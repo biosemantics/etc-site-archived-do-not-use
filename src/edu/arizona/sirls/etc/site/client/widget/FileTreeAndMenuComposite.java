@@ -6,8 +6,10 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
+import edu.arizona.sirls.etc.site.client.builder.dialog.LoadingPopup;
 import edu.arizona.sirls.etc.site.client.builder.lib.fileManager.CreateDirectoryClickHandler;
 import edu.arizona.sirls.etc.site.client.builder.lib.fileManager.DeleteClickHandler;
 import edu.arizona.sirls.etc.site.client.builder.lib.fileManager.MyUploader;
@@ -17,15 +19,27 @@ import edu.arizona.sirls.etc.site.client.builder.lib.fileManager.OnStartUploadHa
 import edu.arizona.sirls.etc.site.client.builder.lib.fileManager.RenameClickHandler;
 import gwtupload.client.IUploadStatus;
 
-public class FileTreeAndMenuComposite extends Composite {
+public class FileTreeAndMenuComposite extends Composite implements ILoadListener {
 
 	private FileTreeComposite fileTree;
+	private LoadingPopup loadingPopup = new LoadingPopup();
+	private VerticalPanel verticalPanel = new VerticalPanel();
 	
 	public FileTreeAndMenuComposite(boolean enableDragAndDrop) { 
-		this.fileTree = new FileTreeComposite(enableDragAndDrop);
+		loadingPopup.center(); 
+		loadingPopup.show(); 
 		
+		this.fileTree = new FileTreeComposite(enableDragAndDrop);
+		fileTree.addLoadListener(this);
 		fileTree.refresh();
+		
+		initWidget(verticalPanel);
+	}
 
+	@Override
+	public void notifyLoadFinished(Widget widget) { 
+		loadingPopup.hide();
+		
 		//StatusWidget statusWidget = new StatusWidget();
 		MyUploader uploader = new MyUploader();
 		uploader.setAutoSubmit(true);
@@ -52,7 +66,6 @@ public class FileTreeAndMenuComposite extends Composite {
 		renameButton.addClickHandler(new RenameClickHandler(fileTree.getFileSelectionHandler(), fileTree));
 		createDirectoryButton.addClickHandler(new CreateDirectoryClickHandler(fileTree.getFileSelectionHandler(), fileTree));
 
-		VerticalPanel verticalPanel = new VerticalPanel();
 		verticalPanel.add(new Label("Your Files:"));
 		verticalPanel.add(new ScrollPanel(fileTree));
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
@@ -65,8 +78,6 @@ public class FileTreeAndMenuComposite extends Composite {
 		
 		verticalPanel.add(horizontalPanel);
 		verticalPanel.add(statusWidget.getWidget());
-		
-		initWidget(verticalPanel);
 	}
 	
 }
