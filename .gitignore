@@ -6,3 +6,9 @@
 /.settings
 /.classpath
 /.project
+
+
+/war/etcsite
+
+/war/WEB-INF/deploy
+/gwt-unitCache
