@@ -12,3 +12,4 @@
 
 /war/WEB-INF/deploy
 /gwt-unitCache
+/war/WEB-INF/classes
