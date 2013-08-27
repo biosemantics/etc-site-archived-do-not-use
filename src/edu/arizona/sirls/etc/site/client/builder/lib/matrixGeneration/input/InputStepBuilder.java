@@ -12,6 +12,7 @@ import edu.arizona.sirls.etc.site.client.Session;
 import edu.arizona.sirls.etc.site.client.builder.PageBuilder;
 import edu.arizona.sirls.etc.site.client.builder.dialog.CloseDialogBoxClickHandler;
 import edu.arizona.sirls.etc.site.client.builder.handler.FileManagerClickHandler;
+import edu.arizona.sirls.etc.site.client.builder.handler.FileManagerPopupClickHandler;
 import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.IStepBuilder;
 import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.MatrixGenerationContentBuilder;
 import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.MatrixGenerationJob;
@@ -70,7 +71,7 @@ public class InputStepBuilder implements IStepBuilder, IFileSelectClickHandlerLi
 		fileManagerPanel.add(new Label("Or upload in "));
 		
 		Anchor fileManagerAnchor = new Anchor("File Manager");
-		fileManagerAnchor.addClickHandler(new FileManagerClickHandler());
+		fileManagerAnchor.addClickHandler(new FileManagerPopupClickHandler());
 		fileManagerPanel.add(fileManagerAnchor);
 		panel.add(fileManagerPanel);
 		
