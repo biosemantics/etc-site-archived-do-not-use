@@ -6,7 +6,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import edu.arizona.sirls.etc.site.client.Session;
 import edu.arizona.sirls.etc.site.client.builder.PageBuilder;
 import edu.arizona.sirls.etc.site.client.builder.lib.HelpContentBuilder;
-import edu.arizona.sirls.etc.site.client.builder.lib.StartContentBuilder;
 
 public class HelpClickHandler implements ClickHandler {
 
@@ -14,7 +13,7 @@ public class HelpClickHandler implements ClickHandler {
 	public void onClick(ClickEvent event) {
 		Session session = Session.getInstance();
 		PageBuilder pageBuilder = session.getPageBuilder();
-		pageBuilder.setContentBuilder(HelpContentBuilder.getInstance());
+		pageBuilder.setContentBuilder(new HelpContentBuilder());
 		pageBuilder.build();
 	}
 

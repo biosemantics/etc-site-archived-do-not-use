@@ -7,14 +7,6 @@ import edu.arizona.sirls.etc.site.client.builder.IContentBuilder;
 
 public class TaxonomyComparisonContentBuilder implements IContentBuilder {
 
-	private static TaxonomyComparisonContentBuilder instance;
-	
-	public static TaxonomyComparisonContentBuilder getInstance() {
-		if(instance == null)
-			instance = new TaxonomyComparisonContentBuilder();
-		return instance;
-	}
-
 	@Override
 	public void build() {
 		Element content = DOM.getElementById("content");

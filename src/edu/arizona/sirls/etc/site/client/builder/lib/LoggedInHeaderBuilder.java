@@ -4,39 +4,20 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.TextBox;
 
-import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.client.Authentication;
-import edu.arizona.sirls.etc.site.client.Session;
 import edu.arizona.sirls.etc.site.client.builder.IHeaderBuilder;
 import edu.arizona.sirls.etc.site.client.builder.handler.FileManagerClickHandler;
 import edu.arizona.sirls.etc.site.client.builder.handler.HelpClickHandler;
 import edu.arizona.sirls.etc.site.client.builder.handler.HomeClickHandler;
-import edu.arizona.sirls.etc.site.client.builder.handler.LoginButtonClickHandler;
 import edu.arizona.sirls.etc.site.client.builder.handler.LogoutButtonClickHandler;
 import edu.arizona.sirls.etc.site.client.builder.handler.SettingsClickHandler;
 import edu.arizona.sirls.etc.site.client.builder.handler.TaskManagerClickHandler;
 import edu.arizona.sirls.etc.site.client.widget.ImageLabelComposite;
 
-import com.google.gwt.safehtml.shared.UriUtils;
-
 public class LoggedInHeaderBuilder implements IHeaderBuilder {
-
-	private static LoggedInHeaderBuilder instance;
-
-	public static LoggedInHeaderBuilder getInstance() {
-		if(instance == null)
-			instance = new LoggedInHeaderBuilder();
-		return instance;
-	}
-	
-	private LoggedInHeaderBuilder() { } 
 	
 	@Override
 	public void build() {

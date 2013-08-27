@@ -4,32 +4,16 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
-import edu.arizona.sirls.etc.site.client.builder.IHeaderBuilder;
 import edu.arizona.sirls.etc.site.client.builder.IMenuBuilder;
 import edu.arizona.sirls.etc.site.client.builder.handler.MatrixGenerationClickHandler;
 import edu.arizona.sirls.etc.site.client.builder.handler.TaxonomyComparisonClickHandler;
 import edu.arizona.sirls.etc.site.client.builder.handler.TreeGenerationClickHandler;
 import edu.arizona.sirls.etc.site.client.builder.handler.VisualizationClickHandler;
 
-public class MainMenuBuilder implements IMenuBuilder {
-
-	private static MainMenuBuilder instance;
-
-	public static MainMenuBuilder getInstance() {
-		if(instance == null)
-			instance = new MainMenuBuilder();
-		return instance;
-	}
-	
-	private MainMenuBuilder() { } 
+public class MainMenuBuilder implements IMenuBuilder { 
 	
 	@Override
 	public void build() {

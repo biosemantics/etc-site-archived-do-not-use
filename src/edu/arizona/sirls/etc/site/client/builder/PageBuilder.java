@@ -2,9 +2,6 @@ package edu.arizona.sirls.etc.site.client.builder;
 
 import com.google.gwt.user.client.DOM;
 
-import edu.arizona.sirls.etc.site.client.builder.lib.StartContentBuilder;
-import edu.arizona.sirls.etc.site.client.builder.lib.StartMenuBuilder;
-
 public class PageBuilder {
 
 	private IFooterBuilder footerBuilder;

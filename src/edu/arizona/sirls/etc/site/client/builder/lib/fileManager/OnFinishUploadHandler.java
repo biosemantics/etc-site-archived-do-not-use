@@ -1,23 +1,16 @@
 package edu.arizona.sirls.etc.site.client.builder.lib.fileManager;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.Tree;
-
-import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.client.Authentication;
-import edu.arizona.sirls.etc.site.client.Session;
-import edu.arizona.sirls.etc.site.client.api.file.IUserFilesAsyncCallbackListener;
-import edu.arizona.sirls.etc.site.client.api.file.UserFilesAsyncCallback;
 import edu.arizona.sirls.etc.site.client.widget.FileTreeComposite;
-import edu.arizona.sirls.etc.site.client.widget.FileTreeDecorator;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
-
-import gwtupload.client.IUploader;
 import gwtupload.client.IUploadStatus.Status;
-import gwtupload.client.MultiUploader;
+import gwtupload.client.IUploader;
 
-public class OnFinishUploadHandler implements IUploader.OnFinishUploaderHandler, IUserFilesAsyncCallbackListener {
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
+public class OnFinishUploadHandler implements IUploader.OnFinishUploaderHandler {
 
 	private FileTreeComposite tree;
 	private final IFileServiceAsync fileService = GWT.create(IFileService.class);
@@ -31,25 +24,20 @@ public class OnFinishUploadHandler implements IUploader.OnFinishUploaderHandler,
 	@Override
 	public void onFinish(IUploader uploader) {
 		if (uploader.getStatus() == Status.SUCCESS) {
-			UserFilesAsyncCallback callback = new UserFilesAsyncCallback();
-			callback.addListener(this);
-			fileService.getUsersFiles(Authentication.getInstance().getAuthenticationToken(), callback);
+			fileService.getUsersFiles(Authentication.getInstance().getAuthenticationToken(), userFilesCallback);
 		}
 		uploader.setServletPath(defaultServletPath);
 	}
+	
+	private AsyncCallback<edu.arizona.sirls.etc.site.shared.rpc.Tree<String>> userFilesCallback = new AsyncCallback<edu.arizona.sirls.etc.site.shared.rpc.Tree<String>>() {
+		public void onSuccess(edu.arizona.sirls.etc.site.shared.rpc.Tree<String> result) {
+			tree.refresh();
+		}
 
-	@Override
-	public void notifyResult(
-			edu.arizona.sirls.etc.site.shared.rpc.Tree<String> result,
-			UserFilesAsyncCallback userFilesAsyncCallback) {
-		tree.refresh();
-	}
-
-	@Override
-	public void notifyException(Throwable caught,
-			UserFilesAsyncCallback userFilesAsyncCallback) {
-		caught.printStackTrace();
-	}
+		public void onFailure(Throwable caught) {
+			caught.printStackTrace();
+		}
+	};
 	
 	
 }

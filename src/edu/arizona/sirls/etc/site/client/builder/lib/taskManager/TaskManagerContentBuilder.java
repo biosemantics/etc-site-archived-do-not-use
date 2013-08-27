@@ -1,42 +1,28 @@
 package edu.arizona.sirls.etc.site.client.builder.lib.taskManager;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
-import edu.arizona.sirls.etc.site.client.api.task.CreatedTasksAsyncCallback;
-import edu.arizona.sirls.etc.site.client.api.task.ICreatedTasksAsyncCallbackListener;
-import edu.arizona.sirls.etc.site.client.api.task.ISharedTasksAsyncCallbackListener;
-import edu.arizona.sirls.etc.site.client.api.task.SharedTasksAsyncCallback;
 import edu.arizona.sirls.etc.site.client.builder.IContentBuilder;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.Task;
 
-public class TaskManagerContentBuilder implements IContentBuilder, ICreatedTasksAsyncCallbackListener, ISharedTasksAsyncCallbackListener {
-
-	private static TaskManagerContentBuilder instance;
-
-	public static TaskManagerContentBuilder getInstance() {
-		if(instance == null)
-			instance = new TaskManagerContentBuilder();
-		return instance;
-	}
+public class TaskManagerContentBuilder implements IContentBuilder {
 	
 	private final ITaskServiceAsync taskService = GWT.create(ITaskService.class);
 	private FlexTable yourTasksTable;
 	private FlexTable sharedTasksTable;
-	
-	private TaskManagerContentBuilder() { }
 
 	@Override
 	public void build() {
@@ -63,9 +49,7 @@ public class TaskManagerContentBuilder implements IContentBuilder, ICreatedTasks
 		yourTasksTable.setWidget(0,  2, taskName);
 		yourTasksTable.setWidget(0,  3, progressLabel);
 		
-		CreatedTasksAsyncCallback createdTasksAsyncCallback = new CreatedTasksAsyncCallback();
-		createdTasksAsyncCallback.addListener(this);
-		taskService.getCreatedTasks(Authentication.getInstance().getAuthenticationToken(), createdTasksAsyncCallback);
+		taskService.getCreatedTasks(Authentication.getInstance().getAuthenticationToken(), createdTaskCallback);
 		
 		this.sharedTasksTable = new FlexTable();
 		sharedTasksTable.setStyleName("table");
@@ -84,10 +68,8 @@ public class TaskManagerContentBuilder implements IContentBuilder, ICreatedTasks
 		sharedTasksTable.setWidget(0,  1, taskTypeLabel);
 		sharedTasksTable.setWidget(0,  2, taskName);
 		sharedTasksTable.setWidget(0,  3, progressLabel);
-				
-		SharedTasksAsyncCallback sharedTasksAsyncCallback = new SharedTasksAsyncCallback();
-		sharedTasksAsyncCallback.addListener(this);
-		taskService.getSharedTasks(Authentication.getInstance().getAuthenticationToken(), sharedTasksAsyncCallback);
+
+		taskService.getSharedTasks(Authentication.getInstance().getAuthenticationToken(), sharedTaskCallback);
 		
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
 		horizontalPanel.add(yourTasksTable);
@@ -100,41 +82,41 @@ public class TaskManagerContentBuilder implements IContentBuilder, ICreatedTasks
 		Element content = DOM.getElementById("content");
 		content.setInnerHTML("<div class='content900pxCentered'><div id='taskManagerContent'></div></div>");
 	}
-
-	@Override
-	public void notifyCreatedTasks(List<Task> result) {
-		DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("MM/dd/yyyy HH:mm");
-		
-		for(int i=1; i<=result.size(); i++) { 
-			Task task = result.get(i-1);
-			this.yourTasksTable.setText(i, 0, dateTimeFormat.format(task.getStart()));
-			this.yourTasksTable.setText(i, 1, task.getTaskType().toString());
-			this.yourTasksTable.setText(i, 2, task.getName());
-			this.yourTasksTable.setText(i, 3, task.getProgress() + "%");
+	
+	protected AsyncCallback<List<Task>> sharedTaskCallback = new AsyncCallback<List<Task>>() {
+		public void onSuccess(List<Task> result) {
+			DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("MM/dd/yyyy HH:mm");
+			
+			for(int i=1; i<=result.size(); i++) { 
+				Task task = result.get(i-1);
+				sharedTasksTable.setText(i, 0, dateTimeFormat.format(task.getStart()));
+				sharedTasksTable.setText(i, 1, task.getTaskType().toString());
+				sharedTasksTable.setText(i, 2, task.getName());
+				sharedTasksTable.setText(i, 3, task.getProgress() + "%");
+			}
 		}
-	}
 
-	@Override
-	public void notifyExceptionCreatedTasks(Throwable caught) {
-		caught.printStackTrace();
-	}
-
-	@Override
-	public void notifyExceptionSharedTasks(Throwable caught) {
-		caught.printStackTrace();
-	}
-
-	@Override
-	public void notifySharedTasks(List<Task> result) {
-		DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("MM/dd/yyyy HH:mm");
-		
-		for(int i=1; i<=result.size(); i++) { 
-			Task task = result.get(i-1);
-			this.sharedTasksTable.setText(i, 0, dateTimeFormat.format(task.getStart()));
-			this.sharedTasksTable.setText(i, 1, task.getTaskType().toString());
-			this.sharedTasksTable.setText(i, 2, task.getName());
-			this.sharedTasksTable.setText(i, 3, task.getProgress() + "%");
+		public void onFailure(Throwable caught) {
+			caught.printStackTrace();
 		}
-	} 
+	};
+	
+	protected AsyncCallback<List<Task>> createdTaskCallback = new AsyncCallback<List<Task>>() {
+		public void onSuccess(List<Task> result) {
+			DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("MM/dd/yyyy HH:mm");
+			
+			for(int i=1; i<=result.size(); i++) { 
+				Task task = result.get(i-1);
+				yourTasksTable.setText(i, 0, dateTimeFormat.format(task.getStart()));
+				yourTasksTable.setText(i, 1, task.getTaskType().toString());
+				yourTasksTable.setText(i, 2, task.getName());
+				yourTasksTable.setText(i, 3, task.getProgress() + "%");
+			}
+		}
+
+		public void onFailure(Throwable caught) {
+			caught.printStackTrace();
+		}
+	};
 
 }

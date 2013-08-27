@@ -2,16 +2,12 @@ package edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.input;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.arizona.sirls.etc.site.client.builder.dialog.CloseDialogBoxClickHandler;
 import edu.arizona.sirls.etc.site.client.builder.dialog.WidgetDialogBox;
-import edu.arizona.sirls.etc.site.client.widget.FileTreeAndMenuComposite;
 import edu.arizona.sirls.etc.site.client.widget.FileTreeAndSelectComposite;
-import edu.arizona.sirls.etc.site.client.widget.FileTreeComposite;
 
 public class FileSelectDialogClickHandler implements ClickHandler {
 	

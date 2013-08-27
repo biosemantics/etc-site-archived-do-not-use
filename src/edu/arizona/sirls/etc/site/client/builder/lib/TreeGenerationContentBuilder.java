@@ -7,14 +7,6 @@ import edu.arizona.sirls.etc.site.client.builder.IContentBuilder;
 
 public class TreeGenerationContentBuilder implements IContentBuilder {
 
-	private static TreeGenerationContentBuilder instance;
-	
-	public static TreeGenerationContentBuilder getInstance() {
-		if(instance == null)
-			instance = new TreeGenerationContentBuilder();
-		return instance;
-	}
-
 	@Override
 	public void build() {
 		Element content = DOM.getElementById("content");

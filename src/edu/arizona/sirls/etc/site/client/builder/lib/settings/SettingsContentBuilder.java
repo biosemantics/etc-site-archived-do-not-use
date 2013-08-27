@@ -12,16 +12,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import edu.arizona.sirls.etc.site.client.builder.IContentBuilder;
 
 public class SettingsContentBuilder implements IContentBuilder {
-
-	private static SettingsContentBuilder instance;
-
-	public static SettingsContentBuilder getInstance() {
-		if(instance == null)
-			instance = new SettingsContentBuilder();
-		return instance;
-	}
-	
-	private SettingsContentBuilder() { }
 	
 	private Label oldPasswordLabel = new Label("Old Password");
 	private PasswordTextBox oldPasswordTextBox = new PasswordTextBox();

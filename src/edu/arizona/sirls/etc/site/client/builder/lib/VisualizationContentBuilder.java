@@ -7,14 +7,6 @@ import edu.arizona.sirls.etc.site.client.builder.IContentBuilder;
 
 public class VisualizationContentBuilder implements IContentBuilder {
 
-	private static VisualizationContentBuilder instance;
-	
-	public static VisualizationContentBuilder getInstance() {
-		if(instance == null)
-			instance = new VisualizationContentBuilder();
-		return instance;
-	}
-
 	@Override
 	public void build() {
 		Element content = DOM.getElementById("content");

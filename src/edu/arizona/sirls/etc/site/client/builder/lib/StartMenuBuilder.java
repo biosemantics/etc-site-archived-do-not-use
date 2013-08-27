@@ -2,23 +2,10 @@ package edu.arizona.sirls.etc.site.client.builder.lib;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.RootPanel;
 
-import edu.arizona.sirls.etc.site.client.builder.IHeaderBuilder;
 import edu.arizona.sirls.etc.site.client.builder.IMenuBuilder;
 
-public class StartMenuBuilder implements IMenuBuilder {
-
-	private static StartMenuBuilder instance;
-
-	public static StartMenuBuilder getInstance() {
-		if(instance == null)
-			instance = new StartMenuBuilder();
-		return instance;
-	}
-	
-	private StartMenuBuilder() { } 
+public class StartMenuBuilder implements IMenuBuilder {	
 	
 	@Override
 	public void build() {

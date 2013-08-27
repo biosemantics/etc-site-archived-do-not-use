@@ -7,7 +7,6 @@ import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.MatrixGene
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationService;
 import edu.arizona.sirls.etc.site.shared.rpc.LearnInvocation;
-import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationJobStatus;
 
 public class MatrixGenerationService extends RemoteServiceServlet implements IMatrixGenerationService  {
 

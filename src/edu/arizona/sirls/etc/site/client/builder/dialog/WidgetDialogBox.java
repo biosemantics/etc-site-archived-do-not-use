@@ -1,6 +1,5 @@
 package edu.arizona.sirls.etc.site.client.builder.dialog;
 
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Widget;
 

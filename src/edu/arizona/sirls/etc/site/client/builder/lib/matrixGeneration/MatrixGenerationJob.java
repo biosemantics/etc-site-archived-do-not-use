@@ -5,13 +5,6 @@ import java.io.Serializable;
 public class MatrixGenerationJob implements Serializable {
 
 	private static final long serialVersionUID = 7710877104139321045L;
-	private static MatrixGenerationJob instance;
-	
-	public static MatrixGenerationJob getInstance() { 
-		if(instance == null)
-			instance = new MatrixGenerationJob();
-		return instance;
-	}
 	
 	private String taxonDescriptionFile = "";
 	private String taxonGlossaryFile = "";

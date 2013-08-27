@@ -1,6 +1,5 @@
 package edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.input;
 
-import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.PopupPanel;
 
 import edu.arizona.sirls.etc.site.client.widget.FileTreeAndMenuComposite;

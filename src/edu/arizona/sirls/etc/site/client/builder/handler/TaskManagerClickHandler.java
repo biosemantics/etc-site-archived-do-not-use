@@ -13,7 +13,7 @@ public class TaskManagerClickHandler implements ClickHandler {
 	public void onClick(ClickEvent event) {
 		Session session = Session.getInstance();
 		PageBuilder pageBuilder = session.getPageBuilder();
-		pageBuilder.setContentBuilder(TaskManagerContentBuilder.getInstance());
+		pageBuilder.setContentBuilder(new TaskManagerContentBuilder());
 		pageBuilder.build();
 	}
 

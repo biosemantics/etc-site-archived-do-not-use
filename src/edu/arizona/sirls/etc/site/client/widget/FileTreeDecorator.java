@@ -45,7 +45,7 @@ public class FileTreeDecorator {
 	private void decorate(TreeItem root, edu.arizona.sirls.etc.site.shared.rpc.Tree<String> fileTree, FileDragDropHandler fileDragAndDropHandler) {
 		String path = getPath(fileTree);
 		FileImageLabelComposite fileComposite = new FileImageLabelComposite(fileImage, "16", "20", fileTree.getValue(), path);
-		FileDoubleClickHandler fileDoubleClickHandler = new FileDoubleClickHandler();
+		FileImageLabelCompositeDoubleClickHandler fileDoubleClickHandler = new FileImageLabelCompositeDoubleClickHandler();
 		fileComposite.addDomHandler(fileDoubleClickHandler, DoubleClickEvent.getType());
 		if(fileTree.isContainerTree()) {
 			fileComposite = new FileImageLabelComposite(folderImage, "19", "20", fileTree.getValue(), path);

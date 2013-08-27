@@ -1,5 +1,13 @@
 package edu.arizona.sirls.etc.site.server;
 
+import edu.arizona.sirls.etc.site.client.AuthenticationToken;
+import edu.arizona.sirls.etc.site.server.rpc.AuthenticationService;
+import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationResult;
+import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
+import gwtupload.server.UploadAction;
+import gwtupload.server.exceptions.UploadActionException;
+import gwtupload.shared.UConsts;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,15 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
-
-import edu.arizona.sirls.etc.site.client.AuthenticationToken;
-import edu.arizona.sirls.etc.site.server.rpc.AuthenticationService;
-import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationResult;
-import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
-
-import gwtupload.server.UploadAction;
-import gwtupload.server.exceptions.UploadActionException;
-import gwtupload.shared.UConsts;
 
 /**
  * This is an example of how to use UploadAction class.

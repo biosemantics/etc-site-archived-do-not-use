@@ -1,7 +1,6 @@
 package edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.review;
 
 import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 
 public class OTOPopup extends PopupPanel {

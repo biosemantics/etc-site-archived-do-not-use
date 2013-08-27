@@ -2,7 +2,6 @@ package edu.arizona.sirls.etc.site.client.builder.lib;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -14,16 +13,6 @@ import edu.arizona.sirls.etc.site.client.builder.handler.TreeGenerationClickHand
 import edu.arizona.sirls.etc.site.client.builder.handler.VisualizationClickHandler;
 
 public class StartContentBuilder implements IContentBuilder {
-
-	private static StartContentBuilder instance;
-
-	public static StartContentBuilder getInstance() {
-		if(instance == null)
-			instance = new StartContentBuilder();
-		return instance;
-	}
-	
-	private StartContentBuilder() { } 
 	
 	@Override
 	public void build() {

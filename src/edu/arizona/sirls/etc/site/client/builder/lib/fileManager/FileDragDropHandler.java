@@ -10,22 +10,14 @@ import com.google.gwt.event.dom.client.DragStartEvent;
 import com.google.gwt.event.dom.client.DragStartHandler;
 import com.google.gwt.event.dom.client.DropEvent;
 import com.google.gwt.event.dom.client.DropHandler;
-import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.client.Authentication;
-import edu.arizona.sirls.etc.site.client.Session;
-import edu.arizona.sirls.etc.site.client.api.file.IMoveFileAsyncCallbackListener;
-import edu.arizona.sirls.etc.site.client.api.file.IUserFilesAsyncCallbackListener;
-import edu.arizona.sirls.etc.site.client.api.file.MoveFileAsyncCallback;
-import edu.arizona.sirls.etc.site.client.api.file.UserFilesAsyncCallback;
 import edu.arizona.sirls.etc.site.client.widget.FileImageLabelComposite;
-import edu.arizona.sirls.etc.site.client.widget.FileTreeComposite;
-import edu.arizona.sirls.etc.site.client.widget.FileTreeDecorator;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 
-public class FileDragDropHandler implements DragStartHandler, DropHandler, DragOverHandler, IMoveFileAsyncCallbackListener {
+public class FileDragDropHandler implements DragStartHandler, DropHandler, DragOverHandler {
 
 	private final IFileServiceAsync fileService = GWT.create(IFileService.class);
 	private Set<IFileMoveListener> listeners = new HashSet<IFileMoveListener>();
@@ -48,14 +40,12 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 		if(target instanceof FileImageLabelComposite) {
 			// Required: set data for the event.
 			FileImageLabelComposite fileImageLabelComposite = (FileImageLabelComposite)target;
-			MoveFileAsyncCallback callback = new MoveFileAsyncCallback();
-			callback.addListener(this);
 			
 			String sourcePathParts[] = sourcePath.split("//");
 			String sourceName = sourcePathParts[sourcePathParts.length-1];
 			String targetPath = ((FileImageLabelComposite) target).getPath() + "//" + sourceName;
 					
-			fileService.moveFile(Authentication.getInstance().getAuthenticationToken(), sourcePath, targetPath, callback);
+			fileService.moveFile(Authentication.getInstance().getAuthenticationToken(), sourcePath, targetPath, moveFileCallback);
 		}
 	}
 
@@ -63,18 +53,6 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 	public void onDragOver(DragOverEvent event) {
 		//this is required for drop to work, see 
 		// http://static.googleusercontent.com/external_content/untrusted_dlcp/www.google.com/it//events/io/2011/static/presofiles/gwt_html5_a_web_develops_dream.pdf slide 62
-	}
-
-	@Override
-	public void notifyException(Throwable caught) {
-		caught.printStackTrace();
-	}
-
-	@Override
-	public void notifyResult(Boolean result) {
-		if(result) {
-			notifyListeners();
-		}	
 	}
 	
 	public void addListener(IFileMoveListener listener) {
@@ -89,5 +67,17 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 		for(IFileMoveListener listener : listeners)
 			listener.notifyFileMove();
 	}
+	
+	private AsyncCallback<Boolean> moveFileCallback = new AsyncCallback<Boolean>() {
+		public void onSuccess(Boolean result) {
+			if(result) {
+				notifyListeners();
+			}	
+		}
+
+		public void onFailure(Throwable caught) {
+			caught.printStackTrace();
+		}
+	};
 	
 }

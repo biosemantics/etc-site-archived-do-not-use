@@ -1,23 +1,11 @@
 package edu.arizona.sirls.etc.site.client.builder.lib;
 
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
 import edu.arizona.sirls.etc.site.client.builder.IFooterBuilder;
 
 public class FooterBuilder implements IFooterBuilder {
-
-	private static FooterBuilder instance;
-
-	public static FooterBuilder getInstance() {
-		if(instance == null)
-			instance = new FooterBuilder();
-		return instance;
-	}
-	
-	private FooterBuilder() { } 
 	
 	@Override
 	public void build() {

@@ -1,8 +1,6 @@
 package edu.arizona.sirls.etc.site.client.builder.lib.fileManager;
 
-import edu.arizona.sirls.etc.site.client.Authentication;
 import gwtupload.client.IUploader;
-import gwtupload.client.MultiUploader;
 
 public class OnStartUploadHandler implements IUploader.OnStartUploaderHandler {
 

@@ -8,17 +8,6 @@ import edu.arizona.sirls.etc.site.client.builder.IContentBuilder;
 import edu.arizona.sirls.etc.site.client.widget.FileTreeAndMenuComposite;
 
 public class FileManagerContentBuilder implements IContentBuilder {
-
-	private static FileManagerContentBuilder instance;
-
-	public static FileManagerContentBuilder getInstance() {
-		if (instance == null)
-			instance = new FileManagerContentBuilder();
-		return instance;
-	}
-
-	private FileManagerContentBuilder() {
-	}
 	
 	@Override
 	public void build() {

@@ -2,9 +2,7 @@ package edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.parse;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 
@@ -12,17 +10,16 @@ import edu.arizona.sirls.etc.site.client.Session;
 import edu.arizona.sirls.etc.site.client.builder.PageBuilder;
 import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.IStepBuilder;
 import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.MatrixGenerationContentBuilder;
+import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.MatrixGenerationJob;
 import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.Step;
 import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.output.OutputStepBuilder;
 
 public class ParseStepBuilder implements IStepBuilder {
-
-	private static ParseStepBuilder instance;
 	
-	public static ParseStepBuilder getInstance() {
-		if(instance == null)
-			instance = new ParseStepBuilder();
-		return instance;
+	private MatrixGenerationJob matrixGenerationJob;
+
+	public ParseStepBuilder(MatrixGenerationJob matrixGenerationJob) { 
+		this.matrixGenerationJob = matrixGenerationJob;
 	}
 	
 	@Override
@@ -37,7 +34,7 @@ public class ParseStepBuilder implements IStepBuilder {
 			@Override
 			public void onClick(ClickEvent event) { 
 				PageBuilder pageBuilder = Session.getInstance().getPageBuilder();
-				pageBuilder.setContentBuilder(MatrixGenerationContentBuilder.getInstance(OutputStepBuilder.getInstance()));
+				pageBuilder.setContentBuilder(new MatrixGenerationContentBuilder(new OutputStepBuilder(matrixGenerationJob)));
 				pageBuilder.build();
 			}
 		});

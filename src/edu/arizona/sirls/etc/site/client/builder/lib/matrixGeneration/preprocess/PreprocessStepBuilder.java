@@ -4,6 +4,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
@@ -11,8 +12,6 @@ import com.google.gwt.user.client.ui.TextArea;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.Session;
-import edu.arizona.sirls.etc.site.client.api.file.GetFileContentAsyncCallback;
-import edu.arizona.sirls.etc.site.client.api.file.IGetFileContentAsyncCallbackListener;
 import edu.arizona.sirls.etc.site.client.builder.PageBuilder;
 import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.IStepBuilder;
 import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.MatrixGenerationContentBuilder;
@@ -22,52 +21,55 @@ import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.learn.Lear
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 
-public class PreprocessStepBuilder implements IStepBuilder, IGetFileContentAsyncCallbackListener {
+public class PreprocessStepBuilder implements IStepBuilder {
 
 	private final IFileServiceAsync fileService = GWT.create(IFileService.class);
 	private TextArea textArea = new TextArea();
 	private Panel panel;
+	private MatrixGenerationJob matrixGenerationJob;
+	
+	public PreprocessStepBuilder(MatrixGenerationJob matrixGenerationJob) {
+		this.matrixGenerationJob = matrixGenerationJob;
+	}
 	
 	@Override
 	public void build(Panel panel) {
 		this.panel = panel;
-		String source = MatrixGenerationJob.getInstance().getTaxonDescriptionFile();
-		GetFileContentAsyncCallback callback = new GetFileContentAsyncCallback();
-		callback.addListener(this);
-		fileService.getFileContent(Authentication.getInstance().getAuthenticationToken(), source, callback);
+		String source = matrixGenerationJob.getTaxonDescriptionFile();
+		fileService.getFileContent(Authentication.getInstance().getAuthenticationToken(), source, fileContentCallback);
 	}
 
 	@Override
 	public Step getStep() {
 		return Step.PREPROCESS_TEXT;
 	}
+	
+	protected AsyncCallback<String> fileContentCallback = new AsyncCallback<String>() {
+		public void onSuccess(String result) {
+			panel.add(new Label("Preprocess Text"));	
+			textArea.setText(result);
+			DOM.setElementAttribute(textArea.getElement(), "id", "preprocessTextArea");
+			panel.add(textArea);
+			
+			Button correctButton = new Button("Correct");
+			correctButton.addClickHandler(new CorrectButtonClickHandler(textArea, matrixGenerationJob));
+			panel.add(correctButton);
+			
+			Button nextButton = new Button("Next");
+			nextButton.addClickHandler(new ClickHandler() { 
+				@Override
+				public void onClick(ClickEvent event) { 
+					PageBuilder pageBuilder = Session.getInstance().getPageBuilder();
+					pageBuilder.setContentBuilder(new MatrixGenerationContentBuilder(new LearnStepBuilder(matrixGenerationJob)));
+					pageBuilder.build();
+				}
+			});
+			panel.add(nextButton);
+		}
 
-	@Override
-	public void notifyResult(String result) {
-		panel.add(new Label("Preprocess Text"));	
-		textArea.setText(result);
-		DOM.setElementAttribute(textArea.getElement(), "id", "preprocessTextArea");
-		panel.add(textArea);
-		
-		Button correctButton = new Button("Correct");
-		correctButton.addClickHandler(new CorrectButtonClickHandler(textArea));
-		panel.add(correctButton);
-		
-		Button nextButton = new Button("Next");
-		nextButton.addClickHandler(new ClickHandler() { 
-			@Override
-			public void onClick(ClickEvent event) { 
-				PageBuilder pageBuilder = Session.getInstance().getPageBuilder();
-				pageBuilder.setContentBuilder(MatrixGenerationContentBuilder.getInstance(new LearnStepBuilder()));
-				pageBuilder.build();
-			}
-		});
-		panel.add(nextButton);
-	}
-
-	@Override
-	public void notifyException(Throwable caught) {
-		caught.printStackTrace();
-	}
+		public void onFailure(Throwable caught) {
+			caught.printStackTrace();
+		}
+	};
 
 }

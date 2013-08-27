@@ -2,28 +2,20 @@ package edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.arizona.sirls.etc.site.client.builder.IContentBuilder;
+import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.input.InputStepBuilder;
 import edu.arizona.sirls.etc.site.client.widget.ImageLabelComposite;
 
 public class MatrixGenerationContentBuilder implements IContentBuilder {
 
-	private static MatrixGenerationContentBuilder instance;
 	private IStepBuilder contentForMatrixGenerationStepBuilder;
 	
-	public static MatrixGenerationContentBuilder getInstance(IStepBuilder contentForMatrixGenerationStepBuilder) {
-		if(instance == null)
-			instance = new MatrixGenerationContentBuilder();
-		instance.setContentForMatrixGenerationStepBuilder(contentForMatrixGenerationStepBuilder);
-		return instance;
-	}
-
-	private void setContentForMatrixGenerationStepBuilder(IStepBuilder contentForMatrixGenerationStepBuilder) {
+	public MatrixGenerationContentBuilder(IStepBuilder contentForMatrixGenerationStepBuilder) {
 		this.contentForMatrixGenerationStepBuilder = contentForMatrixGenerationStepBuilder;
 	}
 

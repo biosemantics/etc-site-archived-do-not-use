@@ -1,40 +1,20 @@
 package edu.arizona.sirls.etc.site.client.builder.lib;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.arizona.sirls.etc.site.client.Session;
 import edu.arizona.sirls.etc.site.client.builder.IHeaderBuilder;
-import edu.arizona.sirls.etc.site.client.builder.handler.FieldVerifier;
 import edu.arizona.sirls.etc.site.client.builder.handler.HelpClickHandler;
 import edu.arizona.sirls.etc.site.client.builder.handler.LoginButtonClickHandler;
 import edu.arizona.sirls.etc.site.client.widget.ImageLabelComposite;
-import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationServiceAsync;
 
 public class LoggedOutHeaderBuilder implements IHeaderBuilder {
-
-	private static LoggedOutHeaderBuilder instance;
-
-	public static LoggedOutHeaderBuilder getInstance() {
-		if(instance == null)
-			instance = new LoggedOutHeaderBuilder();
-		return instance;
-	}
-	
-	private LoggedOutHeaderBuilder() { } 
 	
 	@Override
 	public void build() {

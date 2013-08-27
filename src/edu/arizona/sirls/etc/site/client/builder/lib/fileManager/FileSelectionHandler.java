@@ -1,12 +1,11 @@
 package edu.arizona.sirls.etc.site.client.builder.lib.fileManager;
 
-import edu.arizona.sirls.etc.site.client.widget.ImageLabelComposite;
-import gwtupload.client.MultiUploader;
-
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
+
+import edu.arizona.sirls.etc.site.client.widget.ImageLabelComposite;
 
 public class FileSelectionHandler implements SelectionHandler<TreeItem> {
 

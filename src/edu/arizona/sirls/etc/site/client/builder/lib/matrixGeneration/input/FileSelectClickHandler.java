@@ -5,14 +5,13 @@ import java.util.Set;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasText;
-import com.google.gwt.user.client.ui.Label;
 
-import edu.arizona.sirls.etc.site.client.api.fileFormat.IValidFileAsyncCallbackListener;
 import edu.arizona.sirls.etc.site.client.widget.FileTreeComposite;
 
-public abstract class FileSelectClickHandler implements ClickHandler, IValidFileAsyncCallbackListener {
+public abstract class FileSelectClickHandler implements ClickHandler {
 
 	protected FileTreeComposite tree;
 	protected DialogBox dialogBox;
@@ -52,20 +51,21 @@ public abstract class FileSelectClickHandler implements ClickHandler, IValidFile
 		return tree.getFileSelectionHandler().getTarget();
 	}
 	
-	@Override
-	public void notifyResult(Boolean result) {
-		if(!result) {
-			if(errorText != null)
-				this.errorText.setText("Invalid format for a taxon description");
-		} else {
-			if(dialogBox != null)
-				dialogBox.hide();
-			this.notifyListeners();
+	
+	protected AsyncCallback<Boolean> validFileCallback = new AsyncCallback<Boolean>() {
+		public void onSuccess(Boolean result) {
+			if(!result) {
+				if(errorText != null)
+					errorText.setText("Invalid format for a taxon description");
+			} else {
+				if(dialogBox != null)
+					dialogBox.hide();
+				notifyListeners();
+			}
 		}
-	}
 
-	@Override
-	public void notifyException(Throwable caught) {
-		caught.printStackTrace();
-	}
+		public void onFailure(Throwable caught) {
+			caught.printStackTrace();
+		}
+	};
 }

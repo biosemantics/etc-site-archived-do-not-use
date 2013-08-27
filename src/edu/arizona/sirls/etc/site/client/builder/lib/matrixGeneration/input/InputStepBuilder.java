@@ -19,21 +19,17 @@ import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.Step;
 import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.preprocess.PreprocessStepBuilder;
 
 public class InputStepBuilder implements IStepBuilder, IFileSelectClickHandlerListener {
-
-	private static InputStepBuilder instance;
-	
-	public static InputStepBuilder getInstance() {
-		if(instance == null)
-			instance = new InputStepBuilder();
-		return instance;
-	}
 	
 	private TaxonDescriptionFileSelectClickHandler selectTaxonDescriptionClickHandler = new TaxonDescriptionFileSelectClickHandler();
 	private GlossaryFileSelectClickHandler selectGlossaryFileClickHandler = new GlossaryFileSelectClickHandler();
 	private Label taxonGlossaryFileNameLabel = new Label();
 	private Label taxonDescriptionFileNameLabel = new Label();
 	private Button nextButton = new Button("Next");
-	private MatrixGenerationJob matrixGenerationJob = MatrixGenerationJob.getInstance();
+	private MatrixGenerationJob matrixGenerationJob;
+	
+	public InputStepBuilder(MatrixGenerationJob matrixGenerationJob) {
+		this.matrixGenerationJob = matrixGenerationJob;
+	}
 	
 	@Override
 	public void build(Panel panel) {
@@ -78,7 +74,7 @@ public class InputStepBuilder implements IStepBuilder, IFileSelectClickHandlerLi
 		fileManagerPanel.add(fileManagerAnchor);
 		panel.add(fileManagerPanel);
 		
-		if(!MatrixGenerationJob.getInstance().hasTaxonDescriptionFile())
+		if(!matrixGenerationJob.hasTaxonDescriptionFile())
 			nextButton.setEnabled(false);
 		
 		nextButton.addClickHandler(new ClickHandler() { 
@@ -86,7 +82,7 @@ public class InputStepBuilder implements IStepBuilder, IFileSelectClickHandlerLi
 			public void onClick(ClickEvent event) { 
 				if(matrixGenerationJob.hasTaxonDescriptionFile()) {
 					PageBuilder pageBuilder = Session.getInstance().getPageBuilder();
-					pageBuilder.setContentBuilder(MatrixGenerationContentBuilder.getInstance(new PreprocessStepBuilder()));
+					pageBuilder.setContentBuilder(new MatrixGenerationContentBuilder(new PreprocessStepBuilder(matrixGenerationJob)));
 					pageBuilder.build();
 				}
 			}
@@ -100,9 +96,7 @@ public class InputStepBuilder implements IStepBuilder, IFileSelectClickHandlerLi
 	}
 
 	@Override
-	public void notifyFileSelect(FileSelectClickHandler fileSelectClickHandler,	String selection) {
-		MatrixGenerationJob matrixGenerationJob = MatrixGenerationJob.getInstance();
-		
+	public void notifyFileSelect(FileSelectClickHandler fileSelectClickHandler,	String selection) {		
 		if(fileSelectClickHandler.equals(selectTaxonDescriptionClickHandler)) {
 			this.taxonDescriptionFileNameLabel.setText(selection);
 			matrixGenerationJob.setTaxonDescriptionFile(selection);

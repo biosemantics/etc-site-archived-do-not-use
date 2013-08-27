@@ -4,7 +4,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 
@@ -14,28 +13,25 @@ import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.IStepBuild
 import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.MatrixGenerationContentBuilder;
 import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.MatrixGenerationJob;
 import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.Step;
-import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.input.FormatRequirementsClickHandler;
 import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.parse.ParseStepBuilder;
 
 public class ReviewStepBuilder implements IStepBuilder {
 
-	private static ReviewStepBuilder instance;
+	private MatrixGenerationJob matrixGenerationJob;
 	
-	public static ReviewStepBuilder getInstance() {
-		if(instance == null)
-			instance = new ReviewStepBuilder();
-		return instance;
+	public ReviewStepBuilder(MatrixGenerationJob matrixGenerationJob) {
+		this.matrixGenerationJob = matrixGenerationJob;
 	}
 	
 	@Override
 	public void build(Panel panel) {
-		MatrixGenerationJob.getInstance().setReviewTermsLink("http://biosemantics.arizona.edu:8080/OTOLite/?uploadID=54");
+		matrixGenerationJob.setReviewTermsLink("http://biosemantics.arizona.edu:8080/OTOLite/?uploadID=54");
 		panel.add(new Label("Review Terms"));
 		
 		panel.add(new Label("Please review the terms learned by "));
 		
 		Anchor otoAnchor = new Anchor("visiting OTO");
-		otoAnchor.addClickHandler(new OTOClickHandler());
+		otoAnchor.addClickHandler(new OTOClickHandler(matrixGenerationJob));
 		panel.add(otoAnchor);
 		
 		Button nextButton = new Button("Next");
@@ -43,7 +39,7 @@ public class ReviewStepBuilder implements IStepBuilder {
 			@Override
 			public void onClick(ClickEvent event) { 
 				PageBuilder pageBuilder = Session.getInstance().getPageBuilder();
-				pageBuilder.setContentBuilder(MatrixGenerationContentBuilder.getInstance(ParseStepBuilder.getInstance()));
+				pageBuilder.setContentBuilder(new MatrixGenerationContentBuilder(new ParseStepBuilder(matrixGenerationJob)));
 				pageBuilder.build();
 			}
 		});

@@ -3,21 +3,14 @@ package edu.arizona.sirls.etc.site.client.builder.lib.fileManager;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.client.Authentication;
-import edu.arizona.sirls.etc.site.client.Session;
-import edu.arizona.sirls.etc.site.client.api.file.DeleteFileAsyncCallback;
-import edu.arizona.sirls.etc.site.client.api.file.IDeleteFileAsyncCallbackListener;
-import edu.arizona.sirls.etc.site.client.api.file.IUserFilesAsyncCallbackListener;
-import edu.arizona.sirls.etc.site.client.api.file.UserFilesAsyncCallback;
 import edu.arizona.sirls.etc.site.client.widget.FileTreeComposite;
-import edu.arizona.sirls.etc.site.client.widget.FileTreeDecorator;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 
-public class DeleteClickHandler implements ClickHandler, IDeleteFileAsyncCallbackListener, IUserFilesAsyncCallbackListener {
+public class DeleteClickHandler implements ClickHandler {
 
 	private FileSelectionHandler fileSelectionHandler;
 	private final IFileServiceAsync fileService = GWT.create(IFileService.class);
@@ -33,38 +26,33 @@ public class DeleteClickHandler implements ClickHandler, IDeleteFileAsyncCallbac
 		String target = fileSelectionHandler.getTarget();
 		//don't allow deletetion of root node
 		if(!target.isEmpty()) {
-			DeleteFileAsyncCallback callback = new DeleteFileAsyncCallback();
-			callback.addListener(this);
-			fileService.deleteFile(Authentication.getInstance().getAuthenticationToken(), target, callback);
+			fileService.deleteFile(Authentication.getInstance().getAuthenticationToken(), target, deleteFileCallback);
 		}
 	}
 
-	@Override
-	public void notifyException(Throwable caught) {
-		caught.printStackTrace();
-	}
+	
+	private AsyncCallback<edu.arizona.sirls.etc.site.shared.rpc.Tree<String>> usersFilesCallback = new AsyncCallback<edu.arizona.sirls.etc.site.shared.rpc.Tree<String>>() {
 
-	@Override
-	public void notifyResult(Boolean result) {
-		if(result) {
-			UserFilesAsyncCallback callback = new UserFilesAsyncCallback();
-			callback.addListener(this);
-			fileService.getUsersFiles(Authentication.getInstance().getAuthenticationToken(), callback);
-		}	
-	}
+		public void onSuccess(edu.arizona.sirls.etc.site.shared.rpc.Tree<String> result) {
+			tree.refresh();
+		}
 
+		public void onFailure(Throwable caught) {
+			caught.printStackTrace();
+		}
 
-	@Override
-	public void notifyResult(
-			edu.arizona.sirls.etc.site.shared.rpc.Tree<String> result,
-			UserFilesAsyncCallback userFilesAsyncCallback) {
-		tree.refresh();
-	}
+	};
 
-	@Override
-	public void notifyException(Throwable caught,
-			UserFilesAsyncCallback userFilesAsyncCallback) {
-		caught.printStackTrace();
-	}
+	private AsyncCallback<Boolean> deleteFileCallback = new AsyncCallback<Boolean>() {
+		public void onSuccess(Boolean result) {
+			if (result) {
+				fileService.getUsersFiles(Authentication.getInstance().getAuthenticationToken(), usersFilesCallback);
+			}
+		}
+
+		public void onFailure(Throwable caught) {
+			caught.printStackTrace();
+		}
+	};
 
 }

@@ -8,7 +8,6 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.arizona.sirls.etc.site.client.builder.PageBuilder;
 import edu.arizona.sirls.etc.site.client.builder.handler.LoginButtonClickHandler;

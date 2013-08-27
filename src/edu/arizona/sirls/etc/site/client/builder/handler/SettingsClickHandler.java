@@ -13,7 +13,7 @@ public class SettingsClickHandler implements ClickHandler {
 	public void onClick(ClickEvent event) {
 		Session session = Session.getInstance();
 		PageBuilder pageBuilder = session.getPageBuilder();
-		pageBuilder.setContentBuilder(SettingsContentBuilder.getInstance());
+		pageBuilder.setContentBuilder(new SettingsContentBuilder());
 		pageBuilder.build();
 	}
 
