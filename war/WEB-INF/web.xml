@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+ 	<!-- TODO: Add <servlet> tags for each servlet here. -->
+  <servlet>
+    <servlet-name>authenticationServlet</servlet-name>
+    <servlet-class>edu.arizona.sirls.etc.site.server.rpc.AuthenticationService</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>fileServlet</servlet-name>
+    <servlet-class>edu.arizona.sirls.etc.site.server.rpc.FileService</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>taskServlet</servlet-name>
+    <servlet-class>edu.arizona.sirls.etc.site.server.rpc.TaskService</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>matrixGenerationServlet</servlet-name>
+    <servlet-class>edu.arizona.sirls.etc.site.server.rpc.MatrixGenerationService</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>fileFormatServlet</servlet-name>
+    <servlet-class>edu.arizona.sirls.etc.site.server.rpc.FileFormatService</servlet-class>
+  </servlet>
+  
+  <!-- TODO: Add <servlet-mapping> tags for each <servlet> here. -->
+  <servlet-mapping>
+    <servlet-name>authenticationServlet</servlet-name>
+    <url-pattern>/etcsite/auth</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>fileServlet</servlet-name>
+    <url-pattern>/etcsite/file</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>taskServlet</servlet-name>
+    <url-pattern>/etcsite/task</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>matrixGenerationServlet</servlet-name>
+    <url-pattern>/etcsite/matrixGeneration</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>fileFormatServlet</servlet-name>
+    <url-pattern>/etcsite/fileFormat</url-pattern>
+  </servlet-mapping>
+  
+  <!-- Default page to serve -->
+  <welcome-file-list>
+    <welcome-file>index2.html</welcome-file>
+  </welcome-file-list>
+  
+  
+  
+  <context-param>
+    <!-- max size of the upload request -->
+    <param-name>maxSize</param-name>
+    <param-value>31457280</param-value>
+  </context-param>
+  <context-param>
+    <!-- Useful in development mode to slow down the uploads in fast networks.
+         Put the number of milliseconds to sleep in each block received in the server.
+         false or 0, means don't use slow uploads  -->
+    <param-name>slowUploads</param-name>
+    <param-value>200</param-value>
+  </context-param>
+
+  <servlet>
+    <servlet-name>uploadServlet</servlet-name>
+    <!-- This is the default servlet, it puts files in session -->
+    <servlet-class>edu.arizona.sirls.etc.site.server.UploadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>uploadServlet</servlet-name>
+    <url-pattern>*.gupld</url-pattern>
+  </servlet-mapping>
+  
+</web-app>
