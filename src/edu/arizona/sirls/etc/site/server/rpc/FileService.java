@@ -61,7 +61,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		switch(fileFilter) {
 		case TAXON_DESCRIPTION:
 			return !fileFormatService.isValidTaxonDescription(authenticationToken, target); 
-		case GLOSSARY_FILE:
+		case GLOSSARY:
 			return !fileFormatService.isValidGlossary(authenticationToken, target); 
 		case EULER:
 			return !fileFormatService.isValidEuler(authenticationToken, target); 

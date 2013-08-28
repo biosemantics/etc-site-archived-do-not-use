@@ -63,7 +63,7 @@ public class InputStepBuilder implements IStepBuilder, IFileSelectClickHandlerLi
 		Button taxonGlossaryFileButton = new Button("Select Taxon Glossary File");
 		
 		selectGlossaryFileClickHandler.addListener(this);
-		fileSelectClickHandler = new FileSelectDialogClickHandler(FileFilter.GLOSSARY_FILE, 
+		fileSelectClickHandler = new FileSelectDialogClickHandler(FileFilter.GLOSSARY, 
 				closeClickHandler, selectGlossaryFileClickHandler);
 		taxonGlossaryFileButton.addClickHandler(fileSelectClickHandler);
 		taxonGlossaryFilePanel.add(taxonGlossaryFileButton);
