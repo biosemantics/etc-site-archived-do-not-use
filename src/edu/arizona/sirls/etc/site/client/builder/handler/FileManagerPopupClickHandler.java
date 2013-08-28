@@ -20,7 +20,7 @@ public class FileManagerPopupClickHandler implements ClickHandler, ILoadListener
 		loadingPopup.show(); 
 		
 		fileManagerPopup = new FileManagerPopup();
-		//fileManagerPopup.setGlassEnabled(true); 
+		fileManagerPopup.setGlassEnabled(true); 
 		fileManagerPopup.addLoadListener(this);
 	}
 

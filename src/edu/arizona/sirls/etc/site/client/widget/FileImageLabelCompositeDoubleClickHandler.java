@@ -37,7 +37,8 @@ public class FileImageLabelCompositeDoubleClickHandler implements DoubleClickHan
 			
 			VerticalPanel verticalPanel = new VerticalPanel();
 			ScrollPanel scrollPanel = new ScrollPanel(verticalPanel);
-			WidgetDialogBox widgetDialogBox = new WidgetDialogBox("File content", scrollPanel);
+			scrollPanel.addStyleName("fileContent");
+			WidgetDialogBox widgetDialogBox = new WidgetDialogBox(true, "File content", scrollPanel);
 			verticalPanel.add(html);
 		
 			Button closeButton = new Button("Close");
@@ -45,7 +46,7 @@ public class FileImageLabelCompositeDoubleClickHandler implements DoubleClickHan
 			verticalPanel.add(closeButton);
 					
 			widgetDialogBox.setGlassEnabled(true); 
-			widgetDialogBox.addStyleName("fileContent");
+			
 			widgetDialogBox.center();
 			widgetDialogBox.show(); 
 		}

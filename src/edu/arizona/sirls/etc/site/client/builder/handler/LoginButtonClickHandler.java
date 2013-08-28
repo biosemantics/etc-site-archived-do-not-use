@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.Session;
@@ -24,10 +25,10 @@ public class LoginButtonClickHandler implements ClickHandler {
 	private TextBox userField;
 	private Button loginButton;
 	private MessageDialogBox dialogBox;
-	private DialogBox source;
+	private TitleCloseDialogBox source;
 
 	public LoginButtonClickHandler(TextBox userField,
-			PasswordTextBox passwordField, Button loginButton, DialogBox source, PageBuilder targetPageBuidler) {
+			PasswordTextBox passwordField, Button loginButton, TitleCloseDialogBox source, PageBuilder targetPageBuidler) {
 		this.userField = userField;
 		this.passwordField = passwordField;
 		this.loginButton = loginButton;

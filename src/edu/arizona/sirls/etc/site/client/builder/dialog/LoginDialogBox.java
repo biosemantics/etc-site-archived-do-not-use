@@ -8,11 +8,12 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 
 import edu.arizona.sirls.etc.site.client.builder.PageBuilder;
 import edu.arizona.sirls.etc.site.client.builder.handler.LoginButtonClickHandler;
 
-public class LoginDialogBox extends DialogBox {
+public class LoginDialogBox extends TitleCloseDialogBox {
 
 	private Label messageLabel = new Label();
 	private Label passwordLabel = new Label("Password:");
@@ -23,7 +24,7 @@ public class LoginDialogBox extends DialogBox {
 	private PasswordTextBox passwordField = new PasswordTextBox();
 
 	public LoginDialogBox(String message, PageBuilder targetPageBuilder) { 
-		this.setText("Login");
+		super("Login");
 		this.setAnimationEnabled(true);
 		
 		FlexTable t = new FlexTable();

@@ -30,15 +30,14 @@ public class FileSelectDialogClickHandler implements ClickHandler {
 		Label errorLabel = new Label();
 		panel.add(errorLabel);
 		
-		WidgetDialogBox dialogBox = new WidgetDialogBox("Select File", panel);
+		WidgetDialogBox dialogBox = new WidgetDialogBox(false, "Select File", panel);
 		closeClickHandler.setDialogBox(dialogBox);
 		selectClickHandler.setDialogBox(dialogBox);	
 		selectClickHandler.setErrorText(errorLabel);
 		selectClickHandler.setTree(fileTreeAndSelectComposite.getFileTreeComposite());
 		
 		dialogBox.center();
-		dialogBox.setGlassEnabled(true); 
-		//dialogBox.scheduledCenter();
+		dialogBox.setGlassEnabled(true);
  		dialogBox.show(); 
 	}
 

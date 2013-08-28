@@ -4,19 +4,20 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.widget.FileTreeAndMenuComposite;
 import edu.arizona.sirls.etc.site.client.widget.ILoadListener;
 
-public class FileManagerPopup extends PopupPanel implements ILoadListener {
+public class FileManagerPopup extends TitleCloseDialogBox implements ILoadListener {
 
 	private FileTreeAndMenuComposite fileTreeAndMenuComposite;
 	
     public FileManagerPopup() { 
         // The popup's constructor's argument is a boolean specifying that it 
         // auto-close itself when the user clicks outside of it. 
-        super(true); 
+        super(true, "File Manager"); 
         
         fileTreeAndMenuComposite = new FileTreeAndMenuComposite(true);
         fileTreeAndMenuComposite.addLoadListener(this);

@@ -1,12 +1,12 @@
 package edu.arizona.sirls.etc.site.client.builder.dialog;
 
-import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class WidgetDialogBox extends DialogBox {
+public class WidgetDialogBox extends TitleCloseDialogBox {
 	
-	public WidgetDialogBox(String title, Widget widget) { 
-		this.setText(title);
+	public WidgetDialogBox(boolean autoHide, String title, Widget widget) { 
+		super(autoHide, title);
 		this.setAnimationEnabled(true);
 		this.setWidget(widget);
 	}

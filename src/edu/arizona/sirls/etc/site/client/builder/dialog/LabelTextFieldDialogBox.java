@@ -6,10 +6,11 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class LabelTextFieldDialogBox extends DialogBox {
+public class LabelTextFieldDialogBox extends TitleCloseDialogBox {
 
 	private Label label = new Label();
 	private TextBox textBox = new TextBox();
@@ -17,7 +18,7 @@ public class LabelTextFieldDialogBox extends DialogBox {
 	private Button confirmButton = new Button("Confirm");
 
 	public LabelTextFieldDialogBox(String title, String labelText, String defaultTextBoxText,  final ILabelTextFieldDialogBoxHandler handler) { 
-		this.setText(title);
+		super(title);
 		this.label.setText(labelText);
 		this.setAnimationEnabled(true);
 		this.textBox.setText(defaultTextBoxText);
