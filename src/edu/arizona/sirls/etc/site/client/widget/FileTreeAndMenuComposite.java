@@ -1,5 +1,8 @@
 package edu.arizona.sirls.etc.site.client.widget;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -22,13 +25,9 @@ import gwtupload.client.IUploadStatus;
 public class FileTreeAndMenuComposite extends Composite implements ILoadListener {
 
 	private FileTreeComposite fileTree;
-	private LoadingPopup loadingPopup = new LoadingPopup();
 	private VerticalPanel verticalPanel = new VerticalPanel();
 	
 	public FileTreeAndMenuComposite(boolean enableDragAndDrop) { 
-		loadingPopup.center(); 
-		loadingPopup.show(); 
-		
 		this.fileTree = new FileTreeComposite(enableDragAndDrop);
 		fileTree.addLoadListener(this);
 		fileTree.refresh();
@@ -37,9 +36,7 @@ public class FileTreeAndMenuComposite extends Composite implements ILoadListener
 	}
 
 	@Override
-	public void notifyLoadFinished(Widget widget) { 
-		loadingPopup.hide();
-		
+	public void notifyLoadFinished(Widget widget) { 		
 		//StatusWidget statusWidget = new StatusWidget();
 		MyUploader uploader = new MyUploader();
 		uploader.setAutoSubmit(true);
@@ -78,6 +75,23 @@ public class FileTreeAndMenuComposite extends Composite implements ILoadListener
 		
 		verticalPanel.add(horizontalPanel);
 		verticalPanel.add(statusWidget.getWidget());
+		
+		this.notifyLoadListeners();
+	}
+	
+	private Set<ILoadListener> listeners = new HashSet<ILoadListener>();
+	
+	public void addLoadListener(ILoadListener listener) {
+		this.listeners.add(listener);
+	}
+	
+	public void removeLoadListener(ILoadListener listener) { 
+		this.listeners.remove(listener);
+	}
+	
+	public void notifyLoadListeners() { 
+		for(ILoadListener listener : listeners)
+			listener.notifyLoadFinished(this);
 	}
 	
 }
