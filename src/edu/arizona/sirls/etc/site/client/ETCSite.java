@@ -2,6 +2,8 @@ package edu.arizona.sirls.etc.site.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.arizona.sirls.etc.site.client.builder.IHeaderBuilder;
@@ -46,6 +48,10 @@ public class ETCSite implements EntryPoint {
 					headerBuilder, 
 					new StartMenuBuilder());
 			session.setPageBuilder(pageBuilder);
+			
+			LoadContentSwitcher loadContentSwitcher = new LoadContentSwitcher();
+			loadContentSwitcher.setContent();
+			
 			pageBuilder.build();
 		}
 

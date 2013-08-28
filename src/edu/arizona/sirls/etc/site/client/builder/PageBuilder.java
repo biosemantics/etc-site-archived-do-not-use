@@ -20,7 +20,7 @@ public class PageBuilder {
 		this.menuBuilder = menuBuilder;
 	}
 
-	public void build() {
+	public void build() {		
 		if(headerBuilderChanged) {
 			cleanElement("header");
 			this.headerBuilder.build();
