@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.widget.FileTreeAndMenuComposite;
 import edu.arizona.sirls.etc.site.client.widget.ILoadListener;
+import edu.arizona.sirls.etc.site.shared.rpc.FileFilter;
 
 public class FileManagerPopup extends TitleCloseDialogBox implements ILoadListener {
 
@@ -19,7 +20,7 @@ public class FileManagerPopup extends TitleCloseDialogBox implements ILoadListen
         // auto-close itself when the user clicks outside of it. 
         super(true, "File Manager"); 
         
-        fileTreeAndMenuComposite = new FileTreeAndMenuComposite(true);
+        fileTreeAndMenuComposite = new FileTreeAndMenuComposite(true, FileFilter.ALL);
         fileTreeAndMenuComposite.addLoadListener(this);
     } 	
 

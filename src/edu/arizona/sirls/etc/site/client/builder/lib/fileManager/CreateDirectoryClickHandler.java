@@ -9,6 +9,7 @@ import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.builder.dialog.ILabelTextFieldDialogBoxHandler;
 import edu.arizona.sirls.etc.site.client.builder.dialog.LabelTextFieldDialogBox;
 import edu.arizona.sirls.etc.site.client.widget.FileTreeComposite;
+import edu.arizona.sirls.etc.site.shared.rpc.FileFilter;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 
@@ -44,7 +45,7 @@ public class CreateDirectoryClickHandler implements ClickHandler, ILabelTextFiel
 	private AsyncCallback<Boolean> createDirectoryCallback = new AsyncCallback<Boolean>() {
 		public void onSuccess(Boolean result) {
 			if (result) {
-				fileService.getUsersFiles(Authentication.getInstance().getAuthenticationToken(), usersFilesCallback);
+				fileService.getUsersFiles(Authentication.getInstance().getAuthenticationToken(), FileFilter.ALL, usersFilesCallback);
 			}
 		}
 

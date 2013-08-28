@@ -6,7 +6,7 @@ import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 
 public interface IFileServiceAsync {
 
-	public void getUsersFiles(AuthenticationToken authenticationToken, AsyncCallback<Tree<String>> callback);
+	public void getUsersFiles(AuthenticationToken authenticationToken, FileFilter fileFilter, AsyncCallback<Tree<String>> callback);
 
 	public void deleteFile(AuthenticationToken authenticationToken, String target,
 			AsyncCallback<Boolean> callback);
@@ -17,8 +17,6 @@ public interface IFileServiceAsync {
 	public void createDirectory(AuthenticationToken authenticationToken, String target,
 			String directoryName, AsyncCallback<Boolean> callback);
 	
-	public void setFileContent(AuthenticationToken authenticationToken, String target, String content, AsyncCallback<Boolean> callback);
 
-	public void getFileContent(AuthenticationToken authenticationToken, String target, AsyncCallback<String> callback);
 	
 }

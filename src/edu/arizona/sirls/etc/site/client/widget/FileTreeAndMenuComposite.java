@@ -20,6 +20,7 @@ import edu.arizona.sirls.etc.site.client.builder.lib.fileManager.MyUploaderConst
 import edu.arizona.sirls.etc.site.client.builder.lib.fileManager.OnFinishUploadHandler;
 import edu.arizona.sirls.etc.site.client.builder.lib.fileManager.OnStartUploadHandler;
 import edu.arizona.sirls.etc.site.client.builder.lib.fileManager.RenameClickHandler;
+import edu.arizona.sirls.etc.site.shared.rpc.FileFilter;
 import gwtupload.client.IUploadStatus;
 
 public class FileTreeAndMenuComposite extends Composite implements ILoadListener {
@@ -27,8 +28,8 @@ public class FileTreeAndMenuComposite extends Composite implements ILoadListener
 	private FileTreeComposite fileTree;
 	private VerticalPanel verticalPanel = new VerticalPanel();
 	
-	public FileTreeAndMenuComposite(boolean enableDragAndDrop) { 
-		this.fileTree = new FileTreeComposite(enableDragAndDrop);
+	public FileTreeAndMenuComposite(boolean enableDragAndDrop, FileFilter fileFilter) { 
+		this.fileTree = new FileTreeComposite(enableDragAndDrop, fileFilter);
 		fileTree.addLoadListener(this);
 		fileTree.refresh();
 		

@@ -18,6 +18,7 @@ import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.MatrixGene
 import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.MatrixGenerationJob;
 import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.Step;
 import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.preprocess.PreprocessStepBuilder;
+import edu.arizona.sirls.etc.site.shared.rpc.FileFilter;
 
 public class InputStepBuilder implements IStepBuilder, IFileSelectClickHandlerListener {
 	
@@ -51,7 +52,8 @@ public class InputStepBuilder implements IStepBuilder, IFileSelectClickHandlerLi
 		selectTaxonDescriptionClickHandler.addListener(this);
 		CloseDialogBoxClickHandler closeClickHandler = new CloseDialogBoxClickHandler();
 		
-		FileSelectDialogClickHandler fileSelectClickHandler = new FileSelectDialogClickHandler(closeClickHandler, selectTaxonDescriptionClickHandler);
+		FileSelectDialogClickHandler fileSelectClickHandler = new FileSelectDialogClickHandler(FileFilter.TAXON_DESCRIPTION, 
+				closeClickHandler, selectTaxonDescriptionClickHandler);
 		taxonDescriptionFileButton.addClickHandler(fileSelectClickHandler);
 		taxonDescriptionFilePanel.add(taxonDescriptionFileButton);
 		taxonDescriptionFilePanel.add(taxonDescriptionFileNameLabel);
@@ -61,7 +63,8 @@ public class InputStepBuilder implements IStepBuilder, IFileSelectClickHandlerLi
 		Button taxonGlossaryFileButton = new Button("Select Taxon Glossary File");
 		
 		selectGlossaryFileClickHandler.addListener(this);
-		fileSelectClickHandler = new FileSelectDialogClickHandler(closeClickHandler, selectGlossaryFileClickHandler);
+		fileSelectClickHandler = new FileSelectDialogClickHandler(FileFilter.GLOSSARY_FILE, 
+				closeClickHandler, selectGlossaryFileClickHandler);
 		taxonGlossaryFileButton.addClickHandler(fileSelectClickHandler);
 		taxonGlossaryFilePanel.add(taxonGlossaryFileButton);
 		taxonGlossaryFilePanel.add(taxonGlossaryFileNameLabel);

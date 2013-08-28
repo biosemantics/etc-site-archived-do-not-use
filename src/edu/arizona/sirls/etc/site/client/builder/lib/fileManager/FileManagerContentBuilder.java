@@ -9,6 +9,7 @@ import edu.arizona.sirls.etc.site.client.builder.IContentBuilder;
 import edu.arizona.sirls.etc.site.client.builder.dialog.LoadingPopup;
 import edu.arizona.sirls.etc.site.client.widget.FileTreeAndMenuComposite;
 import edu.arizona.sirls.etc.site.client.widget.ILoadListener;
+import edu.arizona.sirls.etc.site.shared.rpc.FileFilter;
 
 public class FileManagerContentBuilder implements IContentBuilder, ILoadListener {
 	
@@ -28,7 +29,7 @@ public class FileManagerContentBuilder implements IContentBuilder, ILoadListener
 		
 		RootPanel panel = RootPanel.get("fileManagerContent");
 		panel.clear();
-		fileTree = new FileTreeAndMenuComposite(true);
+		fileTree = new FileTreeAndMenuComposite(true, FileFilter.ALL);
 		fileTree.addLoadListener(this);
 		
 	}

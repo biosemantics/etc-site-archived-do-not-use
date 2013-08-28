@@ -11,4 +11,6 @@ public interface IFileFormatService extends RemoteService {
 	public boolean isValidTaxonDescription(AuthenticationToken authenticationToken, String target);
 	
 	public boolean isValidGlossary(AuthenticationToken authenticationToken, String target);
+
+	public boolean isValidEuler(AuthenticationToken authenticationToken, String target);
 }

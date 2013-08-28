@@ -2,6 +2,7 @@ package edu.arizona.sirls.etc.site.client.builder.lib.fileManager;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.widget.FileTreeComposite;
+import edu.arizona.sirls.etc.site.shared.rpc.FileFilter;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import gwtupload.client.IUploadStatus.Status;
@@ -24,7 +25,7 @@ public class OnFinishUploadHandler implements IUploader.OnFinishUploaderHandler 
 	@Override
 	public void onFinish(IUploader uploader) {
 		if (uploader.getStatus() == Status.SUCCESS) {
-			fileService.getUsersFiles(Authentication.getInstance().getAuthenticationToken(), userFilesCallback);
+			fileService.getUsersFiles(Authentication.getInstance().getAuthenticationToken(), FileFilter.ALL, userFilesCallback);
 		}
 		uploader.setServletPath(defaultServletPath);
 	}

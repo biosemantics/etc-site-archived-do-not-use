@@ -13,7 +13,9 @@ import javax.xml.validation.Validator;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
+import edu.arizona.sirls.etc.site.server.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
+import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileFormatService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 
@@ -21,17 +23,17 @@ public class FileFormatService extends RemoteServiceServlet implements IFileForm
 
 	private IAuthenticationService authenticationService = new AuthenticationService();
 	private IFileService fileService = new FileService();
-	private String taxonDescriptionSchemaFile = "C://test//schema.xml";	
+	private IFileAccessService fileAccessService = new FileAccessService();
 	
 	@Override
 	public boolean isValidTaxonDescription(AuthenticationToken authenticationToken, String target) {
 		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
-			String fileContent = fileService.getFileContent(authenticationToken, target);
+			String fileContent = fileAccessService.getFileContent(authenticationToken, target);
 			Source xmlFile = new StreamSource(new StringReader(fileContent)); 
 			SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			
 			try {
-				Schema schema = schemaFactory.newSchema(new File(taxonDescriptionSchemaFile));
+				Schema schema = schemaFactory.newSchema(new File(Configuration.taxonDescriptionSchemaFile));
 				Validator validator = schema.newValidator();
 				validator.validate(xmlFile);
 				return true;
@@ -47,6 +49,11 @@ public class FileFormatService extends RemoteServiceServlet implements IFileForm
 	public boolean isValidGlossary(AuthenticationToken authenticationToken,
 			String target) {
 		return target.endsWith(".csv");
+	}
+
+	@Override
+	public boolean isValidEuler(AuthenticationToken authenticationToken, String target) {
+		return target.endsWith(".euler");
 	}
 
 }

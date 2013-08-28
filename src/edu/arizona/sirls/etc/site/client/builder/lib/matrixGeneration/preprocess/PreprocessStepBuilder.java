@@ -18,12 +18,12 @@ import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.MatrixGene
 import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.MatrixGenerationJob;
 import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.Step;
 import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.learn.LearnStepBuilder;
-import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
-import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
+import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessServiceAsync;
 
 public class PreprocessStepBuilder implements IStepBuilder {
 
-	private final IFileServiceAsync fileService = GWT.create(IFileService.class);
+	private final IFileAccessServiceAsync fileAccessService = GWT.create(IFileAccessService.class);
 	private TextArea textArea = new TextArea();
 	private Panel panel;
 	private MatrixGenerationJob matrixGenerationJob;
@@ -36,7 +36,7 @@ public class PreprocessStepBuilder implements IStepBuilder {
 	public void build(Panel panel) {
 		this.panel = panel;
 		String source = matrixGenerationJob.getTaxonDescriptionFile();
-		fileService.getFileContent(Authentication.getInstance().getAuthenticationToken(), source, fileContentCallback);
+		fileAccessService.getFileContent(Authentication.getInstance().getAuthenticationToken(), source, fileContentCallback);
 	}
 
 	@Override

@@ -8,7 +8,7 @@ import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 @RemoteServiceRelativePath("file")
 public interface IFileService extends RemoteService {
 
-	public Tree<String> getUsersFiles(AuthenticationToken authenticationToken); 
+	public Tree<String> getUsersFiles(AuthenticationToken authenticationToken, FileFilter fileFilter); 
 	
 	public boolean deleteFile(AuthenticationToken authenticationToken, String target);
 
@@ -18,8 +18,6 @@ public interface IFileService extends RemoteService {
 	public boolean createDirectory(AuthenticationToken authenticationToken, String target,
 			String directoryName);
 
-	public boolean setFileContent(AuthenticationToken authenticationToken, String target, String content);
-	
-	public String getFileContent(AuthenticationToken authenticationToken, String target);
+
 	
 }

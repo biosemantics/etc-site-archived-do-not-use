@@ -13,19 +13,21 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.builder.dialog.CloseDialogBoxClickHandler;
 import edu.arizona.sirls.etc.site.client.builder.dialog.WidgetDialogBox;
+import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
+import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 
 public class FileImageLabelCompositeDoubleClickHandler implements DoubleClickHandler {
 
-	private final IFileServiceAsync fileService = GWT.create(IFileService.class);
+	private final IFileAccessServiceAsync fileAccessService = GWT.create(IFileAccessService.class);
 	
 	@Override
 	public void onDoubleClick(DoubleClickEvent event) {
 		Object source = event.getSource();
 		if(source instanceof FileImageLabelComposite) { 
 			String target = ((FileImageLabelComposite) source).getPath();
-			fileService.getFileContent(Authentication.getInstance().getAuthenticationToken(), target, fileContentCallback);
+			fileAccessService.getFileContent(Authentication.getInstance().getAuthenticationToken(), target, fileContentCallback);
 		}
 	}
 

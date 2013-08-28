@@ -7,6 +7,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.widget.FileTreeComposite;
+import edu.arizona.sirls.etc.site.shared.rpc.FileFilter;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 
@@ -46,7 +47,7 @@ public class DeleteClickHandler implements ClickHandler {
 	private AsyncCallback<Boolean> deleteFileCallback = new AsyncCallback<Boolean>() {
 		public void onSuccess(Boolean result) {
 			if (result) {
-				fileService.getUsersFiles(Authentication.getInstance().getAuthenticationToken(), usersFilesCallback);
+				fileService.getUsersFiles(Authentication.getInstance().getAuthenticationToken(), FileFilter.ALL, usersFilesCallback);
 			}
 		}
 

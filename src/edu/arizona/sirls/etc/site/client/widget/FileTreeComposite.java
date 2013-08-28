@@ -15,6 +15,7 @@ import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.builder.lib.fileManager.FileDragDropHandler;
 import edu.arizona.sirls.etc.site.client.builder.lib.fileManager.FileSelectionHandler;
 import edu.arizona.sirls.etc.site.client.builder.lib.fileManager.IFileMoveListener;
+import edu.arizona.sirls.etc.site.shared.rpc.FileFilter;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 
@@ -25,15 +26,17 @@ public class FileTreeComposite extends Composite implements IFileMoveListener {
 	private FileSelectionHandler fileSelectionHandler = new FileSelectionHandler();
 	private FileDragDropHandler fileDragDropHandler = new FileDragDropHandler();
 	private boolean enableDragAndDrop;
+	private FileFilter fileFilter;
 	
-	public FileTreeComposite(boolean enableDragAndDrop) { 
+	public FileTreeComposite(boolean enableDragAndDrop, FileFilter fileFilter) { 
 		this.enableDragAndDrop = enableDragAndDrop;
+		this.fileFilter = fileFilter;
 		tree.addSelectionHandler(fileSelectionHandler);	
 		initWidget(tree);
 	}
 	
 	public void refresh() {
-		this.fileService.getUsersFiles(Authentication.getInstance().getAuthenticationToken(), userFilesCallback);	
+		this.fileService.getUsersFiles(Authentication.getInstance().getAuthenticationToken(), fileFilter, userFilesCallback);	
 	}
 
 	protected AsyncCallback<edu.arizona.sirls.etc.site.shared.rpc.Tree<String>> userFilesCallback = 

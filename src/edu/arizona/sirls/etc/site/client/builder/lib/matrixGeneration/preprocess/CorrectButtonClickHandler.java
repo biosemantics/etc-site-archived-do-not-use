@@ -8,13 +8,13 @@ import com.google.gwt.user.client.ui.TextArea;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.builder.lib.matrixGeneration.MatrixGenerationJob;
-import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
-import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
+import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessServiceAsync;
 
 public class CorrectButtonClickHandler implements ClickHandler {
 
 	private TextArea textArea;
-	private final IFileServiceAsync fileService = GWT.create(IFileService.class);
+	private final IFileAccessServiceAsync fileAccessService = GWT.create(IFileAccessService.class);
 	private MatrixGenerationJob matrixGenerationJob;
 
 	public CorrectButtonClickHandler(TextArea textArea, MatrixGenerationJob matrixGenerationJob) {
@@ -27,7 +27,7 @@ public class CorrectButtonClickHandler implements ClickHandler {
 		String newText = textArea.getText();
 
 		String target = matrixGenerationJob.getTaxonDescriptionFile();
-		fileService.setFileContent(Authentication.getInstance().getAuthenticationToken(), target, newText, setFileContentCallback);
+		fileAccessService.setFileContent(Authentication.getInstance().getAuthenticationToken(), target, newText, setFileContentCallback);
 	}
 	
 	protected AsyncCallback<Boolean> setFileContentCallback = new AsyncCallback<Boolean>() {
