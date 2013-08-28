@@ -1,7 +1,7 @@
 package edu.arizona.sirls.etc.site.shared.rpc;
 
 public enum FileType {	
-	TAXON_DESCRIPTION("Taxon Description"),
+	/*TAXON_DESCRIPTION("Taxon Description"),
 	GLOSSARY("Glossary"),
 	EULER("Euler");
 
@@ -18,5 +18,11 @@ public enum FileType {
     @Override 
     public String toString() { 
     	return displayName; 
-    }
+    }*/
+	
+	TAXON_DESCRIPTION,
+	GLOSSARY,
+	EULER
+
+
 }

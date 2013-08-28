@@ -15,6 +15,7 @@ public class XMLFileFormatter implements IFileFormatter {
 	@Override
 	public String format(String input) {
 	       try {
+	    	   
 	            final InputSource src = new InputSource(new StringReader(input));
 	            final Node document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(src).getDocumentElement();
 	            final Boolean keepDeclaration = Boolean.valueOf(input.startsWith("<?xml"));
