@@ -56,6 +56,7 @@ public class FileContentPresenter {
 						target, fileType, new FileContentCallback());
 			}
 	    });
+		display.getTextArea().setEnabled(false);
 		display.getCloseButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {

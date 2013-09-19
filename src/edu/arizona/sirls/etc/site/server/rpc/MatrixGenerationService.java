@@ -69,11 +69,13 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				List<String> files = fileService.getDirectoriesFiles(authenticationToken, inputDirectory);
 				for(String file : files) {
 					String description = getDescription(authenticationToken, inputDirectory + "//" + file);
-					PreprocessedDescription preprocessedDescription = new PreprocessedDescription(
-							inputDirectory + "//" + file,
-							file, 0,
-							bracketValidator.getBracketCountDifferences(description));
-					result.add(preprocessedDescription);
+					if(!bracketValidator.validate(description)) {
+						PreprocessedDescription preprocessedDescription = new PreprocessedDescription(
+								inputDirectory + "//" + file,
+								file, 0,
+								bracketValidator.getBracketCountDifferences(description));
+						result.add(preprocessedDescription);
+					}	
 				}
 			}
 		}

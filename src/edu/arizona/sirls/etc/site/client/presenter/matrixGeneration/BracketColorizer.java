@@ -28,6 +28,10 @@ public class BracketColorizer {
 				result.append(currentCharacter);
 			}
 		}
+		
+		//to reset to 'normal' color and remove bold some stuff has to be appended, like below.
+		//using the getFormatter on RichTextArea and toggling off bold and setting the foreground color is not sufficient and does not work
+		//result.append("<font color=\"black\"> </font>");
 		return result.toString();
 	}
 

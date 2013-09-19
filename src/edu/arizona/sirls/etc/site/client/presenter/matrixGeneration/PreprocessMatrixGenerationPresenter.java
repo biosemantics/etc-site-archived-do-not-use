@@ -3,18 +3,8 @@ package edu.arizona.sirls.etc.site.client.presenter.matrixGeneration;
 import java.util.List;
 import java.util.Map;
 
-import com.gargoylesoftware.htmlunit.javascript.host.Event;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.DragStartEvent;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
@@ -22,8 +12,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RichTextArea;
-import com.google.gwt.user.client.ui.TitleCloseDialogBox;
+import com.google.gwt.user.client.ui.RichTextArea.Formatter;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
@@ -45,6 +34,7 @@ public class PreprocessMatrixGenerationPresenter {
 		Button getNextButton();
 		ChangeAwareRichTextArea getTextArea();
 		Label getBracketCountsLabel();
+		Label getDescriptionIDLabel();
 	}
 
 	private HandlerManager eventBus;
@@ -55,6 +45,7 @@ public class PreprocessMatrixGenerationPresenter {
 	private int currentPreprocessedDescription;
 	private BracketColorizer bracketColorizer = new BracketColorizer();
 	private BracketValidator bracketValidator = new BracketValidator();
+	private Formatter formatter;
 
 	public PreprocessMatrixGenerationPresenter(HandlerManager eventBus,
 			Display display, IMatrixGenerationServiceAsync matrixGenerationService) {
@@ -65,6 +56,8 @@ public class PreprocessMatrixGenerationPresenter {
 	}
 
 	private void bind() {
+		this.formatter = display.getTextArea().getFormatter();
+		
 		// cursor would jump once the new text is set with html tags inside after colorization
 		// therefore we only colorize and check at the very end
 		//https://groups.google.com/forum/#!topic/google-web-toolkit/YsTHsy0H9-8
@@ -82,7 +75,7 @@ public class PreprocessMatrixGenerationPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				loadingPopup.start();
-			store(new AsyncCallback<Boolean>() {
+				store(new AsyncCallback<Boolean>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
@@ -95,11 +88,18 @@ public class PreprocessMatrixGenerationPresenter {
 						loadingPopup.stop();
 					}
 					private void navigate() {
+						String text = display.getTextArea().getText();
+						if(bracketValidator.validate(text)) {
+							preprocessedDescriptions.remove(currentPreprocessedDescription);
+							if(preprocessedDescriptions.size() == 1)
+								disableDescriptionsNavigation();
+						}
 						currentPreprocessedDescription--;
 						if(currentPreprocessedDescription < 0)
 							currentPreprocessedDescription = preprocessedDescriptions.size() - 1;
 						setPreprocessedDescription(preprocessedDescriptions.get(currentPreprocessedDescription));
 					}
+
 				});
 			}
 		});
@@ -120,9 +120,15 @@ public class PreprocessMatrixGenerationPresenter {
 						loadingPopup.stop();
 					}
 					private void navigate() {
+						String text = display.getTextArea().getText();
+						if(bracketValidator.validate(text)) {
+							preprocessedDescriptions.remove(currentPreprocessedDescription);
+							currentPreprocessedDescription--;
+							if(preprocessedDescriptions.size() == 1)
+								disableDescriptionsNavigation();
+						}
 						currentPreprocessedDescription++;
-						if (currentPreprocessedDescription > preprocessedDescriptions
-								.size() - 1)
+						if (currentPreprocessedDescription > preprocessedDescriptions.size() - 1)
 							currentPreprocessedDescription = 0;
 						setPreprocessedDescription(preprocessedDescriptions.get(currentPreprocessedDescription));
 					}
@@ -132,12 +138,13 @@ public class PreprocessMatrixGenerationPresenter {
 		display.getNextButton().addClickHandler(new ClickHandler() { 
 			@Override
 			public void onClick(ClickEvent event) { 
-				if(bracketValidator.validate(display.getTextArea().getText()))
+				if(preprocessedDescriptions.size() == 0 || (preprocessedDescriptions.size() == 1 && 
+						bracketValidator.validate(display.getTextArea().getText())))
 					storeAndLeave();
 				else {
 					MessageConfirmCancelView messageConfirmCancelView = new MessageConfirmCancelView();
 					MessageConfirmCancelPresenter messageConfirmCancelPresenter = new MessageConfirmCancelPresenter(
-							messageConfirmCancelView, "Missing Brackets", new ClickHandler() {
+							messageConfirmCancelView, "Missing Brackets in descriptions", new ClickHandler() {
 								@Override
 								public void onClick(ClickEvent event) {
 									storeAndLeave();
@@ -163,6 +170,16 @@ public class PreprocessMatrixGenerationPresenter {
 		});
 	}
 
+	private void disableDescriptionsNavigation() {
+		display.getNextDescriptionButton().setEnabled(false);
+		display.getPreviousDescriptionButton().setEnabled(false);
+	}
+	
+	private void enableDescriptionNavigation() {
+		display.getNextDescriptionButton().setEnabled(true);
+		display.getPreviousDescriptionButton().setEnabled(true);
+	}
+
 	protected void store(AsyncCallback<Boolean> asyncCallback) {
 		String target = preprocessedDescriptions.get(currentPreprocessedDescription).getTarget();
 		String content = display.getTextArea().getText();
@@ -173,8 +190,12 @@ public class PreprocessMatrixGenerationPresenter {
 	public void go(HasWidgets content, MatrixGenerationJob matrixGenerationJob) {
 		display.getTextArea().setText("");
 		display.getBracketCountsLabel().setText("");
+		display.getDescriptionIDLabel().setText("");
+		this.enableDescriptionNavigation();
 		
 		this.preprocessedDescriptions = matrixGenerationJob.getPreprocessedDescriptions();
+		if(this.preprocessedDescriptions.size() == 1)
+			this.disableDescriptionsNavigation();
 		this.currentPreprocessedDescription = 0;
 		
 		loadingPopup.start();
@@ -184,7 +205,7 @@ public class PreprocessMatrixGenerationPresenter {
 		content.add(display.asWidget());
 	}
 
-	
+
 	private void setPreprocessedDescription(final PreprocessedDescription preprocessedDescription) {
 		try {
 			matrixGenerationService.getDescription(Authentication.getInstance().getAuthenticationToken(), 
@@ -195,30 +216,53 @@ public class PreprocessMatrixGenerationPresenter {
 						}
 						@Override
 						public void onSuccess(String result) {
-							setContent(result, preprocessedDescription.getBracketCounts());
+							setContent(preprocessedDescription.getFileName(), result, preprocessedDescription.getBracketCounts());
 						}
 			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
+	private void setDone() {
+		// TODO Auto-generated method stub
+		
+	}
 
 	private void updateBracketCounts(Map<Character, Integer> bracketCounts) {
 		display.getBracketCountsLabel().setText(getBracketText(bracketCounts));
 	}
 	
-	private void setContent(String text, Map<Character, Integer> bracketCounts) {
-		int pos = 0;
+	private void setContent(String descriptionId, String text, Map<Character, Integer> bracketCounts) {
 		//doesn't work because the getCursorPos uses element.selectionRange. However the element is an iframe with html content for
 		// the richtextarea, rather than a simpler html element (html textarea) that implemetns selectionRange...
-		/*try {
+		/*
+		int pos = 0;
+		try {
 			pos = display.getTextArea().getCursorPos();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}*/
+		display.getDescriptionIDLabel().setText("Description: " + descriptionId);
 		updateBracketCounts(bracketCounts);
 		text = bracketColorizer.colorize(text);
-		display.getTextArea().setHTML(text);	
+		System.out.println(text);
+		
+		/*System.out.println(display.getTextArea().getFormatter().getForeColor());
+		System.out.println(display.getTextArea().getFormatter().isBold());
+		*/
+		display.getTextArea().setHTML(text);
+		
+		/*
+		System.out.println(display.getTextArea().getFormatter().getForeColor());
+		System.out.println(display.getTextArea().getFormatter().isBold());
+		
+		formatter.setForeColor("black");
+		formatter.toggleBold();
+		
+		System.out.println(display.getTextArea().getFormatter().getForeColor());
+		System.out.println(display.getTextArea().getFormatter().isBold());
+		*/
 		
 		/*try {
 			display.getTextArea().setCursorPos(pos);

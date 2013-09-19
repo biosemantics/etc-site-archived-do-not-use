@@ -230,7 +230,10 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 									@Override
 									public void onSuccess(List<PreprocessedDescription> result) {
 										matrixGenerationJob.setPreprocessedDescriptions(result);
-										addToHistory(HistoryState.PREPROCESS_MATRIX_GENERATION, true, event);
+										if(result.isEmpty())
+											addToHistory(HistoryState.LEARN_MATRIX_GENERATION, true, event);
+										else
+											addToHistory(HistoryState.PREPROCESS_MATRIX_GENERATION, true, event);
 									}
 						});
 						//show some loading screen, while result is not there yet.

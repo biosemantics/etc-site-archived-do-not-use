@@ -22,12 +22,15 @@ public class PreprocessMatrixGenerationView extends MatrixGenerationView impleme
 	private Button previousDescriptionButton;
 	private Button nextDescriptionButton;
 	private Label bracketCountsLabel;
+	private Label descriptionIdLabel;
 
 	@Override
 	protected Widget getStepWidget() {
 		VerticalPanel panel = new VerticalPanel();
 		panel.addStyleName("contentPanel");
 		panel.add(new Label("Preprocess Text"));
+		this.descriptionIdLabel = new Label();
+		panel.add(descriptionIdLabel);
 		this.bracketCountsLabel = new Label();
 		panel.add(bracketCountsLabel);	
 		this.textArea = new ChangeAwareRichTextArea();
@@ -72,6 +75,11 @@ public class PreprocessMatrixGenerationView extends MatrixGenerationView impleme
 	@Override
 	public Label getBracketCountsLabel() {
 		return this.bracketCountsLabel;
+	}
+
+	@Override
+	public Label getDescriptionIDLabel() {
+		return this.descriptionIdLabel;
 	}
 	
 }
