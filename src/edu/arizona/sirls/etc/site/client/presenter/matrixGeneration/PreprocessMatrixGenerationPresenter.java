@@ -23,11 +23,14 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RichTextArea;
+import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.event.matrixGeneration.LearnMatrixGenerationEvent;
+import edu.arizona.sirls.etc.site.client.presenter.MessageConfirmCancelPresenter;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
+import edu.arizona.sirls.etc.site.client.view.MessageConfirmCancelView;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationJob;
 import edu.arizona.sirls.etc.site.shared.rpc.PreprocessedDescription;
@@ -52,7 +55,6 @@ public class PreprocessMatrixGenerationPresenter {
 	private int currentPreprocessedDescription;
 	private BracketColorizer bracketColorizer = new BracketColorizer();
 	private BracketValidator bracketValidator = new BracketValidator();
-	private String oldText;
 
 	public PreprocessMatrixGenerationPresenter(HandlerManager eventBus,
 			Display display, IMatrixGenerationServiceAsync matrixGenerationService) {
@@ -63,28 +65,18 @@ public class PreprocessMatrixGenerationPresenter {
 	}
 
 	private void bind() {
+		// cursor would jump once the new text is set with html tags inside after colorization
+		// therefore we only colorize and check at the very end
+		//https://groups.google.com/forum/#!topic/google-web-toolkit/YsTHsy0H9-8
+		//https://code.google.com/p/google-web-toolkit/issues/detail?id=1127
 		display.getTextArea().addValueChangeHandler(new ValueChangeHandler<String>() {
 	        @Override
 	        public void onValueChange(ValueChangeEvent<String> event) {
-	            System.out.println("value changed " + event.getValue());
+	        	String text = display.getTextArea().getText();
+	        	updateBracketCounts(bracketValidator.getBracketCountDifferences(text));
+	        	//setContent(text, bracketValidator.getBracketCountDifferences(text));
 	        }
-	    });
-		/*display.getTextArea().addMouseUpHandler(new MouseUpHandler() {
-			@Override
-			public void onMouseUp(MouseUpEvent event) {
-				String text = display.getTextArea().getText();
-				if(!oldText.equals(text))
-					setContent(text, bracketValidator.getBracketCountDifferences(text));
-			}
-		});
-		display.getTextArea().addKeyUpHandler(new KeyUpHandler() {
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				String text = display.getTextArea().getText();
-				if(!oldText.equals(text))
-					setContent(text, bracketValidator.getBracketCountDifferences(text));
-			}
-		});*/
+	    }); 
 		
 		display.getPreviousDescriptionButton().addClickHandler(new ClickHandler() {
 			@Override
@@ -140,6 +132,23 @@ public class PreprocessMatrixGenerationPresenter {
 		display.getNextButton().addClickHandler(new ClickHandler() { 
 			@Override
 			public void onClick(ClickEvent event) { 
+				if(bracketValidator.validate(display.getTextArea().getText()))
+					storeAndLeave();
+				else {
+					MessageConfirmCancelView messageConfirmCancelView = new MessageConfirmCancelView();
+					MessageConfirmCancelPresenter messageConfirmCancelPresenter = new MessageConfirmCancelPresenter(
+							messageConfirmCancelView, "Missing Brackets", new ClickHandler() {
+								@Override
+								public void onClick(ClickEvent event) {
+									storeAndLeave();
+								}
+							});
+					messageConfirmCancelPresenter.setMessage("You have not corrected all brackets, do you want to continue?");
+					messageConfirmCancelPresenter.go();
+				}
+			}
+
+			private void storeAndLeave() {
 				store(new AsyncCallback<Boolean>() {
 					@Override
 					public void onFailure(Throwable caught) {
@@ -193,12 +202,30 @@ public class PreprocessMatrixGenerationPresenter {
 			e.printStackTrace();
 		}
 	}
+
+	private void updateBracketCounts(Map<Character, Integer> bracketCounts) {
+		display.getBracketCountsLabel().setText(getBracketText(bracketCounts));
+	}
 	
 	private void setContent(String text, Map<Character, Integer> bracketCounts) {
-		display.getBracketCountsLabel().setText(getBracketText(bracketCounts));
+		int pos = 0;
+		//doesn't work because the getCursorPos uses element.selectionRange. However the element is an iframe with html content for
+		// the richtextarea, rather than a simpler html element (html textarea) that implemetns selectionRange...
+		/*try {
+			pos = display.getTextArea().getCursorPos();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}*/
+		updateBracketCounts(bracketCounts);
 		text = bracketColorizer.colorize(text);
-		display.getTextArea().setHTML(text);
-		this.oldText = text;
+		display.getTextArea().setHTML(text);	
+		
+		/*try {
+			display.getTextArea().setCursorPos(pos);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}*/
+
 	}
 	
 	private String getBracketText(Map<Character, Integer> bracketCounts) {

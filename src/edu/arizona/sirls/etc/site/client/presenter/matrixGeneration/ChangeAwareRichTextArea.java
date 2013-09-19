@@ -1,5 +1,6 @@
 package edu.arizona.sirls.etc.site.client.presenter.matrixGeneration;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -14,15 +15,17 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.RichTextArea;
+import com.google.gwt.user.client.ui.impl.TextBoxImpl;
 
 public class ChangeAwareRichTextArea extends RichTextArea implements
 		HasValueChangeHandlers<String>, HasValue<String> {
 
 	private boolean valueChangeHandlerInitialized;
+	private String oldText = null;
+	private static TextBoxImpl impl = GWT.create(TextBoxImpl.class);
 
 	public ChangeAwareRichTextArea() {
 		super();
-		sinkEvents(Event.ONPASTE);
 		sinkEvents(Event.KEYEVENTS);
 		sinkEvents(Event.GESTUREEVENTS);
 		sinkEvents(Event.MOUSEEVENTS);
@@ -32,20 +35,15 @@ public class ChangeAwareRichTextArea extends RichTextArea implements
 	public void onBrowserEvent(Event event) {
 		super.onBrowserEvent(event);
 		switch (DOM.eventGetType(event)) {
-		case Event.ONPASTE:
-			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-				@Override
-				public void execute() {
-					ValueChangeEvent.fire(ChangeAwareRichTextArea.this,
-							getText());
-				}
-			});
-			break;
 		default:
 			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
 				@Override
 				public void execute() {
-					ValueChangeEvent.fire(ChangeAwareRichTextArea.this, getText());
+					if(oldText == null || !getText().equals(oldText)) {
+						ValueChangeEvent.fire(ChangeAwareRichTextArea.this, getText());
+						oldText = getText();
+					}
 				}
 			});
 		}
@@ -54,7 +52,6 @@ public class ChangeAwareRichTextArea extends RichTextArea implements
 	@Override
 	public HandlerRegistration addValueChangeHandler(
 			ValueChangeHandler<String> handler) {
-		// Initialization code
 		if (!valueChangeHandlerInitialized) {
 			valueChangeHandlerInitialized = true;
 			addChangeHandler(new ChangeHandler() {
@@ -92,6 +89,61 @@ public class ChangeAwareRichTextArea extends RichTextArea implements
 		if (fireEvents) {
 			ValueChangeEvent.fireIfNotEqual(this, getHTML(), value);
 		}
+	}
+	
+	/**
+	 * Copied from ValueBoxBase source, a subclass of the TextArea
+	 * 
+	 * Gets the current position of the cursor (this also serves as the
+	 * beginning of the text selection).
+	 * 
+	 * @return the cursor's position
+	 */
+	public int getCursorPos() {
+		return impl.getCursorPos(getElement());
+	}
+
+	/**
+	 * 	Copied from ValueBoxBase source, a subclass of the TextArea
+	 * 
+	 * Sets the cursor position.
+	 * 
+	 * This will only work when the widget is attached to the document and not
+	 * hidden.
+	 * 
+	 * @param pos
+	 *            the new cursor position
+	 */
+	public void setCursorPos(int pos) {
+		setSelectionRange(pos, 0);
+	}
+
+	/**
+	 * Copied from ValueBoxBase source, a subclass of the TextArea
+	 * 
+	 * Sets the range of text to be selected.
+	 * 
+	 * This will only work when the widget is attached to the document and not
+	 * hidden.
+	 * 
+	 * @param pos
+	 *            the position of the first character to be selected
+	 * @param length
+	 *            the number of characters to be selected
+	 */
+	public void setSelectionRange(int pos, int length) {
+		// Setting the selection range will not work for unattached elements.
+		if (!isAttached()) {
+			return;
+		}
+
+		if (length < 0) {
+			throw new IndexOutOfBoundsException("Length must be a positive integer. Length: " + length);
+		}
+		if ((pos < 0) || (length + pos > getText().length())) {
+			throw new IndexOutOfBoundsException("From Index: " + pos + "  To Index: " + (pos + length) + "  Text Length: " + getText().length());
+		}
+		impl.setSelectionRange(getElement(), pos, length);
 	}
 
 }
