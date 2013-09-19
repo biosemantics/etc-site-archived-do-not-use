@@ -1,8 +1,11 @@
 package edu.arizona.sirls.etc.site.shared.rpc;
 
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 
 public interface IFileServiceAsync {
 
@@ -17,6 +20,11 @@ public interface IFileServiceAsync {
 	public void createDirectory(AuthenticationToken authenticationToken, String target,
 			String directoryName, AsyncCallback<Boolean> callback);
 	
+	public void isDirectory(AuthenticationToken authenticationToken, String target, AsyncCallback<Boolean> callback);
+	
+	public void isFile(AuthenticationToken authenticationToken, String target, AsyncCallback<Boolean> callback);
+
+	public void getDirectoriesFiles(AuthenticationToken authenticationToken, String inputDirectory, AsyncCallback<List<String>> callback);
 
 	
 }

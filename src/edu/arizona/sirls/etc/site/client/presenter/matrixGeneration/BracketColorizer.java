@@ -1,0 +1,34 @@
+package edu.arizona.sirls.etc.site.client.presenter.matrixGeneration;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class BracketColorizer {
+
+	private Map<Character, HTMLColor> characterReplacements = new HashMap<Character, HTMLColor>();
+	
+	public BracketColorizer() {
+		characterReplacements.put('(', HTMLColor.RED);
+		characterReplacements.put(')', HTMLColor.RED);
+		characterReplacements.put('[', HTMLColor.BLUE);
+		characterReplacements.put(']', HTMLColor.BLUE);
+		characterReplacements.put('}', HTMLColor.GREEN);
+		characterReplacements.put('{', HTMLColor.GREEN);
+	}
+	
+	public String colorize(String string) {
+		StringBuilder result = new StringBuilder();
+		for(int i=0; i<string.length(); i++) {
+			char currentCharacter = string.charAt(i);
+			if(characterReplacements.containsKey(currentCharacter)) {
+				result.append("<b><font color=\"" + characterReplacements.get(currentCharacter) + "\">");
+				result.append(currentCharacter);
+				result.append("</font></b>");
+			} else {
+				result.append(currentCharacter);
+			}
+		}
+		return result.toString();
+	}
+
+}

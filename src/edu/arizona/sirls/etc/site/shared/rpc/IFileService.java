@@ -1,9 +1,12 @@
 package edu.arizona.sirls.etc.site.shared.rpc;
 
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 
 @RemoteServiceRelativePath("file")
 public interface IFileService extends RemoteService {
@@ -17,6 +20,14 @@ public interface IFileService extends RemoteService {
 
 	public boolean createDirectory(AuthenticationToken authenticationToken, String target,
 			String directoryName);
+
+	public boolean isDirectory(AuthenticationToken authenticationToken, String target);
+	
+	public boolean isFile(AuthenticationToken authenticationToken, String target);
+
+	public List<String> getDirectoriesFiles(AuthenticationToken authenticationToken, String inputDirectory);
+	
+	
 
 
 	

@@ -1,21 +1,13 @@
 package edu.arizona.sirls.etc.site.client;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.user.client.ui.RootPanel;
 
-import edu.arizona.sirls.etc.site.client.builder.IHeaderBuilder;
-import edu.arizona.sirls.etc.site.client.builder.PageBuilder;
-import edu.arizona.sirls.etc.site.client.builder.lib.FooterBuilder;
-import edu.arizona.sirls.etc.site.client.builder.lib.LoggedInHeaderBuilder;
-import edu.arizona.sirls.etc.site.client.builder.lib.LoggedOutHeaderBuilder;
-import edu.arizona.sirls.etc.site.client.builder.lib.StartContentBuilder;
-import edu.arizona.sirls.etc.site.client.builder.lib.StartMenuBuilder;
-import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationResult;
-import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
-import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationServiceAsync;
+import edu.arizona.sirls.etc.site.client.presenter.LoggedInHeaderPresenter;
+import edu.arizona.sirls.etc.site.client.presenter.LoggedOutHeaderPresenter;
+import edu.arizona.sirls.etc.site.client.view.LoggedInHeaderView;
+import edu.arizona.sirls.etc.site.client.view.LoggedOutHeaderView;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -26,38 +18,25 @@ public class ETCSite implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {		
-		IAuthenticationServiceAsync authenticationService = GWT.create(IAuthenticationService.class);
-		AuthenticationToken authenticationToken = Authentication.getInstance().getAuthenticationToken();
-		authenticationService.isValidSession(authenticationToken, validSessionCallback);
-	}
-
-	
-	private AsyncCallback<AuthenticationResult> validSessionCallback = new AsyncCallback<AuthenticationResult>() {
-		public void onSuccess(AuthenticationResult authenticationResult) {
-			Session session = Session.getInstance();
-			
-			IHeaderBuilder headerBuilder;
-			if(authenticationResult.getResult()) {
-				headerBuilder = new LoggedInHeaderBuilder();
-			} else {
-				headerBuilder = new LoggedOutHeaderBuilder();
-			}
-			PageBuilder pageBuilder = new PageBuilder(
-					new FooterBuilder(), 
-					new StartContentBuilder(), 
-					headerBuilder, 
-					new StartMenuBuilder());
-			session.setPageBuilder(pageBuilder);
-			
-			LoadContentSwitcher loadContentSwitcher = new LoadContentSwitcher();
-			loadContentSwitcher.setContent();
-			
-			pageBuilder.build();
-		}
-
-		public void onFailure(Throwable caught) {
-			caught.printStackTrace();
-		}
-	};
-	
+		
+//		LoadContentSwitcher loadContentSwitcher = new LoadContentSwitcher();
+//		loadContentSwitcher.setContent();
+//		
+//		LoggedInHeaderView loggedIn = new LoggedInHeaderView();
+//		LoggedInHeaderPresenter presenter = new LoggedInHeaderPresenter(null, loggedIn);
+//		presenter.go(RootPanel.get("header"));
+//		
+//		LoggedOutHeaderView loggedOut = new LoggedOutHeaderView();
+//		LoggedOutHeaderPresenter presenter2 = new LoggedOutHeaderPresenter(null, loggedOut, null);
+//		presenter2.go(RootPanel.get("footer"));
+		
+	    HandlerManager eventBus = new HandlerManager(null);
+	    SitePresenter presenter = new MySitePresenter(eventBus);
+	    
+	    LoadContentSwitcher loadContentSwitcher = new LoadContentSwitcher();
+	    loadContentSwitcher.setContent();
+	    
+		presenter.go(RootPanel.get("header"), RootPanel.get("menu"), 
+	    		RootPanel.get("content"), RootPanel.get("footer"));
+	}	
 }

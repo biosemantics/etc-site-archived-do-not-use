@@ -53,4 +53,8 @@ public class Authentication {
 		return new AuthenticationToken(this.getUsername(), this.getSessionID());
 	}
 	
+	public boolean isSet() {
+		return this.getUsername() != null && this.getSessionID() != null;
+	}
+	
 }

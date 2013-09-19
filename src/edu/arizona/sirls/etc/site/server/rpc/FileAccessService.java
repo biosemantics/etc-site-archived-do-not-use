@@ -13,11 +13,10 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.server.Configuration;
-import edu.arizona.sirls.etc.site.shared.rpc.FileFormatter;
-import edu.arizona.sirls.etc.site.shared.rpc.FileType;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
-import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FileFormatter;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FileType;
 
 public class FileAccessService extends RemoteServiceServlet implements IFileAccessService {
 

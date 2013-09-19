@@ -1,3 +1,4 @@
+* {margin:0;padding:0;} 
 html { 
 	height: 100%;
 }
@@ -14,7 +15,7 @@ body {
 }
 #top {
     width: 100%;
-    height: 412px;
+    height: 312px;
     min-width: 900px;
 }
 #header {
@@ -26,7 +27,8 @@ body {
 .imageLabelComposite .gwt-Label {
 	padding-left: 10px;
 }
-#helpIcon {
+
+.helpIcon {
     /*background-image: url('../images/Help.gif');*/
     position: absolute; 
     background-size: contain; 
@@ -243,21 +245,33 @@ body {
     margin-left: -250px;
 }
 #container { 
-	height: 100%; 
+	/*height: 100%; */
+	height: calc(100% - 110px);
+	/*height: 100%;*/
+	min-height: calc(100% - 110px);
 }
 body > #container { 
-	height: auto; 
-	min-height: 100%; 
+	/*height: 600px;*/
+	height: calc(100% - 110px);
+	/*height: 100%;*/
+	min-height: calc(100% - 110px);
 }
-#content {
+/*#content {
 	width:100%; 
-	height:500px; 
-	min-width:900px; 
+	/*height:100px; /*500px; */
+	/*min-width:900px; 
 	position:absolute; 
 	top: 310px;
 	left:0px;
-	padding-bottom: 100px; /* for footer */
-}
+	padding-bottom: 60px; /* for footer */
+}*/
+#content {
+	position: absolute;
+	top: 310px;
+	left: 0px;
+	overflow: auto;
+	padding-bottom: 60px;
+}  /* must be same height as the footer */
 .bullet {
 	background-image: url('../images/Success.gif');
     background-size: 100% 100%;
@@ -265,11 +279,19 @@ body > #container {
     height: 12px;
 }
 #footer {
-	clear: both;
 	position: relative;
-	/*z-index: 10;*/
-	height: 100px;
-	margin-top: -100px;
+	margin-top: -60px; /* negative value of footer height */
+	height: 60px;
+	clear:both;
+}
+/*Opera Fix*/
+body:before {
+	/* thanks to Maleika (Kohoutec)*/
+	content:"";
+	height:100%;
+	float:left;
+	width:0;
+	margin-top:-32767px;/* thank you Erik J - negate effect of float*/
 }
 #footerBackground {
 	background-image:url('../images/Footer.gif'); 
@@ -304,9 +326,10 @@ body > #container {
 	left:50%; 
 	margin-left: 210
 }
+
 .content900pxCentered {
-	width=100%; 
-	min-width=900px; 
+	width: 900px; 
+	min-width:900px; 
 	position:absolute;
 	left:50%; 
 	margin-left:-425px
@@ -417,8 +440,8 @@ green 307137
 	height: 800px;
 }*/
 .otoFrame {
-	width:	1300px;
-	height: 800px;
+	width:	900px;
+	height: 500px;
 }
 
 .fileSelect {
@@ -427,8 +450,8 @@ green 307137
 }
 
 .fileContent {
-	max-width:	600px;
-	max-height: 600px;
+	width: 800px;
+	height: 500px;
 }
 
 .closingButton {
@@ -437,4 +460,9 @@ green 307137
 
 .dialogBoxTitle {
 	width: 100%;
+}
+
+.contentPanel {
+	border-spacing: 0px 20px;
+	width: 900px;
 }

@@ -1,25 +1,20 @@
 package edu.arizona.sirls.etc.site.server.rpc;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.google.gwt.thirdparty.guava.common.io.Files;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.server.Configuration;
-import edu.arizona.sirls.etc.site.shared.rpc.FileFilter;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileFormatService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.Tree;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 
 public class FileService extends RemoteServiceServlet implements IFileService {
 
@@ -32,6 +27,11 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	    super.doUnexpectedFailure(t);
 	}
 	
+	/**
+	 * Cannot hand a fileFilter implementation of .filter(File file) to the method because
+	 * file access is not available in the client code. Hence, translation from enum to implementation 
+	 * becomes necessary.
+	 */
 	@Override
 	public Tree<String> getUsersFiles(AuthenticationToken authenticationToken, FileFilter fileFilter) {
 		Tree<String> result = new Tree<String>("", true);
@@ -58,6 +58,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	private boolean filter(AuthenticationToken authenticationToken, FileFilter fileFilter, File child) {
 		String target = getTarget(authenticationToken, child);
 		IFileFormatService fileFormatService = new FileFormatService();
+		File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
 		switch(fileFilter) {
 		case TAXON_DESCRIPTION:
 			return !fileFormatService.isValidTaxonDescription(authenticationToken, target); 
@@ -67,6 +68,10 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			return !fileFormatService.isValidEuler(authenticationToken, target); 
 		case ALL:
 			return false;
+		case FILE:
+			return !file.isFile();
+		case DIRECTORY:
+			return !file.isDirectory();
 		}
 		return true;
 	}
@@ -135,4 +140,34 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		return result;
 	}
 
+	@Override
+	public boolean isDirectory(AuthenticationToken authenticationToken, String target) {
+		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
+			File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
+			return file.isDirectory();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isFile(AuthenticationToken authenticationToken, String target) {
+		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
+			File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
+			return file.isFile();
+		}
+		return false;
+	}
+
+	@Override
+	public List<String> getDirectoriesFiles(AuthenticationToken authenticationToken, String target) {
+		List<String> result = new LinkedList<String>();
+		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
+			File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
+			for(File child : file.listFiles())
+				if(child.isFile())
+					result.add(child.getName());
+			return result;
+		}
+		return result;
+	}
 }

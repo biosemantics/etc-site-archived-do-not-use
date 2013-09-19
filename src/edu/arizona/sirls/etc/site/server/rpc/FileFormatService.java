@@ -18,29 +18,22 @@ import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileFormatService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
+import edu.arizona.sirls.etc.site.shared.rpc.file.CSVValidator;
+import edu.arizona.sirls.etc.site.shared.rpc.file.XMLValidator;
 
 public class FileFormatService extends RemoteServiceServlet implements IFileFormatService {
 
 	private IAuthenticationService authenticationService = new AuthenticationService();
 	private IFileService fileService = new FileService();
 	private IFileAccessService fileAccessService = new FileAccessService();
+	private CSVValidator csvValidator = new CSVValidator();
+	private XMLValidator xmlValidator = new XMLValidator(new File(Configuration.taxonDescriptionSchemaFile));
 	
 	@Override
 	public boolean isValidTaxonDescription(AuthenticationToken authenticationToken, String target) {
 		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
 			String fileContent = fileAccessService.getFileContent(authenticationToken, target);
-			Source xmlFile = new StreamSource(new StringReader(fileContent)); 
-			SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			
-			try {
-				Schema schema = schemaFactory.newSchema(new File(Configuration.taxonDescriptionSchemaFile));
-				Validator validator = schema.newValidator();
-				validator.validate(xmlFile);
-				return true;
-			} catch(Exception e) { 
-				e.printStackTrace();
-				return false;
-			}
+			return xmlValidator.validate(fileContent);
 		} 
 		return false;
 	}
@@ -48,12 +41,20 @@ public class FileFormatService extends RemoteServiceServlet implements IFileForm
 	@Override
 	public boolean isValidGlossary(AuthenticationToken authenticationToken,
 			String target) {
-		return target.endsWith(".csv");
+		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
+			String fileContent = fileAccessService.getFileContent(authenticationToken, target);
+			return csvValidator.validate(fileContent);
+		} 
+		return false;
 	}
 
 	@Override
 	public boolean isValidEuler(AuthenticationToken authenticationToken, String target) {
-		return target.endsWith(".euler");
+		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
+			String fileContent = fileAccessService.getFileContent(authenticationToken, target);
+			return csvValidator.validate(fileContent);
+		} 
+		return false;
 	}
 
 }
