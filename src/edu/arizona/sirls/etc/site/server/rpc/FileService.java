@@ -174,4 +174,18 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		}
 		return result;
 	}
+
+	@Override
+	public boolean createFile(AuthenticationToken authenticationToken, String target) {
+		boolean result = false;
+		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
+			File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
+			try {
+				return file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
 }

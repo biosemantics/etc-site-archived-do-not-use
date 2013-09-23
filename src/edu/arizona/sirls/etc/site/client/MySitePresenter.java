@@ -119,7 +119,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	private HasWidgets header;
 	private HasWidgets menu;
 	
-	private MatrixGenerationJob matrixGenerationJob;
+	private MatrixGenerationJob matrixGenerationJob = new MatrixGenerationJob();
 
 	protected MainMenuPresenter mainMenuPresenter;
 	protected StartMenuPresenter startMenuPresenter;
@@ -548,7 +548,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 						if (outputMatrixGenerationPresenter == null) {
 							outputMatrixGenerationPresenter = new 
 									OutputMatrixGenerationPresenter(eventBus, 
-											new OutputMatrixGenerationView(), fileService);
+											new OutputMatrixGenerationView(), fileService, matrixGenerationService);
 						}
 						outputMatrixGenerationPresenter.go(content, matrixGenerationJob);
 					}

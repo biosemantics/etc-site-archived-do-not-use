@@ -17,6 +17,8 @@ public interface IMatrixGenerationService extends RemoteService {
 	public boolean setDescription(AuthenticationToken authenticationToken, String target, String description);
 	
 	public LearnInvocation learn(AuthenticationToken authenticationToken, MatrixGenerationJob matrixGenerationJob);
+
+	public boolean outputResult(AuthenticationToken authenticationToken, MatrixGenerationJob matrixGenerationJob);
 	
 	/*public MatrixGenerationJobStatus getJobStatus(AuthenticationToken authenticationToken, MatrixGenerationJob matrixGenerationJob);
 	

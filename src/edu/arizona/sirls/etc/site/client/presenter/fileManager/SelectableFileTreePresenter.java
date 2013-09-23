@@ -43,6 +43,10 @@ public class SelectableFileTreePresenter implements Presenter {
 		display.getSelectButton().addClickHandler(selectClickHandler); 
 		display.getCloseButton().addClickHandler(closeClickHandler); 
 	}
+	
+	public FileTreePresenter getFileTreePresenter() {
+		return this.fileTreePresenter;
+	}
 
 
 	@Override

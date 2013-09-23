@@ -26,5 +26,5 @@ public interface IFileServiceAsync {
 
 	public void getDirectoriesFiles(AuthenticationToken authenticationToken, String inputDirectory, AsyncCallback<List<String>> callback);
 
-	
+	public void createFile(AuthenticationToken authenticationToken, String outputFile, AsyncCallback<Boolean> callback);
 }

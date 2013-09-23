@@ -136,6 +136,15 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		return result;
 	}
 
+	@Override
+	public boolean outputResult(AuthenticationToken authenticationToken, MatrixGenerationJob matrixGenerationJob) {
+		boolean result = false;
+		if(authenticationService.isValidSession(authenticationToken).getResult()) {
+			result = fileService.createFile(authenticationToken, matrixGenerationJob.getOutputFile());
+		}
+		return result;
+	}
+
 
 
 	/*@Override

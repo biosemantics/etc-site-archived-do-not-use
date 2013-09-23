@@ -16,6 +16,8 @@ public interface IMatrixGenerationServiceAsync {
 	
 	public void learn(AuthenticationToken authenticationToken, MatrixGenerationJob matrixGenerationJob, AsyncCallback<LearnInvocation> callback);
 
+	public void outputResult(AuthenticationToken authenticationToken, MatrixGenerationJob matrixGenerationJob, AsyncCallback<Boolean> callback);
+
 	
 	/*public void getJobStatus(AuthenticationToken authenticationToken, MatrixGenerationJob matrixGenerationJob, AsyncCallback<MatrixGenerationJobStatus> callback);
 	

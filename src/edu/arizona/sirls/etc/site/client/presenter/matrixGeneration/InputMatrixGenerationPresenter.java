@@ -147,6 +147,7 @@ public class InputMatrixGenerationPresenter /*implements IFileSelectClickHandler
 
 		@Override
 		public void onClick(ClickEvent event) {	
+			presenter.getFileTreePresenter().refresh();
 			dialogBox.setWidget(view);
 			dialogBox.setAnimationEnabled(true);
 			dialogBox.setGlassEnabled(true);

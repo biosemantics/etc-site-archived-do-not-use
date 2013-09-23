@@ -26,9 +26,8 @@ public interface IFileService extends RemoteService {
 	public boolean isFile(AuthenticationToken authenticationToken, String target);
 
 	public List<String> getDirectoriesFiles(AuthenticationToken authenticationToken, String inputDirectory);
-	
-	
 
-
+	public boolean createFile(AuthenticationToken authenticationToken, String outputFile);
+	
 	
 }
