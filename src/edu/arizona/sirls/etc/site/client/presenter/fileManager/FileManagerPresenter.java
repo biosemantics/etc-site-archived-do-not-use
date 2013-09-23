@@ -39,5 +39,6 @@ public class FileManagerPresenter implements Presenter {
 	public void go(HasWidgets content) {
 		content.clear();
 		content.add(display.asWidget());
+		ManagableFileTreePresenter.setInputFileMultiple();
 	}
 }

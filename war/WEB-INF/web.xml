@@ -62,6 +62,16 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   </welcome-file-list>
   
   
+  	<servlet>
+   		<servlet-name>downloadServlet</servlet-name>
+    	<servlet-class>edu.arizona.sirls.etc.site.server.DownloadServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+	    <servlet-name>downloadServlet</servlet-name>
+	    <url-pattern>/etcsite/download/</url-pattern>
+	</servlet-mapping>
+  
   
   <context-param>
     <!-- max size of the upload request -->

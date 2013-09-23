@@ -33,7 +33,9 @@
 
   <!-- Include GWTUpload library -->
   <inherits name="gwtupload.GWTUpload"/>
+  <inherits name='com.google.gwt.widgetideas.WidgetIdeas' />   
+  <inherits name='com.google.gwt.libideas.LibIdeas' />
   <!-- Load dinamically predefined styles in the library when the application starts -->
-  <!--<stylesheet src="Upload.css"/>-->
+  <stylesheet src="../resources/Upload.css"/>
    
 </module>

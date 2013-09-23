@@ -90,6 +90,7 @@ public class InputMatrixGenerationPresenter /*implements IFileSelectClickHandler
 				dialogBox.center();
 				dialogBox.setGlassEnabled(true);
 		 		dialogBox.show();
+		 		ManagableFileTreePresenter.setInputFileMultiple();
 			}
 		});
 		
