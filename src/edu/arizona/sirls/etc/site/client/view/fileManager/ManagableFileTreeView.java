@@ -46,7 +46,6 @@ public class ManagableFileTreeView extends Composite implements ManagableFileTre
 		//this.uploader = new WorkaroundInput("Add files"); 
 		this.uploader = new SingleUploader();
 		this.addButton = new Button();
-		uploader.setFileInput(new MyFileInput(addButton));
 		
 		//uploader.setStatusWidget(statusWidget);
 	    //Button addButton = new Button("Add file");

@@ -1,11 +1,15 @@
 package edu.arizona.sirls.etc.site.client.presenter.fileManager;
 
+import java.util.List;
+
 import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.presenter.ILabelTextFieldDialogBoxHandler;
 import edu.arizona.sirls.etc.site.client.presenter.LabelTextFieldPresenter;
+import edu.arizona.sirls.etc.site.client.presenter.MessagePresenter;
 import edu.arizona.sirls.etc.site.client.presenter.MyUploaderConstants;
 import edu.arizona.sirls.etc.site.client.presenter.Presenter;
 import edu.arizona.sirls.etc.site.client.view.LabelTextFieldView;
+import edu.arizona.sirls.etc.site.client.view.MessageView;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 
@@ -49,6 +53,8 @@ public class ManagableFileTreePresenter implements Presenter {
 	private FileTreePresenter fileTreePresenter;
 	private FileSelectionHandler fileSelectionHandler;
 	private String defaultServletPath;
+	private MessageView messageView = new MessageView();
+	private MessagePresenter messagePresenter = new MessagePresenter(messageView, "File Selection");
 	
 	public ManagableFileTreePresenter(HandlerManager eventBus, Display display, 
 			IFileServiceAsync fileService, boolean enableDragAndDrop, FileFilter fileFilter) { 
@@ -81,6 +87,9 @@ public class ManagableFileTreePresenter implements Presenter {
 	    display.setStatusWidget(statusWidget.getWidget());
 	    
 	    display.getDownloadButton().addClickHandler(new DownloadClickHandler());
+	    
+	    display.getAddButton().addClickHandler(new AddClickHandler());
+		display.getUploader().setFileInput(new MyFileInput(display.getAddButton()));
 	}
 
 	@Override
@@ -88,16 +97,63 @@ public class ManagableFileTreePresenter implements Presenter {
 		container.clear();
 		container.add(display.asWidget());
 	}
+	
+	protected class AddClickHandler implements ClickHandler {
+		@Override
+		public void onClick(ClickEvent event) {
+			final String target = fileSelectionHandler.getTarget();
+			if(target == null) {
+				display.getUploader().setEnabled(false);
+				messagePresenter.setMessage("Please select a directory to add the files to");
+				messagePresenter.go();
+			} else {
+				display.getUploader().setEnabled(true);
+			}
+		}
+	}
 
 	protected class DownloadClickHandler implements ClickHandler {
 		@Override
 		public void onClick(ClickEvent event) {
-			String target = fileSelectionHandler.getTarget();
+			final String target = fileSelectionHandler.getTarget();
 			if(target != null && !target.isEmpty()) {
-				
-				Window.open("/etcsite/download/?target=" + target + "&username=" + Authentication.getInstance().getUsername() + "&" + 
-						"sessionID=" + Authentication.getInstance().getSessionID()
-						, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes");
+				fileService.isDirectory(Authentication.getInstance().getAuthenticationToken(), target, new AsyncCallback<Boolean>() {
+					@Override
+					public void onFailure(Throwable caught) {
+					
+					}
+					@Override
+					public void onSuccess(Boolean result) {
+						if(result) {
+							fileService.getDirectoriesFiles(Authentication.getInstance().getAuthenticationToken(), 
+									target, new AsyncCallback<List<String>>() {
+										@Override
+										public void onFailure(Throwable caught) {
+											
+										}
+										@Override
+										public void onSuccess(List<String> result) {
+											messagePresenter.setMessage("Please select a single file to download");
+											messagePresenter.go();
+											//TODO: compress to archive and download?
+											
+											/*for(String file : result) {
+												Window.open("/etcsite/download/?target=" + target + "//" + file + "&username=" + Authentication.getInstance().getUsername() + "&" + 
+														"sessionID=" + Authentication.getInstance().getSessionID()
+														, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes");
+											}*/
+										}
+							});
+						} else {
+							Window.open("/etcsite/download/?target=" + target + "&username=" + Authentication.getInstance().getUsername() + "&" + 
+									"sessionID=" + Authentication.getInstance().getSessionID()
+									, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes");
+						}
+					} 
+				});
+			} else {
+				messagePresenter.setMessage("Please select a file to download");
+				messagePresenter.go();
 			}
 		} 
 	}
@@ -117,6 +173,9 @@ public class ManagableFileTreePresenter implements Presenter {
 						fileTreePresenter.refresh();
 					}
 				});
+			} else {
+				messagePresenter.setMessage("Please select a file or directory to delete");
+				messagePresenter.go();
 			}
 		}
 	}
@@ -133,6 +192,9 @@ public class ManagableFileTreePresenter implements Presenter {
 				LabelTextFieldPresenter renameDialogBox = new LabelTextFieldPresenter(
 						renameView, "Rename", "New name: ", pathParts[pathParts.length-1], this);
 				renameDialogBox.go();
+			} else {
+				messagePresenter.setMessage("Please select a file or directory to rename");
+				messagePresenter.go();
 			}
 		}
 
@@ -176,10 +238,16 @@ public class ManagableFileTreePresenter implements Presenter {
 	protected class CreateDirectoryClickHandler implements ClickHandler, ILabelTextFieldDialogBoxHandler {
 		@Override
 		public void onClick(ClickEvent event) {
-			LabelTextFieldView renameView = new LabelTextFieldView();
-			LabelTextFieldPresenter renamePresenter = new LabelTextFieldPresenter(
-					renameView, "Create folder", "Folder name:", "", this);
-			renamePresenter.go();
+			final String target = fileSelectionHandler.getTarget();
+			if(target != null) {
+				LabelTextFieldView renameView = new LabelTextFieldView();
+				LabelTextFieldPresenter renamePresenter = new LabelTextFieldPresenter(
+						renameView, "Create folder", "Folder name:", "", this);
+				renamePresenter.go();
+			} else {
+				messagePresenter.setMessage("Please select a directory to create the new directory in");
+				messagePresenter.go();
+			}
 		}
 		
 		@Override
@@ -187,21 +255,31 @@ public class ManagableFileTreePresenter implements Presenter {
 		}
 
 		@Override
-		public void confirmed(String directoryName) {
-			String target = fileSelectionHandler.getTarget();
-			if(target != null) {
-				fileService.createDirectory(Authentication.getInstance().getAuthenticationToken(), target, directoryName, 
-						new AsyncCallback<Boolean>() {
-					public void onSuccess(Boolean result) {
-						if (result) {
-							fileTreePresenter.refresh();
+		public void confirmed(final String directoryName) {
+			final String target = fileSelectionHandler.getTarget();
+			fileService.isDirectory(Authentication.getInstance().getAuthenticationToken(), target, new AsyncCallback<Boolean>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+				}
+				@Override
+				public void onSuccess(Boolean result) {
+					String newTarget = target;
+					if(!result)
+						newTarget = target.substring(0, target.lastIndexOf("//"));
+					fileService.createDirectory(Authentication.getInstance().getAuthenticationToken(), newTarget, directoryName, 
+							new AsyncCallback<Boolean>() {
+						public void onSuccess(Boolean result) {
+							if (result) {
+								fileTreePresenter.refresh();
+							}
 						}
-					}
-					public void onFailure(Throwable caught) {
-						caught.printStackTrace();
-					}
-				});
-			}
+						public void onFailure(Throwable caught) {
+							caught.printStackTrace();
+						}
+					});
+				}
+			});
 		}
 	}
 	
@@ -229,10 +307,22 @@ public class ManagableFileTreePresenter implements Presenter {
 	
 	public class OnStartUploadHandler implements OnStartUploaderHandler {
 		@Override
-		public void onStart(IUploader uploader) {
-			String target = fileSelectionHandler.getTarget();
-			if(target != null)
-				uploader.setServletPath(uploader.getServletPath() + "&target=" + target);
+		public void onStart(final IUploader uploader) {
+			final String target = fileSelectionHandler.getTarget();
+			fileService.isDirectory(Authentication.getInstance().getAuthenticationToken(), target, new AsyncCallback<Boolean>() {
+				@Override
+				public void onFailure(Throwable caught) {
+				}
+				@Override
+				public void onSuccess(Boolean result) {
+					String newTarget = target;
+					if(!result) 
+						newTarget = target.substring(0, target.lastIndexOf("//"));
+					uploader.setServletPath(uploader.getServletPath() + "&target=" + newTarget);
+				}
+			});
+				
+
 			//only needed when MultiUploader is used instead of SingleUploader
 			//display.setStatusWidget(display.getUploader().getStatusWidget().getWidget());
 			
