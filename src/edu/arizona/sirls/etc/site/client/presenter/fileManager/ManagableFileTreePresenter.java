@@ -170,6 +170,7 @@ public class ManagableFileTreePresenter implements Presenter {
 					}
 					@Override
 					public void onSuccess(Boolean result) {
+						fileSelectionHandler.clear();
 						fileTreePresenter.refresh();
 					}
 				});
@@ -225,7 +226,10 @@ public class ManagableFileTreePresenter implements Presenter {
 					public void onSuccess(Boolean result) {
 						if(result) {
 							fileTreePresenter.refresh();
-						}		
+						} else {
+							messagePresenter.setMessage("File could not be renamed.");
+							messagePresenter.go();
+						}
 					}
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
@@ -272,6 +276,9 @@ public class ManagableFileTreePresenter implements Presenter {
 						public void onSuccess(Boolean result) {
 							if (result) {
 								fileTreePresenter.refresh();
+							} else {
+								messagePresenter.setMessage("Could not create directory.");
+								messagePresenter.go();
 							}
 						}
 						public void onFailure(Throwable caught) {
@@ -290,17 +297,21 @@ public class ManagableFileTreePresenter implements Presenter {
 				fileTreePresenter.refresh();
 			}
 			
+			String serverResponse = uploader.getServerInfo().message;
+			if(serverResponse != null && !serverResponse.isEmpty()) {
+				serverResponse = serverResponse.replaceAll("\n", "<br>");
+				messagePresenter.setMessage(serverResponse);
+				messagePresenter.go();
+			}
 			//only needed when MultiUploader is used instead of SingleUploader. There somewhat of a new instance of MultiUploader
 			//is created for each additional upload.
 			//try to avoid MultiUploader, it will create a new HTML element for each uploader making it complex to style
 			//also MultiUploader is not needed, in comparison to SingleUploader it only allows to append additional uploads once
 			//a previous upload is still running. It doesn't mean multiple files, this can also be done with SingleUploader
 			/*IFileInput ctrl = display.getUploader().getFileInput();
-		    DOM.setElementProperty(((UIObject) ctrl).getElement(), "multiple", "multiple");
-		    
-		    uploader.setServletPath(defaultServletPath);
-		    uploader.setAutoSubmit(true); */
+		    DOM.setElementProperty(((UIObject) ctrl).getElement(), "multiple", "multiple");*/
 			
+			uploader.setServletPath(defaultServletPath);
 			enableManagement();
 		}
 	}
@@ -309,19 +320,12 @@ public class ManagableFileTreePresenter implements Presenter {
 		@Override
 		public void onStart(final IUploader uploader) {
 			final String target = fileSelectionHandler.getTarget();
-			fileService.isDirectory(Authentication.getInstance().getAuthenticationToken(), target, new AsyncCallback<Boolean>() {
-				@Override
-				public void onFailure(Throwable caught) {
-				}
-				@Override
-				public void onSuccess(Boolean result) {
-					String newTarget = target;
-					if(!result) 
-						newTarget = target.substring(0, target.lastIndexOf("//"));
-					uploader.setServletPath(uploader.getServletPath() + "&target=" + newTarget);
-				}
-			});
-				
+			if(fileSelectionHandler.isTargetDirectory()) {
+				uploader.setServletPath(uploader.getServletPath() + "&target=" + target);
+			} else {
+				String newTarget = target.substring(0, target.lastIndexOf("//"));
+				uploader.setServletPath(uploader.getServletPath() + "&target=" + newTarget);
+			}				
 
 			//only needed when MultiUploader is used instead of SingleUploader
 			//display.setStatusWidget(display.getUploader().getStatusWidget().getWidget());

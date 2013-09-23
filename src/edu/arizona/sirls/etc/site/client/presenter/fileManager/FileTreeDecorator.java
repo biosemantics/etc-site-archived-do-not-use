@@ -7,23 +7,25 @@ import com.google.gwt.event.dom.client.DragStartEvent;
 import com.google.gwt.event.dom.client.DropEvent;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
+import com.google.gwt.user.client.ui.Widget;
+
+import edu.arizona.sirls.etc.site.client.view.fileManager.DirectoryTreeItem;
+import edu.arizona.sirls.etc.site.client.view.fileManager.FileImageLabelTreeItem;
+import edu.arizona.sirls.etc.site.client.view.fileManager.FileTreeItem;
 
 public class FileTreeDecorator {
 
-	private String folderImage = "images//Folder.gif";
-	private String fileImage = "images//File.gif";
+
 	
 	public void decorate(Tree tree, edu.arizona.sirls.etc.site.shared.rpc.Tree<String> fileTree, FileDragDropHandler fileDragDropHandler) {
 		String path = getPath(fileTree);
-		FileImageLabelComposite fileComposite = new FileImageLabelComposite(fileImage, "16", "20", fileTree.getValue(), path);
-		
+		FileImageLabelTreeItem root = new FileTreeItem(fileTree.getValue(), path);		
 		if(fileTree.isContainerTree()) {
-			fileComposite = new FileImageLabelComposite(folderImage, "19", "20", fileTree.getValue(), path);
+			root = new DirectoryTreeItem(fileTree.getValue(), path);
 		} 
-		
-		
-		TreeItem root = new TreeItem(fileComposite);
+	
 		if(fileDragDropHandler != null) {
+			FileImageLabelComposite fileComposite = root.getFileImageLabelComposite();
 			fileComposite.getElement().setDraggable(Element.DRAGGABLE_TRUE);
 			fileComposite.addDomHandler(fileDragDropHandler, DragStartEvent.getType());
 			fileComposite.addDomHandler(fileDragDropHandler, DragOverEvent.getType());
@@ -42,14 +44,14 @@ public class FileTreeDecorator {
 
 	private void decorate(TreeItem root, edu.arizona.sirls.etc.site.shared.rpc.Tree<String> fileTree, FileDragDropHandler fileDragAndDropHandler) {
 		String path = getPath(fileTree);
-		FileImageLabelComposite fileComposite = new FileImageLabelComposite(fileImage, "16", "20", fileTree.getValue(), path);
+		FileImageLabelTreeItem treeItem = new FileTreeItem(fileTree.getValue(), path);		
+		FileImageLabelComposite fileComposite = treeItem.getFileImageLabelComposite();
 		FileImageLabelCompositeDoubleClickHandler fileDoubleClickHandler = new FileImageLabelCompositeDoubleClickHandler(fileComposite);
 		fileComposite.addDomHandler(fileDoubleClickHandler, DoubleClickEvent.getType());
-		if(fileTree.isContainerTree()) {
-			fileComposite = new FileImageLabelComposite(folderImage, "19", "20", fileTree.getValue(), path);
-		}
 		
-		TreeItem treeItem = new TreeItem(fileComposite);
+		if(fileTree.isContainerTree()) {
+			treeItem = new DirectoryTreeItem(fileTree.getValue(), path);
+		} 
 		root.addItem(treeItem);
 		
 		if(fileDragAndDropHandler != null) { 

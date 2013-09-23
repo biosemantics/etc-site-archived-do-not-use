@@ -31,10 +31,11 @@ public class DownloadServlet extends HttpServlet {
 		if(authenticationResult.getResult()) { 	
 			int BUFFER = 1024 * 100;
 			response.setContentType("application/octet-stream");
-			response.setHeader("Content-Disposition:", "attachment;filename=" + "\"" + target + "\"");
+			response.setHeader("Content-Disposition:", "attachment;filename=" + "\"" + 
+					target.substring(target.lastIndexOf("//") + 2, target.length()) + "\"");
 			
 			ServletOutputStream outputStream = response.getOutputStream();
-			byte[] fileBytes = getfile(username, target);
+			byte[] fileBytes = getFile(username, target);
 			response.setContentLength(Long.valueOf(fileBytes.length).intValue());
 			response.setBufferSize(BUFFER);
 			outputStream.write(fileBytes);
@@ -43,7 +44,7 @@ public class DownloadServlet extends HttpServlet {
 		}
 	}
 
-	private byte[] getfile(String username, String target) throws IOException {		
+	private byte[] getFile(String username, String target) throws IOException {		
 		Path path = Paths.get(Configuration.fileBase + "//" + username + "//" + target);
 		byte[] data = Files.readAllBytes(path);
 		return data;

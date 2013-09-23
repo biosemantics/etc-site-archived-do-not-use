@@ -2,8 +2,13 @@ package edu.arizona.sirls.etc.site.server;
 
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.server.rpc.AuthenticationService;
+import edu.arizona.sirls.etc.site.server.rpc.FileAccessService;
 import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationResult;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
+import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
+import edu.arizona.sirls.etc.site.shared.rpc.file.CSVValidator;
+import edu.arizona.sirls.etc.site.shared.rpc.file.IContentValidator;
+import edu.arizona.sirls.etc.site.shared.rpc.file.XMLValidator;
 import gwtupload.server.UploadAction;
 import gwtupload.server.exceptions.UploadActionException;
 import gwtupload.shared.UConsts;
@@ -11,8 +16,10 @@ import gwtupload.shared.UConsts;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,9 +44,15 @@ public class UploadServlet extends UploadAction {
 	 * Maintain a list with received files and their content types.
 	 */
 	Hashtable<String, File> receivedFiles = new Hashtable<String, File>();
-	
+	private Set<IContentValidator> contentValidators;
 	//IAuthenticationServiceAsync authenticationService = GWT.create(IAuthenticationService.class);
 
+	public UploadServlet() {
+		contentValidators = new HashSet<IContentValidator>();
+		//contentValidators.add(new CSVValidator());
+		contentValidators.add(new XMLValidator(new File(Configuration.taxonDescriptionSchemaFile)));
+	}
+	
 	/**
 	 * Override executeAction to save the received files in a custom place and
 	 * delete this items from session.
@@ -76,17 +89,29 @@ public class UploadServlet extends UploadAction {
 						// / Create a temporary file placed in the default system
 						// temp folder
 						File file = new File("C://test//users//" + username + "//" + target + "//" + item.getName());
-						file.createNewFile();
-						item.write(file);
-	
-						// / Save a list with the received files
-						receivedFiles.put(item.getFieldName(), file);
-						receivedContentTypes.put(item.getFieldName(),
-								item.getContentType());
-	
-						// / Send a customized message to the client.
-						response += "File saved as " + file.getAbsolutePath();
-	
+						if(!file.exists()) {
+							String fileContent = item.getString("UTF-8");
+							boolean valid = false;
+							for(IContentValidator validator : contentValidators)
+								valid |= validator.validate(fileContent);
+							
+							if(valid) {
+								file.createNewFile();
+								item.write(file);
+			
+								// / Save a list with the received files
+								receivedFiles.put(item.getFieldName(), file);
+								receivedContentTypes.put(item.getFieldName(),
+										item.getContentType());
+			
+								// / Send a customized message to the client.
+								//response += "File saved as " + file.getAbsolutePath();
+							} else {
+								response += "File " + item.getName() + " was not added. Invalid file format.\n";
+							}
+						} else {
+							response += "File " + item.getName() + " was not added. File with same name exists in directory.\n";
+						}
 					} catch (Exception e) {
 						throw new UploadActionException(e);
 					}
@@ -97,7 +122,7 @@ public class UploadServlet extends UploadAction {
 		// / Remove files from session because we have a copy of them
 		removeSessionFileItems(request);
 
-		// / Send your customized message to the client.
+		// / Send your customized message to the client. <- this is where i specify which files were not valid
 		return response;
 	}
 

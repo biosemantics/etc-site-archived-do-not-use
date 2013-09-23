@@ -119,6 +119,10 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		if(authenticationService.isValidSession(authenticationToken).getResult() && !target.trim().isEmpty() &&  !newTarget.trim().isEmpty()) { 
 			File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
 			File targetFile = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + newTarget);
+			if(file.getAbsolutePath().equals(targetFile.getAbsolutePath()))
+				return true;
+			if(targetFile.exists())
+				return false;
 			try {
 				Files.move(file, targetFile);
 				result = true;
