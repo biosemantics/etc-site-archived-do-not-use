@@ -35,8 +35,8 @@ import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationService;
 import edu.arizona.sirls.etc.site.shared.rpc.LearnInvocation;
-import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationJob;
 import edu.arizona.sirls.etc.site.shared.rpc.PreprocessedDescription;
+import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.file.XMLFileFormatter;
 
 public class MatrixGenerationService extends RemoteServiceServlet implements IMatrixGenerationService  {
@@ -49,7 +49,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	private BracketValidator bracketValidator = new BracketValidator();
 
 	@Override
-	public LearnInvocation learn(AuthenticationToken authenticationToken, MatrixGenerationJob matrixGenerationJob) {
+	public LearnInvocation learn(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration) {
 		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
 			return new LearnInvocation(5989, 23212);
 		}
@@ -58,12 +58,12 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 
 	@Override
 	public List<PreprocessedDescription> preprocess(AuthenticationToken authenticationToken,
-			MatrixGenerationJob matrixGenerationJob) {
+			MatrixGenerationConfiguration matrixGenerationConfiguration) {
 		List<PreprocessedDescription> result = new LinkedList<PreprocessedDescription>();
 		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
 			//do preprocessing here, return result immediately or always only return an invocation
 			//and make user come back when ready?
-			String inputDirectory = matrixGenerationJob.getTaxonDescriptionFile();
+			String inputDirectory = matrixGenerationConfiguration.getInput();
 			
 			if(fileService.isDirectory(authenticationToken, inputDirectory)) {
 				List<String> files = fileService.getDirectoriesFiles(authenticationToken, inputDirectory);
@@ -137,10 +137,11 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 
 	@Override
-	public boolean outputResult(AuthenticationToken authenticationToken, MatrixGenerationJob matrixGenerationJob) {
+	public boolean outputResult(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration) {
 		boolean result = false;
 		if(authenticationService.isValidSession(authenticationToken).getResult()) {
-			result = fileService.createFile(authenticationToken, matrixGenerationJob.getOutputFile());
+			// TODO: create a directory parallel to input directory with name "input dir name" + _MGResult.. with result files inside
+			//result = fileService.createFile(authenticationToken, matrixGenerationJob..getOutputFile());
 		}
 		return result;
 	}

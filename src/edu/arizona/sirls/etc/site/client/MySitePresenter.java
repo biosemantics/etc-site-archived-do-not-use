@@ -100,7 +100,6 @@ import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskServiceAsync;
-import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationJob;
 import edu.arizona.sirls.etc.site.shared.rpc.PreprocessedDescription;
 
 public class MySitePresenter implements SitePresenter, ValueChangeHandler<String> {
