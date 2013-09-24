@@ -1,6 +1,8 @@
 package edu.arizona.sirls.etc.site.client.view.matrixGeneration;
 
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -21,10 +23,16 @@ public class ParseMatrixGenerationView extends MatrixGenerationView implements P
 	protected Widget getStepWidget() {
 		VerticalPanel panel = new VerticalPanel();
 		panel.setStyleName("contentPanel");
-		panel.add(new Label("Parse Text"));
-		panel.add(new Label("The system is parsing text."));
-		panel.add(new Label("When the process is completed you will receive an email."));
 		
+		HorizontalPanel horizontalPanel = new HorizontalPanel();
+		Image infoImage = new Image("images/Info.gif");
+		infoImage.addStyleName("infoImage");
+		horizontalPanel.add(infoImage);
+		horizontalPanel.add(new Label("We are now parsing the descriptions. " +
+				"You will receive an email when processing has completed. You can come back to this task using the Task Manager."));
+		panel.add(horizontalPanel);
+		
+		//only while we don't use real tasks/face process
 		this.nextButton = new Button("Next");
 		panel.add(nextButton);
 		return panel;

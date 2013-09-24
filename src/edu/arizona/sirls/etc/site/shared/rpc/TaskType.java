@@ -15,9 +15,4 @@ public enum TaskType {
     public String displayName() { 
     	return displayName; 
     }
-
-    @Override 
-    public String toString() { 
-    	return displayName; 
-    }
 }

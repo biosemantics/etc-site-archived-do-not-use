@@ -1,7 +1,10 @@
 package edu.arizona.sirls.etc.site.client.view.matrixGeneration;
 
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -11,9 +14,10 @@ import edu.arizona.sirls.etc.site.shared.rpc.Step;
 
 public class OutputMatrixGenerationView extends MatrixGenerationView implements OutputMatrixGenerationPresenter.Display {
 
-	private Button selectButton;
-	private Label fileLabel;
-	private Button completeButton;
+	//private Button selectButton;
+	private Label outputLabel;
+	private Anchor fileManager;
+	//private Button completeButton;
 
 	@Override
 	protected Step getStep() {
@@ -22,33 +26,28 @@ public class OutputMatrixGenerationView extends MatrixGenerationView implements 
 
 	@Override
 	protected Widget getStepWidget() {
-		VerticalPanel panel = new VerticalPanel();
+		FlowPanel panel = new FlowPanel();
 		panel.setStyleName("contentPanel");
-		panel.add(new Label("Output"));
-		HorizontalPanel outputPanel = new HorizontalPanel();
-		this.selectButton = new Button("Select Output File");
-		outputPanel.add(selectButton);
-		this.fileLabel = new Label("filename");
-		outputPanel.add(fileLabel);
-		panel.add(outputPanel);
-		this.completeButton = new Button("Complete");
-		panel.add(completeButton);
+		
+		outputLabel = new InlineLabel();
+		panel.add(new InlineLabel("Matrix Generation has completed. You can find the output files in "));
+		panel.add(outputLabel);
+		panel.add(new InlineLabel(" in the "));
+		fileManager = new Anchor(" File Manager");
+		panel.add(fileManager);
+		panel.add(new InlineLabel("."));
 		return panel;
 	}
 
+
 	@Override
-	public Button getSelectButton() {
-		return selectButton;
+	public Label getOutputLabel() {
+		return outputLabel;
 	}
 
 	@Override
-	public Button getCompleteButton() {
-		return completeButton;
-	}
-
-	@Override
-	public Label getFileLabel() {
-		return fileLabel;
+	public Anchor getFileManager() {
+		return fileManager;
 	}
 
 }

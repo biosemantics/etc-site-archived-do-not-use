@@ -12,8 +12,7 @@ public class MatrixGenerationJob implements Serializable {
 	private String preprocessedFile = "";
 	private String reviewTermsLink = "";
 	private String outputFile = "";
-	private List<PreprocessedDescription> preprocessedDescriptions;
-	
+	private List<PreprocessedDescription> preprocessedDescriptions;	
 	
 	public void reset() { 
 		taxonDescriptionFile = "";

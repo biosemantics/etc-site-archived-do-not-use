@@ -16,7 +16,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationJob;
 public class ReviewMatrixGenerationPresenter {
 
 	public interface Display {
-		Anchor getOtoAnchor();
+		Frame getFrame();
 		Button getNextButton();
 		Widget asWidget();
 	}
@@ -32,19 +32,7 @@ public class ReviewMatrixGenerationPresenter {
 		bind();
 	}
 
-	private void bind() {
-		display.getOtoAnchor().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				TitleCloseDialogBox dialogBox = new TitleCloseDialogBox(true, "Term Review");
-				Frame frame = new Frame(matrixGenerationJob.getReviewTermsLink());
-			    frame.addStyleName("otoFrame");
-			    dialogBox.setWidget(frame);
-			    dialogBox.setGlassEnabled(true); 
-			    dialogBox.center(); 
-			    dialogBox.show(); 
-			}
-		});
+	private void bind() {		
 		display.getNextButton().addClickHandler(new ClickHandler() { 
 			@Override
 			public void onClick(ClickEvent event) { 
@@ -56,6 +44,7 @@ public class ReviewMatrixGenerationPresenter {
 	public void go(HasWidgets content, MatrixGenerationJob matrixGenerationJob) {
 		this.matrixGenerationJob = matrixGenerationJob;
 		matrixGenerationJob.setReviewTermsLink("http://biosemantics.arizona.edu:8080/OTOLite/?uploadID=54");
+		display.getFrame().setUrl(matrixGenerationJob.getReviewTermsLink());
 		content.clear();
 		content.add(display.asWidget());
 	}

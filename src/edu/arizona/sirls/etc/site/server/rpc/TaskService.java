@@ -10,8 +10,9 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskService;
-import edu.arizona.sirls.etc.site.shared.rpc.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.TaskType;
+import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
+import edu.arizona.sirls.etc.site.shared.rpc.db.TaskDAO;
 
 public class TaskService extends RemoteServiceServlet implements ITaskService {
 
@@ -24,18 +25,17 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	    super.doUnexpectedFailure(t);
 	}
 	
+	
+	
 	@Override
 	public List<Task> getAllTasks(AuthenticationToken authenticationToken) {
 		List<Task> result = new LinkedList<Task>();
 		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
-			Calendar calendar = Calendar.getInstance();
-			calendar.set(2013, 7, 22, 13, 23);
-			result.add(new Task(calendar.getTime(), TaskType.MATRIX_GENERATION, "My example task", 20));
-			calendar.set(2013, 7, 21, 13, 23);
-			result.add(new Task(calendar.getTime(), TaskType.MATRIX_GENERATION, "My example task2", 22));
-			calendar.set(2013, 7, 20, 13, 23);
-			result.add(new Task(calendar.getTime(), TaskType.TREE_GENERATION, "A shared task", 55));
-			Lists.sort(result);
+			try {
+				result = TaskDAO.getInstance().getUsersTasks(authenticationToken.getUsername());
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return result;
 	}
@@ -44,12 +44,11 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	public List<Task> getCreatedTasks(AuthenticationToken authenticationToken) {
 		List<Task> result = new LinkedList<Task>();
 		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
-			Calendar calendar = Calendar.getInstance();
-			calendar.set(2013, 7, 22, 13, 23);
-			result.add(new Task(calendar.getTime(), TaskType.MATRIX_GENERATION, "My example task", 20));
-			calendar.set(2013, 7, 21, 13, 23);
-			result.add(new Task(calendar.getTime(), TaskType.MATRIX_GENERATION, "My example task2", 22));
-			Lists.sort(result);
+			try {
+				result = TaskDAO.getInstance().getUsersTasks(authenticationToken.getUsername());
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return result;
 	}
@@ -57,13 +56,20 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	@Override
 	public List<Task> getSharedTasks(AuthenticationToken authenticationToken) {
 		List<Task> result = new LinkedList<Task>();
-		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
-			Calendar calendar = Calendar.getInstance();
-			calendar.set(2013, 7, 20, 13, 23);
-			result.add(new Task(calendar.getTime(), TaskType.TREE_GENERATION, "A shared task", 55));
-			Lists.sort(result);
-		}
 		return result;
+	}
+
+
+
+	@Override
+	public void addTask(AuthenticationToken authenticationToken, Task task) {
+		if(authenticationService.isValidSession(authenticationToken).getResult()) {
+			try {
+				TaskDAO.getInstance().addTask(task);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

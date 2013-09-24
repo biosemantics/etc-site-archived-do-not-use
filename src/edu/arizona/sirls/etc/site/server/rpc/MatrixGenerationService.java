@@ -29,6 +29,7 @@ import org.xml.sax.InputSource;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
+import edu.arizona.sirls.etc.site.shared.rpc.BracketValidator;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
@@ -36,7 +37,6 @@ import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationService;
 import edu.arizona.sirls.etc.site.shared.rpc.LearnInvocation;
 import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationJob;
 import edu.arizona.sirls.etc.site.shared.rpc.PreprocessedDescription;
-import edu.arizona.sirls.etc.site.shared.rpc.file.BracketValidator;
 import edu.arizona.sirls.etc.site.shared.rpc.file.XMLFileFormatter;
 
 public class MatrixGenerationService extends RemoteServiceServlet implements IMatrixGenerationService  {

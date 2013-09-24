@@ -1,4 +1,4 @@
-package edu.arizona.sirls.etc.site.shared.rpc.file;
+package edu.arizona.sirls.etc.site.shared.rpc;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,7 +30,7 @@ public class BracketValidator {
 	}
 	
 	public Map<Character, Integer> getBracketCountDifferences(String text) {
-		Map<Character, Integer> result = new HashMap<Character, Integer>();
+		Map<Character, Integer> result = new LinkedHashMap<Character, Integer>();
 		for(Character character : brackets.keySet()) {
 			result.put(character, 0);
 		}

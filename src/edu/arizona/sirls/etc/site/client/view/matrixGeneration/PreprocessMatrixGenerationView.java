@@ -2,6 +2,7 @@ package edu.arizona.sirls.etc.site.client.view.matrixGeneration;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -21,18 +22,29 @@ public class PreprocessMatrixGenerationView extends MatrixGenerationView impleme
 	private Button nextButton;
 	private Button previousDescriptionButton;
 	private Button nextDescriptionButton;
-	private Label bracketCountsLabel;
+	private HTML bracketCountsHTML;
 	private Label descriptionIdLabel;
 
 	@Override
 	protected Widget getStepWidget() {
 		VerticalPanel panel = new VerticalPanel();
 		panel.addStyleName("contentPanel");
-		panel.add(new Label("Preprocess Text"));
+		
+		panel.add(new Label("We found unmatched brackets in the descriptions you provided. " +
+				"Please take the time to review the descriptions for which this is the case."));
+		HorizontalPanel filePanel = new HorizontalPanel();
+		filePanel.add(new Label());
 		this.descriptionIdLabel = new Label();
-		panel.add(descriptionIdLabel);
-		this.bracketCountsLabel = new Label();
-		panel.add(bracketCountsLabel);	
+		filePanel.add(descriptionIdLabel);
+		panel.add(filePanel);
+		
+		HorizontalPanel countsPanel = new HorizontalPanel();
+		countsPanel.add(new Label("Bracket counts: "));
+		this.bracketCountsHTML = new HTML();
+		bracketCountsHTML.addStyleName("bracketCounts");
+		countsPanel.add(bracketCountsHTML);
+		panel.add(countsPanel);
+		
 		this.textArea = new ChangeAwareRichTextArea();
 		DOM.setElementAttribute(textArea.getElement(), "id", "preprocessTextArea");
 		panel.add(textArea);
@@ -73,8 +85,8 @@ public class PreprocessMatrixGenerationView extends MatrixGenerationView impleme
 	}
 
 	@Override
-	public Label getBracketCountsLabel() {
-		return this.bracketCountsLabel;
+	public HTML getBracketCountsHTML() {
+		return this.bracketCountsHTML;
 	}
 
 	@Override

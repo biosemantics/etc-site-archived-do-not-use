@@ -445,6 +445,7 @@ green 307137
 	height: 800px;
 }*/
 .otoFrame {
+	border: 0;
 	width:	900px;
 	height: 500px;
 }
@@ -468,9 +469,31 @@ green 307137
 }
 
 .contentPanel {
-	border-spacing: 0px 20px;
+	border-spacing: 0px 10px;
 	width: 900px;
 }
 .fileManagerContent{
 	height: 100%;
+}
+
+.infoImage {
+	height: 20px;
+	width: 20px;
+	padding-right: 5px;
+}
+
+.inputForm {
+	border-spacing:5px;
+};
+
+.inputForm td {
+	vertical-align:middle;
+}
+
+.bracketCounts {
+	padding-left: 10px;	
+}
+
+.highlightGreen {
+	color: #279446;
 }

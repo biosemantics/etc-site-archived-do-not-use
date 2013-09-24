@@ -4,9 +4,11 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusWidget;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -16,47 +18,45 @@ import edu.arizona.sirls.etc.site.shared.rpc.Step;
 public class InputMatrixGenerationView extends MatrixGenerationView implements 
 		InputMatrixGenerationPresenter.Display {
 
-	private Label taxonGlossaryFileNameLabel;
 	private Label taxonDescriptionFileNameLabel;
 	private Button nextButton;
 	private FocusWidget taxonDescriptionFileButton;
 	private Anchor formatRequirementsAnchor;
-	private Button taxonGlossaryFileButton;
+	private ListBox glossaryListBox;
 	private FocusWidget fileManagerAnchor;
 
 	@Override
 	protected Widget getStepWidget() {
-		this.taxonGlossaryFileNameLabel = new Label();
 		this.taxonDescriptionFileNameLabel = new Label();
 		this.nextButton = new Button("Next");
-		this.taxonDescriptionFileButton = new Button("Select");
-		this.formatRequirementsAnchor = new Anchor("Format Requirements");
-		this.taxonGlossaryFileButton = new Button("Select");
-		this.fileManagerAnchor = new Anchor("File Manager");
+		this.glossaryListBox = new ListBox();
+		glossaryListBox.setVisibleItemCount(1);
 		
 		VerticalPanel verticalPanel = new VerticalPanel();
 		verticalPanel.addStyleName("contentPanel");
-		verticalPanel.add(new Label("Input"));
 		FlowPanel inputRequirementsPanel = new FlowPanel(); 
-		inputRequirementsPanel.add(new InlineLabel("Input taxon description text and glossary. ")); 
-		formatRequirementsAnchor = new Anchor("See Format Requirements");
+		inputRequirementsPanel.add(new InlineLabel("Please provide us with a folder that contains the input taxon descriptions and a glossary type. " +
+				"You can upload them using the "));
+		fileManagerAnchor = new Anchor("File Manager");
+		inputRequirementsPanel.add(fileManagerAnchor);
+		formatRequirementsAnchor = new Anchor("format requirements");
+		inputRequirementsPanel.add(new InlineLabel(". See our "));
 		inputRequirementsPanel.add(formatRequirementsAnchor);
+		inputRequirementsPanel.add(new InlineLabel(" for taxon descriptions."));	
 		verticalPanel.add(inputRequirementsPanel);
 		HorizontalPanel taxonDescriptionFilePanel = new HorizontalPanel();
-		taxonDescriptionFileButton = new Button("Select Taxon Description File");
+		taxonDescriptionFilePanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+		taxonDescriptionFilePanel.addStyleName("inputForm");
+		taxonDescriptionFileButton = new Button("Select Taxon Descriptions");
 		taxonDescriptionFilePanel.add(taxonDescriptionFileButton);
 		taxonDescriptionFilePanel.add(taxonDescriptionFileNameLabel);
 		verticalPanel.add(taxonDescriptionFilePanel);
-		HorizontalPanel taxonGlossaryFilePanel = new HorizontalPanel();
-		taxonGlossaryFileButton = new Button("Select Taxon Glossary File");
-		taxonGlossaryFilePanel.add(taxonGlossaryFileButton);
-		taxonGlossaryFilePanel.add(taxonGlossaryFileNameLabel);
-		verticalPanel.add(taxonGlossaryFilePanel);
-		FlowPanel fileManagerPanel = new FlowPanel();
-		fileManagerPanel.add(new InlineLabel("Or upload in "));
-		fileManagerAnchor = new Anchor("File Manager");
-		fileManagerPanel.add(fileManagerAnchor);
-		verticalPanel.add(fileManagerPanel);
+		HorizontalPanel glossaryPanel = new HorizontalPanel();
+		glossaryPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+		glossaryPanel.addStyleName("inputForm");
+		glossaryPanel.add(new Label("Glossary:"));
+		glossaryPanel.add(glossaryListBox);
+		verticalPanel.add(glossaryPanel);
 		verticalPanel.add(nextButton);
 		return verticalPanel;
 	}
@@ -69,11 +69,6 @@ public class InputMatrixGenerationView extends MatrixGenerationView implements
 	@Override
 	public Button getNextButton() {
 		return this.nextButton;
-	}
-
-	@Override
-	public Label getTaxonGlossaryFileNameLabel() {
-		return this.taxonGlossaryFileNameLabel;
 	}
 
 	@Override
@@ -92,13 +87,13 @@ public class InputMatrixGenerationView extends MatrixGenerationView implements
 	}
 
 	@Override
-	public FocusWidget getTaxonGlossaryFileButton() {
-		return this.taxonGlossaryFileButton;
+	public FocusWidget getFileManagerAnchor() {
+		return this.fileManagerAnchor;
 	}
 
 	@Override
-	public FocusWidget getFileManagerAnchor() {
-		return this.fileManagerAnchor;
+	public ListBox getGlossaryListBox() {
+		return this.glossaryListBox;
 	}
 
 }

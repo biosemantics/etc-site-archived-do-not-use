@@ -17,10 +17,10 @@ import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationJob;
 public class LearnMatrixGenerationPresenter {
 
 	public interface Display {
-		Button getNextButton();
 		void setSentences(int sentences);
 		void setWords(int words);
 		Widget asWidget();
+		Button getNextButton();
 	}
 	
 	private HandlerManager eventBus;
@@ -42,7 +42,7 @@ public class LearnMatrixGenerationPresenter {
 			public void onClick(ClickEvent event) { 
 				eventBus.fireEvent(new ReviewMatrixGenerationEvent());
 			}
-		});
+		}); 
 	}
 
 	public void go(HasWidgets content, MatrixGenerationJob matrixGenerationJob) {

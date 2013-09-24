@@ -10,6 +10,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RichTextArea.Formatter;
@@ -18,12 +19,14 @@ import com.google.gwt.user.client.ui.Widget;
 import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.event.matrixGeneration.LearnMatrixGenerationEvent;
 import edu.arizona.sirls.etc.site.client.presenter.MessageConfirmCancelPresenter;
+import edu.arizona.sirls.etc.site.client.presenter.MessagePresenter;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.client.view.MessageConfirmCancelView;
+import edu.arizona.sirls.etc.site.client.view.MessageView;
+import edu.arizona.sirls.etc.site.shared.rpc.BracketValidator;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationJob;
 import edu.arizona.sirls.etc.site.shared.rpc.PreprocessedDescription;
-import edu.arizona.sirls.etc.site.shared.rpc.file.BracketValidator;
 
 public class PreprocessMatrixGenerationPresenter {
 
@@ -33,8 +36,8 @@ public class PreprocessMatrixGenerationPresenter {
 		Button getNextDescriptionButton();
 		Button getNextButton();
 		ChangeAwareRichTextArea getTextArea();
-		Label getBracketCountsLabel();
 		Label getDescriptionIDLabel();
+		HTML getBracketCountsHTML();
 	}
 
 	private HandlerManager eventBus;
@@ -46,6 +49,8 @@ public class PreprocessMatrixGenerationPresenter {
 	private BracketColorizer bracketColorizer = new BracketColorizer();
 	private BracketValidator bracketValidator = new BracketValidator();
 	private Formatter formatter;
+	private MessageView messageView = new MessageView();
+	private MessagePresenter messagePresenter = new MessagePresenter(messageView, "Unmatched brackets");
 
 	public PreprocessMatrixGenerationPresenter(HandlerManager eventBus,
 			Display display, IMatrixGenerationServiceAsync matrixGenerationService) {
@@ -142,16 +147,8 @@ public class PreprocessMatrixGenerationPresenter {
 						bracketValidator.validate(display.getTextArea().getText())))
 					storeAndLeave();
 				else {
-					MessageConfirmCancelView messageConfirmCancelView = new MessageConfirmCancelView();
-					MessageConfirmCancelPresenter messageConfirmCancelPresenter = new MessageConfirmCancelPresenter(
-							messageConfirmCancelView, "Missing Brackets in descriptions", new ClickHandler() {
-								@Override
-								public void onClick(ClickEvent event) {
-									storeAndLeave();
-								}
-							});
-					messageConfirmCancelPresenter.setMessage("You have not corrected all brackets, do you want to continue?");
-					messageConfirmCancelPresenter.go();
+					messagePresenter.setMessage("You have not corrected all the unmatched brackets.");
+					messagePresenter.go();
 				}
 			}
 
@@ -189,7 +186,7 @@ public class PreprocessMatrixGenerationPresenter {
 	
 	public void go(HasWidgets content, MatrixGenerationJob matrixGenerationJob) {
 		display.getTextArea().setText("");
-		display.getBracketCountsLabel().setText("");
+		display.getBracketCountsHTML().setHTML("");
 		display.getDescriptionIDLabel().setText("");
 		this.enableDescriptionNavigation();
 		
@@ -230,7 +227,7 @@ public class PreprocessMatrixGenerationPresenter {
 	}
 
 	private void updateBracketCounts(Map<Character, Integer> bracketCounts) {
-		display.getBracketCountsLabel().setText(getBracketText(bracketCounts));
+		display.getBracketCountsHTML().setHTML(getBracketHTML(bracketCounts));
 	}
 	
 	private void setContent(String descriptionId, String text, Map<Character, Integer> bracketCounts) {
@@ -272,14 +269,14 @@ public class PreprocessMatrixGenerationPresenter {
 
 	}
 	
-	private String getBracketText(Map<Character, Integer> bracketCounts) {
+	private String getBracketHTML(Map<Character, Integer> bracketCounts) {
 		StringBuilder result = new StringBuilder();
 		for(Character character : bracketCounts.keySet()) {
 			int count = bracketCounts.get(character);
 			if(count > 0)
-				result.append(character + " +" + count + "\n");
+				result.append(character + " +" + count + "<br>");
 			else
-				result.append(character + " " + count + "\n");
+				result.append(character + " " + count + "<br>");
 		}
 		return result.toString();
 	}

@@ -3,6 +3,8 @@ package edu.arizona.sirls.etc.site.client.view;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -15,9 +17,14 @@ public class MessageView extends Composite implements MessagePresenter.Display {
 
 	public MessageView() {
 		messageHTML = new HTML();
+		HorizontalPanel horizontalPanel = new HorizontalPanel();
 		VerticalPanel verticalPanel = new VerticalPanel();
 		verticalPanel.addStyleName("dialogVPanel");
-		verticalPanel.add(messageHTML);
+		verticalPanel.add(horizontalPanel);
+		Image infoImage = new Image("images/Info.gif");
+		infoImage.addStyleName("infoImage");
+		horizontalPanel.add(infoImage);
+		horizontalPanel.add(messageHTML);
 		verticalPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
 		closeButton = new Button("Close");
 		verticalPanel.add(closeButton);

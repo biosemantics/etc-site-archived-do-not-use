@@ -119,7 +119,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	private HasWidgets header;
 	private HasWidgets menu;
 	
-	private MatrixGenerationJob matrixGenerationJob = new MatrixGenerationJob();
+	private MatrixGenerationJob matrixGenerationJob;
 
 	protected MainMenuPresenter mainMenuPresenter;
 	protected StartMenuPresenter startMenuPresenter;
@@ -467,6 +467,10 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 				});
 				break;
 			case INPUT_MATRIX_GENERATION:
+				if(matrixGenerationJob == null) {
+					eventBus.fireEvent(new MatrixGenerationEvent());
+					break;
+				}
 				GWT.runAsync(new RunAsyncCallback() {
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
@@ -481,6 +485,10 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 				});
 				break;
 			case PREPROCESS_MATRIX_GENERATION:
+				if(matrixGenerationJob == null) {
+					eventBus.fireEvent(new MatrixGenerationEvent());
+					break;
+				}
 				GWT.runAsync(new RunAsyncCallback() {
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
@@ -496,6 +504,10 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 				});
 				break;
 			case LEARN_MATRIX_GENERATION:
+				if(matrixGenerationJob == null) {
+					eventBus.fireEvent(new MatrixGenerationEvent());
+					break;
+				}
 				GWT.runAsync(new RunAsyncCallback() {
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
@@ -511,6 +523,10 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 				});
 				break;
 			case REVIEW_MATRIX_GENERATION:
+				if(matrixGenerationJob == null) {
+					eventBus.fireEvent(new MatrixGenerationEvent());
+					break;
+				}
 				GWT.runAsync(new RunAsyncCallback() {
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
@@ -526,6 +542,10 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 				});
 				break;
 			case PARSE_MATRIX_GENERATION:
+				if(matrixGenerationJob == null) {
+					eventBus.fireEvent(new MatrixGenerationEvent());
+					break;
+				}
 				GWT.runAsync(new RunAsyncCallback() {
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
@@ -540,6 +560,10 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 				});
 				break;
 			case OUTPUT_MATRIX_GENERATION:
+				if(matrixGenerationJob == null) {
+					eventBus.fireEvent(new MatrixGenerationEvent());
+					break;
+				}
 				GWT.runAsync(new RunAsyncCallback() {
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();

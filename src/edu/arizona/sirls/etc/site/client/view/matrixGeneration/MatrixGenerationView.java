@@ -18,9 +18,7 @@ public abstract class MatrixGenerationView extends Composite {
 		
 		VerticalPanel verticalPanel = new VerticalPanel();
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
-		verticalPanel.add(horizontalPanel);
-		horizontalPanel.add(new Label("Matrix Generation:"));
-		
+		verticalPanel.add(horizontalPanel);		
 		int i=0;
 		for(Step step : Step.values()) {
 			ImageLabelComposite stepEntry = new ImageLabelComposite("images/Enumeration_unselected_" + i++ + ".gif", "20px", "20px", step.toString());

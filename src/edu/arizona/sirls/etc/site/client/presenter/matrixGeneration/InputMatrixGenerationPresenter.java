@@ -1,14 +1,18 @@
 package edu.arizona.sirls.etc.site.client.presenter.matrixGeneration;
 
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.jsonp.client.JsonpRequestBuilder;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -30,13 +34,12 @@ public class InputMatrixGenerationPresenter /*implements IFileSelectClickHandler
 	
 	public interface Display {
 		Button getNextButton();
-		Label getTaxonGlossaryFileNameLabel();
 		Label getTaxonDescriptionFileNameLabel();
 		Anchor getFormatRequirementsAnchor();
 		FocusWidget getTaxonDescriptionFileButton();
-		FocusWidget getTaxonGlossaryFileButton();
 		FocusWidget getFileManagerAnchor();
 		Widget asWidget();
+		ListBox getGlossaryListBox();
 	}
 
 	private HandlerManager eventBus;
@@ -75,10 +78,13 @@ public class InputMatrixGenerationPresenter /*implements IFileSelectClickHandler
 				display.getTaxonDescriptionFileNameLabel(), 
 				taxonDescriptionFile, true);
 		display.getTaxonDescriptionFileButton().addClickHandler(fileSelectClickHandler);
+		ListBox glossaryListBox = display.getGlossaryListBox();		
+		glossaryListBox.addItem("Hymenoptera");
+		glossaryListBox.addItem("Porifera");
+		glossaryListBox.addItem("Algea");
+		glossaryListBox.addItem("Fossil");
+		glossaryListBox.addItem("Plant");
 		
-		fileSelectClickHandler = new FileSelectDialogClickHandler(FileFilter.ALL,//FileFilter.GLOSSARY, 
-				display.getTaxonGlossaryFileNameLabel(), taxonGlossaryFile, false);
-		display.getTaxonGlossaryFileButton().addClickHandler(fileSelectClickHandler);
 		display.getFileManagerAnchor().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -98,7 +104,7 @@ public class InputMatrixGenerationPresenter /*implements IFileSelectClickHandler
 			@Override
 			public void onClick(ClickEvent event) { 
 				matrixGenerationJob.setTaxonDescriptionFile(taxonDescriptionFile.toString());
-				matrixGenerationJob.setTaxonGlossaryFile(taxonGlossaryFile.toString());
+				matrixGenerationJob.setTaxonGlossaryFile(display.getGlossaryListBox().getItemText(display.getGlossaryListBox().getSelectedIndex()));
 				eventBus.fireEvent(new PreprocessMatrixGenerationEvent());
 			}
 		});
@@ -106,7 +112,6 @@ public class InputMatrixGenerationPresenter /*implements IFileSelectClickHandler
 
 	public void go(HasWidgets content, MatrixGenerationJob matrixGenerationJob) {
 		this.matrixGenerationJob = matrixGenerationJob;
-		this.display.getTaxonGlossaryFileNameLabel().setText("");
 		this.display.getTaxonDescriptionFileNameLabel().setText("");
 		this.display.getNextButton().setEnabled(false);
 		content.clear();
