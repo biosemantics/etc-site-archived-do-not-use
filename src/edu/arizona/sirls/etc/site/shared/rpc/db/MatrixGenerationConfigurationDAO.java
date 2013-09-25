@@ -7,19 +7,19 @@ import java.sql.SQLException;
 
 public class MatrixGenerationConfigurationDAO extends AbstractDAO {
 
-	private static TaskStageDAO instance;
+	private static MatrixGenerationConfigurationDAO instance;
 
 	public MatrixGenerationConfigurationDAO() throws IOException, ClassNotFoundException {
 		super();
 	}
 
-	public static TaskStageDAO getInstance() throws ClassNotFoundException, IOException {
+	public static MatrixGenerationConfigurationDAO getInstance() throws ClassNotFoundException, IOException {
 		if(instance == null)
-			instance = new TaskStageDAO();
+			instance = new MatrixGenerationConfigurationDAO();
 		return instance;
 	}
 	
-	public MatrixGenerationConfiguration getConfiguration(int id) throws SQLException {
+	public MatrixGenerationConfiguration getMatrixGenerationConfiguration(int id) throws SQLException, ClassNotFoundException, IOException {
 		MatrixGenerationConfiguration matrixGenerationConfiguration = null;
 		this.openConnection();
 		PreparedStatement statement = this.executeSQL("SELECT * FROM matrixgenerationconfiguration WHERE id = " + id);
@@ -28,11 +28,32 @@ public class MatrixGenerationConfigurationDAO extends AbstractDAO {
 		while(result.next()) {
 			id = result.getInt(0);
 			String input = result.getString(1);
-			String glossary = result.getString(2);
+			int glossaryId = result.getInt(2);
 			int oto = result.getInt(3);
-			matrixGenerationConfiguration = new MatrixGenerationConfiguration(id, input, glossary, oto);
+			String output = result.getString(4);
+			int taskId = result.getInt(5);
+			Glossary glossary = GlossaryDAO.getInstance().getGlossary(glossaryId);
+			Task task = TaskDAO.getInstance().getTask(taskId);
+			matrixGenerationConfiguration = new MatrixGenerationConfiguration(id, input, glossary, oto, output, task);
 		}
 		this.closeConnection();
 		return matrixGenerationConfiguration;
+	}
+
+	public MatrixGenerationConfiguration addMatrixGenerationConfiguration(MatrixGenerationConfiguration matrixGenerationConfiguration) throws SQLException, ClassNotFoundException, IOException {
+		MatrixGenerationConfiguration result = null;
+		this.openConnection();
+		PreparedStatement statement = this.executeSQL("INSERT INTO matrixgenerationconfiguration " +
+				"('input', 'glossary', 'oto', 'output', 'task') VALUES ('" + matrixGenerationConfiguration.getInput() + 
+				"', " + matrixGenerationConfiguration.getGlossary().getId() + 
+				", " + matrixGenerationConfiguration.getOtoId() + 
+				", '" + matrixGenerationConfiguration.getOutput() + "'" +
+				", " + matrixGenerationConfiguration.getTask().getId() + ")");		
+		ResultSet generatedKeys = statement.getGeneratedKeys();
+        if (generatedKeys.next()) {
+            result = this.getMatrixGenerationConfiguration(generatedKeys.getInt(1));
+        }
+		this.closeConnection();
+		return result;
 	}
 }

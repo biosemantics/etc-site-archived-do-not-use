@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.view.ImageLabelComposite;
-import edu.arizona.sirls.etc.site.shared.rpc.Step;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 public abstract class MatrixGenerationView extends Composite {
 
@@ -20,7 +20,7 @@ public abstract class MatrixGenerationView extends Composite {
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
 		verticalPanel.add(horizontalPanel);		
 		int i=0;
-		for(Step step : Step.values()) {
+		for(TaskStageEnum step : TaskStageEnum.values()) {
 			ImageLabelComposite stepEntry = new ImageLabelComposite("images/Enumeration_unselected_" + i++ + ".gif", "20px", "20px", step.toString());
 			if(getStep().equals(step))
 				stepEntry = new ImageLabelComposite("images/Enumeration_" + i++ + ".gif", "20px", "20px", step.toString());
@@ -33,7 +33,7 @@ public abstract class MatrixGenerationView extends Composite {
 		initWidget(htmlPanel);
 	}
 
-	protected abstract Step getStep();
+	protected abstract TaskStageEnum getStep();
 
 	protected abstract Widget getStepWidget();
 	

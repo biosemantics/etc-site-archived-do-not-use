@@ -5,37 +5,53 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import edu.arizona.sirls.etc.site.shared.rpc.TaskType;
-
 public class TaskStageDAO extends AbstractDAO {
 
-	private static TaskStageDAO instance;
-
-	public TaskStageDAO() throws IOException, ClassNotFoundException {
+	private TaskStageDAO() throws IOException, ClassNotFoundException {
 		super();
-		// TODO Auto-generated constructor stub
 	}
+
+	private static TaskStageDAO instance;
 
 	public static TaskStageDAO getInstance() throws ClassNotFoundException, IOException {
 		if(instance == null)
 			instance = new TaskStageDAO();
 		return instance;
 	}
-
-	public int getTaskStage(TaskType taskType, String stage) throws ClassNotFoundException, SQLException, IOException {
+	
+	public TaskStage getTaskStage(int id) throws SQLException, ClassNotFoundException, IOException {
+		TaskStage taskStage = null;
 		this.openConnection();
-		int  taskStageId = -1;
-		int taskTypeId = TaskTypeDAO.getInstance().getTaskType(taskType);
-		
-		PreparedStatement statement = this.executeSQL("SELECT id FROM taskStages WHERE taskStages.taskType = taskTypes.id ANd " +
-				"taskTypes.id = " + taskTypeId + " AND taskStages.name = '" + stage + "'");
+		PreparedStatement statement = this.executeSQL("SELECT * FROM taskstages WHERE id = " + id);
 		ResultSet result = statement.getResultSet();
-		while(result.next()) {
-			taskTypeId = result.getInt(0);
-		}
 		
+		while(result.next()) {
+			id = result.getInt(0);
+			int tasktypeId = result.getInt(1);
+			String name = result.getString(2);
+			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(tasktypeId);
+			taskStage = new TaskStage(id, taskType, name);
+		}
 		this.closeConnection();
-		return taskStageId;
+		return taskStage;
+	}
+
+	public TaskStage getTaskStage(TaskType taskType, String name) throws SQLException, ClassNotFoundException, IOException {		
+		TaskStage taskStage = null;
+		this.openConnection();
+		PreparedStatement statement = this.executeSQL("SELECT * FROM taskstages WHERE tasktype = " + taskType.getId() + " " +
+				"name = '" + name + "'");
+		ResultSet result = statement.getResultSet();
+		
+		while(result.next()) {
+			int id = result.getInt(0);
+			int taskTypeId = result.getInt(1);
+			name = result.getString(2);
+			taskType = TaskTypeDAO.getInstance().getTaskType(taskTypeId);
+			taskStage = new TaskStage(id, taskType, name);
+		}
+		this.closeConnection();
+		return taskStage;
 	}
 
 }

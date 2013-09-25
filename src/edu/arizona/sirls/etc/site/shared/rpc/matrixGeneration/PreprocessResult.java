@@ -1,4 +1,4 @@
-package edu.arizona.sirls.etc.site.shared.rpc;
+package edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration;
 
 import java.util.List;
 

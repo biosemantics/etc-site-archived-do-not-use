@@ -1,6 +1,6 @@
-package edu.arizona.sirls.etc.site.shared.rpc;
+package edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration;
 
-public enum Step {
+public enum TaskStageEnum {
 	
     INPUT("Input"),
     PREPROCESS_TEXT("Preprocess Text"),
@@ -11,7 +11,7 @@ public enum Step {
 
     private String displayName;
 
-    private Step(String displayName) {
+    private TaskStageEnum(String displayName) {
         this.displayName = displayName;
     }
 

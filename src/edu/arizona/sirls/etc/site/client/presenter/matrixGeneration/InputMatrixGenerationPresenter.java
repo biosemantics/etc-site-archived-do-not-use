@@ -13,9 +13,12 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 import com.google.gwt.user.client.ui.Widget;
 
+import edu.arizona.sirls.etc.site.client.Authentication;
+import edu.arizona.sirls.etc.site.client.ConfigurationManager;
 import edu.arizona.sirls.etc.site.client.event.matrixGeneration.PreprocessMatrixGenerationEvent;
 import edu.arizona.sirls.etc.site.client.presenter.MessagePresenter;
 import edu.arizona.sirls.etc.site.client.presenter.fileManager.ManagableFileTreePresenter;
@@ -24,16 +27,15 @@ import edu.arizona.sirls.etc.site.client.view.MessageView;
 import edu.arizona.sirls.etc.site.client.view.fileManager.ManagableFileTreeView;
 import edu.arizona.sirls.etc.site.client.view.fileManager.SelectableFileTreeView;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
-import edu.arizona.sirls.etc.site.shared.rpc.IHasPath;
-import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationJob;
-import edu.arizona.sirls.etc.site.shared.rpc.TaxonDescriptionFile;
-import edu.arizona.sirls.etc.site.shared.rpc.TaxonGlossaryFile;
+import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 
 public class InputMatrixGenerationPresenter /*implements IFileSelectClickHandlerListener*/ {
 	
 	public interface Display {
 		Button getNextButton();
+		TextBox getNameTextBox();
 		Label getTaxonDescriptionFileNameLabel();
 		Anchor getFormatRequirementsAnchor();
 		FocusWidget getTaxonDescriptionFileButton();
@@ -44,18 +46,19 @@ public class InputMatrixGenerationPresenter /*implements IFileSelectClickHandler
 
 	private HandlerManager eventBus;
 	private Display display;
-	private MatrixGenerationJob matrixGenerationJob;
 	private IFileServiceAsync fileService;
+	private IMatrixGenerationServiceAsync matrixGenerationService;
 	private MessageView messageView = new MessageView();
 	private MessagePresenter messagePresenter = new MessagePresenter(messageView, "Format Requirements");
 	private StringBuilder taxonDescriptionFile = new StringBuilder();
 	private StringBuilder taxonGlossaryFile = new StringBuilder();
 
 	public InputMatrixGenerationPresenter(HandlerManager eventBus,
-			Display display, IFileServiceAsync fileService) {
+			Display display, IFileServiceAsync fileService, IMatrixGenerationServiceAsync matrixGenerationService) {
 		this.eventBus = eventBus;
 		this.display = display;
 		this.fileService = fileService;
+		this.matrixGenerationService = matrixGenerationService;
 		bind();
 	}
 
@@ -103,15 +106,25 @@ public class InputMatrixGenerationPresenter /*implements IFileSelectClickHandler
 		display.getNextButton().addClickHandler(new ClickHandler() { 
 			@Override
 			public void onClick(ClickEvent event) { 
-				matrixGenerationJob.setTaxonDescriptionFile(taxonDescriptionFile.toString());
-				matrixGenerationJob.setTaxonGlossaryFile(display.getGlossaryListBox().getItemText(display.getGlossaryListBox().getSelectedIndex()));
-				eventBus.fireEvent(new PreprocessMatrixGenerationEvent());
+				matrixGenerationService.start(Authentication.getInstance().getAuthenticationToken(), 
+						display.getNameTextBox().getText(), taxonDescriptionFile.toString(), 
+						display.getGlossaryListBox().getItemText(display.getGlossaryListBox().getSelectedIndex()),
+						new AsyncCallback<MatrixGenerationConfiguration>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								caught.printStackTrace();
+							}
+							@Override
+							public void onSuccess(MatrixGenerationConfiguration result) {
+								eventBus.fireEvent(new PreprocessMatrixGenerationEvent(result));
+								//ConfigurationManager.getInstance().setMatrixGenerationConfiguration(result);
+							}
+				});
 			}
 		});
 	}
 
-	public void go(HasWidgets content, MatrixGenerationJob matrixGenerationJob) {
-		this.matrixGenerationJob = matrixGenerationJob;
+	public void go(HasWidgets content) {
 		this.display.getTaxonDescriptionFileNameLabel().setText("");
 		this.display.getNextButton().setEnabled(false);
 		content.clear();

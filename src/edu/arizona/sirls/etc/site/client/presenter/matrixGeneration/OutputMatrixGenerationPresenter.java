@@ -11,7 +11,7 @@ import com.google.gwt.user.client.ui.Widget;
 import edu.arizona.sirls.etc.site.client.event.FileManagerEvent;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
-import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationJob;
+import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 
 public class OutputMatrixGenerationPresenter {
 
@@ -23,9 +23,9 @@ public class OutputMatrixGenerationPresenter {
 
 	private Display display;
 	private HandlerManager eventBus;
-	private MatrixGenerationJob matrixGenerationJob;
 	private IFileServiceAsync fileService;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
+	private MatrixGenerationConfiguration matrixGenerationConfiguration;
 	
 	public OutputMatrixGenerationPresenter(HandlerManager eventBus,
 			Display display, IFileServiceAsync fileService, IMatrixGenerationServiceAsync matrixGenerationService) {
@@ -45,10 +45,10 @@ public class OutputMatrixGenerationPresenter {
 		});
 	}
 
-	public void go(HasWidgets content, MatrixGenerationJob matrixGenerationJob) {
-		this.matrixGenerationJob = matrixGenerationJob;
-		matrixGenerationJob.setOutputFile(matrixGenerationJob.getTaxonDescriptionFile() + "_MGResult");
-		display.getOutputLabel().setText(matrixGenerationJob.getOutputFile());
+	public void go(HasWidgets content, MatrixGenerationConfiguration matrixGenerationConfiguration) {
+		this.matrixGenerationConfiguration = matrixGenerationConfiguration;
+		matrixGenerationConfiguration.setOutputFile(matrixGenerationConfiguration.getInput() + "_MGResult");
+		display.getOutputLabel().setText(matrixGenerationConfiguration.getOutputFile());
 		content.clear();
 		content.add(display.asWidget());
 	}

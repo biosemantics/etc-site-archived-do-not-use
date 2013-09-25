@@ -7,7 +7,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.arizona.sirls.etc.site.shared.rpc.Step;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.ParseMatrixGenerationPresenter;
 
 public class ParseMatrixGenerationView extends MatrixGenerationView implements ParseMatrixGenerationPresenter.Display {
@@ -15,8 +15,8 @@ public class ParseMatrixGenerationView extends MatrixGenerationView implements P
 	private Button nextButton;
 
 	@Override
-	protected Step getStep() {
-		return Step.PARSE_TEXT;
+	protected TaskStageEnum getStep() {
+		return TaskStageEnum.PARSE_TEXT;
 	}
 
 	@Override

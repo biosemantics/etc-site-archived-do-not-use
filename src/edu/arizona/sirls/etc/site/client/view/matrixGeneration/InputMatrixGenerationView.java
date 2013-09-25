@@ -9,11 +9,12 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.InputMatrixGenerationPresenter;
-import edu.arizona.sirls.etc.site.shared.rpc.Step;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 public class InputMatrixGenerationView extends MatrixGenerationView implements 
 		InputMatrixGenerationPresenter.Display {
@@ -24,6 +25,7 @@ public class InputMatrixGenerationView extends MatrixGenerationView implements
 	private Anchor formatRequirementsAnchor;
 	private ListBox glossaryListBox;
 	private FocusWidget fileManagerAnchor;
+	private TextBox nameTextBox;
 
 	@Override
 	protected Widget getStepWidget() {
@@ -44,6 +46,12 @@ public class InputMatrixGenerationView extends MatrixGenerationView implements
 		inputRequirementsPanel.add(formatRequirementsAnchor);
 		inputRequirementsPanel.add(new InlineLabel(" for taxon descriptions."));	
 		verticalPanel.add(inputRequirementsPanel);
+		HorizontalPanel namePanel = new HorizontalPanel();
+		namePanel.addStyleName("inputForm");
+		namePanel.add(new Label("Task name:"));
+		nameTextBox = new TextBox();
+		namePanel.add(nameTextBox);
+		verticalPanel.add(namePanel);
 		HorizontalPanel taxonDescriptionFilePanel = new HorizontalPanel();
 		taxonDescriptionFilePanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		taxonDescriptionFilePanel.addStyleName("inputForm");
@@ -62,8 +70,8 @@ public class InputMatrixGenerationView extends MatrixGenerationView implements
 	}
 
 	@Override
-	protected Step getStep() {
-		return Step.INPUT;
+	protected TaskStageEnum getStep() {
+		return TaskStageEnum.INPUT;
 	}
 
 	@Override
@@ -94,6 +102,11 @@ public class InputMatrixGenerationView extends MatrixGenerationView implements
 	@Override
 	public ListBox getGlossaryListBox() {
 		return this.glossaryListBox;
+	}
+
+	@Override
+	public TextBox getNameTextBox() {
+		return nameTextBox;
 	}
 
 }

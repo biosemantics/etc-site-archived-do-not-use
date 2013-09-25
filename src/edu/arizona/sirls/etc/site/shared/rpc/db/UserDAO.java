@@ -5,11 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UsersDAO extends AbstractDAO {
+public class UserDAO extends AbstractDAO {
 
-	private static UsersDAO instance;
+	private static UserDAO instance;
 
-	public UsersDAO() throws IOException, ClassNotFoundException {
+	public UserDAO() throws IOException, ClassNotFoundException {
 		super();
 	}
 	
@@ -51,9 +51,9 @@ public class UsersDAO extends AbstractDAO {
 		this.closeConnection();
 	}
 		
-	public static UsersDAO getInstance() throws ClassNotFoundException, IOException {
+	public static UserDAO getInstance() throws ClassNotFoundException, IOException {
 		if(instance == null)
-			instance = new UsersDAO();
+			instance = new UserDAO();
 		return instance;
 	}
 

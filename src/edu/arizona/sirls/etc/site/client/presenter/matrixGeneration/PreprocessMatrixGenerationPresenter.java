@@ -18,15 +18,13 @@ import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.event.matrixGeneration.LearnMatrixGenerationEvent;
-import edu.arizona.sirls.etc.site.client.presenter.MessageConfirmCancelPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.MessagePresenter;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
-import edu.arizona.sirls.etc.site.client.view.MessageConfirmCancelView;
 import edu.arizona.sirls.etc.site.client.view.MessageView;
-import edu.arizona.sirls.etc.site.shared.rpc.BracketValidator;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
-import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationJob;
-import edu.arizona.sirls.etc.site.shared.rpc.PreprocessedDescription;
+import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.BracketValidator;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.PreprocessedDescription;
 
 public class PreprocessMatrixGenerationPresenter {
 
@@ -184,22 +182,40 @@ public class PreprocessMatrixGenerationPresenter {
 				target, content, asyncCallback);
 	}
 	
-	public void go(HasWidgets content, MatrixGenerationJob matrixGenerationJob) {
-		display.getTextArea().setText("");
-		display.getBracketCountsHTML().setHTML("");
-		display.getDescriptionIDLabel().setText("");
-		this.enableDescriptionNavigation();
-		
-		this.preprocessedDescriptions = matrixGenerationJob.getPreprocessedDescriptions();
-		if(this.preprocessedDescriptions.size() == 1)
-			this.disableDescriptionsNavigation();
-		this.currentPreprocessedDescription = 0;
-		
+	public void go(final HasWidgets content, MatrixGenerationConfiguration matrixGenerationConfiguration) {
 		loadingPopup.start();
-		this.setPreprocessedDescription(preprocessedDescriptions.get(currentPreprocessedDescription));
-		loadingPopup.stop();
-		content.clear();
-		content.add(display.asWidget());
+		matrixGenerationService.preprocess(Authentication.getInstance().getAuthenticationToken(), 
+				matrixGenerationConfiguration, new AsyncCallback<List<PreprocessedDescription>>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						caught.printStackTrace();
+
+						loadingPopup.stop();
+					}
+					@Override
+					public void onSuccess(List<PreprocessedDescription> result) {
+						if(result.isEmpty())
+							eventBus.fireEvent(new LearnMatrixGenerationEvent(matrixGenerationConfiguration));
+						else 
+							preprocessedDescriptions = result;
+						display.getTextArea().setText("");
+						display.getBracketCountsHTML().setHTML("");
+						display.getDescriptionIDLabel().setText("");
+						enableDescriptionNavigation();
+						
+						if(preprocessedDescriptions.size() == 1)
+							disableDescriptionsNavigation();
+						currentPreprocessedDescription = 0;
+						
+						loadingPopup.start();
+						setPreprocessedDescription(preprocessedDescriptions.get(currentPreprocessedDescription));
+						loadingPopup.stop();
+						content.clear();
+						content.add(display.asWidget());
+
+						loadingPopup.stop();
+					}
+		});
 	}
 
 
@@ -221,11 +237,6 @@ public class PreprocessMatrixGenerationPresenter {
 		}
 	}
 	
-	private void setDone() {
-		// TODO Auto-generated method stub
-		
-	}
-
 	private void updateBracketCounts(Map<Character, Integer> bracketCounts) {
 		display.getBracketCountsHTML().setHTML(getBracketHTML(bracketCounts));
 	}

@@ -2,6 +2,7 @@ package edu.arizona.sirls.etc.site.shared.rpc;
 
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -18,5 +19,7 @@ public interface ITaskService extends RemoteService {
 	public List<Task> getSharedTasks(AuthenticationToken authenticationToken);
 	
 	public void addTask(AuthenticationToken authenticationToken, Task task);
+	
+	//public Task getLatestResumableTask(AuthenticationToken authenticationToken, TaskTypeEnum taskType);
 	
 }

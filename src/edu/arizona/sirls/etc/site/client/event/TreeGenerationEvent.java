@@ -3,22 +3,25 @@ package edu.arizona.sirls.etc.site.client.event;
 import com.google.gwt.event.shared.GwtEvent;
 
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
+import edu.arizona.sirls.etc.site.shared.rpc.db.TreeGenerationConfiguration;
 
 public class TreeGenerationEvent extends GwtEvent<TreeGenerationEventHandler> {
 
 	public static Type<TreeGenerationEventHandler> TYPE = new Type<TreeGenerationEventHandler>();
-	private Task task;
+	private TreeGenerationConfiguration treeGenerationConfiguration;
 	
-	public TreeGenerationEvent(Task task) {
-		this.task = task;
+	public TreeGenerationEvent() { }
+	
+	public TreeGenerationEvent(TreeGenerationConfiguration treeGenerationConfiguration) {
+		this.treeGenerationConfiguration = treeGenerationConfiguration;
 	}
 	
-	public Task getTask() {
-		return task;
+	public TreeGenerationConfiguration getTreeGenerationConfiguration() {
+		return treeGenerationConfiguration;
 	}
 
-	public void setTask(Task task) {
-		this.task = task;
+	public void setTreeGenerationConfiguration(TreeGenerationConfiguration treeGenerationConfiguration) {
+		this.treeGenerationConfiguration = treeGenerationConfiguration;
 	}
 
 	@Override

@@ -12,7 +12,7 @@ import com.google.gwt.user.client.ui.Widget;
 import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.LearnMatrixGenerationPresenter;
 import edu.arizona.sirls.etc.site.client.view.ListItem;
 import edu.arizona.sirls.etc.site.client.view.OrderedList;
-import edu.arizona.sirls.etc.site.shared.rpc.Step;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 public class LearnMatrixGenerationView extends MatrixGenerationView implements LearnMatrixGenerationPresenter.Display {
 	
@@ -21,8 +21,8 @@ public class LearnMatrixGenerationView extends MatrixGenerationView implements L
 	private Button nextButton;
 
 	@Override
-	protected Step getStep() {
-		return Step.LEARN_TERMS;
+	protected TaskStageEnum getStep() {
+		return TaskStageEnum.LEARN_TERMS;
 	}
 
 	@Override

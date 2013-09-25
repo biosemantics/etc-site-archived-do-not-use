@@ -4,17 +4,20 @@ public class MatrixGenerationConfiguration {
 
 	private int id;
 	private String input;
-	private String glossary;
+	private Glossary glossary;
 	private int otoId;
+	private String output;
+	private Task task;
 	
 	public MatrixGenerationConfiguration() { }
 	
-	public MatrixGenerationConfiguration(int id, String input, String glossary, int otoId) {
+	public MatrixGenerationConfiguration(int id, String input, Glossary glossary, int otoId, String output, Task task) {
 		super();
 		this.id = id;
 		this.input = input;
 		this.glossary = glossary;
 		this.otoId = otoId;
+		this.task = task;
 	}
 	public int getId() {
 		return id;
@@ -28,10 +31,10 @@ public class MatrixGenerationConfiguration {
 	public void setInput(String input) {
 		this.input = input;
 	}
-	public String getGlossary() {
+	public Glossary getGlossary() {
 		return glossary;
 	}
-	public void setGlossary(String glossary) {
+	public void setGlossary(Glossary glossary) {
 		this.glossary = glossary;
 	}
 	public int getOtoId() {
@@ -40,5 +43,30 @@ public class MatrixGenerationConfiguration {
 	public void setOtoId(int otoId) {
 		this.otoId = otoId;
 	}
+
+	public void setOutputFile(String output) {
+		this.output = output;
+	}
+
+	public String getOutputFile() {
+		return output;
+	}
+
+	public String getOutput() {
+		return output;
+	}
+
+	public void setOutput(String output) {
+		this.output = output;
+	}
+
+	public Task getTask() {
+		return task;
+	}
+
+	public void setTask(Task task) {
+		this.task = task;
+	}
+	
 	
 }

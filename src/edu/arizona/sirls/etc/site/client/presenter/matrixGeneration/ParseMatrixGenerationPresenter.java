@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.event.matrixGeneration.OutputMatrixGenerationEvent;
-import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationJob;
+import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 
 public class ParseMatrixGenerationPresenter {
 
@@ -19,7 +19,7 @@ public class ParseMatrixGenerationPresenter {
 
 	private Display display;
 	private HandlerManager eventBus;
-	private MatrixGenerationJob matrixGenerationJob;
+	private MatrixGenerationConfiguration matrixGenerationConfiguration;
 
 	public ParseMatrixGenerationPresenter(HandlerManager eventBus,
 			Display display) {
@@ -37,8 +37,8 @@ public class ParseMatrixGenerationPresenter {
 		});
 	}
 
-	public void go(HasWidgets content, MatrixGenerationJob matrixGenerationJob) {
-		this.matrixGenerationJob = matrixGenerationJob;
+	public void go(HasWidgets content, MatrixGenerationConfiguration matrixGenerationConfiguration) {
+		this.matrixGenerationConfiguration = matrixGenerationConfiguration;
 		content.clear();
 		content.add(display.asWidget());
 	}

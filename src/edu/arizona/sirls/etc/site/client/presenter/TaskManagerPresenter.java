@@ -1,5 +1,6 @@
 package edu.arizona.sirls.etc.site.client.presenter;
 
+import java.util.Calendar;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -18,8 +19,16 @@ import edu.arizona.sirls.etc.site.client.event.TaxonomyComparisonEvent;
 import edu.arizona.sirls.etc.site.client.event.TreeGenerationEvent;
 import edu.arizona.sirls.etc.site.client.event.VisualizationEvent;
 import edu.arizona.sirls.etc.site.client.event.matrixGeneration.MatrixGenerationEvent;
+import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.ITaxonomyComparisonServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.ITreeGenerationServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.IVisualizationServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
+import edu.arizona.sirls.etc.site.shared.rpc.db.TaxonomyComparisonConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.db.TreeGenerationConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.db.VisualizationConfiguration;
 
 public class TaskManagerPresenter {
 	
@@ -32,12 +41,22 @@ public class TaskManagerPresenter {
 	private HandlerManager eventBus;
 	private Display display;
 	private ITaskServiceAsync taskService;
+	private IMatrixGenerationServiceAsync matrixGenerationService;
+	private ITreeGenerationServiceAsync treeGenerationService;
+	private ITaxonomyComparisonServiceAsync taxonomyComparisonService;
+	private IVisualizationServiceAsync visualizationService;
 
 	public TaskManagerPresenter(HandlerManager eventBus,
-			Display display, ITaskServiceAsync taskService) {
+			Display display, ITaskServiceAsync taskService, IMatrixGenerationServiceAsync matrixGenerationService, 
+			ITreeGenerationServiceAsync treeGenerationService, ITaxonomyComparisonServiceAsync taxonomyComparisonService,
+			IVisualizationServiceAsync visualizationService) {
 		this.eventBus = eventBus;
 		this.display = display;
 		this.taskService = taskService;
+		this.matrixGenerationService = matrixGenerationService;
+		this.treeGenerationService = treeGenerationService;
+		this.taxonomyComparisonService = taxonomyComparisonService;
+		this.visualizationService = visualizationService;
 	}
 
 	public void go(HasWidgets content) {
@@ -55,26 +74,69 @@ public class TaskManagerPresenter {
 							image.addClickHandler(new ClickHandler() {
 								@Override
 								public void onClick(ClickEvent event) {
-									switch(task.getTask()) {
+									switch(task.getTaskStage().getTaskType().getTaskTypeEnum()) {
 									case MATRIX_GENERATION:
-										eventBus.fireEvent(new MatrixGenerationEvent(task))
+										matrixGenerationService.getMatrixGenerationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
+												task, new AsyncCallback<MatrixGenerationConfiguration>() {
+													@Override
+													public void onFailure(Throwable caught) {
+														caught.printStackTrace();
+													}
+													@Override
+													public void onSuccess(MatrixGenerationConfiguration result) {
+														eventBus.fireEvent(new MatrixGenerationEvent(result));
+													}
+										});
 										break;
 									case TREE_GENERATION:
-										eventBus.fireEvent(new TreeGenerationEvent(task))
+										treeGenerationService.getTreeGenerationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
+												task, new AsyncCallback<TreeGenerationConfiguration>() {
+													@Override
+													public void onFailure(Throwable caught) {
+														caught.printStackTrace();
+													}
+													@Override
+													public void onSuccess(TreeGenerationConfiguration result) {
+														eventBus.fireEvent(new TreeGenerationEvent(result));
+													}
+										});
 										break;
 									case TAXONOMY_COMPARISON:
-										eventBus.fireEvent(new TaxonomyComparisonEvent(task))
+										taxonomyComparisonService.getTaxonomyComparisonConfiguration(Authentication.getInstance().getAuthenticationToken(), 
+												task, new AsyncCallback<TaxonomyComparisonConfiguration>() {
+													@Override
+													public void onFailure(Throwable caught) {
+														caught.printStackTrace();
+													}
+													@Override
+													public void onSuccess(TaxonomyComparisonConfiguration result) {
+														eventBus.fireEvent(new TaxonomyComparisonEvent(result));
+													}
+										});
 										break;
 									case VISUALIZATION:
-										eventBus.fireEvent(new VisualizationEvent(task))
+										visualizationService.getVisualizationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
+												task, new AsyncCallback<VisualizationConfiguration>() {
+													@Override
+													public void onFailure(Throwable caught) {
+														caught.printStackTrace();
+													}
+													@Override
+													public void onSuccess(VisualizationConfiguration result) {
+														eventBus.fireEvent(new VisualizationEvent(result));
+													}
+										});
 										break;
 									}
 								}
 							});
 						}
-						display.getYourTasksTable().setText(i, 0, dateTimeFormat.format(task.getCalendar().getTime()));
-						display.getYourTasksTable().setText(i, 1, task.getTask().displayName());
-						display.getYourTasksTable().setText(i, 2, task.getStage());
+						
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTimeInMillis(task.getTime());
+						display.getYourTasksTable().setText(i, 0, dateTimeFormat.format(calendar.getTime()));
+						display.getYourTasksTable().setText(i, 1, task.getTaskStage().getTaskType().getTaskTypeEnum().displayName());
+						display.getYourTasksTable().setText(i, 2, task.getTaskStage().getName());
 						display.getYourTasksTable().setText(i, 3, task.getName());
 						display.getYourTasksTable().setWidget(i, 4, image);
 					}
@@ -90,11 +152,77 @@ public class TaskManagerPresenter {
 					DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("MM/dd/yyyy HH:mm");
 					
 					for(int i=1; i<=result.size(); i++) { 
-						Task task = result.get(i-1);
-						display.getSharedTasksTable().setText(i, 0, dateTimeFormat.format(task.getStart()));
-						display.getSharedTasksTable().setText(i, 1, task.getTaskType().toString());
-						display.getSharedTasksTable().setText(i, 2, task.getName());
-						display.getSharedTasksTable().setText(i, 3, task.getProgress() + "%");
+						final Task task = result.get(i-1);
+						Image image = new Image("images/Failure.gif");
+						if(task.isResumable()) {
+							image = new Image("images/Success.gif");
+							image.addClickHandler(new ClickHandler() {
+								@Override
+								public void onClick(ClickEvent event) {
+									switch(task.getTaskStage().getTaskType().getTaskTypeEnum()) {
+									case MATRIX_GENERATION:
+										matrixGenerationService.getMatrixGenerationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
+												task, new AsyncCallback<MatrixGenerationConfiguration>() {
+													@Override
+													public void onFailure(Throwable caught) {
+														caught.printStackTrace();
+													}
+													@Override
+													public void onSuccess(MatrixGenerationConfiguration result) {
+														eventBus.fireEvent(new MatrixGenerationEvent(result));
+													}
+										});
+										break;
+									case TREE_GENERATION:
+										treeGenerationService.getTreeGenerationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
+												task, new AsyncCallback<TreeGenerationConfiguration>() {
+													@Override
+													public void onFailure(Throwable caught) {
+														caught.printStackTrace();
+													}
+													@Override
+													public void onSuccess(TreeGenerationConfiguration result) {
+														eventBus.fireEvent(new TreeGenerationEvent(result));
+													}
+										});
+										break;
+									case TAXONOMY_COMPARISON:
+										taxonomyComparisonService.getTaxonomyComparisonConfiguration(Authentication.getInstance().getAuthenticationToken(), 
+												task, new AsyncCallback<TaxonomyComparisonConfiguration>() {
+													@Override
+													public void onFailure(Throwable caught) {
+														caught.printStackTrace();
+													}
+													@Override
+													public void onSuccess(TaxonomyComparisonConfiguration result) {
+														eventBus.fireEvent(new TaxonomyComparisonEvent(result));
+													}
+										});
+										break;
+									case VISUALIZATION:
+										visualizationService.getVisualizationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
+												task, new AsyncCallback<VisualizationConfiguration>() {
+													@Override
+													public void onFailure(Throwable caught) {
+														caught.printStackTrace();
+													}
+													@Override
+													public void onSuccess(VisualizationConfiguration result) {
+														eventBus.fireEvent(new VisualizationEvent(result));
+													}
+										});
+										break;
+									}
+								}
+							});
+						}
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTimeInMillis(task.getTime());
+						display.getSharedTasksTable().setText(i, 0, dateTimeFormat.format(calendar.getTime()));
+						display.getSharedTasksTable().setText(i, 1, task.getTaskStage().getTaskType().getTaskTypeEnum().displayName());
+						display.getSharedTasksTable().setText(i, 2, task.getTaskStage().getName());
+						display.getSharedTasksTable().setText(i, 3, task.getName());
+						display.getSharedTasksTable().setWidget(i, 4, image);
 					}
 				}
 	

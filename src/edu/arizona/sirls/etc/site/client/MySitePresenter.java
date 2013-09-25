@@ -11,6 +11,8 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 
 import edu.arizona.sirls.etc.site.client.event.FileManagerEvent;
 import edu.arizona.sirls.etc.site.client.event.FileManagerEventHandler;
@@ -52,6 +54,7 @@ import edu.arizona.sirls.etc.site.client.presenter.LoggedInHeaderPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.LoggedOutHeaderPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.LoginPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.MainMenuPresenter;
+import edu.arizona.sirls.etc.site.client.presenter.MessageResumeOrStartPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.SettingsPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.StartMenuPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.StartPresenter;
@@ -73,6 +76,7 @@ import edu.arizona.sirls.etc.site.client.view.LoggedInHeaderView;
 import edu.arizona.sirls.etc.site.client.view.LoggedOutHeaderView;
 import edu.arizona.sirls.etc.site.client.view.LoginView;
 import edu.arizona.sirls.etc.site.client.view.MainMenuView;
+import edu.arizona.sirls.etc.site.client.view.MessageResumeOrStartView;
 import edu.arizona.sirls.etc.site.client.view.SettingsView;
 import edu.arizona.sirls.etc.site.client.view.StartMenuView;
 import edu.arizona.sirls.etc.site.client.view.StartView;
@@ -100,7 +104,11 @@ import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskServiceAsync;
-import edu.arizona.sirls.etc.site.shared.rpc.PreprocessedDescription;
+import edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum;
+import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.PreprocessedDescription;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 public class MySitePresenter implements SitePresenter, ValueChangeHandler<String> {
 
@@ -117,8 +125,6 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	private HasWidgets content;
 	private HasWidgets header;
 	private HasWidgets menu;
-	
-	private MatrixGenerationJob matrixGenerationJob;
 
 	protected MainMenuPresenter mainMenuPresenter;
 	protected StartMenuPresenter startMenuPresenter;
@@ -140,6 +146,8 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	protected LoginPresenter loginPresenter;
 	protected HelpPresenter helpPresenter;
 	protected StartPresenter startPresenter;
+
+	private ConfigurationManager configurationManager = ConfigurationManager.getInstance();
 	
 
 	public MySitePresenter(HandlerManager eventBus) {
@@ -201,17 +209,78 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    
 	    eventBus.addHandler(MatrixGenerationEvent.TYPE,
 	    	new MatrixGenerationEventHandler() {
-	          public void onMatrixGeneration(MatrixGenerationEvent event) {
-	        	  matrixGenerationJob = new MatrixGenerationJob();
-	        	  addToHistory(HistoryState.INPUT_MATRIX_GENERATION, true, event);
+	    	
+	    	  private MessageResumeOrStartView messageResumeOrStartView = new MessageResumeOrStartView();
+		    	
+	          public void onMatrixGeneration(final MatrixGenerationEvent matrixGenerationEvent) {	
+	        	  if(!matrixGenerationEvent.hasMatrixGenerationConfiguration()) {
+		        	  matrixGenerationService.getLatestResumable(Authentication.getInstance().getAuthenticationToken(),
+								new AsyncCallback<MatrixGenerationConfiguration>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								caught.printStackTrace();
+							}
+							@Override
+							public void onSuccess(final MatrixGenerationConfiguration latestResumable) {
+								if(latestResumable != null) {
+									MessageResumeOrStartPresenter messageResumeOrStartPresenter = 
+											new MessageResumeOrStartPresenter(messageResumeOrStartView, "Resumable Task", new ClickHandler() {
+												@Override
+												public void onClick(ClickEvent event) {
+													//resume
+													matrixGenerationEvent.setMatrixGenerationConfiguration(latestResumable);
+													start();
+												}
+											}, new ClickHandler() {
+												@Override
+												public void onClick(ClickEvent event) {
+													start();
+												}
+											});
+									messageResumeOrStartPresenter.setMessage("You have a resumable Matrix Generation Task. Do you want to resume it or start a new task?");
+									messageResumeOrStartPresenter.go();
+								}
+							}
+							
+							private void start() {
+								if(matrixGenerationEvent.hasMatrixGenerationConfiguration()) {
+									MatrixGenerationConfiguration matrixGenerationConfiguration = 
+											matrixGenerationEvent.getMatrixGenerationConfiguration();
+									TaskStageEnum stage = 
+											TaskStageEnum.valueOf(matrixGenerationConfiguration.getTask().getTaskStage().getName());
+									switch(stage) {
+									case INPUT:
+										addToHistory(HistoryState.INPUT_MATRIX_GENERATION, true, matrixGenerationEvent);
+										break;
+									case PREPROCESS_TEXT:
+										addToHistory(HistoryState.PREPROCESS_MATRIX_GENERATION, true, matrixGenerationEvent);
+										break;
+									case LEARN_TERMS:
+										addToHistory(HistoryState.LEARN_MATRIX_GENERATION, true, matrixGenerationEvent);
+										break;
+									case REVIEW_TERMS:
+										addToHistory(HistoryState.REVIEW_MATRIX_GENERATION, true, matrixGenerationEvent);
+										break;
+									case PARSE_TEXT:
+										addToHistory(HistoryState.PARSE_MATRIX_GENERATION, true, matrixGenerationEvent);
+										break;
+									case OUTPUT:
+										addToHistory(HistoryState.OUTPUT_MATRIX_GENERATION, true, matrixGenerationEvent);
+										break;
+									}
+								} else {
+									 addToHistory(HistoryState.INPUT_MATRIX_GENERATION, true, matrixGenerationEvent);
+								}
+							}
+		        	  });
+	        	  }
 	          }
 	        });
 	    
 		eventBus.addHandler(InputMatrixGenerationEvent.TYPE,
 				new InputMatrixGenerationEventHandler() {
 					@Override
-					public void onInput(
-							InputMatrixGenerationEvent event) {
+					public void onInput(InputMatrixGenerationEvent event) {
 						addToHistory(HistoryState.INPUT_MATRIX_GENERATION, true, event);
 					}
 				});
@@ -219,25 +288,8 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 		eventBus.addHandler(PreprocessMatrixGenerationEvent.TYPE,
 				new PreprocessMatrixGenerationEventHandler() {
 					@Override
-					public void onPreprocess(
-							final PreprocessMatrixGenerationEvent event) {
-						matrixGenerationService.preprocess(Authentication.getInstance().getAuthenticationToken(), 
-								matrixGenerationJob, new AsyncCallback<List<PreprocessedDescription>>() {
-									@Override
-									public void onFailure(Throwable caught) {
-										caught.printStackTrace();
-									}
-									@Override
-									public void onSuccess(List<PreprocessedDescription> result) {
-										matrixGenerationJob.setPreprocessedDescriptions(result);
-										if(result.isEmpty())
-											addToHistory(HistoryState.LEARN_MATRIX_GENERATION, true, event);
-										else
-											addToHistory(HistoryState.PREPROCESS_MATRIX_GENERATION, true, event);
-									}
-						});
-						//show some loading screen, while result is not there yet.
-						//addToHistory(HistoryState.PREPROCESS_MATRIX_GENERATION, true, event);
+					public void onPreprocess(final PreprocessMatrixGenerationEvent event) {
+						addToHistory(HistoryState.PREPROCESS_MATRIX_GENERATION, true, event);
 					}
 				});
 		
@@ -466,7 +518,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 				});
 				break;
 			case INPUT_MATRIX_GENERATION:
-				if(matrixGenerationJob == null) {
+				if(!configurationManager.hasMatrixGenerationConfiguration()) {
 					eventBus.fireEvent(new MatrixGenerationEvent());
 					break;
 				}
@@ -477,14 +529,14 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 					public void onSuccess() {
 						if (inputMatrixGenerationPresenter == null) {
 							inputMatrixGenerationPresenter = new InputMatrixGenerationPresenter(
-									eventBus, new InputMatrixGenerationView(), fileService);
+									eventBus, new InputMatrixGenerationView(), fileService, matrixGenerationService);
 						}
-						inputMatrixGenerationPresenter.go(content, matrixGenerationJob);
+						inputMatrixGenerationPresenter.go(content);
 					}
 				});
 				break;
 			case PREPROCESS_MATRIX_GENERATION:
-				if(matrixGenerationJob == null) {
+				if(!configurationManager.hasMatrixGenerationConfiguration()) {
 					eventBus.fireEvent(new MatrixGenerationEvent());
 					break;
 				}
@@ -498,12 +550,12 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 									new PreprocessMatrixGenerationPresenter(eventBus, 
 											new PreprocessMatrixGenerationView(), matrixGenerationService);
 						}
-						preprocessMatrixGenerationPresenter.go(content, matrixGenerationJob);
+						preprocessMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
 					}
 				});
 				break;
 			case LEARN_MATRIX_GENERATION:
-				if(matrixGenerationJob == null) {
+				if(!configurationManager.hasMatrixGenerationConfiguration()) {
 					eventBus.fireEvent(new MatrixGenerationEvent());
 					break;
 				}
@@ -517,12 +569,12 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 									LearnMatrixGenerationPresenter(eventBus, 
 											new LearnMatrixGenerationView(), matrixGenerationService);
 						}
-						learnMatrixGenerationPresenter.go(content, matrixGenerationJob);
+						learnMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
 					}
 				});
 				break;
 			case REVIEW_MATRIX_GENERATION:
-				if(matrixGenerationJob == null) {
+				if(!configurationManager.hasMatrixGenerationConfiguration()) {
 					eventBus.fireEvent(new MatrixGenerationEvent());
 					break;
 				}
@@ -534,14 +586,14 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 						if (reviewMatrixGenerationPresenter == null) {
 							reviewMatrixGenerationPresenter = 
 									new ReviewMatrixGenerationPresenter(eventBus, 
-											new ReviewMatrixGenerationView());
+											new ReviewMatrixGenerationView(), matrixGenerationService);
 						}
-						reviewMatrixGenerationPresenter.go(content, matrixGenerationJob);
+						reviewMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
 					}
 				});
 				break;
 			case PARSE_MATRIX_GENERATION:
-				if(matrixGenerationJob == null) {
+				if(!configurationManager.hasMatrixGenerationConfiguration()) {
 					eventBus.fireEvent(new MatrixGenerationEvent());
 					break;
 				}
@@ -554,12 +606,12 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 							parseMatrixGenerationPresenter = new ParseMatrixGenerationPresenter(
 									eventBus, new ParseMatrixGenerationView());
 						}
-						parseMatrixGenerationPresenter.go(content, matrixGenerationJob);
+						parseMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
 					}
 				});
 				break;
 			case OUTPUT_MATRIX_GENERATION:
-				if(matrixGenerationJob == null) {
+				if(!configurationManager.hasMatrixGenerationConfiguration()) {
 					eventBus.fireEvent(new MatrixGenerationEvent());
 					break;
 				}
@@ -573,7 +625,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 									OutputMatrixGenerationPresenter(eventBus, 
 											new OutputMatrixGenerationView(), fileService, matrixGenerationService);
 						}
-						outputMatrixGenerationPresenter.go(content, matrixGenerationJob);
+						outputMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
 					}
 				});
 				break;

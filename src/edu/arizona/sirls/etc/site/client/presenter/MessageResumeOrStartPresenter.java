@@ -9,11 +9,11 @@ import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.view.MessageConfirmCancelView;
 
-public class MessageConfirmCancelPresenter {
+public class MessageResumeOrStartPresenter {
 
 	public interface Display {
-		Button getConfirmButton();
-		Button getCancelButton();
+		Button getResumeButton();
+		Button getStartButton();
 		Widget asWidget();
 		HTML getMessageHTML();
 	}
@@ -21,22 +21,23 @@ public class MessageConfirmCancelPresenter {
 	private TitleCloseDialogBox dialogBox;
 	private Display display;
 	
-	public MessageConfirmCancelPresenter(Display display, String title, ClickHandler confirmHandler) { 
+	public MessageResumeOrStartPresenter(Display display, String title, ClickHandler resumeHandler, ClickHandler startHandler) { 
 		this.dialogBox = new TitleCloseDialogBox(false, title); 
 		this.display = display;
-		bind(confirmHandler);
+		bind(resumeHandler, startHandler);
 	}
 
-	public void bind(final ClickHandler confirmHandler) { 
-		display.getCancelButton().addClickHandler(new ClickHandler() {
+	public void bind(final ClickHandler resumeHandler, final ClickHandler startHandler) { 
+		display.getResumeButton().addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
+				resumeHandler.onClick(event);
 				dialogBox.hide();
 			}
 		}); 
-		display.getConfirmButton().addClickHandler(new ClickHandler() {
+		display.getStartButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				confirmHandler.onClick(event);
+				startHandler.onClick(event);
 				dialogBox.hide();
 			}
 		}); 

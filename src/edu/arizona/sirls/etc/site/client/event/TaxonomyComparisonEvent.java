@@ -3,23 +3,25 @@ package edu.arizona.sirls.etc.site.client.event;
 import com.google.gwt.event.shared.GwtEvent;
 
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
+import edu.arizona.sirls.etc.site.shared.rpc.db.TaxonomyComparisonConfiguration;
 
 public class TaxonomyComparisonEvent extends GwtEvent<TaxonomyComparisonEventHandler> {
 
 	public static Type<TaxonomyComparisonEventHandler> TYPE = new Type<TaxonomyComparisonEventHandler>();
 	
-	private Task task;
+	private TaxonomyComparisonConfiguration taxonomyComparisonConfiguration;
 	
-	public TaxonomyComparisonEvent(Task task) {
-		this.task = task;
+	public TaxonomyComparisonEvent() { }
+	
+	public TaxonomyComparisonEvent(TaxonomyComparisonConfiguration taxonomyComparisonConfiguration) {
+		this.taxonomyComparisonConfiguration = taxonomyComparisonConfiguration;
 	}
-	
-	public Task getTask() {
-		return task;
+	public TaxonomyComparisonConfiguration getTaxonomyComparisonConfiguration() {
+		return taxonomyComparisonConfiguration;
 	}
 
-	public void setTask(Task task) {
-		this.task = task;
+	public void setTaxonomyComparisonConfiguration(TaxonomyComparisonConfiguration taxonomyComparisonConfiguration) {
+		this.taxonomyComparisonConfiguration = taxonomyComparisonConfiguration;
 	}
 
 	@Override

@@ -11,8 +11,8 @@ import com.google.gwt.user.client.ui.Widget;
 import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.event.matrixGeneration.ReviewMatrixGenerationEvent;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
-import edu.arizona.sirls.etc.site.shared.rpc.LearnInvocation;
-import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationJob;
+import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.LearnInvocation;
 
 public class LearnMatrixGenerationPresenter {
 
@@ -25,7 +25,7 @@ public class LearnMatrixGenerationPresenter {
 	
 	private HandlerManager eventBus;
 	private Display display;
-	private MatrixGenerationJob matrixGenerationJob;
+	private MatrixGenerationConfiguration matrixGenerationConfiguration;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
 
 	public LearnMatrixGenerationPresenter(HandlerManager eventBus,
@@ -45,10 +45,10 @@ public class LearnMatrixGenerationPresenter {
 		}); 
 	}
 
-	public void go(HasWidgets content, MatrixGenerationJob matrixGenerationJob) {
-		this.matrixGenerationJob = matrixGenerationJob;
+	public void go(HasWidgets content, MatrixGenerationConfiguration matrixGenerationConfiguration) {
+		this.matrixGenerationConfiguration = matrixGenerationConfiguration;
 		matrixGenerationService.learn(Authentication.getInstance().getAuthenticationToken(),
-				matrixGenerationJob, new AsyncCallback<LearnInvocation>() { 
+				matrixGenerationConfiguration, new AsyncCallback<LearnInvocation>() { 
 			public void onSuccess(LearnInvocation result) {
 				display.setWords(result.getWords());
 				display.setSentences(result.getSentences());

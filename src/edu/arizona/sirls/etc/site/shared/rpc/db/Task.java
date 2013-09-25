@@ -3,85 +3,80 @@ package edu.arizona.sirls.etc.site.shared.rpc.db;
 import java.io.Serializable;
 import java.util.Calendar;
 
-import edu.arizona.sirls.etc.site.shared.rpc.TaskType;
+import edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum;
 
 public class Task implements Serializable  {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5715701929523907789L;
-	private int id;
-	private String user;
-	private Calendar calendar;
-	private String name;
-	private TaskType task;
-	private String stage;
 	private boolean resumable;
-	private int configuration;
-	
-	public Task() { }
-	
-	public Task(int id, String user, Calendar calendar, String name, TaskType task, int configuration, String stage, boolean resumable) {
-		super();
+	private String name;
+	private TaskStage taskStage;
+	private long time;
+	private User user;
+	private int id;
+
+	public Task(int id, User user, long time, TaskStage taskStage, String name, boolean resumable) {
 		this.id = id;
 		this.user = user;
+		this.time = time;
+		this.taskStage = taskStage;
 		this.name = name;
-		this.task = task;
-		this.configuration = configuration;
-		this.stage = stage;
 		this.resumable = resumable;
-		this.calendar = calendar;
 	}
-	public int getId() {
-		return id;
+
+	public Task() {
+		// TODO Auto-generated constructor stub
 	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	public String getUser() {
-		return user;
-	}
-	public void setUser(String user) {
-		this.user = user;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public TaskType getTask() {
-		return task;
-	}
-	public void setTask(TaskType task) {
-		this.task = task;
-	}
-	public String getStage() {
-		return stage;
-	}
-	public void setStage(String stage) {
-		this.stage = stage;
-	}
+
 	public boolean isResumable() {
 		return resumable;
 	}
+
 	public void setResumable(boolean resumable) {
 		this.resumable = resumable;
 	}
-	public Calendar getCalendar() {
-		return calendar;
-	}
-	public void setCalendar(Calendar calendar) {
-		this.calendar = calendar;
+
+	public String getName() {
+		return name;
 	}
 
-	public void setConfiguration(int configuration) {
-		this.configuration = configuration;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public int getConfiguration() {
-		return configuration;
+	public TaskStage getTaskStage() {
+		return taskStage;
 	}
+
+	public void setTaskStage(TaskStage taskStage) {
+		this.taskStage = taskStage;
+	}
+
+	public long getTime() {
+		return time;
+	}
+
+	public void setTime(long time) {
+		this.time = time;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	
+
+	
 		
 }

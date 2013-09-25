@@ -1,6 +1,6 @@
 package edu.arizona.sirls.etc.site.shared.rpc;
 
-public enum TaskType {
+public enum TaskTypeEnum {
 	MATRIX_GENERATION("Matrix Generation"),
 	TREE_GENERATION("Tree Generation"),
 	TAXONOMY_COMPARISON("Taxonomy Comparison"), 
@@ -8,7 +8,7 @@ public enum TaskType {
 	
 	private String displayName;
 
-	TaskType(String displayName) {
+	TaskTypeEnum(String displayName) {
         this.displayName = displayName;
     }
 

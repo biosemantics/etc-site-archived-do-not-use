@@ -6,7 +6,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.arizona.sirls.etc.site.shared.rpc.Step;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.ReviewMatrixGenerationPresenter;
 
 public class ReviewMatrixGenerationView extends MatrixGenerationView implements ReviewMatrixGenerationPresenter.Display {
@@ -15,8 +15,8 @@ public class ReviewMatrixGenerationView extends MatrixGenerationView implements 
 	private Frame frame;
 
 	@Override
-	protected Step getStep() {
-		return Step.REVIEW_TERMS;
+	protected TaskStageEnum getStep() {
+		return TaskStageEnum.REVIEW_TERMS;
 	}
 
 	@Override

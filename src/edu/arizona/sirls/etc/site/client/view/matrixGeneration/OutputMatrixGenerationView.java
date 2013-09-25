@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.OutputMatrixGenerationPresenter;
-import edu.arizona.sirls.etc.site.shared.rpc.Step;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 public class OutputMatrixGenerationView extends MatrixGenerationView implements OutputMatrixGenerationPresenter.Display {
 
@@ -20,8 +20,8 @@ public class OutputMatrixGenerationView extends MatrixGenerationView implements 
 	//private Button completeButton;
 
 	@Override
-	protected Step getStep() {
-		return Step.OUTPUT;
+	protected TaskStageEnum getStep() {
+		return TaskStageEnum.OUTPUT;
 	}
 
 	@Override

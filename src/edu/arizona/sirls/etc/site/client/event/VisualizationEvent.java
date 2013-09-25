@@ -3,23 +3,27 @@ package edu.arizona.sirls.etc.site.client.event;
 import com.google.gwt.event.shared.GwtEvent;
 
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
+import edu.arizona.sirls.etc.site.shared.rpc.db.VisualizationConfiguration;
 
 public class VisualizationEvent extends GwtEvent<VisualizationEventHandler> {
 
 	public static Type<VisualizationEventHandler> TYPE = new Type<VisualizationEventHandler>();
 	
-	private Task task;
+	private VisualizationConfiguration visualizationConfiguration;
 	
-	public VisualizationEvent(Task task) {
-		this.task = task;
-	}
+	public VisualizationEvent() { }
 	
-	public Task getTask() {
-		return task;
+	public VisualizationEvent(VisualizationConfiguration visualizationConfiguration) {
+		this.visualizationConfiguration = visualizationConfiguration;
 	}
 
-	public void setTask(Task task) {
-		this.task = task;
+
+	public VisualizationConfiguration getVisualizationConfiguration() {
+		return visualizationConfiguration;
+	}
+
+	public void setVisualizationConfiguration(VisualizationConfiguration visualizationConfiguration) {
+		this.visualizationConfiguration = visualizationConfiguration;
 	}
 
 	@Override

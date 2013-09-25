@@ -13,7 +13,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.ChangeAwareRichTextArea;
 import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.PreprocessMatrixGenerationPresenter;
-import edu.arizona.sirls.etc.site.shared.rpc.Step;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 
 public class PreprocessMatrixGenerationView extends MatrixGenerationView implements PreprocessMatrixGenerationPresenter.Display {
@@ -70,8 +70,8 @@ public class PreprocessMatrixGenerationView extends MatrixGenerationView impleme
 	}
 
 	@Override
-	protected Step getStep() {
-		return Step.PREPROCESS_TEXT;
+	protected TaskStageEnum getStep() {
+		return TaskStageEnum.PREPROCESS_TEXT;
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 
 public abstract class AbstractDAO {
@@ -25,7 +26,7 @@ public abstract class AbstractDAO {
 	}
 	
 	public PreparedStatement executeSQL(String sql) throws SQLException {
-		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 		preparedStatement.execute();
 		return preparedStatement;
 	}
