@@ -1,9 +1,6 @@
 package edu.arizona.sirls.etc.site.shared.rpc.db;
 
 import java.io.Serializable;
-import java.util.Calendar;
-
-import edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum;
 
 public class Task implements Serializable  {
 

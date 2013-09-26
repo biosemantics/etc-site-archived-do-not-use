@@ -1,13 +1,13 @@
 package edu.arizona.sirls.etc.site.client.presenter;
 
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -132,9 +132,10 @@ public class TaskManagerPresenter {
 							});
 						}
 						
-						Calendar calendar = Calendar.getInstance();
-						calendar.setTimeInMillis(task.getTime());
-						display.getYourTasksTable().setText(i, 0, dateTimeFormat.format(calendar.getTime()));
+						Date date = new Date();
+						date.setTime(task.getTime());
+						DateTimeFormat formatter = DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_MEDIUM);
+						display.getYourTasksTable().setText(i, 0, formatter.format(date));
 						display.getYourTasksTable().setText(i, 1, task.getTaskStage().getTaskType().getTaskTypeEnum().displayName());
 						display.getYourTasksTable().setText(i, 2, task.getTaskStage().getName());
 						display.getYourTasksTable().setText(i, 3, task.getName());
@@ -216,9 +217,10 @@ public class TaskManagerPresenter {
 								}
 							});
 						}
-						Calendar calendar = Calendar.getInstance();
-						calendar.setTimeInMillis(task.getTime());
-						display.getSharedTasksTable().setText(i, 0, dateTimeFormat.format(calendar.getTime()));
+						Date date = new Date();
+						date.setTime(task.getTime());
+						DateTimeFormat formatter = DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_MEDIUM);
+						display.getYourTasksTable().setText(i, 0, formatter.format(date));
 						display.getSharedTasksTable().setText(i, 1, task.getTaskStage().getTaskType().getTaskTypeEnum().displayName());
 						display.getSharedTasksTable().setText(i, 2, task.getTaskStage().getName());
 						display.getSharedTasksTable().setText(i, 3, task.getName());

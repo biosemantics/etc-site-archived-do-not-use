@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -92,32 +90,6 @@ public class TaskDAO extends AbstractDAO {
 		this.closeConnection();
 		return result;
 	}
-
-/*	public Task getLatestResumableTask(String username, TaskType taskType) throws SQLException {
-		this.openConnection();		
-		PreparedStatement statement = this.executeSQL("SELECT " +
-				"tasks.id, users.name, tasks.time, tasktypes.name, tasks.configuration, taskstages.name, tasks.name, tasks.resumable " +
-				"FROM tasks, taskstages, tasktypes, users " +
-				"WHERE users.name = '" + username + "' tasks.user = users.id AND tasks.taskstage = taskstages.id AND taskstages.tasktype = tasktypes.id " +
-						"AND tasktypes.name = '" + taskType.toString() + "' ORDER BY tasks.time DESC");
-		ResultSet result = statement.getResultSet();
-		while(result.next()) {
-			int id = result.getInt(0);
-			String user = result.getString(1);
-			Calendar time = Calendar.getInstance();
-			time.setTimeInMillis(result.getLong(2));
-			String taskName = result.getString(3);
-			int configuration = result.getInt(4);
-			String stage = result.getString(5);
-			String name = result.getString(6);
-			boolean resumable = result.getBoolean(7);
-			Task task = new Task(id, user, time, name, TaskType.valueOf(taskName), configuration, stage, resumable);
-			return task;
-		}
-		
-		this.closeConnection();
-		return null;
-	}*/
 
 	public void updateTask(Task task) throws ClassNotFoundException, SQLException, IOException {
 		this.openConnection();
