@@ -12,6 +12,8 @@ public class TaskStage implements Serializable {
 	private TaskType taskType;
 	private String name;
 
+	public TaskStage() { }
+	
 	public TaskStage(int id, TaskType taskType, String name) {
 		super();
 		this.id = id;

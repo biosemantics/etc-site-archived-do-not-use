@@ -11,6 +11,8 @@ public class Glossary implements Serializable {
 	private int id;
 	private String name;
 	
+	public Glossary() { }
+	
 	public Glossary(int id, String name) {
 		this.id = id;
 		this.name = name;

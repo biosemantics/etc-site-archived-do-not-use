@@ -7,12 +7,15 @@ import edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum;
 
 public class Task implements Serializable  {
 
+	private static final long serialVersionUID = 5053756810897454852L;
 	private boolean resumable;
 	private String name;
 	private TaskStage taskStage;
 	private long time;
 	private User user;
 	private int id;
+	
+	public Task() { }
 
 	public Task(int id, User user, long time, TaskStage taskStage, String name, boolean resumable) {
 		this.id = id;
@@ -21,10 +24,6 @@ public class Task implements Serializable  {
 		this.taskStage = taskStage;
 		this.name = name;
 		this.resumable = resumable;
-	}
-
-	public Task() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public boolean isResumable() {

@@ -13,6 +13,8 @@ public class TaskType implements Serializable {
 	private int id;
 	private edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum taskTypeEnum;
 	
+	public TaskType() { }
+	
 	public TaskType(int id, TaskTypeEnum taskTypeEnum) {
 		super();
 		this.id = id;
