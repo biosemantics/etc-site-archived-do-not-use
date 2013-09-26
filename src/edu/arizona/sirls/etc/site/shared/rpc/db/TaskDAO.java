@@ -30,16 +30,15 @@ public class TaskDAO extends AbstractDAO {
 		ResultSet result = statement.getResultSet();
 		
 		while(result.next()) {
-			id = result.getInt(0);
-			int userId = result.getInt(1);
-			long time = result.getLong(2);
+			id = result.getInt(1);
+			int userId = result.getInt(2);
 			int taskStageId = result.getInt(3);
 			String name = result.getString(4);
 			boolean resumable = result.getBoolean(5);
 			long created = result.getLong(6);
 			User user = UserDAO.getInstance().getUser(userId);
 			TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskStageId);
-			task = new Task(id, user, time, taskStage, name, resumable, created);
+			task = new Task(id, user, taskStage, name, resumable, created);
 		}
 		this.closeConnection();
 		return task;
@@ -52,16 +51,15 @@ public class TaskDAO extends AbstractDAO {
 		PreparedStatement statement = this.executeSQL("SELECT * FROM tasks WHERE user = " + id);
 		ResultSet result = statement.getResultSet();
 		while(result.next()) {
-			id = result.getInt(0);
-			int userId = result.getInt(1);
-			long time = result.getLong(2);
+			id = result.getInt(1);
+			int userId = result.getInt(2);
 			int taskStageId = result.getInt(3);
 			String name = result.getString(4);
 			boolean resumable = result.getBoolean(5);
 			long created = result.getLong(6);
 			User user = UserDAO.getInstance().getUser(userId);
 			TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskStageId);
-			Task task = new Task(id, user, time, taskStage, name, resumable, created);
+			Task task = new Task(id, user, taskStage, name, resumable, created);
 			tasks.add(task);
 		}
 		this.closeConnection();
@@ -78,8 +76,7 @@ public class TaskDAO extends AbstractDAO {
 	public Task addTask(Task task) throws SQLException, ClassNotFoundException, IOException {
 		Task result = null;
 		this.openConnection();
-		PreparedStatement statement =  this.executeSQL("INSERT INTO tasks ('user', 'time', 'taskstage', 'name', 'resumable') VALUES (" + task.getUser().getId() + 
-				", " + task.getTime() + 
+		PreparedStatement statement =  this.executeSQL("INSERT INTO tasks ('user', 'taskstage', 'name', 'resumable') VALUES (" + task.getUser().getId() + 
 				", " + task.getTaskStage().getId() + 
 				", '" + task.getName() + "'" +
 				", " + task.isResumable() + ")");

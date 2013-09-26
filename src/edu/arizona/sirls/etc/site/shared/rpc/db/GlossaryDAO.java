@@ -20,9 +20,9 @@ public class GlossaryDAO extends AbstractDAO {
 		ResultSet result = statement.getResultSet();
 		
 		while(result.next()) {
-			id = result.getInt(0);
-			String name = result.getString(1);
-			long created = result.getLong(2);
+			id = result.getInt(1);
+			String name = result.getString(2);
+			long created = result.getLong(3);
 			glossary = new Glossary(id, name, created);
 		}
 		this.closeConnection();
@@ -36,9 +36,9 @@ public class GlossaryDAO extends AbstractDAO {
 		ResultSet result = statement.getResultSet();
 		
 		while(result.next()) {
-			int id = result.getInt(0);
-			name = result.getString(1);
-			long created = result.getLong(2);
+			int id = result.getInt(1);
+			name = result.getString(2);
+			long created = result.getLong(3);
 			glossary = new Glossary(id, name, created);
 		}
 		this.closeConnection();

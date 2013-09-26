@@ -26,13 +26,13 @@ public class MatrixGenerationConfigurationDAO extends AbstractDAO {
 		ResultSet result = statement.getResultSet();
 		
 		while(result.next()) {
-			id = result.getInt(0);
-			String input = result.getString(1);
-			int glossaryId = result.getInt(2);
-			int oto = result.getInt(3);
-			String output = result.getString(4);
-			int taskId = result.getInt(5);
-			long created = result.getLong(6);
+			id = result.getInt(1);
+			String input = result.getString(2);
+			int glossaryId = result.getInt(3);
+			int oto = result.getInt(4);
+			String output = result.getString(5);
+			int taskId = result.getInt(6);
+			long created = result.getLong(7);
 			Glossary glossary = GlossaryDAO.getInstance().getGlossary(glossaryId);
 			Task task = TaskDAO.getInstance().getTask(taskId);
 			matrixGenerationConfiguration = new MatrixGenerationConfiguration(id, input, glossary, oto, output, task, created);
@@ -65,13 +65,13 @@ public class MatrixGenerationConfigurationDAO extends AbstractDAO {
 		ResultSet result = statement.getResultSet();
 		
 		while(result.next()) {
-			int id = result.getInt(0);
-			String input = result.getString(1);
-			int glossaryId = result.getInt(2);
-			int oto = result.getInt(3);
-			String output = result.getString(4);
-			taskId = result.getInt(5);
-			long created = result.getLong(6);
+			int id = result.getInt(1);
+			String input = result.getString(2);
+			int glossaryId = result.getInt(3);
+			int oto = result.getInt(4);
+			String output = result.getString(5);
+			taskId = result.getInt(6);
+			long created = result.getLong(7);
 			Glossary glossary = GlossaryDAO.getInstance().getGlossary(glossaryId);
 			Task task = TaskDAO.getInstance().getTask(taskId);
 			matrixGenerationConfiguration = new MatrixGenerationConfiguration(id, input, glossary, oto, output, task, created);

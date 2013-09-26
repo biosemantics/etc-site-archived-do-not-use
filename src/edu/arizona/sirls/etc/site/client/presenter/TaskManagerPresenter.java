@@ -133,7 +133,7 @@ public class TaskManagerPresenter {
 						}
 						
 						Date date = new Date();
-						date.setTime(task.getTime());
+						date.setTime(task.getCreated());
 						DateTimeFormat formatter = DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_MEDIUM);
 						display.getYourTasksTable().setText(i, 0, formatter.format(date));
 						display.getYourTasksTable().setText(i, 1, task.getTaskStage().getTaskType().getTaskTypeEnum().displayName());
@@ -218,7 +218,7 @@ public class TaskManagerPresenter {
 							});
 						}
 						Date date = new Date();
-						date.setTime(task.getTime());
+						date.setTime(task.getCreated());
 						DateTimeFormat formatter = DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_MEDIUM);
 						display.getYourTasksTable().setText(i, 0, formatter.format(date));
 						display.getSharedTasksTable().setText(i, 1, task.getTaskStage().getTaskType().getTaskTypeEnum().displayName());
