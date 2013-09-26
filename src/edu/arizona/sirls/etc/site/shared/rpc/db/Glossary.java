@@ -10,12 +10,14 @@ public class Glossary implements Serializable {
 	private static final long serialVersionUID = 8204689349599367413L;
 	private int id;
 	private String name;
+	private long created;
 	
 	public Glossary() { }
 	
-	public Glossary(int id, String name) {
+	public Glossary(int id, String name, long created) {
 		this.id = id;
 		this.name = name;
+		this.created = created;
 	}
 
 	public int getId() {
@@ -32,6 +34,14 @@ public class Glossary implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public long getCreated() {
+		return created;
+	}
+
+	public void setCreated(long created) {
+		this.created = created;
 	}
 	
 	

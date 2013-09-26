@@ -32,9 +32,10 @@ public class MatrixGenerationConfigurationDAO extends AbstractDAO {
 			int oto = result.getInt(3);
 			String output = result.getString(4);
 			int taskId = result.getInt(5);
+			long created = result.getLong(6);
 			Glossary glossary = GlossaryDAO.getInstance().getGlossary(glossaryId);
 			Task task = TaskDAO.getInstance().getTask(taskId);
-			matrixGenerationConfiguration = new MatrixGenerationConfiguration(id, input, glossary, oto, output, task);
+			matrixGenerationConfiguration = new MatrixGenerationConfiguration(id, input, glossary, oto, output, task, created);
 		}
 		this.closeConnection();
 		return matrixGenerationConfiguration;
@@ -70,9 +71,10 @@ public class MatrixGenerationConfigurationDAO extends AbstractDAO {
 			int oto = result.getInt(3);
 			String output = result.getString(4);
 			taskId = result.getInt(5);
+			long created = result.getLong(6);
 			Glossary glossary = GlossaryDAO.getInstance().getGlossary(glossaryId);
 			Task task = TaskDAO.getInstance().getTask(taskId);
-			matrixGenerationConfiguration = new MatrixGenerationConfiguration(id, input, glossary, oto, output, task);
+			matrixGenerationConfiguration = new MatrixGenerationConfiguration(id, input, glossary, oto, output, task, created);
 		}
 		this.closeConnection();
 		return matrixGenerationConfiguration;

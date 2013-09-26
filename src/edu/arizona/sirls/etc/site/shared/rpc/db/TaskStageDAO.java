@@ -29,8 +29,9 @@ public class TaskStageDAO extends AbstractDAO {
 			id = result.getInt(0);
 			int tasktypeId = result.getInt(1);
 			String name = result.getString(2);
+			long created = result.getLong(3);
 			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(tasktypeId);
-			taskStage = new TaskStage(id, taskType, name);
+			taskStage = new TaskStage(id, taskType, name, created);
 		}
 		this.closeConnection();
 		return taskStage;
@@ -47,8 +48,9 @@ public class TaskStageDAO extends AbstractDAO {
 			int id = result.getInt(0);
 			int taskTypeId = result.getInt(1);
 			name = result.getString(2);
+			long created = result.getLong(3);
 			taskType = TaskTypeDAO.getInstance().getTaskType(taskTypeId);
-			taskStage = new TaskStage(id, taskType, name);
+			taskStage = new TaskStage(id, taskType, name, created);
 		}
 		this.closeConnection();
 		return taskStage;

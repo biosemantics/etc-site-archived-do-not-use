@@ -23,7 +23,8 @@ public class UserDAO extends AbstractDAO {
 			id = result.getInt(0);
 			String name = result.getString(1);
 			String password = result.getString(2);
-			user = new User(id, name, password);
+			long created = result.getLong(3);
+			user = new User(id, name, password, created);
 		}
 		this.closeConnection();
 		return user;
@@ -39,7 +40,8 @@ public class UserDAO extends AbstractDAO {
 			int id = result.getInt(0);
 			name = result.getString(1);
 			String password = result.getString(2);
-			user = new User(id, name, password);
+			long created = result.getLong(3);
+			user = new User(id, name, password, created);
 		}
 		this.closeConnection();
 		return user;

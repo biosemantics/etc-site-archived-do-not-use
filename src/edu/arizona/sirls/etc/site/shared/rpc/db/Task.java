@@ -14,16 +14,18 @@ public class Task implements Serializable  {
 	private long time;
 	private User user;
 	private int id;
+	private long created;
 	
 	public Task() { }
 
-	public Task(int id, User user, long time, TaskStage taskStage, String name, boolean resumable) {
+	public Task(int id, User user, long time, TaskStage taskStage, String name, boolean resumable, long created) {
 		this.id = id;
 		this.user = user;
 		this.time = time;
 		this.taskStage = taskStage;
 		this.name = name;
 		this.resumable = resumable;
+		this.created = created;
 	}
 
 	public boolean isResumable() {
@@ -72,6 +74,14 @@ public class Task implements Serializable  {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public long getCreated() {
+		return created;
+	}
+
+	public void setCreated(long created) {
+		this.created = created;
 	}
 	
 	

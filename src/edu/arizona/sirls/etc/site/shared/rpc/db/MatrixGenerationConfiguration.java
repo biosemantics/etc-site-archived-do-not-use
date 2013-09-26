@@ -14,16 +14,18 @@ public class MatrixGenerationConfiguration implements Serializable {
 	private int otoId;
 	private String output;
 	private Task task;
+	private long created;
 	
 	public MatrixGenerationConfiguration() { }
 	
-	public MatrixGenerationConfiguration(int id, String input, Glossary glossary, int otoId, String output, Task task) {
+	public MatrixGenerationConfiguration(int id, String input, Glossary glossary, int otoId, String output, Task task, long created) {
 		super();
 		this.id = id;
 		this.input = input;
 		this.glossary = glossary;
 		this.otoId = otoId;
 		this.task = task;
+		this.created = created;
 	}
 	public int getId() {
 		return id;
@@ -72,6 +74,13 @@ public class MatrixGenerationConfiguration implements Serializable {
 
 	public void setTask(Task task) {
 		this.task = task;
+	}
+	public long getCreated() {
+		return created;
+	}
+
+	public void setCreated(long created) {
+		this.created = created;
 	}
 	
 	

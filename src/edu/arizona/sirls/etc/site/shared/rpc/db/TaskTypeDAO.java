@@ -28,7 +28,8 @@ public class TaskTypeDAO extends AbstractDAO {
 		while(result.next()) {
 			id = result.getInt(0);
 			String name = result.getString(1);
-			taskType = new TaskType(id, edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.valueOf(name));
+			long created = result.getLong(2);
+			taskType = new TaskType(id, edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.valueOf(name), created);
 		}
 		this.closeConnection();
 		return taskType;
@@ -43,7 +44,8 @@ public class TaskTypeDAO extends AbstractDAO {
 		while(result.next()) {
 			int id = result.getInt(0);
 			name = result.getString(1);
-			taskType = new TaskType(id, edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.valueOf(name));
+			long created = result.getLong(2);
+			taskType = new TaskType(id, edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.valueOf(name), created);
 		}
 		this.closeConnection();
 		return taskType;
