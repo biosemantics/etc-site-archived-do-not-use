@@ -2,10 +2,12 @@ package edu.arizona.sirls.etc.site.client.event.matrixGeneration;
 
 import com.google.gwt.event.shared.GwtEvent;
 
+import edu.arizona.sirls.etc.site.client.HistoryState;
+import edu.arizona.sirls.etc.site.client.event.ETCSiteEvent;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 
-public class MatrixGenerationEvent extends GwtEvent<MatrixGenerationEventHandler> {
+public class MatrixGenerationEvent extends GwtEvent<MatrixGenerationEventHandler> implements ETCSiteEvent {
 
 	public static Type<MatrixGenerationEventHandler> TYPE = new Type<MatrixGenerationEventHandler>();
 	private MatrixGenerationConfiguration matrixGenerationConfiguration;
@@ -38,4 +40,18 @@ public class MatrixGenerationEvent extends GwtEvent<MatrixGenerationEventHandler
 		return this.matrixGenerationConfiguration != null;
 	}
 
+	@Override
+	public boolean requiresLogin() {
+		return true;
+	}
+
+	@Override
+	public HistoryState getHistoryState() {
+		return HistoryState.INPUT_MATRIX_GENERATION;
+	}
+
+	@Override
+	public GwtEvent<?> getGwtEvent() {
+		return this;
+	}
 }

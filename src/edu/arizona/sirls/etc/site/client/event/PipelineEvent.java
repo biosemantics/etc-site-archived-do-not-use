@@ -2,7 +2,9 @@ package edu.arizona.sirls.etc.site.client.event;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-public class PipelineEvent extends GwtEvent<PipelineEventHandler> {
+import edu.arizona.sirls.etc.site.client.HistoryState;
+
+public class PipelineEvent extends GwtEvent<PipelineEventHandler> implements ETCSiteEvent {
 	
 	public static Type<PipelineEventHandler> TYPE = new Type<PipelineEventHandler>();
 	
@@ -16,5 +18,21 @@ public class PipelineEvent extends GwtEvent<PipelineEventHandler> {
 	protected void dispatch(PipelineEventHandler handler) {
 		handler.onPipeline(this);
 	}
+
+	@Override
+	public boolean requiresLogin() {
+		return true;
+	}
+
+	@Override
+	public HistoryState getHistoryState() {
+		return HistoryState.PIPELINE;
+	}
+
+	@Override
+	public GwtEvent<?> getGwtEvent() {
+		return this;
+	}
+	
 
 }

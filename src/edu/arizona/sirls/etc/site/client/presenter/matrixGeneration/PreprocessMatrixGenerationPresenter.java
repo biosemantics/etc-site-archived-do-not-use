@@ -195,7 +195,7 @@ public class PreprocessMatrixGenerationPresenter {
 					@Override
 					public void onSuccess(List<PreprocessedDescription> result) {
 						if(result.isEmpty())
-							eventBus.fireEvent(new LearnMatrixGenerationEvent(matrixGenerationConfiguration));
+							eventBus.fireEvent(new LearnMatrixGenerationEvent());
 						else 
 							preprocessedDescriptions = result;
 						display.getTextArea().setText("");

@@ -2,10 +2,11 @@ package edu.arizona.sirls.etc.site.client.event;
 
 import com.google.gwt.event.shared.GwtEvent;
 
+import edu.arizona.sirls.etc.site.client.HistoryState;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TaxonomyComparisonConfiguration;
 
-public class TaxonomyComparisonEvent extends GwtEvent<TaxonomyComparisonEventHandler> {
+public class TaxonomyComparisonEvent extends GwtEvent<TaxonomyComparisonEventHandler> implements ETCSiteEvent {
 
 	public static Type<TaxonomyComparisonEventHandler> TYPE = new Type<TaxonomyComparisonEventHandler>();
 	
@@ -34,4 +35,18 @@ public class TaxonomyComparisonEvent extends GwtEvent<TaxonomyComparisonEventHan
 		handler.onTaxonomyComparison(this);
 	}
 
+	@Override
+	public boolean requiresLogin() {
+		return true;
+	}
+
+	@Override
+	public HistoryState getHistoryState() {
+		return HistoryState.TAXONOMY_COMPARISON;
+	}
+
+	@Override
+	public GwtEvent<?> getGwtEvent() {
+		return this;
+	}
 }

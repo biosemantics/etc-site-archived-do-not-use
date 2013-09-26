@@ -1,8 +1,7 @@
 package edu.arizona.sirls.etc.site.client;
 
 public enum HistoryState {
-	START, 
-	MATRIX_GENERATION, 
+	HOME, 
 	SETTINGS, 
 	HELP, 
 	FILE_MANAGER, 
@@ -15,5 +14,5 @@ public enum HistoryState {
 	PARSE_MATRIX_GENERATION, 
 	LEARN_MATRIX_GENERATION, 
 	PREPROCESS_MATRIX_GENERATION, 
-	INPUT_MATRIX_GENERATION
+	INPUT_MATRIX_GENERATION, PIPELINE
 }

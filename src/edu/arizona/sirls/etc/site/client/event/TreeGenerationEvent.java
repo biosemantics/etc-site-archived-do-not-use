@@ -2,10 +2,11 @@ package edu.arizona.sirls.etc.site.client.event;
 
 import com.google.gwt.event.shared.GwtEvent;
 
+import edu.arizona.sirls.etc.site.client.HistoryState;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TreeGenerationConfiguration;
 
-public class TreeGenerationEvent extends GwtEvent<TreeGenerationEventHandler> {
+public class TreeGenerationEvent extends GwtEvent<TreeGenerationEventHandler> implements ETCSiteEvent {
 
 	public static Type<TreeGenerationEventHandler> TYPE = new Type<TreeGenerationEventHandler>();
 	private TreeGenerationConfiguration treeGenerationConfiguration;
@@ -34,4 +35,18 @@ public class TreeGenerationEvent extends GwtEvent<TreeGenerationEventHandler> {
 		handler.onTreeGeneration(this);
 	}
 
+	@Override
+	public boolean requiresLogin() {
+		return true;
+	}
+
+	@Override
+	public HistoryState getHistoryState() {
+		return HistoryState.TREE_GENERATION;
+	}
+
+	@Override
+	public GwtEvent<?> getGwtEvent() {
+		return this;
+	}
 }

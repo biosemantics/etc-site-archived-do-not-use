@@ -2,7 +2,9 @@ package edu.arizona.sirls.etc.site.client.event;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-public class SettingsEvent extends GwtEvent<SettingsEventHandler> {
+import edu.arizona.sirls.etc.site.client.HistoryState;
+
+public class SettingsEvent extends GwtEvent<SettingsEventHandler> implements ETCSiteEvent {
 	
 	public static Type<SettingsEventHandler> TYPE = new Type<SettingsEventHandler>();
 	
@@ -15,5 +17,19 @@ public class SettingsEvent extends GwtEvent<SettingsEventHandler> {
 	protected void dispatch(SettingsEventHandler handler) {
 		handler.onSettings(this);
 	}
+
+	@Override
+	public boolean requiresLogin() {
+		return true;
+	}
+
+	@Override
+	public HistoryState getHistoryState() {
+		return HistoryState.SETTINGS;
+	}
 	
+	@Override
+	public GwtEvent<?> getGwtEvent() {
+		return this;
+	}
 }
