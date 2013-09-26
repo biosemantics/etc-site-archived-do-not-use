@@ -56,4 +56,25 @@ public class MatrixGenerationConfigurationDAO extends AbstractDAO {
 		this.closeConnection();
 		return result;
 	}
+
+	public MatrixGenerationConfiguration getMatrixGenerationConfigurationFromTask(int taskId) throws SQLException, ClassNotFoundException, IOException {
+		MatrixGenerationConfiguration matrixGenerationConfiguration = null;
+		this.openConnection();
+		PreparedStatement statement = this.executeSQL("SELECT * FROM matrixgenerationconfiguration WHERE task = " + taskId);
+		ResultSet result = statement.getResultSet();
+		
+		while(result.next()) {
+			int id = result.getInt(0);
+			String input = result.getString(1);
+			int glossaryId = result.getInt(2);
+			int oto = result.getInt(3);
+			String output = result.getString(4);
+			taskId = result.getInt(5);
+			Glossary glossary = GlossaryDAO.getInstance().getGlossary(glossaryId);
+			Task task = TaskDAO.getInstance().getTask(taskId);
+			matrixGenerationConfiguration = new MatrixGenerationConfiguration(id, input, glossary, oto, output, task);
+		}
+		this.closeConnection();
+		return matrixGenerationConfiguration;
+	}
 }

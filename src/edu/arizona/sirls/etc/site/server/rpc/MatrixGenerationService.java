@@ -251,13 +251,32 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 
 	@Override
 	public MatrixGenerationConfiguration getLatestResumable(AuthenticationToken authenticationToken) {
-		// TODO Auto-generated method stub
+		if(authenticationService.isValidSession(authenticationToken).getResult()) {
+			try {
+				User user = UserDAO.getInstance().getUser(authenticationToken.getUsername());
+				List<Task> tasks = TaskDAO.getInstance().getUsersTasks(user.getId());
+				for(Task task : tasks) {
+					if(task.isResumable()) 
+						return MatrixGenerationConfigurationDAO.getInstance().getMatrixGenerationConfigurationFromTask(task.getId());
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
 		return null;
 	}
 
 	@Override
 	public MatrixGenerationConfiguration getMatrixGenerationConfiguration(AuthenticationToken authenticationToken, Task task) {
-		// TODO Auto-generated method stub
+		if(authenticationService.isValidSession(authenticationToken).getResult()) {
+			try {
+				MatrixGenerationConfiguration configuration = 
+						MatrixGenerationConfigurationDAO.getInstance().getMatrixGenerationConfigurationFromTask(task.getId());
+				return configuration;
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
 		return null;
 	}
 	
