@@ -1,7 +1,13 @@
 package edu.arizona.sirls.etc.site.shared.rpc.db;
 
-public class Glossary {
+import java.io.Serializable;
 
+public class Glossary implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8204689349599367413L;
 	private int id;
 	private String name;
 	

@@ -1,7 +1,13 @@
 package edu.arizona.sirls.etc.site.shared.rpc.db;
 
-public class TaskStage {
+import java.io.Serializable;
 
+public class TaskStage implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7915389383513784433L;
 	private int id;
 	private TaskType taskType;
 	private String name;

@@ -1,7 +1,13 @@
 package edu.arizona.sirls.etc.site.shared.rpc.db;
 
-public class User {
+import java.io.Serializable;
 
+public class User implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3593412522402966872L;
 	private int id;
 	private String name;
 	private String password;

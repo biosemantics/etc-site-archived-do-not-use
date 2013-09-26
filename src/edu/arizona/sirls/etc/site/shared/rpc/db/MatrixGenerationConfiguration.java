@@ -1,7 +1,13 @@
 package edu.arizona.sirls.etc.site.shared.rpc.db;
 
-public class MatrixGenerationConfiguration {
+import java.io.Serializable;
 
+public class MatrixGenerationConfiguration implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2388969377041543292L;
 	private int id;
 	private String input;
 	private Glossary glossary;
