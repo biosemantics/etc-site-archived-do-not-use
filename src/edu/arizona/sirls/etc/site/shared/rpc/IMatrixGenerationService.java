@@ -10,6 +10,7 @@ import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.LearnInvocation;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.ParseInvocation;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.PreprocessedDescription;
 
 @RemoteServiceRelativePath("matrixGeneration")
@@ -24,7 +25,7 @@ public interface IMatrixGenerationService extends RemoteService {
 
 	public String review(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration);
 	
-	public String parse(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration);
+	public ParseInvocation parse(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration);
 	
 	public boolean output(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration);
 

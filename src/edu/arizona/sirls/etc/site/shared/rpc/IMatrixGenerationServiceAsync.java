@@ -8,6 +8,7 @@ import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.LearnInvocation;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.ParseInvocation;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.PreprocessedDescription;
 
 public interface IMatrixGenerationServiceAsync {
@@ -21,7 +22,7 @@ public interface IMatrixGenerationServiceAsync {
 	
 	public void review(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration, AsyncCallback<String> asyncCallback);
 
-	public void parse(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration, AsyncCallback<String> callback);
+	public void parse(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration, AsyncCallback<ParseInvocation> callback);
 	
 	public void output(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration, AsyncCallback<Boolean> callback);
 

@@ -257,25 +257,26 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 			private void start(MatrixGenerationEvent matrixGenerationEvent) {
 				if (matrixGenerationEvent.hasMatrixGenerationConfiguration()) {
 					MatrixGenerationConfiguration matrixGenerationConfiguration = matrixGenerationEvent.getMatrixGenerationConfiguration();
+					ConfigurationManager.getInstance().setMatrixGenerationConfiguration(matrixGenerationConfiguration);
 					TaskStageEnum stage = matrixGenerationConfiguration.getTask().getTaskStage().getTaskStageEnum();
 					switch (stage) {
 					case INPUT:
-						addToHistory(new InputMatrixGenerationEvent());
+						eventBus.fireEvent(new InputMatrixGenerationEvent());
 						break;
 					case PREPROCESS_TEXT:
-						addToHistory(new PreprocessMatrixGenerationEvent(matrixGenerationConfiguration));
+						eventBus.fireEvent(new PreprocessMatrixGenerationEvent(matrixGenerationConfiguration));
 						break;
 					case LEARN_TERMS:
-						addToHistory(new LearnMatrixGenerationEvent());
+						eventBus.fireEvent(new LearnMatrixGenerationEvent());
 						break;
 					case REVIEW_TERMS:
-						addToHistory(new ReviewMatrixGenerationEvent());
+						eventBus.fireEvent(new ReviewMatrixGenerationEvent());
 						break;
 					case PARSE_TEXT:
-						addToHistory(new ParseMatrixGenerationEvent());
+						eventBus.fireEvent(new ParseMatrixGenerationEvent());
 						break;
 					case OUTPUT:
-						addToHistory(new OutputMatrixGenerationEvent());
+						eventBus.fireEvent(new OutputMatrixGenerationEvent());
 						break;
 					}
 				} else {

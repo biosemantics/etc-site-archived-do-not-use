@@ -13,6 +13,7 @@ import edu.arizona.sirls.etc.site.client.event.matrixGeneration.OutputMatrixGene
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.ParseInvocation;
 
 public class ParseMatrixGenerationPresenter {
 
@@ -47,14 +48,14 @@ public class ParseMatrixGenerationPresenter {
 	public void go(final HasWidgets content, MatrixGenerationConfiguration matrixGenerationConfiguration) {
 		loadingPopup.start();
 		this.matrixGenerationConfiguration = matrixGenerationConfiguration;
-		matrixGenerationService.parse(Authentication.getInstance().getAuthenticationToken(), matrixGenerationConfiguration, new AsyncCallback<String>() {
+		matrixGenerationService.parse(Authentication.getInstance().getAuthenticationToken(), matrixGenerationConfiguration, new AsyncCallback<ParseInvocation>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
 				loadingPopup.stop();
 			}
 			@Override
-			public void onSuccess(String result) {		
+			public void onSuccess(ParseInvocation result) {		
 				content.clear();
 				content.add(display.asWidget());
 				loadingPopup.stop();

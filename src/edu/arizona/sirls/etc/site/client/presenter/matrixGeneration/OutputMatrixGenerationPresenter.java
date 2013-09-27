@@ -52,7 +52,6 @@ public class OutputMatrixGenerationPresenter {
 	public void go(final HasWidgets content, final MatrixGenerationConfiguration matrixGenerationConfiguration) {
 		loadingPopup.start();
 		this.matrixGenerationConfiguration = matrixGenerationConfiguration;
-		matrixGenerationConfiguration.setOutput(matrixGenerationConfiguration.getInput() + "_MGResult");
 		matrixGenerationService.output(Authentication.getInstance().getAuthenticationToken(), matrixGenerationConfiguration, new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
