@@ -2,6 +2,8 @@ package edu.arizona.sirls.etc.site.shared.rpc.db;
 
 import java.io.Serializable;
 
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
+
 public class TaskStage implements Serializable {
 
 	/**
@@ -10,16 +12,16 @@ public class TaskStage implements Serializable {
 	private static final long serialVersionUID = -7915389383513784433L;
 	private int id;
 	private TaskType taskType;
-	private String name;
+	private TaskStageEnum taskStageEnum;
 	private long created;
 
 	public TaskStage() { }
 	
-	public TaskStage(int id, TaskType taskType, String name, long created) {
+	public TaskStage(int id, TaskType taskType, TaskStageEnum taskStageEnum, long created) {
 		super();
 		this.id = id;
 		this.taskType = taskType;
-		this.name = name;
+		this.taskStageEnum = taskStageEnum;
 		this.created = created;
 	}
 	public int getId() {
@@ -34,11 +36,14 @@ public class TaskStage implements Serializable {
 	public void setTaskType(TaskType taskType) {
 		this.taskType = taskType;
 	}
-	public String getName() {
-		return name;
+
+
+	public TaskStageEnum getTaskStageEnum() {
+		return taskStageEnum;
 	}
-	public void setName(String name) {
-		this.name = name;
+
+	public void setTaskStageEnum(TaskStageEnum taskStageEnum) {
+		this.taskStageEnum = taskStageEnum;
 	}
 
 	public long getCreated() {

@@ -3,11 +3,15 @@ package edu.arizona.sirls.etc.site.client.presenter.matrixGeneration;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
+import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.event.matrixGeneration.OutputMatrixGenerationEvent;
+import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
+import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 
 public class ParseMatrixGenerationPresenter {
@@ -19,12 +23,15 @@ public class ParseMatrixGenerationPresenter {
 
 	private Display display;
 	private HandlerManager eventBus;
+	private IMatrixGenerationServiceAsync matrixGenerationService;
 	private MatrixGenerationConfiguration matrixGenerationConfiguration;
+	private LoadingPopup loadingPopup = new LoadingPopup();
 
 	public ParseMatrixGenerationPresenter(HandlerManager eventBus,
-			Display display) {
+			Display display, IMatrixGenerationServiceAsync matrixGenerationService) {
 		this.eventBus = eventBus;
 		this.display = display;
+		this.matrixGenerationService = matrixGenerationService;
 		bind();
 	}
 
@@ -37,10 +44,22 @@ public class ParseMatrixGenerationPresenter {
 		});
 	}
 
-	public void go(HasWidgets content, MatrixGenerationConfiguration matrixGenerationConfiguration) {
+	public void go(final HasWidgets content, MatrixGenerationConfiguration matrixGenerationConfiguration) {
+		loadingPopup.start();
 		this.matrixGenerationConfiguration = matrixGenerationConfiguration;
-		content.clear();
-		content.add(display.asWidget());
+		matrixGenerationService.parse(Authentication.getInstance().getAuthenticationToken(), matrixGenerationConfiguration, new AsyncCallback<String>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+				loadingPopup.stop();
+			}
+			@Override
+			public void onSuccess(String result) {		
+				content.clear();
+				content.add(display.asWidget());
+				loadingPopup.stop();
+			}
+		});
 	}
 
 }

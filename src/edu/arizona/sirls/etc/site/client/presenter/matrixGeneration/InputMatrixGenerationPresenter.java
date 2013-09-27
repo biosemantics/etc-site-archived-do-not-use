@@ -1,10 +1,8 @@
 package edu.arizona.sirls.etc.site.client.presenter.matrixGeneration;
 
-import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.jsonp.client.JsonpRequestBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
@@ -18,7 +16,6 @@ import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
-import edu.arizona.sirls.etc.site.client.ConfigurationManager;
 import edu.arizona.sirls.etc.site.client.event.matrixGeneration.PreprocessMatrixGenerationEvent;
 import edu.arizona.sirls.etc.site.client.presenter.MessagePresenter;
 import edu.arizona.sirls.etc.site.client.presenter.fileManager.ManagableFileTreePresenter;
@@ -35,7 +32,7 @@ public class InputMatrixGenerationPresenter /*implements IFileSelectClickHandler
 	
 	public interface Display {
 		Button getNextButton();
-		TextBox getNameTextBox();
+		//TextBox getNameTextBox();
 		Label getTaxonDescriptionFileNameLabel();
 		Anchor getFormatRequirementsAnchor();
 		FocusWidget getTaxonDescriptionFileButton();
@@ -107,7 +104,9 @@ public class InputMatrixGenerationPresenter /*implements IFileSelectClickHandler
 			@Override
 			public void onClick(ClickEvent event) { 
 				matrixGenerationService.start(Authentication.getInstance().getAuthenticationToken(), 
-						display.getNameTextBox().getText(), taxonDescriptionFile.toString(), 
+						//display.getNameTextBox().getText(), 
+						taxonDescriptionFile.toString(),
+						taxonDescriptionFile.toString(), 
 						display.getGlossaryListBox().getItemText(display.getGlossaryListBox().getSelectedIndex()),
 						new AsyncCallback<MatrixGenerationConfiguration>() {
 							@Override

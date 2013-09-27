@@ -68,15 +68,15 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			String input, String glossaryName) {
 		try {
 			edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum taskType = edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION;
-			TaskType dbTaskType = TaskTypeDAO.getInstance().getTaskType(taskType.toString());
-			TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(dbTaskType, TaskStageEnum.INPUT.toString());
+			TaskType dbTaskType = TaskTypeDAO.getInstance().getTaskType(taskType);
+			TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(dbTaskType, TaskStageEnum.INPUT);
 			User user = UserDAO.getInstance().getUser(authenticationToken.getUsername());
 			Task task = new Task();
 			task.setName(taskName);
 			task.setResumable(true);
 			task.setUser(user);
 			task.setTaskStage(taskStage);
-			taskService.addTask(authenticationToken, task);
+			task = taskService.addTask(authenticationToken, task);
 			
 			Glossary glossary = GlossaryDAO.getInstance().getGlossary(glossaryName);
 			MatrixGenerationConfiguration matrixGenerationConfiguration = new MatrixGenerationConfiguration();
@@ -99,9 +99,11 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		
 		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
 			try {
-				TaskDAO.getInstance().updateTask(matrixGenerationConfiguration.getTask().getId(), 
-						edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION, 
-						TaskStageEnum.PREPROCESS_TEXT);
+				Task task = matrixGenerationConfiguration.getTask();
+				TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
+				TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.PREPROCESS_TEXT);
+				task.setTaskStage(taskStage);
+				TaskDAO.getInstance().updateTask(task);
 				//do preprocessing here, return result immediately or always only return an invocation
 				//and make user come back when ready?
 				String inputDirectory = matrixGenerationConfiguration.getInput();
@@ -131,9 +133,13 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	public LearnInvocation learn(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration) {
 		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
 			try {
-				TaskDAO.getInstance().updateTask(matrixGenerationConfiguration.getTask().getId(), 
-						edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION, 
-						TaskStageEnum.LEARN_TERMS);
+				Task task = matrixGenerationConfiguration.getTask();
+				TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
+				TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.LEARN_TERMS);
+				task.setTaskStage(taskStage);
+				TaskDAO.getInstance().updateTask(task);
+				matrixGenerationConfiguration.setOtoId(54);
+				MatrixGenerationConfigurationDAO.getInstance().updateMatrixGenerationConfiguration(matrixGenerationConfiguration);
 				return new LearnInvocation(5989, 23212);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -146,9 +152,11 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	public String review(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration) {
 		if(authenticationService.isValidSession(authenticationToken).getResult()) {
 			try {
-				TaskDAO.getInstance().updateTask(matrixGenerationConfiguration.getTask().getId(), 
-						edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION, 
-						TaskStageEnum.REVIEW_TERMS);
+				Task task = matrixGenerationConfiguration.getTask();
+				TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
+				TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.REVIEW_TERMS);
+				task.setTaskStage(taskStage);
+				TaskDAO.getInstance().updateTask(task);
 				MatrixGenerationConfiguration configuration = 
 						MatrixGenerationConfigurationDAO.getInstance().getMatrixGenerationConfiguration(
 								matrixGenerationConfiguration.getId());
@@ -165,9 +173,11 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	public String parse(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration) {
 		if(authenticationService.isValidSession(authenticationToken).getResult()) {
 			try {
-				TaskDAO.getInstance().updateTask(matrixGenerationConfiguration.getTask().getId(), 
-						edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION, 
-						TaskStageEnum.PARSE_TEXT);
+				Task task = matrixGenerationConfiguration.getTask();
+				TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
+				TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.PARSE_TEXT);
+				task.setTaskStage(taskStage);
+				TaskDAO.getInstance().updateTask(task);
 				return "";
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -181,9 +191,11 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		boolean result = false;
 		if(authenticationService.isValidSession(authenticationToken).getResult()) {
 			try {
-				TaskDAO.getInstance().updateTask(matrixGenerationConfiguration.getTask().getId(), 
-						edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION, 
-						TaskStageEnum.OUTPUT);
+				Task task = matrixGenerationConfiguration.getTask();
+				TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
+				TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.OUTPUT);
+				task.setTaskStage(taskStage);
+				TaskDAO.getInstance().updateTask(task);
 
 				// TODO: create a directory parallel to input directory with name "input dir name" + _MGResult.. with result files inside
 				//result = fileService.createFile(authenticationToken, matrixGenerationJob..getOutputFile());

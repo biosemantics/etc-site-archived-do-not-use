@@ -18,7 +18,7 @@ public interface ITaskService extends RemoteService {
 	
 	public List<Task> getSharedTasks(AuthenticationToken authenticationToken);
 	
-	public void addTask(AuthenticationToken authenticationToken, Task task);
+	public Task addTask(AuthenticationToken authenticationToken, Task task);
 	
 	//public Task getLatestResumableTask(AuthenticationToken authenticationToken, TaskTypeEnum taskType);
 	

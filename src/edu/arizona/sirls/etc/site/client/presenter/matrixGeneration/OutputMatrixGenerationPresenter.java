@@ -3,12 +3,15 @@ package edu.arizona.sirls.etc.site.client.presenter.matrixGeneration;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
+import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.event.FileManagerEvent;
+import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
@@ -26,6 +29,7 @@ public class OutputMatrixGenerationPresenter {
 	private IFileServiceAsync fileService;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
 	private MatrixGenerationConfiguration matrixGenerationConfiguration;
+	private LoadingPopup loadingPopup = new LoadingPopup();
 	
 	public OutputMatrixGenerationPresenter(HandlerManager eventBus,
 			Display display, IFileServiceAsync fileService, IMatrixGenerationServiceAsync matrixGenerationService) {
@@ -45,12 +49,24 @@ public class OutputMatrixGenerationPresenter {
 		});
 	}
 
-	public void go(HasWidgets content, MatrixGenerationConfiguration matrixGenerationConfiguration) {
+	public void go(final HasWidgets content, final MatrixGenerationConfiguration matrixGenerationConfiguration) {
+		loadingPopup.start();
 		this.matrixGenerationConfiguration = matrixGenerationConfiguration;
-		matrixGenerationConfiguration.setOutputFile(matrixGenerationConfiguration.getInput() + "_MGResult");
-		display.getOutputLabel().setText(matrixGenerationConfiguration.getOutputFile());
-		content.clear();
-		content.add(display.asWidget());
+		matrixGenerationConfiguration.setOutput(matrixGenerationConfiguration.getInput() + "_MGResult");
+		matrixGenerationService.output(Authentication.getInstance().getAuthenticationToken(), matrixGenerationConfiguration, new AsyncCallback<Boolean>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+				loadingPopup.stop();
+			}
+			@Override
+			public void onSuccess(Boolean result) {
+				display.getOutputLabel().setText(matrixGenerationConfiguration.getOutput());
+				content.clear();
+				content.add(display.asWidget());
+				loadingPopup.stop();
+			}
+		});
 	}
 
 }

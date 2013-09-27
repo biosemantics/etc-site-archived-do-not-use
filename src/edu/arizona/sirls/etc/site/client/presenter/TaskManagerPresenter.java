@@ -68,10 +68,12 @@ public class TaskManagerPresenter {
 					
 					for(int i=1; i<=result.size(); i++) { 
 						final Task task = result.get(i-1);
-						Image image = new Image("images/Failure.gif");
+						Image cancelImage = new Image("images/revoke.jpg");
+						cancelImage.setSize("15px", "15px");
 						if(task.isResumable()) {
-							image = new Image("images/Success.gif");
-							image.addClickHandler(new ClickHandler() {
+							Image resumeImage = new Image("images/Success.gif");
+							resumeImage.setSize("15px", "15px");
+							resumeImage.addClickHandler(new ClickHandler() {
 								@Override
 								public void onClick(ClickEvent event) {
 									switch(task.getTaskStage().getTaskType().getTaskTypeEnum()) {
@@ -130,16 +132,16 @@ public class TaskManagerPresenter {
 									}
 								}
 							});
+							display.getYourTasksTable().setWidget(i, 4, resumeImage);
 						}
 						
 						Date date = new Date();
 						date.setTime(task.getCreated());
-						DateTimeFormat formatter = DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_MEDIUM);
-						display.getYourTasksTable().setText(i, 0, formatter.format(date));
+						display.getYourTasksTable().setText(i, 0, dateTimeFormat.format(date));
 						display.getYourTasksTable().setText(i, 1, task.getTaskStage().getTaskType().getTaskTypeEnum().displayName());
-						display.getYourTasksTable().setText(i, 2, task.getTaskStage().getName());
+						display.getYourTasksTable().setText(i, 2, task.getTaskStage().getTaskStageEnum().displayName());
 						display.getYourTasksTable().setText(i, 3, task.getName());
-						display.getYourTasksTable().setWidget(i, 4, image);
+						display.getYourTasksTable().setWidget(i, 5, cancelImage);
 					}
 				}
 				@Override
@@ -154,10 +156,12 @@ public class TaskManagerPresenter {
 					
 					for(int i=1; i<=result.size(); i++) { 
 						final Task task = result.get(i-1);
-						Image image = new Image("images/Failure.gif");
+						Image cancelImage = new Image("images/Failure.gif");
+						cancelImage.setSize("15px", "15px");
 						if(task.isResumable()) {
-							image = new Image("images/Success.gif");
-							image.addClickHandler(new ClickHandler() {
+							Image resumeImage = new Image("images/Success.gif");
+							resumeImage.setSize("15px", "15px");
+							resumeImage.addClickHandler(new ClickHandler() {
 								@Override
 								public void onClick(ClickEvent event) {
 									switch(task.getTaskStage().getTaskType().getTaskTypeEnum()) {
@@ -216,15 +220,15 @@ public class TaskManagerPresenter {
 									}
 								}
 							});
+							display.getSharedTasksTable().setWidget(i, 4, resumeImage);
 						}
 						Date date = new Date();
 						date.setTime(task.getCreated());
-						DateTimeFormat formatter = DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_MEDIUM);
-						display.getYourTasksTable().setText(i, 0, formatter.format(date));
+						display.getYourTasksTable().setText(i, 0, dateTimeFormat.format(date));
 						display.getSharedTasksTable().setText(i, 1, task.getTaskStage().getTaskType().getTaskTypeEnum().displayName());
-						display.getSharedTasksTable().setText(i, 2, task.getTaskStage().getName());
+						display.getSharedTasksTable().setText(i, 2, task.getTaskStage().getTaskStageEnum().displayName());
 						display.getSharedTasksTable().setText(i, 3, task.getName());
-						display.getSharedTasksTable().setWidget(i, 4, image);
+						display.getSharedTasksTable().setWidget(i, 5, cancelImage);
 					}
 				}
 	

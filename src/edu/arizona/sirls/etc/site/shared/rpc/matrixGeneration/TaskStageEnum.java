@@ -18,9 +18,4 @@ public enum TaskStageEnum {
     public String displayName() { 
     	return displayName; 
     }
-
-    @Override 
-    public String toString() { 
-    	return displayName; 
-    }
 }

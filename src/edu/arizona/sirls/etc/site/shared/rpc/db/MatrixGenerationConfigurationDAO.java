@@ -44,8 +44,8 @@ public class MatrixGenerationConfigurationDAO extends AbstractDAO {
 	public MatrixGenerationConfiguration addMatrixGenerationConfiguration(MatrixGenerationConfiguration matrixGenerationConfiguration) throws SQLException, ClassNotFoundException, IOException {
 		MatrixGenerationConfiguration result = null;
 		this.openConnection();
-		PreparedStatement statement = this.executeSQL("INSERT INTO matrixgenerationconfiguration " +
-				"('input', 'glossary', 'oto', 'output', 'task') VALUES ('" + matrixGenerationConfiguration.getInput() + 
+		PreparedStatement statement = this.executeSQL("INSERT INTO `matrixgenerationconfiguration` " +
+				"(`input`, `glossary`, `oto`, `output`, `task`) VALUES ('" + matrixGenerationConfiguration.getInput() + 
 				"', " + matrixGenerationConfiguration.getGlossary().getId() + 
 				", " + matrixGenerationConfiguration.getOtoId() + 
 				", '" + matrixGenerationConfiguration.getOutput() + "'" +
@@ -78,5 +78,18 @@ public class MatrixGenerationConfigurationDAO extends AbstractDAO {
 		}
 		this.closeConnection();
 		return matrixGenerationConfiguration;
+	}
+
+	public void updateMatrixGenerationConfiguration(MatrixGenerationConfiguration matrixGenerationConfiguration) throws SQLException {
+		this.openConnection();
+		int id = matrixGenerationConfiguration.getId();
+		int glossaryId = matrixGenerationConfiguration.getGlossary().getId();
+		String input = matrixGenerationConfiguration.getInput();
+		String output = matrixGenerationConfiguration.getOutput();
+		int taskId = matrixGenerationConfiguration.getTask().getId();
+		int otoId = matrixGenerationConfiguration.getOtoId();
+		this.executeSQL("UPDATE matrixgenerationconfiguration SET glossary = " + glossaryId + ", input = '" + input + "', " +
+				"output = '" + output + "', task = " + taskId + ", oto = " + otoId +" WHERE id = " + id);
+		this.closeConnection();
 	}
 }

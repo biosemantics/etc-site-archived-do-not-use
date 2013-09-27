@@ -49,14 +49,16 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	}
 
 	@Override
-	public void addTask(AuthenticationToken authenticationToken, Task task) {
+	public Task addTask(AuthenticationToken authenticationToken, Task task) {
+		Task result = null;
 		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
 			try {
-				task = TaskDAO.getInstance().addTask(task);
+				result = TaskDAO.getInstance().addTask(task);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+		return result;
 	}
 	
 

@@ -76,7 +76,7 @@ public class TaskDAO extends AbstractDAO {
 	public Task addTask(Task task) throws SQLException, ClassNotFoundException, IOException {
 		Task result = null;
 		this.openConnection();
-		PreparedStatement statement =  this.executeSQL("INSERT INTO tasks ('user', 'taskstage', 'name', 'resumable') VALUES (" + task.getUser().getId() + 
+		PreparedStatement statement =  this.executeSQL("INSERT INTO `tasks` (`user`, `taskstage`, `name`, `resumable`) VALUES (" + task.getUser().getId() + 
 				", " + task.getTaskStage().getId() + 
 				", '" + task.getName() + "'" +
 				", " + task.isResumable() + ")");
@@ -88,17 +88,13 @@ public class TaskDAO extends AbstractDAO {
 		return result;
 	}
 
-	public void updateTask(Task task) throws ClassNotFoundException, SQLException, IOException {
+	public void updateTask(Task task) throws SQLException, ClassNotFoundException, IOException {
 		this.openConnection();
-		this.executeSQL("UPDATE tasks SET task.stage = " + task.getTaskStage().getId() + " WHERE id = " + task.getId());
-		this.closeConnection();
-	}
-
-	public void updateTask(int id, edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum taskType, TaskStageEnum step) throws SQLException, ClassNotFoundException, IOException {
-		this.openConnection();
-		TaskType dbTaskType = TaskTypeDAO.getInstance().getTaskType(taskType.toString());
-		TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(dbTaskType, step.toString());
-		this.executeSQL("UPDATE tasks SET task.stage = " + taskStage.getId() + " WHERE id = " + id);
+		int id = task.getId();
+		String name = task.getName();
+		int taskStageId = task.getTaskStage().getId();
+		int userId = task.getUser().getId();
+		this.executeSQL("UPDATE tasks SET name = '" + name + "', taskstage=" + taskStageId + ", user=" + userId + " WHERE id = " + id);
 		this.closeConnection();
 	}
 

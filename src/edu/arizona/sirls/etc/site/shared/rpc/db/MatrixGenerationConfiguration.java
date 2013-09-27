@@ -52,14 +52,6 @@ public class MatrixGenerationConfiguration implements Serializable {
 		this.otoId = otoId;
 	}
 
-	public void setOutputFile(String output) {
-		this.output = output;
-	}
-
-	public String getOutputFile() {
-		return output;
-	}
-
 	public String getOutput() {
 		return output;
 	}

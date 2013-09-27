@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.event.matrixGeneration.ReviewMatrixGenerationEvent;
+import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.LearnInvocation;
@@ -27,6 +28,7 @@ public class LearnMatrixGenerationPresenter {
 	private Display display;
 	private MatrixGenerationConfiguration matrixGenerationConfiguration;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
+	private LoadingPopup loadingPopup = new LoadingPopup();
 
 	public LearnMatrixGenerationPresenter(HandlerManager eventBus,
 			final Display display, IMatrixGenerationServiceAsync matrixGenerationService) {
@@ -45,20 +47,23 @@ public class LearnMatrixGenerationPresenter {
 		}); 
 	}
 
-	public void go(HasWidgets content, MatrixGenerationConfiguration matrixGenerationConfiguration) {
+	public void go(final HasWidgets content, MatrixGenerationConfiguration matrixGenerationConfiguration) {
+		loadingPopup.start();
 		this.matrixGenerationConfiguration = matrixGenerationConfiguration;
 		matrixGenerationService.learn(Authentication.getInstance().getAuthenticationToken(),
 				matrixGenerationConfiguration, new AsyncCallback<LearnInvocation>() { 
 			public void onSuccess(LearnInvocation result) {
 				display.setWords(result.getWords());
 				display.setSentences(result.getSentences());
+				content.clear();
+				content.add(display.asWidget());
+				loadingPopup.stop();
 			}
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
+				loadingPopup.stop();
 			}
 		});
-		content.clear();
-		content.add(display.asWidget());
 	}
 
 }

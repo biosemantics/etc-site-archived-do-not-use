@@ -257,7 +257,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 			private void start(MatrixGenerationEvent matrixGenerationEvent) {
 				if (matrixGenerationEvent.hasMatrixGenerationConfiguration()) {
 					MatrixGenerationConfiguration matrixGenerationConfiguration = matrixGenerationEvent.getMatrixGenerationConfiguration();
-					TaskStageEnum stage = TaskStageEnum.valueOf(matrixGenerationConfiguration.getTask().getTaskStage().getName());
+					TaskStageEnum stage = matrixGenerationConfiguration.getTask().getTaskStage().getTaskStageEnum();
 					switch (stage) {
 					case INPUT:
 						addToHistory(new InputMatrixGenerationEvent());
@@ -609,7 +609,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 					public void onSuccess() {
 						if (parseMatrixGenerationPresenter == null) {
 							parseMatrixGenerationPresenter = new ParseMatrixGenerationPresenter(
-									eventBus, new ParseMatrixGenerationView());
+									eventBus, new ParseMatrixGenerationView(), matrixGenerationService);
 						}
 						parseMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
 					}

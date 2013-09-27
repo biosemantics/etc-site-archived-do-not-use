@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum;
+
 public class TaskTypeDAO extends AbstractDAO {
 
 	private static TaskTypeDAO instance;
@@ -35,17 +37,17 @@ public class TaskTypeDAO extends AbstractDAO {
 		return taskType;
 	}
 	
-	public TaskType getTaskType(String name) throws SQLException {		
+	public TaskType getTaskType(TaskTypeEnum taskTypeEnum) throws SQLException {		
 		TaskType taskType = null;
 		this.openConnection();
-		PreparedStatement statement = this.executeSQL("SELECT * FROM tasktypes WHERE name = '" + name + "'");
+		PreparedStatement statement = this.executeSQL("SELECT * FROM tasktypes WHERE name = '" + taskTypeEnum.toString() + "'");
 		ResultSet result = statement.getResultSet();
 		
 		while(result.next()) {
 			int id = result.getInt(1);
-			name = result.getString(2);
+			taskTypeEnum = TaskTypeEnum.valueOf(result.getString(2));
 			long created = result.getLong(3);
-			taskType = new TaskType(id, edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.valueOf(name), created);
+			taskType = new TaskType(id, taskTypeEnum, created);
 		}
 		this.closeConnection();
 		return taskType;

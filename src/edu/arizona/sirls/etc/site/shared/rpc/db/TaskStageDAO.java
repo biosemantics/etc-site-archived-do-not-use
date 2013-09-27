@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
+
 public class TaskStageDAO extends AbstractDAO {
 
 	private TaskStageDAO() throws IOException, ClassNotFoundException {
@@ -28,29 +30,29 @@ public class TaskStageDAO extends AbstractDAO {
 		while(result.next()) {
 			id = result.getInt(1);
 			int tasktypeId = result.getInt(2);
-			String name = result.getString(3);
+			TaskStageEnum taskStageEnum = TaskStageEnum.valueOf(result.getString(3));
 			long created = result.getLong(4);
 			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(tasktypeId);
-			taskStage = new TaskStage(id, taskType, name, created);
+			taskStage = new TaskStage(id, taskType, taskStageEnum, created);
 		}
 		this.closeConnection();
 		return taskStage;
 	}
 
-	public TaskStage getTaskStage(TaskType taskType, String name) throws SQLException, ClassNotFoundException, IOException {		
+	public TaskStage getTaskStage(TaskType taskType, TaskStageEnum taskStageEnum) throws SQLException, ClassNotFoundException, IOException {		
 		TaskStage taskStage = null;
 		this.openConnection();
-		PreparedStatement statement = this.executeSQL("SELECT * FROM taskstages WHERE tasktype = " + taskType.getId() + " " +
-				"name = '" + name + "'");
+		PreparedStatement statement = this.executeSQL("SELECT * FROM taskstages WHERE tasktype = " + taskType.getId() + " AND " +
+				"name = '" + taskStageEnum.toString() + "'");
 		ResultSet result = statement.getResultSet();
 		
 		while(result.next()) {
 			int id = result.getInt(1);
 			int taskTypeId = result.getInt(2);
-			name = result.getString(3);
+			taskStageEnum = TaskStageEnum.valueOf(result.getString(3));
 			long created = result.getLong(4);
 			taskType = TaskTypeDAO.getInstance().getTaskType(taskTypeId);
-			taskStage = new TaskStage(id, taskType, name, created);
+			taskStage = new TaskStage(id, taskType, taskStageEnum, created);
 		}
 		this.closeConnection();
 		return taskStage;

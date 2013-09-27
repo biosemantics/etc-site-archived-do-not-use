@@ -183,6 +183,7 @@ public class PreprocessMatrixGenerationPresenter {
 	}
 	
 	public void go(final HasWidgets content, MatrixGenerationConfiguration matrixGenerationConfiguration) {
+		
 		loadingPopup.start();
 		matrixGenerationService.preprocess(Authentication.getInstance().getAuthenticationToken(), 
 				matrixGenerationConfiguration, new AsyncCallback<List<PreprocessedDescription>>() {
@@ -194,9 +195,11 @@ public class PreprocessMatrixGenerationPresenter {
 					}
 					@Override
 					public void onSuccess(List<PreprocessedDescription> result) {
-						if(result.isEmpty())
+						if(result.isEmpty()) {
+							loadingPopup.stop();
 							eventBus.fireEvent(new LearnMatrixGenerationEvent());
-						else 
+							return;
+						} else 
 							preprocessedDescriptions = result;
 						display.getTextArea().setText("");
 						display.getBracketCountsHTML().setHTML("");
