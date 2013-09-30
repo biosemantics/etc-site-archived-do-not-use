@@ -42,9 +42,14 @@ public class ReviewMatrixGenerationPresenter {
 		display.getNextButton().addClickHandler(new ClickHandler() { 
 			@Override
 			public void onClick(ClickEvent event) { 
-				eventBus.fireEvent(new ParseMatrixGenerationEvent());
+				nextStep();
 			}
 		});
+		initIFrameMessaging();
+	}
+	
+	public void nextStep() {
+		eventBus.fireEvent(new ParseMatrixGenerationEvent());
 	}
 
 	public void go(final HasWidgets content, MatrixGenerationConfiguration matrixGenerationConfiguration) {
@@ -65,5 +70,17 @@ public class ReviewMatrixGenerationPresenter {
 			}
 		});
 	}
+	
+	public native void initIFrameMessaging() /*-{
+		var thisPresenterReference = this;
+		$wnd.onmessage = function(e) {
+		    if (e.data == 'done') {
+		    	//if simply this is used here, the reference in javascript will then be the $wnd object rather than the java 'this'. 
+		    	//Therefore the reference is passed above already
+		        thisPresenterReference.@edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.ReviewMatrixGenerationPresenter::nextStep()();
+		    }
+		}
+	}-*/;
+
 
 }

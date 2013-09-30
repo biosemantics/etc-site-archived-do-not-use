@@ -32,7 +32,7 @@ public class InputMatrixGenerationPresenter /*implements IFileSelectClickHandler
 	
 	public interface Display {
 		Button getNextButton();
-		//TextBox getNameTextBox();
+		TextBox getNameTextBox();
 		Label getTaxonDescriptionFileNameLabel();
 		Anchor getFormatRequirementsAnchor();
 		FocusWidget getTaxonDescriptionFileButton();
@@ -104,8 +104,7 @@ public class InputMatrixGenerationPresenter /*implements IFileSelectClickHandler
 			@Override
 			public void onClick(ClickEvent event) { 
 				matrixGenerationService.start(Authentication.getInstance().getAuthenticationToken(), 
-						//display.getNameTextBox().getText(), 
-						taxonDescriptionFile.toString(),
+						taxonDescriptionFile.toString() + "_" + display.getNameTextBox().getText(), 
 						taxonDescriptionFile.toString(), 
 						display.getGlossaryListBox().getItemText(display.getGlossaryListBox().getSelectedIndex()),
 						new AsyncCallback<MatrixGenerationConfiguration>() {

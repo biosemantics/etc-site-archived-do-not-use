@@ -12,15 +12,17 @@ public class Task implements Serializable  {
 	private User user;
 	private int id;
 	private Date created;
+	private boolean completed;
 	
 	public Task() { }
 
-	public Task(int id, User user, TaskStage taskStage, String name, boolean resumable, Date created) {
+	public Task(int id, User user, TaskStage taskStage, String name, boolean resumable, boolean completed, Date created) {
 		this.id = id;
 		this.user = user;
 		this.taskStage = taskStage;
 		this.name = name;
 		this.resumable = resumable;
+		this.completed = completed;
 		this.created = created;
 	}
 
@@ -71,9 +73,14 @@ public class Task implements Serializable  {
 	public void setCreated(Date created) {
 		this.created = created;
 	}
-	
-	
 
+	public boolean isCompleted() {
+		return completed;
+	}
+
+	public void setCompleted(boolean completed) {
+		this.completed = completed;
+	}
 	
 		
 }

@@ -3,46 +3,39 @@ package edu.arizona.sirls.etc.site.client.view;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.HTMLTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.StackLayoutPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.dom.client.Style;
 
 import edu.arizona.sirls.etc.site.client.presenter.TaskManagerPresenter;
 
 public class TaskManagerView extends Composite implements TaskManagerPresenter.Display {
 
 	private FlexTable yourTasksTable;
-	private FlexTable sharedTasksTable;
+	//private FlexTable sharedTasksTable;
+	private FlexTable historyTable;
 	
 	public TaskManagerView() {
 		HTMLPanel htmlPanel = new HTMLPanel("<div class='content900pxCentered'>" +
 				"<div id='taskManagerContent'></div></div>");
 		
-		this.yourTasksTable = new FlexTable();
-		yourTasksTable.setStyleName("table");
-		DOM.setElementAttribute(yourTasksTable.getElement(), "id", "yourTasksTable");
-		yourTasksTable.setTitle("Your tasks");
-		Label createdLabel = new Label("Created");
-		createdLabel.setStyleName("tableHeader");
-		Label taskTypeLabel = new Label("Task Type");
-		taskTypeLabel.setStyleName("tableHeader");
-		Label progressLabel = new Label("Progress");
-		progressLabel.setStyleName("tableHeader");
-		Label nameLabel = new Label("Name");
-		nameLabel.setStyleName("tableHeader");
-		Label resumeLabel = new Label("Resume");
-		resumeLabel.setStyleName("tableHeader");
-		Label cancelLabel = new Label("Cancel");
-		cancelLabel.setStyleName("tableHeader");
+		VerticalPanel verticalPanel = new VerticalPanel();
 		
-		yourTasksTable.setWidget(0,  0, createdLabel);
-		yourTasksTable.setWidget(0,  1, taskTypeLabel);
-		yourTasksTable.setWidget(0,  2, progressLabel);
-		yourTasksTable.setWidget(0,  3, nameLabel);
-		yourTasksTable.setWidget(0,  4, resumeLabel);
-		yourTasksTable.setWidget(0,  5, cancelLabel);
+		VerticalPanel yourTasksPanel = new VerticalPanel();
+		yourTasksPanel.add(new Label("Your tasks"));
+		VerticalPanel historyPanel = new VerticalPanel();
+		historyPanel.add(new Label("History"));
+		this.yourTasksTable = createYourTasksTable();
+		this.historyTable = createHistoryTable();
+		historyPanel.add(historyTable);
+		yourTasksPanel.add(yourTasksTable);
 		
-		this.sharedTasksTable = new FlexTable();
+		/*this.sharedTasksTable = new FlexTable();
 		sharedTasksTable.setStyleName("table");
 		DOM.setElementAttribute(sharedTasksTable.getElement(), "id", "sharedTasksTable");
 		sharedTasksTable.setTitle("Shared tasks");
@@ -65,23 +58,82 @@ public class TaskManagerView extends Composite implements TaskManagerPresenter.D
 		sharedTasksTable.setWidget(0,  3, nameLabel);
 		sharedTasksTable.setWidget(0,  4, resumeLabel);
 		sharedTasksTable.setWidget(0,  5, cancelLabel);
+		*/
+		//HorizontalPanel horizontalPanel = new HorizontalPanel();
+		//horizontalPanel.add(yourTasksTable);
+		//horizontalPanel.add(sharedTasksTable);
 
-		HorizontalPanel horizontalPanel = new HorizontalPanel();
-		horizontalPanel.add(yourTasksTable);
-		horizontalPanel.add(sharedTasksTable);
-
-	    htmlPanel.add(horizontalPanel, "taskManagerContent");	
+		verticalPanel.add(yourTasksPanel);
+		verticalPanel.add(historyPanel);
+		
+	    htmlPanel.add(verticalPanel, "taskManagerContent");	
 		this.initWidget(htmlPanel);
 	}
 
-	@Override
+	/*@Override
 	public FlexTable getSharedTasksTable() {
 		return this.sharedTasksTable;
+	}*/
+
+	private FlexTable createHistoryTable() { 
+		FlexTable result = new FlexTable();
+		result.setStyleName("table");
+		DOM.setElementAttribute(result.getElement(), "id", "historyTasksTable");
+		result.setTitle("Task History");
+		Label createdLabel = new Label("Created");
+		createdLabel.setStyleName("tableHeader");
+		Label taskTypeLabel = new Label("Task Type");
+		taskTypeLabel.setStyleName("tableHeader");
+		Label statusLabel = new Label("Status");
+		statusLabel.setStyleName("tableHeader");
+		Label nameLabel = new Label("Name");
+		nameLabel.setStyleName("tableHeader");
+		Label actionsLabel = new Label("Actions");
+		actionsLabel.setStyleName("tableHeader");
+
+		result.setWidget(0,  0, nameLabel);
+		result.setWidget(0,  1, createdLabel);
+		result.setWidget(0,  2, taskTypeLabel);
+		result.setWidget(0,  4, actionsLabel);
+		return result;
+	}
+	
+	private FlexTable createYourTasksTable() {
+		return this.createTasksTable("Your tasks", "yourTasksTable");
+	}
+
+	private FlexTable createTasksTable(String title, String cssId) {
+		FlexTable result = new FlexTable();
+		result.setStyleName("table");
+		DOM.setElementAttribute(result.getElement(), "id", cssId);
+		result.setTitle(title);
+		Label createdLabel = new Label("Created");
+		createdLabel.setStyleName("tableHeader");
+		Label taskTypeLabel = new Label("Task Type");
+		taskTypeLabel.setStyleName("tableHeader");
+		Label statusLabel = new Label("Status");
+		statusLabel.setStyleName("tableHeader");
+		Label nameLabel = new Label("Name");
+		nameLabel.setStyleName("tableHeader");
+		Label actionsLabel = new Label("Actions");
+		actionsLabel.setStyleName("tableHeader");
+
+		result.setWidget(0,  0, nameLabel);
+		result.setWidget(0,  1, createdLabel);
+		result.setWidget(0,  2, taskTypeLabel);
+		result.setWidget(0,  3, statusLabel);
+		result.setWidget(0,  4, actionsLabel);
+		return result;
 	}
 
 	@Override
 	public FlexTable getYourTasksTable() {
 		return this.yourTasksTable;
+	}
+
+	@Override
+	public FlexTable getHistoryTable() {
+		return this.historyTable;
 	}
 
 }

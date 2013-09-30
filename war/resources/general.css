@@ -497,3 +497,7 @@ green 307137
 .highlightGreen {
 	color: #279446;
 }
+.loader {
+	height: 20px;
+	width: 20px;
+}

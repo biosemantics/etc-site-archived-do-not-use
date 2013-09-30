@@ -25,7 +25,7 @@ public class InputMatrixGenerationView extends MatrixGenerationView implements
 	private Anchor formatRequirementsAnchor;
 	private ListBox glossaryListBox;
 	private FocusWidget fileManagerAnchor;
-	//private TextBox nameTextBox;
+	private TextBox nameTextBox;
 
 	@Override
 	protected Widget getStepWidget() {
@@ -46,12 +46,12 @@ public class InputMatrixGenerationView extends MatrixGenerationView implements
 		inputRequirementsPanel.add(formatRequirementsAnchor);
 		inputRequirementsPanel.add(new InlineLabel(" for taxon descriptions."));	
 		verticalPanel.add(inputRequirementsPanel);
-		/*HorizontalPanel namePanel = new HorizontalPanel();
+		HorizontalPanel namePanel = new HorizontalPanel();
 		namePanel.addStyleName("inputForm");
 		namePanel.add(new Label("Task name:"));
 		nameTextBox = new TextBox();
 		namePanel.add(nameTextBox); 
-		verticalPanel.add(namePanel); */
+		verticalPanel.add(namePanel); 
 		HorizontalPanel taxonDescriptionFilePanel = new HorizontalPanel();
 		taxonDescriptionFilePanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		taxonDescriptionFilePanel.addStyleName("inputForm");
@@ -104,9 +104,9 @@ public class InputMatrixGenerationView extends MatrixGenerationView implements
 		return this.glossaryListBox;
 	}
 
-	/*@Override
+	@Override
 	public TextBox getNameTextBox() {
 		return nameTextBox;
-	}*/
+	}
 
 }

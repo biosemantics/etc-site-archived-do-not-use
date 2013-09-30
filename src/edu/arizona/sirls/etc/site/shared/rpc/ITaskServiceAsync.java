@@ -16,6 +16,8 @@ public interface ITaskServiceAsync {
 	public void getSharedTasks(AuthenticationToken authenticationToken, AsyncCallback<List<Task>> callback);
 	
 	public void addTask(AuthenticationToken authenticationToken, Task task, AsyncCallback<Task> callback);
+
+	public void getPastTasks(AuthenticationToken authenticationToken, AsyncCallback<List<Task>> asyncCallback);
 	
 	//public void cancelTask(AuthenticationToken authenticationToken, Task task, AsyncCallback<Void> callback);
 

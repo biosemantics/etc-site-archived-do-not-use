@@ -36,7 +36,10 @@ public abstract class AbstractDAO {
 	}
 	
 	public void openConnection() throws SQLException {
-		this.connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + databaseName, databaseUser, databasePassword);
+		//this.connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + databaseName, databaseUser, databasePassword);
+		this.connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + databaseName + 
+				"?connecttimeout=0&sockettimeout=0&autoreconnect=true", 
+				databaseUser, databasePassword);
 	}
 	
 	public void closeConnection() throws SQLException {

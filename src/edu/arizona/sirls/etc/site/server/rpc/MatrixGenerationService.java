@@ -253,10 +253,12 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.OUTPUT);
 				task.setTaskStage(taskStage);
 				task.setResumable(false);
+				task.setCompleted(true);
 				TaskDAO.getInstance().updateTask(task);
 
 				matrixGenerationConfiguration.setOutput(matrixGenerationConfiguration.getInput() + "_MGResult");
 				MatrixGenerationConfigurationDAO.getInstance().updateMatrixGenerationConfiguration(matrixGenerationConfiguration);
+				
 				// TODO: create a directory parallel to input directory with name "input dir name" + _MGResult.. with result files inside
 				//result = fileService.createFile(authenticationToken, matrixGenerationJob..getOutputFile());
 				return true;

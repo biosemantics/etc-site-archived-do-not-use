@@ -70,6 +70,19 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 		return result;
 	}
 
+	@Override
+	public List<Task> getPastTasks(AuthenticationToken authenticationToken) {
+		List<Task> result = new LinkedList<Task>();
+		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
+			try {
+				result = TaskDAO.getInstance().getUsersPastTasks(authenticationToken.getUsername());
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
 	/*
 	@Override
 	public void cancelTask(AuthenticationToken authenticationToken, Task task) {
