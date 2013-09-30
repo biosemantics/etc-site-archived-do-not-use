@@ -14,8 +14,6 @@ import edu.arizona.sirls.etc.site.client.view.fileManager.FileImageLabelTreeItem
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileTreeItem;
 
 public class FileTreeDecorator {
-
-
 	
 	public void decorate(Tree tree, edu.arizona.sirls.etc.site.shared.rpc.Tree<String> fileTree, FileDragDropHandler fileDragDropHandler) {
 		String path = getPath(fileTree);
@@ -26,23 +24,24 @@ public class FileTreeDecorator {
 	
 		if(fileDragDropHandler != null) {
 			FileImageLabelComposite fileComposite = root.getFileImageLabelComposite();
-			fileComposite.getElement().setDraggable(Element.DRAGGABLE_TRUE);
-			fileComposite.addDomHandler(fileDragDropHandler, DragStartEvent.getType());
+			//fileComposite.addDomHandler(fileDragDropHandler, DragStartEvent.getType());
 			fileComposite.addDomHandler(fileDragDropHandler, DragOverEvent.getType());
 			fileComposite.addDomHandler(fileDragDropHandler, DropEvent.getType());
+			fileComposite.getElement().setDraggable(Element.DRAGGABLE_FALSE);
 		}
 		tree.addItem(root);
 
 		if(fileTree.isContainerTree()) {
 			for(edu.arizona.sirls.etc.site.shared.rpc.Tree<String> child : fileTree.getChildren()) {
-				decorate(root, child, fileDragDropHandler);
+				decorate(root, child, fileDragDropHandler, 1);
 			}
 		}
 		
 		root.setState(true);
 	}
 
-	private void decorate(TreeItem root, edu.arizona.sirls.etc.site.shared.rpc.Tree<String> fileTree, FileDragDropHandler fileDragAndDropHandler) {
+	private void decorate(TreeItem root, edu.arizona.sirls.etc.site.shared.rpc.Tree<String> fileTree, FileDragDropHandler fileDragAndDropHandler, 
+			int level) {
 		String path = getPath(fileTree);
 		FileImageLabelTreeItem treeItem = new FileTreeItem(fileTree.getValue(), path);		
 		FileImageLabelComposite fileComposite = treeItem.getFileImageLabelComposite();
@@ -51,6 +50,8 @@ public class FileTreeDecorator {
 		
 		if(fileTree.isContainerTree()) {
 			treeItem = new DirectoryTreeItem(fileTree.getValue(), path);
+			if(level > 2)
+				return;
 		} 
 		root.addItem(treeItem);
 		
@@ -63,8 +64,9 @@ public class FileTreeDecorator {
 		}
 		
 		if(fileTree.isContainerTree()) {
+			level++;
 			for(edu.arizona.sirls.etc.site.shared.rpc.Tree<String> child : fileTree.getChildren()) {
-				decorate(treeItem, child, fileDragAndDropHandler);
+				decorate(treeItem, child, fileDragAndDropHandler, level);
 			}
 		}
 		

@@ -2,6 +2,7 @@ package edu.arizona.sirls.etc.site.shared.rpc;
 
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -29,5 +30,6 @@ public interface IFileService extends RemoteService {
 
 	public boolean createFile(AuthenticationToken authenticationToken, String outputFile);
 	
+	public Integer getDepth(AuthenticationToken authenticationToken, String sourcePath);
 	
 }

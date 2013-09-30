@@ -243,17 +243,27 @@ public class ManagableFileTreePresenter implements Presenter {
 		@Override
 		public void onClick(ClickEvent event) {
 			final String target = fileSelectionHandler.getTarget();
-			if(target != null) {
-				LabelTextFieldView renameView = new LabelTextFieldView();
-				LabelTextFieldPresenter renamePresenter = new LabelTextFieldPresenter(
-						renameView, "Create folder", "Folder name:", "", this);
-				renamePresenter.go();
+			int level = getLevel(target);
+			if(level < 2) {
+				if(target != null) {
+					LabelTextFieldView renameView = new LabelTextFieldView();
+					LabelTextFieldPresenter renamePresenter = new LabelTextFieldPresenter(
+							renameView, "Create folder", "Folder name:", "", this);
+					renamePresenter.go();
+				} else {
+					messagePresenter.setMessage("Please select a directory to create the new directory in");
+					messagePresenter.go();
+				}
 			} else {
-				messagePresenter.setMessage("Please select a directory to create the new directory in");
+				messagePresenter.setMessage("Only a directory depth of two is allowed.");
 				messagePresenter.go();
 			}
 		}
 		
+		private int getLevel(String target) {
+			return target.split("//").length - 1;
+		}
+
 		@Override
 		public void canceled() {
 		}

@@ -188,4 +188,25 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		}
 		return false;
 	}
+
+	@Override
+	public Integer getDepth(AuthenticationToken authenticationToken, String target) {
+		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
+			File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
+			return this.getDepth(file);
+		}
+		return -1;
+	}
+	
+	private Integer getDepth(File file) {
+		int maxDepth = 0;
+		for(File child : file.listFiles()) {
+			if(child.isDirectory()) {
+				int depth = getDepth(child) + 1;
+				if(depth > maxDepth)
+					maxDepth = depth;
+			}
+		}
+		return maxDepth;
+	}
 }
