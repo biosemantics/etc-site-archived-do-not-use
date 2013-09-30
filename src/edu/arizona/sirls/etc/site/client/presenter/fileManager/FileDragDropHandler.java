@@ -42,8 +42,9 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 			
 			String sourcePathParts[] = sourcePath.split("//");
 			String sourceName = sourcePathParts[sourcePathParts.length-1];
-			String targetPath = ((FileImageLabelComposite) target).getPath() + "//" + sourceName;
-					
+			String targetPath = fileImageLabelComposite.getPath() + "//" + sourceName;
+			if(fileImageLabelComposite.isFile())
+				 targetPath = getParentDirectory(fileImageLabelComposite.getPath()) + "//" + sourceName;
 			fileService.moveFile(Authentication.getInstance().getAuthenticationToken(), sourcePath, targetPath, 
 					new AsyncCallback<Boolean>() {
 				public void onSuccess(Boolean result) {
@@ -56,6 +57,10 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 				}
 			});
 		}
+	}
+
+	private String getParentDirectory(String path) {
+		return path.substring(0, path.lastIndexOf("//"));
 	}
 
 	@Override

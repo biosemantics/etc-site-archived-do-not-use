@@ -8,7 +8,7 @@ public class DirectoryTreeItem extends FileImageLabelTreeItem {
 	
 	public DirectoryTreeItem(String name, String path) {
 		super(name, path);
-		FileImageLabelComposite fileComposite = new FileImageLabelComposite(folderImage, "19", "20", name, path);
+		FileImageLabelComposite fileComposite = new FileImageLabelComposite(folderImage, "19", "20", name, path, false);
 		super.setFileImageLabelComposite(fileComposite);
 	}
 }

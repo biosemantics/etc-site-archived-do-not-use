@@ -8,7 +8,7 @@ public class FileTreeItem extends FileImageLabelTreeItem {
 	
 	public FileTreeItem(String name, String path) {
 		super(name, path);
-		FileImageLabelComposite fileComposite = new FileImageLabelComposite(fileImage, "16", "20", name, path);
+		FileImageLabelComposite fileComposite = new FileImageLabelComposite(fileImage, "16", "20", name, path, true);
 		super.setFileImageLabelComposite(fileComposite);
 	}
 	
