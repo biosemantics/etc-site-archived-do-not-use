@@ -1,32 +1,30 @@
 package edu.arizona.sirls.etc.site.server.rpc;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
+import com.google.gwt.thirdparty.guava.common.util.concurrent.ListenableFuture;
+import com.google.gwt.thirdparty.guava.common.util.concurrent.ListeningExecutorService;
+import com.google.gwt.thirdparty.guava.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
@@ -63,7 +61,15 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	private IFileService fileService = new FileService();
 	private XMLFileFormatter xmlFileFormatter = new XMLFileFormatter();
 	private BracketValidator bracketValidator = new BracketValidator();
-
+	private int maximumThreads = 10;
+	private ListeningExecutorService executorService;
+	private Map<Integer, ListenableFuture<LearnResult>> activeLearnFutures = new HashMap<Integer, ListenableFuture<LearnResult>>();
+	private Map<Integer, ListenableFuture<ParseResult>> activeParseFutures = new HashMap<Integer, ListenableFuture<ParseResult>>();
+	
+	public MatrixGenerationService() {
+		executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(maximumThreads));
+	}
+	
 	@Override
 	public MatrixGenerationConfiguration start(AuthenticationToken authenticationToken, String taskName, 
 			String input, String glossaryName) {
@@ -135,7 +141,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
 			try {
 				final Task task = matrixGenerationConfiguration.getTask();
-				TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
+				final TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
 				TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.LEARN_TERMS);
 				task.setTaskStage(taskStage);
 				task.setResumable(false);
@@ -146,20 +152,22 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				
 				//fork of the actuall processing or fake
 				Learn learn = new Learn();
-				learn.addListener(new ILearnListener() {
-					@Override
-					public void finished(int otoId) {
-						try {
-							matrixGenerationConfiguration.setOtoId(otoId);
-							MatrixGenerationConfigurationDAO.getInstance().updateMatrixGenerationConfiguration(matrixGenerationConfiguration);
-							task.setResumable(true);
-							TaskDAO.getInstance().updateTask(task);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				});
-				learn.start();
+				final ListenableFuture<LearnResult> futureResult = executorService.submit(learn);
+				activeLearnFutures.put(matrixGenerationConfiguration.getId(), futureResult);
+				futureResult.addListener(new Runnable() {
+				     	public void run() {
+				     		try {
+				     			matrixGenerationConfiguration.setOtoId(futureResult.get().getOtoId());
+								MatrixGenerationConfigurationDAO.getInstance().updateMatrixGenerationConfiguration(matrixGenerationConfiguration);
+								TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.REVIEW_TERMS);
+								task.setTaskStage(taskStage);
+								task.setResumable(true);
+								TaskDAO.getInstance().updateTask(task);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+				     	}
+				     }, executorService);
 				
 				return new LearnInvocation(numberOfSentences, numberOfWords);
 			} catch (Exception e) {
@@ -203,25 +211,29 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		if(authenticationService.isValidSession(authenticationToken).getResult()) {
 			try {
 				final Task task = matrixGenerationConfiguration.getTask();
-				TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
+				final TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
 				TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.PARSE_TEXT);
 				task.setTaskStage(taskStage);
+				task.setResumable(false);
 				TaskDAO.getInstance().updateTask(task);
 				
 				//fork of the actuall processing or fake
 				Parse parse = new Parse();
-				parse.addListener(new IParseListener() {
+				ListenableFuture<ParseResult> futureResult = executorService.submit(parse);
+				activeParseFutures.put(matrixGenerationConfiguration.getId(), futureResult);
+				futureResult.addListener(new Runnable() {
 					@Override
-					public void finished() {
+					public void run() {
 						try {
+							TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.OUTPUT);
+							task.setTaskStage(taskStage);
 							task.setResumable(true);
 							TaskDAO.getInstance().updateTask(task);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
 					}
-				});
-				parse.start();
+				}, executorService);
 				
 				return new ParseInvocation();
 			} catch (Exception e) {
@@ -339,7 +351,39 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		}
 		return null;
 	}
-	
+
+	@Override
+	public void cancel(AuthenticationToken authenticationToken, Task task) {
+		if(authenticationService.isValidSession(authenticationToken).getResult()) {
+			try {
+				MatrixGenerationConfiguration matrixGenerationConfiguration = getMatrixGenerationConfiguration(authenticationToken, task);
+				MatrixGenerationConfigurationDAO.getInstance().remove(matrixGenerationConfiguration);
+				TaskDAO.getInstance().removeTask(task);
+				switch(task.getTaskStage().getTaskStageEnum()) {
+				case INPUT:
+					break;
+				case LEARN_TERMS:
+					ListenableFuture<LearnResult> learnFuture = activeLearnFutures.get(matrixGenerationConfiguration.getId());
+					learnFuture.cancel(true);
+					break;
+				case OUTPUT:
+					break;
+				case PARSE_TEXT:
+					ListenableFuture<ParseResult> parseFuture = activeParseFutures.get(matrixGenerationConfiguration.getId());
+					parseFuture.cancel(true);
+					break;
+				case PREPROCESS_TEXT:
+					break;
+				case REVIEW_TERMS:
+					break;
+				default:
+					break;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}	
 	
 
 	/*@Override

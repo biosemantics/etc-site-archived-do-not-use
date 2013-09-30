@@ -36,6 +36,7 @@ public interface IMatrixGenerationServiceAsync {
 
 	public void getMatrixGenerationConfiguration(AuthenticationToken authenticationToken, Task task, AsyncCallback<MatrixGenerationConfiguration> callback);
 	
+	public void cancel(AuthenticationToken authenticationToken, Task task, AsyncCallback<Void> callback);
 	
 	/*public void getJobStatus(AuthenticationToken authenticationToken, MatrixGenerationJob matrixGenerationJob, AsyncCallback<MatrixGenerationJobStatus> callback);
 	

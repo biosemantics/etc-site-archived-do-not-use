@@ -1,7 +1,5 @@
 package edu.arizona.sirls.etc.site.client;
 
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;

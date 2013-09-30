@@ -1,6 +1,7 @@
 package edu.arizona.sirls.etc.site.shared.rpc.db;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class Task implements Serializable  {
 
@@ -10,11 +11,11 @@ public class Task implements Serializable  {
 	private TaskStage taskStage;
 	private User user;
 	private int id;
-	private long created;
+	private Date created;
 	
 	public Task() { }
 
-	public Task(int id, User user, TaskStage taskStage, String name, boolean resumable, long created) {
+	public Task(int id, User user, TaskStage taskStage, String name, boolean resumable, Date created) {
 		this.id = id;
 		this.user = user;
 		this.taskStage = taskStage;
@@ -63,11 +64,11 @@ public class Task implements Serializable  {
 		this.id = id;
 	}
 
-	public long getCreated() {
+	public Date getCreated() {
 		return created;
 	}
 
-	public void setCreated(long created) {
+	public void setCreated(Date created) {
 		this.created = created;
 	}
 	

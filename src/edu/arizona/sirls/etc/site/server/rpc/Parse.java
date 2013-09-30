@@ -1,29 +1,12 @@
 package edu.arizona.sirls.etc.site.server.rpc;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.concurrent.Callable;
 
-public class Parse {
-
-	private Set<IParseListener> listeners = new HashSet<IParseListener>();
-	
-	public void addListener(IParseListener listener) {
-		listeners.add(listener);
-	}
-	
-	public void removeListener(IParseListener listener) {
-		listeners.remove(listener);
-	}
-
-	public void start() {
-		this.notifyListeners();
-	}
-
-	
-	public void notifyListeners() {
-		for(IParseListener listener : listeners) {
-			listener.finished();
-		}
+public class Parse implements Callable<ParseResult> {
+	@Override
+	public ParseResult call() throws Exception {
+		Thread.sleep(60000);
+		return new ParseResult();
 	}
 
 }

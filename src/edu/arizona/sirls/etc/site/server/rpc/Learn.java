@@ -1,34 +1,20 @@
 package edu.arizona.sirls.etc.site.server.rpc;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.concurrent.Callable;
 
-public class Learn {
+public class Learn implements Callable<LearnResult> {
 
-	private Set<ILearnListener> listeners = new HashSet<ILearnListener>();
 	private int otoId;
 	
-	public void addListener(ILearnListener listener) {
-		listeners.add(listener);
-	}
-	
-	public void removeListener(ILearnListener listener) {
-		listeners.remove(listener);
-	}
-
-	public void start() {
-		otoId = 54;
-		this.notifyListeners(otoId);
-	}
-
 	public int getOtoId() {
 		return otoId;
 	}
-	
-	public void notifyListeners(int otoId) {
-		for(ILearnListener listener : listeners) {
-			listener.finished(otoId);
-		}
+
+	@Override
+	public LearnResult call() throws Exception {
+		Thread.sleep(60000);
+		otoId = 54;
+		return new LearnResult(otoId);
 	}
 
 }

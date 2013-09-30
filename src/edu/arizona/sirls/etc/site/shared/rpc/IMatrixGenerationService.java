@@ -37,6 +37,7 @@ public interface IMatrixGenerationService extends RemoteService {
 	
 	public MatrixGenerationConfiguration getMatrixGenerationConfiguration(AuthenticationToken authenticationToken, Task task);
 	
+	public void cancel(AuthenticationToken authenticationToken, Task task);
 	
 	/*public MatrixGenerationJobStatus getJobStatus(AuthenticationToken authenticationToken, MatrixGenerationJob matrixGenerationJob);
 	

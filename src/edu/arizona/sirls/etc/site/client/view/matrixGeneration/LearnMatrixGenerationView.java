@@ -1,6 +1,6 @@
 package edu.arizona.sirls.etc.site.client.view.matrixGeneration;
 
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -10,15 +10,14 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.LearnMatrixGenerationPresenter;
-import edu.arizona.sirls.etc.site.client.view.ListItem;
-import edu.arizona.sirls.etc.site.client.view.OrderedList;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 public class LearnMatrixGenerationView extends MatrixGenerationView implements LearnMatrixGenerationPresenter.Display {
 	
 	private Label sentencesLabel;
 	private Label wordsLabel;
-	private Button nextButton;
+	//private Button nextButton;
+	private Anchor taskManagerAnchor;
 
 	@Override
 	protected TaskStageEnum getStep() {
@@ -47,13 +46,18 @@ public class LearnMatrixGenerationView extends MatrixGenerationView implements L
 		Image infoImage = new Image("images/Info.gif");
 		infoImage.addStyleName("infoImage");
 		horizontalPanel.add(infoImage);
-		horizontalPanel.add(new Label("We are now learning the terminology. " +
-				"You will receive an email when processing has completed. You can come back to this task using the Task Manager."));
+		FlowPanel taskManagerFlowPanel = new FlowPanel();
+		horizontalPanel.add(taskManagerFlowPanel);
+		taskManagerFlowPanel.add(new InlineLabel("We are now learning the terminology. " +
+				"You will receive an email when processing has completed. You can come back to this task using the "));
+		taskManagerAnchor = new Anchor("Task Manager");
+		taskManagerFlowPanel.add(taskManagerAnchor);
+		taskManagerFlowPanel.add(new InlineLabel("."));
 		panel.add(horizontalPanel);
 
 		//only for design purpose, until we have a fake process
-		this.nextButton = new Button("Next");
-		panel.add(nextButton);
+		//this.nextButton = new Button("Next");
+		//panel.add(nextButton);
 		return panel;
 	}
 
@@ -66,10 +70,15 @@ public class LearnMatrixGenerationView extends MatrixGenerationView implements L
 	public void setWords(int words) {
 		this.wordsLabel.setText(words + " words");
 	}
-	
+
 	@Override
+	public Anchor getTaskManagerAnchor() {
+		return this.taskManagerAnchor;
+	}
+	
+	/*@Override
 	public Button getNextButton() {
 		return this.nextButton;
-	}
+	}*/
 
 }

@@ -20,6 +20,8 @@ public interface ITaskService extends RemoteService {
 	
 	public Task addTask(AuthenticationToken authenticationToken, Task task);
 	
+	//public void cancelTask(AuthenticationToken authenticationToken, Task task);
+	
 	//public Task getLatestResumableTask(AuthenticationToken authenticationToken, TaskTypeEnum taskType);
 	
 }

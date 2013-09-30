@@ -4,12 +4,12 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
-import edu.arizona.sirls.etc.site.client.event.matrixGeneration.OutputMatrixGenerationEvent;
+import edu.arizona.sirls.etc.site.client.event.TaskManagerEvent;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
@@ -18,8 +18,9 @@ import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.ParseInvocation;
 public class ParseMatrixGenerationPresenter {
 
 	public interface Display {
-		Button getNextButton();
+		//Button getNextButton();
 		Widget asWidget();
+		Anchor getTaskManagerAnchor();
 	}
 
 	private Display display;
@@ -37,12 +38,19 @@ public class ParseMatrixGenerationPresenter {
 	}
 
 	private void bind() {
+		display.getTaskManagerAnchor().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				eventBus.fireEvent(new TaskManagerEvent());
+			}
+		});
+		/*display.getNextButton().setEnabled(false);
 		display.getNextButton().addClickHandler(new ClickHandler() { 
 			@Override
 			public void onClick(ClickEvent event) { 
 				eventBus.fireEvent(new OutputMatrixGenerationEvent());
 			}
-		});
+		});*/
 	}
 
 	public void go(final HasWidgets content, MatrixGenerationConfiguration matrixGenerationConfiguration) {

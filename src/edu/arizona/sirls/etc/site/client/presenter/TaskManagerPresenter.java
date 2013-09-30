@@ -60,184 +60,217 @@ public class TaskManagerPresenter {
 	}
 
 	public void go(HasWidgets content) {
-		taskService.getCreatedTasks(Authentication.getInstance().getAuthenticationToken(), 
-			new AsyncCallback<List<Task>>() {
-				@Override
-				public void onSuccess(List<Task> result) {
-					DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("MM/dd/yyyy HH:mm");
-					
-					for(int i=1; i<=result.size(); i++) { 
-						final Task task = result.get(i-1);
-						Image cancelImage = new Image("images/revoke.jpg");
-						cancelImage.setSize("15px", "15px");
-						if(task.isResumable()) {
-							Image resumeImage = new Image("images/Success.gif");
-							resumeImage.setSize("15px", "15px");
-							resumeImage.addClickHandler(new ClickHandler() {
-								@Override
-								public void onClick(ClickEvent event) {
-									switch(task.getTaskStage().getTaskType().getTaskTypeEnum()) {
-									case MATRIX_GENERATION:
-										matrixGenerationService.getMatrixGenerationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
-												task, new AsyncCallback<MatrixGenerationConfiguration>() {
-													@Override
-													public void onFailure(Throwable caught) {
-														caught.printStackTrace();
-													}
-													@Override
-													public void onSuccess(MatrixGenerationConfiguration result) {
-														eventBus.fireEvent(new MatrixGenerationEvent(result));
-													}
-										});
-										break;
-									case TREE_GENERATION:
-										treeGenerationService.getTreeGenerationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
-												task, new AsyncCallback<TreeGenerationConfiguration>() {
-													@Override
-													public void onFailure(Throwable caught) {
-														caught.printStackTrace();
-													}
-													@Override
-													public void onSuccess(TreeGenerationConfiguration result) {
-														eventBus.fireEvent(new TreeGenerationEvent(result));
-													}
-										});
-										break;
-									case TAXONOMY_COMPARISON:
-										taxonomyComparisonService.getTaxonomyComparisonConfiguration(Authentication.getInstance().getAuthenticationToken(), 
-												task, new AsyncCallback<TaxonomyComparisonConfiguration>() {
-													@Override
-													public void onFailure(Throwable caught) {
-														caught.printStackTrace();
-													}
-													@Override
-													public void onSuccess(TaxonomyComparisonConfiguration result) {
-														eventBus.fireEvent(new TaxonomyComparisonEvent(result));
-													}
-										});
-										break;
-									case VISUALIZATION:
-										visualizationService.getVisualizationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
-												task, new AsyncCallback<VisualizationConfiguration>() {
-													@Override
-													public void onFailure(Throwable caught) {
-														caught.printStackTrace();
-													}
-													@Override
-													public void onSuccess(VisualizationConfiguration result) {
-														eventBus.fireEvent(new VisualizationEvent(result));
-													}
-										});
-										break;
-									}
-								}
-							});
-							display.getYourTasksTable().setWidget(i, 4, resumeImage);
-						}
-						
-						Date date = new Date();
-						date.setTime(task.getCreated());
-						display.getYourTasksTable().setText(i, 0, dateTimeFormat.format(date));
-						display.getYourTasksTable().setText(i, 1, task.getTaskStage().getTaskType().getTaskTypeEnum().displayName());
-						display.getYourTasksTable().setText(i, 2, task.getTaskStage().getTaskStageEnum().displayName());
-						display.getYourTasksTable().setText(i, 3, task.getName());
-						display.getYourTasksTable().setWidget(i, 5, cancelImage);
-					}
-				}
-				@Override
-				public void onFailure(Throwable caught) {
-					caught.printStackTrace();
-				}
-			});
-		taskService.getSharedTasks(Authentication.getInstance().getAuthenticationToken(), 
-			new AsyncCallback<List<Task>>() {
-				public void onSuccess(List<Task> result) {
-					DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("MM/dd/yyyy HH:mm");
-					
-					for(int i=1; i<=result.size(); i++) { 
-						final Task task = result.get(i-1);
-						Image cancelImage = new Image("images/Failure.gif");
-						cancelImage.setSize("15px", "15px");
-						if(task.isResumable()) {
-							Image resumeImage = new Image("images/Success.gif");
-							resumeImage.setSize("15px", "15px");
-							resumeImage.addClickHandler(new ClickHandler() {
-								@Override
-								public void onClick(ClickEvent event) {
-									switch(task.getTaskStage().getTaskType().getTaskTypeEnum()) {
-									case MATRIX_GENERATION:
-										matrixGenerationService.getMatrixGenerationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
-												task, new AsyncCallback<MatrixGenerationConfiguration>() {
-													@Override
-													public void onFailure(Throwable caught) {
-														caught.printStackTrace();
-													}
-													@Override
-													public void onSuccess(MatrixGenerationConfiguration result) {
-														eventBus.fireEvent(new MatrixGenerationEvent(result));
-													}
-										});
-										break;
-									case TREE_GENERATION:
-										treeGenerationService.getTreeGenerationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
-												task, new AsyncCallback<TreeGenerationConfiguration>() {
-													@Override
-													public void onFailure(Throwable caught) {
-														caught.printStackTrace();
-													}
-													@Override
-													public void onSuccess(TreeGenerationConfiguration result) {
-														eventBus.fireEvent(new TreeGenerationEvent(result));
-													}
-										});
-										break;
-									case TAXONOMY_COMPARISON:
-										taxonomyComparisonService.getTaxonomyComparisonConfiguration(Authentication.getInstance().getAuthenticationToken(), 
-												task, new AsyncCallback<TaxonomyComparisonConfiguration>() {
-													@Override
-													public void onFailure(Throwable caught) {
-														caught.printStackTrace();
-													}
-													@Override
-													public void onSuccess(TaxonomyComparisonConfiguration result) {
-														eventBus.fireEvent(new TaxonomyComparisonEvent(result));
-													}
-										});
-										break;
-									case VISUALIZATION:
-										visualizationService.getVisualizationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
-												task, new AsyncCallback<VisualizationConfiguration>() {
-													@Override
-													public void onFailure(Throwable caught) {
-														caught.printStackTrace();
-													}
-													@Override
-													public void onSuccess(VisualizationConfiguration result) {
-														eventBus.fireEvent(new VisualizationEvent(result));
-													}
-										});
-										break;
-									}
-								}
-							});
-							display.getSharedTasksTable().setWidget(i, 4, resumeImage);
-						}
-						Date date = new Date();
-						date.setTime(task.getCreated());
-						display.getYourTasksTable().setText(i, 0, dateTimeFormat.format(date));
-						display.getSharedTasksTable().setText(i, 1, task.getTaskStage().getTaskType().getTaskTypeEnum().displayName());
-						display.getSharedTasksTable().setText(i, 2, task.getTaskStage().getTaskStageEnum().displayName());
-						display.getSharedTasksTable().setText(i, 3, task.getName());
-						display.getSharedTasksTable().setWidget(i, 5, cancelImage);
-					}
-				}
-	
-				public void onFailure(Throwable caught) {
-					caught.printStackTrace();
-				}
-			});
-		
+		refresh();
 		content.clear();
 		content.add(display.asWidget());
+	}
+	
+	private void refresh() {
+		for(int i=1; i<display.getSharedTasksTable().getRowCount(); i++) 
+			display.getSharedTasksTable().removeRow(i);
+		for(int i=1; i<display.getYourTasksTable().getRowCount(); i++) 
+			display.getYourTasksTable().removeRow(i);
+		taskService.getCreatedTasks(Authentication.getInstance().getAuthenticationToken(), 
+				new AsyncCallback<List<Task>>() {
+					@Override
+					public void onSuccess(List<Task> result) {
+						DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("MM/dd/yyyy HH:mm");
+						
+						for(int i=1; i<=result.size(); i++) { 
+							final Task task = result.get(i-1);
+							Image cancelImage = new Image("images/revoke.jpg");
+							cancelImage.setSize("15px", "15px");
+							cancelImage.addClickHandler(new ClickHandler() {
+								@Override
+								public void onClick(ClickEvent event) {
+									matrixGenerationService.cancel(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<Void>() {
+										@Override
+										public void onFailure(Throwable caught) {
+											caught.printStackTrace();
+										}
+										@Override
+										public void onSuccess(Void result) {
+											refresh();
+										}
+									});
+								}
+							});
+							if(task.isResumable()) {
+								Image resumeImage = new Image("images/Success.gif");
+								resumeImage.setSize("15px", "15px");
+								resumeImage.addClickHandler(new ClickHandler() {
+									@Override
+									public void onClick(ClickEvent event) {
+										switch(task.getTaskStage().getTaskType().getTaskTypeEnum()) {
+										case MATRIX_GENERATION:
+											matrixGenerationService.getMatrixGenerationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
+													task, new AsyncCallback<MatrixGenerationConfiguration>() {
+														@Override
+														public void onFailure(Throwable caught) {
+															caught.printStackTrace();
+														}
+														@Override
+														public void onSuccess(MatrixGenerationConfiguration result) {
+															eventBus.fireEvent(new MatrixGenerationEvent(result));
+														}
+											});
+											break;
+										case TREE_GENERATION:
+											treeGenerationService.getTreeGenerationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
+													task, new AsyncCallback<TreeGenerationConfiguration>() {
+														@Override
+														public void onFailure(Throwable caught) {
+															caught.printStackTrace();
+														}
+														@Override
+														public void onSuccess(TreeGenerationConfiguration result) {
+															eventBus.fireEvent(new TreeGenerationEvent(result));
+														}
+											});
+											break;
+										case TAXONOMY_COMPARISON:
+											taxonomyComparisonService.getTaxonomyComparisonConfiguration(Authentication.getInstance().getAuthenticationToken(), 
+													task, new AsyncCallback<TaxonomyComparisonConfiguration>() {
+														@Override
+														public void onFailure(Throwable caught) {
+															caught.printStackTrace();
+														}
+														@Override
+														public void onSuccess(TaxonomyComparisonConfiguration result) {
+															eventBus.fireEvent(new TaxonomyComparisonEvent(result));
+														}
+											});
+											break;
+										case VISUALIZATION:
+											visualizationService.getVisualizationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
+													task, new AsyncCallback<VisualizationConfiguration>() {
+														@Override
+														public void onFailure(Throwable caught) {
+															caught.printStackTrace();
+														}
+														@Override
+														public void onSuccess(VisualizationConfiguration result) {
+															eventBus.fireEvent(new VisualizationEvent(result));
+														}
+											});
+											break;
+										}
+									}
+								});
+								display.getYourTasksTable().setWidget(i, 4, resumeImage);
+							}
+							
+							display.getYourTasksTable().setText(i, 0, dateTimeFormat.format(task.getCreated()));
+							display.getYourTasksTable().setText(i, 1, task.getTaskStage().getTaskType().getTaskTypeEnum().displayName());
+							display.getYourTasksTable().setText(i, 2, task.getTaskStage().getTaskStageEnum().displayName());
+							display.getYourTasksTable().setText(i, 3, task.getName());
+							display.getYourTasksTable().setWidget(i, 5, cancelImage);
+						}
+					}
+					@Override
+					public void onFailure(Throwable caught) {
+						caught.printStackTrace();
+					}
+				});
+			taskService.getSharedTasks(Authentication.getInstance().getAuthenticationToken(), 
+				new AsyncCallback<List<Task>>() {
+					public void onSuccess(List<Task> result) {
+						DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("MM/dd/yyyy HH:mm");
+						
+						for(int i=1; i<=result.size(); i++) { 
+							final Task task = result.get(i-1);
+							Image cancelImage = new Image("images/Failure.gif");
+							cancelImage.setSize("15px", "15px");
+							cancelImage.addClickHandler(new ClickHandler() {
+								@Override
+								public void onClick(ClickEvent event) {
+									matrixGenerationService.cancel(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<Void>() {
+										@Override
+										public void onFailure(Throwable caught) {
+											caught.printStackTrace();
+										}
+										@Override
+										public void onSuccess(Void result) {
+											refresh();
+										}
+									});
+								}
+							});
+							if(task.isResumable()) {
+								Image resumeImage = new Image("images/Success.gif");
+								resumeImage.setSize("15px", "15px");
+								resumeImage.addClickHandler(new ClickHandler() {
+									@Override
+									public void onClick(ClickEvent event) {
+										switch(task.getTaskStage().getTaskType().getTaskTypeEnum()) {
+										case MATRIX_GENERATION:
+											matrixGenerationService.getMatrixGenerationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
+													task, new AsyncCallback<MatrixGenerationConfiguration>() {
+														@Override
+														public void onFailure(Throwable caught) {
+															caught.printStackTrace();
+														}
+														@Override
+														public void onSuccess(MatrixGenerationConfiguration result) {
+															eventBus.fireEvent(new MatrixGenerationEvent(result));
+														}
+											});
+											break;
+										case TREE_GENERATION:
+											treeGenerationService.getTreeGenerationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
+													task, new AsyncCallback<TreeGenerationConfiguration>() {
+														@Override
+														public void onFailure(Throwable caught) {
+															caught.printStackTrace();
+														}
+														@Override
+														public void onSuccess(TreeGenerationConfiguration result) {
+															eventBus.fireEvent(new TreeGenerationEvent(result));
+														}
+											});
+											break;
+										case TAXONOMY_COMPARISON:
+											taxonomyComparisonService.getTaxonomyComparisonConfiguration(Authentication.getInstance().getAuthenticationToken(), 
+													task, new AsyncCallback<TaxonomyComparisonConfiguration>() {
+														@Override
+														public void onFailure(Throwable caught) {
+															caught.printStackTrace();
+														}
+														@Override
+														public void onSuccess(TaxonomyComparisonConfiguration result) {
+															eventBus.fireEvent(new TaxonomyComparisonEvent(result));
+														}
+											});
+											break;
+										case VISUALIZATION:
+											visualizationService.getVisualizationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
+													task, new AsyncCallback<VisualizationConfiguration>() {
+														@Override
+														public void onFailure(Throwable caught) {
+															caught.printStackTrace();
+														}
+														@Override
+														public void onSuccess(VisualizationConfiguration result) {
+															eventBus.fireEvent(new VisualizationEvent(result));
+														}
+											});
+											break;
+										}
+									}
+								});
+								display.getSharedTasksTable().setWidget(i, 4, resumeImage);
+							}
+							display.getYourTasksTable().setText(i, 0, dateTimeFormat.format(task.getCreated()));
+							display.getSharedTasksTable().setText(i, 1, task.getTaskStage().getTaskType().getTaskTypeEnum().displayName());
+							display.getSharedTasksTable().setText(i, 2, task.getTaskStage().getTaskStageEnum().displayName());
+							display.getSharedTasksTable().setText(i, 3, task.getName());
+							display.getSharedTasksTable().setWidget(i, 5, cancelImage);
+						}
+					}
+		
+					public void onFailure(Throwable caught) {
+						caught.printStackTrace();
+					}
+				});
 	}
 }

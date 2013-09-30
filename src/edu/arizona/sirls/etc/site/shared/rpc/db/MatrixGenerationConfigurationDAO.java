@@ -92,4 +92,11 @@ public class MatrixGenerationConfigurationDAO extends AbstractDAO {
 				"output = '" + output + "', task = " + taskId + ", oto = " + otoId +" WHERE id = " + id);
 		this.closeConnection();
 	}
+
+	public void remove(MatrixGenerationConfiguration matrixGenerationConfiguration) throws SQLException {
+		this.openConnection();
+		int id = matrixGenerationConfiguration.getId();
+		this.executeSQL("DELETE FROM matrixgenerationconfiguration WHERE id = " + id);
+		this.closeConnection();
+	}
 }

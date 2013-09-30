@@ -4,8 +4,13 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+
+import com.google.gwt.i18n.shared.DateTimeFormat;
+import com.google.gwt.i18n.shared.DateTimeFormat.PredefinedFormat;
 
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
@@ -35,7 +40,7 @@ public class TaskDAO extends AbstractDAO {
 			int taskStageId = result.getInt(3);
 			String name = result.getString(4);
 			boolean resumable = result.getBoolean(5);
-			long created = result.getLong(6);
+			Date created = result.getTimestamp(6);
 			User user = UserDAO.getInstance().getUser(userId);
 			TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskStageId);
 			task = new Task(id, user, taskStage, name, resumable, created);
@@ -56,7 +61,7 @@ public class TaskDAO extends AbstractDAO {
 			int taskStageId = result.getInt(3);
 			String name = result.getString(4);
 			boolean resumable = result.getBoolean(5);
-			long created = result.getLong(6);
+			Date created = result.getTimestamp(6);
 			User user = UserDAO.getInstance().getUser(userId);
 			TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskStageId);
 			Task task = new Task(id, user, taskStage, name, resumable, created);
@@ -94,7 +99,16 @@ public class TaskDAO extends AbstractDAO {
 		String name = task.getName();
 		int taskStageId = task.getTaskStage().getId();
 		int userId = task.getUser().getId();
-		this.executeSQL("UPDATE tasks SET name = '" + name + "', taskstage=" + taskStageId + ", user=" + userId + " WHERE id = " + id);
+		boolean resumable = task.isResumable();
+		this.executeSQL("UPDATE tasks SET name = '" + name + "', taskstage=" + taskStageId + ", user=" + userId + ", resumable=" + 
+				resumable + " WHERE id = " + id);
+		this.closeConnection();
+	}
+
+	public void removeTask(Task task) throws SQLException {
+		this.openConnection();
+		int id = task.getId();
+		this.executeSQL("DELETE FROM tasks WHERE id = " + id);
 		this.closeConnection();
 	}
 
