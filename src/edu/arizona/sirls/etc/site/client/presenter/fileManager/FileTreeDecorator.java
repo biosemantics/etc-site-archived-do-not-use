@@ -55,6 +55,7 @@ public class FileTreeDecorator {
 		root.addItem(treeItem);
 		
 		if(fileDragAndDropHandler != null) { 
+			fileComposite = treeItem.getFileImageLabelComposite();
 			fileComposite.getElement().setDraggable(Element.DRAGGABLE_TRUE);
 			fileComposite.addDomHandler(fileDragAndDropHandler, DragStartEvent.getType());
 			fileComposite.addDomHandler(fileDragAndDropHandler, DragOverEvent.getType());
