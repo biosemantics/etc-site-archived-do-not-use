@@ -197,7 +197,8 @@ public class TaskManagerPresenter {
 					}
 					@Override
 					public void onSuccess(Void result) {
-						display.getYourTasksTable().removeRow(row);
+						drawTable();
+						//display.getYourTasksTable().remove.removeRow(row);
 					}
 				});
 			}
@@ -263,7 +264,8 @@ public class TaskManagerPresenter {
 									}
 									@Override
 									public void onSuccess(Void result) {
-										display.getHistoryTable().removeRow(j);
+										drawTable();
+										//display.getHistoryTable().removeRow(j);
 									}
 								});
 							}

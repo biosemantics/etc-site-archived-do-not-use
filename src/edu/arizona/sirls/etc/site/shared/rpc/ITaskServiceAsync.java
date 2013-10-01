@@ -17,7 +17,9 @@ public interface ITaskServiceAsync {
 	
 	public void addTask(AuthenticationToken authenticationToken, Task task, AsyncCallback<Task> callback);
 
-	public void getPastTasks(AuthenticationToken authenticationToken, AsyncCallback<List<Task>> asyncCallback);
+	public void getPastTasks(AuthenticationToken authenticationToken, AsyncCallback<List<Task>> callback);
+
+	public void isResumable(AuthenticationToken authenticationToken, Task task, AsyncCallback<Boolean> callback);
 	
 	//public void cancelTask(AuthenticationToken authenticationToken, Task task, AsyncCallback<Void> callback);
 

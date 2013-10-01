@@ -22,6 +22,8 @@ public interface ITaskService extends RemoteService {
 	
 	public List<Task> getPastTasks(AuthenticationToken authenticationToken);
 	
+	public boolean isResumable(AuthenticationToken authenticationToken, Task task);
+	
 	//public void cancelTask(AuthenticationToken authenticationToken, Task task);
 	
 	//public Task getLatestResumableTask(AuthenticationToken authenticationToken, TaskTypeEnum taskType);

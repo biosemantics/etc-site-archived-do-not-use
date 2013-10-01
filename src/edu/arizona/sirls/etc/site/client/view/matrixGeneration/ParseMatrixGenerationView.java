@@ -1,8 +1,10 @@
 package edu.arizona.sirls.etc.site.client.view.matrixGeneration;
 
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -18,6 +20,9 @@ public class ParseMatrixGenerationView extends MatrixGenerationView implements P
 	//private Button nextButton;
 
 	private Anchor taskManagerAnchor;
+	private HorizontalPanel statusPanel;
+	private FlowPanel taskManagerFlowPanel;
+	private Image statusImage;
 
 	@Override
 	protected TaskStageEnum getStep() {
@@ -29,18 +34,18 @@ public class ParseMatrixGenerationView extends MatrixGenerationView implements P
 		VerticalPanel panel = new VerticalPanel();
 		panel.setStyleName("contentPanel");
 		
-		HorizontalPanel horizontalPanel = new HorizontalPanel();
-		Image infoImage = new Image("images/Info.gif");
-		infoImage.addStyleName("infoImage");
-		horizontalPanel.add(infoImage);
-		FlowPanel taskManagerFlowPanel = new FlowPanel();
-		horizontalPanel.add(taskManagerFlowPanel);
+		statusPanel = new HorizontalPanel();
+		statusImage = new Image("images/loader3.gif");
+		statusImage.addStyleName("infoImage");
+		statusPanel.add(statusImage);
+		taskManagerFlowPanel = new FlowPanel();
+		statusPanel.add(taskManagerFlowPanel);
 		taskManagerFlowPanel.add(new InlineLabel("We are now parsing the descriptions. " +
 				"You will receive an email when processing has completed. You can come back to this task using the "));
 		taskManagerAnchor = new Anchor("Task Manager");
 		taskManagerFlowPanel.add(taskManagerAnchor);
 		taskManagerFlowPanel.add(new InlineLabel("."));
-		panel.add(horizontalPanel);
+		panel.add(statusPanel);
 		
 		//only while we don't use real tasks/face process
 		//this.nextButton = new Button("Next");
@@ -51,6 +56,26 @@ public class ParseMatrixGenerationView extends MatrixGenerationView implements P
 	@Override
 	public Anchor getTaskManagerAnchor() {
 		return this.taskManagerAnchor;
+	}
+	
+	@Override
+	public void setResumableStatus() {
+		statusPanel.clear();
+		statusImage = new Image("images/play.png");
+		statusImage.addStyleName("infoImage");
+		statusPanel.add(statusImage);
+		statusPanel.add(taskManagerFlowPanel);
+	}
+	
+	@Override
+	public HasClickHandlers getResumableClickable() {
+		return statusImage;
+	}
+
+	@Override
+	public void setNonResumableStatus() {
+		statusImage = new Image("images/loader3.gif");
+		statusImage.addStyleName("infoImage");
 	}
 
 	/*

@@ -572,7 +572,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 						if (learnMatrixGenerationPresenter == null) {
 							learnMatrixGenerationPresenter = new 
 									LearnMatrixGenerationPresenter(eventBus, 
-											new LearnMatrixGenerationView(), matrixGenerationService);
+											new LearnMatrixGenerationView(), matrixGenerationService, taskService);
 						}
 						learnMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
 					}
@@ -609,7 +609,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 					public void onSuccess() {
 						if (parseMatrixGenerationPresenter == null) {
 							parseMatrixGenerationPresenter = new ParseMatrixGenerationPresenter(
-									eventBus, new ParseMatrixGenerationView(), matrixGenerationService);
+									eventBus, new ParseMatrixGenerationView(), matrixGenerationService, taskService);
 						}
 						parseMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
 					}
