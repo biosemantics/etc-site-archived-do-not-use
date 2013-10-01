@@ -98,7 +98,7 @@ public class LearnMatrixGenerationView extends MatrixGenerationView implements L
 	@Override
 	public void setNonResumableStatus() {
 		statusPanel.clear();
-		statusImage = new Image("images/loader3.png");
+		statusImage = new Image("images/loader3.gif");
 		statusImage.addStyleName("infoImage");
 		statusPanel.add(statusImage);
 		statusPanel.add(taskManagerFlowPanel);
