@@ -1,6 +1,7 @@
 package edu.arizona.sirls.etc.site.server.rpc;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -22,12 +23,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
+import com.google.common.io.Files;
 import com.google.gwt.thirdparty.guava.common.util.concurrent.ListenableFuture;
 import com.google.gwt.thirdparty.guava.common.util.concurrent.ListeningExecutorService;
 import com.google.gwt.thirdparty.guava.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
+import edu.arizona.sirls.etc.site.server.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
@@ -151,7 +154,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				int numberOfWords = getNumberOfWords();
 				
 				//fork of the actuall processing or fake
-				Learn learn = new Learn();
+				ILearn learn = new LearnDummy();
 				final ListenableFuture<LearnResult> futureResult = executorService.submit(learn);
 				activeLearnFutures.put(matrixGenerationConfiguration.getId(), futureResult);
 				futureResult.addListener(new Runnable() {
@@ -207,7 +210,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 	
 	@Override
-	public ParseInvocation parse(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration) {
+	public ParseInvocation parse(final AuthenticationToken authenticationToken, final MatrixGenerationConfiguration matrixGenerationConfiguration) {
 		if(authenticationService.isValidSession(authenticationToken).getResult()) {
 			try {
 				final Task task = matrixGenerationConfiguration.getTask();
@@ -218,8 +221,11 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				TaskDAO.getInstance().updateTask(task);
 				
 				//fork of the actuall processing or fake
-				Parse parse = new Parse();
-				ListenableFuture<ParseResult> futureResult = executorService.submit(parse);
+				String config = matrixGenerationConfiguration.getGlossary().getName();
+				String input = matrixGenerationConfiguration.getInput();
+				String tablePrefix = String.valueOf(matrixGenerationConfiguration.getId());
+				IParse parse = new Parse(authenticationToken, config, input, tablePrefix);
+				final ListenableFuture<ParseResult> futureResult = executorService.submit(parse);
 				activeParseFutures.put(matrixGenerationConfiguration.getId(), futureResult);
 				futureResult.addListener(new Runnable() {
 					@Override
@@ -248,25 +254,34 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		boolean result = false;
 		if(authenticationService.isValidSession(authenticationToken).getResult()) {
 			try {
+				// TODO: create a directory parallel to input directory with name "input dir name" + _MGResult.. with result files inside
+				//result = fileService.createFile(authenticationToken, matrixGenerationJob..getOutputFile());
+				
 				Task task = matrixGenerationConfiguration.getTask();
+				matrixGenerationConfiguration.setOutput(matrixGenerationConfiguration.getInput() + "_" + task.getName());
+				MatrixGenerationConfigurationDAO.getInstance().updateMatrixGenerationConfiguration(matrixGenerationConfiguration);
+
+				String outputDirectory = matrixGenerationConfiguration.getOutput();
+				String target = outputDirectory.substring(0, outputDirectory.lastIndexOf("//"));
+				String newDirectory = outputDirectory.substring(outputDirectory.lastIndexOf("//"), outputDirectory.length());
+				result = fileService.createDirectory(authenticationToken, target, newDirectory);
+				
+				File outDirectory = new File("workspace" + File.separator + "FNA_v7" + File.separator + "out");
+				for(File outFile : outDirectory.listFiles()) {
+					File targetFile = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + 
+							matrixGenerationConfiguration.getOutput() + "//" + outFile.getName());
+					Files.copy(outFile, targetFile);
+				}
+				
+				
 				TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
 				TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.OUTPUT);
 				task.setTaskStage(taskStage);
 				task.setResumable(false);
 				task.setCompleted(true);
 				TaskDAO.getInstance().updateTask(task);
-
-				matrixGenerationConfiguration.setOutput(matrixGenerationConfiguration.getInput() + "_" + task.getName());
-				MatrixGenerationConfigurationDAO.getInstance().updateMatrixGenerationConfiguration(matrixGenerationConfiguration);
 				
-				// TODO: create a directory parallel to input directory with name "input dir name" + _MGResult.. with result files inside
-				//result = fileService.createFile(authenticationToken, matrixGenerationJob..getOutputFile());
-				
-				String outputDirectory = matrixGenerationConfiguration.getOutput();
-				String target = outputDirectory.substring(0, outputDirectory.lastIndexOf("//"));
-				String newDirectory = outputDirectory.substring(outputDirectory.lastIndexOf("//"), outputDirectory.length());
-				result = fileService.createDirectory(authenticationToken, target, newDirectory);
-				return result;
+				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

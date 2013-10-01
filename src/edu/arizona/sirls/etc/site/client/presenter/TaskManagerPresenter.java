@@ -122,7 +122,7 @@ public class TaskManagerPresenter {
 	private Panel getActionsPanel(final Task task, final int row) { 
 		HorizontalPanel actionsPanel = new HorizontalPanel();
 		if(task.isResumable()) {
-			Image resumeImage = new Image("images/Success.gif");
+			Image resumeImage = new Image("images/play.png");
 			resumeImage.setSize("15px", "15px");
 			resumeImage.addClickHandler(new ClickHandler() {
 				@Override

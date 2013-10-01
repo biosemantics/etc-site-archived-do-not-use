@@ -17,3 +17,5 @@
 /war/WEB-INF/lib/gwt-servlet.jar
 
 *.properties
+/war/workspace
+/war/resources/charaparser
