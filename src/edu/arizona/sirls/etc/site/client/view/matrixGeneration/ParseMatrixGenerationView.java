@@ -74,8 +74,11 @@ public class ParseMatrixGenerationView extends MatrixGenerationView implements P
 
 	@Override
 	public void setNonResumableStatus() {
-		statusImage = new Image("images/loader3.gif");
+		statusPanel.clear();
+		statusImage = new Image("images/loader3.png");
 		statusImage.addStyleName("infoImage");
+		statusPanel.add(statusImage);
+		statusPanel.add(taskManagerFlowPanel);
 	}
 
 	/*
