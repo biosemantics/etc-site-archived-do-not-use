@@ -19,6 +19,7 @@ public class FileManagerPresenter implements Presenter {
 	private HandlerManager eventBus;
 	private Display display;
 	private IFileServiceAsync fileService;
+	private ManagableFileTreePresenter managableFileTreePresenter;
 
 	public FileManagerPresenter(HandlerManager eventBus,
 			Display display, IFileServiceAsync fileService) {
@@ -30,7 +31,7 @@ public class FileManagerPresenter implements Presenter {
 
 	private void bind() {
 		ManagableFileTreeView managableFileTreeView = new ManagableFileTreeView();
-		ManagableFileTreePresenter managableFileTreePresenter = new ManagableFileTreePresenter(
+		managableFileTreePresenter = new ManagableFileTreePresenter(
 				eventBus, managableFileTreeView, fileService, true, FileFilter.ALL);
 		display.addFileTreeView(managableFileTreeView);
 	}
@@ -39,6 +40,7 @@ public class FileManagerPresenter implements Presenter {
 	public void go(HasWidgets content) {
 		content.clear();
 		content.add(display.asWidget());
+		managableFileTreePresenter.refresh();
 		ManagableFileTreePresenter.setInputFileMultiple();
 	}
 }

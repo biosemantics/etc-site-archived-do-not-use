@@ -364,6 +364,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	private void logout() {
 		Authentication.getInstance().destory();
 		this.presentHeader();
+		eventBus.fireEvent(new HomeEvent());
 	}
 	
 	protected void login(String username, String sessionID) {

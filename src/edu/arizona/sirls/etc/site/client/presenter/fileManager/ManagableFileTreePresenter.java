@@ -351,6 +351,10 @@ public class ManagableFileTreePresenter implements Presenter {
 		}
 	}
 	
+	public void refresh() {
+		this.fileTreePresenter.refresh();
+	}
+	
 	private void disableManagement() {
 		display.getCreateDirectoryButton().setEnabled(false);
 		display.getRenameButton().setEnabled(false);

@@ -256,12 +256,17 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				task.setCompleted(true);
 				TaskDAO.getInstance().updateTask(task);
 
-				matrixGenerationConfiguration.setOutput(matrixGenerationConfiguration.getInput() + "_MGResult");
+				matrixGenerationConfiguration.setOutput(matrixGenerationConfiguration.getInput() + "_" + task.getName());
 				MatrixGenerationConfigurationDAO.getInstance().updateMatrixGenerationConfiguration(matrixGenerationConfiguration);
 				
 				// TODO: create a directory parallel to input directory with name "input dir name" + _MGResult.. with result files inside
 				//result = fileService.createFile(authenticationToken, matrixGenerationJob..getOutputFile());
-				return true;
+				
+				String outputDirectory = matrixGenerationConfiguration.getOutput();
+				String target = outputDirectory.substring(0, outputDirectory.lastIndexOf("//"));
+				String newDirectory = outputDirectory.substring(outputDirectory.lastIndexOf("//"), outputDirectory.length());
+				result = fileService.createDirectory(authenticationToken, target, newDirectory);
+				return result;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

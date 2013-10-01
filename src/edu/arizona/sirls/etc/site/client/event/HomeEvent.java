@@ -20,7 +20,7 @@ public class HomeEvent extends GwtEvent<HomeEventHandler> implements ETCSiteEven
 
 	@Override
 	public boolean requiresLogin() {
-		return true;
+		return false;
 	}
 
 	@Override

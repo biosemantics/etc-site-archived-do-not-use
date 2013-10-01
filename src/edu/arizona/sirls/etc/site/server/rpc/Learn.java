@@ -12,7 +12,7 @@ public class Learn implements Callable<LearnResult> {
 
 	@Override
 	public LearnResult call() throws Exception {
-		Thread.sleep(30000);
+		Thread.sleep(10000);
 		otoId = 54;
 		return new LearnResult(otoId);
 	}

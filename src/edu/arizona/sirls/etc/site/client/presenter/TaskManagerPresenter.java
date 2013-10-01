@@ -73,7 +73,7 @@ public class TaskManagerPresenter {
 	        	refresh();
 	        }
 		};
-		timer.scheduleRepeating(5000);
+		timer.scheduleRepeating(30000);
 	}
 	
 	private void refresh() {

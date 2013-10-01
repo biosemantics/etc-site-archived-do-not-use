@@ -104,7 +104,7 @@ public class InputMatrixGenerationPresenter /*implements IFileSelectClickHandler
 			@Override
 			public void onClick(ClickEvent event) { 
 				matrixGenerationService.start(Authentication.getInstance().getAuthenticationToken(), 
-						taxonDescriptionFile.toString() + "_" + display.getNameTextBox().getText(), 
+						display.getNameTextBox().getText(), 
 						taxonDescriptionFile.toString(), 
 						display.getGlossaryListBox().getItemText(display.getGlossaryListBox().getSelectedIndex()),
 						new AsyncCallback<MatrixGenerationConfiguration>() {
