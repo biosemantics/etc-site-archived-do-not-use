@@ -11,45 +11,44 @@ public class TaskTypeDAO extends AbstractDAO {
 
 	private static TaskTypeDAO instance;
 
-	public TaskTypeDAO() throws IOException, ClassNotFoundException {
+	public TaskTypeDAO() throws IOException, ClassNotFoundException, SQLException {
 		super();
 	}
 
-	public static TaskTypeDAO getInstance() throws ClassNotFoundException, IOException {
+	public static TaskTypeDAO getInstance() throws ClassNotFoundException, IOException, SQLException {
 		if(instance == null)
 			instance = new TaskTypeDAO();
 		return instance;
 	}
 
-	public TaskType getTaskType(int id) throws SQLException {
+	public TaskType getTaskType(int id) throws SQLException, ClassNotFoundException, IOException {
 		TaskType taskType = null;
-		this.openConnection();
-		PreparedStatement statement = this.executeSQL("SELECT * FROM tasktypes WHERE id = " + id);
-		ResultSet result = statement.getResultSet();
-		
+		Query query = new Query("SELECT * FROM tasktypes WHERE id = " + id);
+		query.execute();
+		query.getResultSet();
+		ResultSet result = query.getResultSet();
 		while(result.next()) {
 			id = result.getInt(1);
 			String name = result.getString(2);
 			long created = result.getLong(3);
 			taskType = new TaskType(id, edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.valueOf(name), created);
 		}
-		this.closeConnection();
+		query.close();
 		return taskType;
 	}
 	
-	public TaskType getTaskType(TaskTypeEnum taskTypeEnum) throws SQLException {		
+	public TaskType getTaskType(TaskTypeEnum taskTypeEnum) throws SQLException, ClassNotFoundException, IOException {		
 		TaskType taskType = null;
-		this.openConnection();
-		PreparedStatement statement = this.executeSQL("SELECT * FROM tasktypes WHERE name = '" + taskTypeEnum.toString() + "'");
-		ResultSet result = statement.getResultSet();
-		
+		Query query = new Query("SELECT * FROM tasktypes WHERE name = '" + taskTypeEnum.toString() + "'");
+		query.execute();
+		ResultSet result = query.getResultSet();
 		while(result.next()) {
 			int id = result.getInt(1);
 			taskTypeEnum = TaskTypeEnum.valueOf(result.getString(2));
 			long created = result.getLong(3);
 			taskType = new TaskType(id, taskTypeEnum, created);
 		}
-		this.closeConnection();
+		query.close();
 		return taskType;
 	}
 }

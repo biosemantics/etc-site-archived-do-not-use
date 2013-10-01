@@ -1,19 +1,19 @@
 package edu.arizona.sirls.etc.site.shared.rpc.db;
 
 import java.io.IOException;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 
 public class MatrixGenerationConfigurationDAO extends AbstractDAO {
 
 	private static MatrixGenerationConfigurationDAO instance;
 
-	public MatrixGenerationConfigurationDAO() throws IOException, ClassNotFoundException {
+	public MatrixGenerationConfigurationDAO() throws IOException, ClassNotFoundException, SQLException {
 		super();
 	}
 
-	public static MatrixGenerationConfigurationDAO getInstance() throws ClassNotFoundException, IOException {
+	public static MatrixGenerationConfigurationDAO getInstance() throws ClassNotFoundException, IOException, SQLException {
 		if(instance == null)
 			instance = new MatrixGenerationConfigurationDAO();
 		return instance;
@@ -21,10 +21,9 @@ public class MatrixGenerationConfigurationDAO extends AbstractDAO {
 	
 	public MatrixGenerationConfiguration getMatrixGenerationConfiguration(int id) throws SQLException, ClassNotFoundException, IOException {
 		MatrixGenerationConfiguration matrixGenerationConfiguration = null;
-		this.openConnection();
-		PreparedStatement statement = this.executeSQL("SELECT * FROM matrixgenerationconfiguration WHERE id = " + id);
-		ResultSet result = statement.getResultSet();
-		
+		Query query = new Query("SELECT * FROM matrixgenerationconfiguration WHERE id = " + id);
+		query.execute();
+		ResultSet result = query.getResultSet();
 		while(result.next()) {
 			id = result.getInt(1);
 			String input = result.getString(2);
@@ -37,33 +36,32 @@ public class MatrixGenerationConfigurationDAO extends AbstractDAO {
 			Task task = TaskDAO.getInstance().getTask(taskId);
 			matrixGenerationConfiguration = new MatrixGenerationConfiguration(id, input, glossary, oto, output, task, created);
 		}
-		this.closeConnection();
+		query.close();
 		return matrixGenerationConfiguration;
 	}
 
 	public MatrixGenerationConfiguration addMatrixGenerationConfiguration(MatrixGenerationConfiguration matrixGenerationConfiguration) throws SQLException, ClassNotFoundException, IOException {
 		MatrixGenerationConfiguration result = null;
-		this.openConnection();
-		PreparedStatement statement = this.executeSQL("INSERT INTO `matrixgenerationconfiguration` " +
+		Query query = new Query("INSERT INTO `matrixgenerationconfiguration` " +
 				"(`input`, `glossary`, `oto`, `output`, `task`) VALUES ('" + matrixGenerationConfiguration.getInput() + 
 				"', " + matrixGenerationConfiguration.getGlossary().getId() + 
 				", " + matrixGenerationConfiguration.getOtoId() + 
 				", '" + matrixGenerationConfiguration.getOutput() + "'" +
-				", " + matrixGenerationConfiguration.getTask().getId() + ")");		
-		ResultSet generatedKeys = statement.getGeneratedKeys();
-        if (generatedKeys.next()) {
+				", " + matrixGenerationConfiguration.getTask().getId() + ")");
+		query.execute();
+		ResultSet generatedKeys = query.getGeneratedKeys();
+		if (generatedKeys.next()) {
             result = this.getMatrixGenerationConfiguration(generatedKeys.getInt(1));
         }
-		this.closeConnection();
+		query.close();
 		return result;
 	}
 
 	public MatrixGenerationConfiguration getMatrixGenerationConfigurationFromTask(int taskId) throws SQLException, ClassNotFoundException, IOException {
 		MatrixGenerationConfiguration matrixGenerationConfiguration = null;
-		this.openConnection();
-		PreparedStatement statement = this.executeSQL("SELECT * FROM matrixgenerationconfiguration WHERE task = " + taskId);
-		ResultSet result = statement.getResultSet();
-		
+		Query query = new Query("SELECT * FROM matrixgenerationconfiguration WHERE task = " + taskId);
+		query.execute();
+		ResultSet result = query.getResultSet();
 		while(result.next()) {
 			int id = result.getInt(1);
 			String input = result.getString(2);
@@ -76,27 +74,25 @@ public class MatrixGenerationConfigurationDAO extends AbstractDAO {
 			Task task = TaskDAO.getInstance().getTask(taskId);
 			matrixGenerationConfiguration = new MatrixGenerationConfiguration(id, input, glossary, oto, output, task, created);
 		}
-		this.closeConnection();
+		query.close();
 		return matrixGenerationConfiguration;
 	}
 
-	public void updateMatrixGenerationConfiguration(MatrixGenerationConfiguration matrixGenerationConfiguration) throws SQLException {
-		this.openConnection();
+	public void updateMatrixGenerationConfiguration(MatrixGenerationConfiguration matrixGenerationConfiguration) throws SQLException, ClassNotFoundException, IOException {
 		int id = matrixGenerationConfiguration.getId();
 		int glossaryId = matrixGenerationConfiguration.getGlossary().getId();
 		String input = matrixGenerationConfiguration.getInput();
 		String output = matrixGenerationConfiguration.getOutput();
 		int taskId = matrixGenerationConfiguration.getTask().getId();
 		int otoId = matrixGenerationConfiguration.getOtoId();
-		this.executeSQL("UPDATE matrixgenerationconfiguration SET glossary = " + glossaryId + ", input = '" + input + "', " +
+		Query query = new Query("UPDATE matrixgenerationconfiguration SET glossary = " + glossaryId + ", input = '" + input + "', " +
 				"output = '" + output + "', task = " + taskId + ", oto = " + otoId +" WHERE id = " + id);
-		this.closeConnection();
+		query.executeAndClose();
 	}
 
-	public void remove(MatrixGenerationConfiguration matrixGenerationConfiguration) throws SQLException {
-		this.openConnection();
+	public void remove(MatrixGenerationConfiguration matrixGenerationConfiguration) throws SQLException, ClassNotFoundException, IOException {
 		int id = matrixGenerationConfiguration.getId();
-		this.executeSQL("DELETE FROM matrixgenerationconfiguration WHERE id = " + id);
-		this.closeConnection();
+		Query query = new Query("DELETE FROM matrixgenerationconfiguration WHERE id = " + id);
+		query.executeAndClose();
 	}
 }

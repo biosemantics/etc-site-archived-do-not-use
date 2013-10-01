@@ -18,11 +18,11 @@ public class TaskDAO extends AbstractDAO {
 
 	private static TaskDAO instance;
 
-	private TaskDAO() throws IOException, ClassNotFoundException {
+	private TaskDAO() throws IOException, ClassNotFoundException, SQLException {
 		super();
 	}
 	
-	public static TaskDAO getInstance() throws ClassNotFoundException, IOException {
+	public static TaskDAO getInstance() throws ClassNotFoundException, IOException, SQLException {
 		if(instance == null)
 			instance = new TaskDAO();
 		return instance;
@@ -30,10 +30,9 @@ public class TaskDAO extends AbstractDAO {
 	
 	public Task getTask(int id) throws SQLException, ClassNotFoundException, IOException {
 		Task task = null;
-		this.openConnection();
-		PreparedStatement statement = this.executeSQL("SELECT * FROM tasks WHERE id = " + id);
-		ResultSet result = statement.getResultSet();
-		
+		Query query = new Query("SELECT * FROM tasks WHERE id = " + id);
+		query.execute();
+		ResultSet result = query.getResultSet();
 		while(result.next()) {
 			id = result.getInt(1);
 			int userId = result.getInt(2);
@@ -46,16 +45,16 @@ public class TaskDAO extends AbstractDAO {
 			TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskStageId);
 			task = new Task(id, user, taskStage, name, resumable, completed, created);
 		}
-		this.closeConnection();
+		query.close();
 		return task;
 	}
 	
 	
 	public List<Task> getUsersTasks(int id) throws SQLException, ClassNotFoundException, IOException {
 		List<Task> tasks = new LinkedList<Task>();
-		this.openConnection();
-		PreparedStatement statement = this.executeSQL("SELECT * FROM tasks WHERE user = " + id + " AND completed = false");
-		ResultSet result = statement.getResultSet();
+		Query query = new Query("SELECT * FROM tasks WHERE user = " + id + " AND completed = false");
+		query.execute();
+		ResultSet result = query.getResultSet();
 		while(result.next()) {
 			id = result.getInt(1);
 			int userId = result.getInt(2);
@@ -69,7 +68,7 @@ public class TaskDAO extends AbstractDAO {
 			Task task = new Task(id, user, taskStage, name, resumable, completed, created);
 			tasks.add(task);
 		}
-		this.closeConnection();
+		query.close();
 		return tasks;
 	}
 
@@ -87,9 +86,9 @@ public class TaskDAO extends AbstractDAO {
 
 	private List<Task> getUsersPastTasks(int id) throws SQLException, ClassNotFoundException, IOException {
 		List<Task> tasks = new LinkedList<Task>();
-		this.openConnection();
-		PreparedStatement statement = this.executeSQL("SELECT * FROM tasks WHERE user = " + id + " AND completed=true");
-		ResultSet result = statement.getResultSet();
+		Query query = new Query("SELECT * FROM tasks WHERE user = " + id + " AND completed=true");
+		query.execute();
+		ResultSet result = query.getResultSet();
 		while(result.next()) {
 			id = result.getInt(1);
 			int userId = result.getInt(2);
@@ -103,45 +102,44 @@ public class TaskDAO extends AbstractDAO {
 			Task task = new Task(id, user, taskStage, name, resumable, completed, created);
 			tasks.add(task);
 		}
-		this.closeConnection();
+		query.close();
 		return tasks;
 	}
 
 	public Task addTask(Task task) throws SQLException, ClassNotFoundException, IOException {
 		Task result = null;
-		this.openConnection();
-		PreparedStatement statement =  this.executeSQL("INSERT INTO `tasks` (`user`, `taskstage`, `name`, `resumable`, `completed`) VALUES " +
+		Query query = new Query("INSERT INTO `tasks` (`user`, `taskstage`, `name`, `resumable`, `completed`) VALUES " +
 				"(" + task.getUser().getId() + 
 				", " + task.getTaskStage().getId() + 
 				", '" + task.getName() + "'" +
 				", " + task.isResumable() + "" +
 				", " + task.isCompleted() + ")");
-		ResultSet generatedKeys = statement.getGeneratedKeys();
+		query.execute();
+		ResultSet generatedKeys = query.getGeneratedKeys();
         if (generatedKeys.next()) {
             result = this.getTask(generatedKeys.getInt(1));
         }
-		this.closeConnection();
+		query.close();
 		return result;
 	}
 
 	public void updateTask(Task task) throws SQLException, ClassNotFoundException, IOException {
-		this.openConnection();
+		
 		int id = task.getId();
 		String name = task.getName();
 		int taskStageId = task.getTaskStage().getId();
 		int userId = task.getUser().getId();
 		boolean resumable = task.isResumable();
 		boolean completed = task.isCompleted();
-		this.executeSQL("UPDATE tasks SET name = '" + name + "', taskstage=" + taskStageId + ", user=" + userId + ", resumable=" + 
+		Query query = new Query("UPDATE tasks SET name = '" + name + "', taskstage=" + taskStageId + ", user=" + userId + ", resumable=" + 
 				resumable + ", completed=" + completed + " WHERE id = " + id);
-		this.closeConnection();
+		query.executeAndClose();
 	}
 
-	public void removeTask(Task task) throws SQLException {
-		this.openConnection();
+	public void removeTask(Task task) throws SQLException, ClassNotFoundException, IOException {
 		int id = task.getId();
-		this.executeSQL("DELETE FROM tasks WHERE id = " + id);
-		this.closeConnection();
+		Query query = new Query("DELETE FROM tasks WHERE id = " + id);
+		query.executeAndClose();
 	}
 
 

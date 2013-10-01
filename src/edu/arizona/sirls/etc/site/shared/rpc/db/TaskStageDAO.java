@@ -9,13 +9,13 @@ import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 public class TaskStageDAO extends AbstractDAO {
 
-	private TaskStageDAO() throws IOException, ClassNotFoundException {
+	private TaskStageDAO() throws IOException, ClassNotFoundException, SQLException {
 		super();
 	}
 
 	private static TaskStageDAO instance;
 
-	public static TaskStageDAO getInstance() throws ClassNotFoundException, IOException {
+	public static TaskStageDAO getInstance() throws ClassNotFoundException, IOException, SQLException {
 		if(instance == null)
 			instance = new TaskStageDAO();
 		return instance;
@@ -23,10 +23,9 @@ public class TaskStageDAO extends AbstractDAO {
 	
 	public TaskStage getTaskStage(int id) throws SQLException, ClassNotFoundException, IOException {
 		TaskStage taskStage = null;
-		this.openConnection();
-		PreparedStatement statement = this.executeSQL("SELECT * FROM taskstages WHERE id = " + id);
-		ResultSet result = statement.getResultSet();
-		
+		Query query = new Query("SELECT * FROM taskstages WHERE id = " + id);
+		query.execute();
+		ResultSet result = query.getResultSet();
 		while(result.next()) {
 			id = result.getInt(1);
 			int tasktypeId = result.getInt(2);
@@ -35,17 +34,16 @@ public class TaskStageDAO extends AbstractDAO {
 			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(tasktypeId);
 			taskStage = new TaskStage(id, taskType, taskStageEnum, created);
 		}
-		this.closeConnection();
+		query.close();
 		return taskStage;
 	}
 
 	public TaskStage getTaskStage(TaskType taskType, TaskStageEnum taskStageEnum) throws SQLException, ClassNotFoundException, IOException {		
 		TaskStage taskStage = null;
-		this.openConnection();
-		PreparedStatement statement = this.executeSQL("SELECT * FROM taskstages WHERE tasktype = " + taskType.getId() + " AND " +
+		Query query = new Query("SELECT * FROM taskstages WHERE tasktype = " + taskType.getId() + " AND " +
 				"name = '" + taskStageEnum.toString() + "'");
-		ResultSet result = statement.getResultSet();
-		
+		query.execute();
+		ResultSet result = query.getResultSet();		
 		while(result.next()) {
 			int id = result.getInt(1);
 			int taskTypeId = result.getInt(2);
@@ -54,7 +52,7 @@ public class TaskStageDAO extends AbstractDAO {
 			taskType = TaskTypeDAO.getInstance().getTaskType(taskTypeId);
 			taskStage = new TaskStage(id, taskType, taskStageEnum, created);
 		}
-		this.closeConnection();
+		query.close();
 		return taskStage;
 	}
 
