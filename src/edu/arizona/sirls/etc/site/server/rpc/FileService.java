@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.google.gwt.thirdparty.guava.common.io.Files;
+import com.google.common.io.Files;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;

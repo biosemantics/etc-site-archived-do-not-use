@@ -24,9 +24,9 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
 import com.google.common.io.Files;
-import com.google.gwt.thirdparty.guava.common.util.concurrent.ListenableFuture;
-import com.google.gwt.thirdparty.guava.common.util.concurrent.ListeningExecutorService;
-import com.google.gwt.thirdparty.guava.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
