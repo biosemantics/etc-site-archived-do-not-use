@@ -45,8 +45,8 @@ public class Authentication {
 	}
 	
 	public void destory() {
-		Cookies.removeCookie(CookieVariable.sessionID);
-		Cookies.removeCookie(CookieVariable.username);
+		Cookies.removeCookie(CookieVariable.sessionID, "/");
+		Cookies.removeCookie(CookieVariable.username, "/");
 	}
 
 	public AuthenticationToken getAuthenticationToken() {
