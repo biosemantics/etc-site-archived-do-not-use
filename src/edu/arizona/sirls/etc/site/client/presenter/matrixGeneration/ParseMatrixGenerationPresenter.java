@@ -7,6 +7,7 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
@@ -24,7 +25,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.ParseInvocation;
 public class ParseMatrixGenerationPresenter {
 
 	public interface Display {
-		//Button getNextButton();
+		Button getNextButton();
 		Widget asWidget();
 		Anchor getTaskManagerAnchor();
 		void setResumableStatus();
@@ -38,6 +39,7 @@ public class ParseMatrixGenerationPresenter {
 	private MatrixGenerationConfiguration matrixGenerationConfiguration;
 	private LoadingPopup loadingPopup = new LoadingPopup();
 	private ITaskServiceAsync taskService;
+	private Timer refreshTimer;
 
 	public ParseMatrixGenerationPresenter(HandlerManager eventBus,
 			Display display, IMatrixGenerationServiceAsync matrixGenerationService, 
@@ -56,13 +58,12 @@ public class ParseMatrixGenerationPresenter {
 				eventBus.fireEvent(new TaskManagerEvent());
 			}
 		});
-		/*display.getNextButton().setEnabled(false);
 		display.getNextButton().addClickHandler(new ClickHandler() { 
 			@Override
 			public void onClick(ClickEvent event) { 
 				eventBus.fireEvent(new OutputMatrixGenerationEvent());
 			}
-		});*/
+		});
 	}
 
 	public void go(final HasWidgets content, MatrixGenerationConfiguration matrixGenerationConfiguration) {
@@ -83,12 +84,12 @@ public class ParseMatrixGenerationPresenter {
 			}
 		});
 		
-		Timer timer = new Timer() {
+		refreshTimer = new Timer() {
 	        public void run() {
 	        	refresh();
 	        }
 		};
-		timer.scheduleRepeating(5000);
+		refreshTimer.scheduleRepeating(5000);
 	}
 	
 	private void refresh() {
@@ -102,6 +103,7 @@ public class ParseMatrixGenerationPresenter {
 				@Override
 				public void onSuccess(Boolean isResumable) {
 					if(isResumable) {
+						refreshTimer.cancel();
 						display.setResumableStatus();
 						display.getResumableClickable().addClickHandler(new ClickHandler() {
 							@Override

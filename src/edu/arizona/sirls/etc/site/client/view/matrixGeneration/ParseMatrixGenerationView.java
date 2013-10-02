@@ -17,8 +17,7 @@ import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.ParseMatrixG
 
 public class ParseMatrixGenerationView extends MatrixGenerationView implements ParseMatrixGenerationPresenter.Display {
 
-	//private Button nextButton;
-
+	private Button nextButton;
 	private Anchor taskManagerAnchor;
 	private HorizontalPanel statusPanel;
 	private FlowPanel taskManagerFlowPanel;
@@ -47,9 +46,8 @@ public class ParseMatrixGenerationView extends MatrixGenerationView implements P
 		taskManagerFlowPanel.add(new InlineLabel("."));
 		panel.add(statusPanel);
 		
-		//only while we don't use real tasks/face process
-		//this.nextButton = new Button("Next");
-		//panel.add(nextButton);
+		this.nextButton = new Button("Next");
+		panel.add(nextButton);
 		return panel;
 	}
 
@@ -60,6 +58,7 @@ public class ParseMatrixGenerationView extends MatrixGenerationView implements P
 	
 	@Override
 	public void setResumableStatus() {
+		this.nextButton.setVisible(true);
 		statusPanel.clear();
 		statusImage = new Image("images/play.png");
 		statusImage.addStyleName("infoImage");
@@ -74,6 +73,7 @@ public class ParseMatrixGenerationView extends MatrixGenerationView implements P
 
 	@Override
 	public void setNonResumableStatus() {
+		this.nextButton.setVisible(false);
 		statusPanel.clear();
 		statusImage = new Image("images/loader3.gif");
 		statusImage.addStyleName("infoImage");
@@ -81,9 +81,9 @@ public class ParseMatrixGenerationView extends MatrixGenerationView implements P
 		statusPanel.add(taskManagerFlowPanel);
 	}
 
-	/*
+	
 	@Override
 	public Button getNextButton() {
 		return this.nextButton;
-	}*/
+	}
 }

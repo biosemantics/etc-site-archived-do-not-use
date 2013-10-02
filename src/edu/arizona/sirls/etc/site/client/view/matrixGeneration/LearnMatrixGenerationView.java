@@ -2,6 +2,7 @@ package edu.arizona.sirls.etc.site.client.view.matrixGeneration;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -18,7 +19,7 @@ public class LearnMatrixGenerationView extends MatrixGenerationView implements L
 	
 	private Label sentencesLabel;
 	private Label wordsLabel;
-	//private Button nextButton;
+	private Button nextButton;
 	private Anchor taskManagerAnchor;
 	private HorizontalPanel statusPanel;
 	private FlowPanel taskManagerFlowPanel;
@@ -60,9 +61,8 @@ public class LearnMatrixGenerationView extends MatrixGenerationView implements L
 		taskManagerFlowPanel.add(new InlineLabel("."));
 		panel.add(statusPanel);
 
-		//only for design purpose, until we have a fake process
-		//this.nextButton = new Button("Next");
-		//panel.add(nextButton);
+		this.nextButton = new Button("Next");
+		panel.add(nextButton);
 		return panel;
 	}
 
@@ -83,6 +83,7 @@ public class LearnMatrixGenerationView extends MatrixGenerationView implements L
 
 	@Override
 	public void setResumableStatus() {
+		this.nextButton.setVisible(true);
 		statusPanel.clear();
 		statusImage = new Image("images/play.png");
 		statusImage.addStyleName("infoImage");
@@ -97,6 +98,7 @@ public class LearnMatrixGenerationView extends MatrixGenerationView implements L
 
 	@Override
 	public void setNonResumableStatus() {
+		this.nextButton.setVisible(false);
 		statusPanel.clear();
 		statusImage = new Image("images/loader3.gif");
 		statusImage.addStyleName("infoImage");
@@ -104,9 +106,9 @@ public class LearnMatrixGenerationView extends MatrixGenerationView implements L
 		statusPanel.add(taskManagerFlowPanel);
 	}
 	
-	/*@Override
+	@Override
 	public Button getNextButton() {
 		return this.nextButton;
-	}*/
+	}
 
 }
