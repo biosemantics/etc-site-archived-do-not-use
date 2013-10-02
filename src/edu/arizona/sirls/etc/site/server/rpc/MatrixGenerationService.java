@@ -155,7 +155,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				
 				String config = matrixGenerationConfiguration.getGlossary().getName();
 				String input = matrixGenerationConfiguration.getInput();
-				String tablePrefix = String.valueOf(matrixGenerationConfiguration.getId());
+				String tablePrefix = String.valueOf(task.getId());
 				ILearn learn = new Learn(authenticationToken, config, input, tablePrefix);
 				final ListenableFuture<LearnResult> futureResult = executorService.submit(learn);
 				activeLearnFutures.put(matrixGenerationConfiguration.getId(), futureResult);
@@ -224,7 +224,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				
 				String config = matrixGenerationConfiguration.getGlossary().getName();
 				String input = matrixGenerationConfiguration.getInput();
-				String tablePrefix = String.valueOf(matrixGenerationConfiguration.getId());
+				String tablePrefix = String.valueOf(task.getId());
 				IParse parse = new Parse(authenticationToken, config, input, tablePrefix);
 				final ListenableFuture<ParseResult> futureResult = executorService.submit(parse);
 				activeParseFutures.put(matrixGenerationConfiguration.getId(), futureResult);
@@ -267,7 +267,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				String newDirectory = outputDirectory.substring(outputDirectory.lastIndexOf("//"), outputDirectory.length());
 				result = fileService.createDirectory(authenticationToken, target, newDirectory);
 				
-				File outDirectory = new File("workspace" + File.separator + "FNA_v7" + File.separator + "out");
+				File outDirectory = new File("workspace" + File.separator + task.getId() + File.separator + "out");
 				for(File outFile : outDirectory.listFiles()) {
 					File targetFile = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + 
 							matrixGenerationConfiguration.getOutput() + "//" + outFile.getName());

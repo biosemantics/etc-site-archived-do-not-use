@@ -46,7 +46,6 @@ public class LoggedInHeaderPresenter implements Presenter {
 		this.display.getLogoutButton().addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				eventBus.fireEvent(new LogoutEvent());
-				eventBus.fireEvent(new HomeEvent());
 			}
 		});
 		this.display.getHelpImageLabelComposite().addClickHandler(new ClickHandler() {
