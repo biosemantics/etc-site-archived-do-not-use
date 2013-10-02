@@ -4,11 +4,8 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Properties;
 
-import com.google.gwt.thirdparty.guava.common.io.Files;
-
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.server.Configuration;
-import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 
 import semanticMarkup.MarkupMain;
 
@@ -38,8 +35,9 @@ public class Parse implements IParse {
 		String databasePassword = properties.getProperty("databasePassword");
 		String databaseHost = "localhost";
 		String databasePort = "3306";
-		tablePrefix = "FNA_v7";
-		String[] args = new String[] { "-c", config, "-r", "resources" + File.separator + "charaparser", 
+		String resources = "resources" + File.separator + "charaparser" + File.separator + "resources";
+		String src = "resources" + File.separator + "charaparser" + File.separator + "src";
+		String[] args = new String[] { "-c", config, "-r", resources, "-l", src,
 				"-n", databaseHost, "-p", databasePort, "-d", databaseName, "-u", databaseUser, 
 				"-s", databasePassword, "-i", fileSystemInput, "-z" , tablePrefix };
 		MarkupMain.main(args);

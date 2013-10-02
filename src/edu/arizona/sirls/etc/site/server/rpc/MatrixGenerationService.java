@@ -153,8 +153,10 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				int numberOfSentences = getNumberOfSentences();
 				int numberOfWords = getNumberOfWords();
 				
-				//fork of the actuall processing or fake
-				ILearn learn = new LearnDummy();
+				String config = matrixGenerationConfiguration.getGlossary().getName();
+				String input = matrixGenerationConfiguration.getInput();
+				String tablePrefix = String.valueOf(matrixGenerationConfiguration.getId());
+				ILearn learn = new Learn(authenticationToken, config, input, tablePrefix);
 				final ListenableFuture<LearnResult> futureResult = executorService.submit(learn);
 				activeLearnFutures.put(matrixGenerationConfiguration.getId(), futureResult);
 				futureResult.addListener(new Runnable() {
@@ -220,7 +222,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				task.setResumable(false);
 				TaskDAO.getInstance().updateTask(task);
 				
-				//fork of the actuall processing or fake
 				String config = matrixGenerationConfiguration.getGlossary().getName();
 				String input = matrixGenerationConfiguration.getInput();
 				String tablePrefix = String.valueOf(matrixGenerationConfiguration.getId());
