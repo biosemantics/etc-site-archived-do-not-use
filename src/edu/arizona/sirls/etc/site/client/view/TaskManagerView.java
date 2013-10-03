@@ -25,6 +25,9 @@ public class TaskManagerView extends Composite implements TaskManagerPresenter.D
 				"<div id='taskManagerContent'></div></div>");
 		
 		VerticalPanel verticalPanel = new VerticalPanel();
+		Label headingLabel = new Label("Task Manager");
+		headingLabel.addStyleName("siteHeading");
+		verticalPanel.add(headingLabel);
 		
 		VerticalPanel yourTasksPanel = new VerticalPanel();
 		yourTasksPanel.add(new Label("Your tasks"));
@@ -63,6 +66,8 @@ public class TaskManagerView extends Composite implements TaskManagerPresenter.D
 		//horizontalPanel.add(yourTasksTable);
 		//horizontalPanel.add(sharedTasksTable);
 
+		yourTasksPanel.addStyleName("yourTasksTable");
+		historyPanel.addStyleName("historyTasksTable");
 		verticalPanel.add(yourTasksPanel);
 		verticalPanel.add(historyPanel);
 		
