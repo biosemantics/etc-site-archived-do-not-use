@@ -47,7 +47,7 @@ public class MatrixGenerationEvent extends GwtEvent<MatrixGenerationEventHandler
 
 	@Override
 	public HistoryState getHistoryState() {
-		return HistoryState.INPUT_MATRIX_GENERATION;
+		return HistoryState.MATRIX_GENERATION;
 	}
 
 	@Override

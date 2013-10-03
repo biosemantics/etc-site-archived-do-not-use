@@ -164,8 +164,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				     		try {
 				     			matrixGenerationConfiguration.setOtoId(futureResult.get().getOtoId());
 								MatrixGenerationConfigurationDAO.getInstance().updateMatrixGenerationConfiguration(matrixGenerationConfiguration);
-								TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.REVIEW_TERMS);
-								task.setTaskStage(taskStage);
 								task.setResumable(true);
 								TaskDAO.getInstance().updateTask(task);
 							} catch (Exception e) {
@@ -232,8 +230,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 					@Override
 					public void run() {
 						try {
-							TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.OUTPUT);
-							task.setTaskStage(taskStage);
 							task.setResumable(true);
 							TaskDAO.getInstance().updateTask(task);
 						} catch (Exception e) {

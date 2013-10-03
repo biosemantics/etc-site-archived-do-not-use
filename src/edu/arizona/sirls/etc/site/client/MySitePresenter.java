@@ -32,20 +32,8 @@ import edu.arizona.sirls.etc.site.client.event.TreeGenerationEvent;
 import edu.arizona.sirls.etc.site.client.event.TreeGenerationEventHandler;
 import edu.arizona.sirls.etc.site.client.event.VisualizationEvent;
 import edu.arizona.sirls.etc.site.client.event.VisualizationEventHandler;
-import edu.arizona.sirls.etc.site.client.event.matrixGeneration.InputMatrixGenerationEvent;
-import edu.arizona.sirls.etc.site.client.event.matrixGeneration.InputMatrixGenerationEventHandler;
-import edu.arizona.sirls.etc.site.client.event.matrixGeneration.LearnMatrixGenerationEvent;
-import edu.arizona.sirls.etc.site.client.event.matrixGeneration.LearnMatrixGenerationEventHandler;
 import edu.arizona.sirls.etc.site.client.event.matrixGeneration.MatrixGenerationEvent;
 import edu.arizona.sirls.etc.site.client.event.matrixGeneration.MatrixGenerationEventHandler;
-import edu.arizona.sirls.etc.site.client.event.matrixGeneration.OutputMatrixGenerationEvent;
-import edu.arizona.sirls.etc.site.client.event.matrixGeneration.OutputMatrixGenerationEventHandler;
-import edu.arizona.sirls.etc.site.client.event.matrixGeneration.ParseMatrixGenerationEvent;
-import edu.arizona.sirls.etc.site.client.event.matrixGeneration.ParseMatrixGenerationEventHandler;
-import edu.arizona.sirls.etc.site.client.event.matrixGeneration.PreprocessMatrixGenerationEvent;
-import edu.arizona.sirls.etc.site.client.event.matrixGeneration.PreprocessMatrixGenerationEventHandler;
-import edu.arizona.sirls.etc.site.client.event.matrixGeneration.ReviewMatrixGenerationEvent;
-import edu.arizona.sirls.etc.site.client.event.matrixGeneration.ReviewMatrixGenerationEventHandler;
 import edu.arizona.sirls.etc.site.client.presenter.FooterPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.HelpPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.LoggedInHeaderPresenter;
@@ -232,105 +220,29 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 												public void onClick(ClickEvent event) {
 													//resume
 													matrixGenerationEvent.setMatrixGenerationConfiguration(latestResumable);
-													start(matrixGenerationEvent);
+													addToHistory(matrixGenerationEvent);
 												}
 											}, new ClickHandler() {
 												@Override
 												public void onClick(ClickEvent event) {
-													start(matrixGenerationEvent);
+													configurationManager.removeMatrixGenerationConfiguration();
+													addToHistory(matrixGenerationEvent);
 												}
 											});
 									messageResumeOrStartPresenter.setMessage("You have a resumable Matrix Generation Task. Do you want to resume it or start a new task?");
 									messageResumeOrStartPresenter.go();
 								} else {
-									start(matrixGenerationEvent);
+									configurationManager.removeMatrixGenerationConfiguration();
+									addToHistory(matrixGenerationEvent);
 								}
 							}
 		        	  });
 	        	  } else {
-	        		  start(matrixGenerationEvent);
+	        		  configurationManager.setMatrixGenerationConfiguration(matrixGenerationEvent.getMatrixGenerationConfiguration());
+	        		  addToHistory(matrixGenerationEvent);
 	        	  }
 	          }
-
-			private void start(MatrixGenerationEvent matrixGenerationEvent) {
-				if (matrixGenerationEvent.hasMatrixGenerationConfiguration()) {
-					MatrixGenerationConfiguration matrixGenerationConfiguration = matrixGenerationEvent.getMatrixGenerationConfiguration();
-					ConfigurationManager.getInstance().setMatrixGenerationConfiguration(matrixGenerationConfiguration);
-					TaskStageEnum stage = matrixGenerationConfiguration.getTask().getTaskStage().getTaskStageEnum();
-					switch (stage) {
-					case INPUT:
-						eventBus.fireEvent(new InputMatrixGenerationEvent());
-						break;
-					case PREPROCESS_TEXT:
-						eventBus.fireEvent(new PreprocessMatrixGenerationEvent(matrixGenerationConfiguration));
-						break;
-					case LEARN_TERMS:
-						eventBus.fireEvent(new LearnMatrixGenerationEvent());
-						break;
-					case REVIEW_TERMS:
-						eventBus.fireEvent(new ReviewMatrixGenerationEvent());
-						break;
-					case PARSE_TEXT:
-						eventBus.fireEvent(new ParseMatrixGenerationEvent());
-						break;
-					case OUTPUT:
-						eventBus.fireEvent(new OutputMatrixGenerationEvent());
-						break;
-					}
-				} else {
-					addToHistory(matrixGenerationEvent);
-				}
-			}
-	        });
-	    
-		eventBus.addHandler(InputMatrixGenerationEvent.TYPE,
-				new InputMatrixGenerationEventHandler() {
-					@Override
-					public void onInput(InputMatrixGenerationEvent event) {
-						addToHistory(event);
-					}
-				});
-		
-		eventBus.addHandler(PreprocessMatrixGenerationEvent.TYPE,
-				new PreprocessMatrixGenerationEventHandler() {
-					@Override
-					public void onPreprocess(final PreprocessMatrixGenerationEvent event) {
-						configurationManager.setMatrixGenerationConfiguration(event.getMatrixGenerationConfiguration());
-						addToHistory(event);
-					}
-				});
-		
-		eventBus.addHandler(LearnMatrixGenerationEvent.TYPE,
-				new LearnMatrixGenerationEventHandler() {
-					@Override
-					public void onLearn(LearnMatrixGenerationEvent event) {
-						addToHistory(event);
-					}
-				});
-		
-		eventBus.addHandler(ParseMatrixGenerationEvent.TYPE,
-				new ParseMatrixGenerationEventHandler() {
-					@Override
-					public void onParse(ParseMatrixGenerationEvent event) {
-						addToHistory(event);
-					}
-				});
-		
-		eventBus.addHandler(ReviewMatrixGenerationEvent.TYPE,
-				new ReviewMatrixGenerationEventHandler() {
-					@Override
-					public void onReview(ReviewMatrixGenerationEvent event) {
-						addToHistory(event);
-					}
-				});
-		
-		eventBus.addHandler(OutputMatrixGenerationEvent.TYPE,
-				new OutputMatrixGenerationEventHandler() {
-					@Override
-					public void onOutput(OutputMatrixGenerationEvent event) {
-						addToHistory(event);
-					}
-				});
+	    });
 	    
 	    eventBus.addHandler(TreeGenerationEvent.TYPE,
 		    	new TreeGenerationEventHandler() {
@@ -356,7 +268,11 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	
 	protected void addToHistory(ETCSiteEvent event) {
 		if(!event.requiresLogin() || Authentication.getInstance().isSet())
-			History.newItem(event.getHistoryState().toString());
+			//don't fire the same history state twice in a row
+			if(History.getToken().equals(event.getHistoryState().toString()))
+				History.fireCurrentHistoryState();
+			else
+				History.newItem(event.getHistoryState().toString());
 		else
 			presentLogin(event);
 	}
@@ -526,111 +442,74 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 					}
 				});
 				break;
-			case INPUT_MATRIX_GENERATION:
+			case MATRIX_GENERATION:
 				GWT.runAsync(new RunAsyncCallback() {
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
 					}
 					public void onSuccess() {
-						if (inputMatrixGenerationPresenter == null) {
-							inputMatrixGenerationPresenter = new InputMatrixGenerationPresenter(
-									eventBus, new InputMatrixGenerationView(), fileService, matrixGenerationService);
+						if(!configurationManager.hasMatrixGenerationConfiguration()) {
+							if (inputMatrixGenerationPresenter == null) {
+								inputMatrixGenerationPresenter = new InputMatrixGenerationPresenter(
+										eventBus, new InputMatrixGenerationView(), fileService, matrixGenerationService);
+							}
+							inputMatrixGenerationPresenter.go(content);
+						} else {
+							matrixGenerationService.getMatrixGenerationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
+								configurationManager.getMatrixGenerationConfiguration().getTask(), 
+								new AsyncCallback<MatrixGenerationConfiguration>() {
+									@Override
+									public void onFailure(Throwable caught) {
+										caught.printStackTrace();
+									}
+	
+									@Override
+									public void onSuccess(MatrixGenerationConfiguration matrixGenerationConfiguration) {
+										TaskStageEnum taskStage = matrixGenerationConfiguration.getTask().getTaskStage().getTaskStageEnum();
+										switch(taskStage) {
+										case INPUT:
+											if (preprocessMatrixGenerationPresenter == null) {
+												preprocessMatrixGenerationPresenter = 									
+														new PreprocessMatrixGenerationPresenter(eventBus, 
+																new PreprocessMatrixGenerationView(), matrixGenerationService);
+											}
+											preprocessMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
+											break;
+										case PREPROCESS_TEXT:
+											if (learnMatrixGenerationPresenter == null) {
+												learnMatrixGenerationPresenter = new 
+														LearnMatrixGenerationPresenter(eventBus, 
+																new LearnMatrixGenerationView(), matrixGenerationService, taskService);
+											}
+											learnMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
+											break;
+										case LEARN_TERMS:
+											if (reviewMatrixGenerationPresenter == null) {
+												reviewMatrixGenerationPresenter = 
+														new ReviewMatrixGenerationPresenter(eventBus, 
+																new ReviewMatrixGenerationView(), matrixGenerationService);
+											}
+											reviewMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
+											break;
+										case REVIEW_TERMS:
+											if (parseMatrixGenerationPresenter == null) {
+												parseMatrixGenerationPresenter = new ParseMatrixGenerationPresenter(
+														eventBus, new ParseMatrixGenerationView(), matrixGenerationService, taskService);
+											}
+											parseMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
+											break;
+										case PARSE_TEXT:
+											if (outputMatrixGenerationPresenter == null) {
+												outputMatrixGenerationPresenter = new 
+														OutputMatrixGenerationPresenter(eventBus, 
+																new OutputMatrixGenerationView(), fileService, matrixGenerationService);
+											}
+											outputMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
+											break;
+										}
+									}
+							});
 						}
-						inputMatrixGenerationPresenter.go(content);
-					}
-				});
-				break;
-			case PREPROCESS_MATRIX_GENERATION:
-				if(!configurationManager.hasMatrixGenerationConfiguration()) {
-					eventBus.fireEvent(new MatrixGenerationEvent());
-					break;
-				}
-				GWT.runAsync(new RunAsyncCallback() {
-					public void onFailure(Throwable caught) {
-						caught.printStackTrace();
-					}
-					public void onSuccess() {
-						if (preprocessMatrixGenerationPresenter == null) {
-							preprocessMatrixGenerationPresenter = 									
-									new PreprocessMatrixGenerationPresenter(eventBus, 
-											new PreprocessMatrixGenerationView(), matrixGenerationService);
-						}
-						preprocessMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
-					}
-				});
-				break;
-			case LEARN_MATRIX_GENERATION:
-				if(!configurationManager.hasMatrixGenerationConfiguration()) {
-					eventBus.fireEvent(new MatrixGenerationEvent());
-					break;
-				}
-				GWT.runAsync(new RunAsyncCallback() {
-					public void onFailure(Throwable caught) {
-						caught.printStackTrace();
-					}
-					public void onSuccess() {
-						if (learnMatrixGenerationPresenter == null) {
-							learnMatrixGenerationPresenter = new 
-									LearnMatrixGenerationPresenter(eventBus, 
-											new LearnMatrixGenerationView(), matrixGenerationService, taskService);
-						}
-						learnMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
-					}
-				});
-				break;
-			case REVIEW_MATRIX_GENERATION:
-				if(!configurationManager.hasMatrixGenerationConfiguration()) {
-					eventBus.fireEvent(new MatrixGenerationEvent());
-					break;
-				}
-				GWT.runAsync(new RunAsyncCallback() {
-					public void onFailure(Throwable caught) {
-						caught.printStackTrace();
-					}
-					public void onSuccess() {
-						if (reviewMatrixGenerationPresenter == null) {
-							reviewMatrixGenerationPresenter = 
-									new ReviewMatrixGenerationPresenter(eventBus, 
-											new ReviewMatrixGenerationView(), matrixGenerationService);
-						}
-						reviewMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
-					}
-				});
-				break;
-			case PARSE_MATRIX_GENERATION:
-				if(!configurationManager.hasMatrixGenerationConfiguration()) {
-					eventBus.fireEvent(new MatrixGenerationEvent());
-					break;
-				}
-				GWT.runAsync(new RunAsyncCallback() {
-					public void onFailure(Throwable caught) {
-						caught.printStackTrace();
-					}
-					public void onSuccess() {
-						if (parseMatrixGenerationPresenter == null) {
-							parseMatrixGenerationPresenter = new ParseMatrixGenerationPresenter(
-									eventBus, new ParseMatrixGenerationView(), matrixGenerationService, taskService);
-						}
-						parseMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
-					}
-				});
-				break;
-			case OUTPUT_MATRIX_GENERATION:
-				if(!configurationManager.hasMatrixGenerationConfiguration()) {
-					eventBus.fireEvent(new MatrixGenerationEvent());
-					break;
-				}
-				GWT.runAsync(new RunAsyncCallback() {
-					public void onFailure(Throwable caught) {
-						caught.printStackTrace();
-					}
-					public void onSuccess() {
-						if (outputMatrixGenerationPresenter == null) {
-							outputMatrixGenerationPresenter = new 
-									OutputMatrixGenerationPresenter(eventBus, 
-											new OutputMatrixGenerationView(), fileService, matrixGenerationService);
-						}
-						outputMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
 					}
 				});
 				break;

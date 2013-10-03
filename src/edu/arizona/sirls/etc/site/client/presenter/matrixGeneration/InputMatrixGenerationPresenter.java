@@ -16,7 +16,7 @@ import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
-import edu.arizona.sirls.etc.site.client.event.matrixGeneration.PreprocessMatrixGenerationEvent;
+import edu.arizona.sirls.etc.site.client.event.matrixGeneration.MatrixGenerationEvent;
 import edu.arizona.sirls.etc.site.client.presenter.MessagePresenter;
 import edu.arizona.sirls.etc.site.client.presenter.fileManager.ManagableFileTreePresenter;
 import edu.arizona.sirls.etc.site.client.presenter.fileManager.SelectableFileTreePresenter;
@@ -114,7 +114,7 @@ public class InputMatrixGenerationPresenter /*implements IFileSelectClickHandler
 							}
 							@Override
 							public void onSuccess(MatrixGenerationConfiguration result) {
-								eventBus.fireEvent(new PreprocessMatrixGenerationEvent(result));
+								eventBus.fireEvent(new MatrixGenerationEvent(result));
 								//ConfigurationManager.getInstance().setMatrixGenerationConfiguration(result);
 							}
 				});

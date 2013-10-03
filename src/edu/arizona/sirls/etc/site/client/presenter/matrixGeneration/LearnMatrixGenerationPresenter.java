@@ -16,7 +16,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.event.TaskManagerEvent;
-import edu.arizona.sirls.etc.site.client.event.matrixGeneration.ReviewMatrixGenerationEvent;
+import edu.arizona.sirls.etc.site.client.event.matrixGeneration.MatrixGenerationEvent;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskServiceAsync;
@@ -65,7 +65,7 @@ public class LearnMatrixGenerationPresenter {
 		display.getNextButton().addClickHandler(new ClickHandler() { 
 			@Override
 			public void onClick(ClickEvent event) { 
-				eventBus.fireEvent(new ReviewMatrixGenerationEvent());
+				eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationConfiguration));
 			}
 		});
 	}
@@ -113,7 +113,7 @@ public class LearnMatrixGenerationPresenter {
 						display.getResumableClickable().addClickHandler(new ClickHandler() {
 							@Override
 							public void onClick(ClickEvent event) {
-								eventBus.fireEvent(new ReviewMatrixGenerationEvent());
+								eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationConfiguration));
 							}
 						});
 					} 

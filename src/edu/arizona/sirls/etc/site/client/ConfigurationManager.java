@@ -31,5 +31,9 @@ public class ConfigurationManager {
 	public void newMatrixGenerationConfiguration() {
 		matrixGenerationConfiguration = new MatrixGenerationConfiguration();
 	}
+
+	public void removeMatrixGenerationConfiguration() {
+		this.matrixGenerationConfiguration = null;
+	}
 	
 }

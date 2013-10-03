@@ -17,7 +17,7 @@ import com.google.gwt.user.client.ui.RichTextArea.Formatter;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
-import edu.arizona.sirls.etc.site.client.event.matrixGeneration.LearnMatrixGenerationEvent;
+import edu.arizona.sirls.etc.site.client.event.matrixGeneration.MatrixGenerationEvent;
 import edu.arizona.sirls.etc.site.client.presenter.MessagePresenter;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.client.view.MessageView;
@@ -41,6 +41,7 @@ public class PreprocessMatrixGenerationPresenter {
 	private HandlerManager eventBus;
 	private Display display;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
+	private MatrixGenerationConfiguration matrixGenerationConfiguration;
 	private LoadingPopup loadingPopup = new LoadingPopup();
 	private List<PreprocessedDescription> preprocessedDescriptions;
 	private int currentPreprocessedDescription;
@@ -158,7 +159,7 @@ public class PreprocessMatrixGenerationPresenter {
 					}
 					@Override
 					public void onSuccess(Boolean result) {	
-						eventBus.fireEvent(new LearnMatrixGenerationEvent());
+						eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationConfiguration));
 					}
 				});
 			}
@@ -182,8 +183,8 @@ public class PreprocessMatrixGenerationPresenter {
 				target, content, asyncCallback);
 	}
 	
-	public void go(final HasWidgets content, MatrixGenerationConfiguration matrixGenerationConfiguration) {
-		
+	public void go(final HasWidgets content, final MatrixGenerationConfiguration matrixGenerationConfiguration) {
+		this.matrixGenerationConfiguration = matrixGenerationConfiguration;
 		loadingPopup.start();
 		matrixGenerationService.preprocess(Authentication.getInstance().getAuthenticationToken(), 
 				matrixGenerationConfiguration, new AsyncCallback<List<PreprocessedDescription>>() {
@@ -197,7 +198,7 @@ public class PreprocessMatrixGenerationPresenter {
 					public void onSuccess(List<PreprocessedDescription> result) {
 						if(result.isEmpty()) {
 							loadingPopup.stop();
-							eventBus.fireEvent(new LearnMatrixGenerationEvent());
+							eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationConfiguration));
 							return;
 						} else 
 							preprocessedDescriptions = result;
