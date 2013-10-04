@@ -2,7 +2,7 @@ package edu.arizona.sirls.etc.site.shared.rpc;
 
 public enum TaskTypeEnum {
 	MATRIX_GENERATION("Matrix Generation"),
-	TREE_GENERATION("Tree Generation"),
+	TREE_GENERATION("ID Key Generation"),
 	TAXONOMY_COMPARISON("Taxonomy Comparison"), 
 	VISUALIZATION("Visualization");
 	

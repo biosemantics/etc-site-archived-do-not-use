@@ -21,9 +21,9 @@ public abstract class MatrixGenerationView extends Composite {
 		verticalPanel.add(horizontalPanel);		
 		int i=0;
 		for(TaskStageEnum step : TaskStageEnum.values()) {
-			ImageLabelComposite stepEntry = new ImageLabelComposite("images/Enumeration_unselected_" + i++ + ".gif", "20px", "20px", step.toString());
+			ImageLabelComposite stepEntry = new ImageLabelComposite("images/Enumeration_unselected_" + i++ + ".gif", "20px", "20px", step.displayName());
 			if(getStep().equals(step))
-				stepEntry = new ImageLabelComposite("images/Enumeration_" + i++ + ".gif", "20px", "20px", step.toString());
+				stepEntry = new ImageLabelComposite("images/Enumeration_" + i++ + ".gif", "20px", "20px", step.displayName());
 			stepEntry.addStyleName("submenuEntry");
 			horizontalPanel.add(stepEntry);
 		}

@@ -37,8 +37,8 @@ public class InputMatrixGenerationView extends MatrixGenerationView implements
 		VerticalPanel verticalPanel = new VerticalPanel();
 		verticalPanel.addStyleName("contentPanel");
 		FlowPanel inputRequirementsPanel = new FlowPanel(); 
-		inputRequirementsPanel.add(new InlineLabel("Please provide us with a folder that contains the input taxon descriptions and a glossary type. " +
-				"You can upload them using the "));
+		inputRequirementsPanel.add(new InlineLabel("Please provide us with a folder that contains the input taxon descriptions and the closest taxon group to be processed. " +
+				"You can upload the input taxon descriptions using the "));
 		fileManagerAnchor = new Anchor("File Manager");
 		inputRequirementsPanel.add(fileManagerAnchor);
 		formatRequirementsAnchor = new Anchor("format requirements");
@@ -62,7 +62,7 @@ public class InputMatrixGenerationView extends MatrixGenerationView implements
 		HorizontalPanel glossaryPanel = new HorizontalPanel();
 		glossaryPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		glossaryPanel.addStyleName("inputForm");
-		glossaryPanel.add(new Label("Glossary:"));
+		glossaryPanel.add(new Label("Taxon group:"));
 		glossaryPanel.add(glossaryListBox);
 		verticalPanel.add(glossaryPanel);
 		verticalPanel.add(nextButton);

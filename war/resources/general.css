@@ -522,8 +522,9 @@ green 307137
 }
 
 .fileManagerScrollPanel {
-	height: 400px;
-	width: 400px;
+	max-height: 400px;
+	max-width: 900px;
+	min-width: 400px;
 }
 
 .managableFileManagerButton {
