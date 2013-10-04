@@ -4,6 +4,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 
 import edu.arizona.sirls.etc.site.client.presenter.LoggedInHeaderPresenter;
@@ -79,5 +80,14 @@ public class LoggedInHeaderView extends Composite implements LoggedInHeaderPrese
 	@Override
 	public ImageLabelComposite getSettingsImageLabelComposite() {
 		return this.settingsImageLabelComposite;
+	}
+
+	@Override
+	public void setResumableTaskAvailable(boolean value) {
+		if(value) {
+			this.taskManagerImageLabelComposite.setImage(new Image("images/TaskManager_notification.gif"));
+		} else {
+			this.taskManagerImageLabelComposite.setImage(new Image("images/TaskManager.gif"));
+		}
 	}
 }

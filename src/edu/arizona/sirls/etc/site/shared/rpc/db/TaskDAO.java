@@ -142,6 +142,31 @@ public class TaskDAO extends AbstractDAO {
 		query.executeAndClose();
 	}
 
+	public List<Task> getUsersResumableTasks(String username) throws ClassNotFoundException, SQLException, IOException {
+		User user = UserDAO.getInstance().getUser(username);
+		return this.getUsersResumableTasks(user.getId());
+	}
 
+	private List<Task> getUsersResumableTasks(int id) throws ClassNotFoundException, SQLException, IOException {
+		List<Task> tasks = new LinkedList<Task>();
+		Query query = new Query("SELECT * FROM tasks WHERE user = " + id + " AND resumable=true");
+		query.execute();
+		ResultSet result = query.getResultSet();
+		while(result.next()) {
+			id = result.getInt(1);
+			int userId = result.getInt(2);
+			int taskStageId = result.getInt(3);
+			String name = result.getString(4);
+			boolean resumable = result.getBoolean(5);
+			boolean completed = result.getBoolean(6);
+			Date created = result.getTimestamp(7);
+			User user = UserDAO.getInstance().getUser(userId);
+			TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskStageId);
+			Task task = new Task(id, user, taskStage, name, resumable, completed, created);
+			tasks.add(task);
+		}
+		query.close();
+		return tasks;
+	}
 
 }

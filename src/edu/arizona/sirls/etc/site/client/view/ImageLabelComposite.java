@@ -66,7 +66,8 @@ public class ImageLabelComposite extends Composite {
 
 
 	public void setImage(Image image) {
-		this.image = image;
+		this.image.setUrl(image.getUrl());
+		
 	}
 	
 	public void setImageWidth(String width) {

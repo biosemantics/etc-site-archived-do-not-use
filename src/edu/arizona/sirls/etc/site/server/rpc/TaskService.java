@@ -108,6 +108,29 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 		return false;
 	}
 
+	@Override
+	public boolean hasResumable(AuthenticationToken authenticationToken) {
+		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
+			try {
+				return !this.getResumableTasks(authenticationToken).isEmpty();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+	private List<Task> getResumableTasks(AuthenticationToken authenticationToken) {
+		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
+			try {
+				return TaskDAO.getInstance().getUsersResumableTasks(authenticationToken.getUsername());
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
 	/*
 	@Override
 	public void cancelTask(AuthenticationToken authenticationToken, Task task) {

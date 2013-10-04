@@ -3,6 +3,8 @@ package edu.arizona.sirls.etc.site.client.presenter;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
@@ -16,6 +18,7 @@ import edu.arizona.sirls.etc.site.client.event.LogoutEvent;
 import edu.arizona.sirls.etc.site.client.event.SettingsEvent;
 import edu.arizona.sirls.etc.site.client.event.TaskManagerEvent;
 import edu.arizona.sirls.etc.site.client.view.ImageLabelComposite;
+import edu.arizona.sirls.etc.site.shared.rpc.ITaskServiceAsync;
 
 public class LoggedInHeaderPresenter implements Presenter {
 
@@ -29,10 +32,13 @@ public class LoggedInHeaderPresenter implements Presenter {
 		ImageLabelComposite getFileManagerImageLabelComposite();
 		ImageLabelComposite getSettingsImageLabelComposite();
 		Widget asWidget();
+		void setResumableTaskAvailable(boolean value);
 	}
 	private final Display display;
+	private ITaskServiceAsync taskService;
 
-	public LoggedInHeaderPresenter(HandlerManager eventBus, Display display) {
+	public LoggedInHeaderPresenter(HandlerManager eventBus, Display display, ITaskServiceAsync taskService) {
+		this.taskService = taskService;
 		this.eventBus = eventBus;
 		this.display = display;
 		bind();
@@ -76,8 +82,29 @@ public class LoggedInHeaderPresenter implements Presenter {
 	}
 
 	@Override
-	public void go(HasWidgets container) {
+	public void go(final HasWidgets container) {
 		container.clear();
+		refresh();
 		container.add(display.asWidget());
+		
+		Timer timer = new Timer() {
+	        public void run() {
+	        	refresh();
+	        }
+		};
+		timer.scheduleRepeating(5000);
+	}
+
+	private void refresh() {
+		taskService.hasResumable(Authentication.getInstance().getAuthenticationToken(), new AsyncCallback<Boolean>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+			}
+			@Override
+			public void onSuccess(Boolean result) {
+				display.setResumableTaskAvailable(result);
+			} 
+		});
 	}
 }

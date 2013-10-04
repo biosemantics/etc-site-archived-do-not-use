@@ -596,7 +596,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 					public void onSuccess(AuthenticationResult result) {
 						if(result.getResult()) {
 							if(loggedInHeaderPresenter == null)
-								loggedInHeaderPresenter = new LoggedInHeaderPresenter(eventBus, new LoggedInHeaderView());
+								loggedInHeaderPresenter = new LoggedInHeaderPresenter(eventBus, new LoggedInHeaderView(), taskService);
 							loggedInHeaderPresenter.go(header);
 						} else {
 							if(loggedOutHeaderPresenter == null)
