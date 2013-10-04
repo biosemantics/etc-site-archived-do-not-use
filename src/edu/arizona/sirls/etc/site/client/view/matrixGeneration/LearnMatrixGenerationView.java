@@ -8,7 +8,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -88,7 +87,9 @@ public class LearnMatrixGenerationView extends MatrixGenerationView implements L
 		statusImage = new Image("images/play.png");
 		statusImage.addStyleName("infoImage");
 		statusPanel.add(statusImage);
+		taskManagerFlowPanel = new FlowPanel();
 		statusPanel.add(taskManagerFlowPanel);
+		taskManagerFlowPanel.add(new InlineLabel("We are done learning the terminology."));
 	}
 	
 	@Override
@@ -103,7 +104,13 @@ public class LearnMatrixGenerationView extends MatrixGenerationView implements L
 		statusImage = new Image("images/loader3.gif");
 		statusImage.addStyleName("infoImage");
 		statusPanel.add(statusImage);
+		taskManagerFlowPanel = new FlowPanel();
 		statusPanel.add(taskManagerFlowPanel);
+		taskManagerFlowPanel.add(new InlineLabel("We are now learning the terminology. " +
+				"You will receive an email when processing has completed. You can come back to this task using the "));
+		taskManagerAnchor = new Anchor("Task Manager");
+		taskManagerFlowPanel.add(taskManagerAnchor);
+		taskManagerFlowPanel.add(new InlineLabel("."));
 	}
 	
 	@Override

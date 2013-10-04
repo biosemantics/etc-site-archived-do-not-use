@@ -201,10 +201,10 @@ public class ManagableFileTreePresenter implements Presenter {
 
 		private String getTargetFromParts(String[] parts) {
 			StringBuilder builder = new StringBuilder();
-			for(String part : parts) {
-			    if(builder.length() != 0)
-			    	builder.append("//");
-				builder.append(part);
+			for(int i=0; i<parts.length; i++) {
+				builder.append(parts[i]);
+				if(i < parts.length - 1)
+					builder.append("//");
 			}
 			return builder.toString();
 		}
@@ -220,11 +220,12 @@ public class ManagableFileTreePresenter implements Presenter {
 			if(target != null) {
 				String pathParts[] = target.split("//");
 				pathParts[pathParts.length-1] = newFileName;
-				String newTarget = getTargetFromParts(pathParts);
+				final String newTarget = getTargetFromParts(pathParts);
 				fileService.moveFile(Authentication.getInstance().getAuthenticationToken(), target, newTarget, 
 						new AsyncCallback<Boolean>() {
 					public void onSuccess(Boolean result) {
 						if(result) {
+							fileSelectionHandler.setTarget(newTarget);
 							fileTreePresenter.refresh();
 						} else {
 							messagePresenter.setMessage("File could not be renamed.");
@@ -243,19 +244,19 @@ public class ManagableFileTreePresenter implements Presenter {
 		@Override
 		public void onClick(ClickEvent event) {
 			final String target = fileSelectionHandler.getTarget();
-			int level = getLevel(target);
-			if(level < 2) {
-				if(target != null) {
+			if(target != null) {
+				int level = getLevel(target);
+				if(level < 2) {
 					LabelTextFieldView renameView = new LabelTextFieldView();
 					LabelTextFieldPresenter renamePresenter = new LabelTextFieldPresenter(
 							renameView, "Create folder", "Folder name:", "", this);
 					renamePresenter.go();
 				} else {
-					messagePresenter.setMessage("Please select a directory to create the new directory in");
+					messagePresenter.setMessage("Only a directory depth of two is allowed.");
 					messagePresenter.go();
 				}
 			} else {
-				messagePresenter.setMessage("Only a directory depth of two is allowed.");
+				messagePresenter.setMessage("Please select a parent directory.");
 				messagePresenter.go();
 			}
 		}

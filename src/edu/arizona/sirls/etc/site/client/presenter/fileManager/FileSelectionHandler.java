@@ -32,5 +32,9 @@ public class FileSelectionHandler implements SelectionHandler<TreeItem> {
 		this.target = null;
 		this.targetIsDirectory = false;
 	}
+
+	public void setTarget(String newTarget) {
+		this.target = newTarget;
+	}
 		
 }

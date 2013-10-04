@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -92,7 +93,10 @@ public class InputMatrixGenerationPresenter /*implements IFileSelectClickHandler
 				ManagableFileTreePresenter fileTreePresenter = new ManagableFileTreePresenter(eventBus, 
 						fileTreeView, fileService, true, FileFilter.ALL);
 				TitleCloseDialogBox dialogBox = new TitleCloseDialogBox(false, "File Manager");
-				dialogBox.setWidget(fileTreeView);
+				ScrollPanel scrollPanel = new ScrollPanel();
+				scrollPanel.addStyleName("fileManagerScrollPanel");
+				scrollPanel.setWidget(fileTreeView);
+				dialogBox.setWidget(scrollPanel);
 				dialogBox.center();
 				dialogBox.setGlassEnabled(true);
 		 		dialogBox.show();

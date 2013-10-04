@@ -46,6 +46,7 @@ public class ManagableFileTreeView extends Composite implements ManagableFileTre
 		//this.uploader = new WorkaroundInput("Add files"); 
 		this.uploader = new SingleUploader();
 		this.addButton = new Button();
+		addButton.addStyleName("managableFileManagerButton");
 		
 		//uploader.setStatusWidget(statusWidget);
 	    //Button addButton = new Button("Add file");
@@ -60,10 +61,14 @@ public class ManagableFileTreeView extends Composite implements ManagableFileTre
 		//System.out.println(multiUploader.getUploaders());
 
 		this.downloadButton = new Button("Download");
+		downloadButton.addStyleName("managableFileManagerButton");
 		this.deleteButton = new Button("Delete");
+		deleteButton.addStyleName("managableFileManagerButton");
 		this.renameButton = new Button("Rename");
+		renameButton.addStyleName("managableFileManagerButton");
 		this.createDirectoryButton = new Button("Create Folder");
-
+		createDirectoryButton.addStyleName("managableFileManagerButton");
+		
 		verticalPanel.add(new Label("Your Files:"));
 		verticalPanel.add(new ScrollPanel(fileTreeView));
 		HorizontalPanel horizontalPanel = new HorizontalPanel();

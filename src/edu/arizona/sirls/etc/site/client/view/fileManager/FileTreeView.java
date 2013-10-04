@@ -7,14 +7,14 @@ import edu.arizona.sirls.etc.site.client.presenter.fileManager.FileTreePresenter
 
 public class FileTreeView extends Composite implements FileTreePresenter.Display {
 
-	private final Tree tree = new Tree();
+	private final FileImageLabelTree tree = new FileImageLabelTree();
 	
 	public FileTreeView() { 
 		initWidget(tree);
 	}
 
 	@Override
-	public Tree getTree() {
+	public FileImageLabelTree getTree() {
 		return tree;
 	}
 	

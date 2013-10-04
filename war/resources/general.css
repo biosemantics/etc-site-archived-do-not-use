@@ -514,3 +514,13 @@ green 307137
 .historyTasksTable {
 	padding-top: 20px;
 }
+
+.fileManagerScrollPanel {
+	height: 400px;
+	width: 400px;
+}
+
+.managableFileManagerButton {
+	width: 70;
+	height: 50px;
+}

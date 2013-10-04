@@ -46,4 +46,14 @@ public class FileImageLabelTreeItem extends TreeItem {
 		this.name = name;
 	}
 	
+	@Override 
+	public FileImageLabelTreeItem getChild(int index) {
+		TreeItem item = super.getChild(index);
+		if(item instanceof FileImageLabelTreeItem)
+			return (FileImageLabelTreeItem)item;
+		return null;
+	}
+	
+	
+	
 }

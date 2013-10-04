@@ -63,7 +63,9 @@ public class ParseMatrixGenerationView extends MatrixGenerationView implements P
 		statusImage = new Image("images/play.png");
 		statusImage.addStyleName("infoImage");
 		statusPanel.add(statusImage);
+		taskManagerFlowPanel = new FlowPanel();
 		statusPanel.add(taskManagerFlowPanel);
+		taskManagerFlowPanel.add(new InlineLabel("We are done parsing the descriptions."));
 	}
 	
 	@Override
@@ -78,7 +80,13 @@ public class ParseMatrixGenerationView extends MatrixGenerationView implements P
 		statusImage = new Image("images/loader3.gif");
 		statusImage.addStyleName("infoImage");
 		statusPanel.add(statusImage);
+		taskManagerFlowPanel = new FlowPanel();
 		statusPanel.add(taskManagerFlowPanel);
+		taskManagerFlowPanel.add(new InlineLabel("We are now parsing the descriptions. " +
+				"You will receive an email when processing has completed. You can come back to this task using the "));
+		taskManagerAnchor = new Anchor("Task Manager");
+		taskManagerFlowPanel.add(taskManagerAnchor);
+		taskManagerFlowPanel.add(new InlineLabel("."));
 	}
 
 	

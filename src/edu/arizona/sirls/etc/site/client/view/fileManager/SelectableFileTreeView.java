@@ -23,8 +23,8 @@ public class SelectableFileTreeView extends Composite implements SelectableFileT
 		ScrollPanel scrollPanel = new ScrollPanel(fileTreeView);
 		verticalPanel.add(scrollPanel);
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
-		horizontalPanel.add(closeButton);
 		horizontalPanel.add(selectButton);
+		horizontalPanel.add(closeButton);
 		verticalPanel.add(horizontalPanel);	
 		this.initWidget(verticalPanel);
 	}
