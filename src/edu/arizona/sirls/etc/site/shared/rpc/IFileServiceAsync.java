@@ -29,4 +29,6 @@ public interface IFileServiceAsync {
 	public void createFile(AuthenticationToken authenticationToken, String outputFile, AsyncCallback<Boolean> callback);
 
 	public void getDepth(AuthenticationToken authenticationToken, String sourcePath, AsyncCallback<Integer> asyncCallback);
+
+	public void zipDirectory(AuthenticationToken authenticationToken, String target, AsyncCallback<Void> callback);
 }

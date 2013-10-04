@@ -125,24 +125,17 @@ public class ManagableFileTreePresenter implements Presenter {
 					@Override
 					public void onSuccess(Boolean result) {
 						if(result) {
-							fileService.getDirectoriesFiles(Authentication.getInstance().getAuthenticationToken(), 
-									target, new AsyncCallback<List<String>>() {
-										@Override
-										public void onFailure(Throwable caught) {
-											
-										}
-										@Override
-										public void onSuccess(List<String> result) {
-											messagePresenter.setMessage("Please select a single file to download");
-											messagePresenter.go();
-											//TODO: compress to archive and download?
-											
-											/*for(String file : result) {
-												Window.open("/etcsite/download/?target=" + target + "//" + file + "&username=" + Authentication.getInstance().getUsername() + "&" + 
-														"sessionID=" + Authentication.getInstance().getSessionID()
-														, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes");
-											}*/
-										}
+							fileService.zipDirectory(Authentication.getInstance().getAuthenticationToken(), target, new AsyncCallback<Void>() {
+								@Override
+								public void onFailure(Throwable caught) {
+									caught.printStackTrace();
+								}
+								@Override
+								public void onSuccess(Void result) {
+									Window.open("/etcsite/download/?target=" + target + "&directory=yes&username=" + Authentication.getInstance().getUsername() + "&" + 
+											"sessionID=" + Authentication.getInstance().getSessionID()
+											, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes");
+								}
 							});
 						} else {
 							Window.open("/etcsite/download/?target=" + target + "&username=" + Authentication.getInstance().getUsername() + "&" + 

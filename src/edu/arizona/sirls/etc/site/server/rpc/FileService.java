@@ -209,4 +209,16 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		}
 		return maxDepth;
 	}
+
+	@Override
+	public void zipDirectory(AuthenticationToken authenticationToken, String target) {
+		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
+			Zipper zipper = new Zipper();
+			try {
+				zipper.zip(authenticationToken.getUsername(), target);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

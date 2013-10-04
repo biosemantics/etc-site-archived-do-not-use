@@ -32,4 +32,6 @@ public interface IFileService extends RemoteService {
 	
 	public Integer getDepth(AuthenticationToken authenticationToken, String sourcePath);
 	
+	public void zipDirectory(AuthenticationToken authenticationToken, String target);
+	
 }
