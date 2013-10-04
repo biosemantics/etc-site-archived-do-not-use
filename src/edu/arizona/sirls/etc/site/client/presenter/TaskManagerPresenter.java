@@ -121,6 +121,7 @@ public class TaskManagerPresenter {
 	
 	private Panel getActionsPanel(final Task task, final int row) { 
 		HorizontalPanel actionsPanel = new HorizontalPanel();
+		
 		if(task.isResumable()) {
 			Image resumeImage = new Image("images/play.png");
 			resumeImage.setSize("15px", "15px");
@@ -185,6 +186,53 @@ public class TaskManagerPresenter {
 			});
 			actionsPanel.add(resumeImage);
 		}
+		
+		if(task.isCompleted()) {
+			switch(task.getTaskStage().getTaskType().getTaskTypeEnum()) {
+			case MATRIX_GENERATION:
+				Image pickupImage = new Image("images/rewind.png");
+				pickupImage.setSize("15px", "15px");
+				pickupImage.addClickHandler(new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event) {
+						matrixGenerationService.getMatrixGenerationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
+								task, new AsyncCallback<MatrixGenerationConfiguration>() {
+									@Override
+									public void onFailure(Throwable caught) {
+										caught.printStackTrace();
+									}
+									@Override
+									public void onSuccess(MatrixGenerationConfiguration matrixGenerationConfiguration) {
+										//could also have a popup here asking for a new task name to use..
+										
+										//pickup again from review
+										matrixGenerationService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), matrixGenerationConfiguration, 
+												TaskStageEnum.REVIEW_TERMS ,new AsyncCallback<MatrixGenerationConfiguration>() {
+											@Override
+											public void onFailure(Throwable caught) {
+												caught.printStackTrace();
+											}
+											@Override
+											public void onSuccess(MatrixGenerationConfiguration matrixGenerationConfiguration) {
+												eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationConfiguration));
+											}
+										});
+									}
+						});
+					}
+				});		
+				actionsPanel.add(pickupImage);
+			case TAXONOMY_COMPARISON:
+				break;
+			case TREE_GENERATION:
+				break;
+			case VISUALIZATION:
+				break;
+			default:
+				break;
+			}
+		}
+		
 		Image cancelImage = new Image("images/revoke.jpg");
 		cancelImage.setSize("15px", "15px");
 		cancelImage.addClickHandler(new ClickHandler() {
@@ -273,7 +321,8 @@ public class TaskManagerPresenter {
 						display.getHistoryTable().setText(i, 0, task.getName());
 						display.getHistoryTable().setText(i, 1, dateTimeFormat.format(task.getCreated()));
 						display.getHistoryTable().setText(i, 2, task.getTaskStage().getTaskType().getTaskTypeEnum().displayName());
-						display.getHistoryTable().setWidget(i, 4, cancelImage);
+						Panel actionsPanel = getActionsPanel(task, i);
+						display.getHistoryTable().setWidget(i, 4, actionsPanel);
 					}
 				}
 			});

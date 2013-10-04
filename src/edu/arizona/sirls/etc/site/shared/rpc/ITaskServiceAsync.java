@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
+import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 
 public interface ITaskServiceAsync {
@@ -20,6 +21,8 @@ public interface ITaskServiceAsync {
 	public void getPastTasks(AuthenticationToken authenticationToken, AsyncCallback<List<Task>> callback);
 
 	public void isResumable(AuthenticationToken authenticationToken, Task task, AsyncCallback<Boolean> callback);
+
+	public void isCompleted(AuthenticationToken authenticationToken, Task task, AsyncCallback<Boolean> callback);
 	
 	//public void cancelTask(AuthenticationToken authenticationToken, Task task, AsyncCallback<Void> callback);
 

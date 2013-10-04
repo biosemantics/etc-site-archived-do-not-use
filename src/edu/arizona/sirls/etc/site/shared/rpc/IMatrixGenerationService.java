@@ -12,6 +12,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.LearnInvocation;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.ParseInvocation;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.PreprocessedDescription;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 @RemoteServiceRelativePath("matrixGeneration")
 public interface IMatrixGenerationService extends RemoteService {
@@ -23,11 +24,13 @@ public interface IMatrixGenerationService extends RemoteService {
 	
 	public LearnInvocation learn(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration);
 
-	public String review(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration);
+	public MatrixGenerationConfiguration review(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration);
 	
 	public ParseInvocation parse(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration);
 	
 	public boolean output(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration);
+
+	public MatrixGenerationConfiguration goToTaskStage(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration, TaskStageEnum taskStage);
 
 	public String getDescription(AuthenticationToken authenticationToken, String target);
 	
@@ -38,6 +41,8 @@ public interface IMatrixGenerationService extends RemoteService {
 	public MatrixGenerationConfiguration getMatrixGenerationConfiguration(AuthenticationToken authenticationToken, Task task);
 	
 	public void cancel(AuthenticationToken authenticationToken, Task task);
+
+	
 	
 	/*public MatrixGenerationJobStatus getJobStatus(AuthenticationToken authenticationToken, MatrixGenerationJob matrixGenerationJob);
 	

@@ -13,6 +13,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.ITaskService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaxonomyComparisonService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITreeGenerationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IVisualizationService;
+import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfigurationDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TaskDAO;
@@ -88,6 +89,18 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
 			try {
 				return TaskDAO.getInstance().getTask(task.getId()).isResumable();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isCompleted(AuthenticationToken authenticationToken, Task task) {
+		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
+			try {
+				return TaskDAO.getInstance().getTask(task.getId()).isCompleted();
 			} catch(Exception e) {
 				e.printStackTrace();
 			}

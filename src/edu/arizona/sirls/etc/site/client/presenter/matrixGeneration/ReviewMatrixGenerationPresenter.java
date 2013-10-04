@@ -16,6 +16,7 @@ import edu.arizona.sirls.etc.site.client.event.matrixGeneration.MatrixGeneration
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 public class ReviewMatrixGenerationPresenter {
 
@@ -49,21 +50,32 @@ public class ReviewMatrixGenerationPresenter {
 	}
 	
 	public void nextStep() {
-		eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationConfiguration));
+		matrixGenerationService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), matrixGenerationConfiguration, 
+				TaskStageEnum.PARSE_TEXT, new AsyncCallback<MatrixGenerationConfiguration>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						caught.printStackTrace();
+					}
+					@Override
+					public void onSuccess(MatrixGenerationConfiguration matrixGenerationConfiguration) {
+						eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationConfiguration));
+					}
+		});
 	}
 
 	public void go(final HasWidgets content, MatrixGenerationConfiguration matrixGenerationConfiguration) {
 		loadingPopup.start();
 		this.matrixGenerationConfiguration = matrixGenerationConfiguration;
-		matrixGenerationService.review(Authentication.getInstance().getAuthenticationToken(), matrixGenerationConfiguration, new AsyncCallback<String>() {
+		matrixGenerationService.review(Authentication.getInstance().getAuthenticationToken(), matrixGenerationConfiguration, new AsyncCallback<MatrixGenerationConfiguration>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
 				loadingPopup.stop();
 			}
 			@Override
-			public void onSuccess(String result) {
-				display.getFrame().setUrl(result);
+			public void onSuccess(MatrixGenerationConfiguration matrixGenerationConfiguration) {
+				display.getFrame().setUrl("http://biosemantics.arizona.edu:8080/OTOLite/?uploadID=" + matrixGenerationConfiguration.getOtoId());
+				ReviewMatrixGenerationPresenter.this.matrixGenerationConfiguration = matrixGenerationConfiguration;
 				content.clear();
 				content.add(display.asWidget());
 				loadingPopup.stop();

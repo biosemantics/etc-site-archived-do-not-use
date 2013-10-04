@@ -455,59 +455,84 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 							}
 							inputMatrixGenerationPresenter.go(content);
 						} else {
-							matrixGenerationService.getMatrixGenerationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
-								configurationManager.getMatrixGenerationConfiguration().getTask(), 
-								new AsyncCallback<MatrixGenerationConfiguration>() {
-									@Override
-									public void onFailure(Throwable caught) {
-										caught.printStackTrace();
-									}
-	
-									@Override
-									public void onSuccess(MatrixGenerationConfiguration matrixGenerationConfiguration) {
-										TaskStageEnum taskStage = matrixGenerationConfiguration.getTask().getTaskStage().getTaskStageEnum();
-										switch(taskStage) {
-										case INPUT:
-											if (preprocessMatrixGenerationPresenter == null) {
-												preprocessMatrixGenerationPresenter = 									
-														new PreprocessMatrixGenerationPresenter(eventBus, 
-																new PreprocessMatrixGenerationView(), matrixGenerationService);
-											}
-											preprocessMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
-											break;
-										case PREPROCESS_TEXT:
-											if (learnMatrixGenerationPresenter == null) {
-												learnMatrixGenerationPresenter = new 
-														LearnMatrixGenerationPresenter(eventBus, 
-																new LearnMatrixGenerationView(), matrixGenerationService, taskService);
-											}
-											learnMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
-											break;
-										case LEARN_TERMS:
-											if (reviewMatrixGenerationPresenter == null) {
-												reviewMatrixGenerationPresenter = 
-														new ReviewMatrixGenerationPresenter(eventBus, 
-																new ReviewMatrixGenerationView(), matrixGenerationService);
-											}
-											reviewMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
-											break;
-										case REVIEW_TERMS:
-											if (parseMatrixGenerationPresenter == null) {
-												parseMatrixGenerationPresenter = new ParseMatrixGenerationPresenter(
-														eventBus, new ParseMatrixGenerationView(), matrixGenerationService, taskService);
-											}
-											parseMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
-											break;
-										case PARSE_TEXT:
-											if (outputMatrixGenerationPresenter == null) {
-												outputMatrixGenerationPresenter = new 
-														OutputMatrixGenerationPresenter(eventBus, 
-																new OutputMatrixGenerationView(), fileService, matrixGenerationService);
-											}
-											outputMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
-											break;
+							taskService.isCompleted(Authentication.getInstance().getAuthenticationToken(), configurationManager.getMatrixGenerationConfiguration().getTask(), 
+									new AsyncCallback<Boolean>() {
+								@Override
+								public void onFailure(Throwable caught) {
+									caught.printStackTrace();
+								}
+								@Override
+								public void onSuccess(Boolean result) {
+									if(result) {
+										if (inputMatrixGenerationPresenter == null) {
+											inputMatrixGenerationPresenter = new InputMatrixGenerationPresenter(
+													eventBus, new InputMatrixGenerationView(), fileService, matrixGenerationService);
 										}
+										inputMatrixGenerationPresenter.go(content);
+									} else {
+										matrixGenerationService.getMatrixGenerationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
+												configurationManager.getMatrixGenerationConfiguration().getTask(), 
+												new AsyncCallback<MatrixGenerationConfiguration>() {
+													@Override
+													public void onFailure(Throwable caught) {
+														caught.printStackTrace();
+													}
+					
+													@Override
+													public void onSuccess(MatrixGenerationConfiguration matrixGenerationConfiguration) {
+														TaskStageEnum taskStage = matrixGenerationConfiguration.getTask().getTaskStage().getTaskStageEnum();
+														switch(taskStage) {
+														case PREPROCESS_TEXT:
+															if (preprocessMatrixGenerationPresenter == null) {
+																preprocessMatrixGenerationPresenter = 									
+																		new PreprocessMatrixGenerationPresenter(eventBus, 
+																				new PreprocessMatrixGenerationView(), matrixGenerationService);
+															}
+															preprocessMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
+															break;
+														case LEARN_TERMS:
+															if (learnMatrixGenerationPresenter == null) {
+																learnMatrixGenerationPresenter = new 
+																		LearnMatrixGenerationPresenter(eventBus, 
+																				new LearnMatrixGenerationView(), matrixGenerationService, taskService);
+															}
+															learnMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
+															break;
+														case REVIEW_TERMS:
+															if (reviewMatrixGenerationPresenter == null) {
+																reviewMatrixGenerationPresenter = 
+																		new ReviewMatrixGenerationPresenter(eventBus, 
+																				new ReviewMatrixGenerationView(), matrixGenerationService);
+															}
+															reviewMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
+															break;
+														case PARSE_TEXT:
+															if (parseMatrixGenerationPresenter == null) {
+																parseMatrixGenerationPresenter = new ParseMatrixGenerationPresenter(
+																		eventBus, new ParseMatrixGenerationView(), matrixGenerationService, taskService);
+															}
+															parseMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
+															break;
+														case OUTPUT:
+															if (outputMatrixGenerationPresenter == null) {
+																outputMatrixGenerationPresenter = new 
+																		OutputMatrixGenerationPresenter(eventBus, 
+																				new OutputMatrixGenerationView(), fileService, matrixGenerationService);
+															}
+															outputMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
+															break;
+														default:
+															if (inputMatrixGenerationPresenter == null) {
+																inputMatrixGenerationPresenter = new InputMatrixGenerationPresenter(
+																		eventBus, new InputMatrixGenerationView(), fileService, matrixGenerationService);
+															}
+															inputMatrixGenerationPresenter.go(content);
+															break;
+														}
+													}
+											});
 									}
+								}
 							});
 						}
 					}

@@ -10,6 +10,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.LearnInvocation;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.ParseInvocation;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.PreprocessedDescription;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 public interface IMatrixGenerationServiceAsync {
 
@@ -20,13 +21,13 @@ public interface IMatrixGenerationServiceAsync {
 
 	public void learn(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration, AsyncCallback<LearnInvocation> callback);
 	
-	public void review(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration, AsyncCallback<String> asyncCallback);
+	public void review(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration, AsyncCallback<MatrixGenerationConfiguration> callback);
 
 	public void parse(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration, AsyncCallback<ParseInvocation> callback);
 	
 	public void output(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration, AsyncCallback<Boolean> callback);
 
-	
+	public void goToTaskStage(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration, TaskStageEnum taskStage, AsyncCallback<MatrixGenerationConfiguration> callback);
 	
 	public void getDescription(AuthenticationToken authenticationToken, String target, AsyncCallback<String> callback);
 	
@@ -37,6 +38,8 @@ public interface IMatrixGenerationServiceAsync {
 	public void getMatrixGenerationConfiguration(AuthenticationToken authenticationToken, Task task, AsyncCallback<MatrixGenerationConfiguration> callback);
 	
 	public void cancel(AuthenticationToken authenticationToken, Task task, AsyncCallback<Void> callback);
+
+	
 	
 	/*public void getJobStatus(AuthenticationToken authenticationToken, MatrixGenerationJob matrixGenerationJob, AsyncCallback<MatrixGenerationJobStatus> callback);
 	

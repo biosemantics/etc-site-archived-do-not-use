@@ -25,6 +25,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.BracketValidator;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.PreprocessedDescription;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 public class PreprocessMatrixGenerationPresenter {
 
@@ -159,7 +160,17 @@ public class PreprocessMatrixGenerationPresenter {
 					}
 					@Override
 					public void onSuccess(Boolean result) {	
-						eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationConfiguration));
+						matrixGenerationService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), matrixGenerationConfiguration, 
+								TaskStageEnum.LEARN_TERMS, new AsyncCallback<MatrixGenerationConfiguration>() {
+									@Override
+									public void onFailure(Throwable caught) {
+										caught.printStackTrace();
+									}
+									@Override
+									public void onSuccess(MatrixGenerationConfiguration matrixGenerationConfiguration) {
+										eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationConfiguration));
+									} 
+						});
 					}
 				});
 			}
@@ -198,7 +209,17 @@ public class PreprocessMatrixGenerationPresenter {
 					public void onSuccess(List<PreprocessedDescription> result) {
 						if(result.isEmpty()) {
 							loadingPopup.stop();
-							eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationConfiguration));
+							matrixGenerationService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), matrixGenerationConfiguration, 
+									TaskStageEnum.LEARN_TERMS, new AsyncCallback<MatrixGenerationConfiguration>() {
+										@Override
+										public void onFailure(Throwable caught) {
+											caught.printStackTrace();
+										}
+										@Override
+										public void onSuccess(MatrixGenerationConfiguration matrixGenerationConfiguration) {
+											eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationConfiguration));
+										}
+							});
 							return;
 						} else 
 							preprocessedDescriptions = result;
