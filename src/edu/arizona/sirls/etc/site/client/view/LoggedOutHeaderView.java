@@ -12,7 +12,7 @@ import edu.arizona.sirls.etc.site.client.presenter.LoggedOutHeaderPresenter;
 public class LoggedOutHeaderView extends Composite implements LoggedOutHeaderPresenter.Display {
 
 	private ImageLabelComposite helpImageLabelComposite = 
-			new ImageLabelComposite("images/Help.gif", "20px", "20px", "Help");
+			new ImageLabelComposite("images/Help.gif", "20px", "20px", "Video Tutorial");
 	private PasswordTextBox passwordField = new PasswordTextBox();
 	private TextBox userField = new TextBox();
 	private Button loginButton = new Button("Login");

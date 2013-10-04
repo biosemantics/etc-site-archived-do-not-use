@@ -11,7 +11,7 @@ import edu.arizona.sirls.etc.site.client.presenter.LoggedInHeaderPresenter;
 
 public class LoggedInHeaderView extends Composite implements LoggedInHeaderPresenter.Display {
 
-	private ImageLabelComposite helpImageLabelComposite = new ImageLabelComposite("images/Help.gif", "20px", "20px", "Help");
+	private ImageLabelComposite helpImageLabelComposite = new ImageLabelComposite("images/Help.gif", "20px", "20px", "Video Tutorial");
 	private ImageLabelComposite homeImageLabelComposite = new ImageLabelComposite("images/Home.gif", "20px", "20px", "Home");
 	private ImageLabelComposite taskManagerImageLabelComposite = new ImageLabelComposite("images/TaskManager.gif", "20px", "20px", "Task Manager");
 	private ImageLabelComposite fileManagerImageLabelComposite = new ImageLabelComposite("images/FileManager.gif", "20px", "20px", "File Manager");

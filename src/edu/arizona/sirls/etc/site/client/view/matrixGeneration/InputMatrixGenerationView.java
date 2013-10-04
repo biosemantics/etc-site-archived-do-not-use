@@ -47,6 +47,7 @@ public class InputMatrixGenerationView extends MatrixGenerationView implements
 		inputRequirementsPanel.add(new InlineLabel(" for taxon descriptions."));	
 		verticalPanel.add(inputRequirementsPanel);
 		HorizontalPanel namePanel = new HorizontalPanel();
+		namePanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		namePanel.addStyleName("inputForm");
 		namePanel.add(new Label("Task name:"));
 		nameTextBox = new TextBox();
