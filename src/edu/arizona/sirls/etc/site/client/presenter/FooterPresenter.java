@@ -24,8 +24,8 @@ public class FooterPresenter implements Presenter {
 
 	@Override
 	public void go(HasWidgets container) {
-		container.clear();
-		container.add(display.asWidget());
+		//container.clear();
+		//container.add(display.asWidget());
 	}
 	
 }
