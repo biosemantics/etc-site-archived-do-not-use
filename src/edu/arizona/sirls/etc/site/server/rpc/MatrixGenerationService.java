@@ -74,7 +74,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	private SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MM-dd-yyyy");
 	
 	public MatrixGenerationService() {
-		executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(maximumThreads));
+		executorService = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
 	}
 	
 	@Override
@@ -462,22 +462,9 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		}
 	}
 
-
-	
-
-	/*@Override
-	public MatrixGenerationJobStatus getJobStatus(AuthenticationToken authenticationToken, MatrixGenerationJob matrixGenerationJob) {
-		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
-			return MatrixGenerationJobStatus.MARKUP;
-		}
-		return null;
-	}
-
 	@Override
-	public void cancelJob(AuthenticationToken authenticationToken, MatrixGenerationJob matrixGenerationJob) {
-		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
-			
-		}
-	}*/
-
+	public void destroy() {
+		this.executorService.shutdownNow();
+		super.destroy();
+	}
 }

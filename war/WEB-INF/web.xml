@@ -5,6 +5,9 @@ xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
  	<!-- TODO: Add <servlet> tags for each servlet here. -->
+  
+  <display-name>etcsite</display-name>
+  
   <servlet>
     <servlet-name>authenticationServlet</servlet-name>
     <servlet-class>edu.arizona.sirls.etc.site.server.rpc.AuthenticationService</servlet-class>
@@ -105,4 +108,11 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   <servlet-name>remoteLoggingServiceImpl</servlet-name>
   <url-pattern>/etcsite/logging</url-pattern>
 </servlet-mapping>
+
+
+  <listener>
+  	<listener-class>
+  		edu.arizona.sirls.etc.site.server.ETCSiteServletContextListener
+  	</listener-class>
+  </listener>
 </web-app>

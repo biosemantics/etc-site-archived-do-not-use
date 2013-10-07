@@ -20,7 +20,6 @@ public class ConnectionPool {
 	}
 	
 	public ConnectionPool() throws ClassNotFoundException, SQLException, IOException {
-		connectionPool = null;
 		Class.forName("com.mysql.jdbc.Driver");
 		
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
