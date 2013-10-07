@@ -191,7 +191,7 @@ public class TaskManagerPresenter {
 									}
 									@Override
 									public void onSuccess(MatrixGenerationConfiguration matrixGenerationConfiguration) {
-										//could also have a popup here asking for a new task name to use..
+										//could also have a popup here asking for a new task name to use..										
 										
 										//pickup again from review
 										matrixGenerationService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), matrixGenerationConfiguration, 

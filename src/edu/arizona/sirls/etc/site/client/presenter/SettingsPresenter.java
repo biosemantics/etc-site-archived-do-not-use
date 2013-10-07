@@ -4,6 +4,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ButtonBase;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
@@ -15,6 +16,8 @@ public class SettingsPresenter {
 		Widget asWidget();
 		HasText getOldPasswordTextBox();
 		HasText getNewPasswordTextBox();
+		HasText getBioportalUserIdTextBox();
+		HasText getBioportalAPIKeyTextBox();
 	}
 
 	private Display display;
@@ -34,6 +37,8 @@ public class SettingsPresenter {
 						//service do change; return if worked or not
 						display.getOldPasswordTextBox().getText();
 						display.getNewPasswordTextBox().getText();
+						display.getBioportalUserIdTextBox().getText();
+						display.getBioportalAPIKeyTextBox().getText();
 					}
 				});
 	}
