@@ -1,11 +1,15 @@
 package edu.arizona.sirls.etc.site.client;
 
+import java.util.List;
+import java.util.Map;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -22,6 +26,7 @@ import edu.arizona.sirls.etc.site.client.event.LoginEvent;
 import edu.arizona.sirls.etc.site.client.event.LoginEventHandler;
 import edu.arizona.sirls.etc.site.client.event.LogoutEvent;
 import edu.arizona.sirls.etc.site.client.event.LogoutEventHandler;
+import edu.arizona.sirls.etc.site.client.event.ResumableTasksEvent;
 import edu.arizona.sirls.etc.site.client.event.SettingsEvent;
 import edu.arizona.sirls.etc.site.client.event.SettingsEventHandler;
 import edu.arizona.sirls.etc.site.client.event.TaskManagerEvent;
@@ -96,6 +101,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.ITreeGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IVisualizationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IVisualizationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 public class MySitePresenter implements SitePresenter, ValueChangeHandler<String> {
@@ -137,7 +143,8 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	protected LoginPresenter loginPresenter;
 	protected HelpPresenter helpPresenter;
 	protected StartPresenter startPresenter;
-
+	
+	private TaskManager taskManager = new TaskManager();
 	private ConfigurationManager configurationManager = ConfigurationManager.getInstance();
 	
 
@@ -166,6 +173,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(HomeEvent.TYPE,
 		    	new HomeEventHandler() {
 		          public void onHome(HomeEvent event) {
+		        	  taskManager.removeActiveTask();
 		        	  addToHistory(event);
 		          }
 		        });
@@ -173,6 +181,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(TaskManagerEvent.TYPE,
 		    	new TaskManagerEventHandler() {
 		          public void onTaskManager(TaskManagerEvent event) {
+		        	  taskManager.removeActiveTask();
 		        	  addToHistory(event);
 		          }
 		        });
@@ -180,6 +189,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(FileManagerEvent.TYPE,
 		    	new FileManagerEventHandler() {
 		          public void onFileManager(FileManagerEvent event) {
+		        	  taskManager.removeActiveTask();
 		        	  addToHistory(event);
 		          }
 		        });
@@ -187,6 +197,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(HelpEvent.TYPE,
 		    	new HelpEventHandler() {
 		          public void onHelp(HelpEvent event) {
+		        	  taskManager.removeActiveTask();
 		        	  addToHistory(event);
 		          }
 		        });
@@ -194,6 +205,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(SettingsEvent.TYPE,
 		    	new SettingsEventHandler() {
 		          public void onSettings(SettingsEvent event) {
+		        	  taskManager.removeActiveTask();
 		        	  addToHistory(event);
 		          }
 		        });
@@ -220,6 +232,8 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 												public void onClick(ClickEvent event) {
 													//resume
 													matrixGenerationEvent.setMatrixGenerationConfiguration(latestResumable);
+													configurationManager.setMatrixGenerationConfiguration(latestResumable);
+													taskManager.setActiveTask(configurationManager.getMatrixGenerationConfiguration().getTask());
 													addToHistory(matrixGenerationEvent);
 												}
 											}, new ClickHandler() {
@@ -239,6 +253,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 		        	  });
 	        	  } else {
 	        		  configurationManager.setMatrixGenerationConfiguration(matrixGenerationEvent.getMatrixGenerationConfiguration());
+	        		  taskManager.setActiveTask(configurationManager.getMatrixGenerationConfiguration().getTask());
 	        		  addToHistory(matrixGenerationEvent);
 	        	  }
 	          }
@@ -247,6 +262,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(TreeGenerationEvent.TYPE,
 		    	new TreeGenerationEventHandler() {
 		          public void onTreeGeneration(TreeGenerationEvent event) {
+		        	  taskManager.setActiveTask(configurationManager.getTreeGenerationConfiguration().getTask());
 		        	  addToHistory(event);
 		          }
 		        });
@@ -254,6 +270,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(TaxonomyComparisonEvent.TYPE,
 		    	new TaxonomyComparisonEventHandler() {
 		          public void onTaxonomyComparison(TaxonomyComparisonEvent event) {
+		        	  taskManager.setActiveTask(configurationManager.getTaxonomyComparisonConfiguration().getTask());
 		        	  addToHistory(event);
 		          }
 		        });
@@ -261,6 +278,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(VisualizationEvent.TYPE,
 		    	new VisualizationEventHandler() {
 		          public void onVisualization(VisualizationEvent event) {
+		        	  taskManager.setActiveTask(configurationManager.getVisualizationConfiguration().getTask());
 		        	  addToHistory(event);
 		          }
 		        });
@@ -302,6 +320,23 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    else {
 	      History.fireCurrentHistoryState();
 	    }
+	    
+		Timer timer = new Timer() {
+	        public void run() {
+	        	taskService.getResumableTasks(Authentication.getInstance().getAuthenticationToken(), new AsyncCallback<Map<Integer, Task>>() {
+	    			@Override
+	    			public void onFailure(Throwable caught) {
+	    				caught.printStackTrace();
+	    			}
+	    			@Override
+	    			public void onSuccess(Map<Integer, Task> result) {
+	    				eventBus.fireEvent(new ResumableTasksEvent(result));
+	    			} 
+	    		});
+	        }
+		};
+		
+		timer.scheduleRepeating(5000);
 	}
 
 	@Override
@@ -596,7 +631,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 					public void onSuccess(AuthenticationResult result) {
 						if(result.getResult()) {
 							if(loggedInHeaderPresenter == null)
-								loggedInHeaderPresenter = new LoggedInHeaderPresenter(eventBus, new LoggedInHeaderView(), taskService);
+								loggedInHeaderPresenter = new LoggedInHeaderPresenter(eventBus, new LoggedInHeaderView(), taskService, taskManager);
 							loggedInHeaderPresenter.go(header);
 						} else {
 							if(loggedOutHeaderPresenter == null)

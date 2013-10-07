@@ -1,6 +1,7 @@
 package edu.arizona.sirls.etc.site.shared.rpc;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -25,6 +26,8 @@ public interface ITaskServiceAsync {
 	public void isCompleted(AuthenticationToken authenticationToken, Task task, AsyncCallback<Boolean> callback);
 
 	public void hasResumable(AuthenticationToken authenticationToken, AsyncCallback<Boolean> callback);
+	
+	public void getResumableTasks(AuthenticationToken authenticationToken, AsyncCallback<Map<Integer, Task>> callback); 
 	
 	//public void cancelTask(AuthenticationToken authenticationToken, Task task, AsyncCallback<Void> callback);
 

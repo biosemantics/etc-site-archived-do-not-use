@@ -1,7 +1,10 @@
 package edu.arizona.sirls.etc.site.server.rpc;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -120,10 +123,14 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 		return false;
 	}
 
-	private List<Task> getResumableTasks(AuthenticationToken authenticationToken) {
+	@Override
+	public Map<Integer, Task> getResumableTasks(AuthenticationToken authenticationToken) {
 		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
 			try {
-				return TaskDAO.getInstance().getUsersResumableTasks(authenticationToken.getUsername());
+				Map<Integer, Task> result = new LinkedHashMap<Integer, Task>();
+				for(Task task : TaskDAO.getInstance().getUsersResumableTasks(authenticationToken.getUsername()))
+					result.put(task.getId(), task);
+				return result;
 			} catch(Exception e) {
 				e.printStackTrace();
 			}

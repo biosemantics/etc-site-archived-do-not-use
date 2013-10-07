@@ -1,6 +1,7 @@
 package edu.arizona.sirls.etc.site.shared.rpc;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -28,6 +29,8 @@ public interface ITaskService extends RemoteService {
 	public boolean isCompleted(AuthenticationToken authenticationToken, Task task);
 	
 	public boolean hasResumable(AuthenticationToken authenticationToken);
+	
+	public Map<Integer, Task> getResumableTasks(AuthenticationToken authenticationToken);
 	
 	//public void cancelTask(AuthenticationToken authenticationToken, Task task);
 	

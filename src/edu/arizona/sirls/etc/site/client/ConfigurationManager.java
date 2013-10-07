@@ -1,6 +1,9 @@
 package edu.arizona.sirls.etc.site.client;
 
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.db.TaxonomyComparisonConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.db.TreeGenerationConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.db.VisualizationConfiguration;
 
 public class ConfigurationManager {
 
@@ -15,6 +18,10 @@ public class ConfigurationManager {
 	private ConfigurationManager() { }
 	
 	private MatrixGenerationConfiguration matrixGenerationConfiguration;
+	private TreeGenerationConfiguration treeGenerationConfiguration;
+	private TaxonomyComparisonConfiguration taxonomyComparisonConfiguration;
+	private VisualizationConfiguration visualizationConfiguration;
+	
 
 	public boolean hasMatrixGenerationConfiguration() {
 		return this.matrixGenerationConfiguration != null;
@@ -35,5 +42,18 @@ public class ConfigurationManager {
 	public void removeMatrixGenerationConfiguration() {
 		this.matrixGenerationConfiguration = null;
 	}
+
+	public TreeGenerationConfiguration getTreeGenerationConfiguration() {
+		return this.treeGenerationConfiguration;
+	}
+
+	public TaxonomyComparisonConfiguration getTaxonomyComparisonConfiguration() {
+		return this.taxonomyComparisonConfiguration;
+	}
+	
+	public VisualizationConfiguration getVisualizationConfiguration() {
+		return this.visualizationConfiguration;
+	}
+	
 	
 }

@@ -6,6 +6,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
@@ -15,6 +16,8 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
+import edu.arizona.sirls.etc.site.client.event.ResumableTasksEvent;
+import edu.arizona.sirls.etc.site.client.event.ResumableTasksEventHandler;
 import edu.arizona.sirls.etc.site.client.event.TaskManagerEvent;
 import edu.arizona.sirls.etc.site.client.event.matrixGeneration.MatrixGenerationEvent;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
@@ -68,6 +71,26 @@ public class LearnMatrixGenerationPresenter {
 				eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationConfiguration));
 			}
 		});
+		eventBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEventHandler() {
+			private HandlerRegistration handlerRegistration;
+
+			@Override
+			public void onResumableTaskEvent(ResumableTasksEvent resumableTasksEvent) {
+				if(resumableTasksEvent.getTasks().containsKey(matrixGenerationConfiguration.getTask().getId())) {
+					display.setResumableStatus();
+					handlerRegistration = display.getResumableClickable().addClickHandler(new ClickHandler() {
+						@Override
+						public void onClick(ClickEvent event) {
+							eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationConfiguration));
+						}
+					});
+				} else {
+					display.setNonResumableStatus();
+					if(handlerRegistration != null)
+						handlerRegistration.removeHandler();
+				}
+			}
+		});
 	}
 
 	public void go(final HasWidgets content, MatrixGenerationConfiguration matrixGenerationConfiguration) {
@@ -88,37 +111,5 @@ public class LearnMatrixGenerationPresenter {
 				loadingPopup.stop();
 			}
 		});
-		
-		refreshTimer = new Timer() {
-	        public void run() {
-	        	refresh();
-	        }
-		};
-		refreshTimer.scheduleRepeating(5000);
 	}
-	
-	private void refresh() {
-		taskService.isResumable(Authentication.getInstance().getAuthenticationToken(), 
-				matrixGenerationConfiguration.getTask(),
-				new AsyncCallback<Boolean>() {
-				@Override
-				public void onFailure(Throwable caught) {
-					caught.printStackTrace();
-				}
-				@Override
-				public void onSuccess(Boolean isResumable) {
-					if(isResumable) {
-						refreshTimer.cancel();
-						display.setResumableStatus();
-						display.getResumableClickable().addClickHandler(new ClickHandler() {
-							@Override
-							public void onClick(ClickEvent event) {
-								eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationConfiguration));
-							}
-						});
-					} 
-				}
-		});
-	}
-
 }
