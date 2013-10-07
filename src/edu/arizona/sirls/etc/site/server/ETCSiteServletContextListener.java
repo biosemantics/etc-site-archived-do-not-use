@@ -1,12 +1,8 @@
 package edu.arizona.sirls.etc.site.server;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import edu.arizona.sirls.etc.site.server.rpc.MatrixGenerationService;
 import edu.arizona.sirls.etc.site.shared.rpc.db.ConnectionPool;
 
 public class ETCSiteServletContextListener implements ServletContextListener {
