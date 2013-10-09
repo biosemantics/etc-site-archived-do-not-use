@@ -22,8 +22,10 @@ public class UserDAO extends AbstractDAO {
 			id = result.getInt(1);
 			String name = result.getString(2);
 			String password = result.getString(3);
-			long created = result.getLong(4);
-			user = new User(id, name, password, created);
+			String bioportalUserId = result.getString(4);
+			String bioportalAPIKey = result.getString(5);
+			long created = result.getLong(6);
+			user = new User(id, name, password, bioportalUserId, bioportalAPIKey, created);
 		}
 		query.close();
 		return user;
@@ -38,8 +40,10 @@ public class UserDAO extends AbstractDAO {
 			int id = result.getInt(1);
 			name = result.getString(2);
 			String password = result.getString(3);
-			long created = result.getLong(4);
-			user = new User(id, name, password, created);
+			String bioportalUserId = result.getString(4);
+			String bioportalAPIKey = result.getString(5);
+			long created = result.getLong(6);
+			user = new User(id, name, password, bioportalUserId, bioportalAPIKey, created);
 		}
 		query.close();
 		return user;

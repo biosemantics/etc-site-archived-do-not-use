@@ -32,6 +32,7 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.server.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
@@ -165,10 +166,16 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 					task.setResumable(false);
 					TaskDAO.getInstance().updateTask(task);
 					
-					String config = matrixGenerationConfiguration.getGlossary().getName();
+					String glossary = matrixGenerationConfiguration.getGlossary().getName();
 					String input = matrixGenerationConfiguration.getInput();
 					String tablePrefix = String.valueOf(task.getId());
-					ILearn learn = new Learn(authenticationToken, config, input, tablePrefix);
+					String debugFile = "workspace" + File.separator + task.getId() + File.separator + "debug.log";
+					String errorFile = "workspace" + File.separator + task.getId() + File.separator + "error.log";
+					String source = input; //maybe something else later
+					String user = authenticationToken.getUsername();
+					String bioportalUserId = UserDAO.getInstance().getUser(authenticationToken.getUsername()).getBioportalUserId();
+					String bioportalAPIKey = UserDAO.getInstance().getUser(authenticationToken.getUsername()).getBioportalAPIKey();
+					ILearn learn = new Learn(authenticationToken, glossary, input, tablePrefix, debugFile, errorFile, source, user, bioportalUserId, bioportalAPIKey);
 					final ListenableFuture<LearnResult> futureResult = executorService.submit(learn);
 					activeLearnFutures.put(matrixGenerationConfiguration.getId(), futureResult);
 					futureResult.addListener(new Runnable() {
@@ -239,10 +246,16 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 					task.setResumable(false);
 					TaskDAO.getInstance().updateTask(task);
 					
-					String config = matrixGenerationConfiguration.getGlossary().getName();
+					String glossary = matrixGenerationConfiguration.getGlossary().getName();
 					String input = matrixGenerationConfiguration.getInput();
 					String tablePrefix = String.valueOf(task.getId());
-					IParse parse = new Parse(authenticationToken, config, input, tablePrefix);
+					String debugFile = "workspace" + File.separator + task.getId() + File.separator + "debug.log";
+					String errorFile = "workspace" + File.separator + task.getId() + File.separator + "error.log";
+					String source = input; //maybe something else later
+					String user = authenticationToken.getUsername();
+					String bioportalUserId = UserDAO.getInstance().getUser(authenticationToken.getUsername()).getBioportalUserId();
+					String bioportalAPIKey = UserDAO.getInstance().getUser(authenticationToken.getUsername()).getBioportalAPIKey();
+					IParse parse = new Parse(authenticationToken, glossary, input, tablePrefix, debugFile, errorFile, source, user, bioportalUserId, bioportalAPIKey);
 					final ListenableFuture<ParseResult> futureResult = executorService.submit(parse);
 					activeParseFutures.put(matrixGenerationConfiguration.getId(), futureResult);
 					futureResult.addListener(new Runnable() {

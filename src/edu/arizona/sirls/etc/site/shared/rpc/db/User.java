@@ -12,14 +12,18 @@ public class User implements Serializable {
 	private String name;
 	private String password;
 	private long created;
+	private String bioportalUserId;
+	private String bioportalAPIKey;
 	
 	public User() { }
 	
-	public User(int id, String name, String password, long created) {
+	public User(int id, String name, String password, String bioportalUserId, String bioportalAPIKey, long created) {
 		this.id = id;
 		this.name = name;
 		this.password = password;
 		this.created = created;
+		this.bioportalUserId = bioportalUserId;
+		this.bioportalAPIKey = bioportalAPIKey;
 	}
 
 	public int getId() {
@@ -52,6 +56,22 @@ public class User implements Serializable {
 
 	public void setCreated(long created) {
 		this.created = created;
+	}
+
+	public String getBioportalUserId() {
+		return bioportalUserId;
+	}
+
+	public void setBioportalUserId(String bioportalUserId) {
+		this.bioportalUserId = bioportalUserId;
+	}
+
+	public String getBioportalAPIKey() {
+		return bioportalAPIKey;
+	}
+
+	public void setBioportalAPIKey(String bioportalAPIKey) {
+		this.bioportalAPIKey = bioportalAPIKey;
 	}
 	
 	
