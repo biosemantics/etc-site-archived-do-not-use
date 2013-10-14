@@ -21,6 +21,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     <servlet-class>edu.arizona.sirls.etc.site.server.rpc.FileAccessService</servlet-class>
   </servlet>
   <servlet>
+    <servlet-name>fileSearchServlet</servlet-name>
+    <servlet-class>edu.arizona.sirls.etc.site.server.rpc.FileSearchService</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>taskServlet</servlet-name>
     <servlet-class>edu.arizona.sirls.etc.site.server.rpc.TaskService</servlet-class>
   </servlet>
@@ -42,7 +46,11 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     <servlet-name>fileServlet</servlet-name>
     <url-pattern>/etcsite/file</url-pattern>
   </servlet-mapping>
-    <servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>fileSearchServlet</servlet-name>
+    <url-pattern>/etcsite/fileSearch</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
     <servlet-name>fileAccessServlet</servlet-name>
     <url-pattern>/etcsite/fileAccess</url-pattern>
   </servlet-mapping>

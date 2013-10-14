@@ -24,6 +24,9 @@ public class ETCSiteServletContextListener implements ServletContextListener {
 			try {
 				//init connection pool
 				ConnectionPool connectionPool = ConnectionPool.getInstance();
+				
+				//set XPath objectmodel for XPath 2 supoprt (saxon)
+				System.setProperty("javax.xml.xpath.XPathFactory:" + Configuration.xPathObjectModel, "net.sf.saxon.xpath.XPathFactoryImpl");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

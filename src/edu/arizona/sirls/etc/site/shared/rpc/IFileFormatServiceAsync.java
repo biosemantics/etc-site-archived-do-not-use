@@ -11,4 +11,6 @@ public interface IFileFormatServiceAsync {
 	public void isValidGlossary(AuthenticationToken authenticationToken, String target, AsyncCallback<Boolean> callback);
 	
 	public void isValidEuler(AuthenticationToken authenticationToken, String target, AsyncCallback<Boolean> callback);
+	
+	public void isValidMarkedupTaxonDescription(AuthenticationToken authenticationToken, String target, AsyncCallback<Boolean> callback);
 }

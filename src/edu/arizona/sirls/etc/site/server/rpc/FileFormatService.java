@@ -27,13 +27,23 @@ public class FileFormatService extends RemoteServiceServlet implements IFileForm
 	private IFileService fileService = new FileService();
 	private IFileAccessService fileAccessService = new FileAccessService();
 	private CSVValidator csvValidator = new CSVValidator();
-	private XMLValidator xmlValidator = new XMLValidator(new File(Configuration.taxonDescriptionSchemaFile));
+	private XMLValidator taxonDescriptionValidator = new XMLValidator(new File(Configuration.taxonDescriptionSchemaFile));
+	private XMLValidator markedUpTaxonDescriptionValidator = new XMLValidator(new File(Configuration.markedUpTaxonDescriptionSchemaFile));
 	
 	@Override
 	public boolean isValidTaxonDescription(AuthenticationToken authenticationToken, String target) {
 		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
 			String fileContent = fileAccessService.getFileContent(authenticationToken, target);
-			return xmlValidator.validate(fileContent);
+			return taxonDescriptionValidator.validate(fileContent);
+		} 
+		return false;
+	}
+	
+	@Override
+	public boolean isValidMarkedupTaxonDescription(AuthenticationToken authenticationToken, String target) {
+		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
+			String fileContent = fileAccessService.getFileContent(authenticationToken, target);
+			return markedUpTaxonDescriptionValidator.validate(fileContent);
 		} 
 		return false;
 	}

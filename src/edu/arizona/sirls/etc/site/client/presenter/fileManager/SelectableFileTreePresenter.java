@@ -38,6 +38,16 @@ public class SelectableFileTreePresenter implements Presenter {
 		bind(selectClickHandler, closeClickHandler);
 	}
 	
+	public SelectableFileTreePresenter(HandlerManager eventBus, Display display, 
+			IFileServiceAsync fileService, FileFilter fileFilter) {
+		this.eventBus = eventBus;
+		this.display = display;
+		this.fileTreeView = display.getFileTreeView();
+		this.fileTreePresenter = new FileTreePresenter(eventBus, 
+				fileTreeView, fileService, false, fileFilter);
+		this.fileSelectionHandler = fileTreePresenter.getFileSelectionHandler();
+	}
+	
 	
 	private void bind(ClickHandler selectClickHandler, ClickHandler closeClickHandler) {
 		display.getSelectButton().addClickHandler(selectClickHandler); 
@@ -58,6 +68,14 @@ public class SelectableFileTreePresenter implements Presenter {
 
 	public FileSelectionHandler getFileSelectionHandler() {
 		return fileSelectionHandler;
+	}
+	
+	public void setSelectClickHandler(ClickHandler handler) {
+		display.getSelectButton().addClickHandler(handler);
+	}
+	
+	public void setCloseClickHandler(ClickHandler handler) {
+		display.getCloseButton().addClickHandler(handler);
 	}
 
 }

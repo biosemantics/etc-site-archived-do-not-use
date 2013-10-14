@@ -1,15 +1,22 @@
 package edu.arizona.sirls.etc.site.shared.rpc.file;
 
 import java.io.StringReader;
+import java.io.StringWriter;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.XMLWriter;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.InputSource;
 
+import edu.arizona.sirls.etc.site.server.rpc.HighlightXMLWriter;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileFormatter;
 
 public class XMLFileFormatter implements IFileFormatter {
@@ -41,7 +48,26 @@ public class XMLFileFormatter implements IFileFormatter {
 
 			return writer.writeToString(document);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			e.printStackTrace();
 		}
+		return input;
+	}
+
+	public String formatAndHiglight(String content, NodeList nodeList) {		
+		try {
+			System.out.println("content " + content);
+			Document doc = DocumentHelper.parseText(content);  
+			StringWriter sw = new StringWriter();  
+			OutputFormat format = OutputFormat.createPrettyPrint();  
+			//XMLWriter xw = new XMLWriter(sw, format);  
+			XMLWriter xw = new HighlightXMLWriter(sw, format, nodeList);  
+			xw.write(doc);  
+			String result = sw.toString();
+			System.out.println("result " + result);
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return content;
 	}
 }
