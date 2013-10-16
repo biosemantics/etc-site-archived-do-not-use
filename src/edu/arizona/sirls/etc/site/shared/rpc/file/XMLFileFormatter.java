@@ -52,9 +52,32 @@ public class XMLFileFormatter implements IFileFormatter {
 		}
 		return input;
 	}
+	
+	
+	public String format(Node node) {
+		try {			
+			final DOMImplementationRegistry registry = DOMImplementationRegistry
+					.newInstance();
+			final DOMImplementationLS impl = (DOMImplementationLS) registry
+					.getDOMImplementation("LS");
+			final LSSerializer writer = impl.createLSSerializer();
+
+			writer.getDomConfig().setParameter("format-pretty-print",
+					Boolean.TRUE); // Set this to true if the output needs to be
+									// beautified.
+			writer.getDomConfig().setParameter("xml-declaration",
+					false); // Set this to true if the declaration is
+										// needed to be outputted.
+
+			return writer.writeToString(node);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	} 
 
 	public String formatAndHiglight(String content, NodeList nodeList) {		
-		try {
+		/*try {
 			System.out.println("content " + content);
 			Document doc = DocumentHelper.parseText(content);  
 			StringWriter sw = new StringWriter();  
@@ -67,7 +90,8 @@ public class XMLFileFormatter implements IFileFormatter {
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 		return content;
 	}
+
 }

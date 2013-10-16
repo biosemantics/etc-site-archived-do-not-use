@@ -1,0 +1,42 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.horizontalPanel {
+			width:900px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+		.verticalPanel {
+			padding: 20px;
+        }
+        .searchParameter {
+			width: 300px;
+		}
+		</ui:style>
+	<g:HorizontalPanel addStyleNames="{style.horizontalPanel">
+       <g:cell verticalAlignment="ALIGN_TOP" width="200px">
+	       <g:VerticalPanel addStyleNames="{style.verticalPanel}">
+	       	 <g:Label addStyleNames="{style.searchParameter}">Input:</g:Label>
+		     <g:Button ui:field="inputButton" addStyleNames="{style.searchParameter}">Select</g:Button>
+		     <g:Label ui:field="inputLabel" addStyleNames="{style.searchParameter}" ></g:Label>
+	       </g:VerticalPanel>
+       </g:cell>
+       <g:cell verticalAlignment="ALIGN_TOP" width="300px">
+	       <g:VerticalPanel addStyleNames="{style.verticalPanel}">
+	       	 <g:Label addStyleNames="{style.searchParameter}">Search:</g:Label>
+	         <g:ListBox ui:field="typeListBox" addStyleNames="{style.searchParameter}"></g:ListBox>
+	       </g:VerticalPanel>
+	   </g:cell>
+	   <g:cell verticalAlignment="ALIGN_TOP" width="300px">
+	       <g:VerticalPanel addStyleNames="{style.verticalPanel}">
+	       	 <g:Label ui:field="typeLabel" addStyleNames="{style.searchParameter}"></g:Label>
+	         <g:ListBox ui:field="elementListBox" addStyleNames="{style.searchParameter}"></g:ListBox>
+	         <g:ListBox ui:field="attributeListBox" addStyleNames="{style.searchParameter}"></g:ListBox>
+	         <g:TextBox ui:field="valueTextBox" addStyleNames="{style.searchParameter}"></g:TextBox>
+	         <g:TextBox ui:field="xpathTextBox" addStyleNames="{style.searchParameter}"></g:TextBox>
+	         <g:Button ui:field="searchButton" addStyleNames="{style.searchParameter}">Search</g:Button>
+	       </g:VerticalPanel>
+	    </g:cell>
+    </g:HorizontalPanel>	
+</ui:UiBinder> 

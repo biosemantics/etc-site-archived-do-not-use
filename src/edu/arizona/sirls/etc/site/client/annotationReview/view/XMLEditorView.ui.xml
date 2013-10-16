@@ -2,15 +2,15 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
-		.textArea {
-			width:100%;
-			height:100%;
-			margin-left: auto;
-			margin-right: auto;
-		}
 		.verticalPanel {
 			width:100%;
 			height:100%;
+			padding-right: 20px;
+			padding:20px;
+		}
+		.textArea {
+			height: 100%;
+			width: 100%;
 		}
 		.horizontalPanel {
 			height:30px;
@@ -18,12 +18,16 @@
 			margin-right: auto;
 		}
 	</ui:style>
-	<g:VerticalPanel styleName="{style.verticalPanel}">	
-		<g:RichTextArea ui:field="textArea" styleName="{style.textArea}"></g:RichTextArea>
-		<!--  <g:TextArea ui:field="textArea" styleName="{style.textArea}"></g:TextArea> -->
-		<g:HorizontalPanel styleName="{style.horizontalPanel}">
-			<g:Button ui:field="validateButton">Validate</g:Button>
-			<g:Button ui:field="saveButton">Save</g:Button>
-		</g:HorizontalPanel>
+	<g:VerticalPanel addStyleNames="{style.verticalPanel}">	
+		<g:cell height="100%">
+			<g:RichTextArea ui:field="textArea" addStyleNames="{style.textArea}"></g:RichTextArea>
+		<!--  <g:TextArea ui:field="textArea" addStyleNames="{style.textArea}"></g:TextArea> -->
+		</g:cell>
+		<g:cell height="30px">
+			<g:HorizontalPanel addStyleNames="{style.horizontalPanel}">
+				<g:Button ui:field="validateButton">Validate</g:Button>
+				<g:Button ui:field="saveButton">Save</g:Button>
+			</g:HorizontalPanel>
+		</g:cell>
 	</g:VerticalPanel>
 </ui:UiBinder> 

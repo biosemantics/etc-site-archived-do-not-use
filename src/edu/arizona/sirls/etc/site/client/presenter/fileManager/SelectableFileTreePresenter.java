@@ -1,5 +1,6 @@
 package edu.arizona.sirls.etc.site.client.presenter.fileManager;
 
+import com.google.common.eventbus.EventBus;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.ui.Button;
@@ -7,6 +8,7 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.presenter.Presenter;
+import edu.arizona.sirls.etc.site.client.view.fileManager.SelectableFileTreeView;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 
@@ -47,8 +49,7 @@ public class SelectableFileTreePresenter implements Presenter {
 				fileTreeView, fileService, false, fileFilter);
 		this.fileSelectionHandler = fileTreePresenter.getFileSelectionHandler();
 	}
-	
-	
+
 	private void bind(ClickHandler selectClickHandler, ClickHandler closeClickHandler) {
 		display.getSelectButton().addClickHandler(selectClickHandler); 
 		display.getCloseButton().addClickHandler(closeClickHandler); 

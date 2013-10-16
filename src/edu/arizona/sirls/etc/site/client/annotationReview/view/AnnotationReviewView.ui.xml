@@ -4,7 +4,6 @@
     xmlns:my="urn:import:edu.arizona.sirls.etc.site.client.annotationReview.view">
     <ui:style>        
         .westPanel {
-            /*background-color: #99C;*/
 			padding: 20px
         }
 		.northPanel {
@@ -12,76 +11,21 @@
 			margin-left: auto;
 			margin-right: auto;
 		}
-        .horizontalNorthPanel {
-			padding: 20px;
-        }
-        .verticalNorthPanel {
-			padding: 20px;
-        }
         .centerPanel {
-            /*background-color: #FFC;*/
             height:100%;
             width:100%;
 			padding: 20px
         }
-		.gridHeaderRow {
-			font-weight: bold;
-		}
-		.fileGridHeader {
-			font-weight: bold;	
-		}
-		.matchesGridHeader {
-			font-weight: bold;
-			width: 200px;
-		}
-		.grid {
-			width:100%;
-		}
-		.searchParameter {
-			width: 300px;
-		}
     </ui:style>
      <g:DockLayoutPanel unit='PX'>
        <g:north size='194' styleName="{style.northPanel}">
-       	 <g:HorizontalPanel styleName="{style.northPanel}">
-       	   <g:VerticalPanel styleName="{style.verticalNorthPanel}">
-       	     <g:Label>Input:</g:Label>
-	         <g:Button ui:field="inputButton">Select</g:Button>
-	         <g:Label ui:field="inputLabel"></g:Label>
-       	   </g:VerticalPanel>
-       	   <g:VerticalPanel styleName="{style.verticalNorthPanel}">
-       	   	 <g:Label>Search:</g:Label>
-           	 <g:ListBox ui:field="typeListBox"></g:ListBox>
-       	   </g:VerticalPanel>
-       	   <g:VerticalPanel styleName="{style.verticalNorthPanel}">
-       	   	 <g:Label ui:field="typeLabel"></g:Label>
-           	 <g:ListBox ui:field="elementListBox" styleName="{style.searchParameter}"></g:ListBox>
-           	 <g:ListBox ui:field="attributeListBox" styleName="{style.searchParameter}"></g:ListBox>
-           	 <g:TextBox ui:field="valueTextBox" styleName="{style.searchParameter}"></g:TextBox>
-           	 <g:TextBox ui:field="xpathTextBox" styleName="{style.searchParameter}"></g:TextBox>
-           	 <g:Button ui:field="searchButton">Search</g:Button>
-       	   </g:VerticalPanel>
-       	 </g:HorizontalPanel>
+       	   <my:SearchViewImpl ui:field="search"></my:SearchViewImpl>
        </g:north>
-       <g:west size='400'>
-         <g:VerticalPanel styleName="{style.westPanel}">
-           <g:Label ui:field="resultText"></g:Label>
-           <g:Grid ui:field="resultGrid" styleName="{style.grid}">
-               <g:row>
-                   <g:customCell styleName="{style.fileGridHeader}">
-                       <g:Label>File</g:Label>
-                   </g:customCell>
-                   <g:customCell styleName="{style.matchesGridHeader}">
-                       <g:Label>Matches</g:Label>
-                   </g:customCell>
-               </g:row>
-           </g:Grid>
-         </g:VerticalPanel>
+       <g:west size='400' styleName="{style.westPanel}">
+           <my:ResultViewImpl ui:field="result"></my:ResultViewImpl>
        </g:west>
        <g:center styleName="{style.centerPanel}">
-         <g:FlowPanel styleName="{style.centerPanel}">
            <my:XMLEditorViewImpl ui:field="xmlEditor"></my:XMLEditorViewImpl>
-         </g:FlowPanel>
        </g:center>      
      </g:DockLayoutPanel>
 </ui:UiBinder> 

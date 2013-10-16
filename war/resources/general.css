@@ -537,3 +537,7 @@ green 307137
 	height:43px;
 	padding-right: 10px	
 }
+
+.gwt-StackLayoutPanelHeader {
+	font-weight: bold;	
+}

@@ -20,4 +20,8 @@ public class ElementAttributeValuesSearch implements Search {
 		return "//" + element + "[@" + attribute + "='" + value + "']";
 	}
 
+	public String getAttribute() {
+		return attribute;
+	}
+
 }

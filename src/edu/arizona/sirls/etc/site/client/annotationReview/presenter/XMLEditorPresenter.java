@@ -1,11 +1,14 @@
 package edu.arizona.sirls.etc.site.client.annotationReview.presenter;
 
+import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
 
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.client.annotationReview.Presenter;
+import edu.arizona.sirls.etc.site.client.annotationReview.events.TargetEvent;
+import edu.arizona.sirls.etc.site.client.annotationReview.events.TargetEventHandler;
 import edu.arizona.sirls.etc.site.client.annotationReview.view.XMLEditorView;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileFormatServiceAsync;
@@ -21,13 +24,24 @@ public class XMLEditorPresenter implements Presenter, XMLEditorView.Presenter {
 	private IFileFormatServiceAsync fileFormatService;
 	private IFileSearchServiceAsync fileSearchService;
 	private String target;
+	private HandlerManager eventBus;
 	
-	public XMLEditorPresenter(XMLEditorView view, IFileAccessServiceAsync fileAccessService, IFileFormatServiceAsync fileFormatService, 
+	public XMLEditorPresenter(HandlerManager eventBus, XMLEditorView view, IFileAccessServiceAsync fileAccessService, IFileFormatServiceAsync fileFormatService, 
 			IFileSearchServiceAsync fileSearchService) {
+		this.eventBus = eventBus;
 		this.view = view;
 		this.fileAccessService = fileAccessService;
 		this.fileFormatService = fileFormatService;
 		this.fileSearchService = fileSearchService;
+		view.setPresenter(this);
+		
+		this.setEnabled(false);		
+		eventBus.addHandler(TargetEvent.TYPE, new TargetEventHandler() {
+			@Override
+			public void onTarget(TargetEvent targetEvent) {
+				XMLEditorPresenter.this.setTarget(targetEvent.getTarget());
+			}
+		});
 	}
 	
 	@Override
@@ -62,7 +76,8 @@ public class XMLEditorPresenter implements Presenter, XMLEditorView.Presenter {
 	}
 	
 	@Override
-	public void setTarget(Search search, String target) {
+	public void setTarget(String target) {
+		this.setEnabled(true);
 		this.target = target;
 		fileAccessService.getFileContentHighlighted(new AuthenticationToken("test", ""), target, FileType.TAXON_DESCRIPTION, new AsyncCallback<String>() {
 			@Override
