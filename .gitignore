@@ -19,3 +19,5 @@
 *.properties
 /war/workspace
 /war/resources/charaparser
+
+/bin/*
