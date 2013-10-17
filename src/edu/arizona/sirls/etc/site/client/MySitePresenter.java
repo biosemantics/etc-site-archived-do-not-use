@@ -26,6 +26,8 @@ import edu.arizona.sirls.etc.site.client.event.LoginEvent;
 import edu.arizona.sirls.etc.site.client.event.LoginEventHandler;
 import edu.arizona.sirls.etc.site.client.event.LogoutEvent;
 import edu.arizona.sirls.etc.site.client.event.LogoutEventHandler;
+import edu.arizona.sirls.etc.site.client.event.MarkupReviewEvent;
+import edu.arizona.sirls.etc.site.client.event.MarkupReviewEventHandler;
 import edu.arizona.sirls.etc.site.client.event.ResumableTasksEvent;
 import edu.arizona.sirls.etc.site.client.event.SettingsEvent;
 import edu.arizona.sirls.etc.site.client.event.SettingsEventHandler;
@@ -50,6 +52,10 @@ import edu.arizona.sirls.etc.site.client.presenter.SettingsPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.StartMenuPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.StartPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.TaskManagerPresenter;
+import edu.arizona.sirls.etc.site.client.presenter.annotationReview.AnnotationReviewPresenter;
+import edu.arizona.sirls.etc.site.client.presenter.annotationReview.ResultPresenter;
+import edu.arizona.sirls.etc.site.client.presenter.annotationReview.SearchPresenter;
+import edu.arizona.sirls.etc.site.client.presenter.annotationReview.XMLEditorPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.fileManager.FileManagerPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.InputMatrixGenerationPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.LearnMatrixGenerationPresenter;
@@ -71,6 +77,10 @@ import edu.arizona.sirls.etc.site.client.view.SettingsView;
 import edu.arizona.sirls.etc.site.client.view.StartMenuView;
 import edu.arizona.sirls.etc.site.client.view.StartView;
 import edu.arizona.sirls.etc.site.client.view.TaskManagerView;
+import edu.arizona.sirls.etc.site.client.view.annotationReview.AnnotationReviewViewImpl;
+import edu.arizona.sirls.etc.site.client.view.annotationReview.ResultViewImpl;
+import edu.arizona.sirls.etc.site.client.view.annotationReview.SearchViewImpl;
+import edu.arizona.sirls.etc.site.client.view.annotationReview.XMLEditorViewImpl;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileManagerView;
 import edu.arizona.sirls.etc.site.client.view.matrixGeneration.InputMatrixGenerationView;
 import edu.arizona.sirls.etc.site.client.view.matrixGeneration.LearnMatrixGenerationView;
@@ -88,6 +98,8 @@ import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileFormatService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileFormatServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.IFileSearchService;
+import edu.arizona.sirls.etc.site.shared.rpc.IFileSearchServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationService;
@@ -110,6 +122,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	private final IFileServiceAsync fileService = GWT.create(IFileService.class);
 	private final IFileFormatServiceAsync fileFormatService = GWT.create(IFileFormatService.class);
 	private final IFileAccessServiceAsync fileAccessService = GWT.create(IFileAccessService.class);
+	private final IFileSearchServiceAsync fileSearchService = GWT.create(IFileSearchService.class);
 	private final ITaskServiceAsync taskService = GWT.create(ITaskService.class);
 	private final IMatrixGenerationServiceAsync matrixGenerationService = GWT.create(IMatrixGenerationService.class);
 	private final ITreeGenerationServiceAsync treeGenerationService = GWT.create(ITreeGenerationService.class);
@@ -146,6 +159,10 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	
 	private TaskManager taskManager = new TaskManager();
 	private ConfigurationManager configurationManager = ConfigurationManager.getInstance();
+	protected AnnotationReviewPresenter annotationReviewPresenter;
+	protected XMLEditorPresenter xmlEditorPresenter;
+	protected ResultPresenter resultPresenter;
+	protected SearchPresenter searchPresenter;
 	
 
 	public MySitePresenter(HandlerManager eventBus) {
@@ -177,6 +194,13 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 		        	  addToHistory(event);
 		          }
 		        });
+	    
+	    eventBus.addHandler(MarkupReviewEvent.TYPE, new MarkupReviewEventHandler() {
+			@Override
+			public void onMarkupReview(MarkupReviewEvent event) {
+				addToHistory(event);
+			}
+	    });
 	    
 	    eventBus.addHandler(TaskManagerEvent.TYPE,
 		    	new TaskManagerEventHandler() {
@@ -420,6 +444,27 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 							startPresenter = new StartPresenter(eventBus, new StartView());
 						}
 						startPresenter.go(content);
+					}
+				});
+				break;
+			case MARKUP_REVIEW:
+				GWT.runAsync(new RunAsyncCallback() {
+					public void onFailure(Throwable caught) {
+						caught.printStackTrace();
+					}
+					public void onSuccess() {
+						if(annotationReviewPresenter == null) {
+							HandlerManager annotationReviewEventbus = new HandlerManager(null);
+							SearchViewImpl searchView = new SearchViewImpl();
+							searchPresenter = new SearchPresenter(annotationReviewEventbus, searchView, fileService, fileSearchService);
+							ResultViewImpl resultView = new ResultViewImpl();
+							resultPresenter = new ResultPresenter(annotationReviewEventbus, resultView);
+							XMLEditorViewImpl xmlEditorView = new XMLEditorViewImpl();
+							xmlEditorPresenter = new XMLEditorPresenter(annotationReviewEventbus, xmlEditorView, fileAccessService, fileFormatService, fileSearchService);
+							AnnotationReviewViewImpl annotationReviewView = new AnnotationReviewViewImpl(searchView, resultView, xmlEditorView, fileAccessService, fileFormatService, fileSearchService);
+							annotationReviewPresenter = new AnnotationReviewPresenter(annotationReviewEventbus, annotationReviewView);
+						}
+						annotationReviewPresenter.go(content);
 					}
 				});
 				break;

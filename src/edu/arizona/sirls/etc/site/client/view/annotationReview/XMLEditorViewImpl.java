@@ -1,4 +1,4 @@
-package edu.arizona.sirls.etc.site.client.annotationReview.view;
+package edu.arizona.sirls.etc.site.client.view.annotationReview;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;

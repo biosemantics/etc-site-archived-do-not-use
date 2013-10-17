@@ -1,4 +1,4 @@
-package edu.arizona.sirls.etc.site.client.annotationReview.presenter;
+package edu.arizona.sirls.etc.site.client.presenter.annotationReview;
 
 import java.util.List;
 
@@ -9,10 +9,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
-import edu.arizona.sirls.etc.site.client.annotationReview.events.SearchResultEvent;
-import edu.arizona.sirls.etc.site.client.annotationReview.view.SearchView;
-import edu.arizona.sirls.etc.site.client.annotationReview.view.SearchView.Presenter;
+import edu.arizona.sirls.etc.site.client.presenter.annotationReview.events.SearchResultEvent;
 import edu.arizona.sirls.etc.site.client.presenter.fileManager.SelectableFileTreePresenter;
+import edu.arizona.sirls.etc.site.client.view.annotationReview.SearchView;
 import edu.arizona.sirls.etc.site.client.view.fileManager.SelectableFileTreeView;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileSearchServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
@@ -20,7 +19,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 import edu.arizona.sirls.etc.site.shared.rpc.file.search.Search;
 import edu.arizona.sirls.etc.site.shared.rpc.file.search.SearchResult;
 
-public class SearchPresenter implements Presenter {
+public class SearchPresenter implements SearchView.Presenter {
 
 	private SearchView view;
 	private HandlerManager eventBus;

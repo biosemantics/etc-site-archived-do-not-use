@@ -1,4 +1,4 @@
-package edu.arizona.sirls.etc.site.client.annotationReview.view;
+package edu.arizona.sirls.etc.site.client.view.annotationReview;
 
 import com.google.gwt.user.client.ui.Widget;
 

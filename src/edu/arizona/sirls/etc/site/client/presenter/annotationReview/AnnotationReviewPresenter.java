@@ -1,10 +1,10 @@
-package edu.arizona.sirls.etc.site.client.annotationReview.presenter;
+package edu.arizona.sirls.etc.site.client.presenter.annotationReview;
 
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.ui.HasWidgets;
 
-import edu.arizona.sirls.etc.site.client.annotationReview.Presenter;
-import edu.arizona.sirls.etc.site.client.annotationReview.view.AnnotationReviewView;
+import edu.arizona.sirls.etc.site.client.presenter.Presenter;
+import edu.arizona.sirls.etc.site.client.view.annotationReview.AnnotationReviewView;
 
 public class AnnotationReviewPresenter implements Presenter, AnnotationReviewView.Presenter {
 

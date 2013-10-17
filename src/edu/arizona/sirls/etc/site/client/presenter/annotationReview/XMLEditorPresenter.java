@@ -1,4 +1,4 @@
-package edu.arizona.sirls.etc.site.client.annotationReview.presenter;
+package edu.arizona.sirls.etc.site.client.presenter.annotationReview;
 
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Window;
@@ -6,10 +6,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
 
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
-import edu.arizona.sirls.etc.site.client.annotationReview.Presenter;
-import edu.arizona.sirls.etc.site.client.annotationReview.events.TargetEvent;
-import edu.arizona.sirls.etc.site.client.annotationReview.events.TargetEventHandler;
-import edu.arizona.sirls.etc.site.client.annotationReview.view.XMLEditorView;
+import edu.arizona.sirls.etc.site.client.presenter.Presenter;
+import edu.arizona.sirls.etc.site.client.presenter.annotationReview.events.TargetEvent;
+import edu.arizona.sirls.etc.site.client.presenter.annotationReview.events.TargetEventHandler;
+import edu.arizona.sirls.etc.site.client.view.annotationReview.XMLEditorView;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileFormatServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileSearchServiceAsync;

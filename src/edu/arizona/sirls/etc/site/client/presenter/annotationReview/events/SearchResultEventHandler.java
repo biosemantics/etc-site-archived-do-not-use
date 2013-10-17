@@ -1,4 +1,4 @@
-package edu.arizona.sirls.etc.site.client.annotationReview.events;
+package edu.arizona.sirls.etc.site.client.presenter.annotationReview.events;
 
 import com.google.gwt.event.shared.EventHandler;
 

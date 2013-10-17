@@ -1,4 +1,4 @@
-package edu.arizona.sirls.etc.site.client.annotationReview.view;
+package edu.arizona.sirls.etc.site.client.view.annotationReview;
 
 import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileFormatServiceAsync;
@@ -9,6 +9,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
  
 public class AnnotationReviewViewImpl extends Composite implements AnnotationReviewView {
@@ -30,7 +31,7 @@ public class AnnotationReviewViewImpl extends Composite implements AnnotationRev
 
     public AnnotationReviewViewImpl(SearchViewImpl search, ResultViewImpl result, XMLEditorViewImpl xmlEditor,
     		IFileAccessServiceAsync fileAccessService, IFileFormatServiceAsync fileFormatService, IFileSearchServiceAsync fileSearchService) {
-        this.search = search;
+    	this.search = search;
         this.result = result;
         this.xmlEditor = xmlEditor;
     	initWidget(uiBinder.createAndBindUi(this));

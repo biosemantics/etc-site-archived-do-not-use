@@ -1,4 +1,4 @@
-package edu.arizona.sirls.etc.site.client.annotationReview.view;
+package edu.arizona.sirls.etc.site.client.view.annotationReview;
 
 import java.util.HashSet;
 import java.util.List;
