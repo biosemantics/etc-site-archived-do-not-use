@@ -13,7 +13,7 @@ public interface SearchView {
 	  
 	void setPresenter(Presenter presenter);
 	Widget asWidget();
-	void setEnabledSearch(boolean value);
+	void setEnabled(boolean value);
 	void setInput(String input);
 	
 }

@@ -15,7 +15,8 @@ public class ElementValuesSearch implements Search {
 	
 	@Override
 	public String getXPath() {
-		System.out.println("//" + element + "=[text()='" + value + "']");
+		if(value.isEmpty())
+			return "//" + element + "[text()[matches(., '^.*$')]]";
 		return "//" + element + "[text()='" + value + "']";
 	}
 

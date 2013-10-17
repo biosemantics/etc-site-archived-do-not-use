@@ -17,6 +17,8 @@ public class ElementAttributeValuesSearch implements Search {
 	
 	@Override
 	public String getXPath() {
+		if(value.isEmpty())
+			return "//" + element + "[@" + attribute + "[matches(., '^.*$')]]";
 		return "//" + element + "[@" + attribute + "='" + value + "']";
 	}
 

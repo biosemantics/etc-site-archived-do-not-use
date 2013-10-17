@@ -76,7 +76,9 @@ public class ResultViewImpl extends Composite implements ResultView {
 					});
 				}
 				scrollPanel.add(filesPanel);
-				stackLayoutPanel.add(scrollPanel, new Label(result.getCapturedMatch()), 20);
+				Label headerLabel = new Label(result.getCapturedMatch());
+				headerLabel.setTitle(result.getCapturedMatch());
+				stackLayoutPanel.add(scrollPanel, headerLabel, 20);
 			}
 			resultText.setText(matches + " matches found in " + files.size() + " files");
 		}

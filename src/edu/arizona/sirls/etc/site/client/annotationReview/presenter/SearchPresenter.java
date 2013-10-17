@@ -35,7 +35,7 @@ public class SearchPresenter implements Presenter {
 		this.fileService = fileService;
 		this.fileSearchService = fileSearchService;
 		view.setPresenter(this);
-		view.setEnabledSearch(false);
+		view.setEnabled(false);
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class SearchPresenter implements Presenter {
 				if(target != null) {
 					SearchPresenter.this.input = target;
 					SearchPresenter.this.view.setInput(target);
-					SearchPresenter.this.view.setEnabledSearch(true);
+					SearchPresenter.this.view.setEnabled(true);
 				}
 				dialogBox.hide();
 			}

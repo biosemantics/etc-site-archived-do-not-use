@@ -54,14 +54,25 @@ public class SearchViewImpl extends Composite implements SearchView {
     @UiField
     TextBox valueTextBox;
     @UiField
+    Label valueTextBoxLabel;
+    @UiField
     TextBox xpathTextBox;
+    @UiField
+    Label xpathTextBoxLabel;
     @UiField
     ListBox elementListBox;
     @UiField
+    Label elementListBoxLabel;
+    @UiField
     ListBox attributeListBox;
-    
+    @UiField
+    Label attributeListBoxLabel;
+    @UiField
+    Label xpathLabel;
+
 
 	private Presenter presenter;
+	private boolean enabled;
 
 	public SearchViewImpl() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -154,14 +165,17 @@ public class SearchViewImpl extends Composite implements SearchView {
 	}
     
     private void updateXPath() {
-    	Search search = getCurrentSearch();
-    	this.xpathTextBox.setText(search.getXPath());
-	}
+    	if(isEnabled()) {
+	    	Search search = getCurrentSearch();
+	    	this.xpathLabel.setText(search.getXPath());
+	    	this.xpathTextBox.setText(search.getXPath());
+    	}
+	}	
 
 	@UiHandler("typeListBox")
     void onTypeChangeEvent(ChangeEvent event) {
     	SearchTypeEnum searchTypeEnum = SearchTypeEnum.getEnum(typeListBox.getValue(typeListBox.getSelectedIndex()));
-    	this.typeLabel.setText(searchTypeEnum.displayName());
+    	this.typeLabel.setText(searchTypeEnum.displayName() + ":");
     	switch(searchTypeEnum) {
 		case ELEMENTATTRIBUTEVALUES:
 			createElementAttributeValuesSearch();
@@ -188,40 +202,59 @@ public class SearchViewImpl extends Composite implements SearchView {
 	private void createXPathSearch() {
 		xpathTextBox.setVisible(true);
 		xpathTextBox.setEnabled(true);
+		valueTextBoxLabel.setVisible(false);
 		valueTextBox.setVisible(false);
+		elementListBoxLabel.setVisible(false);
 		elementListBox.setVisible(false);
+		attributeListBoxLabel.setVisible(false);
 		attributeListBox.setVisible(false);
 	}
 	
 	private void createElementAttributeValuesSearch() {
-		xpathTextBox.setVisible(true);
+		xpathTextBoxLabel.setVisible(false);
+		xpathTextBox.setVisible(false);
 		xpathTextBox.setEnabled(false);
+		valueTextBoxLabel.setVisible(true);
 		valueTextBox.setVisible(true);
+		elementListBoxLabel.setVisible(true);
 		elementListBox.setVisible(true);
+		attributeListBoxLabel.setVisible(true);
 		attributeListBox.setVisible(true);
 	}
 	
 	private void createElementsSearch() {
-		xpathTextBox.setVisible(true);
+		xpathTextBoxLabel.setVisible(false);
+		xpathTextBox.setVisible(false);
 		xpathTextBox.setEnabled(false);
+		valueTextBoxLabel.setVisible(false);
 		valueTextBox.setVisible(false);
+		elementListBoxLabel.setVisible(true);
 		elementListBox.setVisible(true);
+		attributeListBoxLabel.setVisible(false);
 		attributeListBox.setVisible(false);
 	}
 	
 	private void createNumericalsSearch() {
-		xpathTextBox.setVisible(true);
+		xpathTextBoxLabel.setVisible(false);
+		xpathTextBox.setVisible(false);
 		xpathTextBox.setEnabled(false);
+		valueTextBoxLabel.setVisible(false);
 		valueTextBox.setVisible(false);
+		elementListBoxLabel.setVisible(false);
 		elementListBox.setVisible(false);
+		attributeListBoxLabel.setVisible(false);
 		attributeListBox.setVisible(false);
 	}
 	
 	private void createElementValuesSearch() {
-		xpathTextBox.setVisible(true);
+		xpathTextBoxLabel.setVisible(false);
+		xpathTextBox.setVisible(false);
 		xpathTextBox.setEnabled(false);
+		valueTextBoxLabel.setVisible(true);
 		valueTextBox.setVisible(true);
+		elementListBoxLabel.setVisible(true);
 		elementListBox.setVisible(true);
+		attributeListBoxLabel.setVisible(false);
 		attributeListBox.setVisible(false);
 	}
 
@@ -255,8 +288,9 @@ public class SearchViewImpl extends Composite implements SearchView {
 	}
 	
     @Override
-    public void setEnabledSearch(boolean value) {
-		this.typeListBox.setEnabled(value);
+    public void setEnabled(boolean value) {
+		this.enabled = value;
+    	this.typeListBox.setEnabled(value);
 		this.searchButton.setEnabled(value);
 		this.attributeListBox.setEnabled(value);
 		this.elementListBox.setEnabled(value);
@@ -264,6 +298,13 @@ public class SearchViewImpl extends Composite implements SearchView {
 		this.xpathTextBox.setEnabled(value);
 	}
     
+    
+    
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+
 	private void initElementListBox() {
 		elementListBox.clear();
         for(ElementEnum element : ElementEnum.values()) {
