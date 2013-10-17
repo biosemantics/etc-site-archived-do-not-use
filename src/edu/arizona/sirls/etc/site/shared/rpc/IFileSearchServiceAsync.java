@@ -2,8 +2,6 @@ package edu.arizona.sirls.etc.site.shared.rpc;
 
 import java.util.List;
 
-import org.w3c.dom.NodeList;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;

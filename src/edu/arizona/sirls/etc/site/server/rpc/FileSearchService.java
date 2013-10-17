@@ -1,6 +1,7 @@
 package edu.arizona.sirls.etc.site.server.rpc;
 
 import java.io.ByteArrayInputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -20,7 +21,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.google.gwt.dev.util.collect.Lists;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
@@ -111,7 +111,7 @@ public class FileSearchService extends RemoteServiceServlet implements IFileSear
 				result.add(new SearchResult(capturedMatch, capturedMatchTargets.get(capturedMatch)));
 			}
 		}
-		Lists.sort(result);
+		Collections.sort(result);
 		return result;
 	}
 	

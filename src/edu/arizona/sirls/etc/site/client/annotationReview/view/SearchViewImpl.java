@@ -289,13 +289,17 @@ public class SearchViewImpl extends Composite implements SearchView {
 	
     @Override
     public void setEnabled(boolean value) {
-		this.enabled = value;
-    	this.typeListBox.setEnabled(value);
+    	enabled = value;
+		this.typeListBox.setEnabled(value);
 		this.searchButton.setEnabled(value);
 		this.attributeListBox.setEnabled(value);
 		this.elementListBox.setEnabled(value);
 		this.valueTextBox.setEnabled(value);
 		this.xpathTextBox.setEnabled(value);
+		if(value)
+			updateXPath();
+		else
+			this.xpathLabel.setText("");
 	}
     
     

@@ -7,6 +7,7 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.HasWidgets;
 
+import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.annotationReview.presenter.AnnotationReviewPresenter;
 import edu.arizona.sirls.etc.site.client.annotationReview.presenter.ResultPresenter;
 import edu.arizona.sirls.etc.site.client.annotationReview.presenter.SearchPresenter;
@@ -62,6 +63,7 @@ public class MySitePresenter implements Presenter, ValueChangeHandler<String> {
 	private AnnotationReviewPresenter annotationReviewPresenter;
 
 	public MySitePresenter(HandlerManager eventBus) {
+		Authentication.getInstance().setUsername("test");
 		this.eventBus = eventBus;
 		bind();
 	}
