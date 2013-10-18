@@ -34,23 +34,7 @@ public class XMLFileFormatter implements IFileFormatter {
 					.newDocumentBuilder().parse(src).getDocumentElement();
 			Boolean keepDeclaration = Boolean.valueOf(input
 					.startsWith("<?xml"));
-
-			// May need this:
-			// System.setProperty(DOMImplementationRegistry.PROPERTY,"com.sun.org.apache.xerces.internal.dom.DOMImplementationSourceImpl");
-
-			DOMImplementationRegistry registry = DOMImplementationRegistry
-					.newInstance();
-			DOMImplementationLS impl = (DOMImplementationLS) registry
-					.getDOMImplementation("LS");
-			LSSerializer writer = impl.createLSSerializer();
-			LSOutput lsOutput = impl.createLSOutput();
-			lsOutput.setEncoding("UTF-8");
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			lsOutput.setByteStream(out);
-			writer.getDomConfig().setParameter("format-pretty-print", Boolean.TRUE);
-			writer.getDomConfig().setParameter("xml-declaration", keepDeclaration); 
-			writer.write(document, lsOutput);
-			return out.toString("UTF-8");
+			this.format(document, keepDeclaration);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -58,22 +42,22 @@ public class XMLFileFormatter implements IFileFormatter {
 	}
 	
 	
-	public String format(Node node) {
+	public String format(Node node, boolean keepDecleration) {
 		try {			
-			final DOMImplementationRegistry registry = DOMImplementationRegistry
-					.newInstance();
-			final DOMImplementationLS impl = (DOMImplementationLS) registry
-					.getDOMImplementation("LS");
-			final LSSerializer writer = impl.createLSSerializer();
+			// May need this:
+			// System.setProperty(DOMImplementationRegistry.PROPERTY,"com.sun.org.apache.xerces.internal.dom.DOMImplementationSourceImpl");
 
-			writer.getDomConfig().setParameter("format-pretty-print",
-					Boolean.TRUE); // Set this to true if the output needs to be
-									// beautified.
-			writer.getDomConfig().setParameter("xml-declaration",
-					false); // Set this to true if the declaration is
-										// needed to be outputted.
-
-			return writer.writeToString(node);
+			DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
+			DOMImplementationLS impl = (DOMImplementationLS) registry.getDOMImplementation("LS");
+			LSSerializer writer = impl.createLSSerializer();
+			LSOutput lsOutput = impl.createLSOutput();
+			lsOutput.setEncoding("UTF-8");
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			lsOutput.setByteStream(out);
+			writer.getDomConfig().setParameter("format-pretty-print", Boolean.TRUE); 
+			writer.getDomConfig().setParameter("xml-declaration", false);
+			writer.write(node, lsOutput);
+			return out.toString("UTF-8");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

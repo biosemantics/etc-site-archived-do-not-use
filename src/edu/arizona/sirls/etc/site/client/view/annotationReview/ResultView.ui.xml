@@ -20,7 +20,7 @@
 		}
 	</ui:style>
          <g:VerticalPanel styleName="{style.verticalPanel}">
-           <g:cell height="20px">
+           <g:cell height="40px">
              <g:Label ui:field="resultText" styleName="{style.resultLabel}"></g:Label> 
            </g:cell>
  		   <g:cell height="100%">

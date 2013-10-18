@@ -93,10 +93,10 @@ public class FileSearchService extends RemoteServiceServlet implements IFileSear
 								capturedMatch = capturedMatch.substring(0, capturedMatch.length() - 2);
 						} 
 						if(search instanceof XPathSearch) {
-							capturedMatch = xmlFileFormatter.format(node);
+							capturedMatch = xmlFileFormatter.format(node, false);
 						} 
 				    	if(capturedMatch == null)
-				    		capturedMatch = xmlFileFormatter.format(node);
+				    		capturedMatch = xmlFileFormatter.format(node, false);
 				    	if(!capturedMatchTargets.containsKey(capturedMatch))
 				    		capturedMatchTargets.put(capturedMatch, new HashSet<String>());
 				    	capturedMatchTargets.get(capturedMatch).add(inputDirectory + "//" + file);
