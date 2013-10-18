@@ -1,5 +1,6 @@
 package edu.arizona.sirls.etc.site.shared.rpc;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -15,4 +16,6 @@ public interface IFileFormatService extends RemoteService {
 	public boolean isValidEuler(AuthenticationToken authenticationToken, String target);
 
 	public boolean isValidMarkedupTaxonDescription(AuthenticationToken authenticationToken, String target);
+	
+	public boolean isValidMarkedupTaxonDescriptionContent(AuthenticationToken authenticationToken, String content);
 }

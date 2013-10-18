@@ -46,20 +46,41 @@ public class XMLEditorPresenter implements Presenter, XMLEditorView.Presenter {
 	
 	@Override
 	public void onSaveButtonClicked() {
-		fileAccessService.setFileContent(new AuthenticationToken("test", ""), target, view.getText(), new AsyncCallback<Boolean>() {
+		fileFormatService.isValidMarkedupTaxonDescriptionContent(new AuthenticationToken("test", ""), view.getText(), new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
 			}
 			@Override
 			public void onSuccess(Boolean result) {
+				if(result) {
+					fileAccessService.setFileContent(new AuthenticationToken("test", ""), target, view.getText(), new AsyncCallback<Boolean>() {
+						@Override
+						public void onFailure(Throwable caught) {
+							caught.printStackTrace();
+						}
+						@Override
+						public void onSuccess(Boolean result) {
+							Window.alert("Saved successfully");
+						}
+					});
+				} else {
+					Window.alert("Invalid format. Can't save.");
+				}
 			}
 		});
 	}
 
 	@Override
 	public void onValidateButtonClicked() {
-		fileFormatService.isValidMarkedupTaxonDescription(new AuthenticationToken("test", ""), target, new AsyncCallback<Boolean>() {
+		/*byte[] bytes = view.getText().getBytes();
+	    StringBuilder sb = new StringBuilder();
+	    for (byte b : bytes) {
+	    	 sb.append(Integer.toHexString(b & 0xFF) + " ");
+	    }
+	    System.out.println(sb.toString());*/
+		
+		fileFormatService.isValidMarkedupTaxonDescriptionContent(new AuthenticationToken("test", ""), view.getText(), new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
@@ -72,7 +93,6 @@ public class XMLEditorPresenter implements Presenter, XMLEditorView.Presenter {
 					Window.alert("Invalid format");
 			}
 		});
-		view.getText();
 	}
 	
 	@Override
@@ -88,7 +108,7 @@ public class XMLEditorPresenter implements Presenter, XMLEditorView.Presenter {
 			public void onSuccess(String result) {
 				view.setText(result);
 			}
-		});
+		}); 
 	}
 
 	@Override

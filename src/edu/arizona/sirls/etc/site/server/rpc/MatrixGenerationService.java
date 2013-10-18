@@ -359,7 +359,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			String fileContent = fileAccessService.getFileContent(authenticationToken, target);
-			Document document = db.parse(new InputSource(new ByteArrayInputStream(fileContent.getBytes("utf-8"))));
+			Document document = db.parse(new InputSource(new ByteArrayInputStream(fileContent.getBytes("UTF-8"))));
 			
 			XPath xPath = XPathFactory.newInstance().newXPath();
 			Node node = (Node)xPath.evaluate("/treatment/description",
@@ -375,7 +375,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document document = db.parse(new InputSource(new ByteArrayInputStream(content.getBytes("utf-8"))));
+			Document document = db.parse(new InputSource(new ByteArrayInputStream(content.getBytes("UTF-8"))));
 			
 			XPath xPath = XPathFactory.newInstance().newXPath();
 			Node node = (Node)xPath.evaluate("/treatment/description",

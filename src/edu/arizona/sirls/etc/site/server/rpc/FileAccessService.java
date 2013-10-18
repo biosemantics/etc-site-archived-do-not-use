@@ -1,5 +1,6 @@
 package edu.arizona.sirls.etc.site.server.rpc;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -49,7 +50,7 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 			File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
 			if(file.exists() && file.isFile()) {
 				try {
-					Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF8"));
+					Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
 					writer.append(content);
 					writer.flush();
 					writer.close();
@@ -72,7 +73,7 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 				try {
 					StringBuilder  stringBuilder = new StringBuilder();
 					String line = null;
-					BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
+					BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
 					while((line = reader.readLine() ) != null ) {
 				        stringBuilder.append(line);
 				        stringBuilder.append("\n");
@@ -94,8 +95,7 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 
 	@Override
 	public String getFileContentHighlighted(AuthenticationToken authenticationToken, String target, FileType fileType) {
-		String content = getFileContent(authenticationToken, target, fileType);
-		
+		String content = getFileContent(authenticationToken, target, fileType);		
 		MyXmlXhtmlRenderer renderer = new MyXmlXhtmlRenderer();
 		//Renderer renderer = XhtmlRendererFactory.getRenderer(XhtmlRendererFactory.XML); 
 		OutputStream out = new ByteArrayOutputStream();
@@ -104,7 +104,8 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return out.toString();
+		String outString = out.toString();
+		return outString;
 
 		/*try {
 			TransformerFactory tf = TransformerFactory.newInstance();

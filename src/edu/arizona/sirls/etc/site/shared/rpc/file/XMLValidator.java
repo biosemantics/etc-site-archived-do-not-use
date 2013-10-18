@@ -1,8 +1,7 @@
 package edu.arizona.sirls.etc.site.shared.rpc.file;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileReader;
-import java.io.StringReader;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
@@ -25,8 +24,8 @@ public class XMLValidator implements IContentValidator {
 			SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			Source schemaSource = new StreamSource(schemaFile);
 			Schema schema = factory.newSchema(schemaSource);
-			Validator validator = schema.newValidator();
-			validator.validate(new StreamSource(new StringReader(input)));
+			Validator validator = schema.newValidator();	
+			validator.validate(new StreamSource(new ByteArrayInputStream(input.getBytes("UTF-8"))));
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();

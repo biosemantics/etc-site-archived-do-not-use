@@ -57,7 +57,10 @@ public class XMLEditorViewImpl extends Composite implements XMLEditorView {
 
 	@Override
 	public String getText() {
-		return this.textArea.getText();
+		String text = textArea.getText();
+		//due to the &nbsp; that is in HTML the returned text will contain the no-breaking space (c2 a0) character rather than the space (20) character
+		text = text.replace('\u00A0', '\u0020');
+		return text;
 	}
 
 	@Override

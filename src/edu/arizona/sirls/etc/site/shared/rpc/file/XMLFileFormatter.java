@@ -1,5 +1,9 @@
 package edu.arizona.sirls.etc.site.shared.rpc.file;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -13,6 +17,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSOutput;
 import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.InputSource;
 
@@ -24,29 +29,28 @@ public class XMLFileFormatter implements IFileFormatter {
 	@Override
 	public String format(String input) {
 		try {
-			final InputSource src = new InputSource(new StringReader(input));
-			final Node document = DocumentBuilderFactory.newInstance()
+			InputSource src = new InputSource(new ByteArrayInputStream(input.getBytes("UTF-8")));
+			Node document = DocumentBuilderFactory.newInstance()
 					.newDocumentBuilder().parse(src).getDocumentElement();
-			final Boolean keepDeclaration = Boolean.valueOf(input
+			Boolean keepDeclaration = Boolean.valueOf(input
 					.startsWith("<?xml"));
 
 			// May need this:
 			// System.setProperty(DOMImplementationRegistry.PROPERTY,"com.sun.org.apache.xerces.internal.dom.DOMImplementationSourceImpl");
 
-			final DOMImplementationRegistry registry = DOMImplementationRegistry
+			DOMImplementationRegistry registry = DOMImplementationRegistry
 					.newInstance();
-			final DOMImplementationLS impl = (DOMImplementationLS) registry
+			DOMImplementationLS impl = (DOMImplementationLS) registry
 					.getDOMImplementation("LS");
-			final LSSerializer writer = impl.createLSSerializer();
-
-			writer.getDomConfig().setParameter("format-pretty-print",
-					Boolean.TRUE); // Set this to true if the output needs to be
-									// beautified.
-			writer.getDomConfig().setParameter("xml-declaration",
-					keepDeclaration); // Set this to true if the declaration is
-										// needed to be outputted.
-
-			return writer.writeToString(document);
+			LSSerializer writer = impl.createLSSerializer();
+			LSOutput lsOutput = impl.createLSOutput();
+			lsOutput.setEncoding("UTF-8");
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			lsOutput.setByteStream(out);
+			writer.getDomConfig().setParameter("format-pretty-print", Boolean.TRUE);
+			writer.getDomConfig().setParameter("xml-declaration", keepDeclaration); 
+			writer.write(document, lsOutput);
+			return out.toString("UTF-8");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -1,14 +1,6 @@
 package edu.arizona.sirls.etc.site.server.rpc;
 
 import java.io.File;
-import java.io.StringReader;
-
-import javax.xml.XMLConstants;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -47,6 +39,14 @@ public class FileFormatService extends RemoteServiceServlet implements IFileForm
 		} 
 		return false;
 	}
+	
+	@Override
+	public boolean isValidMarkedupTaxonDescriptionContent(AuthenticationToken authenticationToken, String content) {
+		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
+			return markedUpTaxonDescriptionValidator.validate(content);
+		}
+		return false;
+	}
 
 	@Override
 	public boolean isValidGlossary(AuthenticationToken authenticationToken,
@@ -66,5 +66,4 @@ public class FileFormatService extends RemoteServiceServlet implements IFileForm
 		} 
 		return false;
 	}
-
 }
