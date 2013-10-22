@@ -13,6 +13,7 @@ import edu.arizona.sirls.etc.site.server.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileFormatService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
+import edu.arizona.sirls.etc.site.shared.rpc.MessageResult;
 import edu.arizona.sirls.etc.site.shared.rpc.Tree;
 import edu.arizona.sirls.etc.site.shared.rpc.db.FilesInUseDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
@@ -85,16 +86,33 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	}
 
 	@Override
-	public boolean deleteFile(AuthenticationToken authenticationToken, String target) {
-		boolean result = false;
-		if(authenticationService.isValidSession(authenticationToken).getResult() && !target.trim().isEmpty()
-				&& !this.isInUse(authenticationToken, target)) { 
-			File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
-			result = deleteRecursively(file);
-		} 
+	public MessageResult deleteFile(AuthenticationToken authenticationToken, String target) {
+		MessageResult result = new MessageResult(false, "Authentication failed");
+		if(authenticationService.isValidSession(authenticationToken).getResult()) {
+			if(!target.trim().isEmpty()) {
+				if(!this.isInUse(authenticationToken, target)) {
+					File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
+					boolean resultDelete = deleteRecursively(file);
+					result = new MessageResult(resultDelete, resultDelete? "" : "Couldn't delete a file");
+				} else {
+					result = createMessageFileInUse(authenticationToken, target);
+				}
+			} else {
+				result = new MessageResult(false, "Target can not be empty");
+			}
+		}
 		return result;
 	}
 	
+	private MessageResult createMessageFileInUse(AuthenticationToken authenticationToken, String target) {
+		List<Task> tasks = this.getUsingTasks(authenticationToken, target);
+		StringBuilder messageBuilder = new StringBuilder("File is in use by tasks: ");
+		for(Task task : tasks) 
+			messageBuilder.append(task.getName() + ", ");
+		String message = messageBuilder.toString();
+		return new MessageResult(false, message.substring(0, message.length() - 2));
+	}
+
 	private boolean deleteRecursively(File file) {
 		boolean result = false;
 		if (file.isDirectory()) {
@@ -117,34 +135,57 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	}
 
 	@Override
-	public boolean moveFile(AuthenticationToken authenticationToken, String target, String newTarget) { 
-		boolean result = false;
-		if(authenticationService.isValidSession(authenticationToken).getResult() && !target.trim().isEmpty() &&  !newTarget.trim().isEmpty() 
-				&& !this.isInUse(authenticationToken, target) && !this.isInUse(authenticationToken, newTarget)) { 
-			File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
-			File targetFile = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + newTarget);
-			if(file.getAbsolutePath().equals(targetFile.getAbsolutePath()))
-				return true;
-			if(targetFile.exists())
-				return false;
-			try {
-				Files.move(file, targetFile);
-				result = true;
-			} catch (IOException e) {
-				e.printStackTrace();
-				result = false;
+	public MessageResult moveFile(AuthenticationToken authenticationToken, String target, String newTarget) { 
+		MessageResult result = new MessageResult(false, "Authentication failed");
+		if(authenticationService.isValidSession(authenticationToken).getResult()) {
+			if(!target.trim().isEmpty()) {
+				if(!newTarget.trim().isEmpty() ) {
+					if(!this.isInUse(authenticationToken, target)) {
+						if(!this.isInUse(authenticationToken, newTarget)) {
+							File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
+							File targetFile = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + newTarget);
+							if(file.getAbsolutePath().equals(targetFile.getAbsolutePath()))
+								return new MessageResult(true);
+							if(targetFile.exists())
+								return new MessageResult(false, "File does not exist");
+							try {
+								Files.move(file, targetFile);
+								result = new MessageResult(true);
+							} catch (IOException e) {
+								e.printStackTrace();
+								result = new MessageResult(false, "Couldn't move a file");
+							}
+						} else {
+							result = createMessageFileInUse(authenticationToken, newTarget);
+						}
+					} else {
+						result = createMessageFileInUse(authenticationToken, target);
+					}
+				} else {
+					result = new MessageResult(false, "New target can not be empty");
+				}
+			} else {
+				result = new MessageResult(false, "Target can not be empty");
 			}
 		}
 		return result;
 	}
 	
 	@Override
-	public boolean createDirectory(AuthenticationToken authenticationToken, String target, String directoryName) { 
-		boolean result = false;
-		if(authenticationService.isValidSession(authenticationToken).getResult() && !directoryName.trim().isEmpty() 
-				&& !this.isInUse(authenticationToken, target)) { 
-			File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target + "//" + directoryName);
-			result = file.mkdir();
+	public MessageResult createDirectory(AuthenticationToken authenticationToken, String target, String directoryName) { 
+		MessageResult result = new MessageResult(false, "Authentication failed");
+		if(authenticationService.isValidSession(authenticationToken).getResult()) {
+			if(!directoryName.trim().isEmpty()) {
+				if(!this.isInUse(authenticationToken, target)) {
+					File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target + "//" + directoryName);
+					boolean resultMkDir = file.mkdir();
+					result = new MessageResult(resultMkDir, resultMkDir ? "" : "Couldn't create directory");
+				} else {
+					result = createMessageFileInUse(authenticationToken, target);
+				}
+			} else {
+				result = new MessageResult(false, "Directory name can not be empty");
+			}
 		}
 		return result;
 	}
@@ -181,17 +222,19 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	}
 
 	@Override
-	public boolean createFile(AuthenticationToken authenticationToken, String target) {
-		boolean result = false;
+	public MessageResult createFile(AuthenticationToken authenticationToken, String target) {
+		MessageResult result = new MessageResult(false, "Authentication failed");
 		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
 			File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
 			try {
-				return file.createNewFile();
+				boolean createResult = file.createNewFile();
+				return new MessageResult(createResult, createResult ? "" : "creating file failed");
 			} catch (IOException e) {
 				e.printStackTrace();
+				return new MessageResult(false, "creating file failed");
 			}
 		}
-		return false;
+		return result;
 	}
 
 	@Override

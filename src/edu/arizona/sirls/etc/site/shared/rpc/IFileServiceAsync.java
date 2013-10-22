@@ -13,13 +13,13 @@ public interface IFileServiceAsync {
 	public void getUsersFiles(AuthenticationToken authenticationToken, FileFilter fileFilter, AsyncCallback<Tree<String>> callback);
 
 	public void deleteFile(AuthenticationToken authenticationToken, String target,
-			AsyncCallback<Boolean> callback);
+			AsyncCallback<MessageResult> callback);
 	
 	public void moveFile(AuthenticationToken authenticationToken, String target,
-			String newTarget, AsyncCallback<Boolean> callback);
+			String newTarget, AsyncCallback<MessageResult> callback);
 
 	public void createDirectory(AuthenticationToken authenticationToken, String target,
-			String directoryName, AsyncCallback<Boolean> callback);
+			String directoryName, AsyncCallback<MessageResult> callback);
 	
 	public void isDirectory(AuthenticationToken authenticationToken, String target, AsyncCallback<Boolean> callback);
 	
@@ -27,7 +27,7 @@ public interface IFileServiceAsync {
 
 	public void getDirectoriesFiles(AuthenticationToken authenticationToken, String inputDirectory, AsyncCallback<List<String>> callback);
 
-	public void createFile(AuthenticationToken authenticationToken, String outputFile, AsyncCallback<Boolean> callback);
+	public void createFile(AuthenticationToken authenticationToken, String outputFile, AsyncCallback<MessageResult> callback);
 
 	public void getDepth(AuthenticationToken authenticationToken, String sourcePath, AsyncCallback<Integer> asyncCallback);
 

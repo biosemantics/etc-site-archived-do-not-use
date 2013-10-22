@@ -41,6 +41,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskService;
 import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
+import edu.arizona.sirls.etc.site.shared.rpc.MessageResult;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Glossary;
 import edu.arizona.sirls.etc.site.shared.rpc.db.GlossaryDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
@@ -304,15 +305,15 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				String newDirectory = outputDirectory.substring(outputDirectory.lastIndexOf("//"), outputDirectory.length());
 				
 				//find a suitable targetDirectory
-				result = fileService.createDirectory(authenticationToken, target, newDirectory);
-				if(!result) {
+				MessageResult message = fileService.createDirectory(authenticationToken, target, newDirectory);
+				if(!message.isSucceeded()) {
 					String date = dateTimeFormat.format(new Date());
 					newDirectory = newDirectory + "_" + date;
-					result = fileService.createDirectory(authenticationToken, target, newDirectory);
+					message = fileService.createDirectory(authenticationToken, target, newDirectory);
 					int i = 1;
-					while(!result) {
+					while(!message.isSucceeded()) {
 						newDirectory = newDirectory + "_" + i++;
-						result = fileService.createDirectory(authenticationToken, target, newDirectory);
+						message = fileService.createDirectory(authenticationToken, target, newDirectory);
 					}
 				}
 		

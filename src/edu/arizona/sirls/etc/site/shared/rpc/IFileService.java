@@ -2,7 +2,6 @@ package edu.arizona.sirls.etc.site.shared.rpc;
 
 import java.util.List;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -15,12 +14,12 @@ public interface IFileService extends RemoteService {
 
 	public Tree<String> getUsersFiles(AuthenticationToken authenticationToken, FileFilter fileFilter); 
 	
-	public boolean deleteFile(AuthenticationToken authenticationToken, String target);
+	public MessageResult deleteFile(AuthenticationToken authenticationToken, String target);
 
-	public boolean moveFile(AuthenticationToken authenticationToken, String target,
+	public MessageResult moveFile(AuthenticationToken authenticationToken, String target,
 			String newTarget);
 
-	public boolean createDirectory(AuthenticationToken authenticationToken, String target,
+	public MessageResult createDirectory(AuthenticationToken authenticationToken, String target,
 			String directoryName);
 
 	public boolean isDirectory(AuthenticationToken authenticationToken, String target);
@@ -29,7 +28,7 @@ public interface IFileService extends RemoteService {
 
 	public List<String> getDirectoriesFiles(AuthenticationToken authenticationToken, String inputDirectory);
 
-	public boolean createFile(AuthenticationToken authenticationToken, String outputFile);
+	public MessageResult createFile(AuthenticationToken authenticationToken, String outputFile);
 	
 	public Integer getDepth(AuthenticationToken authenticationToken, String sourcePath);
 	
