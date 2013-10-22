@@ -4,18 +4,15 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
-public class TaskStageDAO extends AbstractDAO {
-
-	private TaskStageDAO() throws IOException, ClassNotFoundException, SQLException {
-		super();
-	}
+public class TaskStageDAO {
 
 	private static TaskStageDAO instance;
 
-	public static TaskStageDAO getInstance() throws ClassNotFoundException, IOException, SQLException {
+	public static TaskStageDAO getInstance() {
 		if(instance == null)
 			instance = new TaskStageDAO();
 		return instance;
@@ -24,15 +21,14 @@ public class TaskStageDAO extends AbstractDAO {
 	public TaskStage getTaskStage(int id) throws SQLException, ClassNotFoundException, IOException {
 		TaskStage taskStage = null;
 		Query query = new Query("SELECT * FROM taskstages WHERE id = " + id);
-		query.execute();
-		ResultSet result = query.getResultSet();
+		ResultSet result = query.execute();
 		while(result.next()) {
 			id = result.getInt(1);
-			int tasktypeId = result.getInt(2);
-			TaskStageEnum taskStageEnum = TaskStageEnum.valueOf(result.getString(3));
-			long created = result.getLong(4);
+			TaskStageEnum taskStageEnum = TaskStageEnum.valueOf(result.getString(2));
+			int tasktypeId = result.getInt(3);
+			Date created = result.getTimestamp(4);
 			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(tasktypeId);
-			taskStage = new TaskStage(id, taskType, taskStageEnum, created);
+			taskStage = new TaskStage(id, taskStageEnum, taskType, created);
 		}
 		query.close();
 		return taskStage;
@@ -42,15 +38,14 @@ public class TaskStageDAO extends AbstractDAO {
 		TaskStage taskStage = null;
 		Query query = new Query("SELECT * FROM taskstages WHERE tasktype = " + taskType.getId() + " AND " +
 				"name = '" + taskStageEnum.toString() + "'");
-		query.execute();
-		ResultSet result = query.getResultSet();		
+		ResultSet result = query.execute();
 		while(result.next()) {
 			int id = result.getInt(1);
-			int taskTypeId = result.getInt(2);
-			taskStageEnum = TaskStageEnum.valueOf(result.getString(3));
-			long created = result.getLong(4);
+			taskStageEnum = TaskStageEnum.valueOf(result.getString(2));
+			int taskTypeId = result.getInt(3);
+			Date created = result.getTimestamp(4);
 			taskType = TaskTypeDAO.getInstance().getTaskType(taskTypeId);
-			taskStage = new TaskStage(id, taskType, taskStageEnum, created);
+			taskStage = new TaskStage(id, taskStageEnum, taskType, created);
 		}
 		query.close();
 		return taskStage;

@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.GwtEvent;
 
 import edu.arizona.sirls.etc.site.client.HistoryState;
 
-public class SettingsEvent extends GwtEvent<SettingsEventHandler> implements ETCSiteEvent {
+public class SettingsEvent extends GwtEvent<SettingsEventHandler> implements IETCSiteEvent {
 	
 	public static Type<SettingsEventHandler> TYPE = new Type<SettingsEventHandler>();
 	

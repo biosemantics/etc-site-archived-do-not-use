@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.GwtEvent;
 
 import edu.arizona.sirls.etc.site.client.HistoryState;
 
-public class HomeEvent extends GwtEvent<HomeEventHandler> implements ETCSiteEvent {
+public class HomeEvent extends GwtEvent<HomeEventHandler> implements IETCSiteEvent {
 
 	public static Type<HomeEventHandler> TYPE = new Type<HomeEventHandler>();
 	

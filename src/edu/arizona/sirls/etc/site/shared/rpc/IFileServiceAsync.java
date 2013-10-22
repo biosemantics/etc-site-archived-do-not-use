@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
+import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 
 public interface IFileServiceAsync {
@@ -31,4 +32,10 @@ public interface IFileServiceAsync {
 	public void getDepth(AuthenticationToken authenticationToken, String sourcePath, AsyncCallback<Integer> asyncCallback);
 
 	public void zipDirectory(AuthenticationToken authenticationToken, String target, AsyncCallback<Void> callback);
+	
+	public void setInUse(AuthenticationToken authenticationToken, boolean value, String input, Task task, AsyncCallback<Void> callback);
+	
+	public void isInUse(AuthenticationToken authenticationToken, String input, AsyncCallback<Boolean> callback);
+	
+	public void getUsingTasks(AuthenticationToken authenticationToken, String input, AsyncCallback<List<Task>> callback);
 }

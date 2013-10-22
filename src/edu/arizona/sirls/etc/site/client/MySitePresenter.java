@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 
-import edu.arizona.sirls.etc.site.client.event.ETCSiteEvent;
+import edu.arizona.sirls.etc.site.client.event.IETCSiteEvent;
 import edu.arizona.sirls.etc.site.client.event.FileManagerEvent;
 import edu.arizona.sirls.etc.site.client.event.FileManagerEventHandler;
 import edu.arizona.sirls.etc.site.client.event.HelpEvent;
@@ -28,6 +28,8 @@ import edu.arizona.sirls.etc.site.client.event.LogoutEvent;
 import edu.arizona.sirls.etc.site.client.event.LogoutEventHandler;
 import edu.arizona.sirls.etc.site.client.event.MarkupReviewEvent;
 import edu.arizona.sirls.etc.site.client.event.MarkupReviewEventHandler;
+import edu.arizona.sirls.etc.site.client.event.MatrixGenerationEvent;
+import edu.arizona.sirls.etc.site.client.event.MatrixGenerationEventHandler;
 import edu.arizona.sirls.etc.site.client.event.ResumableTasksEvent;
 import edu.arizona.sirls.etc.site.client.event.SettingsEvent;
 import edu.arizona.sirls.etc.site.client.event.SettingsEventHandler;
@@ -39,8 +41,6 @@ import edu.arizona.sirls.etc.site.client.event.TreeGenerationEvent;
 import edu.arizona.sirls.etc.site.client.event.TreeGenerationEventHandler;
 import edu.arizona.sirls.etc.site.client.event.VisualizationEvent;
 import edu.arizona.sirls.etc.site.client.event.VisualizationEventHandler;
-import edu.arizona.sirls.etc.site.client.event.matrixGeneration.MatrixGenerationEvent;
-import edu.arizona.sirls.etc.site.client.event.matrixGeneration.MatrixGenerationEventHandler;
 import edu.arizona.sirls.etc.site.client.presenter.FooterPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.HelpPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.LoggedInHeaderPresenter;
@@ -112,6 +112,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.ITreeGenerationService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITreeGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IVisualizationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IVisualizationServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
@@ -158,7 +159,6 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	protected StartPresenter startPresenter;
 	
 	private TaskManager taskManager = new TaskManager();
-	private ConfigurationManager configurationManager = ConfigurationManager.getInstance();
 	protected AnnotationReviewPresenter annotationReviewPresenter;
 	protected XMLEditorPresenter xmlEditorPresenter;
 	protected ResultPresenter resultPresenter;
@@ -190,7 +190,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(HomeEvent.TYPE,
 		    	new HomeEventHandler() {
 		          public void onHome(HomeEvent event) {
-		        	  taskManager.removeActiveTask();
+		        	  taskManager.removeActiveTaskConfiguration();
 		        	  addToHistory(event);
 		          }
 		        });
@@ -205,7 +205,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(TaskManagerEvent.TYPE,
 		    	new TaskManagerEventHandler() {
 		          public void onTaskManager(TaskManagerEvent event) {
-		        	  taskManager.removeActiveTask();
+		        	  taskManager.removeActiveTaskConfiguration();
 		        	  addToHistory(event);
 		          }
 		        });
@@ -213,7 +213,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(FileManagerEvent.TYPE,
 		    	new FileManagerEventHandler() {
 		          public void onFileManager(FileManagerEvent event) {
-		        	  taskManager.removeActiveTask();
+		        	  taskManager.removeActiveTaskConfiguration();
 		        	  addToHistory(event);
 		          }
 		        });
@@ -221,7 +221,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(HelpEvent.TYPE,
 		    	new HelpEventHandler() {
 		          public void onHelp(HelpEvent event) {
-		        	  taskManager.removeActiveTask();
+		        	  taskManager.removeActiveTaskConfiguration();
 		        	  addToHistory(event);
 		          }
 		        });
@@ -229,7 +229,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(SettingsEvent.TYPE,
 		    	new SettingsEventHandler() {
 		          public void onSettings(SettingsEvent event) {
-		        	  taskManager.removeActiveTask();
+		        	  taskManager.removeActiveTaskConfiguration();
 		        	  addToHistory(event);
 		          }
 		        });
@@ -240,44 +240,40 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    	  private MessageResumeOrStartView messageResumeOrStartView = new MessageResumeOrStartView();
 		    	
 	          public void onMatrixGeneration(final MatrixGenerationEvent matrixGenerationEvent) {	
-	        	  if(!matrixGenerationEvent.hasMatrixGenerationConfiguration()) {
+	        	  if(!matrixGenerationEvent.hasTaskConfiguration()) {
 		        	  matrixGenerationService.getLatestResumable(Authentication.getInstance().getAuthenticationToken(),
-								new AsyncCallback<MatrixGenerationConfiguration>() {
+								new AsyncCallback<MatrixGenerationTaskRun>() {
 							@Override
 							public void onFailure(Throwable caught) {
 								caught.printStackTrace();
 							}
 							@Override
-							public void onSuccess(final MatrixGenerationConfiguration latestResumable) {
+							public void onSuccess(final MatrixGenerationTaskRun latestResumable) {
 								if(latestResumable != null) {
 									MessageResumeOrStartPresenter messageResumeOrStartPresenter = 
 											new MessageResumeOrStartPresenter(messageResumeOrStartView, "Resumable Task", new ClickHandler() {
 												@Override
 												public void onClick(ClickEvent event) {
 													//resume
-													matrixGenerationEvent.setMatrixGenerationConfiguration(latestResumable);
-													configurationManager.setMatrixGenerationConfiguration(latestResumable);
-													taskManager.setActiveTask(configurationManager.getMatrixGenerationConfiguration().getTask());
+													matrixGenerationEvent.setTaskConfiguration(latestResumable);
+													taskManager.setActiveTaskRun(latestResumable);
 													addToHistory(matrixGenerationEvent);
 												}
 											}, new ClickHandler() {
 												@Override
 												public void onClick(ClickEvent event) {
-													configurationManager.removeMatrixGenerationConfiguration();
 													addToHistory(matrixGenerationEvent);
 												}
 											});
 									messageResumeOrStartPresenter.setMessage("You have a resumable Matrix Generation Task. Do you want to resume it or start a new task?");
 									messageResumeOrStartPresenter.go();
 								} else {
-									configurationManager.removeMatrixGenerationConfiguration();
 									addToHistory(matrixGenerationEvent);
 								}
 							}
 		        	  });
 	        	  } else {
-	        		  configurationManager.setMatrixGenerationConfiguration(matrixGenerationEvent.getMatrixGenerationConfiguration());
-	        		  taskManager.setActiveTask(configurationManager.getMatrixGenerationConfiguration().getTask());
+	        		  taskManager.setActiveTaskRun(matrixGenerationEvent.getTaskConfiguration());
 	        		  addToHistory(matrixGenerationEvent);
 	        	  }
 	          }
@@ -286,7 +282,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(TreeGenerationEvent.TYPE,
 		    	new TreeGenerationEventHandler() {
 		          public void onTreeGeneration(TreeGenerationEvent event) {
-		        	  taskManager.setActiveTask(configurationManager.getTreeGenerationConfiguration().getTask());
+		        	  taskManager.setActiveTaskRun(event.getTaskConfiguration());
 		        	  addToHistory(event);
 		          }
 		        });
@@ -294,7 +290,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(TaxonomyComparisonEvent.TYPE,
 		    	new TaxonomyComparisonEventHandler() {
 		          public void onTaxonomyComparison(TaxonomyComparisonEvent event) {
-		        	  taskManager.setActiveTask(configurationManager.getTaxonomyComparisonConfiguration().getTask());
+		        	  taskManager.setActiveTaskRun(event.getTaskConfiguration());
 		        	  addToHistory(event);
 		          }
 		        });
@@ -302,13 +298,13 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(VisualizationEvent.TYPE,
 		    	new VisualizationEventHandler() {
 		          public void onVisualization(VisualizationEvent event) {
-		        	  taskManager.setActiveTask(configurationManager.getVisualizationConfiguration().getTask());
+		        	  taskManager.setActiveTaskRun(event.getTaskConfiguration());
 		        	  addToHistory(event);
 		          }
 		        });
 	}
 	
-	protected void addToHistory(ETCSiteEvent event) {
+	protected void addToHistory(IETCSiteEvent event) {
 		if(!event.requiresLogin() || Authentication.getInstance().isSet())
 			//don't fire the same history state twice in a row
 			if(History.getToken().equals(event.getHistoryState().toString()))
@@ -372,7 +368,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 		presentFooter();
 	}
 	
-	private void presentLogin(final ETCSiteEvent event) {
+	private void presentLogin(final IETCSiteEvent event) {
 		GWT.runAsync(new RunAsyncCallback() {
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
@@ -528,14 +524,15 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 						caught.printStackTrace();
 					}
 					public void onSuccess() {
-						if(!configurationManager.hasMatrixGenerationConfiguration()) {
+						if(!taskManager.hasActiveTaskRun() || !(taskManager.getActiveTaskRun() instanceof MatrixGenerationTaskRun)) {
 							if (inputMatrixGenerationPresenter == null) {
 								inputMatrixGenerationPresenter = new InputMatrixGenerationPresenter(
 										eventBus, new InputMatrixGenerationView(), fileService, matrixGenerationService);
 							}
 							inputMatrixGenerationPresenter.go(content);
 						} else {
-							taskService.isCompleted(Authentication.getInstance().getAuthenticationToken(), configurationManager.getMatrixGenerationConfiguration().getTask(), 
+							final MatrixGenerationTaskRun matrixGenerationTask = (MatrixGenerationTaskRun)taskManager.getActiveTaskRun();
+							taskService.isComplete(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTask.getTask(), 
 									new AsyncCallback<Boolean>() {
 								@Override
 								public void onFailure(Throwable caught) {
@@ -550,17 +547,17 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 										}
 										inputMatrixGenerationPresenter.go(content);
 									} else {
-										matrixGenerationService.getMatrixGenerationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
-												configurationManager.getMatrixGenerationConfiguration().getTask(), 
-												new AsyncCallback<MatrixGenerationConfiguration>() {
+										matrixGenerationService.getMatrixGenerationTaskRun(Authentication.getInstance().getAuthenticationToken(), 
+												matrixGenerationTask.getTask(), 
+												new AsyncCallback<MatrixGenerationTaskRun>() {
 													@Override
 													public void onFailure(Throwable caught) {
 														caught.printStackTrace();
 													}
 					
 													@Override
-													public void onSuccess(MatrixGenerationConfiguration matrixGenerationConfiguration) {
-														TaskStageEnum taskStage = matrixGenerationConfiguration.getTask().getTaskStage().getTaskStageEnum();
+													public void onSuccess(MatrixGenerationTaskRun matrixGenerationTask) {
+														TaskStageEnum taskStage = matrixGenerationTask.getTask().getTaskStage().getTaskStageEnum();
 														switch(taskStage) {
 														case PREPROCESS_TEXT:
 															if (preprocessMatrixGenerationPresenter == null) {
@@ -568,7 +565,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 																		new PreprocessMatrixGenerationPresenter(eventBus, 
 																				new PreprocessMatrixGenerationView(), matrixGenerationService);
 															}
-															preprocessMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
+															preprocessMatrixGenerationPresenter.go(content, matrixGenerationTask);
 															break;
 														case LEARN_TERMS:
 															if (learnMatrixGenerationPresenter == null) {
@@ -576,7 +573,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 																		LearnMatrixGenerationPresenter(eventBus, 
 																				new LearnMatrixGenerationView(), matrixGenerationService, taskService);
 															}
-															learnMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
+															learnMatrixGenerationPresenter.go(content, matrixGenerationTask);
 															break;
 														case REVIEW_TERMS:
 															if (reviewMatrixGenerationPresenter == null) {
@@ -584,14 +581,14 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 																		new ReviewMatrixGenerationPresenter(eventBus, 
 																				new ReviewMatrixGenerationView(), matrixGenerationService);
 															}
-															reviewMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
+															reviewMatrixGenerationPresenter.go(content, matrixGenerationTask);
 															break;
 														case PARSE_TEXT:
 															if (parseMatrixGenerationPresenter == null) {
 																parseMatrixGenerationPresenter = new ParseMatrixGenerationPresenter(
 																		eventBus, new ParseMatrixGenerationView(), matrixGenerationService, taskService);
 															}
-															parseMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
+															parseMatrixGenerationPresenter.go(content, matrixGenerationTask);
 															break;
 														case OUTPUT:
 															if (outputMatrixGenerationPresenter == null) {
@@ -599,7 +596,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 																		OutputMatrixGenerationPresenter(eventBus, 
 																				new OutputMatrixGenerationView(), fileService, matrixGenerationService);
 															}
-															outputMatrixGenerationPresenter.go(content, configurationManager.getMatrixGenerationConfiguration());
+															outputMatrixGenerationPresenter.go(content, matrixGenerationTask);
 															break;
 														default:
 															if (inputMatrixGenerationPresenter == null) {

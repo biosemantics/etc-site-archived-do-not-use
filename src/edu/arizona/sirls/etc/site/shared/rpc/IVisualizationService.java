@@ -11,6 +11,6 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.VisualizationConfiguration;
 @RemoteServiceRelativePath("visualization")
 public interface IVisualizationService extends RemoteService {
 
-	public VisualizationConfiguration getVisualizationConfiguration(AuthenticationToken authenticationToken, Task task);
+	public VisualizationTaskRun getVisualizationTask(AuthenticationToken authenticationToken, Task task);
 
 }

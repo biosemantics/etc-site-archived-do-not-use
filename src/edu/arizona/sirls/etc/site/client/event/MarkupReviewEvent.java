@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.GwtEvent;
 
 import edu.arizona.sirls.etc.site.client.HistoryState;
 
-public class MarkupReviewEvent extends GwtEvent<MarkupReviewEventHandler> implements ETCSiteEvent {
+public class MarkupReviewEvent extends GwtEvent<MarkupReviewEventHandler> implements IETCSiteEvent {
 
 	public static Type<MarkupReviewEventHandler> TYPE = new Type<MarkupReviewEventHandler>();
 	

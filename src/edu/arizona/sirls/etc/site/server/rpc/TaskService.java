@@ -100,10 +100,10 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	}
 
 	@Override
-	public boolean isCompleted(AuthenticationToken authenticationToken, Task task) {
+	public boolean isComplete(AuthenticationToken authenticationToken, Task task) {
 		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
 			try {
-				return TaskDAO.getInstance().getTask(task.getId()).isCompleted();
+				return TaskDAO.getInstance().getTask(task.getId()).isComplete();
 			} catch(Exception e) {
 				e.printStackTrace();
 			}

@@ -1,53 +1,56 @@
 package edu.arizona.sirls.etc.site.shared.rpc.db;
 
 import java.io.Serializable;
+import java.util.Date;
 
-public class MatrixGenerationConfiguration implements Serializable {
+public class MatrixGenerationConfiguration extends AbstractTaskConfiguration implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 2388969377041543292L;
-	private int id;
+	private static final long serialVersionUID = -2317947666906682233L;
 	private String input;
+	private int numberOfInputFiles;
 	private Glossary glossary;
 	private int otoId;
 	private String output;
-	private Task task;
-	private long created;
 	
 	public MatrixGenerationConfiguration() { }
 	
-	public MatrixGenerationConfiguration(int id, String input, Glossary glossary, int otoId, String output, Task task, long created) {
-		super();
-		this.id = id;
+	public MatrixGenerationConfiguration(Configuration configuration, String input, int numberOfInputFiles, Glossary glossary, int otoId, String output) {
+		super(configuration);
 		this.input = input;
+		this.numberOfInputFiles = numberOfInputFiles;
 		this.glossary = glossary;
 		this.otoId = otoId;
-		this.task = task;
-		this.created = created;
+		this.output = output;
 	}
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
+
 	public String getInput() {
 		return input;
 	}
+
 	public void setInput(String input) {
 		this.input = input;
 	}
+
+	public int getNumberOfInputFiles() {
+		return numberOfInputFiles;
+	}
+
+	public void setNumberOfInputFiles(int numberOfInputFiles) {
+		this.numberOfInputFiles = numberOfInputFiles;
+	}
+
 	public Glossary getGlossary() {
 		return glossary;
 	}
+
 	public void setGlossary(Glossary glossary) {
 		this.glossary = glossary;
 	}
+
 	public int getOtoId() {
 		return otoId;
 	}
+
 	public void setOtoId(int otoId) {
 		this.otoId = otoId;
 	}
@@ -60,20 +63,6 @@ public class MatrixGenerationConfiguration implements Serializable {
 		this.output = output;
 	}
 
-	public Task getTask() {
-		return task;
-	}
 
-	public void setTask(Task task) {
-		this.task = task;
-	}
-	public long getCreated() {
-		return created;
-	}
-
-	public void setCreated(long created) {
-		this.created = created;
-	}
-	
 	
 }

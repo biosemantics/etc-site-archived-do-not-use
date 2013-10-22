@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.GwtEvent;
 
 import edu.arizona.sirls.etc.site.client.HistoryState;
 
-public interface ETCSiteEvent {
+public interface IETCSiteEvent {
 
 	public boolean requiresLogin();
 	

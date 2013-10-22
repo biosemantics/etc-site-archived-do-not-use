@@ -1,30 +1,25 @@
 package edu.arizona.sirls.etc.site.shared.rpc.db;
 
 import java.io.IOException;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 
-public class UserDAO extends AbstractDAO {
+public class UserDAO {
 
 	private static UserDAO instance;
-
-	public UserDAO() throws IOException, ClassNotFoundException, SQLException {
-		super();
-	}
 	
 	public User getUser(int id) throws SQLException, ClassNotFoundException, IOException {
 		User user = null;
 		Query query = new Query("SELECT * FROM users WHERE id = " + id);
-		query.execute();
-		ResultSet result = query.getResultSet();
+		ResultSet result = query.execute();
 		while(result.next()) {
 			id = result.getInt(1);
 			String name = result.getString(2);
 			String password = result.getString(3);
 			String bioportalUserId = result.getString(4);
 			String bioportalAPIKey = result.getString(5);
-			long created = result.getLong(6);
+			Date created = result.getTimestamp(6);
 			user = new User(id, name, password, bioportalUserId, bioportalAPIKey, created);
 		}
 		query.close();
@@ -34,15 +29,14 @@ public class UserDAO extends AbstractDAO {
 	public User getUser(String name) throws SQLException, ClassNotFoundException, IOException {		
 		User user = null;
 		Query query = new Query("SELECT * FROM users WHERE name = '" + name + "'");
-		query.execute();
-		ResultSet result = query.getResultSet();
+		ResultSet result = query.execute();
 		while(result.next()) {
 			int id = result.getInt(1);
 			name = result.getString(2);
 			String password = result.getString(3);
 			String bioportalUserId = result.getString(4);
 			String bioportalAPIKey = result.getString(5);
-			long created = result.getLong(6);
+			Date created = result.getTimestamp(6);
 			user = new User(id, name, password, bioportalUserId, bioportalAPIKey, created);
 		}
 		query.close();
@@ -54,7 +48,7 @@ public class UserDAO extends AbstractDAO {
 		query.executeAndClose();
 	}
 		
-	public static UserDAO getInstance() throws ClassNotFoundException, IOException, SQLException {
+	public static UserDAO getInstance() {
 		if(instance == null)
 			instance = new UserDAO();
 		return instance;

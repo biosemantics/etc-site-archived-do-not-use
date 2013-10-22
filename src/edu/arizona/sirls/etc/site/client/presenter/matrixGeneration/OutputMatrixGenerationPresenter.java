@@ -14,6 +14,7 @@ import edu.arizona.sirls.etc.site.client.event.FileManagerEvent;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 
 public class OutputMatrixGenerationPresenter {
@@ -28,7 +29,7 @@ public class OutputMatrixGenerationPresenter {
 	private HandlerManager eventBus;
 	private IFileServiceAsync fileService;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
-	private MatrixGenerationConfiguration matrixGenerationConfiguration;
+	private MatrixGenerationTaskRun matrixGenerationTask;
 	private LoadingPopup loadingPopup = new LoadingPopup();
 	
 	public OutputMatrixGenerationPresenter(HandlerManager eventBus,
@@ -49,10 +50,10 @@ public class OutputMatrixGenerationPresenter {
 		});
 	}
 
-	public void go(final HasWidgets content, final MatrixGenerationConfiguration matrixGenerationConfiguration) {
+	public void go(final HasWidgets content, final MatrixGenerationTaskRun matrixGenerationTask) {
 		loadingPopup.start();
-		this.matrixGenerationConfiguration = matrixGenerationConfiguration;
-		matrixGenerationService.output(Authentication.getInstance().getAuthenticationToken(), matrixGenerationConfiguration, new AsyncCallback<Boolean>() {
+		this.matrixGenerationTask = matrixGenerationTask;
+		matrixGenerationService.output(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTask, new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
@@ -60,7 +61,7 @@ public class OutputMatrixGenerationPresenter {
 			}
 			@Override
 			public void onSuccess(Boolean result) {
-				display.getOutputLabel().setText(matrixGenerationConfiguration.getOutput());
+				display.getOutputLabel().setText(matrixGenerationTask.getConfiguration().getOutput());
 				content.clear();
 				content.add(display.asWidget());
 				loadingPopup.stop();

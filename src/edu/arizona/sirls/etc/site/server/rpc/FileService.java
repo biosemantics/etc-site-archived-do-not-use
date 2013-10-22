@@ -14,6 +14,8 @@ import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileFormatService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.Tree;
+import edu.arizona.sirls.etc.site.shared.rpc.db.FilesInUseDAO;
+import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 
 public class FileService extends RemoteServiceServlet implements IFileService {
@@ -85,7 +87,8 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	@Override
 	public boolean deleteFile(AuthenticationToken authenticationToken, String target) {
 		boolean result = false;
-		if(authenticationService.isValidSession(authenticationToken).getResult() && !target.trim().isEmpty()) { 
+		if(authenticationService.isValidSession(authenticationToken).getResult() && !target.trim().isEmpty()
+				&& !this.isInUse(authenticationToken, target)) { 
 			File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
 			result = deleteRecursively(file);
 		} 
@@ -116,7 +119,8 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	@Override
 	public boolean moveFile(AuthenticationToken authenticationToken, String target, String newTarget) { 
 		boolean result = false;
-		if(authenticationService.isValidSession(authenticationToken).getResult() && !target.trim().isEmpty() &&  !newTarget.trim().isEmpty()) { 
+		if(authenticationService.isValidSession(authenticationToken).getResult() && !target.trim().isEmpty() &&  !newTarget.trim().isEmpty() 
+				&& !this.isInUse(authenticationToken, target) && !this.isInUse(authenticationToken, newTarget)) { 
 			File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
 			File targetFile = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + newTarget);
 			if(file.getAbsolutePath().equals(targetFile.getAbsolutePath()))
@@ -137,7 +141,8 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	@Override
 	public boolean createDirectory(AuthenticationToken authenticationToken, String target, String directoryName) { 
 		boolean result = false;
-		if(authenticationService.isValidSession(authenticationToken).getResult() && !directoryName.trim().isEmpty()) { 
+		if(authenticationService.isValidSession(authenticationToken).getResult() && !directoryName.trim().isEmpty() 
+				&& !this.isInUse(authenticationToken, target)) { 
 			File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target + "//" + directoryName);
 			result = file.mkdir();
 		}
@@ -221,4 +226,40 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			}
 		}
 	}
+
+	@Override
+	public void setInUse(AuthenticationToken authenticationToken, boolean value, String target, Task task) {
+		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
+			try {
+				FilesInUseDAO.getInstance().setInUse(value, target, task);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public boolean isInUse(AuthenticationToken authenticationToken, String target) {
+		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
+			try {
+				return FilesInUseDAO.getInstance().isInUse(target);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public List<Task> getUsingTasks(AuthenticationToken authenticationToken, String target) {
+		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
+			try {
+				return FilesInUseDAO.getInstance().getUsingTasks(target);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return new LinkedList<Task>();
+	}
+	
 }

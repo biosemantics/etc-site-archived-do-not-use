@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.GwtEvent;
 
 import edu.arizona.sirls.etc.site.client.HistoryState;
 
-public class LogoutEvent extends GwtEvent<LogoutEventHandler> implements ETCSiteEvent {
+public class LogoutEvent extends GwtEvent<LogoutEventHandler> implements IETCSiteEvent {
 
 	public static Type<LogoutEventHandler> TYPE = new Type<LogoutEventHandler>();
 	

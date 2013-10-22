@@ -2,7 +2,7 @@ package edu.arizona.sirls.etc.site.shared.rpc.db;
 
 import java.io.Serializable;
 
-public class TreeGenerationConfiguration implements Serializable {
+public class TreeGenerationConfiguration extends AbstractTaskConfiguration implements Serializable {
 
 	/**
 	 * 

@@ -11,6 +11,6 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.TreeGenerationConfiguration;
 @RemoteServiceRelativePath("treeGeneration")
 public interface ITreeGenerationService extends RemoteService  {
 	
-	public TreeGenerationConfiguration getTreeGenerationConfiguration(AuthenticationToken authenticationToken, Task task);
+	public TreeGenerationTaskRun getTreeGenerationTask(AuthenticationToken authenticationToken, Task task);
 
 }

@@ -1,6 +1,7 @@
 package edu.arizona.sirls.etc.site.shared.rpc.db;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class Glossary implements Serializable {
 
@@ -10,11 +11,11 @@ public class Glossary implements Serializable {
 	private static final long serialVersionUID = 8204689349599367413L;
 	private int id;
 	private String name;
-	private long created;
+	private Date created;
 	
 	public Glossary() { }
 	
-	public Glossary(int id, String name, long created) {
+	public Glossary(int id, String name, Date created) {
 		this.id = id;
 		this.name = name;
 		this.created = created;
@@ -36,14 +37,14 @@ public class Glossary implements Serializable {
 		this.name = name;
 	}
 
-	public long getCreated() {
+	public Date getCreated() {
 		return created;
 	}
 
-	public void setCreated(long created) {
+	public void setCreated(Date created) {
 		this.created = created;
 	}
-	
+
 	
 
 }

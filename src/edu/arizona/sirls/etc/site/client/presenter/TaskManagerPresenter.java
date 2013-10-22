@@ -18,17 +18,22 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
+import edu.arizona.sirls.etc.site.client.event.MatrixGenerationEvent;
 import edu.arizona.sirls.etc.site.client.event.ResumableTasksEvent;
 import edu.arizona.sirls.etc.site.client.event.ResumableTasksEventHandler;
 import edu.arizona.sirls.etc.site.client.event.TaxonomyComparisonEvent;
 import edu.arizona.sirls.etc.site.client.event.TreeGenerationEvent;
 import edu.arizona.sirls.etc.site.client.event.VisualizationEvent;
-import edu.arizona.sirls.etc.site.client.event.matrixGeneration.MatrixGenerationEvent;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.AbstractTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaxonomyComparisonServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ITreeGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IVisualizationServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
+import edu.arizona.sirls.etc.site.shared.rpc.TaxonomyComparisonTaskRun;
+import edu.arizona.sirls.etc.site.shared.rpc.TreeGenerationTaskRun;
+import edu.arizona.sirls.etc.site.shared.rpc.VisualizationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TaxonomyComparisonConfiguration;
@@ -109,7 +114,7 @@ public class TaskManagerPresenter {
 	
 	private Panel getActionsPanel(final Task task) { 
 		HorizontalPanel actionsPanel = new HorizontalPanel();
-		
+				
 		if(task.isResumable()) {
 			Image resumeImage = new Image("images/play.png");
 			resumeImage.setSize("15px", "15px");
@@ -118,53 +123,53 @@ public class TaskManagerPresenter {
 				public void onClick(ClickEvent event) {
 					switch(task.getTaskStage().getTaskType().getTaskTypeEnum()) {
 					case MATRIX_GENERATION:
-						matrixGenerationService.getMatrixGenerationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
-								task, new AsyncCallback<MatrixGenerationConfiguration>() {
+						matrixGenerationService.getMatrixGenerationTaskRun(Authentication.getInstance().getAuthenticationToken(), 
+								task, new AsyncCallback<MatrixGenerationTaskRun>() {
 									@Override
 									public void onFailure(Throwable caught) {
 										caught.printStackTrace();
 									}
 									@Override
-									public void onSuccess(MatrixGenerationConfiguration result) {
+									public void onSuccess(MatrixGenerationTaskRun result) {
 										eventBus.fireEvent(new MatrixGenerationEvent(result));
 									}
 						});
 						break;
 					case TREE_GENERATION:
-						treeGenerationService.getTreeGenerationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
-								task, new AsyncCallback<TreeGenerationConfiguration>() {
+						treeGenerationService.getTreeGenerationTask(Authentication.getInstance().getAuthenticationToken(), 
+								task, new AsyncCallback<TreeGenerationTaskRun>() {
 									@Override
 									public void onFailure(Throwable caught) {
 										caught.printStackTrace();
 									}
 									@Override
-									public void onSuccess(TreeGenerationConfiguration result) {
+									public void onSuccess(TreeGenerationTaskRun result) {
 										eventBus.fireEvent(new TreeGenerationEvent(result));
 									}
 						});
 						break;
 					case TAXONOMY_COMPARISON:
-						taxonomyComparisonService.getTaxonomyComparisonConfiguration(Authentication.getInstance().getAuthenticationToken(), 
-								task, new AsyncCallback<TaxonomyComparisonConfiguration>() {
+						taxonomyComparisonService.getTaxonomyComparisonTask(Authentication.getInstance().getAuthenticationToken(), 
+								task, new AsyncCallback<TaxonomyComparisonTaskRun>() {
 									@Override
 									public void onFailure(Throwable caught) {
 										caught.printStackTrace();
 									}
 									@Override
-									public void onSuccess(TaxonomyComparisonConfiguration result) {
+									public void onSuccess(TaxonomyComparisonTaskRun result) {
 										eventBus.fireEvent(new TaxonomyComparisonEvent(result));
 									}
 						});
 						break;
 					case VISUALIZATION:
-						visualizationService.getVisualizationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
-								task, new AsyncCallback<VisualizationConfiguration>() {
+						visualizationService.getVisualizationTask(Authentication.getInstance().getAuthenticationToken(), 
+								task, new AsyncCallback<VisualizationTaskRun>() {
 									@Override
 									public void onFailure(Throwable caught) {
 										caught.printStackTrace();
 									}
 									@Override
-									public void onSuccess(VisualizationConfiguration result) {
+									public void onSuccess(VisualizationTaskRun result) {
 										eventBus.fireEvent(new VisualizationEvent(result));
 									}
 						});
@@ -175,7 +180,7 @@ public class TaskManagerPresenter {
 			actionsPanel.add(resumeImage);
 		}
 		
-		if(task.isCompleted()) {
+		if(task.isComplete()) {
 			switch(task.getTaskStage().getTaskType().getTaskTypeEnum()) {
 			case MATRIX_GENERATION:
 				Image pickupImage = new Image("images/rewind.png");
@@ -183,26 +188,26 @@ public class TaskManagerPresenter {
 				pickupImage.addClickHandler(new ClickHandler() {
 					@Override
 					public void onClick(ClickEvent event) {
-						matrixGenerationService.getMatrixGenerationConfiguration(Authentication.getInstance().getAuthenticationToken(), 
-								task, new AsyncCallback<MatrixGenerationConfiguration>() {
+						matrixGenerationService.getMatrixGenerationTaskRun(Authentication.getInstance().getAuthenticationToken(), 
+								task, new AsyncCallback<MatrixGenerationTaskRun>() {
 									@Override
 									public void onFailure(Throwable caught) {
 										caught.printStackTrace();
 									}
 									@Override
-									public void onSuccess(MatrixGenerationConfiguration matrixGenerationConfiguration) {
+									public void onSuccess(MatrixGenerationTaskRun matrixGenerationTask) {
 										//could also have a popup here asking for a new task name to use..										
 										
 										//pickup again from review
-										matrixGenerationService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), matrixGenerationConfiguration, 
-												TaskStageEnum.REVIEW_TERMS ,new AsyncCallback<MatrixGenerationConfiguration>() {
+										matrixGenerationService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTask, 
+												TaskStageEnum.REVIEW_TERMS ,new AsyncCallback<MatrixGenerationTaskRun>() {
 											@Override
 											public void onFailure(Throwable caught) {
 												caught.printStackTrace();
 											}
 											@Override
-											public void onSuccess(MatrixGenerationConfiguration matrixGenerationConfiguration) {
-												eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationConfiguration));
+											public void onSuccess(MatrixGenerationTaskRun matrixGenerationTask) {
+												eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationTask));
 											}
 										});
 									}

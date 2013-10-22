@@ -40,6 +40,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskService;
+import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Glossary;
 import edu.arizona.sirls.etc.site.shared.rpc.db.GlossaryDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
@@ -79,9 +80,17 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 	
 	@Override
-	public MatrixGenerationConfiguration start(AuthenticationToken authenticationToken, String taskName, 
+	public MatrixGenerationTaskRun start(AuthenticationToken authenticationToken, String taskName, 
 			String input, String glossaryName) {
 		try {
+			int numberOfInputFiles = fileService.getDirectoriesFiles(authenticationToken, input).size();
+			Glossary glossary = GlossaryDAO.getInstance().getGlossary(glossaryName);
+			MatrixGenerationConfiguration matrixGenerationConfiguration = new MatrixGenerationConfiguration();
+			matrixGenerationConfiguration.setInput(input);	
+			matrixGenerationConfiguration.setGlossary(glossary);
+			matrixGenerationConfiguration.setNumberOfInputFiles(numberOfInputFiles);
+			matrixGenerationConfiguration = MatrixGenerationConfigurationDAO.getInstance().addMatrixGenerationConfiguration(matrixGenerationConfiguration);
+			
 			edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum taskType = edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION;
 			TaskType dbTaskType = TaskTypeDAO.getInstance().getTaskType(taskType);
 			TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(dbTaskType, TaskStageEnum.INPUT);
@@ -91,20 +100,16 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			task.setResumable(true);
 			task.setUser(user);
 			task.setTaskStage(taskStage);
+			task.setConfiguration(matrixGenerationConfiguration.getConfiguration());
+			task.setTaskType(dbTaskType);
 			task = taskService.addTask(authenticationToken, task);
 			
 			taskStage = TaskStageDAO.getInstance().getTaskStage(dbTaskType, TaskStageEnum.PREPROCESS_TEXT);
 			task.setTaskStage(taskStage);
 			TaskDAO.getInstance().updateTask(task);
-			
-			Glossary glossary = GlossaryDAO.getInstance().getGlossary(glossaryName);
-			MatrixGenerationConfiguration matrixGenerationConfiguration = new MatrixGenerationConfiguration();
-			matrixGenerationConfiguration.setInput(input);	
-			matrixGenerationConfiguration.setGlossary(glossary);
-			matrixGenerationConfiguration.setTask(task);
-			matrixGenerationConfiguration = 
-					MatrixGenerationConfigurationDAO.getInstance().addMatrixGenerationConfiguration(matrixGenerationConfiguration);
-			return matrixGenerationConfiguration;
+
+			fileService.setInUse(authenticationToken, true, input, task);
+			return new MatrixGenerationTaskRun(matrixGenerationConfiguration, task);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -112,20 +117,19 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 	
 	@Override
-	public List<PreprocessedDescription> preprocess(AuthenticationToken authenticationToken,
-			MatrixGenerationConfiguration matrixGenerationConfiguration) {
+	public List<PreprocessedDescription> preprocess(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTaskRun) {
 		List<PreprocessedDescription> result = new LinkedList<PreprocessedDescription>();
 		
 		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
 			try {
-				Task task = matrixGenerationConfiguration.getTask();
+				Task task = matrixGenerationTaskRun.getTask();
 				TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
 				TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.PREPROCESS_TEXT);
 				task.setTaskStage(taskStage);
 				TaskDAO.getInstance().updateTask(task);
 				//do preprocessing here, return result immediately or always only return an invocation
 				//and make user come back when ready?
-				String inputDirectory = matrixGenerationConfiguration.getInput();
+				String inputDirectory = matrixGenerationTaskRun.getConfiguration().getInput();
 				
 				if(fileService.isDirectory(authenticationToken, inputDirectory)) {
 					List<String> files = fileService.getDirectoriesFiles(authenticationToken, inputDirectory);
@@ -149,17 +153,18 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 	
 	@Override
-	public LearnInvocation learn(AuthenticationToken authenticationToken, final MatrixGenerationConfiguration matrixGenerationConfiguration) {
+	public LearnInvocation learn(AuthenticationToken authenticationToken, final MatrixGenerationTaskRun matrixGenerationTaskRun) {
 		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
 			try {
 				int numberOfSentences = getNumberOfSentences();
 				int numberOfWords = getNumberOfWords();
 				
+				final MatrixGenerationConfiguration matrixGenerationConfiguration = matrixGenerationTaskRun.getConfiguration();
 				//browser back button may invoke another "learn"
-				if(activeLearnFutures.containsKey(matrixGenerationConfiguration.getId())) {
+				if(activeLearnFutures.containsKey(matrixGenerationConfiguration.getConfiguration().getId())) {
 					return new LearnInvocation(numberOfSentences, numberOfWords);
 				} else {
-					final Task task = matrixGenerationConfiguration.getTask();
+					final Task task = TaskDAO.getInstance().getTask(matrixGenerationConfiguration.getConfiguration());
 					final TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
 					TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.LEARN_TERMS);
 					task.setTaskStage(taskStage);
@@ -177,11 +182,11 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 					String bioportalAPIKey = UserDAO.getInstance().getUser(authenticationToken.getUsername()).getBioportalAPIKey();
 					ILearn learn = new Learn(authenticationToken, glossary, input, tablePrefix, debugFile, errorFile, source, user, bioportalUserId, bioportalAPIKey);
 					final ListenableFuture<LearnResult> futureResult = executorService.submit(learn);
-					activeLearnFutures.put(matrixGenerationConfiguration.getId(), futureResult);
+					activeLearnFutures.put(matrixGenerationConfiguration.getConfiguration().getId(), futureResult);
 					futureResult.addListener(new Runnable() {
 					     	public void run() {
 					     		try {
-					     			activeLearnFutures.remove(matrixGenerationConfiguration.getId());
+					     			activeLearnFutures.remove(matrixGenerationConfiguration.getConfiguration().getId());
 					     			matrixGenerationConfiguration.setOtoId(futureResult.get().getOtoId());
 									MatrixGenerationConfigurationDAO.getInstance().updateMatrixGenerationConfiguration(matrixGenerationConfiguration);
 									TaskStage newTaskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.REVIEW_TERMS);
@@ -212,19 +217,19 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 	
 	@Override
-	public MatrixGenerationConfiguration review(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration) {
+	public MatrixGenerationTaskRun review(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTaskRun) {
 		if(authenticationService.isValidSession(authenticationToken).getResult()) {
 			try {
-				Task task = matrixGenerationConfiguration.getTask();
+				Task task = matrixGenerationTaskRun.getTask();
 				TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
 				TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.REVIEW_TERMS);
 				task.setTaskStage(taskStage);
 				TaskDAO.getInstance().updateTask(task);
 				MatrixGenerationConfiguration configuration = 
 						MatrixGenerationConfigurationDAO.getInstance().getMatrixGenerationConfiguration(
-								matrixGenerationConfiguration.getId());
+								matrixGenerationTaskRun.getConfiguration().getConfiguration().getId());
 				
-				return configuration;
+				return new MatrixGenerationTaskRun(configuration, task);
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -233,13 +238,14 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 	
 	@Override
-	public ParseInvocation parse(final AuthenticationToken authenticationToken, final MatrixGenerationConfiguration matrixGenerationConfiguration) {
+	public ParseInvocation parse(final AuthenticationToken authenticationToken, final MatrixGenerationTaskRun matrixGenerationTaskRun) {
 		if(authenticationService.isValidSession(authenticationToken).getResult()) {
 			try {
-				if(activeParseFutures.containsKey(matrixGenerationConfiguration.getId())) {
+				final MatrixGenerationConfiguration matrixGenerationConfiguration = matrixGenerationTaskRun.getConfiguration();
+				if(activeParseFutures.containsKey(matrixGenerationConfiguration.getConfiguration().getId())) {
 					return new ParseInvocation();
 				} else {
-					final Task task = matrixGenerationConfiguration.getTask();
+					final Task task = TaskDAO.getInstance().getTask(matrixGenerationConfiguration.getConfiguration());
 					final TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
 					TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.PARSE_TEXT);
 					task.setTaskStage(taskStage);
@@ -257,12 +263,12 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 					String bioportalAPIKey = UserDAO.getInstance().getUser(authenticationToken.getUsername()).getBioportalAPIKey();
 					IParse parse = new Parse(authenticationToken, glossary, input, tablePrefix, debugFile, errorFile, source, user, bioportalUserId, bioportalAPIKey);
 					final ListenableFuture<ParseResult> futureResult = executorService.submit(parse);
-					activeParseFutures.put(matrixGenerationConfiguration.getId(), futureResult);
+					activeParseFutures.put(matrixGenerationConfiguration.getConfiguration().getId(), futureResult);
 					futureResult.addListener(new Runnable() {
 						@Override
 						public void run() {
 							try {
-								activeParseFutures.remove(matrixGenerationConfiguration.getId());
+								activeParseFutures.remove(matrixGenerationConfiguration.getConfiguration().getId());
 								task.setResumable(true);
 								TaskStage newTaskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.OUTPUT);
 								task.setTaskStage(newTaskStage);
@@ -284,11 +290,12 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 
 	@Override
-	public boolean output(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration) {
+	public boolean output(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTaskRun) {
 		boolean result = false;
 		if(authenticationService.isValidSession(authenticationToken).getResult()) {
 			try {				
-				Task task = matrixGenerationConfiguration.getTask();
+				Task task = matrixGenerationTaskRun.getTask();
+				MatrixGenerationConfiguration matrixGenerationConfiguration = matrixGenerationTaskRun.getConfiguration();
 				matrixGenerationConfiguration.setOutput(matrixGenerationConfiguration.getInput() + "_" + task.getName());
 				MatrixGenerationConfigurationDAO.getInstance().updateMatrixGenerationConfiguration(matrixGenerationConfiguration);
 
@@ -320,7 +327,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				
 				//update task
 				task.setResumable(false);
-				task.setCompleted(true);
+				task.setComplete(true);
+				task.setCompleted(new Date());
 				TaskDAO.getInstance().updateTask(task);
 				
 				return true;
@@ -332,20 +340,21 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 	
 	@Override
-	public MatrixGenerationConfiguration goToTaskStage(AuthenticationToken authenticationToken, MatrixGenerationConfiguration matrixGenerationConfiguration, TaskStageEnum taskStageEnum) {
+	public MatrixGenerationTaskRun goToTaskStage(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTaskRun, TaskStageEnum taskStageEnum) {
 		if(authenticationService.isValidSession(authenticationToken).getResult()) {
 			try {
-				Task task = matrixGenerationConfiguration.getTask();
+				Task task = matrixGenerationTaskRun.getTask();
 				TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
 				TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, taskStageEnum);
 				task.setTaskStage(taskStage);
 				task.setResumable(true);
-				task.setCompleted(false);
+				task.setComplete(false);
+				task.setCompleted(null);
 				TaskDAO.getInstance().updateTask(task);
 				MatrixGenerationConfiguration configuration = 
 						MatrixGenerationConfigurationDAO.getInstance().getMatrixGenerationConfiguration(
-								matrixGenerationConfiguration.getId());
-				return configuration;
+								matrixGenerationTaskRun.getConfiguration().getConfiguration().getId());
+				return new MatrixGenerationTaskRun(configuration, task);
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -408,14 +417,16 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 
 	@Override
-	public MatrixGenerationConfiguration getLatestResumable(AuthenticationToken authenticationToken) {
+	public MatrixGenerationTaskRun getLatestResumable(AuthenticationToken authenticationToken) {
 		if(authenticationService.isValidSession(authenticationToken).getResult()) {
 			try {
 				User user = UserDAO.getInstance().getUser(authenticationToken.getUsername());
 				List<Task> tasks = TaskDAO.getInstance().getUsersTasks(user.getId());
 				for(Task task : tasks) {
-					if(task.isResumable()) 
-						return MatrixGenerationConfigurationDAO.getInstance().getMatrixGenerationConfigurationFromTask(task.getId());
+					if(task.isResumable()) {
+						MatrixGenerationConfiguration configuration = MatrixGenerationConfigurationDAO.getInstance().getMatrixGenerationConfiguration(task.getConfiguration().getId());
+						return new MatrixGenerationTaskRun(configuration, task);
+					}
 				}
 			} catch(Exception e) {
 				e.printStackTrace();
@@ -425,12 +436,13 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 
 	@Override
-	public MatrixGenerationConfiguration getMatrixGenerationConfiguration(AuthenticationToken authenticationToken, Task task) {
+	public MatrixGenerationTaskRun getMatrixGenerationTaskRun(AuthenticationToken authenticationToken, Task task) {
 		if(authenticationService.isValidSession(authenticationToken).getResult()) {
 			try {
+				task = TaskDAO.getInstance().getTask(task.getId());
 				MatrixGenerationConfiguration configuration = 
-						MatrixGenerationConfigurationDAO.getInstance().getMatrixGenerationConfigurationFromTask(task.getId());
-				return configuration;
+						MatrixGenerationConfigurationDAO.getInstance().getMatrixGenerationConfiguration(task.getConfiguration().getId());
+				return new MatrixGenerationTaskRun(configuration, task);
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -442,23 +454,25 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	public void cancel(AuthenticationToken authenticationToken, Task task) {
 		if(authenticationService.isValidSession(authenticationToken).getResult()) {
 			try {
-				MatrixGenerationConfiguration matrixGenerationConfiguration = getMatrixGenerationConfiguration(authenticationToken, task);
+				MatrixGenerationTaskRun matrixGenerationTaskRun = getMatrixGenerationTaskRun(authenticationToken, task);
+				MatrixGenerationConfiguration matrixGenerationConfiguration = matrixGenerationTaskRun.getConfiguration();
+				fileService.setInUse(authenticationToken, false, matrixGenerationConfiguration.getInput(), task);
 				MatrixGenerationConfigurationDAO.getInstance().remove(matrixGenerationConfiguration);
 				TaskDAO.getInstance().removeTask(task);
 				switch(task.getTaskStage().getTaskStageEnum()) {
 				case INPUT:
 					break;
 				case LEARN_TERMS:
-					if(activeLearnFutures.containsKey(matrixGenerationConfiguration.getId())) {
-						ListenableFuture<LearnResult> learnFuture = activeLearnFutures.get(matrixGenerationConfiguration.getId());
+					if(activeLearnFutures.containsKey(matrixGenerationConfiguration.getConfiguration().getId())) {
+						ListenableFuture<LearnResult> learnFuture = activeLearnFutures.get(matrixGenerationConfiguration.getConfiguration().getId());
 						learnFuture.cancel(true);
 					}
 					break;
 				case OUTPUT:
 					break;
 				case PARSE_TEXT:
-					if(activeParseFutures.containsKey(matrixGenerationConfiguration.getId())) {
-						ListenableFuture<ParseResult> parseFuture = activeParseFutures.get(matrixGenerationConfiguration.getId());
+					if(activeParseFutures.containsKey(matrixGenerationConfiguration.getConfiguration().getId())) {
+						ListenableFuture<ParseResult> parseFuture = activeParseFutures.get(matrixGenerationConfiguration.getConfiguration().getId());
 						parseFuture.cancel(true);
 					}
 					break;

@@ -14,13 +14,14 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
+import edu.arizona.sirls.etc.site.client.event.MatrixGenerationEvent;
 import edu.arizona.sirls.etc.site.client.event.ResumableTasksEvent;
 import edu.arizona.sirls.etc.site.client.event.ResumableTasksEventHandler;
 import edu.arizona.sirls.etc.site.client.event.TaskManagerEvent;
-import edu.arizona.sirls.etc.site.client.event.matrixGeneration.MatrixGenerationEvent;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.ParseInvocation;
 
@@ -38,7 +39,7 @@ public class ParseMatrixGenerationPresenter {
 	private Display display;
 	private HandlerManager eventBus;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
-	private MatrixGenerationConfiguration matrixGenerationConfiguration;
+	private MatrixGenerationTaskRun matrixGenerationTask;
 	private LoadingPopup loadingPopup = new LoadingPopup();
 	private ITaskServiceAsync taskService;
 	private Timer refreshTimer;
@@ -63,7 +64,7 @@ public class ParseMatrixGenerationPresenter {
 		display.getNextButton().addClickHandler(new ClickHandler() { 
 			@Override
 			public void onClick(ClickEvent event) { 
-				eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationConfiguration));
+				eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationTask));
 			}
 		});
 		eventBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEventHandler() {
@@ -71,12 +72,12 @@ public class ParseMatrixGenerationPresenter {
 
 			@Override
 			public void onResumableTaskEvent(ResumableTasksEvent resumableTasksEvent) {
-				if(resumableTasksEvent.getTasks().containsKey(matrixGenerationConfiguration.getTask().getId())) {
+				if(resumableTasksEvent.getTasks().containsKey(matrixGenerationTask.getTask().getId())) {
 					display.setResumableStatus();
 					handlerRegistration = display.getResumableClickable().addClickHandler(new ClickHandler() {
 						@Override
 						public void onClick(ClickEvent event) {
-							eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationConfiguration));
+							eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationTask));
 						}
 					});
 				} else {
@@ -88,11 +89,11 @@ public class ParseMatrixGenerationPresenter {
 		});
 	}
 
-	public void go(final HasWidgets content, MatrixGenerationConfiguration matrixGenerationConfiguration) {
+	public void go(final HasWidgets content, MatrixGenerationTaskRun matrixGenerationTask) {
 		loadingPopup.start();
 		display.setNonResumableStatus();
-		this.matrixGenerationConfiguration = matrixGenerationConfiguration;
-		matrixGenerationService.parse(Authentication.getInstance().getAuthenticationToken(), matrixGenerationConfiguration, new AsyncCallback<ParseInvocation>() {
+		this.matrixGenerationTask = matrixGenerationTask;
+		matrixGenerationService.parse(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTask, new AsyncCallback<ParseInvocation>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();

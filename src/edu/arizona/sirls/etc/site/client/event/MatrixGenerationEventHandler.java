@@ -1,4 +1,4 @@
-package edu.arizona.sirls.etc.site.client.event.matrixGeneration;
+package edu.arizona.sirls.etc.site.client.event;
 
 import com.google.gwt.event.shared.EventHandler;
 

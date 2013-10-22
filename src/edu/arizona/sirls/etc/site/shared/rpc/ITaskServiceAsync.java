@@ -23,7 +23,7 @@ public interface ITaskServiceAsync {
 
 	public void isResumable(AuthenticationToken authenticationToken, Task task, AsyncCallback<Boolean> callback);
 
-	public void isCompleted(AuthenticationToken authenticationToken, Task task, AsyncCallback<Boolean> callback);
+	public void isComplete(AuthenticationToken authenticationToken, Task task, AsyncCallback<Boolean> callback);
 
 	public void hasResumable(AuthenticationToken authenticationToken, AsyncCallback<Boolean> callback);
 	

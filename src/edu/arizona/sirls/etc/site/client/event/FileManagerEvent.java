@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.GwtEvent;
 
 import edu.arizona.sirls.etc.site.client.HistoryState;
 
-public class FileManagerEvent extends GwtEvent<FileManagerEventHandler> implements ETCSiteEvent {
+public class FileManagerEvent extends GwtEvent<FileManagerEventHandler> implements IETCSiteEvent {
 
 	public static Type<FileManagerEventHandler> TYPE = new Type<FileManagerEventHandler>();
 	

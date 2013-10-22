@@ -1,29 +1,27 @@
 package edu.arizona.sirls.etc.site.shared.rpc.db;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class User implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 3593412522402966872L;
 	private int id;
 	private String name;
 	private String password;
-	private long created;
 	private String bioportalUserId;
 	private String bioportalAPIKey;
+	private Date created;
 	
 	public User() { }
 	
-	public User(int id, String name, String password, String bioportalUserId, String bioportalAPIKey, long created) {
+	public User(int id, String name, String password, String bioportalUserId, String bioportalAPIKey, Date created) {
 		this.id = id;
 		this.name = name;
 		this.password = password;
-		this.created = created;
 		this.bioportalUserId = bioportalUserId;
 		this.bioportalAPIKey = bioportalAPIKey;
+		this.created = created;
 	}
 
 	public int getId() {
@@ -50,14 +48,6 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
-	public long getCreated() {
-		return created;
-	}
-
-	public void setCreated(long created) {
-		this.created = created;
-	}
-
 	public String getBioportalUserId() {
 		return bioportalUserId;
 	}
@@ -73,7 +63,14 @@ public class User implements Serializable {
 	public void setBioportalAPIKey(String bioportalAPIKey) {
 		this.bioportalAPIKey = bioportalAPIKey;
 	}
-	
+
+	public Date getCreated() {
+		return created;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
 	
 	
 }

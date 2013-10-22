@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.GwtEvent;
 
 import edu.arizona.sirls.etc.site.client.HistoryState;
 
-public class TaskManagerEvent extends GwtEvent<TaskManagerEventHandler> implements ETCSiteEvent {
+public class TaskManagerEvent extends GwtEvent<TaskManagerEventHandler> implements IETCSiteEvent {
 
 	public static Type<TaskManagerEventHandler> TYPE = new Type<TaskManagerEventHandler>();
 	

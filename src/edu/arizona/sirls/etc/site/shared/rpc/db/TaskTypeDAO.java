@@ -4,18 +4,15 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 
 import edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum;
 
-public class TaskTypeDAO extends AbstractDAO {
+public class TaskTypeDAO {
 
 	private static TaskTypeDAO instance;
-
-	public TaskTypeDAO() throws IOException, ClassNotFoundException, SQLException {
-		super();
-	}
-
-	public static TaskTypeDAO getInstance() throws ClassNotFoundException, IOException, SQLException {
+	
+	public static TaskTypeDAO getInstance() {
 		if(instance == null)
 			instance = new TaskTypeDAO();
 		return instance;
@@ -24,14 +21,14 @@ public class TaskTypeDAO extends AbstractDAO {
 	public TaskType getTaskType(int id) throws SQLException, ClassNotFoundException, IOException {
 		TaskType taskType = null;
 		Query query = new Query("SELECT * FROM tasktypes WHERE id = " + id);
-		query.execute();
-		query.getResultSet();
-		ResultSet result = query.getResultSet();
+		ResultSet result = query.execute();
 		while(result.next()) {
 			id = result.getInt(1);
 			String name = result.getString(2);
-			long created = result.getLong(3);
-			taskType = new TaskType(id, edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.valueOf(name), created);
+			int inputTypeId = result.getInt(3);
+			InputType inputType = InputTypeDAO.getInstance().getInputType(inputTypeId);
+			Date created = result.getTimestamp(4);
+			taskType = new TaskType(id, edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.valueOf(name), inputType, created);
 		}
 		query.close();
 		return taskType;
@@ -40,13 +37,14 @@ public class TaskTypeDAO extends AbstractDAO {
 	public TaskType getTaskType(TaskTypeEnum taskTypeEnum) throws SQLException, ClassNotFoundException, IOException {		
 		TaskType taskType = null;
 		Query query = new Query("SELECT * FROM tasktypes WHERE name = '" + taskTypeEnum.toString() + "'");
-		query.execute();
-		ResultSet result = query.getResultSet();
+		ResultSet result = query.execute();
 		while(result.next()) {
 			int id = result.getInt(1);
 			taskTypeEnum = TaskTypeEnum.valueOf(result.getString(2));
-			long created = result.getLong(3);
-			taskType = new TaskType(id, taskTypeEnum, created);
+			int inputTypeId = result.getInt(3);
+			InputType inputType = InputTypeDAO.getInstance().getInputType(inputTypeId);
+			Date created = result.getTimestamp(4);
+			taskType = new TaskType(id, taskTypeEnum, inputType, created);
 		}
 		query.close();
 		return taskType;

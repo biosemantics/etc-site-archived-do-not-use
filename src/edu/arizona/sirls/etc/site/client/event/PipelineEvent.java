@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.GwtEvent;
 
 import edu.arizona.sirls.etc.site.client.HistoryState;
 
-public class PipelineEvent extends GwtEvent<PipelineEventHandler> implements ETCSiteEvent {
+public class PipelineEvent extends GwtEvent<PipelineEventHandler> implements IETCSiteEvent {
 	
 	public static Type<PipelineEventHandler> TYPE = new Type<PipelineEventHandler>();
 	

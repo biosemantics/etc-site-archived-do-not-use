@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.GwtEvent;
 
 import edu.arizona.sirls.etc.site.client.HistoryState;
 
-public class HelpEvent extends GwtEvent<HelpEventHandler> implements ETCSiteEvent {
+public class HelpEvent extends GwtEvent<HelpEventHandler> implements IETCSiteEvent {
 
 	public static Type<HelpEventHandler> TYPE = new Type<HelpEventHandler>();
 	

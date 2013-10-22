@@ -3,28 +3,20 @@ package edu.arizona.sirls.etc.site.client.event;
 import com.google.gwt.event.shared.GwtEvent;
 
 import edu.arizona.sirls.etc.site.client.HistoryState;
-import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
+import edu.arizona.sirls.etc.site.shared.rpc.TreeGenerationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TreeGenerationConfiguration;
 
-public class TreeGenerationEvent extends GwtEvent<TreeGenerationEventHandler> implements ETCSiteEvent {
+public class TreeGenerationEvent extends GwtEvent<TreeGenerationEventHandler> implements IETCSiteEvent, ITaskEvent<TreeGenerationTaskRun> {
 
 	public static Type<TreeGenerationEventHandler> TYPE = new Type<TreeGenerationEventHandler>();
-	private TreeGenerationConfiguration treeGenerationConfiguration;
+	private TreeGenerationTaskRun taskConfiguration;
 	
 	public TreeGenerationEvent() { }
 	
-	public TreeGenerationEvent(TreeGenerationConfiguration treeGenerationConfiguration) {
-		this.treeGenerationConfiguration = treeGenerationConfiguration;
+	public TreeGenerationEvent(TreeGenerationTaskRun taskConfiguration) { 
+		this.taskConfiguration = taskConfiguration;
 	}
 	
-	public TreeGenerationConfiguration getTreeGenerationConfiguration() {
-		return treeGenerationConfiguration;
-	}
-
-	public void setTreeGenerationConfiguration(TreeGenerationConfiguration treeGenerationConfiguration) {
-		this.treeGenerationConfiguration = treeGenerationConfiguration;
-	}
-
 	@Override
 	public Type<TreeGenerationEventHandler> getAssociatedType() {
 		return TYPE;
@@ -48,5 +40,20 @@ public class TreeGenerationEvent extends GwtEvent<TreeGenerationEventHandler> im
 	@Override
 	public GwtEvent<?> getGwtEvent() {
 		return this;
+	}
+
+	@Override
+	public TreeGenerationTaskRun getTaskConfiguration() {
+		return taskConfiguration;
+	}
+
+	@Override
+	public void setTaskConfiguration(TreeGenerationTaskRun task) {
+		this.taskConfiguration = task;
+	}
+
+	@Override
+	public boolean hasTaskConfiguration() {
+		return taskConfiguration != null;
 	}
 }

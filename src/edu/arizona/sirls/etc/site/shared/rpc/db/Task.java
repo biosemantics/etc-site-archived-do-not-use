@@ -6,56 +6,31 @@ import java.util.Date;
 public class Task implements Serializable  {
 
 	private static final long serialVersionUID = 5053756810897454852L;
-	private boolean resumable;
-	private String name;
-	private TaskStage taskStage;
-	private User user;
 	private int id;
+	private String name;
+	private TaskType taskType;
+	private TaskStage taskStage;
+	private Configuration configuration;
+	private User user;
+	private boolean resumable;
+	private boolean complete;
+	private Date completed;
 	private Date created;
-	private boolean completed;
 	
 	public Task() { }
-
-	public Task(int id, User user, TaskStage taskStage, String name, boolean resumable, boolean completed, Date created) {
+	
+	public Task(int id, String name, TaskType taskType, TaskStage taskStage, Configuration configuration, User user, boolean resumable, boolean complete, Date completed, Date created) {
+		super();
 		this.id = id;
-		this.user = user;
-		this.taskStage = taskStage;
 		this.name = name;
+		this.taskType = taskType;
+		this.taskStage = taskStage;
+		this.configuration = configuration;
+		this.user = user;
 		this.resumable = resumable;
+		this.complete = complete;
 		this.completed = completed;
 		this.created = created;
-	}
-
-	public boolean isResumable() {
-		return resumable;
-	}
-
-	public void setResumable(boolean resumable) {
-		this.resumable = resumable;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public TaskStage getTaskStage() {
-		return taskStage;
-	}
-
-	public void setTaskStage(TaskStage taskStage) {
-		this.taskStage = taskStage;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
 	}
 
 	public int getId() {
@@ -66,6 +41,70 @@ public class Task implements Serializable  {
 		this.id = id;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public TaskType getTaskType() {
+		return taskType;
+	}
+
+	public void setTaskType(TaskType taskType) {
+		this.taskType = taskType;
+	}
+
+	public TaskStage getTaskStage() {
+		return taskStage;
+	}
+
+	public void setTaskStage(TaskStage taskStage) {
+		this.taskStage = taskStage;
+	}
+
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public boolean isResumable() {
+		return resumable;
+	}
+
+	public void setResumable(boolean resumable) {
+		this.resumable = resumable;
+	}
+
+	public boolean isComplete() {
+		return complete;
+	}
+
+	public void setComplete(boolean complete) {
+		this.complete = complete;
+	}
+
+	public Date getCompleted() {
+		return completed;
+	}
+
+	public void setCompleted(Date completed) {
+		this.completed = completed;
+	}
+
 	public Date getCreated() {
 		return created;
 	}
@@ -74,13 +113,4 @@ public class Task implements Serializable  {
 		this.created = created;
 	}
 
-	public boolean isCompleted() {
-		return completed;
-	}
-
-	public void setCompleted(boolean completed) {
-		this.completed = completed;
-	}
-	
-		
 }

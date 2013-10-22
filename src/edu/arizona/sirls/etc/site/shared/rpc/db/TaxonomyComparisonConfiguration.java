@@ -2,7 +2,7 @@ package edu.arizona.sirls.etc.site.shared.rpc.db;
 
 import java.io.Serializable;
 
-public class TaxonomyComparisonConfiguration implements Serializable {
+public class TaxonomyComparisonConfiguration extends AbstractTaskConfiguration implements Serializable {
 
 	/**
 	 * 

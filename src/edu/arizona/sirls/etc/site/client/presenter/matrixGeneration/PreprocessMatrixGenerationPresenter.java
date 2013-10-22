@@ -17,11 +17,12 @@ import com.google.gwt.user.client.ui.RichTextArea.Formatter;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
-import edu.arizona.sirls.etc.site.client.event.matrixGeneration.MatrixGenerationEvent;
+import edu.arizona.sirls.etc.site.client.event.MatrixGenerationEvent;
 import edu.arizona.sirls.etc.site.client.presenter.MessagePresenter;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.client.view.MessageView;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.BracketValidator;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.PreprocessedDescription;
@@ -42,7 +43,7 @@ public class PreprocessMatrixGenerationPresenter {
 	private HandlerManager eventBus;
 	private Display display;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
-	private MatrixGenerationConfiguration matrixGenerationConfiguration;
+	private MatrixGenerationTaskRun matrixGenerationTask;
 	private LoadingPopup loadingPopup = new LoadingPopup();
 	private List<PreprocessedDescription> preprocessedDescriptions;
 	private int currentPreprocessedDescription;
@@ -160,15 +161,15 @@ public class PreprocessMatrixGenerationPresenter {
 					}
 					@Override
 					public void onSuccess(Boolean result) {	
-						matrixGenerationService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), matrixGenerationConfiguration, 
-								TaskStageEnum.LEARN_TERMS, new AsyncCallback<MatrixGenerationConfiguration>() {
+						matrixGenerationService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTask, 
+								TaskStageEnum.LEARN_TERMS, new AsyncCallback<MatrixGenerationTaskRun>() {
 									@Override
 									public void onFailure(Throwable caught) {
 										caught.printStackTrace();
 									}
 									@Override
-									public void onSuccess(MatrixGenerationConfiguration matrixGenerationConfiguration) {
-										eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationConfiguration));
+									public void onSuccess(MatrixGenerationTaskRun matrixGenerationTask) {
+										eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationTask));
 									} 
 						});
 					}
@@ -194,11 +195,11 @@ public class PreprocessMatrixGenerationPresenter {
 				target, content, asyncCallback);
 	}
 	
-	public void go(final HasWidgets content, final MatrixGenerationConfiguration matrixGenerationConfiguration) {
-		this.matrixGenerationConfiguration = matrixGenerationConfiguration;
+	public void go(final HasWidgets content, final MatrixGenerationTaskRun matrixGenerationTask) {
+		this.matrixGenerationTask = matrixGenerationTask;
 		loadingPopup.start();
 		matrixGenerationService.preprocess(Authentication.getInstance().getAuthenticationToken(), 
-				matrixGenerationConfiguration, new AsyncCallback<List<PreprocessedDescription>>() {
+				matrixGenerationTask, new AsyncCallback<List<PreprocessedDescription>>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
@@ -209,15 +210,15 @@ public class PreprocessMatrixGenerationPresenter {
 					public void onSuccess(List<PreprocessedDescription> result) {
 						if(result.isEmpty()) {
 							loadingPopup.stop();
-							matrixGenerationService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), matrixGenerationConfiguration, 
-									TaskStageEnum.LEARN_TERMS, new AsyncCallback<MatrixGenerationConfiguration>() {
+							matrixGenerationService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTask, 
+									TaskStageEnum.LEARN_TERMS, new AsyncCallback<MatrixGenerationTaskRun>() {
 										@Override
 										public void onFailure(Throwable caught) {
 											caught.printStackTrace();
 										}
 										@Override
-										public void onSuccess(MatrixGenerationConfiguration matrixGenerationConfiguration) {
-											eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationConfiguration));
+										public void onSuccess(MatrixGenerationTaskRun matrixGenerationTask) {
+											eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationTask));
 										}
 							});
 							return;

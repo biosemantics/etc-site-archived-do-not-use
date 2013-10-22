@@ -10,6 +10,6 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.TaxonomyComparisonConfiguration;
 @RemoteServiceRelativePath("taxonomyComparison")
 public interface ITaxonomyComparisonService extends RemoteService  {
 	
-	public TaxonomyComparisonConfiguration getTaxonomyComparisonConfiguration(AuthenticationToken authenticationToken, Task task);
+	public TaxonomyComparisonTaskRun getTaxonomyComparisonTask(AuthenticationToken authenticationToken, Task task);
 
 }

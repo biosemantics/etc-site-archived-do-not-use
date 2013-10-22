@@ -3,26 +3,20 @@ package edu.arizona.sirls.etc.site.client.event;
 import com.google.gwt.event.shared.GwtEvent;
 
 import edu.arizona.sirls.etc.site.client.HistoryState;
+import edu.arizona.sirls.etc.site.shared.rpc.TaxonomyComparisonTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TaxonomyComparisonConfiguration;
 
-public class TaxonomyComparisonEvent extends GwtEvent<TaxonomyComparisonEventHandler> implements ETCSiteEvent {
+public class TaxonomyComparisonEvent extends GwtEvent<TaxonomyComparisonEventHandler> implements IETCSiteEvent, ITaskEvent<TaxonomyComparisonTaskRun> {
 
 	public static Type<TaxonomyComparisonEventHandler> TYPE = new Type<TaxonomyComparisonEventHandler>();
-	
-	private TaxonomyComparisonConfiguration taxonomyComparisonConfiguration;
+
+	private TaxonomyComparisonTaskRun taskConfiguration;
 	
 	public TaxonomyComparisonEvent() { }
 	
-	public TaxonomyComparisonEvent(TaxonomyComparisonConfiguration taxonomyComparisonConfiguration) {
-		this.taxonomyComparisonConfiguration = taxonomyComparisonConfiguration;
-	}
-	public TaxonomyComparisonConfiguration getTaxonomyComparisonConfiguration() {
-		return taxonomyComparisonConfiguration;
-	}
-
-	public void setTaxonomyComparisonConfiguration(TaxonomyComparisonConfiguration taxonomyComparisonConfiguration) {
-		this.taxonomyComparisonConfiguration = taxonomyComparisonConfiguration;
+	public TaxonomyComparisonEvent(TaxonomyComparisonTaskRun taskConfiguration) {
+		this.taskConfiguration = taskConfiguration;
 	}
 
 	@Override
@@ -48,5 +42,20 @@ public class TaxonomyComparisonEvent extends GwtEvent<TaxonomyComparisonEventHan
 	@Override
 	public GwtEvent<?> getGwtEvent() {
 		return this;
+	}
+
+	@Override
+	public TaxonomyComparisonTaskRun getTaskConfiguration() {
+		return taskConfiguration;
+	}
+
+	@Override
+	public void setTaskConfiguration(TaxonomyComparisonTaskRun taskConfiguration) {
+		this.taskConfiguration = taskConfiguration;
+	}
+
+	@Override
+	public boolean hasTaskConfiguration() {
+		return taskConfiguration != null;
 	}
 }

@@ -7,10 +7,10 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
+import edu.arizona.sirls.etc.site.client.event.MatrixGenerationEvent;
 import edu.arizona.sirls.etc.site.client.event.TaxonomyComparisonEvent;
 import edu.arizona.sirls.etc.site.client.event.TreeGenerationEvent;
 import edu.arizona.sirls.etc.site.client.event.VisualizationEvent;
-import edu.arizona.sirls.etc.site.client.event.matrixGeneration.MatrixGenerationEvent;
 
 public class MainMenuPresenter implements Presenter {
 

@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.GwtEvent;
 
 import edu.arizona.sirls.etc.site.client.HistoryState;
 
-public class LoginEvent extends GwtEvent<LoginEventHandler> implements ETCSiteEvent {
+public class LoginEvent extends GwtEvent<LoginEventHandler> implements IETCSiteEvent {
 
 	public static Type<LoginEventHandler> TYPE = new Type<LoginEventHandler>();
 	private String username;

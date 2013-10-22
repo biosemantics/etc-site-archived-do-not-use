@@ -24,7 +24,7 @@ public class ConnectionPool {
 		return instance;
 	}
 	
-	public ConnectionPool() throws ClassNotFoundException, SQLException, IOException {
+	private ConnectionPool() throws ClassNotFoundException, SQLException, IOException {
 		Class.forName("com.mysql.jdbc.Driver");
 		mySqlDriver = DriverManager.getDriver("jdbc:mysql://localhost:3306/");
 		
@@ -45,6 +45,8 @@ public class ConnectionPool {
 		config.setMinConnectionsPerPartition(10);
 		config.setMaxConnectionsPerPartition(20);
 		config.setPartitionCount(2);
+		config.setPoolName("MyPoolName");
+		config.setDisableJMX(true);
 		connectionPool = new BoneCP(config);
 	}
 	

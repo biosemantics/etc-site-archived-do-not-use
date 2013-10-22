@@ -17,7 +17,7 @@ import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
-import edu.arizona.sirls.etc.site.client.event.matrixGeneration.MatrixGenerationEvent;
+import edu.arizona.sirls.etc.site.client.event.MatrixGenerationEvent;
 import edu.arizona.sirls.etc.site.client.presenter.MessagePresenter;
 import edu.arizona.sirls.etc.site.client.presenter.fileManager.ManagableFileTreePresenter;
 import edu.arizona.sirls.etc.site.client.presenter.fileManager.SelectableFileTreePresenter;
@@ -26,6 +26,7 @@ import edu.arizona.sirls.etc.site.client.view.fileManager.ManagableFileTreeView;
 import edu.arizona.sirls.etc.site.client.view.fileManager.SelectableFileTreeView;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 
@@ -111,13 +112,13 @@ public class InputMatrixGenerationPresenter /*implements IFileSelectClickHandler
 						display.getNameTextBox().getText(), 
 						taxonDescriptionFile.toString(), 
 						display.getGlossaryListBox().getItemText(display.getGlossaryListBox().getSelectedIndex()),
-						new AsyncCallback<MatrixGenerationConfiguration>() {
+						new AsyncCallback<MatrixGenerationTaskRun>() {
 							@Override
 							public void onFailure(Throwable caught) {
 								caught.printStackTrace();
 							}
 							@Override
-							public void onSuccess(MatrixGenerationConfiguration result) {
+							public void onSuccess(MatrixGenerationTaskRun result) {
 								eventBus.fireEvent(new MatrixGenerationEvent(result));
 								//ConfigurationManager.getInstance().setMatrixGenerationConfiguration(result);
 							}
