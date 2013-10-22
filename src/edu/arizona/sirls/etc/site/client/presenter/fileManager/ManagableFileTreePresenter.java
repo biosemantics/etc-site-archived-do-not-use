@@ -11,6 +11,7 @@ import edu.arizona.sirls.etc.site.client.presenter.Presenter;
 import edu.arizona.sirls.etc.site.client.view.LabelTextFieldView;
 import edu.arizona.sirls.etc.site.client.view.MessageView;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.MessageResult;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 
 import gwtupload.client.BaseUploadStatus;
@@ -156,13 +157,13 @@ public class ManagableFileTreePresenter implements Presenter {
 		public void onClick(ClickEvent event) {
 			String target = fileSelectionHandler.getTarget();
 			if(target != null && !target.isEmpty()) {
-				fileService.deleteFile(Authentication.getInstance().getAuthenticationToken(), target, new AsyncCallback<Boolean>(){
+				fileService.deleteFile(Authentication.getInstance().getAuthenticationToken(), target, new AsyncCallback<MessageResult>(){
 					@Override
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
 					}
 					@Override
-					public void onSuccess(Boolean result) {
+					public void onSuccess(MessageResult result) {
 						fileSelectionHandler.clear();
 						fileTreePresenter.refresh();
 					}
@@ -215,9 +216,9 @@ public class ManagableFileTreePresenter implements Presenter {
 				pathParts[pathParts.length-1] = newFileName;
 				final String newTarget = getTargetFromParts(pathParts);
 				fileService.moveFile(Authentication.getInstance().getAuthenticationToken(), target, newTarget, 
-						new AsyncCallback<Boolean>() {
-					public void onSuccess(Boolean result) {
-						if(result) {
+						new AsyncCallback<MessageResult>() {
+					public void onSuccess(MessageResult result) {
+						if(result.isSucceeded()) {
 							fileSelectionHandler.setTarget(newTarget);
 							fileTreePresenter.refresh();
 						} else {
@@ -276,9 +277,9 @@ public class ManagableFileTreePresenter implements Presenter {
 					if(!result)
 						newTarget = target.substring(0, target.lastIndexOf("//"));
 					fileService.createDirectory(Authentication.getInstance().getAuthenticationToken(), newTarget, directoryName, 
-							new AsyncCallback<Boolean>() {
-						public void onSuccess(Boolean result) {
-							if (result) {
+							new AsyncCallback<MessageResult>() {
+						public void onSuccess(MessageResult result) {
+							if (result.isSucceeded()) {
 								fileTreePresenter.refresh();
 							} else {
 								messagePresenter.setMessage("Could not create directory.");

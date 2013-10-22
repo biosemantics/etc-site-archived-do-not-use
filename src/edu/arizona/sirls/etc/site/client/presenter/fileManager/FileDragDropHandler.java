@@ -17,6 +17,7 @@ import edu.arizona.sirls.etc.site.client.presenter.MessagePresenter;
 import edu.arizona.sirls.etc.site.client.view.MessageView;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.MessageResult;
 
 public class FileDragDropHandler implements DragStartHandler, DropHandler, DragOverHandler {
 
@@ -97,9 +98,9 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 	
 	protected void moveFile(String sourcePath, String targetPath) {
 		fileService.moveFile(Authentication.getInstance().getAuthenticationToken(), sourcePath, targetPath, 
-				new AsyncCallback<Boolean>() {
-			public void onSuccess(Boolean result) {
-				if(result) {
+				new AsyncCallback<MessageResult>() {
+			public void onSuccess(MessageResult result) {
+				if(result.isSucceeded()) {
 					notifyListeners();
 				}	
 			}
