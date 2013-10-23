@@ -188,12 +188,14 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 					     	public void run() {
 					     		try {
 					     			activeLearnFutures.remove(matrixGenerationConfiguration.getConfiguration().getId());
-					     			matrixGenerationConfiguration.setOtoId(futureResult.get().getOtoId());
-									MatrixGenerationConfigurationDAO.getInstance().updateMatrixGenerationConfiguration(matrixGenerationConfiguration);
-									TaskStage newTaskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.REVIEW_TERMS);
-									task.setTaskStage(newTaskStage);
-									task.setResumable(true);
-									TaskDAO.getInstance().updateTask(task);
+					     			if(!futureResult.isCancelled()) {
+						     			matrixGenerationConfiguration.setOtoId(futureResult.get().getOtoId());
+										MatrixGenerationConfigurationDAO.getInstance().updateMatrixGenerationConfiguration(matrixGenerationConfiguration);
+										TaskStage newTaskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.REVIEW_TERMS);
+										task.setTaskStage(newTaskStage);
+										task.setResumable(true);
+										TaskDAO.getInstance().updateTask(task);
+					     			}
 								} catch (Exception e) {
 									e.printStackTrace();
 								}
@@ -270,10 +272,12 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 						public void run() {
 							try {
 								activeParseFutures.remove(matrixGenerationConfiguration.getConfiguration().getId());
-								task.setResumable(true);
-								TaskStage newTaskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.OUTPUT);
-								task.setTaskStage(newTaskStage);
-								TaskDAO.getInstance().updateTask(task);
+								if(!futureResult.isCancelled()) {
+									task.setResumable(true);
+									TaskStage newTaskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.OUTPUT);
+									task.setTaskStage(newTaskStage);
+									TaskDAO.getInstance().updateTask(task);
+								}
 							} catch (Exception e) {
 								e.printStackTrace();
 							}

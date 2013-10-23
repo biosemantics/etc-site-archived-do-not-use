@@ -1,6 +1,8 @@
 package edu.arizona.sirls.etc.site.server.rpc;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 
 import edu.arizona.sirls.etc.site.server.Configuration;
 
@@ -12,13 +14,15 @@ public class Zipper {
 		String targetFile = Configuration.zipFileBase + "//" + username + "//" + target + ".tar.gz";
 		String commandTar = "7za.exe a -ttar " + tempFile + " " + sourceDirectory;
 		String commandGz = "7za.exe a -tgzip " + targetFile + " " + tempFile;
-		runCommand(commandTar);
-		runCommand(commandGz);
+		Process process = runCommand(commandTar);
+		process.waitFor();
+		process = runCommand(commandGz);
+		process.waitFor();
 		File file = new File(tempFile);
 		file.delete();
 	}
 	
-	private void runCommand(String command) throws Exception {
+	private Process runCommand(String command) throws Exception {
 		Process p = Runtime.getRuntime().exec(command);
 		/*BufferedReader stdInput = new BufferedReader(new InputStreamReader(p
 				.getInputStream()));
@@ -38,6 +42,7 @@ public class Zipper {
 		while ((e = errInput.readLine()) != null) {
 			System.out.println(s);
 		}*/
+		return p;
 	}
 
 }

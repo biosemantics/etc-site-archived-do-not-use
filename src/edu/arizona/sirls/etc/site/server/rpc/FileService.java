@@ -297,6 +297,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	public List<Task> getUsingTasks(AuthenticationToken authenticationToken, String target) {
 		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
 			try {
+				
 				return FilesInUseDAO.getInstance().getUsingTasks(target);
 			} catch(Exception e) {
 				e.printStackTrace();

@@ -26,11 +26,12 @@ public class FilesInUseDAO {
 		if(!value) {
 			if(resultFileId.next()) {
 				int fileInUseId = resultFileId.getInt(1);
-				Query delteFileInUse = new Query("DELETE FROM filesinuse WHERE id = " + fileInUseId);
-				delteFileInUse.executeAndClose();
+				query.close();				
 				Query deleteTasksFiles = new Query("DELETE FROM tasksfiles WHERE fileinuse = " + fileInUseId);
 				deleteTasksFiles.executeAndClose();
-				
+				Query delteFileInUse = new Query("DELETE FROM filesinuse WHERE id = " + fileInUseId);
+				delteFileInUse.executeAndClose();
+
 			}
 		} else {
 			int fileInUseId = -1;
@@ -61,9 +62,9 @@ public class FilesInUseDAO {
 
 	public List<Task> getUsingTasks(String input) throws ClassNotFoundException, SQLException, IOException {
 		List<Task> result = new LinkedList<Task>();
-		Query query = new Query("SELECT id FROM filesinuse WHERE file = '" + input + "'");
+		Query query = new Query("SELECT id FROM filesinuse WHERE INSTR('" + input + "', file) = 1");
 		ResultSet resultFileId = query.execute();
-		if(resultFileId.next()) {
+		while(resultFileId.next()) {
 			int fileInUseId = resultFileId.getInt(1);
 			Query tasksFilesQuery = new Query("SELECT task FROM tasksfiles WHERE fileinuse = " + fileInUseId);
 			ResultSet tasksResult = tasksFilesQuery.execute();

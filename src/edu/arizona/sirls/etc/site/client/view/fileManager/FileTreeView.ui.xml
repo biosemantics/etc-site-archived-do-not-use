@@ -4,8 +4,8 @@
 	xmlns:my='urn:import:edu.arizona.sirls.etc.site.client.view.fileManager'>
 	<ui:style>      
 		.fileTree {
-			height: 400px;
-			max-height: 400px;
+			height: 300px;
+			max-height: 300px;
 			max-width: 900px;
 			min-width: 900px;
 			width:900px;
