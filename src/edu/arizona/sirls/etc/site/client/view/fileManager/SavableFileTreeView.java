@@ -16,10 +16,10 @@ public class SavableFileTreeView extends Composite implements SavableFileTreePre
 	private Button closeButton;
 	
 	public SavableFileTreeView() {
-		fileTreeView = new FileTreeView();
+		fileTreeView = new FileTreeViewImpl();
 		closeButton = new Button("Save");
 		VerticalPanel verticalPanel = new VerticalPanel();
-		ScrollPanel scrollPanel = new ScrollPanel(fileTreeView);
+		ScrollPanel scrollPanel = new ScrollPanel(fileTreeView.asWidget());
 		verticalPanel.add(scrollPanel);
 		nameTextBox = new TextBox();
 		verticalPanel.add(nameTextBox);

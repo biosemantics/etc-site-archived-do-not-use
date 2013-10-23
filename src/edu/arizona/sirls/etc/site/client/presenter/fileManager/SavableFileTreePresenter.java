@@ -10,7 +10,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.presenter.MessagePresenter;
 import edu.arizona.sirls.etc.site.client.presenter.Presenter;
-import edu.arizona.sirls.etc.site.client.presenter.fileManager.FileTreePresenter.Display;
 import edu.arizona.sirls.etc.site.client.view.MessageView;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileTreeView;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
@@ -21,14 +20,14 @@ public class SavableFileTreePresenter implements Presenter, ClickHandler {
 	public interface Display {
 		Widget asWidget();
 		Button getCloseButton();
-		FileTreePresenter.Display getFileTreeView();
+		FileTreeView getFileTreeView();
 		TextBox getNameTextBox();
 	}
 
 	private HandlerManager eventBus;
 	private Display display;
 	private FileTreePresenter fileTreePresenter;
-	private FileTreePresenter.Display fileTreeView;
+	private FileTreeView fileTreeView;
 	private FileSelectionHandler fileSelectionHandler;
 	private ClickHandler saveClickHandler;
 	private MessageView messageView = new MessageView();

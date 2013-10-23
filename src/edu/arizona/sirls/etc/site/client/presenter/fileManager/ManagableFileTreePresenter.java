@@ -12,6 +12,7 @@ import edu.arizona.sirls.etc.site.client.presenter.Presenter;
 import edu.arizona.sirls.etc.site.client.view.LabelTextFieldCancelConfirmView;
 import edu.arizona.sirls.etc.site.client.view.LabelTextFieldConfirmView;
 import edu.arizona.sirls.etc.site.client.view.MessageView;
+import edu.arizona.sirls.etc.site.client.view.fileManager.FileTreeView;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.MessageResult;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
@@ -43,7 +44,7 @@ public class ManagableFileTreePresenter implements Presenter {
 		Button getCreateDirectoryButton();
 		Button getRenameButton();
 		Button getDeleteButton();
-		FileTreePresenter.Display getFileTreeView();
+		FileTreeView getFileTreeView();
 		void setStatusWidget(Widget statusWidget);
 		Button getAddButton();
 		Button getDownloadButton();
@@ -52,7 +53,7 @@ public class ManagableFileTreePresenter implements Presenter {
 	private Display display;
 	private HandlerManager eventBus;
 	private IFileServiceAsync fileService;
-	private FileTreePresenter.Display fileTreeView;
+	private FileTreeView fileTreeView;
 	private FileTreePresenter fileTreePresenter;
 	private FileSelectionHandler fileSelectionHandler;
 	private String defaultServletPath;

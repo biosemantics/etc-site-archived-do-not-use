@@ -1,21 +1,13 @@
 package edu.arizona.sirls.etc.site.client.view.fileManager;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.Widget;
 
-import edu.arizona.sirls.etc.site.client.presenter.fileManager.FileTreePresenter;
-
-public class FileTreeView extends Composite implements FileTreePresenter.Display {
-
-	private final FileImageLabelTree tree = new FileImageLabelTree();
+public interface FileTreeView {
 	
-	public FileTreeView() { 
-		initWidget(tree);
+	public interface Presenter {
 	}
-
-	@Override
-	public FileImageLabelTree getTree() {
-		return tree;
-	}
-	
+	  
+	void setPresenter(Presenter presenter);
+	Widget asWidget();
+	FileImageLabelTree getTree();
 }

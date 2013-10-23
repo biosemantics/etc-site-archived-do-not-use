@@ -37,7 +37,7 @@ public class ManagableFileTreeView extends Composite implements ManagableFileTre
 	private Button downloadButton;
 
 	public ManagableFileTreeView() {
-		this.fileTreeView = new FileTreeView();
+		this.fileTreeView = new FileTreeViewImpl();
 		
 		VerticalPanel verticalPanel = new VerticalPanel();
 		
@@ -70,7 +70,7 @@ public class ManagableFileTreeView extends Composite implements ManagableFileTre
 		createDirectoryButton.addStyleName("managableFileManagerButton");
 		
 		verticalPanel.add(new Label("Your Files:"));
-		verticalPanel.add(new ScrollPanel(fileTreeView));
+		verticalPanel.add(fileTreeView.asWidget());
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
 		
 		horizontalPanel.add(createDirectoryButton);

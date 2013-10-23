@@ -7,7 +7,6 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.arizona.sirls.etc.site.client.presenter.fileManager.SelectableFileTreePresenter;
-import edu.arizona.sirls.etc.site.client.presenter.fileManager.FileTreePresenter.Display;
 
 public class SelectableFileTreeView extends Composite implements SelectableFileTreePresenter.Display {
 
@@ -16,11 +15,11 @@ public class SelectableFileTreeView extends Composite implements SelectableFileT
 	private Button selectButton;
 
 	public SelectableFileTreeView() {
-		fileTreeView = new FileTreeView();
+		fileTreeView = new FileTreeViewImpl();
 		closeButton = new Button("Close");
 		selectButton = new Button("Select");
 		VerticalPanel verticalPanel = new VerticalPanel();
-		ScrollPanel scrollPanel = new ScrollPanel(fileTreeView);
+		ScrollPanel scrollPanel = new ScrollPanel(fileTreeView.asWidget());
 		verticalPanel.add(scrollPanel);
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
 		horizontalPanel.add(selectButton);
@@ -41,7 +40,7 @@ public class SelectableFileTreeView extends Composite implements SelectableFileT
 	}
 
 	@Override
-	public Display getFileTreeView() {
+	public FileTreeView getFileTreeView() {
 		return this.fileTreeView;
 	}
 	

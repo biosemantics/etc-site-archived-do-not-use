@@ -6,28 +6,19 @@ import java.util.Map;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
-import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.presenter.Presenter;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
-import edu.arizona.sirls.etc.site.client.view.fileManager.DirectoryTreeItem;
-import edu.arizona.sirls.etc.site.client.view.fileManager.FileImageLabelTree;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileImageLabelTreeItem;
+import edu.arizona.sirls.etc.site.client.view.fileManager.FileTreeView;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 
-public class FileTreePresenter implements Presenter, IFileMoveListener {
-
-	public interface Display {
-		FileImageLabelTree getTree();
-		Widget asWidget();
-	}
+public class FileTreePresenter implements Presenter, FileTreeView.Presenter, IFileMoveListener {
 
 	private IFileServiceAsync fileService;
-	private Display display;
+	private FileTreeView view;
 	private HandlerManager eventBus;
 	private boolean enableDragAndDrop;
 	private FileFilter fileFilter;
@@ -36,10 +27,11 @@ public class FileTreePresenter implements Presenter, IFileMoveListener {
 	private FileDragDropHandler fileDragDropHandler = new FileDragDropHandler();
 	private LoadingPopup loadingPopup = new LoadingPopup();
 	
-	public FileTreePresenter(HandlerManager eventBus, Display display,
+	public FileTreePresenter(HandlerManager eventBus, FileTreeView view,
 			IFileServiceAsync fileService, boolean enableDragAndDrop, FileFilter fileFilter) {
 		this.eventBus = eventBus;
-		this.display = display;
+		this.view = view;
+		view.setPresenter(this);
 		this.fileService = fileService;
 		this.enableDragAndDrop = enableDragAndDrop;
 		this.fileFilter = fileFilter;
@@ -47,14 +39,14 @@ public class FileTreePresenter implements Presenter, IFileMoveListener {
 	}
 	
 	private void bind() {
-		display.getTree().addSelectionHandler(fileSelectionHandler);	
+		view.getTree().addSelectionHandler(fileSelectionHandler);	
 		refresh();
 	}
 
 	@Override
 	public void go(HasWidgets container) {
 		container.clear();
-		container.add(display.asWidget());
+		container.add(view.asWidget());
 	}
 	
 	public void refresh() {
@@ -70,23 +62,23 @@ public class FileTreePresenter implements Presenter, IFileMoveListener {
 					String selectionTarget = fileSelectionHandler.getTarget();
 					
 					//remove previous data
-					display.getTree().clear();
+					view.getTree().clear();
 					
 					//decorate
 					FileTreeDecorator fileTreeDecorator = new FileTreeDecorator();
 					fileDragDropHandler.addListener(FileTreePresenter.this);
 					
 					if(enableDragAndDrop) 
-						fileTreeDecorator.decorate(display.getTree(), result, fileDragDropHandler, selectionTarget, retainedStates);
+						fileTreeDecorator.decorate(view.getTree(), result, fileDragDropHandler, selectionTarget, retainedStates);
 					else
-						fileTreeDecorator.decorate(display.getTree(), result, null, selectionTarget, retainedStates);
+						fileTreeDecorator.decorate(view.getTree(), result, null, selectionTarget, retainedStates);
 					
 					loadingPopup.stop();
 				}
 				private Map<String, Boolean> getRetainedStates() {
 					Map<String, Boolean> retainedStates = new HashMap<String, Boolean>();
-					for(int i=0; i<display.getTree().getItemCount(); i++) {
-						FileImageLabelTreeItem fileImageLabelTreeItem = display.getTree().getItem(i);
+					for(int i=0; i<view.getTree().getItemCount(); i++) {
+						FileImageLabelTreeItem fileImageLabelTreeItem = view.getTree().getItem(i);
 						fillChildrenStates(fileImageLabelTreeItem, retainedStates);
 					}
 					return retainedStates;
