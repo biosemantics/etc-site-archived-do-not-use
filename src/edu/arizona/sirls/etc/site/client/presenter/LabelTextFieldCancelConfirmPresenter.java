@@ -3,12 +3,13 @@ package edu.arizona.sirls.etc.site.client.presenter;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ICancelConfirmHandler;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class LabelTextFieldPresenter {
+public class LabelTextFieldCancelConfirmPresenter {
 
 	public interface Display {
 		Label getLabel();
@@ -24,8 +25,8 @@ public class LabelTextFieldPresenter {
 	private String defaultTextBoxText;
 	private String labelText;
 	
-	public LabelTextFieldPresenter(Display display, String title, 
-			String labelText, String defaultTextBoxText, ILabelTextFieldDialogBoxHandler handler) {
+	public LabelTextFieldCancelConfirmPresenter(final Display display, String title, 
+			String labelText, String defaultTextBoxText, final ILabelTextFieldDialogBoxHandler handler) {
 		this.display = display;
 		this.dialogBox = new TitleCloseDialogBox(false, title);
 		this.labelText = labelText;
@@ -51,7 +52,20 @@ public class LabelTextFieldPresenter {
 				dialogBox.hide();
 				handler.confirmed(display.getTextBox().getText());
 			}
-		}); 
+		});
+		
+		dialogBox.setCancelConfirmHandler(new ICancelConfirmHandler() {
+			@Override
+			public void cancel() {
+				dialogBox.hide();
+				handler.canceled();
+			}
+			@Override
+			public void confirm() {
+				dialogBox.hide();
+				handler.confirmed(display.getTextBox().getText());
+			}
+		});
 	}
 
 	public void go() { 

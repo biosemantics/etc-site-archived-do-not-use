@@ -44,7 +44,7 @@ public class Authentication {
 	    Cookies.setCookie(CookieVariable.username, username, expires, null, "/", false);
 	}
 	
-	public void destory() {
+	public void destroy() {
 		Cookies.removeCookie(CookieVariable.sessionID, "/");
 		Cookies.removeCookie(CookieVariable.username, "/");
 	}

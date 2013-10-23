@@ -4,11 +4,13 @@ import java.util.List;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.presenter.ILabelTextFieldDialogBoxHandler;
-import edu.arizona.sirls.etc.site.client.presenter.LabelTextFieldPresenter;
+import edu.arizona.sirls.etc.site.client.presenter.LabelTextFieldCancelConfirmPresenter;
+import edu.arizona.sirls.etc.site.client.presenter.LabelTextFieldConfirmPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.MessagePresenter;
 import edu.arizona.sirls.etc.site.client.presenter.MyUploaderConstants;
 import edu.arizona.sirls.etc.site.client.presenter.Presenter;
-import edu.arizona.sirls.etc.site.client.view.LabelTextFieldView;
+import edu.arizona.sirls.etc.site.client.view.LabelTextFieldCancelConfirmView;
+import edu.arizona.sirls.etc.site.client.view.LabelTextFieldConfirmView;
 import edu.arizona.sirls.etc.site.client.view.MessageView;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.MessageResult;
@@ -183,8 +185,8 @@ public class ManagableFileTreePresenter implements Presenter {
 			//don't allow rename of root node
 			if(target != null && !target.isEmpty()) {
 				String pathParts[] = target.split("//");
-				LabelTextFieldView renameView = new LabelTextFieldView();
-				LabelTextFieldPresenter renameDialogBox = new LabelTextFieldPresenter(
+				LabelTextFieldCancelConfirmView renameView = new LabelTextFieldCancelConfirmView();
+				LabelTextFieldCancelConfirmPresenter renameDialogBox = new LabelTextFieldCancelConfirmPresenter(
 						renameView, "Rename", "New name: ", pathParts[pathParts.length-1], this);
 				renameDialogBox.go();
 			} else {
@@ -241,8 +243,8 @@ public class ManagableFileTreePresenter implements Presenter {
 			if(target != null) {
 				int level = getLevel(target);
 				if(level < 2) {
-					LabelTextFieldView renameView = new LabelTextFieldView();
-					LabelTextFieldPresenter renamePresenter = new LabelTextFieldPresenter(
+					LabelTextFieldConfirmView renameView = new LabelTextFieldConfirmView();
+					LabelTextFieldConfirmPresenter renamePresenter = new LabelTextFieldConfirmPresenter(
 							renameView, "Create folder", "Folder name:", "", this);
 					renamePresenter.go();
 				} else {

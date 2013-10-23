@@ -21,7 +21,7 @@ public class FilesInUseDAO {
 	}
 
 	public void setInUse(boolean value, String input, Task task) throws SQLException, ClassNotFoundException, IOException {
-		Query query = new Query("SELECT id FROM filesinuse WHERE file = " + input);
+		Query query = new Query("SELECT id FROM filesinuse WHERE file = '" + input + "'");
 		ResultSet resultFileId = query.execute();
 		if(!value) {
 			if(resultFileId.next()) {
@@ -61,7 +61,7 @@ public class FilesInUseDAO {
 
 	public List<Task> getUsingTasks(String input) throws ClassNotFoundException, SQLException, IOException {
 		List<Task> result = new LinkedList<Task>();
-		Query query = new Query("SELECT id FROM filesinuse WHERE file = " + input);
+		Query query = new Query("SELECT id FROM filesinuse WHERE file = '" + input + "'");
 		ResultSet resultFileId = query.execute();
 		if(resultFileId.next()) {
 			int fileInUseId = resultFileId.getInt(1);

@@ -74,6 +74,7 @@ import edu.arizona.sirls.etc.site.client.view.LoginView;
 import edu.arizona.sirls.etc.site.client.view.MainMenuView;
 import edu.arizona.sirls.etc.site.client.view.MessageResumeOrStartView;
 import edu.arizona.sirls.etc.site.client.view.SettingsView;
+import edu.arizona.sirls.etc.site.client.view.SettingsViewImpl;
 import edu.arizona.sirls.etc.site.client.view.StartMenuView;
 import edu.arizona.sirls.etc.site.client.view.StartView;
 import edu.arizona.sirls.etc.site.client.view.TaskManagerView;
@@ -163,9 +164,10 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	protected XMLEditorPresenter xmlEditorPresenter;
 	protected ResultPresenter resultPresenter;
 	protected SearchPresenter searchPresenter;
+	private Timer resumableTasksTimer;
 	
 
-	public MySitePresenter(HandlerManager eventBus) {
+	public MySitePresenter(final HandlerManager eventBus) {
 		this.eventBus = eventBus;
 		bind();
 	}
@@ -316,15 +318,15 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	}
 
 	private void logout() {
-		Authentication.getInstance().destory();
-		this.presentHeader();
+		Authentication.getInstance().destroy();
+		this.presentHeader(false);
 		eventBus.fireEvent(new HomeEvent());
 	}
 	
 	protected void login(String username, String sessionID) {
 		Authentication.getInstance().setUsername(username);
 		Authentication.getInstance().setSessionID(sessionID);
-		this.presentHeader();
+		this.presentHeader(true);
 	}
 	
 	@Override
@@ -340,32 +342,52 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    else {
 	      History.fireCurrentHistoryState();
 	    }
-	    
-		Timer timer = new Timer() {
-	        public void run() {
-	        	taskService.getResumableTasks(Authentication.getInstance().getAuthenticationToken(), new AsyncCallback<Map<Integer, Task>>() {
-	    			@Override
-	    			public void onFailure(Throwable caught) {
-	    				caught.printStackTrace();
-	    			}
-	    			@Override
-	    			public void onSuccess(Map<Integer, Task> result) {
-	    				eventBus.fireEvent(new ResumableTasksEvent(result));
-	    			} 
-	    		});
-	        }
-		};
-		
-		timer.scheduleRepeating(5000);
 	}
 
 	@Override
 	public void onValueChange(ValueChangeEvent<String> event) {
-		HistoryState historyState = HistoryState.valueOf(event.getValue());
-		presentHeader();
-		presentMenu(historyState);
-		presentContent(historyState);
-		presentFooter();
+		final HistoryState historyState = HistoryState.valueOf(event.getValue());
+		
+		this.authenticationService.isValidSession(Authentication.getInstance().getAuthenticationToken(), 
+				new AsyncCallback<AuthenticationResult>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						caught.printStackTrace();
+					}
+					@Override
+					public void onSuccess(AuthenticationResult result) {
+						manageResumableTasksTimer(result.getResult());
+						presentHeader(result.getResult());
+						presentMenu(historyState);
+						presentContent(historyState);
+						presentFooter();
+					}
+		});
+	}
+	
+	private void manageResumableTasksTimer(boolean authenticated) {
+		if(authenticated) {
+			if(this.resumableTasksTimer == null) {
+				this.resumableTasksTimer = new Timer() {
+			        public void run() {
+			        	taskService.getResumableTasks(Authentication.getInstance().getAuthenticationToken(), new AsyncCallback<Map<Integer, Task>>() {
+			    			@Override
+			    			public void onFailure(Throwable caught) {
+			    				caught.printStackTrace();
+			    			}
+			    			@Override
+			    			public void onSuccess(Map<Integer, Task> result) {
+			    				eventBus.fireEvent(new ResumableTasksEvent(result));
+			    			} 
+			    		});
+			        }
+				};
+				this.resumableTasksTimer.scheduleRepeating(5000);
+			}
+		} else {
+			if(this.resumableTasksTimer != null)
+				this.resumableTasksTimer.cancel();
+		}
 	}
 	
 	private void presentLogin(final IETCSiteEvent event) {
@@ -512,7 +534,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 					}
 					public void onSuccess() {
 						if (settingsPresenter == null) {
-							settingsPresenter = new SettingsPresenter(eventBus, new SettingsView());
+							settingsPresenter = new SettingsPresenter(eventBus, new SettingsViewImpl());
 						}
 						settingsPresenter.go(content);
 					}
@@ -662,27 +684,17 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 		}
 	}
 
-	private void presentHeader() {
-		this.authenticationService.isValidSession(Authentication.getInstance().getAuthenticationToken(), 
-				new AsyncCallback<AuthenticationResult>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						caught.printStackTrace();
-					}
-					@Override
-					public void onSuccess(AuthenticationResult result) {
-						if(result.getResult()) {
-							if(loggedInHeaderPresenter == null)
-								loggedInHeaderPresenter = new LoggedInHeaderPresenter(eventBus, new LoggedInHeaderView(), taskService, taskManager);
-							loggedInHeaderPresenter.go(header);
-						} else {
-							if(loggedOutHeaderPresenter == null)
-								loggedOutHeaderPresenter = new LoggedOutHeaderPresenter(eventBus, new LoggedOutHeaderView(), 
-										authenticationService);
-							loggedOutHeaderPresenter.go(header);
-						}
-					}
-		});
+	private void presentHeader(boolean authenticated) {
+		if(authenticated) {
+			if(loggedInHeaderPresenter == null)
+				loggedInHeaderPresenter = new LoggedInHeaderPresenter(eventBus, new LoggedInHeaderView(), taskService, taskManager);
+			loggedInHeaderPresenter.go(header);
+		} else {
+			if(loggedOutHeaderPresenter == null)
+				loggedOutHeaderPresenter = new LoggedOutHeaderPresenter(eventBus, new LoggedOutHeaderView(), 
+						authenticationService);
+			loggedOutHeaderPresenter.go(header);
+		}
 	}
 
 	private void presentFooter() {

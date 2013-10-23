@@ -7,16 +7,16 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-import edu.arizona.sirls.etc.site.client.presenter.LabelTextFieldPresenter;
+import edu.arizona.sirls.etc.site.client.presenter.LabelTextFieldCancelConfirmPresenter;
 
-public class LabelTextFieldView extends Composite implements LabelTextFieldPresenter.Display {
+public class LabelTextFieldCancelConfirmView extends Composite implements LabelTextFieldCancelConfirmPresenter.Display {
 
 	private Label label = new Label();
 	private TextBox textBox = new TextBox();
 	private Button cancelButton = new Button("Cancel");
 	private Button confirmButton = new Button("Confirm");
 	
-	public LabelTextFieldView() { 
+	public LabelTextFieldCancelConfirmView() { 
 		VerticalPanel verticalPanel = new VerticalPanel();
 		verticalPanel.add(label);
 		verticalPanel.add(textBox);

@@ -9,43 +9,36 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
-public class SettingsPresenter {
+import edu.arizona.sirls.etc.site.client.view.SettingsView;
 
-	public interface Display {
-		Button getSubmitButton();
-		Widget asWidget();
-		HasText getOldPasswordTextBox();
-		HasText getNewPasswordTextBox();
-		HasText getBioportalUserIdTextBox();
-		HasText getBioportalAPIKeyTextBox();
-	}
+public class SettingsPresenter implements Presenter, SettingsView.Presenter {
 
-	private Display display;
 	private HandlerManager eventBus;
+	private SettingsView view;
 
-	public SettingsPresenter(HandlerManager eventBus, Display display) {
+	public SettingsPresenter(HandlerManager eventBus, SettingsView view) {
 		this.eventBus = eventBus;
-		this.display = display;
-		bind();
+		this.view = view;
+		view.setPresenter(this);
+		
+		
 	}
 
-	private void bind() {
-		display.getSubmitButton().addClickHandler(
-				new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent event) {
-						//service do change; return if worked or not
-						display.getOldPasswordTextBox().getText();
-						display.getNewPasswordTextBox().getText();
-						display.getBioportalUserIdTextBox().getText();
-						display.getBioportalAPIKeyTextBox().getText();
-					}
-				});
+	@Override
+	public void onSubmit() {
+		//service do change; return if worked or not
+		view.getOldPassword();
+		view.getNewPassword();
+		view.getConfirmedNewPassword();
+		view.getBioportalUserId();
+		view.getBioportalAPIKey();
 	}
 
-	public void go(HasWidgets content) {
-		content.clear();
-		content.add(display.asWidget());
+	@Override
+	public void go(HasWidgets container) {
+		container.clear();
+		container.add(view.asWidget());
 	}
+
 
 }

@@ -19,6 +19,7 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.HasAllMouseHandlers;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
@@ -190,6 +191,8 @@ public class TitleCloseDialogBox extends DecoratedPopupPanel implements HasHTML,
   private int clientTop;
 
   private HandlerRegistration resizeHandlerRegistration;
+
+private ICancelConfirmHandler cancelConfirmHandler;
 
   /**
    * Creates an empty dialog box. It should not be shown until its child widget
@@ -520,15 +523,41 @@ public class TitleCloseDialogBox extends DecoratedPopupPanel implements HasHTML,
     // is dragged.
     NativeEvent nativeEvent = event.getNativeEvent();
 
-    if (!event.isCanceled() && (event.getTypeInt() == Event.ONMOUSEDOWN)
+    /*if (!event.isCanceled() && (event.getTypeInt() == Event.ONMOUSEDOWN)
         && isCaptionEvent(nativeEvent)) {
       nativeEvent.preventDefault();
+    }*/
+    switch(event.getTypeInt()) {
+	    case Event.ONKEYDOWN: 
+	    	switch(event.getNativeEvent().getKeyCode()) {
+		    	case KeyCodes.KEY_ESCAPE:
+		    		this.hide();
+		    		if(cancelConfirmHandler != null)
+		    			this.cancelConfirmHandler.cancel();
+		    		break;
+		    	case KeyCodes.KEY_ENTER:
+		    		this.hide();
+		    		if(cancelConfirmHandler != null)
+		    			this.cancelConfirmHandler.confirm();
+		    		break;
+	    	}
+	    	break;
+	    case Event.ONMOUSEDOWN: 
+	    	if(!event.isCanceled() && isCaptionEvent(nativeEvent)) {
+	    		nativeEvent.preventDefault();
+	    	}
+	    	break;
     }
 
     super.onPreviewNativeEvent(event);
   }
+  
 
-  private boolean isCaptionEvent(NativeEvent event) {
+  public void setCancelConfirmHandler(ICancelConfirmHandler cancelConfirmHandler) {
+	this.cancelConfirmHandler = cancelConfirmHandler;
+  }
+
+private boolean isCaptionEvent(NativeEvent event) {
     EventTarget target = event.getEventTarget();
     if (Element.is(target)) {
       return getCellElement(0, 1).getParentElement().isOrHasChild(
