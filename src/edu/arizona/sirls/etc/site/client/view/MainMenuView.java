@@ -18,22 +18,22 @@ public class MainMenuView extends Composite implements MainMenuPresenter.Display
 		HTMLPanel htmlPanel = new HTMLPanel(
 				"<div id='menuBackgroundLayer'></div><div id='menuHighlightLayer'></div>" +
 				"<div id='menuLayer'>" +
-				"<div id='menuMatrixGeneration' class='menuAction'>" +
+				"<div id='menuMatrixGeneration' class='menuAction clickable'>" +
 				"<div id='menuMatrixGenerationIcon' class='menuActionIcon'></div>" +
 				"<div id='menuMatrixGenerationText' class='menuActionText'>Matrix Generation</div>" +
 				"<div id='menuMatrixGenerationLink' class='menuAction'></div>" +
 				"</div>" +
-				"<div id='menuTreeGeneration' class='menuAction'>" +
+				"<div id='menuTreeGeneration' class='menuAction clickable'>" +
 				"<div id='menuTreeGenerationIcon' class='menuActionIcon'></div>" +
 				"<div id='menuTreeGenerationText' class='menuActionText'>Tree Generation</div>" +
 				"<div id='menuTreeGenerationLink' class='menuAction'></div>" +
 				"</div>" +
-				"<div id='menuTaxonomyComparison' class='menuAction'>" +
+				"<div id='menuTaxonomyComparison' class='menuAction clickable'>" +
 				"<div id='menuTaxonomyComparisonIcon' class='menuActionIcon'></div>" +
 				"<div id='menuTaxonomyComparisonText' class='menuActionText'>Taxonomy Comparison</div>" +
 				"<div id='menuTaxonomyComparisonLink' class='menuAction'></div>" +
 				"</div>" +
-				"<div id='menuVisualization' class='menuAction'>" +
+				"<div id='menuVisualization' class='menuAction clickable'>" +
 				"<div id='menuVisualizationIcon' class='menuActionIcon'></div>" +
 				"<div id='menuVisualizationText' class='menuActionText'>Visualization</div>" +
 				"<div id='menuVisualizationLink' class='menuAction'></div>" +

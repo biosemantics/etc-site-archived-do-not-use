@@ -86,6 +86,7 @@ public class LearnMatrixGenerationView extends MatrixGenerationView implements L
 		statusPanel.clear();
 		statusImage = new Image("images/play.png");
 		statusImage.addStyleName("infoImage");
+		statusImage.addStyleName("clickable");
 		statusPanel.add(statusImage);
 		taskManagerFlowPanel = new FlowPanel();
 		statusPanel.add(taskManagerFlowPanel);

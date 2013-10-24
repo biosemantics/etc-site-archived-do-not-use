@@ -541,3 +541,7 @@ green 307137
 .gwt-StackLayoutPanelHeader {
 	font-weight: bold;	
 }
+
+.clickable {
+	cursor: pointer;
+}

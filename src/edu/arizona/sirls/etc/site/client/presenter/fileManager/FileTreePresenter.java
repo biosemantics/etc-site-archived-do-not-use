@@ -14,6 +14,7 @@ import edu.arizona.sirls.etc.site.client.view.fileManager.FileImageLabelTreeItem
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileTreeView;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FileInfo;
 
 public class FileTreePresenter implements Presenter, FileTreeView.Presenter, IFileMoveListener {
 
@@ -52,9 +53,9 @@ public class FileTreePresenter implements Presenter, FileTreeView.Presenter, IFi
 	public void refresh() {
 		loadingPopup.start();
 		
-		this.fileService.getUsersFiles(Authentication.getInstance().getAuthenticationToken(), fileFilter, 
-				new AsyncCallback<edu.arizona.sirls.etc.site.shared.rpc.Tree<String>>() {
-				public void onSuccess(edu.arizona.sirls.etc.site.shared.rpc.Tree<String> result) {
+		this.fileService.getUsersFiles(Authentication.getInstance().getAuthenticationToken(), FileFilter.ALL, 
+				new AsyncCallback<edu.arizona.sirls.etc.site.shared.rpc.Tree<FileInfo>>() {
+				public void onSuccess(edu.arizona.sirls.etc.site.shared.rpc.Tree<FileInfo> result) {
 					//retain "open" state of folders
 					Map<String, Boolean> retainedStates = getRetainedStates();
 					
@@ -69,9 +70,9 @@ public class FileTreePresenter implements Presenter, FileTreeView.Presenter, IFi
 					fileDragDropHandler.addListener(FileTreePresenter.this);
 					
 					if(enableDragAndDrop) 
-						fileTreeDecorator.decorate(view.getTree(), result, fileDragDropHandler, selectionTarget, retainedStates);
+						fileTreeDecorator.decorate(view.getTree(), result, fileFilter, fileDragDropHandler, selectionTarget, retainedStates);
 					else
-						fileTreeDecorator.decorate(view.getTree(), result, null, selectionTarget, retainedStates);
+						fileTreeDecorator.decorate(view.getTree(), result, fileFilter, null, selectionTarget, retainedStates);
 					
 					loadingPopup.stop();
 				}

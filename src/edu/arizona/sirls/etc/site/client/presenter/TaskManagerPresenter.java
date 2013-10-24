@@ -117,6 +117,7 @@ public class TaskManagerPresenter {
 				
 		if(task.isResumable()) {
 			Image resumeImage = new Image("images/play.png");
+			resumeImage.addStyleName("clickable");
 			resumeImage.setSize("15px", "15px");
 			resumeImage.addClickHandler(new ClickHandler() {
 				@Override
@@ -184,6 +185,7 @@ public class TaskManagerPresenter {
 			switch(task.getTaskStage().getTaskType().getTaskTypeEnum()) {
 			case MATRIX_GENERATION:
 				Image pickupImage = new Image("images/rewind.png");
+				pickupImage.addStyleName("clickable");
 				pickupImage.setSize("15px", "15px");
 				pickupImage.addClickHandler(new ClickHandler() {
 					@Override
@@ -227,6 +229,7 @@ public class TaskManagerPresenter {
 		}
 		
 		Image cancelImage = new Image("images/revoke.jpg");
+		cancelImage.addStyleName("clickable");
 		cancelImage.setSize("15px", "15px");
 		cancelImage.addClickHandler(new ClickHandler() {
 			@Override

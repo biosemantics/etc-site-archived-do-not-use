@@ -18,11 +18,14 @@ import edu.arizona.sirls.etc.site.shared.rpc.Tree;
 import edu.arizona.sirls.etc.site.shared.rpc.db.FilesInUseDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FileInfo;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FileType;
 
 public class FileService extends RemoteServiceServlet implements IFileService {
 
 	private static final long serialVersionUID = -9193602268703418530L;
 	private IAuthenticationService authenticationService = new AuthenticationService();
+	private IFileFormatService fileFormatService = new FileFormatService();
 	
 	@Override
 	protected void doUnexpectedFailure(Throwable t) {
@@ -36,47 +39,66 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	 * becomes necessary.
 	 */
 	@Override
-	public Tree<String> getUsersFiles(AuthenticationToken authenticationToken, FileFilter fileFilter) {
-		Tree<String> result = new Tree<String>("", true);
+	public Tree<FileInfo> getUsersFiles(AuthenticationToken authenticationToken, FileFilter fileFilter) {
+		//will become part of 'target' and has effect on several things. therefore leave root as "" for now. Also will have to escape \\'s before it is inserted into SQL statements
+		//sql injection..
+		//Tree<FileInfo> result = new Tree<FileInfo>(new FileInfo(authenticationToken.getUsername() + "'s files", FileType.DIRECTORY));
+		Tree<FileInfo> result = new Tree<FileInfo>(new FileInfo("", FileType.DIRECTORY));
 		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
 			decorateTree(authenticationToken, result, fileFilter, Configuration.fileBase + "//" + authenticationToken.getUsername());
 		} 
 		return result;
 	}
 	
-	private void decorateTree(AuthenticationToken authenticationToken, Tree<String> fileTree, FileFilter fileFilter, String filePath) {
+	private void decorateTree(AuthenticationToken authenticationToken, Tree<FileInfo> fileTree, FileFilter fileFilter, String filePath) {
 		File file = new File(filePath);
 		for(File child : file.listFiles()) {
 			String name = child.getName();
-			if(child.isFile() && !filter(authenticationToken, fileFilter, child)) {
-				fileTree.addChild(new Tree<String>(name, false));
-			} else if(child.isDirectory()) {
-				Tree<String> childTree = new Tree<String>(name, true);
-				decorateTree(authenticationToken, childTree, fileFilter, child.getAbsolutePath());
+			FileType fileType = getFileType(authenticationToken, child);
+			if(!filter(fileType, fileFilter)) {
+				Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(name, fileType));
 				fileTree.addChild(childTree);
+				if(child.isDirectory()) {
+					decorateTree(authenticationToken, childTree, fileFilter, child.getAbsolutePath());
+				}
 			}
 		}
 	}
 
-	private boolean filter(AuthenticationToken authenticationToken, FileFilter fileFilter, File child) {
-		String target = getTarget(authenticationToken, child);
-		IFileFormatService fileFormatService = new FileFormatService();
-		File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
+	private boolean filter(FileType fileType, FileFilter fileFilter) {
 		switch(fileFilter) {
 		case TAXON_DESCRIPTION:
-			return !fileFormatService.isValidTaxonDescription(authenticationToken, target); 
+			return !fileType.equals(FileType.TAXON_DESCRIPTION);
 		case GLOSSARY:
-			return !fileFormatService.isValidGlossary(authenticationToken, target); 
+			return !fileType.equals(FileType.GLOSSARY);
 		case EULER:
-			return !fileFormatService.isValidEuler(authenticationToken, target); 
+			return !fileType.equals(FileType.EULER);
 		case ALL:
 			return false;
 		case FILE:
-			return !file.isFile();
+			return fileType.equals(FileType.DIRECTORY);
 		case DIRECTORY:
-			return !file.isDirectory();
+			return !fileType.equals(FileType.DIRECTORY);
 		}
 		return true;
+	}
+
+	private FileType getFileType(AuthenticationToken authenticationToken, File child) {
+		String target = getTarget(authenticationToken, child);
+		if(child.isFile()) {
+			if(fileFormatService.isValidEuler(authenticationToken, target))
+				return FileType.EULER;
+			if(fileFormatService.isValidGlossary(authenticationToken, target))
+				return FileType.GLOSSARY;
+			if(fileFormatService.isValidMarkedupTaxonDescription(authenticationToken, target))
+				return FileType.GLOSSARY;
+			if(fileFormatService.isValidTaxonDescription(authenticationToken, target))
+				return FileType.TAXON_DESCRIPTION;
+			if(fileFormatService.isValidMarkedupTaxonDescription(authenticationToken, target))
+				return FileType.MARKEDUP_TAXON_DESCRIPTION;
+		} else if (child.isDirectory())
+			return FileType.DIRECTORY;
+		return null;
 	}
 
 	private String getTarget(AuthenticationToken authenticationToke, File child) {

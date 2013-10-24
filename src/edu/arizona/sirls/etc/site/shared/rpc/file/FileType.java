@@ -21,8 +21,10 @@ public enum FileType {
     }*/
 	
 	TAXON_DESCRIPTION,
+	MARKEDUP_TAXON_DESCRIPTION,
 	GLOSSARY,
-	EULER
+	EULER, 
+	DIRECTORY
 
 
 }

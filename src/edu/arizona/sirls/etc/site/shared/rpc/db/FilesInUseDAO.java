@@ -27,11 +27,15 @@ public class FilesInUseDAO {
 			if(resultFileId.next()) {
 				int fileInUseId = resultFileId.getInt(1);
 				query.close();				
-				Query deleteTasksFiles = new Query("DELETE FROM tasksfiles WHERE fileinuse = " + fileInUseId);
+				Query deleteTasksFiles = new Query("DELETE FROM tasksfiles WHERE fileinuse = " + fileInUseId + " AND task = " + task.getId());
 				deleteTasksFiles.executeAndClose();
-				Query delteFileInUse = new Query("DELETE FROM filesinuse WHERE id = " + fileInUseId);
-				delteFileInUse.executeAndClose();
-
+				
+				Query checkIfEmtpyTaskFiles = new Query("SELECT * FROM tasksfiles WHERE fileinuse = " + fileInUseId);
+				ResultSet resultSetCheckEmpty = checkIfEmtpyTaskFiles.execute();
+				if(!resultSetCheckEmpty.next()) {
+					Query delteFileInUse = new Query("DELETE FROM filesinuse WHERE id = " + fileInUseId);
+					delteFileInUse.executeAndClose();
+				}
 			}
 		} else {
 			int fileInUseId = -1;
@@ -62,7 +66,9 @@ public class FilesInUseDAO {
 
 	public List<Task> getUsingTasks(String input) throws ClassNotFoundException, SQLException, IOException {
 		List<Task> result = new LinkedList<Task>();
-		Query query = new Query("SELECT id FROM filesinuse WHERE INSTR('" + input + "', file) = 1");
+		//returns //FNA row for //FNA//1.xml, which is ok but also
+		//returns //FNA for //FNA123 which is not ok
+		Query query = new Query("SELECT id FROM filesinuse WHERE INSTR('" + input + "', CONCAT(file, '//')) = 1 OR file = '" + input + "'");
 		ResultSet resultFileId = query.execute();
 		while(resultFileId.next()) {
 			int fileInUseId = resultFileId.getInt(1);

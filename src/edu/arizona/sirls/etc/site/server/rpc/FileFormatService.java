@@ -9,14 +9,12 @@ import edu.arizona.sirls.etc.site.server.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileFormatService;
-import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.file.CSVValidator;
 import edu.arizona.sirls.etc.site.shared.rpc.file.XMLValidator;
 
 public class FileFormatService extends RemoteServiceServlet implements IFileFormatService {
 
 	private IAuthenticationService authenticationService = new AuthenticationService();
-	private IFileService fileService = new FileService();
 	private IFileAccessService fileAccessService = new FileAccessService();
 	private CSVValidator csvValidator = new CSVValidator();
 	private XMLValidator taxonDescriptionValidator = new XMLValidator(new File(Configuration.taxonDescriptionSchemaFile));

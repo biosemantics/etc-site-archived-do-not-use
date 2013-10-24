@@ -8,11 +8,12 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FileInfo;
 
 @RemoteServiceRelativePath("file")
 public interface IFileService extends RemoteService {
 
-	public Tree<String> getUsersFiles(AuthenticationToken authenticationToken, FileFilter fileFilter); 
+	public Tree<FileInfo> getUsersFiles(AuthenticationToken authenticationToken, FileFilter fileFilter); 
 	
 	public MessageResult deleteFile(AuthenticationToken authenticationToken, String target);
 

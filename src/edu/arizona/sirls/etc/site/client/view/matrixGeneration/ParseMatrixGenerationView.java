@@ -61,6 +61,7 @@ public class ParseMatrixGenerationView extends MatrixGenerationView implements P
 		this.nextButton.setVisible(true);
 		statusPanel.clear();
 		statusImage = new Image("images/play.png");
+		statusImage.addStyleName("clickable");
 		statusImage.addStyleName("infoImage");
 		statusPanel.add(statusImage);
 		taskManagerFlowPanel = new FlowPanel();

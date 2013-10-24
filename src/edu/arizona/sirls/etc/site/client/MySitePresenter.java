@@ -382,7 +382,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 			    		});
 			        }
 				};
-				this.resumableTasksTimer.scheduleRepeating(5000);
+				this.resumableTasksTimer.scheduleRepeating(1000);
 			}
 		} else {
 			if(this.resumableTasksTimer != null)
@@ -593,7 +593,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 															if (learnMatrixGenerationPresenter == null) {
 																learnMatrixGenerationPresenter = new 
 																		LearnMatrixGenerationPresenter(eventBus, 
-																				new LearnMatrixGenerationView(), matrixGenerationService, taskService);
+																				new LearnMatrixGenerationView(), matrixGenerationService);
 															}
 															learnMatrixGenerationPresenter.go(content, matrixGenerationTask);
 															break;
@@ -608,7 +608,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 														case PARSE_TEXT:
 															if (parseMatrixGenerationPresenter == null) {
 																parseMatrixGenerationPresenter = new ParseMatrixGenerationPresenter(
-																		eventBus, new ParseMatrixGenerationView(), matrixGenerationService, taskService);
+																		eventBus, new ParseMatrixGenerationView(), matrixGenerationService);
 															}
 															parseMatrixGenerationPresenter.go(content, matrixGenerationTask);
 															break;

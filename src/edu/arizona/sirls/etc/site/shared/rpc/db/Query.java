@@ -66,4 +66,7 @@ public class Query {
 		this.close();
 	}
 	
+	public String toString() {
+		return sql;
+	}
 }

@@ -46,49 +46,31 @@ public class LearnMatrixGenerationPresenter {
 	private MatrixGenerationTaskRun matrixGenerationTask;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
 	private LoadingPopup loadingPopup = new LoadingPopup();
-	private ITaskServiceAsync taskService;
-	private Timer refreshTimer;
+	private HandlerRegistration taskManagerHandlerRegistration;
+	private HandlerRegistration resumableClickableHandlerRegistration;
 
 	public LearnMatrixGenerationPresenter(HandlerManager eventBus,
-			final Display display, IMatrixGenerationServiceAsync matrixGenerationService, 
-			ITaskServiceAsync taskService) {
+			final Display display, IMatrixGenerationServiceAsync matrixGenerationService) {
 		this.matrixGenerationService = matrixGenerationService;
-		this.taskService = taskService;
 		this.eventBus = eventBus;
 		this.display = display;
 		bind();
 	}
 
 	private void bind() {
-		display.getTaskManagerAnchor().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				eventBus.fireEvent(new TaskManagerEvent());
-			}
-		});
 		display.getNextButton().addClickHandler(new ClickHandler() { 
 			@Override
 			public void onClick(ClickEvent event) { 
 				eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationTask));
 			}
 		});
-		eventBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEventHandler() {
-			private HandlerRegistration handlerRegistration;
-
+		eventBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEventHandler() {	
 			@Override
 			public void onResumableTaskEvent(ResumableTasksEvent resumableTasksEvent) {
 				if(resumableTasksEvent.getTasks().containsKey(matrixGenerationTask.getTask().getId())) {
-					display.setResumableStatus();
-					handlerRegistration = display.getResumableClickable().addClickHandler(new ClickHandler() {
-						@Override
-						public void onClick(ClickEvent event) {
-							eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationTask));
-						}
-					});
+					setResumable();
 				} else {
-					display.setNonResumableStatus();
-					if(handlerRegistration != null)
-						handlerRegistration.removeHandler();
+					setNonResumable();
 				}
 			}
 		});
@@ -96,7 +78,8 @@ public class LearnMatrixGenerationPresenter {
 
 	public void go(final HasWidgets content, MatrixGenerationTaskRun matrixGenerationTask) {
 		loadingPopup.start();
-		display.setNonResumableStatus();
+		setNonResumable();
+		
 		this.matrixGenerationTask = matrixGenerationTask;
 		matrixGenerationService.learn(Authentication.getInstance().getAuthenticationToken(),
 				matrixGenerationTask, new AsyncCallback<LearnInvocation>() { 
@@ -112,5 +95,29 @@ public class LearnMatrixGenerationPresenter {
 				loadingPopup.stop();
 			}
 		});
+	}
+
+	private void setNonResumable() {
+		display.setNonResumableStatus();
+		taskManagerHandlerRegistration = display.getTaskManagerAnchor().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				eventBus.fireEvent(new TaskManagerEvent());
+			}
+		});
+		if(resumableClickableHandlerRegistration != null)
+			resumableClickableHandlerRegistration.removeHandler(); 
+	}
+	
+	private void setResumable() {
+		display.setResumableStatus();
+		resumableClickableHandlerRegistration = display.getResumableClickable().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationTask));
+			}
+		});
+		if(taskManagerHandlerRegistration != null)
+			taskManagerHandlerRegistration.removeHandler();
 	}
 }

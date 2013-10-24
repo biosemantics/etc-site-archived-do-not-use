@@ -7,10 +7,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FileInfo;
 
 public interface IFileServiceAsync {
 
-	public void getUsersFiles(AuthenticationToken authenticationToken, FileFilter fileFilter, AsyncCallback<Tree<String>> callback);
+	public void getUsersFiles(AuthenticationToken authenticationToken, FileFilter fileFilter, AsyncCallback<Tree<FileInfo>> callback);
 
 	public void deleteFile(AuthenticationToken authenticationToken, String target,
 			AsyncCallback<MessageResult> callback);

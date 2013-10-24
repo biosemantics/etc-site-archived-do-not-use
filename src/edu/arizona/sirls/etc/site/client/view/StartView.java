@@ -40,31 +40,31 @@ public class StartView extends Composite implements StartPresenter.Display {
 						"Matrix generation generates taxon-character matrices from clean textual descriptions of organisms.	The matrices can be used to create " +
 						"specimen identification keys or be used as input to the Tree Generation tool. </div>" +
 				"<div id='matrixGenerationArrow' class='actionArrow'></div>" +
-				"<div id='matrixGenerationButton' class='actionButton'></div>" +
-				"<div id='matrixGenerationButtonText' class='actionButtonText'></div>" +
+				"<div id='matrixGenerationButton' class='actionButton clickable'></div>" +
+				"<div id='matrixGenerationButtonText' class='actionButtonText clickable'></div>" +
 				"<div id='treeGenerationImage' class='actionImage'></div>" +
 				"<div id='treeGenerationText' class='actionText'></div>" +
 				"<div id='treeGenerationDescription' class='actionDescription'>" +
 				"Tree Generation generates candidate taxonomies from taxon-character matrices, based on the similarity of characters of taxa. The character-similarity based " +
 				"taxonomies may be one source of input for the Taxonomy Comparison tool.</div>" +
 				"<div id='treeGenerationArrow' class='actionArrow'></div>" +
-				"<div id='treeGenerationButton' class='actionButton'></div>" +
-				"<div id='treeGenerationButtonText' class='actionButtonText'></div>" +
+				"<div id='treeGenerationButton' class='actionButton clickable'></div>" +
+				"<div id='treeGenerationButtonText' class='actionButtonText clickable'></div>" +
 				"<div id='taxonomyComparisonImage' class='actionImage'></div>" +
 				"<div id='taxonomyComparisonText' class='actionText'></div>" +
 				"<div id='taxonomyComparisonDescription' class='actionDescription'>" +
 						"Taxonomy Comparison takes expert provided relationships among taxa and optionally the result from the Tree Generation to perform " +
 						"logic reasoning and identify logic conflicts and/or ambiguities.</div>" +
 				"<div id='taxonomyComparisonArrow' class='actionArrow'></div>" +
-				"<div id='taxonomyComparisonButton' class='actionButton'></div>" +
-				"<div id='taxonomyComparisonButtonText' class='actionButtonText'></div>" +
+				"<div id='taxonomyComparisonButton' class='actionButton clickable'></div>" +
+				"<div id='taxonomyComparisonButtonText' class='actionButtonText clickable'></div>" +
 				"<div id='visualizationImage' class='actionImage'></div>" +
 				"<div id='visualizationText' class='actionText'></div>" +
 				"<div id='visualizationDescription' class='actionDescription'>Visualization integrates " +
 						"relationships among taxa and relationships between character and taxa in a visual way to facilitate taxon concept comparison and analysis. </div>" +
 				"<div id='visualizationArrow' class='actionArrow'></div>" +
-				"<div id='visualizationButton' class='actionButton'></div>" +
-				"<div id='visualizationButtonText' class='actionButtonText'></div>" +
+				"<div id='visualizationButton' class='actionButton clickable'></div>" +
+				"<div id='visualizationButtonText' class='actionButtonText clickable'></div>" +
 				"<div id='orText'></div>" +
 				"<div id='pipelineButton'></div>" +
 				"<div id='pipelineButtonText'></div>" +

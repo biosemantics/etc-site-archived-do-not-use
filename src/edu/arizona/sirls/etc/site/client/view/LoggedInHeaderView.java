@@ -21,15 +21,15 @@ public class LoggedInHeaderView extends Composite implements LoggedInHeaderPrese
 
 	public LoggedInHeaderView() { 
 		HTMLPanel htmlPanel = new HTMLPanel(		
-			"<div id='home'></div><div id='homeText'></div><div id='greetingText'></div>" +
-			"<div id='taskManager'></div><div id='taskManagerText'></div>" +
-			"<div id='fileManager'></div>" +
+			"<div id='home' class='clickable'></div><div id='homeText'></div><div id='greetingText'></div>" +
+			"<div id='taskManager' class='clickable'></div><div id='taskManagerText'></div>" +
+			"<div id='fileManager' class='clickable'></div>" +
 			"<div id='fileManagerText'></div>" +
-			"<div id='settings'></div>" +
+			"<div id='settings' class='clickable'></div>" +
 			"<div id='settingsText'></div>" +
 			"<div id='logoutButton'></div>" +
 			"<div id='logoutButtonText'></div>" +
-			"<div class='helpIcon' id='helpIconLoggedIn'></div>" +
+			"<div class='helpIcon clickable' id='helpIconLoggedIn'></div>" +
 			"<div id='helpText'></div>");
 		
 		htmlPanel.add(greetingLabel, "greetingText");

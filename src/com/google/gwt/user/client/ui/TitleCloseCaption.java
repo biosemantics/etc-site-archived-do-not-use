@@ -8,8 +8,8 @@ import com.google.gwt.user.client.ui.TitleCloseDialogBox.Caption;
 public class TitleCloseCaption extends FocusPanel implements Caption {
 
 	/*
-	 * That´s what we have done here, and it works very well. 
-	 * We´ve made our own Caption class that extends FocusablePanel 
+	 * Thatï¿½s what we have done here, and it works very well. 
+	 * Weï¿½ve made our own Caption class that extends FocusablePanel 
 	 * (a SimplePanel that captures all mouse events) and we added a 
 	 * HorizontalPanel to it, with buttons and text. We had to override onAttach() 
 	 * and onDetach() just by calling the super method (they are protected).
@@ -26,6 +26,7 @@ public class TitleCloseCaption extends FocusPanel implements Caption {
 		html = new HTML(title);
 		html.addStyleName("titleText");
 		Image image = new Image("images/revoke.jpg");
+		image.addStyleName("clickable");
 		image.setSize("15px", "15px");
 		image.addStyleName("closingButton");
 		

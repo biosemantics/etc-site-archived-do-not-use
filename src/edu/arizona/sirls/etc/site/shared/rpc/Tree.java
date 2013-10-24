@@ -10,13 +10,11 @@ public class Tree<T> implements Serializable {
 	private T value;
 	private List<Tree<T>> children = new LinkedList<Tree<T>>();
 	private Tree<T> parent;
-	private boolean isContainerTree;
 	
 	public Tree() { }
 	
-	public Tree(T value, boolean isContainerTree) {
+	public Tree(T value) {
 		this.value = value;
-		this.isContainerTree = isContainerTree;
 	}
 
 	public T getValue() {
@@ -27,30 +25,19 @@ public class Tree<T> implements Serializable {
 		this.value = value;
 	}
 	
-	public boolean isContainerTree() {
-		return this.isContainerTree;
-	}
-	
 	public List<Tree<T>> getChildren() {
-		if(this.isContainerTree)
-			return children;
-		else
-			return new LinkedList<Tree<T>>();
+		return children;
 	}
 
 	public void setChildren(List<Tree<T>> children) {
-		if(this.isContainerTree) { 
-			for(Tree<T> child : children)
-				child.setParent(this);
-			this.children = children;
-		}
+		for(Tree<T> child : children)
+			child.setParent(this);
+		this.children = children;
 	}
 
 	public void addChild(Tree<T> child) {
-		if(this.isContainerTree) {
-			child.setParent(this);
-			children.add(child);
-		}
+		child.setParent(this);
+		children.add(child);
 	}
 
 	private void setParent(Tree<T> parent) {

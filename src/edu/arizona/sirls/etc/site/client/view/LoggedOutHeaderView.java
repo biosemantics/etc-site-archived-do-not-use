@@ -18,7 +18,7 @@ public class LoggedOutHeaderView extends Composite implements LoggedOutHeaderPre
 	private Button loginButton = new Button("Login");
 
 	public LoggedOutHeaderView() { 
-		HTMLPanel htmlPanel = new HTMLPanel("<div class='helpIcon' id='helpIconLoggedOut'></div>" +
+		HTMLPanel htmlPanel = new HTMLPanel("<div class='helpIcon clickable' id='helpIconLoggedOut'></div>" +
 				"<div id='helpText'></div>" +
 				"<div id='loginButton'></div>" +
 				"<div id='loginButtonText'></div>" +
