@@ -2,7 +2,10 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
     xmlns:g="urn:import:com.google.gwt.user.client.ui"
     xmlns:my="urn:import:edu.arizona.sirls.etc.site.client.view.annotationReview">
-    <ui:style>        
+    <ui:style>     
+		.verticalPanel {
+			width: 900px;
+		}   
         .westPanel {
 			padding: 20px;
         }
@@ -18,17 +21,26 @@
     </ui:style>
     <g:HTMLPanel >
     <div class='content900pxCentered'>
-    <g:DockLayoutPanel unit='PX' height='1000'>
-       <g:north size='194' styleName="{style.northPanel}">
-       	   <my:SearchViewImpl ui:field="search"></my:SearchViewImpl>
-       </g:north>
-       <g:west size='200' styleName="{style.westPanel}">
-           <my:ResultViewImpl ui:field="result"></my:ResultViewImpl>
-       </g:west>
-       <g:center styleName="{style.centerPanel}">
-           <my:XMLEditorViewImpl ui:field="xmlEditor"></my:XMLEditorViewImpl>
-       </g:center>      
-     </g:DockLayoutPanel>
+    <g:VerticalPanel styleName='{style.verticalPanel}'>
+        <g:cell>
+         <g:Label styleName="siteHeading">
+             Markup Review
+         </g:Label>   
+        </g:cell>
+    	<g:cell>
+    	 <g:DockLayoutPanel unit='PX' height='1000'>
+	       <g:north size='194' styleName="{style.northPanel}">
+	       	   <my:SearchViewImpl ui:field="search"></my:SearchViewImpl>
+	       </g:north>
+	       <g:west size='200' styleName="{style.westPanel}">
+	           <my:ResultViewImpl ui:field="result"></my:ResultViewImpl>
+	       </g:west>
+	       <g:center styleName="{style.centerPanel}">
+	           <my:XMLEditorViewImpl ui:field="xmlEditor"></my:XMLEditorViewImpl>
+	       </g:center>      
+	     </g:DockLayoutPanel>
+    	</g:cell>
+     </g:VerticalPanel>
      </div>
      </g:HTMLPanel>
 </ui:UiBinder> 

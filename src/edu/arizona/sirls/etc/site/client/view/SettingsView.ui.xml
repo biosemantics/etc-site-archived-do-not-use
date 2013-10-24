@@ -10,7 +10,7 @@
 	    <div class='content900pxCentered'>
 			<g:VerticalPanel>
 			    <g:cell>
-			    	<g:Label>Account settings</g:Label>
+			    	<g:Label styleName="siteHeading">Settings</g:Label>
 			    </g:cell>
 			    <g:cell>
 				    <g:Grid>
