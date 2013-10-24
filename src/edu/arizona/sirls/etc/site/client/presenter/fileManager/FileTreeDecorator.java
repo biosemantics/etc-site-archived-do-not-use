@@ -14,6 +14,7 @@ import edu.arizona.sirls.etc.site.client.view.fileManager.DirectoryTreeItem;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileImageLabelTree;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileImageLabelTreeItem;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileTreeItem;
+import edu.arizona.sirls.etc.site.shared.rpc.Tree;
 
 public class FileTreeDecorator {
 	
@@ -25,7 +26,8 @@ public class FileTreeDecorator {
 		if(fileTree.isContainerTree()) {
 			//String name = fileTree.getValue() + " [" + getNumberOfContainers(fileTree.getChildren()) + " folder, " + getNumberOfFiles(fileTree.getChildren()) + " files]";
 			String name = fileTree.getValue();
-			root = new DirectoryTreeItem(name, path);
+			String contentString = getContentString(fileTree);
+			root = new DirectoryTreeItem(name + " " + contentString, path);
 		} 
 	
 		if(fileDragDropHandler != null) {
@@ -52,6 +54,19 @@ public class FileTreeDecorator {
 			root.setState(true);
 	}
 
+	private String getContentString(Tree<String> fileTree) {
+		int numberOfChildFiles = 0;
+		int numberOfChildDirectories = 0;
+		for(Tree<String> childTree : fileTree.getChildren()) {
+			if(childTree.isContainerTree()) {
+				numberOfChildDirectories++;
+			} else {
+				numberOfChildFiles++;
+			}
+		}
+		return numberOfChildDirectories + " directories, " + numberOfChildFiles + " files";
+	}
+
 	private void decorate(FileImageLabelTree tree, TreeItem root, edu.arizona.sirls.etc.site.shared.rpc.Tree<String> fileTree, FileDragDropHandler fileDragAndDropHandler, 
 			int level, String selectionTarget, Map<String, Boolean> retainedStates) {
 		String path = getPath(fileTree);
@@ -63,7 +78,8 @@ public class FileTreeDecorator {
 		if(fileTree.isContainerTree()) {
 			//String name = fileTree.getValue() + " [" + getNumberOfContainers(fileTree.getChildren()) + " folder, " + getNumberOfFiles(fileTree.getChildren()) + " files]";
 			String name = fileTree.getValue();
-			treeItem = new DirectoryTreeItem(name, path);
+			String contentString = getContentString(fileTree);
+			treeItem = new DirectoryTreeItem(name + " " + contentString, path);
 			if(level > 2)
 				return;
 		} 
