@@ -8,13 +8,13 @@ import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 @RemoteServiceRelativePath("fileFormat")
 public interface IFileFormatService extends RemoteService {
 
-	public RPCResult<Boolean> isValidTaxonDescription(AuthenticationToken authenticationToken, String target);
+	public RPCResult<Boolean> isValidTaxonDescription(AuthenticationToken authenticationToken, String filePath);
 	
-	public RPCResult<Boolean> isValidGlossary(AuthenticationToken authenticationToken, String target);
+	public RPCResult<Boolean> isValidGlossary(AuthenticationToken authenticationToken, String filePath);
 
-	public RPCResult<Boolean> isValidEuler(AuthenticationToken authenticationToken, String target);
+	public RPCResult<Boolean> isValidEuler(AuthenticationToken authenticationToken, String filePath);
 
-	public RPCResult<Boolean> isValidMarkedupTaxonDescription(AuthenticationToken authenticationToken, String target);
+	public RPCResult<Boolean> isValidMarkedupTaxonDescription(AuthenticationToken authenticationToken, String filePath);
 	
 	public RPCResult<Boolean> isValidMarkedupTaxonDescriptionContent(AuthenticationToken authenticationToken, String content);
 }

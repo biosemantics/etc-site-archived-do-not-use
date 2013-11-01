@@ -79,6 +79,9 @@ public class FileTreeDecorator {
 		int numberOfChildFiles = 0;
 		int numberOfChildDirectories = 0;
 		for(Tree<FileInfo> childTree : fileTree.getChildren()) {
+			System.out.println(childTree);
+			System.out.println(childTree.getValue());
+			System.out.println(childTree.getValue().getFileType());
 			if(childTree.getValue().getFileType().equals(FileType.DIRECTORY)) {
 				numberOfChildDirectories++;
 			} else {

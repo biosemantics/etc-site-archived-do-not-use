@@ -8,16 +8,16 @@ public class PreprocessedDescription implements Serializable {
 	private static final long serialVersionUID = -3004957797166336806L;
 	private String fileName;
 	private int descriptionNumber;
-	private String target;
+	private String filePath;
 	private Map<Character, Integer> bracketCounts;
 
 	public PreprocessedDescription() {
 
 	}
 
-	public PreprocessedDescription(String target, String fileName,
+	public PreprocessedDescription(String filePath, String fileName,
 			int descriptionNumber, Map<Character, Integer> bracketCounts) {
-		this.target = target;
+		this.filePath = filePath;
 		this.fileName = fileName;
 		this.descriptionNumber = descriptionNumber;
 		this.bracketCounts = bracketCounts;
@@ -47,12 +47,12 @@ public class PreprocessedDescription implements Serializable {
 		this.bracketCounts = bracketCounts;
 	}
 
-	public String getTarget() {
-		return this.target;
+	public String getFilePath() {
+		return this.filePath;
 	}
 
-	public void setTarget(String target) {
-		this.target = target;
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}
 
 }

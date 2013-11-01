@@ -1,19 +1,15 @@
 package edu.arizona.sirls.etc.site.server.rpc;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
-
-import edu.arizona.sirls.etc.site.server.Configuration;
 
 public class Zipper {
 
-	public void zip(String username, String target) throws Exception {
-		String sourceDirectory = Configuration.fileBase + "//" + username + "//" + target;
-		String tempFile = Configuration.zipFileBase + "//" + username + "//" + target + ".tar";
-		String targetFile = Configuration.zipFileBase + "//" + username + "//" + target + ".tar.gz";
+	public void zip(String filePath) throws Exception {
+		String sourceDirectory = filePath;
+		String tempFile = filePath + ".tar";
+		String destinationFile = filePath + ".tar.gz";
 		String commandTar = "7za.exe a -ttar " + tempFile + " " + sourceDirectory;
-		String commandGz = "7za.exe a -tgzip " + targetFile + " " + tempFile;
+		String commandGz = "7za.exe a -tgzip " + destinationFile + " " + tempFile;
 		Process process = runCommand(commandTar);
 		process.waitFor();
 		process = runCommand(commandGz);

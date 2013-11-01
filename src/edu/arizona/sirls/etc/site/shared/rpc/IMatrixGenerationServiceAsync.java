@@ -13,8 +13,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 public interface IMatrixGenerationServiceAsync {
 
-	public void start(AuthenticationToken authenticationToken, String taskName, 
-			String input, String glossaryName, AsyncCallback<RPCResult<MatrixGenerationTaskRun>> callback);
+	public void start(AuthenticationToken authenticationToken, String taskName, String filePath, String glossaryName, AsyncCallback<RPCResult<MatrixGenerationTaskRun>> callback);
 	
 	public void preprocess(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask, AsyncCallback<RPCResult<List<PreprocessedDescription>>> callback);
 
@@ -29,9 +28,9 @@ public interface IMatrixGenerationServiceAsync {
 	public void goToTaskStage(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask, TaskStageEnum taskStage, 
 			AsyncCallback<RPCResult<MatrixGenerationTaskRun>> callback);
 	
-	public void getDescription(AuthenticationToken authenticationToken, String target, AsyncCallback<RPCResult<String>> callback);
+	public void getDescription(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<String>> callback);
 	
-	public void setDescription(AuthenticationToken authenticationToken, String target, String description, AsyncCallback<RPCResult<Void>> callback);
+	public void setDescription(AuthenticationToken authenticationToken, String filePath, String description, AsyncCallback<RPCResult<Void>> callback);
 
 	public void getLatestResumable(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<MatrixGenerationTaskRun>> asyncCallback);
 
@@ -39,10 +38,4 @@ public interface IMatrixGenerationServiceAsync {
 	
 	public void cancel(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Void>> callback);
 
-	
-	
-	/*public void getJobStatus(AuthenticationToken authenticationToken, MatrixGenerationJob matrixGenerationJob, AsyncCallback<MatrixGenerationJobStatus> callback);
-	
-	public void cancelJob(AuthenticationToken authenticationToken, MatrixGenerationJob matrixGenerationJob, AsyncCallback<Void> callback);
-	*/
 }

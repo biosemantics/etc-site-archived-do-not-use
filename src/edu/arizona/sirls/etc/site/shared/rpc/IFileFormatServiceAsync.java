@@ -6,13 +6,13 @@ import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 
 public interface IFileFormatServiceAsync {
 	
-	public void isValidTaxonDescription(AuthenticationToken authenticationToken, String target, AsyncCallback<RPCResult<Boolean>> callback);
+	public void isValidTaxonDescription(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<Boolean>> callback);
 
-	public void isValidGlossary(AuthenticationToken authenticationToken, String target, AsyncCallback<RPCResult<Boolean>> callback);
+	public void isValidGlossary(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<Boolean>> callback);
 	
-	public void isValidEuler(AuthenticationToken authenticationToken, String target, AsyncCallback<RPCResult<Boolean>> callback);
+	public void isValidEuler(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<Boolean>> callback);
 	
-	public void isValidMarkedupTaxonDescription(AuthenticationToken authenticationToken, String target, AsyncCallback<RPCResult<Boolean>> callback);
+	public void isValidMarkedupTaxonDescription(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<Boolean>> callback);
 	
 	public void isValidMarkedupTaxonDescriptionContent(AuthenticationToken authenticationToken, String content, AsyncCallback<RPCResult<Boolean>> callback);
 }

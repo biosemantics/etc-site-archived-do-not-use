@@ -15,8 +15,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 @RemoteServiceRelativePath("matrixGeneration")
 public interface IMatrixGenerationService extends RemoteService {
 
-	public RPCResult<MatrixGenerationTaskRun> start(AuthenticationToken authenticationToken, String taskName, 
-			String input, String glossaryName);
+	public RPCResult<MatrixGenerationTaskRun> start(AuthenticationToken authenticationToken, String taskName, String filePath, String glossaryName);
 	
 	public RPCResult<List<PreprocessedDescription>> preprocess(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask);
 	
@@ -30,9 +29,9 @@ public interface IMatrixGenerationService extends RemoteService {
 
 	public RPCResult<MatrixGenerationTaskRun> goToTaskStage(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask, TaskStageEnum taskStage);
 
-	public RPCResult<String> getDescription(AuthenticationToken authenticationToken, String target);
+	public RPCResult<String> getDescription(AuthenticationToken authenticationToken, String filePath);
 	
-	public RPCResult<Void> setDescription(AuthenticationToken authenticationToken, String target, String description);
+	public RPCResult<Void> setDescription(AuthenticationToken authenticationToken, String filePath, String description);
 	
 	public RPCResult<MatrixGenerationTaskRun> getLatestResumable(AuthenticationToken authenticationToken);
 	
@@ -40,9 +39,4 @@ public interface IMatrixGenerationService extends RemoteService {
 	
 	public RPCResult<Void> cancel(AuthenticationToken authenticationToken, Task task);
 
-	
-	
-	/*public MatrixGenerationJobStatus getJobStatus(AuthenticationToken authenticationToken, MatrixGenerationJob matrixGenerationJob);
-	
-	public void cancelJob(AuthenticationToken authenticationToken, MatrixGenerationJob matrixGenerationJob); */
 }

@@ -22,6 +22,7 @@ import edu.arizona.sirls.etc.site.server.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationResult;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
+import edu.arizona.sirls.etc.site.shared.rpc.IFilePermissionService;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFormatter;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileType;
@@ -30,18 +31,23 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 
 	private static final long serialVersionUID = 5956919724639140570L;
 	private IAuthenticationService authenticationService = new AuthenticationService();
+	private IFilePermissionService filePermissionService = new FilePermissionService();
 	
 	@Override
-	public RPCResult<Void> setFileContent(AuthenticationToken authenticationToken, String target, String content) {
+	public RPCResult<Void> setFileContent(AuthenticationToken authenticationToken, String filePath, String content) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
 		if(!authResult.isSucceeded()) 
 			return new RPCResult<Void>(false, authResult.getMessage());
 		if(!authResult.getData().getResult())
 			return new RPCResult<Void>(false, "Authentication failed");
-		if(target.trim().isEmpty()) 
-			return new RPCResult<Void>(false, "Target may not be empty");
+
+		RPCResult<Boolean> permissionResult = filePermissionService.hasWritePermission(authenticationToken, filePath);
+		if(!permissionResult.isSucceeded())
+			return new RPCResult<Void>(false, permissionResult.getMessage());
+		if(!permissionResult.getData()) 
+			return new RPCResult<Void>(false, "No permission");
 		
-		File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
+		File file = new File(filePath);
 		if(file.exists() && file.isFile()) {
 			try {
 				Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
@@ -54,20 +60,24 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 				return new RPCResult<Void>(false, "Internal Server Error");
 			}
 		}
-		return new RPCResult<Void>(false, "Target does not exist or is not a file");
+		return new RPCResult<Void>(false, "File at path does not exist or is not a file");
 	}
 
 	@Override
-	public RPCResult<String> getFileContent(AuthenticationToken authenticationToken, String target) {
+	public RPCResult<String> getFileContent(AuthenticationToken authenticationToken, String filePath) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
 		if(!authResult.isSucceeded()) 
 			return new RPCResult<String>(false, authResult.getMessage(), "");
 		if(!authResult.getData().getResult())
 			return new RPCResult<String>(false, "Authentication failed", "");
-		if(target.trim().isEmpty()) 
-			return new RPCResult<String>(false, "Target may not be empty", "");
 		
-		File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
+		RPCResult<Boolean> permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
+		if(!permissionResult.isSucceeded())
+			return new RPCResult<String>(false, permissionResult.getMessage(), "");
+		if(!permissionResult.getData()) 
+			return new RPCResult<String>(false, "No permission", "");
+		
+		File file = new File(filePath);
 		if(!file.exists() || !file.isFile())
 			return new RPCResult<String>(false, "File doesn't exist", "");
 		try {
@@ -87,32 +97,16 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 	}
 
 	@Override
-	public RPCResult<String> getFileContent(AuthenticationToken authenticationToken, String target, FileType fileType) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<String>(false, authResult.getMessage(), "");
-		if(!authResult.getData().getResult())
-			return new RPCResult<String>(false, "Authentication failed", "");
-		if(target.trim().isEmpty()) 
-			return new RPCResult<String>(false, "Target may not be empty", "");
-		
-		RPCResult<String> fileContentResult = getFileContent(authenticationToken, target);
+	public RPCResult<String> getFileContent(AuthenticationToken authenticationToken, String filePath, FileType fileType) {		
+		RPCResult<String> fileContentResult = getFileContent(authenticationToken, filePath);
 		if(fileContentResult.isSucceeded()) 
 			return new RPCResult<String>(true, "", new FileFormatter().format(fileContentResult.getData(), fileType));
 		return fileContentResult;
 	}
 
 	@Override
-	public RPCResult<String> getFileContentHighlighted(AuthenticationToken authenticationToken, String target, FileType fileType) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<String>(false, authResult.getMessage(), "");
-		if(!authResult.getData().getResult())
-			return new RPCResult<String>(false, "Authentication failed", "");
-		if(target.trim().isEmpty()) 
-			return new RPCResult<String>(false, "Target may not be empty", "");
-		
-		RPCResult<String> fileContentResult = getFileContent(authenticationToken, target);
+	public RPCResult<String> getFileContentHighlighted(AuthenticationToken authenticationToken, String filePath, FileType fileType) {		
+		RPCResult<String> fileContentResult = getFileContent(authenticationToken, filePath);
 		if(fileContentResult.isSucceeded()) {
 			MyXmlXhtmlRenderer renderer = new MyXmlXhtmlRenderer();
 			//Renderer renderer = XhtmlRendererFactory.getRenderer(XhtmlRendererFactory.XML); 

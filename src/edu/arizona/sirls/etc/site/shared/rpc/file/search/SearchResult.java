@@ -8,16 +8,16 @@ public class SearchResult implements Serializable, Comparable<SearchResult> {
 
 	private static final long serialVersionUID = -2060179646121834566L;
 	//private int occurrences;
-	private Set<String> targets;
+	private Set<String> filePaths;
 	private String capturedMatch;
 
 	public SearchResult() {
 		
 	}
 
-	public SearchResult(String capturedMatch, Set<String> targets) {
+	public SearchResult(String capturedMatch, Set<String> filePaths) {
 		super();
-		this.targets = targets;
+		this.filePaths = filePaths;
 		this.capturedMatch = capturedMatch;
 	}
 
@@ -30,13 +30,13 @@ public class SearchResult implements Serializable, Comparable<SearchResult> {
 		return occurrences;
 	}*/
 
-	public Set<String> getTargets() {
-		return targets;
+	public Set<String> getFilePaths() {
+		return filePaths;
 	}
 
 
-	public void setTargets(Set<String> targets) {
-		this.targets = targets;
+	public void setTargets(Set<String> filePaths) {
+		this.filePaths = filePaths;
 	}
 
 

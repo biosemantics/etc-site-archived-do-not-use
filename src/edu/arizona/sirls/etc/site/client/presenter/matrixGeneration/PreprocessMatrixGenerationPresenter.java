@@ -191,7 +191,7 @@ public class PreprocessMatrixGenerationPresenter {
 	}
 
 	protected void store(AsyncCallback<RPCResult<Void>> asyncCallback) {
-		String target = preprocessedDescriptions.get(currentPreprocessedDescription).getTarget();
+		String target = preprocessedDescriptions.get(currentPreprocessedDescription).getFilePath();
 		String content = display.getTextArea().getText();
 		matrixGenerationService.setDescription(Authentication.getInstance().getAuthenticationToken(), 
 				target, content, asyncCallback);
@@ -252,7 +252,7 @@ public class PreprocessMatrixGenerationPresenter {
 	private void setPreprocessedDescription(final PreprocessedDescription preprocessedDescription) {
 		try {
 			matrixGenerationService.getDescription(Authentication.getInstance().getAuthenticationToken(), 
-					preprocessedDescription.getTarget(), new AsyncCallback<RPCResult<String>>() {
+					preprocessedDescription.getFilePath(), new AsyncCallback<RPCResult<String>>() {
 						@Override
 						public void onFailure(Throwable caught) {
 							caught.printStackTrace();

@@ -9,12 +9,12 @@ import edu.arizona.sirls.etc.site.shared.rpc.file.FileType;
 @RemoteServiceRelativePath("fileAccess")
 public interface IFileAccessService extends RemoteService {
 
-	public RPCResult<Void> setFileContent(AuthenticationToken authenticationToken, String target, String content);
+	public RPCResult<Void> setFileContent(AuthenticationToken authenticationToken, String filePath, String content);
 	
-	public RPCResult<String> getFileContent(AuthenticationToken authenticationToken, String target);
+	public RPCResult<String> getFileContent(AuthenticationToken authenticationToken, String filePath);
 	
-	public RPCResult<String> getFileContent(AuthenticationToken authenticationToken, String target, FileType fileType);
+	public RPCResult<String> getFileContent(AuthenticationToken authenticationToken, String filePath, FileType fileType);
 	
-	public RPCResult<String> getFileContentHighlighted(AuthenticationToken authenticationToken, String target, FileType fileType);
+	public RPCResult<String> getFileContentHighlighted(AuthenticationToken authenticationToken, String filePath, FileType fileType);
 	
 }

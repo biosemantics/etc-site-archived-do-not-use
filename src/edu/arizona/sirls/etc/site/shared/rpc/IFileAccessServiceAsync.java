@@ -8,13 +8,13 @@ import edu.arizona.sirls.etc.site.shared.rpc.file.search.Search;
 
 public interface IFileAccessServiceAsync {
 	
-	public void setFileContent(AuthenticationToken authenticationToken, String target, String content, AsyncCallback<RPCResult<Void>> callback);
+	public void setFileContent(AuthenticationToken authenticationToken, String filePath, String content, AsyncCallback<RPCResult<Void>> callback);
 
-	public void getFileContent(AuthenticationToken authenticationToken, String target, AsyncCallback<RPCResult<String>> callback);
+	public void getFileContent(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<String>> callback);
 
-	public void getFileContent(AuthenticationToken authenticationToken, String target, FileType fileType, AsyncCallback<RPCResult<String>> callback);
+	public void getFileContent(AuthenticationToken authenticationToken, String filePath, FileType fileType, AsyncCallback<RPCResult<String>> callback);
 
-	public void getFileContentHighlighted(AuthenticationToken authenticationToken, String target, FileType taxonDescription, AsyncCallback<RPCResult<String>> asyncCallback);
+	public void getFileContentHighlighted(AuthenticationToken authenticationToken, String filePath, FileType taxonDescription, AsyncCallback<RPCResult<String>> asyncCallback);
 
 	
 }

@@ -23,16 +23,14 @@ public class FileFormatService extends RemoteServiceServlet implements IFileForm
 	private XMLValidator markedUpTaxonDescriptionValidator = new XMLValidator(new File(Configuration.markedUpTaxonDescriptionSchemaFile));
 	
 	@Override
-	public RPCResult<Boolean> isValidTaxonDescription(AuthenticationToken authenticationToken, String target) {
+	public RPCResult<Boolean> isValidTaxonDescription(AuthenticationToken authenticationToken, String filePath) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
 		if(!authResult.isSucceeded()) 
 			return new RPCResult<Boolean>(false, authResult.getMessage());
 		if(!authResult.getData().getResult())
 			return new RPCResult<Boolean>(false, "Authentication failed");
-		if(target.trim().isEmpty()) 
-			return new RPCResult<Boolean>(false, "Target may not be empty");
 		
-		RPCResult<String> fileContentResult = fileAccessService.getFileContent(authenticationToken, target);
+		RPCResult<String> fileContentResult = fileAccessService.getFileContent(authenticationToken, filePath);
 		if(fileContentResult.isSucceeded()) {
 			String fileContent = fileContentResult.getData();
 			return new RPCResult<Boolean>(true, taxonDescriptionValidator.validate(fileContent));
@@ -41,16 +39,14 @@ public class FileFormatService extends RemoteServiceServlet implements IFileForm
 	}
 	
 	@Override
-	public RPCResult<Boolean> isValidMarkedupTaxonDescription(AuthenticationToken authenticationToken, String target) {
+	public RPCResult<Boolean> isValidMarkedupTaxonDescription(AuthenticationToken authenticationToken, String filePath) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
 		if(!authResult.isSucceeded()) 
 			return new RPCResult<Boolean>(false, authResult.getMessage());
 		if(!authResult.getData().getResult())
 			return new RPCResult<Boolean>(false, "Authentication failed");
-		if(target.trim().isEmpty()) 
-			return new RPCResult<Boolean>(false, "Target may not be empty");
 		
-		RPCResult<String> fileContentResult = fileAccessService.getFileContent(authenticationToken, target);
+		RPCResult<String> fileContentResult = fileAccessService.getFileContent(authenticationToken, filePath);
 		if(fileContentResult.isSucceeded()) {
 			String fileContent = fileContentResult.getData();
 			return new RPCResult<Boolean>(true, markedUpTaxonDescriptionValidator.validate(fileContent));
@@ -73,17 +69,14 @@ public class FileFormatService extends RemoteServiceServlet implements IFileForm
 	}
 
 	@Override
-	public RPCResult<Boolean> isValidGlossary(AuthenticationToken authenticationToken,
-			String target) {
+	public RPCResult<Boolean> isValidGlossary(AuthenticationToken authenticationToken, String filePath) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
 		if(!authResult.isSucceeded()) 
 			return new RPCResult<Boolean>(false, authResult.getMessage());
 		if(!authResult.getData().getResult())
 			return new RPCResult<Boolean>(false, "Authentication failed");
-		if(target.trim().isEmpty()) 
-			return new RPCResult<Boolean>(false, "Target may not be empty");
 		
-		RPCResult<String> fileContentResult = fileAccessService.getFileContent(authenticationToken, target);
+		RPCResult<String> fileContentResult = fileAccessService.getFileContent(authenticationToken, filePath);
 		if(fileContentResult.isSucceeded()) {
 			String fileContent = fileContentResult.getData();
 			return new RPCResult<Boolean>(true, csvValidator.validate(fileContent));
@@ -92,16 +85,14 @@ public class FileFormatService extends RemoteServiceServlet implements IFileForm
 	}
 
 	@Override
-	public RPCResult<Boolean> isValidEuler(AuthenticationToken authenticationToken, String target) {
+	public RPCResult<Boolean> isValidEuler(AuthenticationToken authenticationToken, String filePath) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
 		if(!authResult.isSucceeded()) 
 			return new RPCResult<Boolean>(false, authResult.getMessage());
 		if(!authResult.getData().getResult())
 			return new RPCResult<Boolean>(false, "Authentication failed");
-		if(target.trim().isEmpty()) 
-			return new RPCResult<Boolean>(false, "Target may not be empty");
 		
-		RPCResult<String> fileContentResult = fileAccessService.getFileContent(authenticationToken, target);
+		RPCResult<String> fileContentResult = fileAccessService.getFileContent(authenticationToken, filePath);
 		if(fileContentResult.isSucceeded()) {
 			String fileContent = fileContentResult.getData();
 			return new RPCResult<Boolean>(true, csvValidator.validate(fileContent));

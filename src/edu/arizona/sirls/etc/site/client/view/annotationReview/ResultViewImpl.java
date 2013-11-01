@@ -60,12 +60,12 @@ public class ResultViewImpl extends Composite implements ResultView {
 			int matches = 0;
 			Set<String> files = new HashSet<String>();
 			for(SearchResult result : results) {
-				matches += result.getTargets().size();
-				files.addAll(result.getTargets());
+				matches += result.getFilePaths().size();
+				files.addAll(result.getFilePaths());
 				
 				ScrollPanel scrollPanel = new ScrollPanel();
 				VerticalPanel filesPanel = new VerticalPanel();
-				for(final String target : result.getTargets()) {
+				for(final String target : result.getFilePaths()) {
 					Anchor anchor = new Anchor(target);
 					filesPanel.add(anchor);
 					anchor.addClickHandler(new ClickHandler() {

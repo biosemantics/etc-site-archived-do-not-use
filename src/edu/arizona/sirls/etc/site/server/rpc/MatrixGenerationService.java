@@ -80,7 +80,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 	
 	@Override
-	public RPCResult<MatrixGenerationTaskRun> start(AuthenticationToken authenticationToken, String taskName, String input, String glossaryName) {
+	public RPCResult<MatrixGenerationTaskRun> start(AuthenticationToken authenticationToken, String taskName, String filePath, String glossaryName) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
 		if(!authResult.isSucceeded()) 
 			return new RPCResult<MatrixGenerationTaskRun>(false, authResult.getMessage());
@@ -88,14 +88,14 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			return new RPCResult<MatrixGenerationTaskRun>(false, "Authentication failed");
 		
 		try {
-			RPCResult<List<String>> directoriesFilesResult = fileService.getDirectoriesFiles(authenticationToken, input);
+			RPCResult<List<String>> directoriesFilesResult = fileService.getDirectoriesFiles(authenticationToken, filePath);
 			if(!directoriesFilesResult.isSucceeded()) {
-				return new RPCResult<MatrixGenerationTaskRun>(false, "Could not retrieve files");
+				return new RPCResult<MatrixGenerationTaskRun>(false, directoriesFilesResult.getMessage());
 			}
 			int numberOfInputFiles = directoriesFilesResult.getData().size();
 			Glossary glossary = GlossaryDAO.getInstance().getGlossary(glossaryName);
 			MatrixGenerationConfiguration matrixGenerationConfiguration = new MatrixGenerationConfiguration();
-			matrixGenerationConfiguration.setInput(input);	
+			matrixGenerationConfiguration.setInput(filePath);	
 			matrixGenerationConfiguration.setGlossary(glossary);
 			matrixGenerationConfiguration.setNumberOfInputFiles(numberOfInputFiles);
 			matrixGenerationConfiguration = MatrixGenerationConfigurationDAO.getInstance().addMatrixGenerationConfiguration(matrixGenerationConfiguration);
@@ -114,13 +114,13 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			
 			RPCResult<Task> addTaskResult = taskService.addTask(authenticationToken, task);
 			if(!addTaskResult.isSucceeded())
-				return new RPCResult<MatrixGenerationTaskRun>(false, "Add task failed");
+				return new RPCResult<MatrixGenerationTaskRun>(false, addTaskResult.getMessage());
 			
 			taskStage = TaskStageDAO.getInstance().getTaskStage(dbTaskType, TaskStageEnum.PREPROCESS_TEXT);
 			task.setTaskStage(taskStage);
 			TaskDAO.getInstance().updateTask(task);
 
-			fileService.setInUse(authenticationToken, true, input, task);
+			fileService.setInUse(authenticationToken, true, filePath, task);
 			return new RPCResult<MatrixGenerationTaskRun>(true, new MatrixGenerationTaskRun(matrixGenerationConfiguration, task));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -340,29 +340,29 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			MatrixGenerationConfigurationDAO.getInstance().updateMatrixGenerationConfiguration(matrixGenerationConfiguration);
 
 			String outputDirectory = matrixGenerationConfiguration.getOutput();
-			String target = outputDirectory.substring(0, outputDirectory.lastIndexOf("//"));
+			String filePath = outputDirectory.substring(0, outputDirectory.lastIndexOf("//"));
 			String newDirectory = outputDirectory.substring(outputDirectory.lastIndexOf("//"), outputDirectory.length());
 			
-			//find a suitable targetDirectory
-			RPCResult<Void> createDirectoryResult = fileService.createDirectory(authenticationToken, target, newDirectory);
+			//find a suitable destination filePath
+			RPCResult<Void> createDirectoryResult = fileService.createDirectory(authenticationToken, filePath, newDirectory);
 			if(!createDirectoryResult.isSucceeded()) {
 				String date = dateTimeFormat.format(new Date());
 				newDirectory = newDirectory + "_" + date;
-				createDirectoryResult = fileService.createDirectory(authenticationToken, target, newDirectory);
+				createDirectoryResult = fileService.createDirectory(authenticationToken, filePath, newDirectory);
 				int i = 1;
 				while(!createDirectoryResult.isSucceeded()) {
 					newDirectory = newDirectory + "_" + i++;
-					createDirectoryResult = fileService.createDirectory(authenticationToken, target, newDirectory);
+					createDirectoryResult = fileService.createDirectory(authenticationToken, filePath, newDirectory);
 				}
 			}
 	
-			//copy the output files to the target directory
+			//copy the output files to the directory
 			File outDirectory = new File("workspace" + File.separator + task.getId() + File.separator + "out");
-			File targetDirectory = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + 
-					target + "//" + newDirectory);
+			File destinationDirectory = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + 
+					filePath + "//" + newDirectory);
 			for(File outFile : outDirectory.listFiles()) {
-				File targetFile = new File(targetDirectory, outFile.getName());
-				Files.copy(outFile, targetFile);
+				File destinationFile = new File(destinationDirectory, outFile.getName());
+				Files.copy(outFile, destinationFile);
 			}
 			
 			//update task
@@ -407,7 +407,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}	
 
 	@Override
-	public RPCResult<String> getDescription(AuthenticationToken authenticationToken, String target) {
+	public RPCResult<String> getDescription(AuthenticationToken authenticationToken, String filePath) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
 		if(!authResult.isSucceeded()) 
 			return new RPCResult<String>(false, authResult.getMessage(), "");
@@ -417,7 +417,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = dbf.newDocumentBuilder();
-			RPCResult<String> fileContentResult = fileAccessService.getFileContent(authenticationToken, target);
+			RPCResult<String> fileContentResult = fileAccessService.getFileContent(authenticationToken, filePath);
 			if(fileContentResult.isSucceeded()) {
 				String fileContent = fileContentResult.getData();
 				Document document = db.parse(new InputSource(new ByteArrayInputStream(fileContent.getBytes("UTF-8"))));
@@ -426,7 +426,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				        document.getDocumentElement(), XPathConstants.NODE);
 				return new RPCResult<String>(true, "", node.getTextContent());
 			}
-			return new RPCResult<String>(false, "Couldn't read file content", "");
+			return new RPCResult<String>(false, fileContentResult.getMessage(), "");
 		} catch(Exception e) {
 			e.printStackTrace();
 			return new RPCResult<String>(false, "Internal Server Error", "");
@@ -454,29 +454,29 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 
 	@Override
-	public RPCResult<Void> setDescription(AuthenticationToken authenticationToken, String target, String description) {
+	public RPCResult<Void> setDescription(AuthenticationToken authenticationToken, String filePath, String description) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
 		if(!authResult.isSucceeded()) 
 			return new RPCResult<Void>(false, authResult.getMessage());
 		if(!authResult.getData().getResult())
 			return new RPCResult<Void>(false, "Authentication failed");
 		
-		RPCResult<String> fileContentResult = fileAccessService.getFileContent(authenticationToken, target);
+		RPCResult<String> fileContentResult = fileAccessService.getFileContent(authenticationToken, filePath);
 		if(fileContentResult.isSucceeded()) {
 			String content = fileContentResult.getData();		
 			String newContent;
 			try {
 				newContent = replaceDescription(content, description);
-				RPCResult<Void> setContentResult = fileAccessService.setFileContent(authenticationToken, target, newContent);
+				RPCResult<Void> setContentResult = fileAccessService.setFileContent(authenticationToken, filePath, newContent);
 				if(!setContentResult.isSucceeded()) 
-					return new RPCResult<Void>(false, "Couldn't set new content");
+					return new RPCResult<Void>(false, setContentResult.getMessage());
 				return new RPCResult<Void>(true);
 			} catch (Exception e) {
 				e.printStackTrace();
-				return new RPCResult<Void>(false, "Couldn't replace description");
+				return new RPCResult<Void>(false, "Internal Server Error");
 			}
 		}
-		return new RPCResult<Void>(false, "Couldn't read content");
+		return new RPCResult<Void>(false, fileContentResult.getMessage());
 	}
 
 	@Override
@@ -536,7 +536,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			RPCResult<MatrixGenerationTaskRun> matrixGenerationTaskRunResult = 
 					getMatrixGenerationTaskRun(authenticationToken, task);
 			if(!matrixGenerationTaskRunResult.isSucceeded()) 
-				return new RPCResult<Void>(false, "Couldn't retrieve MatrixGenerationTaskRun");
+				return new RPCResult<Void>(false, matrixGenerationTaskRunResult.getMessage());
 			MatrixGenerationTaskRun matrixGenerationTaskRun = matrixGenerationTaskRunResult.getData();
 			MatrixGenerationConfiguration matrixGenerationConfiguration = matrixGenerationTaskRun.getConfiguration();
 			fileService.setInUse(authenticationToken, false, matrixGenerationConfiguration.getInput(), task);
