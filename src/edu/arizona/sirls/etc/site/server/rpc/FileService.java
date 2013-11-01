@@ -10,6 +10,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.server.Configuration;
+import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationResult;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileFormatService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
@@ -49,19 +50,21 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		//will become part of 'target' and has effect on several things. therefore leave root as "" for now. Also will have to escape \\'s before it is inserted into SQL statements
 		//sql injection..
 		//Tree<FileInfo> result = new Tree<FileInfo>(new FileInfo(authenticationToken.getUsername() + "'s files", FileType.DIRECTORY));
-		RPCResult<Tree<FileInfo>> result = new RPCResult<Tree<FileInfo>>(false, "Authentication failed");
-		if(authenticationService.isValidSession(authenticationToken).getData().getResult()) { 
-			Tree<FileInfo> resultTree = new Tree<FileInfo>(new FileInfo("", FileType.DIRECTORY));
-			Tree<FileInfo> ownedFiles = new Tree<FileInfo>(new FileInfo("Owned", FileType.DIRECTORY));
-			Tree<FileInfo> sharedFiles = new Tree<FileInfo>(new FileInfo("Shared", FileType.DIRECTORY));
-			resultTree.addChild(ownedFiles);
-			resultTree.addChild(sharedFiles);
-			decorateOwnedTree(authenticationToken, ownedFiles, fileFilter, Configuration.fileBase + "//" + authenticationToken.getUsername());
-			decorateSharedTree(authenticationToken, sharedFiles, fileFilter);
-			
-			return new RPCResult<Tree<FileInfo>>(true, resultTree);
-		} 
-		return result;
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<Tree<FileInfo>>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<Tree<FileInfo>>(false, "Authentication failed");
+		
+		Tree<FileInfo> resultTree = new Tree<FileInfo>(new FileInfo("", FileType.DIRECTORY));
+		Tree<FileInfo> ownedFiles = new Tree<FileInfo>(new FileInfo("Owned", FileType.DIRECTORY));
+		Tree<FileInfo> sharedFiles = new Tree<FileInfo>(new FileInfo("Shared", FileType.DIRECTORY));
+		resultTree.addChild(ownedFiles);
+		resultTree.addChild(sharedFiles);
+		decorateOwnedTree(authenticationToken, ownedFiles, fileFilter, Configuration.fileBase + "//" + authenticationToken.getUsername());
+		decorateSharedTree(authenticationToken, sharedFiles, fileFilter);
+		
+		return new RPCResult<Tree<FileInfo>>(true, resultTree);
 	}
 	
 	private void decorateSharedTree(AuthenticationToken authenticationToken, Tree<FileInfo> sharedFiles, FileFilter fileFilter) {
@@ -159,26 +162,26 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	}
 
 	@Override
-	public RPCResult<Boolean> deleteFile(AuthenticationToken authenticationToken, String target) {
-		RPCResult<Boolean> result = new RPCResult<Boolean>(false, "Authentication failed");
-		if(authenticationService.isValidSession(authenticationToken).getData().getResult()) {
-			if(!target.trim().isEmpty()) {
-				RPCResult<Boolean> inUseResult = this.isInUse(authenticationToken, target);
-				if(inUseResult.isSucceeded() && !inUseResult.getData()) {
-					File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
-					boolean resultDelete = deleteRecursively(file);
-					result = new RPCResult<Boolean>(true, resultDelete);
-				} else {
-					result = createMessageFileInUse(authenticationToken, target);
-				}
-			} else {
-				result = new RPCResult<Boolean>(false, "Target can not be empty");
-			}
+	public RPCResult<Void> deleteFile(AuthenticationToken authenticationToken, String target) {
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<Void>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<Void>(false, "Authentication failed");
+		if(target.isEmpty()) 
+			return new RPCResult<Void>(false, "Target may not be empty");
+			
+		RPCResult<Boolean> inUseResult = this.isInUse(authenticationToken, target);
+		if(inUseResult.isSucceeded() && !inUseResult.getData()) {
+			File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
+			boolean resultDelete = deleteRecursively(file);
+			return new RPCResult<Void>(resultDelete);
+		} else {
+			return createMessageFileInUse(authenticationToken, target);
 		}
-		return result;
 	}
 	
-	private RPCResult<Boolean> createMessageFileInUse(AuthenticationToken authenticationToken, String target) {
+	private RPCResult<Void> createMessageFileInUse(AuthenticationToken authenticationToken, String target) {
 		RPCResult<List<Task>> tasksResult = this.getUsingTasks(authenticationToken, target);
 		if(tasksResult.isSucceeded()) {
 			List<Task> tasks = tasksResult.getData();
@@ -186,9 +189,9 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			for(Task task : tasks) 
 				messageBuilder.append(task.getName() + ", ");
 			String message = messageBuilder.toString();
-			return new RPCResult<Boolean>(true, message.substring(0, message.length() - 2));
+			return new RPCResult<Void>(true, message.substring(0, message.length() - 2));
 		}
-		return new RPCResult<Boolean>(false, "Couldn't retrieve tasks using the file");
+		return new RPCResult<Void>(false, "Couldn't retrieve tasks using the file");
 	}
 
 	private boolean deleteRecursively(File file) {
@@ -213,123 +216,130 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	}
 
 	@Override
-	public RPCResult<Boolean> moveFile(AuthenticationToken authenticationToken, String target, String newTarget) { 
-		RPCResult<Boolean> result = new RPCResult<Boolean>(false, "Authentication failed");
-		if(authenticationService.isValidSession(authenticationToken).getData().getResult()) {
-			if(!target.trim().isEmpty()) {
-				if(!newTarget.trim().isEmpty() ) {
-					RPCResult<Boolean> inUseResult = this.isInUse(authenticationToken, target);
-					if(inUseResult.isSucceeded() && !inUseResult.getData()) {
-						inUseResult = this.isInUse(authenticationToken, newTarget);
-						if(inUseResult.isSucceeded() && !inUseResult.getData()) {
-							File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
-							File targetFile = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + newTarget);
-							if(file.getAbsolutePath().equals(targetFile.getAbsolutePath()))
-								return new RPCResult<Boolean>(true);
-							if(targetFile.exists())
-								return new RPCResult<Boolean>(false, "File does not exist");
-							try {
-								Files.move(file, targetFile);
-								result = new RPCResult<Boolean>(true, true);
-							} catch (IOException e) {
-								e.printStackTrace();
-								result = new RPCResult<Boolean>(false, "Couldn't move a file");
-							}
-						} else {
-							result = createMessageFileInUse(authenticationToken, newTarget);
-						}
-					} else {
-						result = createMessageFileInUse(authenticationToken, target);
-					}
-				} else {
-					result = new RPCResult<Boolean>(false, "New target can not be empty");
+	public RPCResult<Void> moveFile(AuthenticationToken authenticationToken, String target, String newTarget) { 
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<Void>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<Void>(false, "Authentication failed");
+		if(target.isEmpty()) 
+			return new RPCResult<Void>(false, "Target may not be empty");
+		if(newTarget.isEmpty())
+			return new RPCResult<Void>(false, "New Target may not be empty");
+		
+		RPCResult<Boolean> inUseResult = this.isInUse(authenticationToken, target);
+		if(inUseResult.isSucceeded() && !inUseResult.getData()) {
+			inUseResult = this.isInUse(authenticationToken, newTarget);
+			if(inUseResult.isSucceeded() && !inUseResult.getData()) {
+				File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
+				File targetFile = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + newTarget);
+				if(file.getAbsolutePath().equals(targetFile.getAbsolutePath()))
+					return new RPCResult<Void>(true);
+				if(targetFile.exists())
+					return new RPCResult<Void>(false, "File does not exist");
+				try {
+					Files.move(file, targetFile);
+					return new RPCResult<Void>(true);
+				} catch (IOException e) {
+					e.printStackTrace();
+					return new RPCResult<Void>(false, "Couldn't move a file");
 				}
 			} else {
-				result = new RPCResult<Boolean>(false, "Target can not be empty");
+				return createMessageFileInUse(authenticationToken, newTarget);
 			}
+		} else {
+			return createMessageFileInUse(authenticationToken, target);
 		}
-		return result;
 	}
 	
 	@Override
-	public RPCResult<Boolean> createDirectory(AuthenticationToken authenticationToken, String target, String directoryName) { 
-		RPCResult<Boolean> result = new RPCResult<Boolean>(false, "Authentication failed");
-		if(authenticationService.isValidSession(authenticationToken).getData().getResult()) {
-			if(!directoryName.trim().isEmpty()) {
-				RPCResult<Boolean> inUseResult = this.isInUse(authenticationToken, target);
-				if(inUseResult.isSucceeded() && !inUseResult.getData()) {
-					File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target + "//" + directoryName);
-					boolean resultMkDir = file.mkdir();
-					result = new RPCResult<Boolean>(true, resultMkDir);
-				} else {
-					result = createMessageFileInUse(authenticationToken, target);
-				}
-			} else {
-				result = new RPCResult<Boolean>(false, "Directory name can not be empty");
-			}
+	public RPCResult<Void> createDirectory(AuthenticationToken authenticationToken, String target, String directoryName) { 
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<Void>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<Void>(false, "Authentication failed");
+		if(target.isEmpty()) 
+			return new RPCResult<Void>(false, "Target may not be empty");
+		if(directoryName.trim().isEmpty()) 
+			return new RPCResult<Void>(false, "Directory name may not be empty");
+			
+		RPCResult<Boolean> inUseResult = this.isInUse(authenticationToken, target);
+		if(inUseResult.isSucceeded() && !inUseResult.getData()) {
+			File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target + "//" + directoryName);
+			boolean resultMkDir = file.mkdir();
+			return new RPCResult<Void>(resultMkDir);
+		} else {
+			return createMessageFileInUse(authenticationToken, target);
 		}
-		return result;
 	}
 
 	@Override
 	public RPCResult<Boolean> isDirectory(AuthenticationToken authenticationToken, String target) {
-		RPCResult<Boolean> result = new RPCResult<Boolean>(false, "Authentication failed");
-		if(authenticationService.isValidSession(authenticationToken).getData().getResult()) { 
-			File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
-			return new RPCResult<Boolean>(true, file.isDirectory());
-		}
-		return result;
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<Boolean>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<Boolean>(false, "Authentication failed");
+		File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
+		return new RPCResult<Boolean>(true, file.isDirectory());
 	}
 
 	@Override
 	public RPCResult<Boolean> isFile(AuthenticationToken authenticationToken, String target) {
-		RPCResult<Boolean> result = new RPCResult<Boolean>(false, "Authentication failed");
-		if(authenticationService.isValidSession(authenticationToken).getData().getResult()) { 
-			File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
-			return new RPCResult<Boolean>(true, file.isFile());
-		}
-		return result;
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<Boolean>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<Boolean>(false, "Authentication failed");
+		File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
+		return new RPCResult<Boolean>(true, file.isFile());
 	}
 
 	@Override
 	public RPCResult<List<String>> getDirectoriesFiles(AuthenticationToken authenticationToken, String target) {
-		RPCResult<List<String>> result = new RPCResult<List<String>>(false, "Authentication failed");
-		if(authenticationService.isValidSession(authenticationToken).getData().getResult()) { 
-			List<String> resultList = new LinkedList<String>();
-			File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
-			for(File child : file.listFiles())
-				if(child.isFile())
-					resultList.add(child.getName());
-			return new RPCResult<List<String>>(true, resultList);
-		}
-		return result;
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<List<String>>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<List<String>>(false, "Authentication failed");
+	
+		List<String> resultList = new LinkedList<String>();
+		File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
+		for(File child : file.listFiles())
+			if(child.isFile())
+				resultList.add(child.getName());
+		return new RPCResult<List<String>>(true, resultList);
 	}
 
 	@Override
 	public RPCResult<Void> createFile(AuthenticationToken authenticationToken, String target) {
-		RPCResult<Void> result = new RPCResult<Void>(false, "Authentication failed");
-		if(authenticationService.isValidSession(authenticationToken).getData().getResult()) { 
-			File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
-			try {
-				boolean createResult = file.createNewFile();
-				return new RPCResult<Void>(createResult, createResult ? "" : "creating file failed");
-			} catch (IOException e) {
-				e.printStackTrace();
-				return new RPCResult<Void>(false, "creating file failed");
-			}
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<Void>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<Void>(false, "Authentication failed");
+		File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
+		try {
+			boolean createResult = file.createNewFile();
+			return new RPCResult<Void>(createResult, createResult ? "" : "creating file failed");
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new RPCResult<Void>(false, "creating file failed");
 		}
-		return result;
 	}
 
 	@Override
 	public RPCResult<Integer> getDepth(AuthenticationToken authenticationToken, String target) {
-		RPCResult<Integer> result = new RPCResult<Integer>(false, "Authentication failed");
-		if(authenticationService.isValidSession(authenticationToken).getData().getResult()) { 
-			File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
-			int depth = this.getDepth(file);
-			return new RPCResult<Integer>(true, depth);
-		}
-		return result;
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<Integer>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<Integer>(false, "Authentication failed");
+		
+		File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
+		int depth = this.getDepth(file);
+		return new RPCResult<Integer>(true, depth);
 	}
 	
 	private int getDepth(File file) {
@@ -346,61 +356,68 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 
 	@Override
 	public RPCResult<Void> zipDirectory(AuthenticationToken authenticationToken, String target) {
-		RPCResult<Void> result = new RPCResult<Void>(false, "Authentication failed");
-		if(authenticationService.isValidSession(authenticationToken).getData().getResult()) { 
-			Zipper zipper = new Zipper();
-			try {
-				zipper.zip(authenticationToken.getUsername(), target);
-				return new RPCResult<Void>(true);
-			} catch (Exception e) {
-				e.printStackTrace();
-				return new RPCResult<Void>(false, "Zipping failed");
-			}
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<Void>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<Void>(false, "Authentication failed");
+		
+		Zipper zipper = new Zipper();
+		try {
+			zipper.zip(authenticationToken.getUsername(), target);
+			return new RPCResult<Void>(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new RPCResult<Void>(false, "Zipping failed");
 		}
-		return result;
 	}
 
 	@Override
 	public RPCResult<Void> setInUse(AuthenticationToken authenticationToken, boolean value, String target, Task task) {
-		RPCResult<Void> result = new RPCResult<Void>(false, "Authentication failed");
-		if(authenticationService.isValidSession(authenticationToken).getData().getResult()) { 
-			try {
-				FilesInUseDAO.getInstance().setInUse(value, target, task);
-				return new RPCResult<Void>(true);
-			} catch(Exception e) {
-				e.printStackTrace();
-				return new RPCResult<Void>(false, "Zipping failed");
-			}
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<Void>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<Void>(false, "Authentication failed");
+		
+		try {
+			FilesInUseDAO.getInstance().setInUse(value, target, task);
+			return new RPCResult<Void>(true);
+		} catch(Exception e) {
+			e.printStackTrace();
+			return new RPCResult<Void>(false, "Zipping failed");
 		}
-		return result;
 	}
 
 	@Override
 	public RPCResult<Boolean> isInUse(AuthenticationToken authenticationToken, String target) {
-		RPCResult<Boolean> result = new RPCResult<Boolean>(false, "Authentication failed");
-		if(authenticationService.isValidSession(authenticationToken).getData().getResult()) { 
-			try {
-				return new RPCResult<Boolean>(true, FilesInUseDAO.getInstance().isInUse(target));
-			} catch(Exception e) {
-				e.printStackTrace();
-				return new RPCResult<Boolean>(false, "Zipping failed");
-			}
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<Boolean>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<Boolean>(false, "Authentication failed");
+		try {
+			return new RPCResult<Boolean>(true, FilesInUseDAO.getInstance().isInUse(target));
+		} catch(Exception e) {
+			e.printStackTrace();
+			return new RPCResult<Boolean>(false, "Zipping failed");
 		}
-		return result;
 	}
 
 	@Override
 	public RPCResult<List<Task>> getUsingTasks(AuthenticationToken authenticationToken, String target) {
-		RPCResult<List<Task>> result = new RPCResult<List<Task>>(false, "Authentication failed");
-		if(authenticationService.isValidSession(authenticationToken).getData().getResult()) { 
-			try {
-				return new RPCResult<List<Task>>(true, FilesInUseDAO.getInstance().getUsingTasks(target));
-			} catch(Exception e) {
-				e.printStackTrace();
-				return new RPCResult<List<Task>>(false, "Internal Server Error");
-			}
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<List<Task>>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<List<Task>>(false, "Authentication failed");
+		
+		try {
+			return new RPCResult<List<Task>>(true, FilesInUseDAO.getInstance().getUsingTasks(target));
+		} catch(Exception e) {
+			e.printStackTrace();
+			return new RPCResult<List<Task>>(false, "Internal Server Error");
 		}
-		return result;
 	}
 	
 }

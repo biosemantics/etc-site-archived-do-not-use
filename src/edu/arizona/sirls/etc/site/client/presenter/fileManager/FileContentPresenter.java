@@ -14,6 +14,7 @@ import com.google.gwt.user.client.ui.Widget;
 import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileType;
 
 public class FileContentPresenter {
@@ -80,16 +81,18 @@ public class FileContentPresenter {
 		dialogBox.center();
 	}
 	
-	private class FileContentCallback implements AsyncCallback<String> {
+	private class FileContentCallback implements AsyncCallback<RPCResult<String>> {
 		@Override
 		public void onFailure(Throwable caught) {
 			caught.printStackTrace();
 			loadingPopup.stop();
 		}
 		@Override
-		public void onSuccess(String result) {
-			display.getTextArea().setText(result);
-			loadingPopup.stop();
+		public void onSuccess(RPCResult<String> result) {
+			if(result.isSucceeded()) {
+				display.getTextArea().setText(result.getData());
+				loadingPopup.stop();
+			}
 		}
 	}
 }

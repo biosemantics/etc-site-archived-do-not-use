@@ -15,6 +15,7 @@ import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.server.rpc.AuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationResult;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
+import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 
 public class DownloadServlet extends HttpServlet {
 
@@ -28,8 +29,9 @@ public class DownloadServlet extends HttpServlet {
 		String target = request.getParameter("target");
 		String directory = request.getParameter("directory");
 		
-		AuthenticationResult authenticationResult = authenticationService.isValidSession(new AuthenticationToken(username, sessionID));
-		if(authenticationResult.getResult()) { 	
+		RPCResult<AuthenticationResult> authenticationResult = 
+				authenticationService.isValidSession(new AuthenticationToken(username, sessionID));
+		if(authenticationResult.isSucceeded() && authenticationResult.getData().getResult()) { 	
 			int BUFFER = 1024 * 100;
 			response.setContentType("application/octet-stream");
 			if(directory.equals("yes")) {

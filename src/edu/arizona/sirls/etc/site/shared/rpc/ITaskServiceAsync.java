@@ -12,23 +12,23 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 
 public interface ITaskServiceAsync {
 
-	public void getAllTasks(AuthenticationToken authenticationToken, AsyncCallback<List<Task>> callback);
+	public void getAllTasks(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<List<Task>>> callback);
 	
-	public void getCreatedTasks(AuthenticationToken authenticationToken, AsyncCallback<List<Task>> callback);
+	public void getCreatedTasks(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<List<Task>>> callback);
 	
-	public void getSharedTasks(AuthenticationToken authenticationToken, AsyncCallback<List<Task>> callback);
+	public void getSharedTasks(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<List<Task>>> callback);
 	
-	public void addTask(AuthenticationToken authenticationToken, Task task, AsyncCallback<Task> callback);
+	public void addTask(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Task>> callback);
 
-	public void getPastTasks(AuthenticationToken authenticationToken, AsyncCallback<List<Task>> callback);
+	public void getPastTasks(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<List<Task>>> callback);
 
-	public void isResumable(AuthenticationToken authenticationToken, Task task, AsyncCallback<Boolean> callback);
+	public void isResumable(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Boolean>> callback);
 
-	public void isComplete(AuthenticationToken authenticationToken, Task task, AsyncCallback<Boolean> callback);
+	public void isComplete(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Boolean>> callback);
 
-	public void hasResumable(AuthenticationToken authenticationToken, AsyncCallback<Boolean> callback);
+	public void hasResumable(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<Boolean>> callback);
 	
-	public void getResumableTasks(AuthenticationToken authenticationToken, AsyncCallback<Map<Integer, Task>> callback); 
+	public void getResumableTasks(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<Map<Integer, Task>>> callback); 
 	
 	//public void cancelTask(AuthenticationToken authenticationToken, Task task, AsyncCallback<Void> callback);
 

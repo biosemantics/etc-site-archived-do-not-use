@@ -15,6 +15,7 @@ import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
+import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 
 public class OutputMatrixGenerationPresenter {
@@ -53,14 +54,14 @@ public class OutputMatrixGenerationPresenter {
 	public void go(final HasWidgets content, final MatrixGenerationTaskRun matrixGenerationTask) {
 		loadingPopup.start();
 		this.matrixGenerationTask = matrixGenerationTask;
-		matrixGenerationService.output(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTask, new AsyncCallback<Boolean>() {
+		matrixGenerationService.output(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTask, new AsyncCallback<RPCResult<Void>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
 				loadingPopup.stop();
 			}
 			@Override
-			public void onSuccess(Boolean result) {
+			public void onSuccess(RPCResult<Void> result) {
 				display.getOutputLabel().setText(matrixGenerationTask.getConfiguration().getOutput());
 				content.clear();
 				content.add(display.asWidget());

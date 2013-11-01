@@ -16,6 +16,7 @@ import edu.arizona.sirls.etc.site.client.event.MatrixGenerationEvent;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
+import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
@@ -52,14 +53,15 @@ public class ReviewMatrixGenerationPresenter {
 	
 	public void nextStep() {
 		matrixGenerationService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTask, 
-				TaskStageEnum.PARSE_TEXT, new AsyncCallback<MatrixGenerationTaskRun>() {
+				TaskStageEnum.PARSE_TEXT, new AsyncCallback<RPCResult<MatrixGenerationTaskRun>>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
 					}
 					@Override
-					public void onSuccess(MatrixGenerationTaskRun matrixGenerationTask) {
-						eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationTask));
+					public void onSuccess(RPCResult<MatrixGenerationTaskRun> matrixGenerationTask) {
+						if(matrixGenerationTask.isSucceeded())
+							eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationTask.getData()));
 					}
 		});
 	}
@@ -67,18 +69,21 @@ public class ReviewMatrixGenerationPresenter {
 	public void go(final HasWidgets content, MatrixGenerationTaskRun matrixGenerationTask) {
 		loadingPopup.start();
 		this.matrixGenerationTask = matrixGenerationTask;
-		matrixGenerationService.review(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTask, new AsyncCallback<MatrixGenerationTaskRun>() {
+		matrixGenerationService.review(Authentication.getInstance().getAuthenticationToken(), 
+				matrixGenerationTask, new AsyncCallback<RPCResult<MatrixGenerationTaskRun>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
 				loadingPopup.stop();
 			}
 			@Override
-			public void onSuccess(MatrixGenerationTaskRun matrixGenerationTask) {
-				display.getFrame().setUrl("http://biosemantics.arizona.edu:8080/OTOLite/?embed=true&uploadID=" + matrixGenerationTask.getConfiguration().getOtoId());
-				ReviewMatrixGenerationPresenter.this.matrixGenerationTask = matrixGenerationTask;
-				content.clear();
-				content.add(display.asWidget());
+			public void onSuccess(RPCResult<MatrixGenerationTaskRun> matrixGenerationTask) {
+				if(matrixGenerationTask.isSucceeded()) {
+					display.getFrame().setUrl("http://biosemantics.arizona.edu:8080/OTOLite/?embed=true&uploadID=" + matrixGenerationTask.getData().getConfiguration().getOtoId());
+					ReviewMatrixGenerationPresenter.this.matrixGenerationTask = matrixGenerationTask.getData();
+					content.clear();
+					content.add(display.asWidget());
+				}
 				loadingPopup.stop();
 			}
 		});

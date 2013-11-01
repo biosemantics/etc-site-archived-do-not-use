@@ -22,6 +22,7 @@ import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
+import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.ParseInvocation;
 
@@ -75,14 +76,14 @@ public class ParseMatrixGenerationPresenter {
 		loadingPopup.start();
 		display.setNonResumableStatus();
 		this.matrixGenerationTask = matrixGenerationTask;
-		matrixGenerationService.parse(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTask, new AsyncCallback<ParseInvocation>() {
+		matrixGenerationService.parse(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTask, new AsyncCallback<RPCResult<ParseInvocation>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
 				loadingPopup.stop();
 			}
 			@Override
-			public void onSuccess(ParseInvocation result) {		
+			public void onSuccess(RPCResult<ParseInvocation> result) {		
 				content.clear();
 				content.add(display.asWidget());
 				loadingPopup.stop();

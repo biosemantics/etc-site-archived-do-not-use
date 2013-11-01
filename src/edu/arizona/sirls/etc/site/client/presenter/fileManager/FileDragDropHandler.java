@@ -49,41 +49,48 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 			String targetPath = fileImageLabelComposite.getPath();
 			
 			if(!targetPath.contains(sourcePath)) {
-				fileService.isDirectory(Authentication.getInstance().getAuthenticationToken(), sourcePath, new AsyncCallback<Boolean>() {
+				fileService.isDirectory(Authentication.getInstance().getAuthenticationToken(), 
+						sourcePath, new AsyncCallback<RPCResult<Boolean>>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
 					}
 					@Override
-					public void onSuccess(Boolean isDirectory) {
-						String sourcePathParts[] = sourcePath.split("//");
-						String sourceName = sourcePathParts[sourcePathParts.length-1];
-						String targetAndAddonPath = fileImageLabelComposite.getPath() + "//" + sourceName;
-						if(fileImageLabelComposite.isFile())
-							targetAndAddonPath = getParentDirectory(fileImageLabelComposite.getPath()) + "//" + sourceName;
-						final int targetLevel = getLevel(targetAndAddonPath);
-						final String targetAndAddonPathFinal = targetAndAddonPath;
-						
-						if(isDirectory) {
-							fileService.getDepth(Authentication.getInstance().getAuthenticationToken(), sourcePath, new AsyncCallback<Integer>() {
-								@Override
-								public void onFailure(Throwable caught) {
-									caught.printStackTrace();
-								}
-								@Override
-								public void onSuccess(Integer sourceDepth) {
-									int overallDepth = targetLevel + (sourceDepth + 1);
-									if(overallDepth > Configuration.fileManagerMaxDepth) {
-										messagePresenter.setMessage("Only a directory depth of " + Configuration.fileManagerMaxDepth + " is allowed.");
-										messagePresenter.go();
-										return;
-									} else {
-										moveFile(sourcePath, targetAndAddonPathFinal);
+					public void onSuccess(RPCResult<Boolean> isDirectory) {
+						if(isDirectory.isSucceeded()) {
+							String sourcePathParts[] = sourcePath.split("//");
+							String sourceName = sourcePathParts[sourcePathParts.length-1];
+							String targetAndAddonPath = fileImageLabelComposite.getPath() + "//" + sourceName;
+							if(fileImageLabelComposite.isFile())
+								targetAndAddonPath = getParentDirectory(fileImageLabelComposite.getPath()) + "//" + sourceName;
+							final int targetLevel = getLevel(targetAndAddonPath);
+							final String targetAndAddonPathFinal = targetAndAddonPath;
+							
+							if(isDirectory.getData()) {
+								fileService.getDepth(Authentication.getInstance().getAuthenticationToken(), sourcePath, 
+										new AsyncCallback<RPCResult<Integer>>() {
+									
+									@Override
+									public void onFailure(Throwable caught) {
+										caught.printStackTrace();
 									}
-								}
-							});
-						} else {
-							moveFile(sourcePath, targetAndAddonPathFinal);
+									@Override
+									public void onSuccess(RPCResult<Integer> sourceDepth) {
+										if(sourceDepth.isSucceeded()) {
+											int overallDepth = targetLevel + (sourceDepth.getData() + 1);
+											if(overallDepth > Configuration.fileManagerMaxDepth) {
+												messagePresenter.setMessage("Only a directory depth of " + Configuration.fileManagerMaxDepth + " is allowed.");
+												messagePresenter.go();
+												return;
+											} else {
+												moveFile(sourcePath, targetAndAddonPathFinal);
+											}
+										}
+									}
+								});
+							} else {
+								moveFile(sourcePath, targetAndAddonPathFinal);
+							}
 						}
 					}
 					private int getLevel(String target) {
@@ -99,8 +106,8 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 	
 	protected void moveFile(String sourcePath, String targetPath) {
 		fileService.moveFile(Authentication.getInstance().getAuthenticationToken(), sourcePath, targetPath, 
-				new AsyncCallback<RPCResult>() {
-			public void onSuccess(RPCResult result) {
+				new AsyncCallback<RPCResult<Void>>() {
+			public void onSuccess(RPCResult<Void> result) {
 				if(result.isSucceeded()) {
 					notifyListeners();
 				}	

@@ -24,6 +24,7 @@ import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
+import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.LearnInvocation;
@@ -82,13 +83,15 @@ public class LearnMatrixGenerationPresenter {
 		
 		this.matrixGenerationTask = matrixGenerationTask;
 		matrixGenerationService.learn(Authentication.getInstance().getAuthenticationToken(),
-				matrixGenerationTask, new AsyncCallback<LearnInvocation>() { 
-			public void onSuccess(LearnInvocation result) {
-				display.setWords(result.getWords());
-				display.setSentences(result.getSentences());
-				content.clear();
-				content.add(display.asWidget());
-				loadingPopup.stop();
+				matrixGenerationTask, new AsyncCallback<RPCResult<LearnInvocation>>() { 
+			public void onSuccess(RPCResult<LearnInvocation> result) {
+				if(result.isSucceeded()) {
+					display.setWords(result.getData().getWords());
+					display.setSentences(result.getData().getSentences());
+					content.clear();
+					content.add(display.asWidget());
+					loadingPopup.stop();
+				}
 			}
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();

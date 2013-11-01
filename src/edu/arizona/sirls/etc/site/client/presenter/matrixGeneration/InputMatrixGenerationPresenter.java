@@ -27,6 +27,7 @@ import edu.arizona.sirls.etc.site.client.view.fileManager.SelectableFileTreeView
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
+import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 
@@ -112,14 +113,15 @@ public class InputMatrixGenerationPresenter /*implements IFileSelectClickHandler
 						display.getNameTextBox().getText(), 
 						taxonDescriptionFile.toString(), 
 						display.getGlossaryListBox().getItemText(display.getGlossaryListBox().getSelectedIndex()),
-						new AsyncCallback<MatrixGenerationTaskRun>() {
+						new AsyncCallback<RPCResult<MatrixGenerationTaskRun>>() {
 							@Override
 							public void onFailure(Throwable caught) {
 								caught.printStackTrace();
 							}
 							@Override
-							public void onSuccess(MatrixGenerationTaskRun result) {
-								eventBus.fireEvent(new MatrixGenerationEvent(result));
+							public void onSuccess(RPCResult<MatrixGenerationTaskRun> result) {
+								if(result.isSucceeded())
+									eventBus.fireEvent(new MatrixGenerationEvent(result.getData()));
 								//ConfigurationManager.getInstance().setMatrixGenerationConfiguration(result);
 							}
 				});

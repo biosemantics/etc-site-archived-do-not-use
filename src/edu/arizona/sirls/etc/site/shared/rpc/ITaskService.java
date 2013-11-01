@@ -15,23 +15,23 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 @RemoteServiceRelativePath("task")
 public interface ITaskService extends RemoteService {
 
-	public List<Task> getAllTasks(AuthenticationToken authenticationToken);
+	public RPCResult<List<Task>> getAllTasks(AuthenticationToken authenticationToken);
 	
-	public List<Task> getCreatedTasks(AuthenticationToken authenticationToken);
+	public RPCResult<List<Task>> getCreatedTasks(AuthenticationToken authenticationToken);
 	
-	public List<Task> getSharedTasks(AuthenticationToken authenticationToken);
+	public RPCResult<List<Task>> getSharedTasks(AuthenticationToken authenticationToken);
 	
-	public Task addTask(AuthenticationToken authenticationToken, Task task);
+	public RPCResult<Task> addTask(AuthenticationToken authenticationToken, Task task);
 	
-	public List<Task> getPastTasks(AuthenticationToken authenticationToken);
+	public RPCResult<List<Task>> getPastTasks(AuthenticationToken authenticationToken);
 	
-	public boolean isResumable(AuthenticationToken authenticationToken, Task task);
+	public RPCResult<Boolean> isResumable(AuthenticationToken authenticationToken, Task task);
 	
-	public boolean isComplete(AuthenticationToken authenticationToken, Task task);
+	public RPCResult<Boolean> isComplete(AuthenticationToken authenticationToken, Task task);
 	
-	public boolean hasResumable(AuthenticationToken authenticationToken);
+	public RPCResult<Boolean> hasResumable(AuthenticationToken authenticationToken);
 	
-	public Map<Integer, Task> getResumableTasks(AuthenticationToken authenticationToken);
+	public RPCResult<Map<Integer, Task>> getResumableTasks(AuthenticationToken authenticationToken);
 	
 	//public void cancelTask(AuthenticationToken authenticationToken, Task task);
 	

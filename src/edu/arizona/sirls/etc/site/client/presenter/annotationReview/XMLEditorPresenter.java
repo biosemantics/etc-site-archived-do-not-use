@@ -13,6 +13,7 @@ import edu.arizona.sirls.etc.site.client.view.annotationReview.XMLEditorView;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileFormatServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileSearchServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileType;
 import edu.arizona.sirls.etc.site.shared.rpc.file.search.Search;
 
@@ -46,26 +47,28 @@ public class XMLEditorPresenter implements Presenter, XMLEditorView.Presenter {
 	
 	@Override
 	public void onSaveButtonClicked() {
-		fileFormatService.isValidMarkedupTaxonDescriptionContent(new AuthenticationToken("test", ""), view.getText(), new AsyncCallback<Boolean>() {
+		fileFormatService.isValidMarkedupTaxonDescriptionContent(new AuthenticationToken("test", ""), view.getText(), new AsyncCallback<RPCResult<Boolean>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
 			}
 			@Override
-			public void onSuccess(Boolean result) {
-				if(result) {
-					fileAccessService.setFileContent(new AuthenticationToken("test", ""), target, view.getText(), new AsyncCallback<Boolean>() {
-						@Override
-						public void onFailure(Throwable caught) {
-							caught.printStackTrace();
-						}
-						@Override
-						public void onSuccess(Boolean result) {
-							Window.alert("Saved successfully");
-						}
-					});
-				} else {
-					Window.alert("Invalid format. Can't save.");
+			public void onSuccess(RPCResult<Boolean> result) {
+				if(result.isSucceeded()) {
+					if(result.getData()) {
+						fileAccessService.setFileContent(new AuthenticationToken("test", ""), target, view.getText(), new AsyncCallback<RPCResult<Void>>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								caught.printStackTrace();
+							}
+							@Override
+							public void onSuccess(RPCResult<Void> result) {
+								Window.alert("Saved successfully");
+							}
+						});
+					} else {
+						Window.alert("Invalid format. Can't save.");
+					}
 				}
 			}
 		});
@@ -80,17 +83,19 @@ public class XMLEditorPresenter implements Presenter, XMLEditorView.Presenter {
 	    }
 	    System.out.println(sb.toString());*/
 		
-		fileFormatService.isValidMarkedupTaxonDescriptionContent(new AuthenticationToken("test", ""), view.getText(), new AsyncCallback<Boolean>() {
+		fileFormatService.isValidMarkedupTaxonDescriptionContent(new AuthenticationToken("test", ""), view.getText(), new AsyncCallback<RPCResult<Boolean>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
 			}
 			@Override
-			public void onSuccess(Boolean result) {
-				if(result)
-					Window.alert("Valid format");
-				else
-					Window.alert("Invalid format");
+			public void onSuccess(RPCResult<Boolean> result) {
+				if(result.isSucceeded()) {
+					if(result.getData())
+						Window.alert("Valid format");
+					else
+						Window.alert("Invalid format");
+				}
 			}
 		});
 	}
@@ -99,14 +104,15 @@ public class XMLEditorPresenter implements Presenter, XMLEditorView.Presenter {
 	public void setTarget(String target) {
 		this.setEnabled(true);
 		this.target = target;
-		fileAccessService.getFileContentHighlighted(new AuthenticationToken("test", ""), target, FileType.TAXON_DESCRIPTION, new AsyncCallback<String>() {
+		fileAccessService.getFileContentHighlighted(new AuthenticationToken("test", ""), target, FileType.TAXON_DESCRIPTION, new AsyncCallback<RPCResult<String>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
 			}
 			@Override
-			public void onSuccess(String result) {
-				view.setText(result);
+			public void onSuccess(RPCResult<String> result) {
+				if(result.isSucceeded())
+					view.setText(result.getData());
 			}
 		}); 
 	}

@@ -143,53 +143,56 @@ public class TaskManagerPresenter {
 					switch(task.getTaskStage().getTaskType().getTaskTypeEnum()) {
 					case MATRIX_GENERATION:
 						matrixGenerationService.getMatrixGenerationTaskRun(Authentication.getInstance().getAuthenticationToken(), 
-								task, new AsyncCallback<MatrixGenerationTaskRun>() {
+								task, new AsyncCallback<RPCResult<MatrixGenerationTaskRun>>() {
 									@Override
 									public void onFailure(Throwable caught) {
 										caught.printStackTrace();
 									}
 									@Override
-									public void onSuccess(MatrixGenerationTaskRun result) {
-										eventBus.fireEvent(new MatrixGenerationEvent(result));
+									public void onSuccess(RPCResult<MatrixGenerationTaskRun> result) {
+										if(result.isSucceeded())
+											eventBus.fireEvent(new MatrixGenerationEvent(result.getData()));
 									}
 						});
 						break;
 					case TREE_GENERATION:
 						treeGenerationService.getTreeGenerationTask(Authentication.getInstance().getAuthenticationToken(), 
-								task, new AsyncCallback<TreeGenerationTaskRun>() {
+								task, new AsyncCallback<RPCResult<TreeGenerationTaskRun>>() {
 									@Override
 									public void onFailure(Throwable caught) {
 										caught.printStackTrace();
 									}
 									@Override
-									public void onSuccess(TreeGenerationTaskRun result) {
-										eventBus.fireEvent(new TreeGenerationEvent(result));
+									public void onSuccess(RPCResult<TreeGenerationTaskRun> result) {
+										if(result.isSucceeded())
+											eventBus.fireEvent(new TreeGenerationEvent(result.getData()));
 									}
 						});
 						break;
 					case TAXONOMY_COMPARISON:
 						taxonomyComparisonService.getTaxonomyComparisonTask(Authentication.getInstance().getAuthenticationToken(), 
-								task, new AsyncCallback<TaxonomyComparisonTaskRun>() {
+								task, new AsyncCallback<RPCResult<TaxonomyComparisonTaskRun>>() {
 									@Override
 									public void onFailure(Throwable caught) {
 										caught.printStackTrace();
 									}
 									@Override
-									public void onSuccess(TaxonomyComparisonTaskRun result) {
-										eventBus.fireEvent(new TaxonomyComparisonEvent(result));
+									public void onSuccess(RPCResult<TaxonomyComparisonTaskRun> result) {
+										eventBus.fireEvent(new TaxonomyComparisonEvent(result.getData()));
 									}
 						});
 						break;
 					case VISUALIZATION:
 						visualizationService.getVisualizationTask(Authentication.getInstance().getAuthenticationToken(), 
-								task, new AsyncCallback<VisualizationTaskRun>() {
+								task, new AsyncCallback<RPCResult<VisualizationTaskRun>>() {
 									@Override
 									public void onFailure(Throwable caught) {
 										caught.printStackTrace();
 									}
 									@Override
-									public void onSuccess(VisualizationTaskRun result) {
-										eventBus.fireEvent(new VisualizationEvent(result));
+									public void onSuccess(RPCResult<VisualizationTaskRun> result) {
+										if(result.isSucceeded())
+											eventBus.fireEvent(new VisualizationEvent(result.getData()));
 									}
 						});
 						break;
@@ -209,27 +212,31 @@ public class TaskManagerPresenter {
 					@Override
 					public void onClick(ClickEvent event) {
 						matrixGenerationService.getMatrixGenerationTaskRun(Authentication.getInstance().getAuthenticationToken(), 
-								task, new AsyncCallback<MatrixGenerationTaskRun>() {
+								task, new AsyncCallback<RPCResult<MatrixGenerationTaskRun>>() {
 									@Override
 									public void onFailure(Throwable caught) {
 										caught.printStackTrace();
 									}
 									@Override
-									public void onSuccess(MatrixGenerationTaskRun matrixGenerationTask) {
+									public void onSuccess(RPCResult<MatrixGenerationTaskRun> matrixGenerationTaskResult) {
 										//could also have a popup here asking for a new task name to use..										
 										
 										//pickup again from review
-										matrixGenerationService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTask, 
-												TaskStageEnum.REVIEW_TERMS ,new AsyncCallback<MatrixGenerationTaskRun>() {
-											@Override
-											public void onFailure(Throwable caught) {
-												caught.printStackTrace();
-											}
-											@Override
-											public void onSuccess(MatrixGenerationTaskRun matrixGenerationTask) {
-												eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationTask));
-											}
-										});
+										if(matrixGenerationTaskResult.isSucceeded()) { 
+											MatrixGenerationTaskRun matrixGenerationTask = matrixGenerationTaskResult.getData();
+											matrixGenerationService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTask, 
+													TaskStageEnum.REVIEW_TERMS ,new AsyncCallback<RPCResult<MatrixGenerationTaskRun>>() {
+												@Override
+												public void onFailure(Throwable caught) {
+													caught.printStackTrace();
+												}
+												@Override
+												public void onSuccess(RPCResult<MatrixGenerationTaskRun> matrixGenerationTask) {
+													if(matrixGenerationTask.isSucceeded())
+														eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationTask.getData()));
+												}
+											});
+										}
 									}
 						});
 					}
@@ -252,13 +259,13 @@ public class TaskManagerPresenter {
 		cancelImage.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				matrixGenerationService.cancel(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<Void>() {
+				matrixGenerationService.cancel(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Void>>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
 					}
 					@Override
-					public void onSuccess(Void result) {
+					public void onSuccess(RPCResult<Void> result) {
 						drawTable();
 						//display.getYourTasksTable().remove.removeRow(row);
 					}
@@ -316,24 +323,28 @@ public class TaskManagerPresenter {
 		
 		this.taskRowMap = new HashMap<Integer, Integer>();
 		taskService.getCreatedTasks(Authentication.getInstance().getAuthenticationToken(), 
-				new AsyncCallback<List<Task>>() {
+				new AsyncCallback<RPCResult<List<Task>>>() {
 					@Override
-					public void onSuccess(List<Task> result) {
-						DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("MM/dd/yyyy HH:mm");
-						
-						for(int i=1; i<=result.size(); i++) { 
-							final int j = i;
-							final Task task = result.get(i-1);
-							taskRowMap.put(task.getId(), i);
-
-							display.getYourTasksTable().setText(i, 0, task.getName());
-							display.getYourTasksTable().setText(i, 1, dateTimeFormat.format(task.getCreated()));
-							display.getYourTasksTable().setText(i, 2, task.getTaskStage().getTaskType().getTaskTypeEnum().displayName());
+					public void onSuccess(RPCResult<List<Task>> taskListResult) {
+						if(taskListResult.isSucceeded()) {
+							DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("MM/dd/yyyy HH:mm");
 							
-							Panel statusPanel = getStatusPanel(task);
-							display.getYourTasksTable().setWidget(i, 3, statusPanel);
-							Panel actionsPanel = getActionsPanel(task);
-							display.getYourTasksTable().setWidget(i, 4, actionsPanel);
+							List<Task> result = taskListResult.getData();
+							
+							for(int i=1; i<=result.size(); i++) { 
+								final int j = i;
+								final Task task = result.get(i-1);
+								taskRowMap.put(task.getId(), i);
+	
+								display.getYourTasksTable().setText(i, 0, task.getName());
+								display.getYourTasksTable().setText(i, 1, dateTimeFormat.format(task.getCreated()));
+								display.getYourTasksTable().setText(i, 2, task.getTaskStage().getTaskType().getTaskTypeEnum().displayName());
+								
+								Panel statusPanel = getStatusPanel(task);
+								display.getYourTasksTable().setWidget(i, 3, statusPanel);
+								Panel actionsPanel = getActionsPanel(task);
+								display.getYourTasksTable().setWidget(i, 4, actionsPanel);
+							}
 						}
 					}
 					@Override
@@ -342,41 +353,46 @@ public class TaskManagerPresenter {
 					}
 				});
 		
-			taskService.getPastTasks(Authentication.getInstance().getAuthenticationToken(), new AsyncCallback<List<Task>>() {
+			taskService.getPastTasks(Authentication.getInstance().getAuthenticationToken(), 
+					new AsyncCallback<RPCResult<List<Task>>>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					caught.printStackTrace();
 				}
 				@Override
-				public void onSuccess(List<Task> result) {
-					DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("MM/dd/yyyy HH:mm");
-					
-					for(int i=1; i<=result.size(); i++) { 
-						final int j = i;
-						final Task task = result.get(i-1);
-						Image cancelImage = new Image("images/revoke.jpg");
-						cancelImage.setSize("15px", "15px");
-						cancelImage.addClickHandler(new ClickHandler() {
-							@Override
-							public void onClick(ClickEvent event) {
-								matrixGenerationService.cancel(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<Void>() {
-									@Override
-									public void onFailure(Throwable caught) {
-										caught.printStackTrace();
-									}
-									@Override
-									public void onSuccess(Void result) {
-										drawTable();
-										//display.getHistoryTable().removeRow(j);
-									}
-								});
-							}
-						});
-						display.getHistoryTable().setText(i, 0, task.getName());
-						display.getHistoryTable().setText(i, 1, dateTimeFormat.format(task.getCreated()));
-						display.getHistoryTable().setText(i, 2, task.getTaskStage().getTaskType().getTaskTypeEnum().displayName());
-						Panel actionsPanel = getActionsPanel(task);
-						display.getHistoryTable().setWidget(i, 4, actionsPanel);
+				public void onSuccess(RPCResult<List<Task>> pastTasksResult) {
+					if(pastTasksResult.isSucceeded()) {
+						DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("MM/dd/yyyy HH:mm");
+	
+						List<Task> result = pastTasksResult.getData();
+						for(int i=1; i<=result.size(); i++) { 
+							final int j = i;
+							final Task task = result.get(i-1);
+							Image cancelImage = new Image("images/revoke.jpg");
+							cancelImage.setSize("15px", "15px");
+							cancelImage.addClickHandler(new ClickHandler() {
+								@Override
+								public void onClick(ClickEvent event) {
+									matrixGenerationService.cancel(Authentication.getInstance().getAuthenticationToken(), task, 
+											new AsyncCallback<RPCResult<Void>>() {
+										@Override
+										public void onFailure(Throwable caught) {
+											caught.printStackTrace();
+										}
+										@Override
+										public void onSuccess(RPCResult<Void> result) {
+											drawTable();
+											//display.getHistoryTable().removeRow(j);
+										}
+									});
+								}
+							});
+							display.getHistoryTable().setText(i, 0, task.getName());
+							display.getHistoryTable().setText(i, 1, dateTimeFormat.format(task.getCreated()));
+							display.getHistoryTable().setText(i, 2, task.getTaskStage().getTaskType().getTaskTypeEnum().displayName());
+							Panel actionsPanel = getActionsPanel(task);
+							display.getHistoryTable().setWidget(i, 4, actionsPanel);
+						}
 					}
 				}
 			});

@@ -15,12 +15,12 @@ public interface IFileService extends RemoteService {
 
 	public RPCResult<Tree<FileInfo>> getUsersFiles(AuthenticationToken authenticationToken, FileFilter fileFilter); 
 	
-	public RPCResult<Boolean> deleteFile(AuthenticationToken authenticationToken, String target);
+	public RPCResult<Void> deleteFile(AuthenticationToken authenticationToken, String target);
 
 	public RPCResult<Void> moveFile(AuthenticationToken authenticationToken, String target,
 			String newTarget);
 
-	public RPCResult<Boolean> createDirectory(AuthenticationToken authenticationToken, String target,
+	public RPCResult<Void> createDirectory(AuthenticationToken authenticationToken, String target,
 			String directoryName);
 
 	public RPCResult<Boolean> isDirectory(AuthenticationToken authenticationToken, String target);

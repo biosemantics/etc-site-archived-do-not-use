@@ -14,6 +14,7 @@ import edu.arizona.sirls.etc.site.client.event.LoginEvent;
 import edu.arizona.sirls.etc.site.client.view.MessageView;
 import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationResult;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 
 public class LoginButtonClickHandler implements ClickHandler {
 
@@ -52,13 +53,13 @@ public class LoginButtonClickHandler implements ClickHandler {
 		authenticationService.login(userName, password, loginCallback);
 	}
 	
-	private AsyncCallback<AuthenticationResult> loginCallback = new AsyncCallback<AuthenticationResult>() {
-		public void onSuccess(AuthenticationResult authenticationResult) {
-			if(authenticationResult.getResult()) {
+	private AsyncCallback<RPCResult<AuthenticationResult>> loginCallback = new AsyncCallback<RPCResult<AuthenticationResult>>() {
+		public void onSuccess(RPCResult<AuthenticationResult> authenticationResult) {
+			if(authenticationResult.isSucceeded() && authenticationResult.getData().getResult()) {
 				if(sourceDialogBox != null)
 					sourceDialogBox.hide();
-				eventBus.fireEvent(new LoginEvent(authenticationResult.getUsername(), 
-						authenticationResult.getSessionID()));
+				eventBus.fireEvent(new LoginEvent(authenticationResult.getData().getUsername(), 
+						authenticationResult.getData().getSessionID()));
 				eventBus.fireEvent(target);
 			} else {
 				messagePresenter.setMessage("Wrong username or password. Login failed.");

@@ -15,6 +15,7 @@ import edu.arizona.sirls.etc.site.client.view.annotationReview.SearchView;
 import edu.arizona.sirls.etc.site.client.view.fileManager.SelectableFileTreeView;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileSearchServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 import edu.arizona.sirls.etc.site.shared.rpc.file.search.Search;
 import edu.arizona.sirls.etc.site.shared.rpc.file.search.SearchResult;
@@ -41,14 +42,16 @@ public class SearchPresenter implements SearchView.Presenter {
 	public void onSearchButtonClicked(Search search) {
 		this.search = search;
 		if(search != null) {
-			fileSearchService.search(new AuthenticationToken("test", ""), input, search, new AsyncCallback<List<SearchResult>>() {
+			fileSearchService.search(new AuthenticationToken("test", ""), input, search,
+					new AsyncCallback<RPCResult<List<SearchResult>>>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					caught.printStackTrace();
 				}
 				@Override
-				public void onSuccess(List<SearchResult> result) {
-					eventBus.fireEvent(new SearchResultEvent(result));
+				public void onSuccess(RPCResult<List<SearchResult>> result) {
+					if(result.isSucceeded())
+						eventBus.fireEvent(new SearchResultEvent(result.getData()));
 				}
 			});
 		}

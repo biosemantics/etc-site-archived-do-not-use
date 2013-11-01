@@ -13,6 +13,7 @@ import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileImageLabelTreeItem;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileTreeView;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileInfo;
 
@@ -54,27 +55,29 @@ public class FileTreePresenter implements Presenter, FileTreeView.Presenter, IFi
 		loadingPopup.start();
 		
 		this.fileService.getUsersFiles(Authentication.getInstance().getAuthenticationToken(), FileFilter.ALL, 
-				new AsyncCallback<edu.arizona.sirls.etc.site.shared.rpc.Tree<FileInfo>>() {
-				public void onSuccess(edu.arizona.sirls.etc.site.shared.rpc.Tree<FileInfo> result) {
-					//retain "open" state of folders
-					Map<String, Boolean> retainedStates = getRetainedStates();
-					
-					//retain selection
-					String selectionTarget = fileSelectionHandler.getTarget();
-					
-					//remove previous data
-					view.getTree().clear();
-					
-					//decorate
-					FileTreeDecorator fileTreeDecorator = new FileTreeDecorator();
-					fileDragDropHandler.addListener(FileTreePresenter.this);
-					
-					if(enableDragAndDrop) 
-						fileTreeDecorator.decorate(view.getTree(), result, fileFilter, fileDragDropHandler, selectionTarget, retainedStates);
-					else
-						fileTreeDecorator.decorate(view.getTree(), result, fileFilter, null, selectionTarget, retainedStates);
-					
-					loadingPopup.stop();
+				new AsyncCallback<RPCResult<edu.arizona.sirls.etc.site.shared.rpc.Tree<FileInfo>>>() {
+				public void onSuccess(RPCResult<edu.arizona.sirls.etc.site.shared.rpc.Tree<FileInfo>> result) {
+					if(result.isSucceeded()) {
+						//retain "open" state of folders
+						Map<String, Boolean> retainedStates = getRetainedStates();
+						
+						//retain selection
+						String selectionTarget = fileSelectionHandler.getTarget();
+						
+						//remove previous data
+						view.getTree().clear();
+						
+						//decorate
+						FileTreeDecorator fileTreeDecorator = new FileTreeDecorator();
+						fileDragDropHandler.addListener(FileTreePresenter.this);
+						
+						if(enableDragAndDrop) 
+							fileTreeDecorator.decorate(view.getTree(), result.getData(), fileFilter, fileDragDropHandler, selectionTarget, retainedStates);
+						else
+							fileTreeDecorator.decorate(view.getTree(), result.getData(), fileFilter, null, selectionTarget, retainedStates);
+						
+						loadingPopup.stop();
+					}
 				}
 				private Map<String, Boolean> getRetainedStates() {
 					Map<String, Boolean> retainedStates = new HashMap<String, Boolean>();

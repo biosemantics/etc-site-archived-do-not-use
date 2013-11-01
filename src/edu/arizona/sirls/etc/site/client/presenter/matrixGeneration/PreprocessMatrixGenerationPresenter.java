@@ -23,6 +23,7 @@ import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.client.view.MessageView;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
+import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.BracketValidator;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.PreprocessedDescription;
@@ -81,7 +82,7 @@ public class PreprocessMatrixGenerationPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				loadingPopup.start();
-				store(new AsyncCallback<Boolean>() {
+				store(new AsyncCallback<RPCResult<Void>>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
@@ -89,7 +90,7 @@ public class PreprocessMatrixGenerationPresenter {
 						loadingPopup.stop();
 					}
 					@Override
-					public void onSuccess(Boolean result) {
+					public void onSuccess(RPCResult<Void> result) {
 						navigate();
 						loadingPopup.stop();
 					}
@@ -113,7 +114,7 @@ public class PreprocessMatrixGenerationPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				loadingPopup.start();
-				store(new AsyncCallback<Boolean>() {
+				store(new AsyncCallback<RPCResult<Void>>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
@@ -121,7 +122,7 @@ public class PreprocessMatrixGenerationPresenter {
 						loadingPopup.stop();
 					}
 					@Override
-					public void onSuccess(Boolean result) {
+					public void onSuccess(RPCResult<Void> result) {
 						navigate();
 						loadingPopup.stop();
 					}
@@ -154,22 +155,23 @@ public class PreprocessMatrixGenerationPresenter {
 			}
 
 			private void storeAndLeave() {
-				store(new AsyncCallback<Boolean>() {
+				store(new AsyncCallback<RPCResult<Void>>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
 					}
 					@Override
-					public void onSuccess(Boolean result) {	
+					public void onSuccess(RPCResult<Void> result) {	
 						matrixGenerationService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTask, 
-								TaskStageEnum.LEARN_TERMS, new AsyncCallback<MatrixGenerationTaskRun>() {
+								TaskStageEnum.LEARN_TERMS, new AsyncCallback<RPCResult<MatrixGenerationTaskRun>>() {
 									@Override
 									public void onFailure(Throwable caught) {
 										caught.printStackTrace();
 									}
 									@Override
-									public void onSuccess(MatrixGenerationTaskRun matrixGenerationTask) {
-										eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationTask));
+									public void onSuccess(RPCResult<MatrixGenerationTaskRun> matrixGenerationTask) {
+										if(matrixGenerationTask.isSucceeded())
+											eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationTask.getData()));
 									} 
 						});
 					}
@@ -188,7 +190,7 @@ public class PreprocessMatrixGenerationPresenter {
 		display.getPreviousDescriptionButton().setEnabled(true);
 	}
 
-	protected void store(AsyncCallback<Boolean> asyncCallback) {
+	protected void store(AsyncCallback<RPCResult<Void>> asyncCallback) {
 		String target = preprocessedDescriptions.get(currentPreprocessedDescription).getTarget();
 		String content = display.getTextArea().getText();
 		matrixGenerationService.setDescription(Authentication.getInstance().getAuthenticationToken(), 
@@ -199,7 +201,7 @@ public class PreprocessMatrixGenerationPresenter {
 		this.matrixGenerationTask = matrixGenerationTask;
 		loadingPopup.start();
 		matrixGenerationService.preprocess(Authentication.getInstance().getAuthenticationToken(), 
-				matrixGenerationTask, new AsyncCallback<List<PreprocessedDescription>>() {
+				matrixGenerationTask, new AsyncCallback<RPCResult<List<PreprocessedDescription>>>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
@@ -207,39 +209,41 @@ public class PreprocessMatrixGenerationPresenter {
 						loadingPopup.stop();
 					}
 					@Override
-					public void onSuccess(List<PreprocessedDescription> result) {
-						if(result.isEmpty()) {
+					public void onSuccess(RPCResult<List<PreprocessedDescription>> result) {
+						if(result.isSucceeded()) {
+							if(result.getData().isEmpty()) {
+								loadingPopup.stop();
+								matrixGenerationService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTask, 
+										TaskStageEnum.LEARN_TERMS, new AsyncCallback<RPCResult<MatrixGenerationTaskRun>>() {
+											@Override
+											public void onFailure(Throwable caught) {
+												caught.printStackTrace();
+											}
+											@Override
+											public void onSuccess(RPCResult<MatrixGenerationTaskRun> matrixGenerationTask) {
+												eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationTask.getData()));
+											}
+								});
+								return;
+							} else 
+								preprocessedDescriptions = result.getData();
+							display.getTextArea().setText("");
+							display.getBracketCountsHTML().setHTML("");
+							display.getDescriptionIDLabel().setText("");
+							enableDescriptionNavigation();
+							
+							if(preprocessedDescriptions.size() == 1)
+								disableDescriptionsNavigation();
+							currentPreprocessedDescription = 0;
+							
+							loadingPopup.start();
+							setPreprocessedDescription(preprocessedDescriptions.get(currentPreprocessedDescription));
 							loadingPopup.stop();
-							matrixGenerationService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTask, 
-									TaskStageEnum.LEARN_TERMS, new AsyncCallback<MatrixGenerationTaskRun>() {
-										@Override
-										public void onFailure(Throwable caught) {
-											caught.printStackTrace();
-										}
-										@Override
-										public void onSuccess(MatrixGenerationTaskRun matrixGenerationTask) {
-											eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationTask));
-										}
-							});
-							return;
-						} else 
-							preprocessedDescriptions = result;
-						display.getTextArea().setText("");
-						display.getBracketCountsHTML().setHTML("");
-						display.getDescriptionIDLabel().setText("");
-						enableDescriptionNavigation();
-						
-						if(preprocessedDescriptions.size() == 1)
-							disableDescriptionsNavigation();
-						currentPreprocessedDescription = 0;
-						
-						loadingPopup.start();
-						setPreprocessedDescription(preprocessedDescriptions.get(currentPreprocessedDescription));
-						loadingPopup.stop();
-						content.clear();
-						content.add(display.asWidget());
-
-						loadingPopup.stop();
+							content.clear();
+							content.add(display.asWidget());
+	
+							loadingPopup.stop();
+						}
 					}
 		});
 	}
@@ -248,14 +252,15 @@ public class PreprocessMatrixGenerationPresenter {
 	private void setPreprocessedDescription(final PreprocessedDescription preprocessedDescription) {
 		try {
 			matrixGenerationService.getDescription(Authentication.getInstance().getAuthenticationToken(), 
-					preprocessedDescription.getTarget(), new AsyncCallback<String>() {
+					preprocessedDescription.getTarget(), new AsyncCallback<RPCResult<String>>() {
 						@Override
 						public void onFailure(Throwable caught) {
 							caught.printStackTrace();
 						}
 						@Override
-						public void onSuccess(String result) {
-							setContent(preprocessedDescription.getFileName(), result, preprocessedDescription.getBracketCounts());
+						public void onSuccess(RPCResult<String> result) {
+							if(result.isSucceeded())
+								setContent(preprocessedDescription.getFileName(), result.getData(), preprocessedDescription.getBracketCounts());
 						}
 			});
 		} catch (Exception e) {

@@ -122,30 +122,32 @@ public class ManagableFileTreePresenter implements Presenter {
 		public void onClick(ClickEvent event) {
 			final String target = fileSelectionHandler.getTarget();
 			if(target != null && !target.isEmpty()) {
-				fileService.isDirectory(Authentication.getInstance().getAuthenticationToken(), target, new AsyncCallback<Boolean>() {
+				fileService.isDirectory(Authentication.getInstance().getAuthenticationToken(), target, new AsyncCallback<RPCResult<Boolean>>() {
 					@Override
 					public void onFailure(Throwable caught) {
 					
 					}
 					@Override
-					public void onSuccess(Boolean result) {
-						if(result) {
-							fileService.zipDirectory(Authentication.getInstance().getAuthenticationToken(), target, new AsyncCallback<Void>() {
-								@Override
-								public void onFailure(Throwable caught) {
-									caught.printStackTrace();
-								}
-								@Override
-								public void onSuccess(Void result) {
-									Window.open("/etcsite/download/?target=" + target + "&directory=yes&username=" + Authentication.getInstance().getUsername() + "&" + 
-											"sessionID=" + Authentication.getInstance().getSessionID()
-											, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes");
-								}
-							});
-						} else {
-							Window.open("/etcsite/download/?target=" + target + "&username=" + Authentication.getInstance().getUsername() + "&" + 
-									"sessionID=" + Authentication.getInstance().getSessionID()
-									, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes");
+					public void onSuccess(RPCResult<Boolean> result) {
+						if(result.isSucceeded()) {
+							if(result.getData()) {
+								fileService.zipDirectory(Authentication.getInstance().getAuthenticationToken(), target, new AsyncCallback<RPCResult<Void>>() {
+									@Override
+									public void onFailure(Throwable caught) {
+										caught.printStackTrace();
+									}
+									@Override
+									public void onSuccess(RPCResult<Void> result) {
+										Window.open("/etcsite/download/?target=" + target + "&directory=yes&username=" + Authentication.getInstance().getUsername() + "&" + 
+												"sessionID=" + Authentication.getInstance().getSessionID()
+												, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes");
+									}
+								});
+							} else {
+								Window.open("/etcsite/download/?target=" + target + "&username=" + Authentication.getInstance().getUsername() + "&" + 
+										"sessionID=" + Authentication.getInstance().getSessionID()
+										, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes");
+							}
 						}
 					} 
 				});
@@ -161,13 +163,13 @@ public class ManagableFileTreePresenter implements Presenter {
 		public void onClick(ClickEvent event) {
 			String target = fileSelectionHandler.getTarget();
 			if(target != null && !target.isEmpty()) {
-				fileService.deleteFile(Authentication.getInstance().getAuthenticationToken(), target, new AsyncCallback<RPCResult>(){
+				fileService.deleteFile(Authentication.getInstance().getAuthenticationToken(), target, new AsyncCallback<RPCResult<Void>>(){
 					@Override
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
 					}
 					@Override
-					public void onSuccess(RPCResult result) {
+					public void onSuccess(RPCResult<Void> result) {
 						fileSelectionHandler.clear();
 						fileTreePresenter.refresh();
 					}
@@ -220,8 +222,8 @@ public class ManagableFileTreePresenter implements Presenter {
 				pathParts[pathParts.length-1] = newFileName;
 				final String newTarget = getTargetFromParts(pathParts);
 				fileService.moveFile(Authentication.getInstance().getAuthenticationToken(), target, newTarget, 
-						new AsyncCallback<RPCResult>() {
-					public void onSuccess(RPCResult result) {
+						new AsyncCallback<RPCResult<Void>>() {
+					public void onSuccess(RPCResult<Void> result) {
 						if(result.isSucceeded()) {
 							fileSelectionHandler.setTarget(newTarget);
 							fileTreePresenter.refresh();
@@ -270,30 +272,32 @@ public class ManagableFileTreePresenter implements Presenter {
 		@Override
 		public void confirmed(final String directoryName) {
 			final String target = fileSelectionHandler.getTarget();
-			fileService.isDirectory(Authentication.getInstance().getAuthenticationToken(), target, new AsyncCallback<Boolean>() {
+			fileService.isDirectory(Authentication.getInstance().getAuthenticationToken(), target, new AsyncCallback<RPCResult<Boolean>>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					caught.printStackTrace();
 				}
 				@Override
-				public void onSuccess(Boolean result) {
+				public void onSuccess(RPCResult<Boolean> result) {
 					String newTarget = target;
-					if(!result)
-						newTarget = target.substring(0, target.lastIndexOf("//"));
-					fileService.createDirectory(Authentication.getInstance().getAuthenticationToken(), newTarget, directoryName, 
-							new AsyncCallback<RPCResult>() {
-						public void onSuccess(RPCResult result) {
-							if (result.isSucceeded()) {
-								fileTreePresenter.refresh();
-							} else {
-								messagePresenter.setMessage("Could not create directory.");
-								messagePresenter.go();
+					if(result.isSucceeded()) {
+						if(!result.getData())
+							newTarget = target.substring(0, target.lastIndexOf("//"));
+						fileService.createDirectory(Authentication.getInstance().getAuthenticationToken(), newTarget, directoryName, 
+								new AsyncCallback<RPCResult<Void>>() {
+							public void onSuccess(RPCResult<Void> result) {
+								if (result.isSucceeded()) {
+									fileTreePresenter.refresh();
+								} else {
+									messagePresenter.setMessage("Could not create directory.");
+									messagePresenter.go();
+								}
 							}
-						}
-						public void onFailure(Throwable caught) {
-							caught.printStackTrace();
-						}
-					});
+							public void onFailure(Throwable caught) {
+								caught.printStackTrace();
+							}
+						});
+					}
 				}
 			});
 		}

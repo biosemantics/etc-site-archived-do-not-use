@@ -6,6 +6,7 @@ import edu.arizona.sirls.etc.site.server.rpc.FileAccessService;
 import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationResult;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
+import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.file.CSVValidator;
 import edu.arizona.sirls.etc.site.shared.rpc.file.IContentValidator;
 import edu.arizona.sirls.etc.site.shared.rpc.file.XMLValidator;
@@ -67,8 +68,9 @@ public class UploadServlet extends UploadAction {
 		String target = request.getParameter("target");
 		
 		IAuthenticationService authenticationService = new AuthenticationService();
-		AuthenticationResult authenticationResult = authenticationService.isValidSession(new AuthenticationToken(username, sessionID));
-		if(authenticationResult.getResult()) { 	
+		RPCResult<AuthenticationResult> authenticationResult = 
+				authenticationService.isValidSession(new AuthenticationToken(username, sessionID));
+		if(authenticationResult.isSucceeded() && authenticationResult.getData().getResult()) {
 			int cont = 0;
 			for (FileItem item : sessionFiles) {
 				if (false == item.isFormField()) {

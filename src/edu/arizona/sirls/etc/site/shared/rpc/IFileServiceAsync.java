@@ -14,13 +14,13 @@ public interface IFileServiceAsync {
 	public void getUsersFiles(AuthenticationToken authenticationToken, FileFilter fileFilter, AsyncCallback<RPCResult<Tree<FileInfo>>> callback);
 
 	public void deleteFile(AuthenticationToken authenticationToken, String target,
-			AsyncCallback<RPCResult<Boolean>> callback);
+			AsyncCallback<RPCResult<Void>> callback);
 	
 	public void moveFile(AuthenticationToken authenticationToken, String target,
 			String newTarget, AsyncCallback<RPCResult<Void>> callback);
 
 	public void createDirectory(AuthenticationToken authenticationToken, String target,
-			String directoryName, AsyncCallback<RPCResult<Boolean>> callback);
+			String directoryName, AsyncCallback<RPCResult<Void>> callback);
 	
 	public void isDirectory(AuthenticationToken authenticationToken, String target, AsyncCallback<RPCResult<Boolean>> callback);
 	

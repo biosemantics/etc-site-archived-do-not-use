@@ -24,14 +24,14 @@ public interface IMatrixGenerationServiceAsync {
 
 	public void parse(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask, AsyncCallback<RPCResult<ParseInvocation>> callback);
 	
-	public void output(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask, AsyncCallback<RPCResult<Boolean>> callback);
+	public void output(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask, AsyncCallback<RPCResult<Void>> callback);
 
 	public void goToTaskStage(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask, TaskStageEnum taskStage, 
 			AsyncCallback<RPCResult<MatrixGenerationTaskRun>> callback);
 	
 	public void getDescription(AuthenticationToken authenticationToken, String target, AsyncCallback<RPCResult<String>> callback);
 	
-	public void setDescription(AuthenticationToken authenticationToken, String target, String description, AsyncCallback<RPCResult<Boolean>> callback);
+	public void setDescription(AuthenticationToken authenticationToken, String target, String description, AsyncCallback<RPCResult<Void>> callback);
 
 	public void getLatestResumable(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<MatrixGenerationTaskRun>> asyncCallback);
 

@@ -26,13 +26,13 @@ public interface IMatrixGenerationService extends RemoteService {
 	
 	public RPCResult<ParseInvocation> parse(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask);
 	
-	public RPCResult<Boolean> output(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask);
+	public RPCResult<Void> output(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask);
 
 	public RPCResult<MatrixGenerationTaskRun> goToTaskStage(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask, TaskStageEnum taskStage);
 
 	public RPCResult<String> getDescription(AuthenticationToken authenticationToken, String target);
 	
-	public RPCResult<Boolean> setDescription(AuthenticationToken authenticationToken, String target, String description);
+	public RPCResult<Void> setDescription(AuthenticationToken authenticationToken, String target, String description);
 	
 	public RPCResult<MatrixGenerationTaskRun> getLatestResumable(AuthenticationToken authenticationToken);
 	

@@ -7,6 +7,6 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 
 public interface ITreeGenerationServiceAsync {
 
-	public void getTreeGenerationTask(AuthenticationToken authenticationToken, Task task, AsyncCallback<TreeGenerationTaskRun> asyncCallback);
+	public void getTreeGenerationTask(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<TreeGenerationTaskRun>> asyncCallback);
 
 }
