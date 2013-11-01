@@ -15,30 +15,30 @@ import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 @RemoteServiceRelativePath("matrixGeneration")
 public interface IMatrixGenerationService extends RemoteService {
 
-	public MatrixGenerationTaskRun start(AuthenticationToken authenticationToken, String taskName, 
+	public RPCResult<MatrixGenerationTaskRun> start(AuthenticationToken authenticationToken, String taskName, 
 			String input, String glossaryName);
 	
-	public List<PreprocessedDescription> preprocess(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask);
+	public RPCResult<List<PreprocessedDescription>> preprocess(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask);
 	
-	public LearnInvocation learn(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask);
+	public RPCResult<LearnInvocation> learn(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask);
 
-	public MatrixGenerationTaskRun review(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask);
+	public RPCResult<MatrixGenerationTaskRun> review(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask);
 	
-	public ParseInvocation parse(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask);
+	public RPCResult<ParseInvocation> parse(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask);
 	
-	public boolean output(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask);
+	public RPCResult<Boolean> output(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask);
 
-	public MatrixGenerationTaskRun goToTaskStage(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask, TaskStageEnum taskStage);
+	public RPCResult<MatrixGenerationTaskRun> goToTaskStage(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask, TaskStageEnum taskStage);
 
-	public String getDescription(AuthenticationToken authenticationToken, String target);
+	public RPCResult<String> getDescription(AuthenticationToken authenticationToken, String target);
 	
-	public boolean setDescription(AuthenticationToken authenticationToken, String target, String description);
+	public RPCResult<Boolean> setDescription(AuthenticationToken authenticationToken, String target, String description);
 	
-	public MatrixGenerationTaskRun getLatestResumable(AuthenticationToken authenticationToken);
+	public RPCResult<MatrixGenerationTaskRun> getLatestResumable(AuthenticationToken authenticationToken);
 	
-	public MatrixGenerationTaskRun getMatrixGenerationTaskRun(AuthenticationToken authenticationToken, Task task);
+	public RPCResult<MatrixGenerationTaskRun> getMatrixGenerationTaskRun(AuthenticationToken authenticationToken, Task task);
 	
-	public void cancel(AuthenticationToken authenticationToken, Task task);
+	public RPCResult<Void> cancel(AuthenticationToken authenticationToken, Task task);
 
 	
 	

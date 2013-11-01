@@ -9,5 +9,6 @@ public class Configuration {
 	public static final String zipFileBase = "C://test//zipFiles";
 	public static final String markedUpTaxonDescriptionSchemaFile = "C://test//markedUpSchema.xml";
 	public static final String xPathObjectModel = NamespaceConstant.OBJECT_MODEL_SAXON;
+	public static final int fileManagerMaxDepth = 3;
 
 }

@@ -7,6 +7,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.db.Share;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 
 public interface ITaskServiceAsync {
@@ -32,5 +33,11 @@ public interface ITaskServiceAsync {
 	//public void cancelTask(AuthenticationToken authenticationToken, Task task, AsyncCallback<Void> callback);
 
 	//public void getLatestResumableTask(AuthenticationToken authenticationToken, TaskTypeEnum taskType, AsyncCallback<Task> callback);
+	
+	public void addShare(AuthenticationToken authenticationToken, Share share, AsyncCallback<RPCResult<Share>> callback);
+	
+	public void getOwnedShares(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<List<Share>>> callback);
+	
+	public void getInvitedShares(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<List<Share>>> callback);
 	
 }

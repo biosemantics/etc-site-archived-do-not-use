@@ -15,9 +15,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.presenter.MessagePresenter;
 import edu.arizona.sirls.etc.site.client.view.MessageView;
+import edu.arizona.sirls.etc.site.server.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
-import edu.arizona.sirls.etc.site.shared.rpc.MessageResult;
+import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 
 public class FileDragDropHandler implements DragStartHandler, DropHandler, DragOverHandler {
 
@@ -72,8 +73,8 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 								@Override
 								public void onSuccess(Integer sourceDepth) {
 									int overallDepth = targetLevel + (sourceDepth + 1);
-									if(overallDepth > 2) {
-										messagePresenter.setMessage("Only a directory depth of two is allowed.");
+									if(overallDepth > Configuration.fileManagerMaxDepth) {
+										messagePresenter.setMessage("Only a directory depth of " + Configuration.fileManagerMaxDepth + " is allowed.");
 										messagePresenter.go();
 										return;
 									} else {
@@ -98,8 +99,8 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 	
 	protected void moveFile(String sourcePath, String targetPath) {
 		fileService.moveFile(Authentication.getInstance().getAuthenticationToken(), sourcePath, targetPath, 
-				new AsyncCallback<MessageResult>() {
-			public void onSuccess(MessageResult result) {
+				new AsyncCallback<RPCResult>() {
+			public void onSuccess(RPCResult result) {
 				if(result.isSucceeded()) {
 					notifyListeners();
 				}	

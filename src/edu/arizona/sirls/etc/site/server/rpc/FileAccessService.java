@@ -30,9 +30,12 @@ import com.uwyn.jhighlight.renderer.XhtmlRendererFactory;
 
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.server.Configuration;
+import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationResult;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileSearchService;
+import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
+import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFormatter;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileType;
 import edu.arizona.sirls.etc.site.shared.rpc.file.XMLFileFormatter;
@@ -44,30 +47,35 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 	private IAuthenticationService authenticationService = new AuthenticationService();
 	
 	@Override
-	public boolean setFileContent(AuthenticationToken authenticationToken, String target, String content) {
-		boolean result = false;
-		if(authenticationService.isValidSession(authenticationToken).getResult() && !target.trim().isEmpty()) { 
-			File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
-			if(file.exists() && file.isFile()) {
-				try {
-					Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
-					writer.append(content);
-					writer.flush();
-					writer.close();
-					result = true;
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+	public RPCResult<Boolean> setFileContent(AuthenticationToken authenticationToken, String target, String content) {
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<Boolean>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<Boolean>(false, "Authentication failed");
+		if(target.trim().isEmpty()) 
+			return new RPCResult<Boolean>(false, "Target may not be empty");
+		
+		File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
+		if(file.exists() && file.isFile()) {
+			try {
+				Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
+				writer.append(content);
+				writer.flush();
+				writer.close();
+				return new RPCResult<Boolean>(true, true);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return new RPCResult<Boolean>(false, "Internal Server Error");
 			}
 		}
-		return result;
+		return new RPCResult<Boolean>(false, "Target does not exist or is not a file");
 	}
 
 	@Override
-	public String getFileContent(AuthenticationToken authenticationToken,
-			String target) {
-		String result = null;
-		if(authenticationService.isValidSession(authenticationToken).getResult() && !target.trim().isEmpty()) { 
+	public RPCResult<String> getFileContent(AuthenticationToken authenticationToken, String target) {
+		RPCResult<String> result = new RPCResult<String>(false, "", "Authentication failed");
+		if(authenticationService.isValidSession(authenticationToken).getData().getResult() && !target.trim().isEmpty()) { 
 			File file = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + target);
 			if(file.exists() && file.isFile()) {
 				try {
@@ -78,7 +86,7 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 				        stringBuilder.append(line);
 				        stringBuilder.append("\n");
 				    }
-				    result = stringBuilder.toString();
+				    result = new RPCResult<String>(true, "", stringBuilder.toString());
 					reader.close();
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -89,23 +97,29 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 	}
 
 	@Override
-	public String getFileContent(AuthenticationToken authenticationToken, String target, FileType fileType) {
-		return new FileFormatter().format(getFileContent(authenticationToken, target), fileType);
+	public RPCResult<String> getFileContent(AuthenticationToken authenticationToken, String target, FileType fileType) {
+		RPCResult<String> fileContentResult = getFileContent(authenticationToken, target);
+		if(fileContentResult.isSucceeded()) 
+			return new RPCResult<String>(true, "", new FileFormatter().format(fileContentResult.getData(), fileType));
+		return fileContentResult;
 	}
 
 	@Override
-	public String getFileContentHighlighted(AuthenticationToken authenticationToken, String target, FileType fileType) {
-		String content = getFileContent(authenticationToken, target, fileType);		
-		MyXmlXhtmlRenderer renderer = new MyXmlXhtmlRenderer();
-		//Renderer renderer = XhtmlRendererFactory.getRenderer(XhtmlRendererFactory.XML); 
-		OutputStream out = new ByteArrayOutputStream();
-		try {
-			renderer.highlight(null, IOUtils.toInputStream(content), out, "UTF-8", false);
-		} catch (IOException e) {
-			e.printStackTrace();
+	public RPCResult<String> getFileContentHighlighted(AuthenticationToken authenticationToken, String target, FileType fileType) {
+		RPCResult<String> fileContentResult = getFileContent(authenticationToken, target);
+		if(fileContentResult.isSucceeded()) {
+			MyXmlXhtmlRenderer renderer = new MyXmlXhtmlRenderer();
+			//Renderer renderer = XhtmlRendererFactory.getRenderer(XhtmlRendererFactory.XML); 
+			OutputStream out = new ByteArrayOutputStream();
+			try {
+				renderer.highlight(null, IOUtils.toInputStream(fileContentResult.getData()), out, "UTF-8", false);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			String outString = out.toString();
+			return new RPCResult<String>(true, "", outString);
 		}
-		String outString = out.toString();
-		return outString;
+		return fileContentResult;
 
 		/*try {
 			TransformerFactory tf = TransformerFactory.newInstance();

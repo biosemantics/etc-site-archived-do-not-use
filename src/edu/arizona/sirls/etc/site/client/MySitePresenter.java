@@ -111,6 +111,8 @@ import edu.arizona.sirls.etc.site.shared.rpc.ITaxonomyComparisonService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaxonomyComparisonServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ITreeGenerationService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITreeGenerationServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.IUserService;
+import edu.arizona.sirls.etc.site.shared.rpc.IUserServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IVisualizationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IVisualizationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
@@ -130,6 +132,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	private final ITreeGenerationServiceAsync treeGenerationService = GWT.create(ITreeGenerationService.class);
 	private final ITaxonomyComparisonServiceAsync taxonomyComparisonService = GWT.create(ITaxonomyComparisonService.class);
 	private final IVisualizationServiceAsync visualizationService = GWT.create(IVisualizationService.class);
+	private final IUserServiceAsync userService = GWT.create(IUserService.class);
 	
 	private HandlerManager eventBus;
 	
@@ -508,7 +511,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 						if (taskManagerPresenter == null) {
 							taskManagerPresenter = new TaskManagerPresenter(eventBus, 
 									new TaskManagerView(), taskService, matrixGenerationService, 
-									treeGenerationService, taxonomyComparisonService, visualizationService);
+									treeGenerationService, taxonomyComparisonService, visualizationService, userService);
 						}
 						taskManagerPresenter.go(content);
 					}

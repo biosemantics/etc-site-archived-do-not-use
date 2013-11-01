@@ -7,12 +7,14 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationResult;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
+import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 
 /**
  * The server side implementation of the RPC service.
  */
-@SuppressWarnings("serial")
 public class AuthenticationService extends RemoteServiceServlet implements IAuthenticationService {
+
+	private static final long serialVersionUID = 5337745818086392785L;
 
 	@Override
 	protected void doUnexpectedFailure(Throwable t) {
@@ -21,20 +23,20 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	}
 	
 	@Override
-	public AuthenticationResult login(String user, String password) {
+	public RPCResult<AuthenticationResult> login(String user, String password) {
 		String hash = BCrypt.hashpw(password, BCrypt.gensalt());
 		//(create new user entry in db storing ONLY username and hash, *NOT* the password).
-		if(user.equals("test"))
-			return new AuthenticationResult(true, "sessionID", user);
-		return new AuthenticationResult(false, null, null);
+		if(user.equals("test") || user.equals("test2"))
+			return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(true, "sessionID", user));
+		return new RPCResult<AuthenticationResult>(true, "Authentication failed", new AuthenticationResult(false, null, null));
 	}
 
 	@Override
-	public AuthenticationResult isValidSession(AuthenticationToken authentication) {
+	public RPCResult<AuthenticationResult> isValidSession(AuthenticationToken authentication) {
 		String sessionID = authentication.getSessionID();
 		if(sessionID != null)
-			return new AuthenticationResult(true, sessionID, "test");
-		return new AuthenticationResult(false, null, null);
+			return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(true, sessionID, authentication.getUsername()));
+		return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(false, null, null));
 	}
 	
 	

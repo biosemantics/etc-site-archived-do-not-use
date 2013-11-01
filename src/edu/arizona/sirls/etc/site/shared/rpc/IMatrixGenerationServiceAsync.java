@@ -14,29 +14,30 @@ import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 public interface IMatrixGenerationServiceAsync {
 
 	public void start(AuthenticationToken authenticationToken, String taskName, 
-			String input, String glossaryName, AsyncCallback<MatrixGenerationTaskRun> callback);
+			String input, String glossaryName, AsyncCallback<RPCResult<MatrixGenerationTaskRun>> callback);
 	
-	public void preprocess(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask, AsyncCallback<List<PreprocessedDescription>> callback);
+	public void preprocess(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask, AsyncCallback<RPCResult<List<PreprocessedDescription>>> callback);
 
-	public void learn(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask, AsyncCallback<LearnInvocation> callback);
+	public void learn(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask, AsyncCallback<RPCResult<LearnInvocation>> callback);
 	
-	public void review(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask, AsyncCallback<MatrixGenerationTaskRun> callback);
+	public void review(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask, AsyncCallback<RPCResult<MatrixGenerationTaskRun>> callback);
 
-	public void parse(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask, AsyncCallback<ParseInvocation> callback);
+	public void parse(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask, AsyncCallback<RPCResult<ParseInvocation>> callback);
 	
-	public void output(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask, AsyncCallback<Boolean> callback);
+	public void output(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask, AsyncCallback<RPCResult<Boolean>> callback);
 
-	public void goToTaskStage(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask, TaskStageEnum taskStage, AsyncCallback<MatrixGenerationTaskRun> callback);
+	public void goToTaskStage(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask, TaskStageEnum taskStage, 
+			AsyncCallback<RPCResult<MatrixGenerationTaskRun>> callback);
 	
-	public void getDescription(AuthenticationToken authenticationToken, String target, AsyncCallback<String> callback);
+	public void getDescription(AuthenticationToken authenticationToken, String target, AsyncCallback<RPCResult<String>> callback);
 	
-	public void setDescription(AuthenticationToken authenticationToken, String target, String description, AsyncCallback<Boolean> callback);
+	public void setDescription(AuthenticationToken authenticationToken, String target, String description, AsyncCallback<RPCResult<Boolean>> callback);
 
-	public void getLatestResumable(AuthenticationToken authenticationToken, AsyncCallback<MatrixGenerationTaskRun> asyncCallback);
+	public void getLatestResumable(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<MatrixGenerationTaskRun>> asyncCallback);
 
-	public void getMatrixGenerationTaskRun(AuthenticationToken authenticationToken, Task task, AsyncCallback<MatrixGenerationTaskRun> callback);
+	public void getMatrixGenerationTaskRun(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<MatrixGenerationTaskRun>> callback);
 	
-	public void cancel(AuthenticationToken authenticationToken, Task task, AsyncCallback<Void> callback);
+	public void cancel(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Void>> callback);
 
 	
 	

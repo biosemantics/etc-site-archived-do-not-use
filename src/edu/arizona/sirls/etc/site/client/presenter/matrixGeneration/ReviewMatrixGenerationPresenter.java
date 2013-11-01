@@ -75,7 +75,7 @@ public class ReviewMatrixGenerationPresenter {
 			}
 			@Override
 			public void onSuccess(MatrixGenerationTaskRun matrixGenerationTask) {
-				display.getFrame().setUrl("http://biosemantics.arizona.edu:8080/OTOLite/?uploadID=" + matrixGenerationTask.getConfiguration().getOtoId());
+				display.getFrame().setUrl("http://biosemantics.arizona.edu:8080/OTOLite/?embed=true&uploadID=" + matrixGenerationTask.getConfiguration().getOtoId());
 				ReviewMatrixGenerationPresenter.this.matrixGenerationTask = matrixGenerationTask;
 				content.clear();
 				content.add(display.asWidget());

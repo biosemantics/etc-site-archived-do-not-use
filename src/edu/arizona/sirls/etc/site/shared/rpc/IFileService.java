@@ -13,32 +13,32 @@ import edu.arizona.sirls.etc.site.shared.rpc.file.FileInfo;
 @RemoteServiceRelativePath("file")
 public interface IFileService extends RemoteService {
 
-	public Tree<FileInfo> getUsersFiles(AuthenticationToken authenticationToken, FileFilter fileFilter); 
+	public RPCResult<Tree<FileInfo>> getUsersFiles(AuthenticationToken authenticationToken, FileFilter fileFilter); 
 	
-	public MessageResult deleteFile(AuthenticationToken authenticationToken, String target);
+	public RPCResult<Boolean> deleteFile(AuthenticationToken authenticationToken, String target);
 
-	public MessageResult moveFile(AuthenticationToken authenticationToken, String target,
+	public RPCResult<Void> moveFile(AuthenticationToken authenticationToken, String target,
 			String newTarget);
 
-	public MessageResult createDirectory(AuthenticationToken authenticationToken, String target,
+	public RPCResult<Boolean> createDirectory(AuthenticationToken authenticationToken, String target,
 			String directoryName);
 
-	public boolean isDirectory(AuthenticationToken authenticationToken, String target);
+	public RPCResult<Boolean> isDirectory(AuthenticationToken authenticationToken, String target);
 	
-	public boolean isFile(AuthenticationToken authenticationToken, String target);
+	public RPCResult<Boolean> isFile(AuthenticationToken authenticationToken, String target);
 
-	public List<String> getDirectoriesFiles(AuthenticationToken authenticationToken, String inputDirectory);
+	public RPCResult<List<String>> getDirectoriesFiles(AuthenticationToken authenticationToken, String inputDirectory);
 
-	public MessageResult createFile(AuthenticationToken authenticationToken, String outputFile);
+	public RPCResult<Void> createFile(AuthenticationToken authenticationToken, String outputFile);
 	
-	public Integer getDepth(AuthenticationToken authenticationToken, String sourcePath);
+	public RPCResult<Integer> getDepth(AuthenticationToken authenticationToken, String sourcePath);
 	
-	public void zipDirectory(AuthenticationToken authenticationToken, String target);
+	public RPCResult<Void> zipDirectory(AuthenticationToken authenticationToken, String target);
 
-	public void setInUse(AuthenticationToken authenticationToken, boolean value, String input, Task task);
+	public RPCResult<Void> setInUse(AuthenticationToken authenticationToken, boolean value, String input, Task task);
 	
-	public boolean isInUse(AuthenticationToken authenticationToken, String input);	
+	public RPCResult<Boolean> isInUse(AuthenticationToken authenticationToken, String input);	
 	
-	public List<Task> getUsingTasks(AuthenticationToken authenticationToken, String input);
+	public RPCResult<List<Task>> getUsingTasks(AuthenticationToken authenticationToken, String input);
 	
 }

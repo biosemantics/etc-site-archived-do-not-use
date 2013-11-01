@@ -11,7 +11,7 @@ public class Task implements Serializable  {
 	private TaskType taskType;
 	private TaskStage taskStage;
 	private Configuration configuration;
-	private User user;
+	private ShortUser user;
 	private boolean resumable;
 	private boolean complete;
 	private Date completed;
@@ -19,7 +19,7 @@ public class Task implements Serializable  {
 	
 	public Task() { }
 	
-	public Task(int id, String name, TaskType taskType, TaskStage taskStage, Configuration configuration, User user, boolean resumable, boolean complete, Date completed, Date created) {
+	public Task(int id, String name, TaskType taskType, TaskStage taskStage, Configuration configuration, ShortUser user, boolean resumable, boolean complete, Date completed, Date created) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -73,11 +73,11 @@ public class Task implements Serializable  {
 		this.configuration = configuration;
 	}
 
-	public User getUser() {
+	public ShortUser getUser() {
 		return user;
 	}
 
-	public void setUser(User user) {
+	public void setUser(ShortUser user) {
 		this.user = user;
 	}
 

@@ -4,10 +4,24 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 public class UserDAO {
 
 	private static UserDAO instance;
+	
+	public ShortUser getShortUser(int id) throws ClassNotFoundException, SQLException, IOException {
+		User user = this.getUser(id);
+		ShortUser result = new ShortUser(user.getId(), user.getName());
+		return result;
+	}
+	
+	public ShortUser getShortUser(String name) throws ClassNotFoundException, SQLException, IOException {
+		User user = this.getUser(name);
+		ShortUser result = new ShortUser(user.getId(), user.getName());
+		return result;
+	}
 	
 	public User getUser(int id) throws SQLException, ClassNotFoundException, IOException {
 		User user = null;
@@ -52,6 +66,16 @@ public class UserDAO {
 		if(instance == null)
 			instance = new UserDAO();
 		return instance;
+	}
+
+	public List<ShortUser> getUsers() throws SQLException, ClassNotFoundException, IOException {
+		List<ShortUser> result = new LinkedList<ShortUser>();
+		Query query = new Query("SELECT id, name FROM users");
+		ResultSet resultSet = query.execute();
+		while(resultSet.next()) {
+			result.add(new ShortUser(resultSet.getInt(1), resultSet.getString(2)));
+		}
+		return result;
 	}
 
 }

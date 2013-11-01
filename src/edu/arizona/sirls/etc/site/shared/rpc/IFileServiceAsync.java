@@ -11,32 +11,32 @@ import edu.arizona.sirls.etc.site.shared.rpc.file.FileInfo;
 
 public interface IFileServiceAsync {
 
-	public void getUsersFiles(AuthenticationToken authenticationToken, FileFilter fileFilter, AsyncCallback<Tree<FileInfo>> callback);
+	public void getUsersFiles(AuthenticationToken authenticationToken, FileFilter fileFilter, AsyncCallback<RPCResult<Tree<FileInfo>>> callback);
 
 	public void deleteFile(AuthenticationToken authenticationToken, String target,
-			AsyncCallback<MessageResult> callback);
+			AsyncCallback<RPCResult<Boolean>> callback);
 	
 	public void moveFile(AuthenticationToken authenticationToken, String target,
-			String newTarget, AsyncCallback<MessageResult> callback);
+			String newTarget, AsyncCallback<RPCResult<Void>> callback);
 
 	public void createDirectory(AuthenticationToken authenticationToken, String target,
-			String directoryName, AsyncCallback<MessageResult> callback);
+			String directoryName, AsyncCallback<RPCResult<Boolean>> callback);
 	
-	public void isDirectory(AuthenticationToken authenticationToken, String target, AsyncCallback<Boolean> callback);
+	public void isDirectory(AuthenticationToken authenticationToken, String target, AsyncCallback<RPCResult<Boolean>> callback);
 	
-	public void isFile(AuthenticationToken authenticationToken, String target, AsyncCallback<Boolean> callback);
+	public void isFile(AuthenticationToken authenticationToken, String target, AsyncCallback<RPCResult<Boolean>> callback);
 
-	public void getDirectoriesFiles(AuthenticationToken authenticationToken, String inputDirectory, AsyncCallback<List<String>> callback);
+	public void getDirectoriesFiles(AuthenticationToken authenticationToken, String inputDirectory, AsyncCallback<RPCResult<List<String>>> callback);
 
-	public void createFile(AuthenticationToken authenticationToken, String outputFile, AsyncCallback<MessageResult> callback);
+	public void createFile(AuthenticationToken authenticationToken, String outputFile, AsyncCallback<RPCResult<Void>> callback);
 
-	public void getDepth(AuthenticationToken authenticationToken, String sourcePath, AsyncCallback<Integer> asyncCallback);
+	public void getDepth(AuthenticationToken authenticationToken, String sourcePath, AsyncCallback<RPCResult<Integer>> asyncCallback);
 
-	public void zipDirectory(AuthenticationToken authenticationToken, String target, AsyncCallback<Void> callback);
+	public void zipDirectory(AuthenticationToken authenticationToken, String target, AsyncCallback<RPCResult<Void>> callback);
 	
-	public void setInUse(AuthenticationToken authenticationToken, boolean value, String input, Task task, AsyncCallback<Void> callback);
+	public void setInUse(AuthenticationToken authenticationToken, boolean value, String input, Task task, AsyncCallback<RPCResult<Void>> callback);
 	
-	public void isInUse(AuthenticationToken authenticationToken, String input, AsyncCallback<Boolean> callback);
+	public void isInUse(AuthenticationToken authenticationToken, String input, AsyncCallback<RPCResult<Boolean>> callback);
 	
-	public void getUsingTasks(AuthenticationToken authenticationToken, String input, AsyncCallback<List<Task>> callback);
+	public void getUsingTasks(AuthenticationToken authenticationToken, String input, AsyncCallback<RPCResult<List<Task>>> callback);
 }

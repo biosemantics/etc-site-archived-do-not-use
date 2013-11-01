@@ -13,8 +13,9 @@ import edu.arizona.sirls.etc.site.client.view.LabelTextFieldCancelConfirmView;
 import edu.arizona.sirls.etc.site.client.view.LabelTextFieldConfirmView;
 import edu.arizona.sirls.etc.site.client.view.MessageView;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileTreeView;
+import edu.arizona.sirls.etc.site.server.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
-import edu.arizona.sirls.etc.site.shared.rpc.MessageResult;
+import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 
 import gwtupload.client.BaseUploadStatus;
@@ -160,13 +161,13 @@ public class ManagableFileTreePresenter implements Presenter {
 		public void onClick(ClickEvent event) {
 			String target = fileSelectionHandler.getTarget();
 			if(target != null && !target.isEmpty()) {
-				fileService.deleteFile(Authentication.getInstance().getAuthenticationToken(), target, new AsyncCallback<MessageResult>(){
+				fileService.deleteFile(Authentication.getInstance().getAuthenticationToken(), target, new AsyncCallback<RPCResult>(){
 					@Override
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
 					}
 					@Override
-					public void onSuccess(MessageResult result) {
+					public void onSuccess(RPCResult result) {
 						fileSelectionHandler.clear();
 						fileTreePresenter.refresh();
 					}
@@ -219,8 +220,8 @@ public class ManagableFileTreePresenter implements Presenter {
 				pathParts[pathParts.length-1] = newFileName;
 				final String newTarget = getTargetFromParts(pathParts);
 				fileService.moveFile(Authentication.getInstance().getAuthenticationToken(), target, newTarget, 
-						new AsyncCallback<MessageResult>() {
-					public void onSuccess(MessageResult result) {
+						new AsyncCallback<RPCResult>() {
+					public void onSuccess(RPCResult result) {
 						if(result.isSucceeded()) {
 							fileSelectionHandler.setTarget(newTarget);
 							fileTreePresenter.refresh();
@@ -243,13 +244,13 @@ public class ManagableFileTreePresenter implements Presenter {
 			final String target = fileSelectionHandler.getTarget();
 			if(target != null) {
 				int level = getLevel(target);
-				if(level < 2) {
+				if(level < Configuration.fileManagerMaxDepth) {
 					LabelTextFieldConfirmView renameView = new LabelTextFieldConfirmView();
 					LabelTextFieldConfirmPresenter renamePresenter = new LabelTextFieldConfirmPresenter(
 							renameView, "Create folder", "Folder name:", "", this);
 					renamePresenter.go();
 				} else {
-					messagePresenter.setMessage("Only a directory depth of two is allowed.");
+					messagePresenter.setMessage("Only a directory depth of " + Configuration.fileManagerMaxDepth + " is allowed.");
 					messagePresenter.go();
 				}
 			} else {
@@ -280,8 +281,8 @@ public class ManagableFileTreePresenter implements Presenter {
 					if(!result)
 						newTarget = target.substring(0, target.lastIndexOf("//"));
 					fileService.createDirectory(Authentication.getInstance().getAuthenticationToken(), newTarget, directoryName, 
-							new AsyncCallback<MessageResult>() {
-						public void onSuccess(MessageResult result) {
+							new AsyncCallback<RPCResult>() {
+						public void onSuccess(RPCResult result) {
 							if (result.isSucceeded()) {
 								fileTreePresenter.refresh();
 							} else {

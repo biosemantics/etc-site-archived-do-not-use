@@ -1,6 +1,7 @@
 package edu.arizona.sirls.etc.site.shared.rpc.db;
 
 import java.io.Serializable;
+import java.util.List;
 
 public abstract class AbstractTaskConfiguration implements Serializable {
 
@@ -22,6 +23,8 @@ public abstract class AbstractTaskConfiguration implements Serializable {
 		this.configuration = configuration;
 	}
 	
+	public abstract List<String> getInputs();
 	
+	public abstract List<String> getOutputs();
 	
 }

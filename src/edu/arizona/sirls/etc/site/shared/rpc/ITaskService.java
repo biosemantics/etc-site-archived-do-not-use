@@ -9,6 +9,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.db.Share;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 
 @RemoteServiceRelativePath("task")
@@ -35,5 +36,11 @@ public interface ITaskService extends RemoteService {
 	//public void cancelTask(AuthenticationToken authenticationToken, Task task);
 	
 	//public Task getLatestResumableTask(AuthenticationToken authenticationToken, TaskTypeEnum taskType);
+	
+	public RPCResult<List<Share>> getOwnedShares(AuthenticationToken authenticationToken);
+	
+	public RPCResult<List<Share>> getInvitedShares(AuthenticationToken authenticationToken);
+
+	public RPCResult<Share> addShare(AuthenticationToken authenticationToken, Share share);
 	
 }

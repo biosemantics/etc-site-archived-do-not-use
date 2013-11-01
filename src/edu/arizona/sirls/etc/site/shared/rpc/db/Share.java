@@ -3,18 +3,19 @@ package edu.arizona.sirls.etc.site.shared.rpc.db;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 public class Share implements Serializable {
 
 	private static final long serialVersionUID = 4818830111979976800L;
 	private int id;
 	private Task task;
-	private List<User> invitees;
+	private Set<ShortUser> invitees;
 	private Date created;
 	
 	public Share() { }
 	
-	public Share(int id, Task task, List<User> invitees, Date created) {
+	public Share(int id, Task task, Set<ShortUser> invitees, Date created) {
 		super();
 		this.id = id;
 		this.task = task;
@@ -40,11 +41,11 @@ public class Share implements Serializable {
 		this.created = created;
 	}
 
-	public List<User> getInvitees() {
+	public Set<ShortUser> getInvitees() {
 		return invitees;
 	}
 
-	public void setInvitees(List<User> invitees) {
+	public void setInvitees(Set<ShortUser> invitees) {
 		this.invitees = invitees;
 	}
 	

@@ -61,12 +61,12 @@ public class TaskDAO {
 
 	
 	public List<Task> getUsersTasks(String name) throws SQLException, ClassNotFoundException, IOException {
-		User user = UserDAO.getInstance().getUser(name);
+		ShortUser user = UserDAO.getInstance().getShortUser(name);
 		return this.getUsersTasks(user.getId());
 	}
 	
 	public List<Task> getUsersPastTasks(String username) throws SQLException, ClassNotFoundException, IOException {
-		User user = UserDAO.getInstance().getUser(username);
+		ShortUser user = UserDAO.getInstance().getShortUser(username);
 		return this.getUsersPastTasks(user.getId());
 	}
 
@@ -94,7 +94,7 @@ public class TaskDAO {
 		boolean complete = result.getBoolean(8);
 		Date completed = result.getTimestamp(9);
 		Date created = result.getTimestamp(10);
-		User user = UserDAO.getInstance().getUser(userId);
+		ShortUser user = UserDAO.getInstance().getShortUser(userId);
 		TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskStageId);
 		Configuration configuration = ConfigurationDAO.getInstance().getConfiguration(configurationId);
 		TaskType taskType = TaskTypeDAO.getInstance().getTaskType(taskTypeId);
@@ -165,7 +165,7 @@ public class TaskDAO {
 	}
 
 	public List<Task> getUsersResumableTasks(String username) throws ClassNotFoundException, SQLException, IOException {
-		User user = UserDAO.getInstance().getUser(username);
+		ShortUser user = UserDAO.getInstance().getShortUser(username);
 		return this.getUsersResumableTasks(user.getId());
 	}
 

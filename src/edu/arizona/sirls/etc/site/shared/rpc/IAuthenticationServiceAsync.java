@@ -9,8 +9,8 @@ import edu.arizona.sirls.etc.site.client.AuthenticationToken;
  */
 public interface IAuthenticationServiceAsync {
 	
-	public void login(String user, String password, AsyncCallback<AuthenticationResult> callback);
+	public void login(String user, String password, AsyncCallback<RPCResult<AuthenticationResult>> callback);
 	
-	public void isValidSession(AuthenticationToken authentication, AsyncCallback<AuthenticationResult> callback);
+	public void isValidSession(AuthenticationToken authentication, AsyncCallback<RPCResult<AuthenticationResult>> callback);
 	
 }

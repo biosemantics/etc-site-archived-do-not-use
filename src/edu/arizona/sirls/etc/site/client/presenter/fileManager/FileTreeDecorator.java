@@ -13,6 +13,7 @@ import edu.arizona.sirls.etc.site.client.view.fileManager.DirectoryTreeItem;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileImageLabelTree;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileImageLabelTreeItem;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileTreeItem;
+import edu.arizona.sirls.etc.site.server.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.Tree;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileInfo;
@@ -102,7 +103,7 @@ public class FileTreeDecorator {
 				String name = fileTree.getValue().getName();
 				String contentString = getContentString(fileTree);
 				treeItem = new DirectoryTreeItem(name + " " + contentString, path);
-				if(level > 2)
+				if(level > Configuration.fileManagerMaxDepth)
 					return;
 			} 
 			root.addItem(treeItem);

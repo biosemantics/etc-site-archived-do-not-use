@@ -12,8 +12,8 @@ import edu.arizona.sirls.etc.site.shared.rpc.file.search.SearchResult;
 @RemoteServiceRelativePath("fileSearch")
 public interface IFileSearchService extends RemoteService {
 
-	public List<SearchResult> search(AuthenticationToken authenticationToken, String input, Search search);
+	public RPCResult<List<SearchResult>> search(AuthenticationToken authenticationToken, String input, Search search);
 
-	public String getFileContentSearched(AuthenticationToken authenticationToken, String target, Search search);
+	public RPCResult<String> getFileContentSearched(AuthenticationToken authenticationToken, String target, Search search);
 	
 }

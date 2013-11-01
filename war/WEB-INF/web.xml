@@ -36,6 +36,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     <servlet-name>fileFormatServlet</servlet-name>
     <servlet-class>edu.arizona.sirls.etc.site.server.rpc.FileFormatService</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>userServlet</servlet-name>
+    <servlet-class>edu.arizona.sirls.etc.site.server.rpc.UserService</servlet-class>
+  </servlet>
   
   <!-- TODO: Add <servlet-mapping> tags for each <servlet> here. -->
   <servlet-mapping>
@@ -65,6 +69,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   <servlet-mapping>
     <servlet-name>fileFormatServlet</servlet-name>
     <url-pattern>/etcsite/fileFormat</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>userServlet</servlet-name>
+    <url-pattern>/etcsite/user</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->

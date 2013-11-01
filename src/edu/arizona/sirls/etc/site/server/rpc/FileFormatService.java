@@ -9,6 +9,7 @@ import edu.arizona.sirls.etc.site.server.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileFormatService;
+import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.file.CSVValidator;
 import edu.arizona.sirls.etc.site.shared.rpc.file.XMLValidator;
 
@@ -21,47 +22,63 @@ public class FileFormatService extends RemoteServiceServlet implements IFileForm
 	private XMLValidator markedUpTaxonDescriptionValidator = new XMLValidator(new File(Configuration.markedUpTaxonDescriptionSchemaFile));
 	
 	@Override
-	public boolean isValidTaxonDescription(AuthenticationToken authenticationToken, String target) {
-		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
-			String fileContent = fileAccessService.getFileContent(authenticationToken, target);
-			return taxonDescriptionValidator.validate(fileContent);
+	public RPCResult<Boolean> isValidTaxonDescription(AuthenticationToken authenticationToken, String target) {
+		if(authenticationService.isValidSession(authenticationToken).getData().getResult()) { 
+			RPCResult<String> fileContentResult = fileAccessService.getFileContent(authenticationToken, target);
+			if(fileContentResult.isSucceeded()) {
+				String fileContent = fileContentResult.getData();
+				return new RPCResult<Boolean>(true, taxonDescriptionValidator.validate(fileContent));
+			}
+			return new RPCResult<Boolean>(false, fileContentResult.getMessage());
 		} 
-		return false;
+		return new RPCResult<Boolean>(false, "Authentication failed");
 	}
 	
 	@Override
-	public boolean isValidMarkedupTaxonDescription(AuthenticationToken authenticationToken, String target) {
-		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
-			String fileContent = fileAccessService.getFileContent(authenticationToken, target);
-			return markedUpTaxonDescriptionValidator.validate(fileContent);
+	public RPCResult<Boolean> isValidMarkedupTaxonDescription(AuthenticationToken authenticationToken, String target) {
+		if(authenticationService.isValidSession(authenticationToken).getData().getResult()) { 
+			RPCResult<String> fileContentResult = fileAccessService.getFileContent(authenticationToken, target);
+			if(fileContentResult.isSucceeded()) {
+				String fileContent = fileContentResult.getData();
+				return new RPCResult<Boolean>(true, markedUpTaxonDescriptionValidator.validate(fileContent));
+			}
+			return new RPCResult<Boolean>(false, fileContentResult.getMessage());
 		} 
-		return false;
+		return new RPCResult<Boolean>(false, "Authentication failed");
 	}
 	
 	@Override
-	public boolean isValidMarkedupTaxonDescriptionContent(AuthenticationToken authenticationToken, String content) {
-		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
-			return markedUpTaxonDescriptionValidator.validate(content);
-		}
-		return false;
+	public RPCResult<Boolean> isValidMarkedupTaxonDescriptionContent(AuthenticationToken authenticationToken, String content) {
+		if(authenticationService.isValidSession(authenticationToken).getData().getResult()) { 
+			return new RPCResult<Boolean>(true, markedUpTaxonDescriptionValidator.validate(content));
+		} 
+		return new RPCResult<Boolean>(false, "Authentication failed");
 	}
 
 	@Override
-	public boolean isValidGlossary(AuthenticationToken authenticationToken,
+	public RPCResult<Boolean> isValidGlossary(AuthenticationToken authenticationToken,
 			String target) {
-		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
-			String fileContent = fileAccessService.getFileContent(authenticationToken, target);
-			return csvValidator.validate(fileContent);
+		if(authenticationService.isValidSession(authenticationToken).getData().getResult()) { 
+			RPCResult<String> fileContentResult = fileAccessService.getFileContent(authenticationToken, target);
+			if(fileContentResult.isSucceeded()) {
+				String fileContent = fileContentResult.getData();
+				return new RPCResult<Boolean>(true, csvValidator.validate(fileContent));
+			}
+			return new RPCResult<Boolean>(false, fileContentResult.getMessage());
 		} 
-		return false;
+		return new RPCResult<Boolean>(false, "Authentication failed");
 	}
 
 	@Override
-	public boolean isValidEuler(AuthenticationToken authenticationToken, String target) {
-		if(authenticationService.isValidSession(authenticationToken).getResult()) { 
-			String fileContent = fileAccessService.getFileContent(authenticationToken, target);
-			return csvValidator.validate(fileContent);
+	public RPCResult<Boolean> isValidEuler(AuthenticationToken authenticationToken, String target) {
+		if(authenticationService.isValidSession(authenticationToken).getData().getResult()) { 
+			RPCResult<String> fileContentResult = fileAccessService.getFileContent(authenticationToken, target);
+			if(fileContentResult.isSucceeded()) {
+				String fileContent = fileContentResult.getData();
+				return new RPCResult<Boolean>(true, csvValidator.validate(fileContent));
+			}
+			return new RPCResult<Boolean>(false, fileContentResult.getMessage());
 		} 
-		return false;
+		return new RPCResult<Boolean>(false, "Authentication failed");
 	}
 }

@@ -2,6 +2,8 @@ package edu.arizona.sirls.etc.site.shared.rpc.db;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 public class MatrixGenerationConfiguration extends AbstractTaskConfiguration implements Serializable {
 
@@ -63,6 +65,18 @@ public class MatrixGenerationConfiguration extends AbstractTaskConfiguration imp
 		this.output = output;
 	}
 
+	@Override
+	public List<String> getInputs() {
+		List<String> result = new LinkedList<String>();
+		result.add(this.getInput());
+		return result;
+	}
 
+	@Override
+	public List<String> getOutputs() {
+		List<String> result = new LinkedList<String>();
+		result.add(this.getOutput());
+		return result;
+	}
 	
 }

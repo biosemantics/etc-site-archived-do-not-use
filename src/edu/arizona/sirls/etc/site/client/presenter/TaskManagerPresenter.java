@@ -2,6 +2,7 @@ package edu.arizona.sirls.etc.site.client.presenter;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -15,6 +16,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
@@ -24,21 +27,34 @@ import edu.arizona.sirls.etc.site.client.event.ResumableTasksEventHandler;
 import edu.arizona.sirls.etc.site.client.event.TaxonomyComparisonEvent;
 import edu.arizona.sirls.etc.site.client.event.TreeGenerationEvent;
 import edu.arizona.sirls.etc.site.client.event.VisualizationEvent;
+import edu.arizona.sirls.etc.site.client.presenter.fileManager.ManagableFileTreePresenter;
+import edu.arizona.sirls.etc.site.client.presenter.users.UserSelectPresenter;
+import edu.arizona.sirls.etc.site.client.presenter.users.UserSelectPresenter.ISelectHandler;
+import edu.arizona.sirls.etc.site.client.presenter.users.UsersPresenter;
+import edu.arizona.sirls.etc.site.client.view.fileManager.ManagableFileTreeView;
+import edu.arizona.sirls.etc.site.client.view.users.UserSelectView;
+import edu.arizona.sirls.etc.site.client.view.users.UserSelectViewImpl;
+import edu.arizona.sirls.etc.site.client.view.users.UsersViewImpl;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.AbstractTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaxonomyComparisonServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ITreeGenerationServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.IUserServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IVisualizationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
+import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.TaxonomyComparisonTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.TreeGenerationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.VisualizationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.db.Share;
+import edu.arizona.sirls.etc.site.shared.rpc.db.ShortUser;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TaxonomyComparisonConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TreeGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.VisualizationConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 public class TaskManagerPresenter {
@@ -53,6 +69,7 @@ public class TaskManagerPresenter {
 	private HandlerManager eventBus;
 	private Display display;
 	private ITaskServiceAsync taskService;
+	private IUserServiceAsync userService;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
 	private ITreeGenerationServiceAsync treeGenerationService;
 	private ITaxonomyComparisonServiceAsync taxonomyComparisonService;
@@ -62,7 +79,7 @@ public class TaskManagerPresenter {
 	public TaskManagerPresenter(HandlerManager eventBus,
 			Display display, ITaskServiceAsync taskService, IMatrixGenerationServiceAsync matrixGenerationService, 
 			ITreeGenerationServiceAsync treeGenerationService, ITaxonomyComparisonServiceAsync taxonomyComparisonService,
-			IVisualizationServiceAsync visualizationService) {
+			IVisualizationServiceAsync visualizationService, IUserServiceAsync userService) {
 		this.eventBus = eventBus;
 		this.display = display;
 		this.taskService = taskService;
@@ -70,6 +87,7 @@ public class TaskManagerPresenter {
 		this.treeGenerationService = treeGenerationService;
 		this.taxonomyComparisonService = taxonomyComparisonService;
 		this.visualizationService = visualizationService;
+		this.userService = userService;
 	}
 
 	public void go(HasWidgets content) {
@@ -248,6 +266,45 @@ public class TaskManagerPresenter {
 			}
 		});
 		actionsPanel.add(cancelImage);
+		
+		Image shareImage = new Image("images/share.png");
+		shareImage.addStyleDependentName("clickable");
+		shareImage.setSize("15px", "15px");
+		shareImage.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				final Share share = new Share();
+				share.setTask(task);
+				
+				final TitleCloseDialogBox dialogBox = new TitleCloseDialogBox(false, "Select user");
+				UsersViewImpl usersView = new UsersViewImpl();
+				UsersPresenter usersPresenter = new UsersPresenter(eventBus, usersView, userService);
+				UserSelectView userSelectView = new UserSelectViewImpl(usersView);
+				UserSelectPresenter userSelectPresenter = new UserSelectPresenter(eventBus, userSelectView, new ISelectHandler() {
+					@Override
+					public void onSelect(Set<ShortUser> users) {
+						share.setInvitees(users);
+						dialogBox.hide();
+						
+						taskService.addShare(Authentication.getInstance().getAuthenticationToken(), share, new AsyncCallback<RPCResult<Share>>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								caught.printStackTrace();
+							}
+							@Override
+							public void onSuccess(RPCResult<Share> result) { }
+						});
+					} 
+				});
+				dialogBox.setWidget(userSelectView.asWidget());
+				dialogBox.center();
+				dialogBox.setGlassEnabled(true);
+		 		dialogBox.show();
+			}
+		});
+		actionsPanel.add(shareImage);
+		
 		return actionsPanel;
 	}
 	

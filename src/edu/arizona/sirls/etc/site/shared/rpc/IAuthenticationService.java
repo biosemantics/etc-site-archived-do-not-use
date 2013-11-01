@@ -11,8 +11,8 @@ import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 @RemoteServiceRelativePath("auth")
 public interface IAuthenticationService extends RemoteService {
 	
-	public AuthenticationResult login(String user, String password);
+	public RPCResult<AuthenticationResult> login(String user, String password);
 	
-	public AuthenticationResult isValidSession(AuthenticationToken authenticationToken);
+	public RPCResult<AuthenticationResult> isValidSession(AuthenticationToken authenticationToken);
 
 }
