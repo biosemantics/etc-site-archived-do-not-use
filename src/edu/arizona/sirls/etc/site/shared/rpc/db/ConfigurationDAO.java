@@ -11,7 +11,8 @@ public class ConfigurationDAO {
 	
 	public Configuration getConfiguration(int id) throws SQLException, ClassNotFoundException, IOException {
 		Configuration configuration = null;
-		Query query = new Query("SELECT * FROM configurations WHERE id = " + id);
+		Query query = new Query("SELECT * FROM configurations WHERE id = ?");
+		query.setParameter(1, id);
 		ResultSet result = query.execute();
 		while(result.next()) {
 			id = result.getInt(1);

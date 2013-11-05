@@ -17,7 +17,8 @@ public class DatasetPrefixDAO {
 
 	public DatasetPrefix getDatasetPrefix(String prefix) throws SQLException, ClassNotFoundException, IOException {
 		DatasetPrefix datasetPrefix = null;
-		Query query = new Query("SELECT * FROM datasetprefixes WHERE prefix = '" + prefix + "'");
+		Query query = new Query("SELECT * FROM datasetprefixes WHERE prefix = ?");
+		query.setParameter(1, prefix);
 		ResultSet result = query.execute();
 		while(result.next()) {
 			prefix = result.getString(1);

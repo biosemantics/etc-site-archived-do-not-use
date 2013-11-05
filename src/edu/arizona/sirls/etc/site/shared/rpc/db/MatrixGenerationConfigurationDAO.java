@@ -18,7 +18,8 @@ public class MatrixGenerationConfigurationDAO {
 	
 	public MatrixGenerationConfiguration getMatrixGenerationConfiguration(int configurationId) throws SQLException, ClassNotFoundException, IOException {
 		MatrixGenerationConfiguration matrixGenerationConfiguration = null;
-		Query query = new Query("SELECT * FROM matrixgenerationconfigurations WHERE configuration = " + configurationId);
+		Query query = new Query("SELECT * FROM matrixgenerationconfigurations WHERE configuration = ?");
+		query.setParameter(1, configurationId);
 		ResultSet result = query.execute();
 		while(result.next()) {
 			matrixGenerationConfiguration = createMatrixGenerationConfiguration(result);
@@ -47,12 +48,14 @@ public class MatrixGenerationConfigurationDAO {
 		while(generatedKeys.next()) {
 			Configuration configuration = ConfigurationDAO.getInstance().getConfiguration(generatedKeys.getInt(1));
 			Query matrixGenerationQuery = new Query("INSERT INTO `matrixgenerationconfigurations` " +
-					"(`configuration`, `input`, `numberofinputfiles`, `glossary`, `oto`, `output`) VALUES (" + configuration.getId() + 
-					", '" + matrixGenerationConfiguration.getInput() + "'" + 
-					", " + matrixGenerationConfiguration.getNumberOfInputFiles() +
-					", " + matrixGenerationConfiguration.getGlossary().getId() + 
-					", " + matrixGenerationConfiguration.getOtoId() + 
-					", '" + matrixGenerationConfiguration.getOutput() + "')");
+					"(`configuration`, `input`, `numberofinputfiles`, `glossary`, `oto`, `output`) VALUES (?, ?, ?, ?, ?)");
+			matrixGenerationQuery.setParameter(1, configuration.getId());
+			matrixGenerationQuery.setParameter(2, matrixGenerationConfiguration.getInput());
+			matrixGenerationQuery.setParameter(3, matrixGenerationConfiguration.getNumberOfInputFiles());
+			matrixGenerationQuery.setParameter(4, matrixGenerationConfiguration.getGlossary().getId());
+			matrixGenerationQuery.setParameter(5, matrixGenerationConfiguration.getOtoId());
+			matrixGenerationQuery.setParameter(6, matrixGenerationConfiguration.getOutput());
+			
 			matrixGenerationQuery.execute();
 			matrixGenerationQuery.close();
 			result = this.getMatrixGenerationConfiguration(generatedKeys.getInt(1));
@@ -67,14 +70,20 @@ public class MatrixGenerationConfigurationDAO {
 		String output = matrixGenerationConfiguration.getOutput();
 		int otoId = matrixGenerationConfiguration.getOtoId();
 		int numberOfInputFiles = matrixGenerationConfiguration.getNumberOfInputFiles();
-		Query query = new Query("UPDATE matrixgenerationconfigurations SET input = '" + input + "', numberofinputfiles = " + numberOfInputFiles + ", " +
-				"glossary = " + glossaryId + ", oto = " + otoId + ", output = '" + output + "' WHERE configuration = " + configuration.getId());
+		Query query = new Query("UPDATE matrixgenerationconfigurations SET input = ?, numberofinputfiles = ?, glossary = ?, oto = ?, output = ? WHERE configuration = ?");
+		query.setParameter(1, input);
+		query.setParameter(2, numberOfInputFiles);
+		query.setParameter(3, glossaryId);
+		query.setParameter(4, otoId);
+		query.setParameter(5, output);
+		query.setParameter(6, configuration.getId());
 		query.executeAndClose();
 	}
 
 	public void remove(MatrixGenerationConfiguration matrixGenerationConfiguration) throws SQLException, ClassNotFoundException, IOException {
 		Configuration configuration = matrixGenerationConfiguration.getConfiguration();
-		Query query = new Query("DELETE FROM matrixgenerationconfigurations WHERE configuration = " + configuration.getId());
+		Query query = new Query("DELETE FROM matrixgenerationconfigurations WHERE configuration = ?");
+		query.setParameter(1, configuration.getId());
 		query.executeAndClose();
 	}
 }

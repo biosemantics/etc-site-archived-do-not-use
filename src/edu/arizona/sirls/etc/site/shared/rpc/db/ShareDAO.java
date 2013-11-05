@@ -21,7 +21,8 @@ public class ShareDAO {
 	
 	public Share getShare(int id) throws SQLException, ClassNotFoundException, IOException {
 		Share share = null;
-		Query query = new Query("SELECT * FROM shares WHERE id = " + id);
+		Query query = new Query("SELECT * FROM shares WHERE id = ?");
+		query.setParameter(1, id);
 		query.execute();
 		ResultSet result = query.getResultSet();
 		while(result.next()) {
@@ -31,7 +32,8 @@ public class ShareDAO {
 			Task task = TaskDAO.getInstance().getTask(taskId);
 			
 			Set<ShortUser> invitees = new HashSet<ShortUser>();
-			Query inviteesQuery = new Query("SELECT inviteeuser FROM shareinvitees WHERE share = " + id);
+			Query inviteesQuery = new Query("SELECT inviteeuser FROM shareinvitees WHERE share = ?");
+			inviteesQuery.setParameter(1, id);
 			ResultSet resultInvitees = inviteesQuery.execute();
 			while(resultInvitees.next()) {
 				int userId = resultInvitees.getInt(1);
@@ -65,7 +67,8 @@ public class ShareDAO {
 
 	public List<Share> getSharesOfOwner(ShortUser owner) throws ClassNotFoundException, SQLException, IOException {
 		List<Share> result = new LinkedList<Share>();
-		Query query = new Query("SELECT id FROM `shares` WHERE shares.id=tasks.id AND tasks.user=" + owner.getId());
+		Query query = new Query("SELECT id FROM `shares` WHERE shares.id=tasks.id AND tasks.user=?");
+		query.setParameter(1,  owner.getId());
 		ResultSet resultSet = query.execute();
 		while(resultSet.next()) {
 			Share share = this.getShare(resultSet.getInt(1));
@@ -76,7 +79,8 @@ public class ShareDAO {
 	
 	public List<Share> getSharesOfInvitee(ShortUser invitee) throws ClassNotFoundException, SQLException, IOException {
 		List<Share> result = new LinkedList<Share>();
-		Query query = new Query("SELECT share FROM `shareinvitees` WHERE inviteeuser=" + invitee.getId());
+		Query query = new Query("SELECT share FROM `shareinvitees` WHERE inviteeuser=?");
+		query.setParameter(1, invitee.getId());
 		ResultSet resultSet = query.execute();
 		while(resultSet.next()) {
 			Share share = this.getShare(resultSet.getInt(1));

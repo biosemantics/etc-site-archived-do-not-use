@@ -11,7 +11,8 @@ public class GlossaryDAO {
 	
 	public Glossary getGlossary(int id) throws SQLException, ClassNotFoundException, IOException {
 		Glossary glossary = null;
-		Query query = new Query("SELECT * FROM glossaries WHERE id = " + id);
+		Query query = new Query("SELECT * FROM glossaries WHERE id = ?");
+		query.setParameter(1, id);
 		ResultSet result = query.execute();
 		while(result.next()) {
 			id = result.getInt(1);
@@ -25,7 +26,8 @@ public class GlossaryDAO {
 	
 	public Glossary getGlossary(String name) throws SQLException, ClassNotFoundException, IOException {		
 		Glossary glossary = null;
-		Query query = new Query("SELECT * FROM glossaries WHERE name = '" + name + "'");
+		Query query = new Query("SELECT * FROM glossaries WHERE name = ?");
+		query.setParameter(1, name);
 		ResultSet result = query.execute();
 		while(result.next()) {
 			int id = result.getInt(1);

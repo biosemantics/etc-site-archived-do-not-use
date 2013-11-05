@@ -20,7 +20,8 @@ public class TaskTypeDAO {
 
 	public TaskType getTaskType(int id) throws SQLException, ClassNotFoundException, IOException {
 		TaskType taskType = null;
-		Query query = new Query("SELECT * FROM tasktypes WHERE id = " + id);
+		Query query = new Query("SELECT * FROM tasktypes WHERE id = ?");
+		query.setParameter(1, id);
 		ResultSet result = query.execute();
 		while(result.next()) {
 			id = result.getInt(1);
@@ -36,7 +37,8 @@ public class TaskTypeDAO {
 	
 	public TaskType getTaskType(TaskTypeEnum taskTypeEnum) throws SQLException, ClassNotFoundException, IOException {		
 		TaskType taskType = null;
-		Query query = new Query("SELECT * FROM tasktypes WHERE name = '" + taskTypeEnum.toString() + "'");
+		Query query = new Query("SELECT * FROM tasktypes WHERE name = ?");
+		query.setParameter(1, taskTypeEnum.toString());
 		ResultSet result = query.execute();
 		while(result.next()) {
 			int id = result.getInt(1);

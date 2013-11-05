@@ -13,7 +13,8 @@ public class InputTypeDAO {
 	
 	public InputType getInputType(int id) throws SQLException, ClassNotFoundException, IOException {
 		InputType inputType = null;
-		Query query = new Query("SELECT * FROM inputtypes WHERE id = " + id);
+		Query query = new Query("SELECT * FROM inputtypes WHERE id = ?");
+		query.setParameter(1, id);
 		ResultSet result = query.execute();
 		while(result.next()) {
 			id = result.getInt(1);
@@ -27,7 +28,8 @@ public class InputTypeDAO {
 	
 	public InputType getInputType(String name) throws SQLException, ClassNotFoundException, IOException {		
 		InputType inputType = null;
-		Query query = new Query("SELECT * FROM inputtypes WHERE name = '" + name + "'");
+		Query query = new Query("SELECT * FROM inputtypes WHERE name = ?");
+		query.setParameter(1, name);
 		ResultSet result = query.execute();
 		while(result.next()) {
 			int id = result.getInt(1);

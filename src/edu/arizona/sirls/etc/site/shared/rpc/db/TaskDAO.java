@@ -26,7 +26,8 @@ public class TaskDAO {
 	
 	public Task getTask(int id) throws SQLException, ClassNotFoundException, IOException {
 		Task task = null;
-		Query query = new Query("SELECT * FROM tasks WHERE id = " + id);
+		Query query = new Query("SELECT * FROM tasks WHERE id = ?");
+		query.setParameter(1, id);
 		ResultSet result = query.execute();
 		while(result.next()) {
 			task = createTask(result);
@@ -37,7 +38,8 @@ public class TaskDAO {
 	
 	public Task getTask(Configuration configuration) throws SQLException, ClassNotFoundException, IOException {
 		Task task = null;
-		Query query = new Query("SELECT * FROM tasks WHERE configuration = " + configuration.getId());
+		Query query = new Query("SELECT * FROM tasks WHERE configuration = ?");
+		query.setParameter(1, configuration.getId());
 		ResultSet result = query.execute();
 		while(result.next()) {
 			task = createTask(result);
@@ -49,7 +51,8 @@ public class TaskDAO {
 	
 	public List<Task> getUsersTasks(int id) throws SQLException, ClassNotFoundException, IOException {
 		List<Task> tasks = new LinkedList<Task>();
-		Query query = new Query("SELECT * FROM tasks WHERE user = " + id + " AND complete = false");
+		Query query = new Query("SELECT * FROM tasks WHERE user = ? AND complete = false");
+		query.setParameter(1, id);
 		ResultSet result = query.execute();
 		while(result.next()) {			
 			Task task = createTask(result);
@@ -73,7 +76,8 @@ public class TaskDAO {
 
 	private List<Task> getUsersPastTasks(int id) throws SQLException, ClassNotFoundException, IOException {
 		List<Task> tasks = new LinkedList<Task>();
-		Query query = new Query("SELECT * FROM tasks WHERE user = " + id + " AND complete=true");
+		Query query = new Query("SELECT * FROM tasks WHERE user = ? AND complete=true");
+		query.setParameter(1, id);
 		ResultSet result = query.execute();
 		while(result.next()) {
 			Task task = createTask(result);
@@ -115,13 +119,14 @@ public class TaskDAO {
 	public Task addTask(Task task) throws SQLException, ClassNotFoundException, IOException {
 		Task result = null;
 		Query query = new Query("INSERT INTO `tasks` (`name`, `tasktype`, `taskstage`, `configuration`, `user`, `resumable`, `complete`) VALUES " +
-				"('" + task.getName() + "'" + 
-				", " + task.getTaskType().getId() +
-				", " + task.getTaskStage().getId() +
-				", " + task.getConfiguration().getId() +
-				", " + task.getUser().getId() +
-				", " + task.isResumable() + "" +
-				", " + task.isComplete() + ")");
+				"(?, ?, ?, ?, ?, ?, ?)");
+		query.setParameter(1, task.getName());
+		query.setParameter(2, task.getTaskType().getId());
+		query.setParameter(3, task.getTaskStage().getId());
+		query.setParameter(4, task.getConfiguration().getId());
+		query.setParameter(5, task.getUser().getId());
+		query.setParameter(6, task.isResumable());
+		query.setParameter(7, task.isComplete());
 		query.execute();
 		ResultSet generatedKeys = query.getGeneratedKeys();
         if (generatedKeys.next()) {
@@ -160,7 +165,8 @@ public class TaskDAO {
 
 	public void removeTask(Task task) throws SQLException, ClassNotFoundException, IOException {
 		int id = task.getId();
-		Query query = new Query("DELETE FROM tasks WHERE id = " + id);
+		Query query = new Query("DELETE FROM tasks WHERE id = ?");
+		query.setParameter(1, id);
 		query.executeAndClose();
 	}
 
@@ -171,7 +177,8 @@ public class TaskDAO {
 
 	private List<Task> getUsersResumableTasks(int id) throws ClassNotFoundException, SQLException, IOException {
 		List<Task> tasks = new LinkedList<Task>();
-		Query query = new Query("SELECT * FROM tasks WHERE user = " + id + " AND resumable=true");
+		Query query = new Query("SELECT * FROM tasks WHERE user = ? AND resumable=true");
+		query.setParameter(1, id);
 		ResultSet result = query.execute();
 		while(result.next()) {
 			Task task = createTask(result);

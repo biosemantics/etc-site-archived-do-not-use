@@ -20,7 +20,8 @@ public class TaskStageDAO {
 	
 	public TaskStage getTaskStage(int id) throws SQLException, ClassNotFoundException, IOException {
 		TaskStage taskStage = null;
-		Query query = new Query("SELECT * FROM taskstages WHERE id = " + id);
+		Query query = new Query("SELECT * FROM taskstages WHERE id = ?");
+		query.setParameter(1, id);
 		ResultSet result = query.execute();
 		while(result.next()) {
 			id = result.getInt(1);
@@ -36,8 +37,9 @@ public class TaskStageDAO {
 
 	public TaskStage getTaskStage(TaskType taskType, TaskStageEnum taskStageEnum) throws SQLException, ClassNotFoundException, IOException {		
 		TaskStage taskStage = null;
-		Query query = new Query("SELECT * FROM taskstages WHERE tasktype = " + taskType.getId() + " AND " +
-				"name = '" + taskStageEnum.toString() + "'");
+		Query query = new Query("SELECT * FROM taskstages WHERE tasktype = ? AND name = ?");
+		query.setParameter(1, taskType.getId());
+		query.setParameter(2, taskStageEnum.toString());
 		ResultSet result = query.execute();
 		while(result.next()) {
 			int id = result.getInt(1);

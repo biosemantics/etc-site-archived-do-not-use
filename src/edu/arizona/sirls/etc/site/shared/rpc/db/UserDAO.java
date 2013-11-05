@@ -25,7 +25,8 @@ public class UserDAO {
 	
 	public User getUser(int id) throws SQLException, ClassNotFoundException, IOException {
 		User user = null;
-		Query query = new Query("SELECT * FROM users WHERE id = " + id);
+		Query query = new Query("SELECT * FROM users WHERE id = ?");
+		query.setParameter(1, id);
 		ResultSet result = query.execute();
 		while(result.next()) {
 			id = result.getInt(1);
@@ -42,7 +43,8 @@ public class UserDAO {
 	
 	public User getUser(String name) throws SQLException, ClassNotFoundException, IOException {		
 		User user = null;
-		Query query = new Query("SELECT * FROM users WHERE name = '" + name + "'");
+		Query query = new Query("SELECT * FROM users WHERE name = ?");
+		query.setParameter(1, name);
 		ResultSet result = query.execute();
 		while(result.next()) {
 			int id = result.getInt(1);
@@ -58,7 +60,9 @@ public class UserDAO {
 	}
 	
 	public void setPassword(User user, String newPassword) throws SQLException, ClassNotFoundException, IOException {
-		Query query = new Query("UPDATE users SET password = '" + newPassword + "' WHERE id = " + user.getId());
+		Query query = new Query("UPDATE users SET password = ? WHERE id = ?");
+		query.setParameter(1, newPassword);
+		query.setParameter(2, user.getId());
 		query.executeAndClose();
 	}
 		
