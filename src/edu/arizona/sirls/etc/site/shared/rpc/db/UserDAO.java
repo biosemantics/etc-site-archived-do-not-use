@@ -81,5 +81,16 @@ public class UserDAO {
 		}
 		return result;
 	}
+	
+	public List<ShortUser> getUsersWithout(String username) throws SQLException, ClassNotFoundException, IOException {
+		List<ShortUser> result = new LinkedList<ShortUser>();
+		Query query = new Query("SELECT id, name FROM users WHERE name != ?");
+		query.setParameter(1, username);
+		ResultSet resultSet = query.execute();
+		while(resultSet.next()) {
+			result.add(new ShortUser(resultSet.getInt(1), resultSet.getString(2)));
+		}
+		return result;
+	}
 
 }

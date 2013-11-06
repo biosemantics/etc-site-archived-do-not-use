@@ -35,7 +35,7 @@ public class UsersPresenter implements Presenter, UsersView.Presenter {
 	}
 	
 	public void refresh() {
-		userService.getUsers(Authentication.getInstance().getAuthenticationToken(), new AsyncCallback<RPCResult<List<ShortUser>>>() {
+		userService.getUsers(Authentication.getInstance().getAuthenticationToken(), false, new AsyncCallback<RPCResult<List<ShortUser>>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();

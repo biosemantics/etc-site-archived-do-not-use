@@ -91,7 +91,8 @@ public class FileTreePresenter implements Presenter, FileTreeView.Presenter, IFi
 					return retainedStates;
 				}
 				private void fillChildrenStates(FileImageLabelTreeItem fileImageLabelTreeItem, Map<String, Boolean> retainedStates) {
-					retainedStates.put(fileImageLabelTreeItem.getFileInfo().getFilePath(), fileImageLabelTreeItem.getState());
+					if(fileImageLabelTreeItem.getFileInfo().getFilePath() != null)
+						retainedStates.put(fileImageLabelTreeItem.getFileInfo().getFilePath(), fileImageLabelTreeItem.getState());
 					for(int i=0; i < fileImageLabelTreeItem.getChildCount(); i++) {
 						FileImageLabelTreeItem child = fileImageLabelTreeItem.getChild(i);
 						fillChildrenStates(child, retainedStates);

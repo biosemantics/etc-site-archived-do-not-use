@@ -128,8 +128,11 @@ public class FileTreeDecorator {
 				}
 			}
 			
-			if(retainedStates.containsKey(filePath))
+			if(retainedStates.containsKey(filePath)) {
 				treeItem.setState(retainedStates.get(filePath));
+			} else {
+				treeItem.setState(true);
+			}
 		}
 	}
 

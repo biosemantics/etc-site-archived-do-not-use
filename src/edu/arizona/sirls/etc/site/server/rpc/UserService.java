@@ -16,11 +16,16 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 	private IAuthenticationService authenticationService = new AuthenticationService();
 	
 	@Override
-	public RPCResult<List<ShortUser>> getUsers(AuthenticationToken authenticationToken) {
+	public RPCResult<List<ShortUser>> getUsers(AuthenticationToken authenticationToken, boolean includeSelf) {
 		RPCResult<List<ShortUser>> result = new RPCResult<List<ShortUser>>(false, "Authentication failed");
 		if(authenticationService.isValidSession(authenticationToken).getData().getResult()) {
 			try {
-				List<ShortUser> usernames = UserDAO.getInstance().getUsers();
+
+				List<ShortUser> usernames;
+				if(includeSelf)
+					usernames = UserDAO.getInstance().getUsers();
+				else
+					usernames = UserDAO.getInstance().getUsersWithout(authenticationToken.getUsername());
 				result = new RPCResult<List<ShortUser>>(true, usernames);
 			} catch (Exception e) {
 				e.printStackTrace();

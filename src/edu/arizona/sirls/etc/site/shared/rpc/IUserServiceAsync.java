@@ -8,6 +8,6 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.ShortUser;
 
 public interface IUserServiceAsync {
 
-	public void getUsers(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<List<ShortUser>>> callback);
+	public void getUsers(AuthenticationToken authenticationToken, boolean includeSelf, AsyncCallback<RPCResult<List<ShortUser>>> callback);
 	
 }
