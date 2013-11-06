@@ -62,7 +62,10 @@ public class FileTreePresenter implements Presenter, FileTreeView.Presenter, IFi
 						Map<String, Boolean> retainedStates = getRetainedStates();
 						
 						//retain selection
-						String selectionTarget = fileSelectionHandler.getTarget();
+						FileImageLabelTreeItem selection = fileSelectionHandler.getSelection();
+						String selectionPath = null;
+						if(selection != null)
+							selectionPath = selection.getFileInfo().getFilePath();
 						
 						//remove previous data
 						view.getTree().clear();
@@ -72,9 +75,9 @@ public class FileTreePresenter implements Presenter, FileTreeView.Presenter, IFi
 						fileDragDropHandler.addListener(FileTreePresenter.this);
 						
 						if(enableDragAndDrop) 
-							fileTreeDecorator.decorate(view.getTree(), result.getData(), fileFilter, fileDragDropHandler, selectionTarget, retainedStates);
+							fileTreeDecorator.decorate(view.getTree(), result.getData(), fileFilter, fileDragDropHandler, selectionPath, retainedStates);
 						else
-							fileTreeDecorator.decorate(view.getTree(), result.getData(), fileFilter, null, selectionTarget, retainedStates);
+							fileTreeDecorator.decorate(view.getTree(), result.getData(), fileFilter, null, selectionPath, retainedStates);
 						
 						loadingPopup.stop();
 					}
@@ -88,7 +91,7 @@ public class FileTreePresenter implements Presenter, FileTreeView.Presenter, IFi
 					return retainedStates;
 				}
 				private void fillChildrenStates(FileImageLabelTreeItem fileImageLabelTreeItem, Map<String, Boolean> retainedStates) {
-					retainedStates.put(fileImageLabelTreeItem.getPath(), fileImageLabelTreeItem.getState());
+					retainedStates.put(fileImageLabelTreeItem.getFileInfo().getFilePath(), fileImageLabelTreeItem.getState());
 					for(int i=0; i < fileImageLabelTreeItem.getChildCount(); i++) {
 						FileImageLabelTreeItem child = fileImageLabelTreeItem.getChild(i);
 						fillChildrenStates(child, retainedStates);

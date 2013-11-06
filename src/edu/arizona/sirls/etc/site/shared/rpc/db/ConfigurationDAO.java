@@ -28,4 +28,10 @@ public class ConfigurationDAO {
 			instance = new ConfigurationDAO();
 		return instance;
 	}
+
+	public void remove(edu.arizona.sirls.etc.site.shared.rpc.db.Configuration configuration) throws ClassNotFoundException, SQLException, IOException {
+		Query query = new Query("DELETE FROM configurations WHERE id = ?");
+		query.setParameter(1, configuration.getId());
+		query.executeAndClose();
+	}
 }

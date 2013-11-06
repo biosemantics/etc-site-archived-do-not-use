@@ -2,19 +2,31 @@ package edu.arizona.sirls.etc.site.server.rpc;
 
 public class LearnResult {
 
-	private int otoId;
 
-	public LearnResult(int otoId) {
-		this.otoId = otoId;
+	private int otoUploadId;
+	private String otoSecret;
+
+	public LearnResult(int otoUploadId, String otoSecret) {
+		this.otoUploadId = otoUploadId;
+		this.otoSecret = otoSecret;
 	}
 
-	public int getOtoId() {
-		return otoId;
+	public int getOtoUploadId() {
+		return otoUploadId;
 	}
 
-	public void setOtoId(int otoId) {
-		this.otoId = otoId;
+	public void setOtoUploadId(int otoUploadId) {
+		this.otoUploadId = otoUploadId;
 	}
+
+	public String getOtoSecret() {
+		return otoSecret;
+	}
+
+	public void setOtoSecret(String otoSecret) {
+		this.otoSecret = otoSecret;
+	}
+
 
 	
 }

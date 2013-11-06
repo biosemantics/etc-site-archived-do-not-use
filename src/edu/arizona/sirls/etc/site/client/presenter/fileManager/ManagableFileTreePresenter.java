@@ -12,11 +12,13 @@ import edu.arizona.sirls.etc.site.client.presenter.Presenter;
 import edu.arizona.sirls.etc.site.client.view.LabelTextFieldCancelConfirmView;
 import edu.arizona.sirls.etc.site.client.view.LabelTextFieldConfirmView;
 import edu.arizona.sirls.etc.site.client.view.MessageView;
+import edu.arizona.sirls.etc.site.client.view.fileManager.FileImageLabelTreeItem;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileTreeView;
-import edu.arizona.sirls.etc.site.server.Configuration;
+import edu.arizona.sirls.etc.site.shared.rpc.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FileType;
 
 import gwtupload.client.BaseUploadStatus;
 import gwtupload.client.IUploadStatus;
@@ -34,6 +36,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -106,10 +109,13 @@ public class ManagableFileTreePresenter implements Presenter {
 	protected class AddClickHandler implements ClickHandler {
 		@Override
 		public void onClick(ClickEvent event) {
-			final String target = fileSelectionHandler.getTarget();
-			if(target == null) {
+			final FileImageLabelTreeItem selection = fileSelectionHandler.getSelection();
+			if(selection == null) {
 				display.getUploader().setEnabled(false);
-				messagePresenter.setMessage("Please select a directory to add the files to");
+				messagePresenter.setMessage("Please select a valid directory to add the files to");
+				messagePresenter.go();
+			} else if(selection.getFileInfo().getFilePath() == null) {
+				messagePresenter.setMessage("Please select a valid directory to add the files to");
 				messagePresenter.go();
 			} else {
 				display.getUploader().setEnabled(true);
@@ -120,37 +126,43 @@ public class ManagableFileTreePresenter implements Presenter {
 	protected class DownloadClickHandler implements ClickHandler {
 		@Override
 		public void onClick(ClickEvent event) {
-			final String target = fileSelectionHandler.getTarget();
-			if(target != null && !target.isEmpty()) {
-				fileService.isDirectory(Authentication.getInstance().getAuthenticationToken(), target, new AsyncCallback<RPCResult<Boolean>>() {
-					@Override
-					public void onFailure(Throwable caught) {
-					
-					}
-					@Override
-					public void onSuccess(RPCResult<Boolean> result) {
-						if(result.isSucceeded()) {
-							if(result.getData()) {
-								fileService.zipDirectory(Authentication.getInstance().getAuthenticationToken(), target, new AsyncCallback<RPCResult<Void>>() {
-									@Override
-									public void onFailure(Throwable caught) {
-										caught.printStackTrace();
-									}
-									@Override
-									public void onSuccess(RPCResult<Void> result) {
-										Window.open("/etcsite/download/?target=" + target + "&directory=yes&username=" + Authentication.getInstance().getUsername() + "&" + 
-												"sessionID=" + Authentication.getInstance().getSessionID()
-												, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes");
-									}
-								});
-							} else {
-								Window.open("/etcsite/download/?target=" + target + "&username=" + Authentication.getInstance().getUsername() + "&" + 
-										"sessionID=" + Authentication.getInstance().getSessionID()
-										, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes");
-							}
+			final FileImageLabelTreeItem selection = fileSelectionHandler.getSelection();
+			if(selection != null) { 
+				final String selectionPath = selection.getFileInfo().getFilePath();
+				if(selectionPath != null) {
+					fileService.isDirectory(Authentication.getInstance().getAuthenticationToken(), selectionPath, new AsyncCallback<RPCResult<Boolean>>() {
+						@Override
+						public void onFailure(Throwable caught) {
+						
 						}
-					} 
-				});
+						@Override
+						public void onSuccess(RPCResult<Boolean> result) {
+							if(result.isSucceeded()) {
+								if(result.getData()) {
+									fileService.zipDirectory(Authentication.getInstance().getAuthenticationToken(), selectionPath, new AsyncCallback<RPCResult<Void>>() {
+										@Override
+										public void onFailure(Throwable caught) {
+											caught.printStackTrace();
+										}
+										@Override
+										public void onSuccess(RPCResult<Void> result) {
+											Window.open("/etcsite/download/?target=" + selectionPath + "&directory=yes&username=" + Authentication.getInstance().getUsername() + "&" + 
+													"sessionID=" + Authentication.getInstance().getSessionID()
+													, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes");
+										}
+									});
+								} else {
+									Window.open("/etcsite/download/?target=" + selectionPath + "&username=" + Authentication.getInstance().getUsername() + "&" + 
+											"sessionID=" + Authentication.getInstance().getSessionID()
+											, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes");
+								}
+							}
+						} 
+					});
+				} else {
+					messagePresenter.setMessage("Not downloadable");
+					messagePresenter.go();
+				}
 			} else {
 				messagePresenter.setMessage("Please select a file to download");
 				messagePresenter.go();
@@ -161,9 +173,10 @@ public class ManagableFileTreePresenter implements Presenter {
 	protected class DeleteClickHandler implements ClickHandler {
 		@Override
 		public void onClick(ClickEvent event) {
-			String target = fileSelectionHandler.getTarget();
-			if(target != null && !target.isEmpty()) {
-				fileService.deleteFile(Authentication.getInstance().getAuthenticationToken(), target, new AsyncCallback<RPCResult<Void>>(){
+			FileImageLabelTreeItem selection = fileSelectionHandler.getSelection();
+			
+			if(selection != null && selection.getFileInfo().getFilePath() != null) {
+				fileService.deleteFile(Authentication.getInstance().getAuthenticationToken(), selection.getFileInfo().getFilePath(), new AsyncCallback<RPCResult<Void>>(){
 					@Override
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
@@ -185,13 +198,12 @@ public class ManagableFileTreePresenter implements Presenter {
 	protected class RenameClickHandler implements ClickHandler, ILabelTextFieldDialogBoxHandler {
 		@Override
 		public void onClick(ClickEvent event) {
-			String target = fileSelectionHandler.getTarget();
+			FileImageLabelTreeItem selection = fileSelectionHandler.getSelection();
 			//don't allow rename of root node
-			if(target != null && !target.isEmpty()) {
-				String pathParts[] = target.split("//");
+			if(selection != null) {
 				LabelTextFieldCancelConfirmView renameView = new LabelTextFieldCancelConfirmView();
 				LabelTextFieldCancelConfirmPresenter renameDialogBox = new LabelTextFieldCancelConfirmPresenter(
-						renameView, "Rename", "New name: ", pathParts[pathParts.length-1], this);
+						renameView, "Rename", "New name: ", selection.getFileInfo().getName(), this);
 				renameDialogBox.go();
 			} else {
 				messagePresenter.setMessage("Please select a file or directory to rename");
@@ -199,38 +211,21 @@ public class ManagableFileTreePresenter implements Presenter {
 			}
 		}
 
-		private String getTargetFromParts(String[] parts) {
-			StringBuilder builder = new StringBuilder();
-			for(int i=0; i<parts.length; i++) {
-				builder.append(parts[i]);
-				if(i < parts.length - 1)
-					builder.append("//");
-			}
-			return builder.toString();
-		}
-
 		@Override
-		public void canceled() {
-			
-		}
-
-		@Override
-		public void confirmed(String newFileName) {
-			String target = fileSelectionHandler.getTarget();
-			if(target != null) {
-				String pathParts[] = target.split("//");
-				pathParts[pathParts.length-1] = newFileName;
-				final String newTarget = getTargetFromParts(pathParts);
-				fileService.moveFile(Authentication.getInstance().getAuthenticationToken(), target, newTarget, 
+		public void confirmed(final String newFileName) {
+			final FileImageLabelTreeItem selection = fileSelectionHandler.getSelection();
+			if(selection != null && selection.getFileInfo().getFilePath() != null) {
+				fileService.renameFile(Authentication.getInstance().getAuthenticationToken(), selection.getFileInfo().getFilePath(), newFileName, 
 						new AsyncCallback<RPCResult<Void>>() {
 					public void onSuccess(RPCResult<Void> result) {
 						if(result.isSucceeded()) {
-							fileSelectionHandler.setTarget(newTarget);
+							//fileSelectionHandler..setTarget(newTarget);
 							fileTreePresenter.refresh();
 						} else {
 							messagePresenter.setMessage("File could not be renamed.");
 							messagePresenter.go();
 						}
+						selection.getFileInfo().setName(newFileName);
 					}
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
@@ -238,14 +233,20 @@ public class ManagableFileTreePresenter implements Presenter {
 				});
 			}
 		}
+
+		@Override
+		public void canceled() {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 	
 	protected class CreateDirectoryClickHandler implements ClickHandler, ILabelTextFieldDialogBoxHandler {
 		@Override
 		public void onClick(ClickEvent event) {
-			final String target = fileSelectionHandler.getTarget();
-			if(target != null) {
-				int level = getLevel(target);
+			final FileImageLabelTreeItem selection = fileSelectionHandler.getSelection();
+			if(selection != null) {
+				int level = getLevel(selection);
 				if(level < Configuration.fileManagerMaxDepth) {
 					LabelTextFieldConfirmView renameView = new LabelTextFieldConfirmView();
 					LabelTextFieldConfirmPresenter renamePresenter = new LabelTextFieldConfirmPresenter(
@@ -261,8 +262,13 @@ public class ManagableFileTreePresenter implements Presenter {
 			}
 		}
 		
-		private int getLevel(String target) {
-			return target.split("//").length - 1;
+		private int getLevel(TreeItem item) {
+			int result = 0;
+			while(item.getParentItem() != null) {
+				result++;
+				item = item.getParentItem();
+			}
+			return result;
 		}
 
 		@Override
@@ -271,36 +277,51 @@ public class ManagableFileTreePresenter implements Presenter {
 
 		@Override
 		public void confirmed(final String directoryName) {
-			final String target = fileSelectionHandler.getTarget();
-			fileService.isDirectory(Authentication.getInstance().getAuthenticationToken(), target, new AsyncCallback<RPCResult<Boolean>>() {
+			final FileImageLabelTreeItem selection = fileSelectionHandler.getSelection();
+			final String selectionPath = selection.getFileInfo().getFilePath();
+			fileService.isDirectory(Authentication.getInstance().getAuthenticationToken(), selectionPath, new AsyncCallback<RPCResult<Boolean>>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					caught.printStackTrace();
 				}
 				@Override
 				public void onSuccess(RPCResult<Boolean> result) {
-					String newTarget = target;
+					String newDirectoryParent = selectionPath;
 					if(result.isSucceeded()) {
 						if(!result.getData())
-							newTarget = target.substring(0, target.lastIndexOf("//"));
-						fileService.createDirectory(Authentication.getInstance().getAuthenticationToken(), newTarget, directoryName, 
-								new AsyncCallback<RPCResult<Void>>() {
-							public void onSuccess(RPCResult<Void> result) {
-								if (result.isSucceeded()) {
-									fileTreePresenter.refresh();
-								} else {
-									messagePresenter.setMessage("Could not create directory.");
-									messagePresenter.go();
+							newDirectoryParent = getParent(selection);
+						if(newDirectoryParent != null) {
+							fileService.createDirectory(Authentication.getInstance().getAuthenticationToken(), newDirectoryParent, directoryName, 
+									new AsyncCallback<RPCResult<Void>>() {
+								public void onSuccess(RPCResult<Void> result) {
+									if (result.isSucceeded()) {
+										fileTreePresenter.refresh();
+									} else {
+										messagePresenter.setMessage("Could not create directory.");
+										messagePresenter.go();
+									}
 								}
-							}
-							public void onFailure(Throwable caught) {
-								caught.printStackTrace();
-							}
-						});
+								public void onFailure(Throwable caught) {
+									caught.printStackTrace();
+								}
+							});
+						}
 					}
 				}
 			});
 		}
+	}
+	
+	private String getParent(FileImageLabelTreeItem selection) {
+		TreeItem parentItem = selection.getParentItem();
+		if(parentItem != null && parentItem instanceof FileImageLabelTreeItem) {
+			FileImageLabelTreeItem parentFileTreeItem = (FileImageLabelTreeItem)parentItem;
+			if(parentFileTreeItem.getFileInfo().getFilePath() == null) {
+				return this.getParent(parentFileTreeItem);
+			}
+			return parentFileTreeItem.getFileInfo().getFilePath();
+		}
+		return null;
 	}
 	
 	public class OnFinishUploadHandler implements OnFinishUploaderHandler {
@@ -332,12 +353,12 @@ public class ManagableFileTreePresenter implements Presenter {
 	public class OnStartUploadHandler implements OnStartUploaderHandler {
 		@Override
 		public void onStart(final IUploader uploader) {
-			final String target = fileSelectionHandler.getTarget();
-			if(fileSelectionHandler.isTargetDirectory()) {
-				uploader.setServletPath(uploader.getServletPath() + "&target=" + target);
+			final FileImageLabelTreeItem selection = fileSelectionHandler.getSelection();
+			if(fileSelectionHandler.getSelection().getFileInfo().getFileType().equals(FileType.DIRECTORY)) {
+				uploader.setServletPath(uploader.getServletPath() + "&target=" + selection.getFileInfo().getFilePath());
 			} else {
-				String newTarget = target.substring(0, target.lastIndexOf("//"));
-				uploader.setServletPath(uploader.getServletPath() + "&target=" + newTarget);
+				String newFilePath = getParent(selection);
+				uploader.setServletPath(uploader.getServletPath() + "&target=" + newFilePath);
 			}				
 
 			//only needed when MultiUploader is used instead of SingleUploader

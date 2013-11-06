@@ -14,6 +14,7 @@ import com.google.gwt.user.client.ui.Widget;
 import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.event.MatrixGenerationEvent;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
+import edu.arizona.sirls.etc.site.shared.rpc.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
@@ -79,7 +80,8 @@ public class ReviewMatrixGenerationPresenter {
 			@Override
 			public void onSuccess(RPCResult<MatrixGenerationTaskRun> matrixGenerationTask) {
 				if(matrixGenerationTask.isSucceeded()) {
-					display.getFrame().setUrl("http://biosemantics.arizona.edu:8080/OTOLite/?embed=true&uploadID=" + matrixGenerationTask.getData().getConfiguration().getOtoId());
+					display.getFrame().setUrl(Configuration.otoLiteURL + "&uploadID=" + matrixGenerationTask.getData().getConfiguration().getOtoUploadId() + 
+							"&secret=" + matrixGenerationTask.getData().getConfiguration().getOtoSecret());
 					ReviewMatrixGenerationPresenter.this.matrixGenerationTask = matrixGenerationTask.getData();
 					content.clear();
 					content.add(display.asWidget());

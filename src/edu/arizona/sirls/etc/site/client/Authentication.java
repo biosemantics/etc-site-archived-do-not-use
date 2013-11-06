@@ -4,6 +4,8 @@ import java.util.Date;
 
 import com.google.gwt.user.client.Cookies;
 
+import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationToken;
+
 public class Authentication {
 
 	private static Authentication instance;

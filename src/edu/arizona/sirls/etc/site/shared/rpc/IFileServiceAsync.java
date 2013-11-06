@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileInfo;
@@ -36,4 +35,14 @@ public interface IFileServiceAsync {
 	public void isInUse(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<Boolean>> callback);
 	
 	public void getUsingTasks(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<List<Task>>> callback);
+
+	public void renameFile(AuthenticationToken authenticationToken, String path, String newFileName, AsyncCallback<RPCResult<Void>> callback);
+	
+	public void getParent(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<String>> callback);
+
+	public void getFileName(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<String>> callback);
+
+	public void copyFiles(AuthenticationToken authenticationToken, String sourceDirectory, String destinationDirectory, AsyncCallback<RPCResult<Void>> callback);
+	
+	public void createDirectoryForcibly(AuthenticationToken authenticationToken, String directory, String idealFolderName, AsyncCallback<RPCResult<Void>> callback);
 }

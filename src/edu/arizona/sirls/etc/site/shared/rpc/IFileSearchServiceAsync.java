@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.file.search.Search;
 import edu.arizona.sirls.etc.site.shared.rpc.file.search.SearchResult;
 

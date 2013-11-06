@@ -3,16 +3,15 @@ package edu.arizona.sirls.etc.site.client.view.fileManager;
 import com.google.gwt.user.client.ui.TreeItem;
 
 import edu.arizona.sirls.etc.site.client.presenter.fileManager.FileImageLabelComposite;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FileInfo;
 
 public class FileImageLabelTreeItem extends TreeItem {
 
 	private FileImageLabelComposite fileImageLabelComposite;
-	private String path;
-	private String name;
+	private FileInfo fileInfo;
 	
-	public FileImageLabelTreeItem(String name, String path) {
-		this.name = name;
-		this.path = path;
+	public FileImageLabelTreeItem(FileInfo fileInfo) {
+		this.fileInfo = fileInfo;
 	}
 	
 	public FileImageLabelTreeItem(FileImageLabelComposite fileImageLabelComposite) {
@@ -30,22 +29,14 @@ public class FileImageLabelTreeItem extends TreeItem {
 		return fileImageLabelComposite;
 	}
 
-	public String getPath() {
-		return path;
+	public FileInfo getFileInfo() {
+		return fileInfo;
 	}
 
-	public void setPath(String path) {
-		this.path = path;
+	public void setFileInfo(FileInfo fileInfo) {
+		this.fileInfo = fileInfo;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-	
 	@Override 
 	public FileImageLabelTreeItem getChild(int index) {
 		TreeItem item = super.getChild(index);

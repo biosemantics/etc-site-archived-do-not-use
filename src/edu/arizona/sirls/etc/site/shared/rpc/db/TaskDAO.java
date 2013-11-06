@@ -165,6 +165,16 @@ public class TaskDAO {
 
 	public void removeTask(Task task) throws SQLException, ClassNotFoundException, IOException {
 		int id = task.getId();
+		
+		// remove shares
+		List<Share> shares = ShareDAO.getInstance().getShares(task);
+		for(Share share : shares) {
+			ShareDAO.getInstance().removeShare(share);
+		}
+		
+		// remove files in use
+		FilesInUseDAO.getInstance().removeFilesInUse(task);
+				
 		Query query = new Query("DELETE FROM tasks WHERE id = ?");
 		query.setParameter(1, id);
 		query.executeAndClose();

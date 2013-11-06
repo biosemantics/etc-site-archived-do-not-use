@@ -11,17 +11,19 @@ public class MatrixGenerationConfiguration extends AbstractTaskConfiguration imp
 	private String input;
 	private int numberOfInputFiles;
 	private Glossary glossary;
-	private int otoId;
+	private int otoUploadId;
+	private String otoSecret;
 	private String output;
 	
 	public MatrixGenerationConfiguration() { }
 	
-	public MatrixGenerationConfiguration(Configuration configuration, String input, int numberOfInputFiles, Glossary glossary, int otoId, String output) {
+	public MatrixGenerationConfiguration(Configuration configuration, String input, int numberOfInputFiles, Glossary glossary, int otoUploadId, String otoSecret, String output) {
 		super(configuration);
 		this.input = input;
 		this.numberOfInputFiles = numberOfInputFiles;
 		this.glossary = glossary;
-		this.otoId = otoId;
+		this.otoUploadId = otoUploadId;
+		this.otoSecret = otoSecret;
 		this.output = output;
 	}
 
@@ -49,16 +51,24 @@ public class MatrixGenerationConfiguration extends AbstractTaskConfiguration imp
 		this.glossary = glossary;
 	}
 
-	public int getOtoId() {
-		return otoId;
+	public int getOtoUploadId() {
+		return otoUploadId;
 	}
 
-	public void setOtoId(int otoId) {
-		this.otoId = otoId;
+	public void setOtoUploadId(int otoUploadId) {
+		this.otoUploadId = otoUploadId;
 	}
 
 	public String getOutput() {
 		return output;
+	}
+	
+	public String getOtoSecret() {
+		return this.otoSecret;
+	}
+	
+	public void setOtoSecret(String otoSecret) {
+		this.otoSecret = otoSecret;
 	}
 
 	public void setOutput(String output) {
@@ -78,5 +88,7 @@ public class MatrixGenerationConfiguration extends AbstractTaskConfiguration imp
 		result.add(this.getOutput());
 		return result;
 	}
+
+
 	
 }

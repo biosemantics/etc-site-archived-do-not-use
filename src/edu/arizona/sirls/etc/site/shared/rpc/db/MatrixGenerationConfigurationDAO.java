@@ -33,11 +33,12 @@ public class MatrixGenerationConfigurationDAO {
 		String input = result.getString(2);
 		int numberOfInputFiles = result.getInt(3);
 		int glossaryId = result.getInt(4);
-		int oto = result.getInt(5);
-		String output = result.getString(6);
+		int otoUploadId = result.getInt(5);
+		String otoSecret = result.getString(6);
+		String output = result.getString(7);
 		Configuration configuration = ConfigurationDAO.getInstance().getConfiguration(configurationId);
 		Glossary glossary = GlossaryDAO.getInstance().getGlossary(glossaryId);
-		return  new MatrixGenerationConfiguration(configuration, input, numberOfInputFiles, glossary, oto, output);
+		return  new MatrixGenerationConfiguration(configuration, input, numberOfInputFiles, glossary, otoUploadId, otoSecret, output);
 	}
 
 	public MatrixGenerationConfiguration addMatrixGenerationConfiguration(MatrixGenerationConfiguration matrixGenerationConfiguration) throws SQLException, ClassNotFoundException, IOException {
@@ -48,13 +49,14 @@ public class MatrixGenerationConfigurationDAO {
 		while(generatedKeys.next()) {
 			Configuration configuration = ConfigurationDAO.getInstance().getConfiguration(generatedKeys.getInt(1));
 			Query matrixGenerationQuery = new Query("INSERT INTO `matrixgenerationconfigurations` " +
-					"(`configuration`, `input`, `numberofinputfiles`, `glossary`, `oto`, `output`) VALUES (?, ?, ?, ?, ?)");
+					"(`configuration`, `input`, `numberofinputfiles`, `glossary`, `oto_uploadid`, `oto_secret`, `output`) VALUES (?, ?, ?, ?, ?, ?, ?)");
 			matrixGenerationQuery.setParameter(1, configuration.getId());
 			matrixGenerationQuery.setParameter(2, matrixGenerationConfiguration.getInput());
 			matrixGenerationQuery.setParameter(3, matrixGenerationConfiguration.getNumberOfInputFiles());
 			matrixGenerationQuery.setParameter(4, matrixGenerationConfiguration.getGlossary().getId());
-			matrixGenerationQuery.setParameter(5, matrixGenerationConfiguration.getOtoId());
-			matrixGenerationQuery.setParameter(6, matrixGenerationConfiguration.getOutput());
+			matrixGenerationQuery.setParameter(5, matrixGenerationConfiguration.getOtoUploadId());
+			matrixGenerationQuery.setParameter(6, matrixGenerationConfiguration.getOtoSecret());
+			matrixGenerationQuery.setParameter(7, matrixGenerationConfiguration.getOutput());
 			
 			matrixGenerationQuery.execute();
 			matrixGenerationQuery.close();
@@ -68,15 +70,17 @@ public class MatrixGenerationConfigurationDAO {
 		int glossaryId = matrixGenerationConfiguration.getGlossary().getId();
 		String input = matrixGenerationConfiguration.getInput();
 		String output = matrixGenerationConfiguration.getOutput();
-		int otoId = matrixGenerationConfiguration.getOtoId();
+		int otoUploadId = matrixGenerationConfiguration.getOtoUploadId();
+		String otoSecret = matrixGenerationConfiguration.getOtoSecret();
 		int numberOfInputFiles = matrixGenerationConfiguration.getNumberOfInputFiles();
-		Query query = new Query("UPDATE matrixgenerationconfigurations SET input = ?, numberofinputfiles = ?, glossary = ?, oto = ?, output = ? WHERE configuration = ?");
+		Query query = new Query("UPDATE matrixgenerationconfigurations SET input = ?, numberofinputfiles = ?, glossary = ?, oto_uploadid = ?, oto_secret = ?, output = ? WHERE configuration = ?");
 		query.setParameter(1, input);
 		query.setParameter(2, numberOfInputFiles);
 		query.setParameter(3, glossaryId);
-		query.setParameter(4, otoId);
-		query.setParameter(5, output);
-		query.setParameter(6, configuration.getId());
+		query.setParameter(4, otoUploadId);
+		query.setParameter(5, otoSecret);
+		query.setParameter(6, output);
+		query.setParameter(7, configuration.getId());
 		query.executeAndClose();
 	}
 

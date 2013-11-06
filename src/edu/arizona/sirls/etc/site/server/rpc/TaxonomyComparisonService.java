@@ -2,8 +2,8 @@ package edu.arizona.sirls.etc.site.server.rpc;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationResult;
+import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaxonomyComparisonService;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;

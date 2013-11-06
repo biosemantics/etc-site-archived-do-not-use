@@ -1,35 +1,25 @@
 package edu.arizona.sirls.etc.site.client.presenter.fileManager;
 
 import edu.arizona.sirls.etc.site.client.view.ImageLabelComposite;
+import edu.arizona.sirls.etc.site.client.view.fileManager.FileImageLabelTreeItem;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FileInfo;
 
 public class FileImageLabelComposite extends ImageLabelComposite {
 	
-	private String path;
-	private boolean isFile;
+	private FileImageLabelTreeItem fileTreeItem;
 	
-	public FileImageLabelComposite(String imageUri, String width,
-			String height, String labelText, String path, boolean isFile) {
-		super(imageUri, width, height, labelText);
-		this.path = path;
-		this.isFile = isFile;
+	public FileImageLabelComposite(FileImageLabelTreeItem fileTreeItem, String imageUri, String width,
+			String height, String label) {
+		super(imageUri, width, height, label);
+		this.fileTreeItem = fileTreeItem;
 	}
 
-	public String getPath() {
-		return path;
+	public FileInfo getFileInfo() {
+		return fileTreeItem.getFileInfo();
 	}
 
-	public void setPath(String path) {
-		this.path = path;
+	public FileImageLabelTreeItem getFileTreeItem() {
+		return fileTreeItem;
 	}
-
-	public boolean isFile() {
-		return isFile;
-	}
-
-	public void setFile(boolean isFile) {
-		this.isFile = isFile;
-	}
-	
-	
 	
 }

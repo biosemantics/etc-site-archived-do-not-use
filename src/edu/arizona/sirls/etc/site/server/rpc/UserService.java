@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-import edu.arizona.sirls.etc.site.client.AuthenticationToken;
+import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IUserService;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;

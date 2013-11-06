@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Properties;
 
-import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.server.Configuration;
+import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationToken;
 
 import semanticMarkup.MarkupMain;
 
@@ -39,7 +39,6 @@ public class Parse implements IParse {
 	@Override
 	public ParseResult call() throws Exception {
 		ParseResult result = new ParseResult(new HashSet<File>());
-		String fileSystemInput = Configuration.fileBase +  File.separator + authenticationToken.getUsername() + File.separator + input;
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		Properties properties = new Properties(); 
 		properties.load(loader.getResourceAsStream("config.properties"));
@@ -52,12 +51,12 @@ public class Parse implements IParse {
 		String src = "resources" + File.separator + "charaparser" + File.separator + "src";
 		String[] args = new String[] { "-f", source, "-g", user, "-j", bioportalUserId, "-k", bioportalAPIKey, "-b", debugFile, "-e", errorFile, "-c", config, "-r", resources, "-l", src,
 				"-n", databaseHost, "-p", databasePort, "-d", databaseName, "-u", databaseUser, 
-				"-s", databasePassword, "-i", fileSystemInput, "-z" , tablePrefix };
+				"-s", databasePassword, "-i", input, "-z" , tablePrefix };
 		MarkupMain.main(args);
-		File outputFile = new File("workspace" + File.separator + tablePrefix + File.separator + "out");
-		for(File outFile : outputFile.listFiles()) {
-			result.getOutputFiles().add(outFile);
-		}
+		//File outputFile = new File("workspace" + File.separator + tablePrefix + File.separator + "out");
+		//for(File outFile : outputFile.listFiles()) {
+		//	result.getOutputFiles().add(outFile);
+		//}
 		return result;
 	}
 

@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.Widget;
 import edu.arizona.sirls.etc.site.client.presenter.MessagePresenter;
 import edu.arizona.sirls.etc.site.client.presenter.Presenter;
 import edu.arizona.sirls.etc.site.client.view.MessageView;
+import edu.arizona.sirls.etc.site.client.view.fileManager.FileImageLabelTreeItem;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileTreeView;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
@@ -61,9 +62,9 @@ public class SavableFileTreePresenter implements Presenter, ClickHandler {
 
 	@Override
 	public void onClick(ClickEvent event) {
-		String target = getFileSelectionHandler().getTarget();
+		FileImageLabelTreeItem selection = getFileSelectionHandler().getSelection();
 		String fileName = display.getNameTextBox().getText();
-		if(target == null) {
+		if(selection == null) {
 			messagePresenter.setMessage("You have to select a directory");
 			messagePresenter.go();
 		} else if(fileName.trim().isEmpty()) {

@@ -31,9 +31,9 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.server.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationResult;
+import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
@@ -41,10 +41,13 @@ import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskService;
 import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
+import edu.arizona.sirls.etc.site.shared.rpc.db.ConfigurationDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Glossary;
 import edu.arizona.sirls.etc.site.shared.rpc.db.GlossaryDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfigurationDAO;
+import edu.arizona.sirls.etc.site.shared.rpc.db.Share;
+import edu.arizona.sirls.etc.site.shared.rpc.db.ShareDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.ShortUser;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TaskDAO;
@@ -67,13 +70,12 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	private IFileAccessService fileAccessService = new FileAccessService();
 	private ITaskService taskService = new TaskService();
 	private IFileService fileService = new FileService();
-	private XMLFileFormatter xmlFileFormatter = new XMLFileFormatter();
 	private BracketValidator bracketValidator = new BracketValidator();
 	private int maximumThreads = 10;
 	private ListeningExecutorService executorService;
 	private Map<Integer, ListenableFuture<LearnResult>> activeLearnFutures = new HashMap<Integer, ListenableFuture<LearnResult>>();
 	private Map<Integer, ListenableFuture<ParseResult>> activeParseFutures = new HashMap<Integer, ListenableFuture<ParseResult>>();
-	private SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MM-dd-yyyy");
+
 	
 	public MatrixGenerationService() {
 		executorService = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
@@ -82,6 +84,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	@Override
 	public RPCResult<MatrixGenerationTaskRun> start(AuthenticationToken authenticationToken, String taskName, String filePath, String glossaryName) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+			
 		if(!authResult.isSucceeded()) 
 			return new RPCResult<MatrixGenerationTaskRun>(false, authResult.getMessage());
 		if(!authResult.getData().getResult())
@@ -115,6 +118,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			RPCResult<Task> addTaskResult = taskService.addTask(authenticationToken, task);
 			if(!addTaskResult.isSucceeded())
 				return new RPCResult<MatrixGenerationTaskRun>(false, addTaskResult.getMessage());
+			task = addTaskResult.getData();
 			
 			taskStage = TaskStageDAO.getInstance().getTaskStage(dbTaskType, TaskStageEnum.PREPROCESS_TEXT);
 			task.setTaskStage(taskStage);
@@ -152,12 +156,12 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				RPCResult<List<String>> resultDirectoryFiles = fileService.getDirectoriesFiles(authenticationToken, inputDirectory);
 				if(resultDirectoryFiles.isSucceeded()) {
 					for(String file : resultDirectoryFiles.getData()) {
-						RPCResult<String> descriptionResult = getDescription(authenticationToken, inputDirectory + "//" + file);
+						RPCResult<String> descriptionResult = getDescription(authenticationToken, inputDirectory + File.separator + file);
 						if(descriptionResult.isSucceeded()) {
 							String description = descriptionResult.getData();
 							if(!bracketValidator.validate(description)) {
 								PreprocessedDescription preprocessedDescription = new PreprocessedDescription(
-										inputDirectory + "//" + file,
+										inputDirectory + File.separator + file,
 										file, 0,
 										bracketValidator.getBracketCountDifferences(description));
 								result.add(preprocessedDescription);
@@ -214,7 +218,9 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				     		try {
 				     			activeLearnFutures.remove(matrixGenerationConfiguration.getConfiguration().getId());
 				     			if(!futureResult.isCancelled()) {
-					     			matrixGenerationConfiguration.setOtoId(futureResult.get().getOtoId());
+				     				LearnResult result = futureResult.get();
+					     			matrixGenerationConfiguration.setOtoUploadId(result.getOtoUploadId());
+					     			matrixGenerationConfiguration.setOtoSecret(result.getOtoSecret());
 									MatrixGenerationConfigurationDAO.getInstance().updateMatrixGenerationConfiguration(matrixGenerationConfiguration);
 									TaskStage newTaskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.REVIEW_TERMS);
 									task.setTaskStage(newTaskStage);
@@ -340,30 +346,24 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			MatrixGenerationConfigurationDAO.getInstance().updateMatrixGenerationConfiguration(matrixGenerationConfiguration);
 
 			String outputDirectory = matrixGenerationConfiguration.getOutput();
-			String filePath = outputDirectory.substring(0, outputDirectory.lastIndexOf("//"));
-			String newDirectory = outputDirectory.substring(outputDirectory.lastIndexOf("//"), outputDirectory.length());
+			//String filePath = outputDirectory.substring(0, outputDirectory.lastIndexOf(File.separator));
+			//String newDirectory = outputDirectory.substring(outputDirectory.lastIndexOf(File.separator), outputDirectory.length());
+			
+			RPCResult<String> outputDirectoryParentResult = fileService.getParent(authenticationToken, outputDirectory);
+			RPCResult<String> outputDirectoryNameResult = fileService.getFileName(authenticationToken, outputDirectory);
+			if(!outputDirectoryParentResult.isSucceeded() || !outputDirectoryNameResult.isSucceeded())
+				return new RPCResult<Void>(false, outputDirectoryParentResult.getMessage());
 			
 			//find a suitable destination filePath
-			RPCResult<Void> createDirectoryResult = fileService.createDirectory(authenticationToken, filePath, newDirectory);
-			if(!createDirectoryResult.isSucceeded()) {
-				String date = dateTimeFormat.format(new Date());
-				newDirectory = newDirectory + "_" + date;
-				createDirectoryResult = fileService.createDirectory(authenticationToken, filePath, newDirectory);
-				int i = 1;
-				while(!createDirectoryResult.isSucceeded()) {
-					newDirectory = newDirectory + "_" + i++;
-					createDirectoryResult = fileService.createDirectory(authenticationToken, filePath, newDirectory);
-				}
-			}
-	
+			RPCResult<Void> createDirectoryResult = fileService.createDirectoryForcibly(authenticationToken, outputDirectoryParentResult.getData(), outputDirectoryNameResult.getData());
+			if(!createDirectoryResult.isSucceeded()) 
+				return new RPCResult<Void>(false, createDirectoryResult.getMessage());
+			
 			//copy the output files to the directory
-			File outDirectory = new File("workspace" + File.separator + task.getId() + File.separator + "out");
-			File destinationDirectory = new File(Configuration.fileBase + "//" + authenticationToken.getUsername() + "//" + 
-					filePath + "//" + newDirectory);
-			for(File outFile : outDirectory.listFiles()) {
-				File destinationFile = new File(destinationDirectory, outFile.getName());
-				Files.copy(outFile, destinationFile);
-			}
+			String charaParserOutputDirectory = "workspace" + File.separator + task.getId() + File.separator + "out";			
+			RPCResult<Void> copyResult = fileService.copyFiles(new AdminAuthenticationToken(), charaParserOutputDirectory, outputDirectory);
+			if(!copyResult.isSucceeded())
+				return copyResult;
 			
 			//update task
 			task.setResumable(false);
@@ -539,34 +539,51 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				return new RPCResult<Void>(false, matrixGenerationTaskRunResult.getMessage());
 			MatrixGenerationTaskRun matrixGenerationTaskRun = matrixGenerationTaskRunResult.getData();
 			MatrixGenerationConfiguration matrixGenerationConfiguration = matrixGenerationTaskRun.getConfiguration();
-			fileService.setInUse(authenticationToken, false, matrixGenerationConfiguration.getInput(), task);
-			MatrixGenerationConfigurationDAO.getInstance().remove(matrixGenerationConfiguration);
-			TaskDAO.getInstance().removeTask(task);
-			switch(task.getTaskStage().getTaskStageEnum()) {
-			case INPUT:
-				break;
-			case LEARN_TERMS:
-				if(activeLearnFutures.containsKey(matrixGenerationConfiguration.getConfiguration().getId())) {
-					ListenableFuture<LearnResult> learnFuture = activeLearnFutures.get(matrixGenerationConfiguration.getConfiguration().getId());
-					learnFuture.cancel(true);
-				}
-				break;
-			case OUTPUT:
-				break;
-			case PARSE_TEXT:
-				if(activeParseFutures.containsKey(matrixGenerationConfiguration.getConfiguration().getId())) {
-					ListenableFuture<ParseResult> parseFuture = activeParseFutures.get(matrixGenerationConfiguration.getConfiguration().getId());
-					parseFuture.cancel(true);
-				}
-				break;
-			case PREPROCESS_TEXT:
-				break;
-			case REVIEW_TERMS:
-				break;
-			default:
-				break;
+						
+			//remove matrix generation configuration
+			if(matrixGenerationConfiguration != null) {
+				if(matrixGenerationConfiguration.getInput() != null)
+					fileService.setInUse(authenticationToken, false, matrixGenerationConfiguration.getInput(), task);
+				MatrixGenerationConfigurationDAO.getInstance().remove(matrixGenerationConfiguration);
 			}
-			return new RPCResult<Void>(false, "Task couldn't be found");
+			
+			//remove task
+			if(task != null) {
+				TaskDAO.getInstance().removeTask(task);
+				if(task.getConfiguration() != null)
+					
+					//remove configuration
+					ConfigurationDAO.getInstance().remove(task.getConfiguration());
+			
+				//cancel possible futures
+				if(task.getTaskStage() != null) {
+					switch(task.getTaskStage().getTaskStageEnum()) {
+					case INPUT:
+						break;
+					case LEARN_TERMS:
+						if(activeLearnFutures.containsKey(matrixGenerationConfiguration.getConfiguration().getId())) {
+							ListenableFuture<LearnResult> learnFuture = activeLearnFutures.get(matrixGenerationConfiguration.getConfiguration().getId());
+							learnFuture.cancel(true);
+						}
+						break;
+					case OUTPUT:
+						break;
+					case PARSE_TEXT:
+						if(activeParseFutures.containsKey(matrixGenerationConfiguration.getConfiguration().getId())) {
+							ListenableFuture<ParseResult> parseFuture = activeParseFutures.get(matrixGenerationConfiguration.getConfiguration().getId());
+							parseFuture.cancel(true);
+						}
+						break;
+					case PREPROCESS_TEXT:
+						break;
+					case REVIEW_TERMS:
+						break;
+					default:
+						break;
+					}
+				}
+			}
+			return new RPCResult<Void>(true);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new RPCResult<Void>(false, "Internal Server Error");

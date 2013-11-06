@@ -8,11 +8,12 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 
-import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.client.presenter.annotationReview.events.SearchResultEvent;
 import edu.arizona.sirls.etc.site.client.presenter.fileManager.SelectableFileTreePresenter;
 import edu.arizona.sirls.etc.site.client.view.annotationReview.SearchView;
+import edu.arizona.sirls.etc.site.client.view.fileManager.FileImageLabelTreeItem;
 import edu.arizona.sirls.etc.site.client.view.fileManager.SelectableFileTreeView;
+import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileSearchServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
@@ -65,10 +66,10 @@ public class SearchPresenter implements SearchView.Presenter {
 		presenter.setSelectClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				String target = presenter.getFileSelectionHandler().getTarget();
-				if(target != null) {
-					SearchPresenter.this.input = target;
-					SearchPresenter.this.view.setInput(target);
+				FileImageLabelTreeItem selection = presenter.getFileSelectionHandler().getSelection();
+				if(selection != null) {
+					SearchPresenter.this.input = selection.getFileInfo().getFilePath();
+					SearchPresenter.this.view.setInput(selection.getFileInfo().getFilePath());
 					SearchPresenter.this.view.setEnabled(true);
 				}
 				dialogBox.hide();

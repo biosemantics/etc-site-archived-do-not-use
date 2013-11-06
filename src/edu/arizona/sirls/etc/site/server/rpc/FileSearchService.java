@@ -1,6 +1,7 @@
 package edu.arizona.sirls.etc.site.server.rpc;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,9 +24,9 @@ import org.w3c.dom.NodeList;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.server.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationResult;
+import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileSearchService;
@@ -66,7 +67,7 @@ public class FileSearchService extends RemoteServiceServlet implements IFileSear
 		
 		List<String> files = filesResult.getData();
 		for(String file : files) {
-			RPCResult<String> contentResult = fileAccessService.getFileContent(authenticationToken, filePath + "//" + file);
+			RPCResult<String> contentResult = fileAccessService.getFileContent(authenticationToken, filePath + File.separator + file);
 			if(!contentResult.isSucceeded()) 
 				return new RPCResult<List<SearchResult>>(false, contentResult.getMessage());
 			try {
@@ -114,11 +115,11 @@ public class FileSearchService extends RemoteServiceServlet implements IFileSear
 			    		capturedMatch = xmlFileFormatter.format(node, false);
 			    	if(!capturedMatchFiles.containsKey(capturedMatch))
 			    		capturedMatchFiles.put(capturedMatch, new HashSet<String>());
-			    	capturedMatchFiles.get(capturedMatch).add(filePath + "//" + file);
+			    	capturedMatchFiles.get(capturedMatch).add(filePath + File.separator + file);
 			    }
 				/*int occurrences = nodeList.getLength();
 				if(occurrences > 0) {
-					result.add(new SearchResult(inputDirectory + "//" + file, occurrences));
+					result.add(new SearchResult(inputDirectory + File.separator + file, occurrences));
 				}*/
 			} catch(Exception e) {
 				e.printStackTrace();

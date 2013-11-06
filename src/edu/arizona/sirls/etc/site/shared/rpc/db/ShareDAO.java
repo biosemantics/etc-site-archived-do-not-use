@@ -39,6 +39,7 @@ public class ShareDAO {
 				int userId = resultInvitees.getInt(1);
 				invitees.add(UserDAO.getInstance().getShortUser(userId));
 			}
+			inviteesQuery.close();
 			share = new Share(id, task, invitees, created);
 		}
 		query.close();
@@ -74,6 +75,7 @@ public class ShareDAO {
 			Share share = this.getShare(resultSet.getInt(1));
 			result.add(share);
 		}
+		query.close();
 		return result;
 	}
 	
@@ -86,7 +88,30 @@ public class ShareDAO {
 			Share share = this.getShare(resultSet.getInt(1));
 			result.add(share);
 		}
+		query.close();
 		return result;
+	}
+
+	public List<Share> getShares(Task task) throws ClassNotFoundException, SQLException, IOException {
+		List<Share> shares = new LinkedList<Share>();
+		Query query = new Query("SELECT id FROM shares WHERE task = ?");
+		query.setParameter(1, task.getId());
+		ResultSet resultSet = query.execute();
+		while(resultSet.next()) {
+			Share share = this.getShare(resultSet.getInt(1));
+			shares.add(share);
+		}
+		query.close();
+		return shares;
+	}
+
+	public void removeShare(Share share) throws ClassNotFoundException, SQLException, IOException {
+		Query query = new Query("DELETE FROM shareinvitees WHERE share = ?");
+		query.setParameter(1, share.getId());
+		query.executeAndClose();
+		query = new Query("DELETE FROM shares WHERE id = ?");
+		query.setParameter(1, share.getId());
+		query.executeAndClose();
 	}
 	
 }

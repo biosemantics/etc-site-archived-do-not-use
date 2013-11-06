@@ -28,15 +28,15 @@ public class FileContentPresenter {
 
 	private Display display;
 	private IFileAccessServiceAsync fileAccessService;
-	private String target;
+	private String path;
 	private TitleCloseDialogBox dialogBox;
 	private LoadingPopup loadingPopup;
 
 	public FileContentPresenter(Display display, 
-			IFileAccessServiceAsync fileAccessService, String target) {
+			IFileAccessServiceAsync fileAccessService, String path) {
 		this.display = display;
 		this.fileAccessService = fileAccessService;
-		this.target = target;
+		this.path = path;
 		this.dialogBox = new TitleCloseDialogBox("File Content");
 		bind();
 	}
@@ -54,7 +54,7 @@ public class FileContentPresenter {
 				FileType fileType = FileType.valueOf(listBox.getValue(listBox.getSelectedIndex()));
 				fileAccessService.getFileContent(
 						Authentication.getInstance().getAuthenticationToken(), 
-						target, fileType, new FileContentCallback());
+						path, fileType, new FileContentCallback());
 			}
 	    });
 		display.getTextArea().setEnabled(false);
@@ -74,7 +74,7 @@ public class FileContentPresenter {
 		FileType fileType = FileType.valueOf(formatListBox.getValue(formatListBox.getSelectedIndex()));
 		
 		fileAccessService.getFileContent(Authentication.getInstance().getAuthenticationToken(), 
-				target, fileType, new FileContentCallback());
+				path, fileType, new FileContentCallback());
 		dialogBox.setGlassEnabled(true);
 		dialogBox.clear();
 		dialogBox.add(display.asWidget());

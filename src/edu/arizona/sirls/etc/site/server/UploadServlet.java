@@ -1,9 +1,9 @@
 package edu.arizona.sirls.etc.site.server;
 
-import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.server.rpc.AuthenticationService;
 import edu.arizona.sirls.etc.site.server.rpc.FileAccessService;
 import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationResult;
+import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
@@ -33,7 +33,7 @@ import org.apache.commons.fileupload.FileItem;
  * This servlet saves all received files in a temporary folder, and deletes them
  * when the user sends a remove request.
  * 
- * @author Manolo Carrasco Moñino
+ * @author Manolo Carrasco Moï¿½ino
  * 
  */
 public class UploadServlet extends UploadAction {
@@ -90,7 +90,7 @@ public class UploadServlet extends UploadAction {
 	
 						// / Create a temporary file placed in the default system
 						// temp folder
-						File file = new File("C://test//users//" + username + "//" + target + "//" + item.getName());
+						File file = new File(target + File.separator + item.getName());
 						if(!file.exists()) {
 							String fileContent = item.getString("UTF-8");
 							boolean valid = false;

@@ -11,14 +11,17 @@ import com.google.gwt.event.dom.client.DragStartHandler;
 import com.google.gwt.event.dom.client.DropEvent;
 import com.google.gwt.event.dom.client.DropHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.TreeItem;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.presenter.MessagePresenter;
 import edu.arizona.sirls.etc.site.client.view.MessageView;
-import edu.arizona.sirls.etc.site.server.Configuration;
+import edu.arizona.sirls.etc.site.client.view.fileManager.FileImageLabelTreeItem;
+import edu.arizona.sirls.etc.site.shared.rpc.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FileType;
 
 public class FileDragDropHandler implements DragStartHandler, DropHandler, DragOverHandler {
 
@@ -34,7 +37,9 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 		if(source instanceof FileImageLabelComposite) {
 			// Required: set data for the event.
 			FileImageLabelComposite fileImageLabelComposite = (FileImageLabelComposite)source;
-			event.setData("sourcePath", fileImageLabelComposite.getPath());
+			event.setData("sourcePath", fileImageLabelComposite.getFileInfo().getFilePath());
+			event.setData("sourceName", fileImageLabelComposite.getFileInfo().getName());
+			event.setData("fileType", fileImageLabelComposite.getFileInfo().getFileType().toString());
 		}
 	}
 
@@ -42,11 +47,12 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 	public void onDrop(DropEvent event) {
 		event.preventDefault();
 		final String sourcePath = event.getData("sourcePath");
+		final String sourceName = event.getData("sourceName");
 		Object target = event.getSource();
 		if(target instanceof FileImageLabelComposite) {
 			// Required: set data for the event.
 			final FileImageLabelComposite fileImageLabelComposite = (FileImageLabelComposite)target;
-			String targetPath = fileImageLabelComposite.getPath();
+			String targetPath = fileImageLabelComposite.getFileInfo().getFilePath();
 			
 			if(!targetPath.contains(sourcePath)) {
 				fileService.isDirectory(Authentication.getInstance().getAuthenticationToken(), 
@@ -58,13 +64,13 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 					@Override
 					public void onSuccess(RPCResult<Boolean> isDirectory) {
 						if(isDirectory.isSucceeded()) {
-							String sourcePathParts[] = sourcePath.split("//");
-							String sourceName = sourcePathParts[sourcePathParts.length-1];
-							String targetAndAddonPath = fileImageLabelComposite.getPath() + "//" + sourceName;
-							if(fileImageLabelComposite.isFile())
-								targetAndAddonPath = getParentDirectory(fileImageLabelComposite.getPath()) + "//" + sourceName;
-							final int targetLevel = getLevel(targetAndAddonPath);
-							final String targetAndAddonPathFinal = targetAndAddonPath;
+							//String targetAndAddonPath = fileImageLabelComposite.getFileInfo().getFilePath() + File.seperator + sourceName;
+							String targetPath = fileImageLabelComposite.getFileInfo().getFilePath();
+							if(!fileImageLabelComposite.getFileInfo().getFileType().equals(FileType.DIRECTORY))
+								//targetAndAddonPath = getParentDirectory(fileImageLabelComposite.getPath()) + File.seperator + sourceName;
+								targetPath = getParent(fileImageLabelComposite.getFileTreeItem());
+							final int targetLevel = getLevel(fileImageLabelComposite.getFileTreeItem());
+							final String targetPathFinal = targetPath;
 							
 							if(isDirectory.getData()) {
 								fileService.getDepth(Authentication.getInstance().getAuthenticationToken(), sourcePath, 
@@ -83,18 +89,15 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 												messagePresenter.go();
 												return;
 											} else {
-												moveFile(sourcePath, targetAndAddonPathFinal);
+												moveFile(sourcePath, targetPathFinal);
 											}
 										}
 									}
 								});
 							} else {
-								moveFile(sourcePath, targetAndAddonPathFinal);
+								moveFile(sourcePath, targetPathFinal);
 							}
 						}
-					}
-					private int getLevel(String target) {
-						return target.split("//").length - 2;
 					}
 				});
 			} else {
@@ -102,6 +105,27 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 				messagePresenter.go();
 			}
 		}
+	}
+	
+	private String getParent(FileImageLabelTreeItem selection) {
+		TreeItem parentItem = selection.getParentItem();
+		if(parentItem != null && parentItem instanceof FileImageLabelTreeItem) {
+			FileImageLabelTreeItem parentFileTreeItem = (FileImageLabelTreeItem)parentItem;
+			if(parentFileTreeItem.getFileInfo().getFilePath() == null) {
+				return this.getParent(parentFileTreeItem);
+			}
+			return parentFileTreeItem.getFileInfo().getFilePath();
+		}
+		return null;
+	}
+	
+	private int getLevel(TreeItem item) {
+		int result = 0;
+		while(item.getParentItem() != null) {
+			result++;
+			item = item.getParentItem();
+		}
+		return result;
 	}
 	
 	protected void moveFile(String sourcePath, String targetPath) {
@@ -116,10 +140,6 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 				caught.printStackTrace();
 			}
 		});
-	}
-
-	private String getParentDirectory(String path) {
-		return path.substring(0, path.lastIndexOf("//"));
 	}
 
 	@Override

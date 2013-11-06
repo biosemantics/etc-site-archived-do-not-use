@@ -11,18 +11,18 @@ import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessServiceAsync;
 public class FileImageLabelCompositeDoubleClickHandler implements DoubleClickHandler {
 
 	private final IFileAccessServiceAsync fileAccessService = GWT.create(IFileAccessService.class);
-	private String target;
+	private String filePath;
 	private FileContentPresenter fileContentPresenter;
 	
 	public FileImageLabelCompositeDoubleClickHandler(FileImageLabelComposite source) {
-		this.target = source.getPath();
+		this.filePath = source.getFileInfo().getFilePath();
 	}
 	
 	@Override
 	public void onDoubleClick(DoubleClickEvent event) {
 		if(fileContentPresenter == null) 
 			this.fileContentPresenter = new FileContentPresenter(
-				new FileContentView(), fileAccessService, target);
+				new FileContentView(), fileAccessService, filePath);
 		fileContentPresenter.go();
 	}
 }

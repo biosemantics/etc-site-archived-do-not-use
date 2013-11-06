@@ -22,6 +22,7 @@ import edu.arizona.sirls.etc.site.client.presenter.MessagePresenter;
 import edu.arizona.sirls.etc.site.client.presenter.fileManager.ManagableFileTreePresenter;
 import edu.arizona.sirls.etc.site.client.presenter.fileManager.SelectableFileTreePresenter;
 import edu.arizona.sirls.etc.site.client.view.MessageView;
+import edu.arizona.sirls.etc.site.client.view.fileManager.FileImageLabelTreeItem;
 import edu.arizona.sirls.etc.site.client.view.fileManager.ManagableFileTreeView;
 import edu.arizona.sirls.etc.site.client.view.fileManager.SelectableFileTreeView;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
@@ -150,11 +151,11 @@ public class InputMatrixGenerationPresenter /*implements IFileSelectClickHandler
 					new ClickHandler() {
 						@Override
 						public void onClick(ClickEvent event) {
-							String target = presenter.getFileSelectionHandler().getTarget();
-							if(target != null) {
-								text.setText(target);
+							FileImageLabelTreeItem selection = presenter.getFileSelectionHandler().getSelection();
+							if(selection != null) {
+								text.setText(selection.getFileInfo().getFilePath());
 								stringBuilder.setLength(0);
-								stringBuilder.append(target);
+								stringBuilder.append(selection.getFileInfo().getFilePath());
 								if(requiredToContinue)
 									display.getNextButton().setEnabled(true);
 							}

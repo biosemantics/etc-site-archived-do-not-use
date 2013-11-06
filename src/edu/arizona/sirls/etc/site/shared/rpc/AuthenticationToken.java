@@ -1,4 +1,4 @@
-package edu.arizona.sirls.etc.site.client;
+package edu.arizona.sirls.etc.site.shared.rpc;
 
 import java.io.Serializable;
 

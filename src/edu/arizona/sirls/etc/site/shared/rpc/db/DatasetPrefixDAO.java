@@ -23,9 +23,10 @@ public class DatasetPrefixDAO {
 		while(result.next()) {
 			prefix = result.getString(1);
 			String glossaryVersion = result.getString(2);
-			int otoId = result.getInt(3);
-			Date created = result.getTimestamp(4);
-			datasetPrefix = new DatasetPrefix(prefix, glossaryVersion, otoId, created);
+			int otoUploadId = result.getInt(3);
+			String otoSecret = result.getString(4);
+			Date created = result.getTimestamp(5);
+			datasetPrefix = new DatasetPrefix(prefix, glossaryVersion, otoUploadId, otoSecret, created);
 		}
 		query.close();
 		return datasetPrefix;

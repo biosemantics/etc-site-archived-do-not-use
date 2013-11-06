@@ -10,31 +10,20 @@ import edu.arizona.sirls.etc.site.client.view.fileManager.DirectoryTreeItem;
 
 public class FileSelectionHandler implements SelectionHandler<TreeItem> {
 
-	private String target = null;
-	private boolean targetIsDirectory = false;
+	private FileImageLabelTreeItem selection;
 
 	@Override
 	public void onSelection(SelectionEvent<TreeItem> event) {
-		FileImageLabelTreeItem selection = (FileImageLabelTreeItem)event.getSelectedItem();
-		this.target = selection.getPath();
-		targetIsDirectory = selection instanceof DirectoryTreeItem;
+		if(event.getSelectedItem() instanceof FileImageLabelTreeItem)
+			this.selection = (FileImageLabelTreeItem)event.getSelectedItem();
 	}
 
-	public String getTarget() {
-		return target;
-	}
-	
-	public boolean isTargetDirectory() {
-		return targetIsDirectory;
+	public FileImageLabelTreeItem getSelection() {
+		return selection;
 	}
 
 	public void clear() {
-		this.target = null;
-		this.targetIsDirectory = false;
-	}
-
-	public void setTarget(String newTarget) {
-		this.target = newTarget;
+		this.selection = null;
 	}
 		
 }

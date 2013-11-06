@@ -13,7 +13,7 @@ import edu.arizona.sirls.etc.site.client.view.fileManager.DirectoryTreeItem;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileImageLabelTree;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileImageLabelTreeItem;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileTreeItem;
-import edu.arizona.sirls.etc.site.server.Configuration;
+import edu.arizona.sirls.etc.site.shared.rpc.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.Tree;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileInfo;
@@ -22,17 +22,17 @@ import edu.arizona.sirls.etc.site.shared.rpc.file.FileType;
 public class FileTreeDecorator {
 	
 	public void decorate(FileImageLabelTree tree, edu.arizona.sirls.etc.site.shared.rpc.Tree<FileInfo> fileTree, FileFilter fileFilter, 
-			FileDragDropHandler fileDragDropHandler, String selectionTarget, 
+			FileDragDropHandler fileDragDropHandler, String selectionPath, 
 			Map<String, Boolean> retainedStates) {
-		String path = getPath(fileTree);
-
-		FileImageLabelTreeItem root = new FileTreeItem(fileTree.getValue().getName(), path);		
+		FileInfo fileInfo = fileTree.getValue();
+		String filePath = fileInfo.getFilePath();
+		
+		FileImageLabelTreeItem root = new FileTreeItem(fileInfo.getName(), fileInfo);		
 		if(fileTree.getValue().getFileType().equals(FileType.DIRECTORY)) {
-			String name = fileTree.getValue().getName();
 			String contentString = getContentString(fileTree);
-			root = new DirectoryTreeItem(name + " " + contentString, path);
+			root = new DirectoryTreeItem(fileInfo.getName() + " " + contentString, fileInfo);
 		} 
-	
+		
 		if(fileDragDropHandler != null) {
 			FileImageLabelComposite fileComposite = root.getFileImageLabelComposite();
 			//fileComposite.addDomHandler(fileDragDropHandler, DragStartEvent.getType());
@@ -42,17 +42,17 @@ public class FileTreeDecorator {
 		}
 		
 		tree.addItem(root);
-		if(path.equals(selectionTarget))
+		if(selectionPath != null && filePath != null && filePath.equals(selectionPath))
 			tree.setSelectedItem(root);
 		
 		if(fileTree.getValue().getFileType().equals(FileType.DIRECTORY)) {
 			for(edu.arizona.sirls.etc.site.shared.rpc.Tree<FileInfo> child : fileTree.getChildren()) {
-				decorate(tree, root, child, fileFilter, fileDragDropHandler, 1, selectionTarget, retainedStates);
+				decorate(tree, root, child, fileFilter, fileDragDropHandler, 1, selectionPath, retainedStates);
 			}
 		}
 		
-		if(retainedStates.containsKey(path))
-			root.setState(retainedStates.get(path));
+		if(retainedStates.containsKey(filePath))
+			root.setState(retainedStates.get(filePath));
 		else
 			root.setState(true);
 	}
@@ -79,9 +79,9 @@ public class FileTreeDecorator {
 		int numberOfChildFiles = 0;
 		int numberOfChildDirectories = 0;
 		for(Tree<FileInfo> childTree : fileTree.getChildren()) {
-			System.out.println(childTree);
-			System.out.println(childTree.getValue());
-			System.out.println(childTree.getValue().getFileType());
+			//System.out.println(childTree);
+			//System.out.println(childTree.getValue());
+			//System.out.println(childTree.getValue().getFileType());
 			if(childTree.getValue().getFileType().equals(FileType.DIRECTORY)) {
 				numberOfChildDirectories++;
 			} else {
@@ -93,24 +93,24 @@ public class FileTreeDecorator {
 
 	private void decorate(FileImageLabelTree tree, TreeItem root, edu.arizona.sirls.etc.site.shared.rpc.Tree<FileInfo> fileTree, FileFilter fileFilter, 
 			FileDragDropHandler fileDragAndDropHandler, 
-			int level, String selectionTarget, Map<String, Boolean> retainedStates) {
+			int level, String selectionPath, Map<String, Boolean> retainedStates) {
 		if(!filter(fileTree.getValue().getFileType(), fileFilter)) {
-			String path = getPath(fileTree);
-			FileImageLabelTreeItem treeItem = new FileTreeItem(fileTree.getValue().getName(), path);		
+			FileInfo fileInfo = fileTree.getValue();
+			String filePath = fileInfo.getFilePath();
+			FileImageLabelTreeItem treeItem = new FileTreeItem(fileInfo.getName(), fileInfo);		
 			FileImageLabelComposite fileComposite = treeItem.getFileImageLabelComposite();
 			FileImageLabelCompositeDoubleClickHandler fileDoubleClickHandler = new FileImageLabelCompositeDoubleClickHandler(fileComposite);
 			fileComposite.addDomHandler(fileDoubleClickHandler, DoubleClickEvent.getType());
 			
 			if(fileTree.getValue().getFileType().equals(FileType.DIRECTORY)) {
 				//String name = fileTree.getValue() + " [" + getNumberOfContainers(fileTree.getChildren()) + " folder, " + getNumberOfFiles(fileTree.getChildren()) + " files]";
-				String name = fileTree.getValue().getName();
 				String contentString = getContentString(fileTree);
-				treeItem = new DirectoryTreeItem(name + " " + contentString, path);
+				treeItem = new DirectoryTreeItem(fileInfo.getName() + " " + contentString, fileInfo);
 				if(level > Configuration.fileManagerMaxDepth)
 					return;
 			} 
 			root.addItem(treeItem);
-			if(path.equals(selectionTarget))
+			if(selectionPath != null && filePath != null && filePath.equals(selectionPath))
 				tree.setSelectedItem(treeItem);
 			
 			if(fileDragAndDropHandler != null) { 
@@ -124,27 +124,13 @@ public class FileTreeDecorator {
 			if(fileTree.getValue().getFileType().equals(FileType.DIRECTORY)) {
 				level++;
 				for(edu.arizona.sirls.etc.site.shared.rpc.Tree<FileInfo> child : fileTree.getChildren()) {
-					decorate(tree, treeItem, child, fileFilter, fileDragAndDropHandler, level, selectionTarget, retainedStates);
+					decorate(tree, treeItem, child, fileFilter, fileDragAndDropHandler, level, selectionPath, retainedStates);
 				}
 			}
 			
-			if(retainedStates.containsKey(path))
-				treeItem.setState(retainedStates.get(path));
+			if(retainedStates.containsKey(filePath))
+				treeItem.setState(retainedStates.get(filePath));
 		}
 	}
 
-
-	private String getPath(edu.arizona.sirls.etc.site.shared.rpc.Tree<FileInfo> fileTree) {
-		String result = "";
-		edu.arizona.sirls.etc.site.shared.rpc.Tree<FileInfo> currentNode = fileTree;
-		do {
-			String value = currentNode.getValue().getName();
-			if(result.isEmpty())
-				result = value;
-			else 
-				result = value + "//" + result;
-			currentNode = currentNode.getParent();
-		} while(currentNode != null);
-		return result;
-	}
 }

@@ -2,10 +2,10 @@ package edu.arizona.sirls.etc.site.shared.rpc;
 
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileInfo;
@@ -38,5 +38,15 @@ public interface IFileService extends RemoteService {
 	public RPCResult<Boolean> isInUse(AuthenticationToken authenticationToken, String filePath);	
 	
 	public RPCResult<List<Task>> getUsingTasks(AuthenticationToken authenticationToken, String filePath);
+	
+	public RPCResult<Void> renameFile(AuthenticationToken authenticationToken, String path, String newFileName);
+
+	public RPCResult<String> getParent(AuthenticationToken authenticationToken, String filePath);
+
+	public RPCResult<String> getFileName(AuthenticationToken authenticationToken, String filePath);
+
+	public RPCResult<Void> copyFiles(AuthenticationToken authenticationToken, String sourceDirectory, String destinationDirectory);
+
+	public RPCResult<Void> createDirectoryForcibly(AuthenticationToken authenticationToken, String directory, String idealFolderName);
 	
 }

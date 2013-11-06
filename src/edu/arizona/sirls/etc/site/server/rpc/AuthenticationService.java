@@ -4,8 +4,8 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-import edu.arizona.sirls.etc.site.client.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationResult;
+import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 
@@ -32,10 +32,12 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	}
 
 	@Override
-	public RPCResult<AuthenticationResult> isValidSession(AuthenticationToken authentication) {
-		String sessionID = authentication.getSessionID();
+	public RPCResult<AuthenticationResult> isValidSession(AuthenticationToken authenticationToken) {
+		if(authenticationToken instanceof AdminAuthenticationToken)
+			return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(true, "admin", "admin"));
+		String sessionID = authenticationToken.getSessionID();
 		if(sessionID != null)
-			return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(true, sessionID, authentication.getUsername()));
+			return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(true, sessionID, authenticationToken.getUsername()));
 		return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(false, null, null));
 	}
 	
