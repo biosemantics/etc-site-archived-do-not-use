@@ -44,5 +44,5 @@ public interface IFileServiceAsync {
 
 	public void copyFiles(AuthenticationToken authenticationToken, String sourceDirectory, String destinationDirectory, AsyncCallback<RPCResult<Void>> callback);
 	
-	public void createDirectoryForcibly(AuthenticationToken authenticationToken, String directory, String idealFolderName, AsyncCallback<RPCResult<Void>> callback);
+	public void createDirectoryForcibly(AuthenticationToken authenticationToken, String directory, String idealFolderName, AsyncCallback<RPCResult<String>> callback);
 }

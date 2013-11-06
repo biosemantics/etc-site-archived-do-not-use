@@ -603,16 +603,16 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	}
 
 	@Override
-	public RPCResult<Void> createDirectoryForcibly(AuthenticationToken authenticationToken, String directory, String idealFolderName) {
+	public RPCResult<String> createDirectoryForcibly(AuthenticationToken authenticationToken, String directory, String idealFolderName) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
 		if(!authResult.isSucceeded()) 
-			return new RPCResult<Void>(false, authResult.getMessage());
+			return new RPCResult<String>(false, authResult.getMessage(), "");
 		if(!authResult.getData().getResult())
-			return new RPCResult<Void>(false, "Authentication failed");
+			return new RPCResult<String>(false, "Authentication failed", "");
 		
 		RPCResult<Boolean> permissionResultDestination = filePermissionService.hasWritePermission(authenticationToken, directory);
 		if(!permissionResultDestination.isSucceeded())
-			return new RPCResult<Void>(false, permissionResultDestination.getMessage());
+			return new RPCResult<String>(false, permissionResultDestination.getMessage(), "");
 		if(permissionResultDestination.getData()) {
 			RPCResult<Void> createResult = this.createDirectory(authenticationToken, directory, idealFolderName);
 			if(!createResult.isSucceeded()) {
@@ -625,8 +625,8 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 					createResult = this.createDirectory(authenticationToken, directory, idealFolderName);
 				}
 			}
-			return new RPCResult<Void>(true);
+			return new RPCResult<String>(true, "", new File(directory, idealFolderName).getAbsolutePath());
 		}
-		return new RPCResult<Void>(false, "Permission denied");
+		return new RPCResult<String>(false, "Permission denied", "");
 	}
 }

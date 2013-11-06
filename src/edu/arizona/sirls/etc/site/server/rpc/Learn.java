@@ -50,7 +50,7 @@ public class Learn implements ILearn {
 		String src = "resources" + File.separator + "charaparser" + File.separator + "src";
 		String[] args = new String[] { "-f", source, "-g", user, "-j", bioportalUserId, "-k", bioportalAPIKey, "-b", debugFile, "-e", errorFile, "-c", config, "-r", resources, "-l", src,
 				"-n", databaseHost, "-p", databasePort, "-d", databaseName, "-u", databaseUser, 
-				"-s", databasePassword, "-i", input, "-z" , tablePrefix };
+				"-s", databasePassword, "-i", input, "-z" , tablePrefix, "-y"};
 		LearnMain.main(args);
 		DatasetPrefix datasetPrefix = DatasetPrefixDAO.getInstance().getDatasetPrefix(tablePrefix);
 		LearnResult result = new LearnResult(datasetPrefix.getOtoUploadId(), datasetPrefix.getOtoSecret());

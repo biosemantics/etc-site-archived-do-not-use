@@ -47,6 +47,6 @@ public interface IFileService extends RemoteService {
 
 	public RPCResult<Void> copyFiles(AuthenticationToken authenticationToken, String sourceDirectory, String destinationDirectory);
 
-	public RPCResult<Void> createDirectoryForcibly(AuthenticationToken authenticationToken, String directory, String idealFolderName);
+	public RPCResult<String> createDirectoryForcibly(AuthenticationToken authenticationToken, String directory, String idealFolderName);
 	
 }

@@ -51,7 +51,7 @@ public class Parse implements IParse {
 		String src = "resources" + File.separator + "charaparser" + File.separator + "src";
 		String[] args = new String[] { "-f", source, "-g", user, "-j", bioportalUserId, "-k", bioportalAPIKey, "-b", debugFile, "-e", errorFile, "-c", config, "-r", resources, "-l", src,
 				"-n", databaseHost, "-p", databasePort, "-d", databaseName, "-u", databaseUser, 
-				"-s", databasePassword, "-i", input, "-z" , tablePrefix };
+				"-s", databasePassword, "-i", input, "-z" , tablePrefix, "-y" };
 		MarkupMain.main(args);
 		//File outputFile = new File("workspace" + File.separator + tablePrefix + File.separator + "out");
 		//for(File outFile : outputFile.listFiles()) {

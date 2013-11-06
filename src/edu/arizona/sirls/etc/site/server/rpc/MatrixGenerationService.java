@@ -345,23 +345,20 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			matrixGenerationConfiguration.setOutput(matrixGenerationConfiguration.getInput() + "_" + task.getName());
 			MatrixGenerationConfigurationDAO.getInstance().updateMatrixGenerationConfiguration(matrixGenerationConfiguration);
 
-			String outputDirectory = matrixGenerationConfiguration.getOutput();
-			//String filePath = outputDirectory.substring(0, outputDirectory.lastIndexOf(File.separator));
-			//String newDirectory = outputDirectory.substring(outputDirectory.lastIndexOf(File.separator), outputDirectory.length());
-			
+			String outputDirectory = matrixGenerationConfiguration.getOutput();			
 			RPCResult<String> outputDirectoryParentResult = fileService.getParent(authenticationToken, outputDirectory);
 			RPCResult<String> outputDirectoryNameResult = fileService.getFileName(authenticationToken, outputDirectory);
 			if(!outputDirectoryParentResult.isSucceeded() || !outputDirectoryNameResult.isSucceeded())
 				return new RPCResult<Void>(false, outputDirectoryParentResult.getMessage());
 			
 			//find a suitable destination filePath
-			RPCResult<Void> createDirectoryResult = fileService.createDirectoryForcibly(authenticationToken, outputDirectoryParentResult.getData(), outputDirectoryNameResult.getData());
+			RPCResult<String> createDirectoryResult = fileService.createDirectoryForcibly(authenticationToken, outputDirectoryParentResult.getData(), outputDirectoryNameResult.getData());
 			if(!createDirectoryResult.isSucceeded()) 
 				return new RPCResult<Void>(false, createDirectoryResult.getMessage());
 			
 			//copy the output files to the directory
 			String charaParserOutputDirectory = "workspace" + File.separator + task.getId() + File.separator + "out";			
-			RPCResult<Void> copyResult = fileService.copyFiles(new AdminAuthenticationToken(), charaParserOutputDirectory, outputDirectory);
+			RPCResult<Void> copyResult = fileService.copyFiles(new AdminAuthenticationToken(), charaParserOutputDirectory, createDirectoryResult.getData());
 			if(!copyResult.isSucceeded())
 				return copyResult;
 			
