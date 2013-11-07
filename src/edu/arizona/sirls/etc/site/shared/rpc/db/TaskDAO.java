@@ -1,7 +1,6 @@
 package edu.arizona.sirls.etc.site.shared.rpc.db;
 
 import java.io.IOException;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -9,14 +8,12 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.google.gwt.i18n.shared.DateTimeFormat;
-import com.google.gwt.i18n.shared.DateTimeFormat.PredefinedFormat;
-
-import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
-
 public class TaskDAO {
 
 	private static TaskDAO instance;
+	private String ownerQuery = "SELECT * FROM tasks WHERE user=?";
+	private String sharedWithQuery = "SELECT t.* FROM tasks AS t, shares, shareinvitees WHERE t.id = shares.task AND shares.id = shareinvitees.share AND shareinvitees.inviteeuser=?";
+	private String allUsersTasksQuery = "(" + ownerQuery + ") UNION (" + this.sharedWithQuery + ")";
 	
 	public static TaskDAO getInstance() {
 		if(instance == null)
@@ -49,10 +46,37 @@ public class TaskDAO {
 	}
 	
 	
-	public List<Task> getUsersTasks(int id) throws SQLException, ClassNotFoundException, IOException {
+	public List<Task> getOwnedTasks(int userId) throws SQLException, ClassNotFoundException, IOException {
 		List<Task> tasks = new LinkedList<Task>();
-		Query query = new Query("SELECT * FROM tasks WHERE user = ? AND complete = false");
-		query.setParameter(1, id);
+		Query query = new Query(ownerQuery);
+		query.setParameter(1, userId);
+		ResultSet result = query.execute();
+		while(result.next()) {			
+			Task task = createTask(result);
+			tasks.add(task);
+		}
+		query.close();
+		return tasks;
+	}
+	
+	public List<Task> getSharedWithTasks(int userId) throws SQLException, ClassNotFoundException, IOException {
+		List<Task> tasks = new LinkedList<Task>();
+		Query query = new Query(sharedWithQuery);
+		query.setParameter(1, userId);
+		ResultSet result = query.execute();
+		while(result.next()) {			
+			Task task = createTask(result);
+			tasks.add(task);
+		}
+		query.close();
+		return tasks;
+	}
+	
+	public List<Task> getAllTasks(int userId) throws ClassNotFoundException, SQLException, IOException {
+		List<Task> tasks = new LinkedList<Task>();
+		Query query = new Query(this.allUsersTasksQuery);
+		query.setParameter(1, userId);
+		query.setParameter(2, userId);
 		ResultSet result = query.execute();
 		while(result.next()) {			
 			Task task = createTask(result);
@@ -62,22 +86,11 @@ public class TaskDAO {
 		return tasks;
 	}
 
-	
-	public List<Task> getUsersTasks(String name) throws SQLException, ClassNotFoundException, IOException {
-		ShortUser user = UserDAO.getInstance().getShortUser(name);
-		return this.getUsersTasks(user.getId());
-	}
-	
-	public List<Task> getUsersPastTasks(String username) throws SQLException, ClassNotFoundException, IOException {
-		ShortUser user = UserDAO.getInstance().getShortUser(username);
-		return this.getUsersPastTasks(user.getId());
-	}
-
-
-	private List<Task> getUsersPastTasks(int id) throws SQLException, ClassNotFoundException, IOException {
+	private List<Task> getResumableTasks(int userId) throws ClassNotFoundException, SQLException, IOException {
 		List<Task> tasks = new LinkedList<Task>();
-		Query query = new Query("SELECT * FROM tasks WHERE user = ? AND complete=true");
-		query.setParameter(1, id);
+		Query query = new Query("SELECT * FROM (" + allUsersTasksQuery + ")AS allTasks WHERE resumable=true");
+		query.setParameter(1, userId);
+		query.setParameter(2, userId);
 		ResultSet result = query.execute();
 		while(result.next()) {
 			Task task = createTask(result);
@@ -85,6 +98,45 @@ public class TaskDAO {
 		}
 		query.close();
 		return tasks;
+	}
+	
+	private List<Task> getCompletedTasks(int userId) throws SQLException, ClassNotFoundException, IOException {
+		List<Task> tasks = new LinkedList<Task>();
+		Query query = new Query("SELECT * FROM (" + allUsersTasksQuery + ")AS allTasks WHERE complete=true");
+		query.setParameter(1, userId);
+		query.setParameter(2, userId);
+		ResultSet result = query.execute();
+		while(result.next()) {
+			Task task = createTask(result);
+			tasks.add(task);
+		}
+		query.close();
+		return tasks;
+	}
+
+	public List<Task> getSharedWithTasks(String name) throws SQLException, ClassNotFoundException, IOException {
+		ShortUser user = UserDAO.getInstance().getShortUser(name);
+		return this.getSharedWithTasks(user.getId());
+	}
+	
+	public List<Task> getAllTasks(String name) throws ClassNotFoundException, SQLException, IOException {
+		ShortUser user = UserDAO.getInstance().getShortUser(name);
+		return this.getAllTasks(user.getId());
+	}
+	
+	public List<Task> getOwnedTasks(String name) throws SQLException, ClassNotFoundException, IOException {
+		ShortUser user = UserDAO.getInstance().getShortUser(name);
+		return this.getOwnedTasks(user.getId());
+	}
+	
+	public List<Task> getCompletedTasks(String username) throws SQLException, ClassNotFoundException, IOException {
+		ShortUser user = UserDAO.getInstance().getShortUser(username);
+		return this.getCompletedTasks(user.getId());
+	}
+
+	public List<Task> getResumableTasks(String username) throws ClassNotFoundException, SQLException, IOException {
+		ShortUser user = UserDAO.getInstance().getShortUser(username);
+		return this.getResumableTasks(user.getId());
 	}
 
 	private Task createTask(ResultSet result) throws SQLException, ClassNotFoundException, IOException {
@@ -179,25 +231,4 @@ public class TaskDAO {
 		query.setParameter(1, id);
 		query.executeAndClose();
 	}
-
-	public List<Task> getUsersResumableTasks(String username) throws ClassNotFoundException, SQLException, IOException {
-		ShortUser user = UserDAO.getInstance().getShortUser(username);
-		return this.getUsersResumableTasks(user.getId());
-	}
-
-	private List<Task> getUsersResumableTasks(int id) throws ClassNotFoundException, SQLException, IOException {
-		List<Task> tasks = new LinkedList<Task>();
-		Query query = new Query("SELECT * FROM tasks WHERE user = ? AND resumable=true");
-		query.setParameter(1, id);
-		ResultSet result = query.execute();
-		while(result.next()) {
-			Task task = createTask(result);
-			tasks.add(task);
-		}
-		query.close();
-		return tasks;
-	}
-
-
-
 }

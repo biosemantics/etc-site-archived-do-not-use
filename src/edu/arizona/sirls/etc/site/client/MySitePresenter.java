@@ -75,7 +75,7 @@ import edu.arizona.sirls.etc.site.client.view.MessageResumeOrStartView;
 import edu.arizona.sirls.etc.site.client.view.SettingsViewImpl;
 import edu.arizona.sirls.etc.site.client.view.StartMenuView;
 import edu.arizona.sirls.etc.site.client.view.StartView;
-import edu.arizona.sirls.etc.site.client.view.TaskManagerView;
+import edu.arizona.sirls.etc.site.client.view.TaskManagerViewImpl;
 import edu.arizona.sirls.etc.site.client.view.annotationReview.AnnotationReviewViewImpl;
 import edu.arizona.sirls.etc.site.client.view.annotationReview.ResultViewImpl;
 import edu.arizona.sirls.etc.site.client.view.annotationReview.SearchViewImpl;
@@ -513,7 +513,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 					public void onSuccess() {
 						if (taskManagerPresenter == null) {
 							taskManagerPresenter = new TaskManagerPresenter(eventBus, 
-									new TaskManagerView(), taskService, matrixGenerationService, 
+									new TaskManagerViewImpl(), taskService, matrixGenerationService, 
 									treeGenerationService, taxonomyComparisonService, visualizationService, userService);
 						}
 						taskManagerPresenter.go(content);

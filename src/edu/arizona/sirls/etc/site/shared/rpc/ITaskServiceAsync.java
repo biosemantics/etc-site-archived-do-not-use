@@ -13,13 +13,13 @@ public interface ITaskServiceAsync {
 
 	public void getAllTasks(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<List<Task>>> callback);
 	
-	public void getCreatedTasks(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<List<Task>>> callback);
+	public void getOwnedTasks(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<List<Task>>> callback);
 	
-	public void getSharedTasks(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<List<Task>>> callback);
+	public void getSharedWithTasks(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<List<Task>>> callback);
 	
 	public void addTask(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Task>> callback);
 
-	public void getPastTasks(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<List<Task>>> callback);
+	public void getCompletedTasks(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<List<Task>>> callback);
 
 	public void isResumable(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Boolean>> callback);
 

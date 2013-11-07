@@ -16,13 +16,13 @@ public interface ITaskService extends RemoteService {
 
 	public RPCResult<List<Task>> getAllTasks(AuthenticationToken authenticationToken);
 	
-	public RPCResult<List<Task>> getCreatedTasks(AuthenticationToken authenticationToken);
+	public RPCResult<List<Task>> getOwnedTasks(AuthenticationToken authenticationToken);
 	
-	public RPCResult<List<Task>> getSharedTasks(AuthenticationToken authenticationToken);
+	public RPCResult<List<Task>> getSharedWithTasks(AuthenticationToken authenticationToken);
 	
 	public RPCResult<Task> addTask(AuthenticationToken authenticationToken, Task task);
 	
-	public RPCResult<List<Task>> getPastTasks(AuthenticationToken authenticationToken);
+	public RPCResult<List<Task>> getCompletedTasks(AuthenticationToken authenticationToken);
 	
 	public RPCResult<Boolean> isResumable(AuthenticationToken authenticationToken, Task task);
 	

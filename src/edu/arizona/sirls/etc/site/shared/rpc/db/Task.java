@@ -3,7 +3,7 @@ package edu.arizona.sirls.etc.site.shared.rpc.db;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Task implements Serializable  {
+public class Task implements Serializable, Comparable<Task> {
 
 	private static final long serialVersionUID = 5053756810897454852L;
 	private int id;
@@ -111,6 +111,11 @@ public class Task implements Serializable  {
 
 	public void setCreated(Date created) {
 		this.created = created;
+	}
+
+	@Override
+	public int compareTo(Task o) {
+		return this.getId() - o.getId();
 	}
 
 }

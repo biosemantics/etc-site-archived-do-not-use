@@ -339,7 +339,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		if(!authResult.getData().getResult())
 			return new RPCResult<Void>(false, "Authentication failed");
 		
-		try {				
+		try {
 			Task task = matrixGenerationTaskRun.getTask();
 			MatrixGenerationConfiguration matrixGenerationConfiguration = matrixGenerationTaskRun.getConfiguration();
 			matrixGenerationConfiguration.setOutput(matrixGenerationConfiguration.getInput() + "_" + task.getName());
@@ -486,7 +486,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		
 		try {
 			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUsername());
-			List<Task> tasks = TaskDAO.getInstance().getUsersTasks(user.getId());
+			List<Task> tasks = TaskDAO.getInstance().getOwnedTasks(user.getId());
 			for(Task task : tasks) {
 				if(task.isResumable()) {
 					MatrixGenerationConfiguration configuration = MatrixGenerationConfigurationDAO.getInstance().getMatrixGenerationConfiguration(task.getConfiguration().getId());
