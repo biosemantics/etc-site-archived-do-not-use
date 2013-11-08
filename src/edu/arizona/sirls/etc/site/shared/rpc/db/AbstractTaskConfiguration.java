@@ -27,4 +27,22 @@ public abstract class AbstractTaskConfiguration implements Serializable {
 	
 	public abstract List<String> getOutputs();
 	
+	@Override
+	public int hashCode() {
+		return configuration.getId();
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if(object == null)
+			return false;
+		if (getClass() != object.getClass()) {
+	        return false;
+	    }
+		AbstractTaskConfiguration abstractTaskConfiguration = (AbstractTaskConfiguration)object;
+		if(abstractTaskConfiguration.getConfiguration().getId()==this.getConfiguration().getId())
+			return true;
+		return false;
+	}
+	
 }

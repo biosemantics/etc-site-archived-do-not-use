@@ -113,5 +113,53 @@ public class ShareDAO {
 		query.setParameter(1, share.getId());
 		query.executeAndClose();
 	}
+
+	public Set<ShortUser> getInvitees(Task task) throws ClassNotFoundException, SQLException, IOException {
+		Set<ShortUser> invitees = new HashSet<ShortUser>();
+		List<Share> shares = this.getShares(task);
+		for(Share share : shares) {
+			invitees.addAll(share.getInvitees());
+		}
+		return invitees;
+	}
+
+	public Share addOrUpdateShare(Share share) throws ClassNotFoundException, SQLException, IOException {
+		List<Share> tasksShares = this.getShares(share.getTask());
+		if(!tasksShares.isEmpty()) {
+			Share shareToUpdate = tasksShares.get(0);
+			shareToUpdate.setInvitees(share.getInvitees());
+			this.updateShare(shareToUpdate);
+			return shareToUpdate;
+		} else 
+			return this.addShare(share);
+	}
+
+	public Share updateShare(Share share) throws SQLException, ClassNotFoundException, IOException {
+		Query removeInvitees = new Query("DELETE FROM shareinvitees WHERE share = ?");
+		removeInvitees.setParameter(1, share.getId());
+		removeInvitees.executeAndClose();
+		
+        for(ShortUser invitee : share.getInvitees()) {
+            Query inviteeQuery = new Query("INSERT INTO `shareinvitees` (`share`, `inviteeuser`) VALUES (?, ?)");
+            inviteeQuery.setParameter(1, share.getId());
+            inviteeQuery.setParameter(2, invitee.getId());
+            inviteeQuery.executeAndClose();
+        }
+        return share;
+	}
+
+	public List<Share> getSharesOfInviteeForTask(ShortUser invitee, Task task) throws SQLException, ClassNotFoundException, IOException {
+		List<Share> result = new LinkedList<Share>();
+		Query query = new Query("SELECT share FROM shareinvitees, shares, tasks WHERE tasks.id = shares.task AND shares.id = shareinvitees.share AND inviteeuser=? AND tasks.id = ?");
+		query.setParameter(1, invitee.getId());
+		query.setParameter(2, task.getId());
+		ResultSet resultSet = query.execute();
+		while(resultSet.next()) {
+			Share share = this.getShare(resultSet.getInt(1));
+			result.add(share);
+		}
+		query.close();
+		return result;
+	}
 	
 }

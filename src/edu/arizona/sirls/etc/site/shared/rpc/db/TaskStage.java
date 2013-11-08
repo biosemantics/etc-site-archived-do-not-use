@@ -55,6 +55,22 @@ public class TaskStage implements Serializable {
 		this.created = created;
 	}
 	
+	@Override
+	public int hashCode() {
+		return id;
+	}
 	
+	@Override
+	public boolean equals(Object object) {
+		if(object == null)
+			return false;
+		if (getClass() != object.getClass()) {
+	        return false;
+	    }
+		TaskStage taskStage = (TaskStage)object;
+		if(taskStage.getId()==this.id)
+			return true;
+		return false;
+	}
 	
 }

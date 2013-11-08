@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -275,6 +276,71 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new RPCResult<List<Share>>(false, "Internal Server Error");
+		}
+	}
+
+	@Override
+	public RPCResult<Set<ShortUser>> getInvitees(AuthenticationToken authenticationToken, Task task) {
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<Set<ShortUser>>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<Set<ShortUser>>(false, "Authentication failed");
+		try {
+			Set<ShortUser> invitees = ShareDAO.getInstance().getInvitees(task);
+			return new RPCResult<Set<ShortUser>>(true, invitees);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new RPCResult<Set<ShortUser>>(false, "Internal Server Error");
+		}
+	}
+
+	@Override
+	public RPCResult<Share> addOrUpdateShare(AuthenticationToken authenticationToken, Share share) {
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<Share>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<Share>(false, "Authentication failed");
+		try {
+			Share shareResult = ShareDAO.getInstance().addOrUpdateShare(share);
+			return new RPCResult<Share>(true, shareResult);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new RPCResult<Share>(false, "Internal Server Error");
+		}
+	}
+	
+	@Override
+	public RPCResult<Share> updateShare(AuthenticationToken authenticationToken, Share share) {
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<Share>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<Share>(false, "Authentication failed");
+		try {
+			Share shareResult = ShareDAO.getInstance().updateShare(share);
+			return new RPCResult<Share>(true, shareResult);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new RPCResult<Share>(false, "Internal Server Error");
+		}
+	}
+	
+
+	@Override
+	public RPCResult<Void> removeMeFromShare(AuthenticationToken authenticationToken, Task task) {
+		try {
+			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUsername());
+			List<Share> shares = ShareDAO.getInstance().getSharesOfInviteeForTask(user, task);
+			for(Share share : shares) {
+				share.getInvitees().remove(user);
+				this.updateShare(authenticationToken, share);
+			}
+			return new RPCResult<Void>(true);
+		} catch(Exception e) {
+			e.printStackTrace();
+			return new RPCResult<Void>(false, "Internal Server Error");
 		}
 	}
 

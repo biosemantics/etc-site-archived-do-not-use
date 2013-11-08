@@ -1,5 +1,6 @@
 package edu.arizona.sirls.etc.site.client.presenter;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -99,45 +100,69 @@ public class TaskManagerPresenter implements TaskManagerView.Presenter, Presente
 		share.setTask(task);
 		
 		final TitleCloseDialogBox dialogBox = new TitleCloseDialogBox(false, "Select user");
-		UsersViewImpl usersView = new UsersViewImpl();
+		final UsersViewImpl usersView = new UsersViewImpl();
 		UsersPresenter usersPresenter = new UsersPresenter(eventBus, usersView, userService);
-		UserSelectView userSelectView = new UserSelectViewImpl(usersView);
-		UserSelectPresenter userSelectPresenter = new UserSelectPresenter(eventBus, userSelectView, new ISelectHandler() {
-			@Override
-			public void onSelect(Set<ShortUser> users) {
-				share.setInvitees(users);
-				dialogBox.hide();
-				
-				taskService.addShare(Authentication.getInstance().getAuthenticationToken(), share, new AsyncCallback<RPCResult<Share>>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						caught.printStackTrace();
-					}
-					@Override
-					public void onSuccess(RPCResult<Share> result) { }
-				});
-			} 
-		});
-		dialogBox.setWidget(userSelectView.asWidget());
-		dialogBox.center();
-		dialogBox.setGlassEnabled(true);
- 		dialogBox.show();
-	}
-
-
-	@Override
-	public void onDelete(final Task task) {
-		matrixGenerationService.cancel(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Void>>() {
+		taskService.getInvitees(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Set<ShortUser>>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
 			}
 			@Override
-			public void onSuccess(RPCResult<Void> result) {
+			public void onSuccess(RPCResult<Set<ShortUser>> result) {
 				if(result.isSucceeded())
-					view.removeTask(task);
+					usersView.setSelectedUsers(result.getData());
+				UserSelectView userSelectView = new UserSelectViewImpl(usersView);
+				UserSelectPresenter userSelectPresenter = new UserSelectPresenter(eventBus, userSelectView, new ISelectHandler() {
+					@Override
+					public void onSelect(Set<ShortUser> users) {
+						share.setInvitees(users);
+						dialogBox.hide();
+						
+						taskService.addOrUpdateShare(Authentication.getInstance().getAuthenticationToken(), share, new AsyncCallback<RPCResult<Share>>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								caught.printStackTrace();
+							}
+							@Override
+							public void onSuccess(RPCResult<Share> result) { }
+						});
+					} 
+				});
+				dialogBox.setWidget(userSelectView.asWidget());
+				dialogBox.center();
+				dialogBox.setGlassEnabled(true);
+		 		dialogBox.show();
 			}
 		});
+	}
+
+
+	@Override
+	public void onDelete(final Task task) {
+		if(task.getUser().getName().equals(Authentication.getInstance().getUsername())) {
+			matrixGenerationService.cancel(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Void>>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+				}
+				@Override
+				public void onSuccess(RPCResult<Void> result) {
+					if(result.isSucceeded())
+						view.removeTask(task);
+				}
+			});
+		} else {
+			taskService.removeMeFromShare(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Void>>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+				}
+				@Override
+				public void onSuccess(RPCResult<Void> result) {
+					view.removeTask(task);
+				} 
+			});
+		}
 	}
 
 

@@ -2,6 +2,7 @@ package edu.arizona.sirls.etc.site.shared.rpc;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -9,6 +10,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Share;
+import edu.arizona.sirls.etc.site.shared.rpc.db.ShortUser;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 
 @RemoteServiceRelativePath("task")
@@ -41,5 +43,13 @@ public interface ITaskService extends RemoteService {
 	public RPCResult<List<Share>> getInvitedShares(AuthenticationToken authenticationToken);
 
 	public RPCResult<Share> addShare(AuthenticationToken authenticationToken, Share share);
+	
+	public RPCResult<Set<ShortUser>> getInvitees(AuthenticationToken authenticationToken, Task task);
+	
+	public RPCResult<Share> addOrUpdateShare(AuthenticationToken authenticationToken, Share share);
+	
+	public RPCResult<Void> removeMeFromShare(AuthenticationToken authenticationToken, Task task);
+
+	public RPCResult<Share> updateShare(AuthenticationToken authenticationToken, Share share);
 	
 }

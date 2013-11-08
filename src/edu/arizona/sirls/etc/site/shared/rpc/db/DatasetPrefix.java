@@ -62,7 +62,23 @@ public class DatasetPrefix implements Serializable {
 		this.created = created;
 	}
 
-
+	@Override
+	public int hashCode() {
+		return prefix.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if(object == null)
+			return false;
+		if (getClass() != object.getClass()) {
+	        return false;
+	    }
+		DatasetPrefix dataSetPrefix = (DatasetPrefix)object;
+		if(dataSetPrefix.getPrefix()==this.getPrefix())
+			return true;
+		return false;
+	}
 
 	
 	

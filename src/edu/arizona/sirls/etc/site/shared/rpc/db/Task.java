@@ -117,5 +117,22 @@ public class Task implements Serializable, Comparable<Task> {
 	public int compareTo(Task o) {
 		return this.getId() - o.getId();
 	}
-
+	
+	@Override
+	public int hashCode() {
+		return id;
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if(object == null)
+			return false;
+		if (getClass() != object.getClass()) {
+	        return false;
+	    }
+		Task task = (Task)object;
+		if(task.getId()==this.id)
+			return true;
+		return false;
+	}
 }

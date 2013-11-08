@@ -2,11 +2,13 @@ package edu.arizona.sirls.etc.site.shared.rpc;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Share;
+import edu.arizona.sirls.etc.site.shared.rpc.db.ShortUser;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 
 public interface ITaskServiceAsync {
@@ -38,5 +40,13 @@ public interface ITaskServiceAsync {
 	public void getOwnedShares(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<List<Share>>> callback);
 	
 	public void getInvitedShares(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<List<Share>>> callback);
+
+	public void getInvitees(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Set<ShortUser>>> callback);
+
+	public void addOrUpdateShare(AuthenticationToken authenticationToken, Share share, AsyncCallback<RPCResult<Share>> callback);
+
+	public void removeMeFromShare(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Void>> callback);
+	
+	public void updateShare(AuthenticationToken authenticationToken, Share share, AsyncCallback<RPCResult<Share>> callback);
 	
 }

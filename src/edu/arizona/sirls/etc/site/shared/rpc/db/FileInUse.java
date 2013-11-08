@@ -41,5 +41,21 @@ public class FileInUse {
 	public void setUsingTasks(List<Task> usingTasks) {
 		this.usingTasks = usingTasks;
 	}
+	@Override
+	public int hashCode() {
+		return id;
+	}
 	
+	@Override
+	public boolean equals(Object object) {
+		if(object == null)
+			return false;
+		if (getClass() != object.getClass()) {
+	        return false;
+	    }
+		FileInUse fileInUse = (FileInUse)object;
+		if(fileInUse.getId()==this.id)
+			return true;
+		return false;
+	}
 }

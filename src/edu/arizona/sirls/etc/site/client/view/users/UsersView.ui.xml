@@ -18,7 +18,7 @@
 	    <g:cell>
 	        <g:ScrollPanel styleName="{style.usersList}">
 		        <g:HTMLPanel>
-	        		<c:CellList ui:field="cellList" />
+	        		<c:CellList ui:field="usersList" />
 		       	</g:HTMLPanel>
 	       	</g:ScrollPanel>
 	    </g:cell>

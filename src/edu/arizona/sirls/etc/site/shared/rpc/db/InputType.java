@@ -40,6 +40,22 @@ public class InputType implements Serializable {
 		this.created = created;
 	}
 	
+	@Override
+	public int hashCode() {
+		return id;
+	}
 	
+	@Override
+	public boolean equals(Object object) {
+		if(object == null)
+			return false;
+		if (getClass() != object.getClass()) {
+	        return false;
+	    }
+		InputType inputType = (InputType)object;
+		if(inputType.getId()==this.id)
+			return true;
+		return false;
+	}
 	
 }

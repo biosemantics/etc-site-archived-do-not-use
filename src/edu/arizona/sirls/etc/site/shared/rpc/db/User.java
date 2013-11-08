@@ -72,5 +72,21 @@ public class User implements Serializable {
 		this.created = created;
 	}
 	
+	@Override
+	public int hashCode() {
+		return id;
+	}
 	
+	@Override
+	public boolean equals(Object object) {
+		if(object == null)
+			return false;
+		if (getClass() != object.getClass()) {
+	        return false;
+	    }
+		User user = (User)object;
+		if(user.getId()==this.id)
+			return true;
+		return false;
+	}
 }

@@ -25,7 +25,6 @@ import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
@@ -75,7 +74,6 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 		pager = createPager(taskTable);
 		pager.setDisplay(taskTable);
 		initWidget(uiBinder.createAndBindUi(this));
-		selectionModel.addSelectionChangeHandler(this);
 	}
 	
 	private SimplePager createPager(CellTable<Task> cellTable) {
@@ -93,6 +91,7 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 	    selectionModel = new SingleSelectionModel<Task>(taskKeyProvider);
 	    taskTable.setSelectionModel(selectionModel);//, DefaultSelectionEventManager.<Task> createCheckboxManager());
 	    initTableColumns(taskTable, selectionModel, sortHandler);
+		selectionModel.addSelectionChangeHandler(this);
 	    return taskTable;
 	}
 
@@ -361,6 +360,11 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 
 	@Override
 	public void onSelectionChange(SelectionChangeEvent event) {
+		if(!this.getSelectedTask().getUser().getName().equals(Authentication.getInstance().getUsername())) {
+			this.shareButton.setEnabled(false);
+		} else {
+			this.shareButton.setEnabled(true);
+		}
 		if(this.getSelectedTask().isComplete()) {
 			this.rewindButton.setEnabled(true);
 			this.resumeButton.setEnabled(false);

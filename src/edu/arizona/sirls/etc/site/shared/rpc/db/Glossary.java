@@ -45,6 +45,22 @@ public class Glossary implements Serializable {
 		this.created = created;
 	}
 
+	@Override
+	public int hashCode() {
+		return id;
+	}
 	
+	@Override
+	public boolean equals(Object object) {
+		if(object == null)
+			return false;
+		if (getClass() != object.getClass()) {
+	        return false;
+	    }
+		Glossary glossary = (Glossary)object;
+		if(glossary.getId()==this.id)
+			return true;
+		return false;
+	}
 
 }

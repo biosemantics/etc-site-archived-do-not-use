@@ -17,5 +17,6 @@ public interface UsersView {
 	void setPresenter(Presenter presenter);
 	Widget asWidget();
 	Set<ShortUser> getSelectedUsers();
+	void setSelectedUsers(Set<ShortUser> selectedUsers);
 
 }
