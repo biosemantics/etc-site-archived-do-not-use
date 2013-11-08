@@ -391,8 +391,10 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 				this.resumableTasksTimer.scheduleRepeating(1000);
 			}
 		} else {
-			if(this.resumableTasksTimer != null)
+			if(this.resumableTasksTimer != null) {
 				this.resumableTasksTimer.cancel();
+				this.resumableTasksTimer = null;
+			}
 		}
 	}
 	

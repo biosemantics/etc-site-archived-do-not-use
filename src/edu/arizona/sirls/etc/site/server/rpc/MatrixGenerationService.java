@@ -84,7 +84,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	@Override
 	public RPCResult<MatrixGenerationTaskRun> start(AuthenticationToken authenticationToken, String taskName, String filePath, String glossaryName) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-			
+		
 		if(!authResult.isSucceeded()) 
 			return new RPCResult<MatrixGenerationTaskRun>(false, authResult.getMessage());
 		if(!authResult.getData().getResult())

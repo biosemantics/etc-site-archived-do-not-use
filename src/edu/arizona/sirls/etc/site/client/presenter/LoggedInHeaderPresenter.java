@@ -71,11 +71,7 @@ public class LoggedInHeaderPresenter implements Presenter {
 			}
 		});
 		
-		
-		String username = Authentication.getInstance().getUsername();
-		if(username != null)
-			this.display.getGreetingLabel().setText("Hello " + username + ":");
-		
+				
 		this.display.getLogoutButton().addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				eventBus.fireEvent(new LogoutEvent());
@@ -110,6 +106,10 @@ public class LoggedInHeaderPresenter implements Presenter {
 
 	@Override
 	public void go(final HasWidgets container) {
+		String username = Authentication.getInstance().getUsername();
+		if(username != null)
+			this.display.getGreetingLabel().setText("Hello " + username + ":");
+		
 		container.clear();
 		container.add(display.asWidget());
 	}

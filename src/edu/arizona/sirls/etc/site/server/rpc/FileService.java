@@ -110,13 +110,18 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 				Tree<FileInfo> outputTree = new Tree<FileInfo>(new FileInfo("Output", null, FileType.DIRECTORY));
 				shareTree.addChild(outputTree);
 				for(String output : outputFiles) {
-					File file = new File(output);
-					if(file.exists()) {
+					File child = new File(output);
+					if(child.exists()) {
 						RPCResult<Boolean> permissionResult = filePermissionService.hasReadPermission(authenticationToken, output);
 						if(!permissionResult.isSucceeded())
 							throw new Exception("Couldn't check permission");
-						if(permissionResult.getData())
-							outputTree.addChild(new Tree<FileInfo>(new FileInfo(file.getName(), file.getAbsolutePath(), getFileType(authenticationToken, output))));
+						if(permissionResult.getData()) {
+							Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(child.getName(), child.getAbsolutePath(), getFileType(authenticationToken, output)));
+							outputTree.addChild(childTree);
+							if(child.isDirectory()) {
+								decorateOwnedTree(authenticationToken, childTree, fileFilter, child.getAbsolutePath());
+							}
+						}
 					}
 				}
 			}
@@ -500,18 +505,19 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		if(!authResult.getData().getResult())
 			return new RPCResult<Boolean>(false, "Authentication failed");
 		
-		RPCResult<Boolean> permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
-		if(!permissionResult.isSucceeded())
-			return new RPCResult<Boolean>(false, permissionResult.getMessage());
-		if(permissionResult.getData()) {
+		//not required, isInUse doesn't read any actual content
+		//RPCResult<Boolean> permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
+		//if(!permissionResult.isSucceeded())
+		//	return new RPCResult<Boolean>(false, permissionResult.getMessage());
+		//if(permissionResult.getData()) {
 			try {
 				return new RPCResult<Boolean>(true, FilesInUseDAO.getInstance().isInUse(filePath));
 			} catch(Exception e) {
 				e.printStackTrace();
-				return new RPCResult<Boolean>(false, "Zipping failed");
+				return new RPCResult<Boolean>(false, "Internal Server Error");
 			}
-		}
-		return new RPCResult<Boolean>(false, "Permission denied");
+		//}
+		//return new RPCResult<Boolean>(false, "Permission denied");
 	}
 
 	@Override
