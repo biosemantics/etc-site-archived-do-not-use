@@ -131,6 +131,8 @@ public class InputMatrixGenerationPresenter /*implements IFileSelectClickHandler
 	}
 
 	public void go(HasWidgets content) {
+		this.display.getNameTextBox().setText("");
+		this.display.getGlossaryListBox().setSelectedIndex(0);
 		this.display.getTaxonDescriptionFileNameLabel().setText("");
 		this.display.getNextButton().setEnabled(false);
 		content.clear();

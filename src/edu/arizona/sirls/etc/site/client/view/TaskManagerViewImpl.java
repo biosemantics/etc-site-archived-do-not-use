@@ -351,6 +351,8 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 	@UiHandler("deleteButton")
 	public void onDelete(ClickEvent e) {
 		presenter.onDelete(this.getSelectedTask());
+		this.removeTask(this.getSelectedTask());
+		this.selectionModel.clear();
 	}
 	
 	@UiHandler("shareButton")
@@ -360,17 +362,31 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 
 	@Override
 	public void onSelectionChange(SelectionChangeEvent event) {
-		if(!this.getSelectedTask().getUser().getName().equals(Authentication.getInstance().getUsername())) {
+		if(this.dataProvider.getList().isEmpty()) {
+			this.resumeButton.setEnabled(false);
+			this.rewindButton.setEnabled(false);
+			this.deleteButton.setEnabled(false);
 			this.shareButton.setEnabled(false);
 		} else {
+			this.resumeButton.setEnabled(true);
+			this.rewindButton.setEnabled(true);
+			this.deleteButton.setEnabled(true);
 			this.shareButton.setEnabled(true);
 		}
-		if(this.getSelectedTask().isComplete()) {
-			this.rewindButton.setEnabled(true);
-			this.resumeButton.setEnabled(false);
-		} else {
-			this.rewindButton.setEnabled(false);
-			this.resumeButton.setEnabled(true);
+		
+		if(this.getSelectedTask() != null) {
+			if(!this.getSelectedTask().getUser().getName().equals(Authentication.getInstance().getUsername())) {
+				this.shareButton.setEnabled(false);
+			} else {
+				this.shareButton.setEnabled(true);
+			}
+			if(this.getSelectedTask().isComplete()) {
+				this.rewindButton.setEnabled(true);
+				this.resumeButton.setEnabled(false);
+			} else {
+				this.rewindButton.setEnabled(false);
+				this.resumeButton.setEnabled(true);
+			}
 		}
 	}
 

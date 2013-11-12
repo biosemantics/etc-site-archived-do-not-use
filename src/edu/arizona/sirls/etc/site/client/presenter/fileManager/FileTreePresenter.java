@@ -52,6 +52,7 @@ public class FileTreePresenter implements Presenter, FileTreeView.Presenter, IFi
 	}
 	
 	public void refresh() {
+		view.getTree().clear();
 		loadingPopup.start();
 		
 		this.fileService.getUsersFiles(Authentication.getInstance().getAuthenticationToken(), FileFilter.ALL, 
