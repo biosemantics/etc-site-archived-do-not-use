@@ -69,6 +69,8 @@ public class TaskManagerPresenter implements TaskManagerView.Presenter, Presente
 
 	@Override
 	public void go(HasWidgets container) {
+		view.resetSelection();
+		
 		container.clear();
 		container.add(view.asWidget());
 		

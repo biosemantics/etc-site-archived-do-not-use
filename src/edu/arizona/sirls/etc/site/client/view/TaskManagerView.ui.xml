@@ -8,6 +8,10 @@
 	      text-align: left;
 	      margin-bottom: 4px;
 	    }
+
+		.cellTable td {
+			border-style: none; 
+		}
 	</ui:style>
 	<g:HTMLPanel>
 	    <div class='content900pxCentered'>

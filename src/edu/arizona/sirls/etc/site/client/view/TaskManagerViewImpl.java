@@ -373,5 +373,10 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 			this.resumeButton.setEnabled(true);
 		}
 	}
+
+	@Override
+	public void resetSelection() {
+		this.selectionModel.clear();
+	}
 	
 }

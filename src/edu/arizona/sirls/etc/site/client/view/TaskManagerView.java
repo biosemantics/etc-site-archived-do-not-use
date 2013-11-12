@@ -22,5 +22,6 @@ public interface TaskManagerView {
 	void removeTask(Task tasks);
 	void addTask(Task task);
 	Task getSelectedTask();
+	void resetSelection();
 	
 }
