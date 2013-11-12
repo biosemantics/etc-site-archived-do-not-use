@@ -52,25 +52,21 @@ public class FileTreePresenter implements Presenter, FileTreeView.Presenter, IFi
 	}
 	
 	public void refresh() {
-		view.getTree().clear();
-		loadingPopup.start();
+		//retain "open" state of folders
+		final Map<String, Boolean> retainedStates = getRetainedStates();
 		
+		//retain selection
+		FileImageLabelTreeItem selection = fileSelectionHandler.getSelection();
+		final String selectionPath = selection == null ? null : selection.getFileInfo().getFilePath();
+		
+		//remove previous data
+		view.getTree().clear();
+		
+		loadingPopup.start();
 		this.fileService.getUsersFiles(Authentication.getInstance().getAuthenticationToken(), FileFilter.ALL, 
 				new AsyncCallback<RPCResult<edu.arizona.sirls.etc.site.shared.rpc.Tree<FileInfo>>>() {
 				public void onSuccess(RPCResult<edu.arizona.sirls.etc.site.shared.rpc.Tree<FileInfo>> result) {
 					if(result.isSucceeded()) {
-						//retain "open" state of folders
-						Map<String, Boolean> retainedStates = getRetainedStates();
-						
-						//retain selection
-						FileImageLabelTreeItem selection = fileSelectionHandler.getSelection();
-						String selectionPath = null;
-						if(selection != null)
-							selectionPath = selection.getFileInfo().getFilePath();
-						
-						//remove previous data
-						view.getTree().clear();
-						
 						//decorate
 						FileTreeDecorator fileTreeDecorator = new FileTreeDecorator();
 						fileDragDropHandler.addListener(FileTreePresenter.this);
@@ -83,27 +79,21 @@ public class FileTreePresenter implements Presenter, FileTreeView.Presenter, IFi
 						loadingPopup.stop();
 					}
 				}
-				private Map<String, Boolean> getRetainedStates() {
-					Map<String, Boolean> retainedStates = new HashMap<String, Boolean>();
-					for(int i=0; i<view.getTree().getItemCount(); i++) {
-						FileImageLabelTreeItem fileImageLabelTreeItem = view.getTree().getItem(i);
-						fillChildrenStates(fileImageLabelTreeItem, retainedStates);
-					}
-					return retainedStates;
-				}
-				private void fillChildrenStates(FileImageLabelTreeItem fileImageLabelTreeItem, Map<String, Boolean> retainedStates) {
-					if(fileImageLabelTreeItem.getFileInfo().getFilePath() != null)
-						retainedStates.put(fileImageLabelTreeItem.getFileInfo().getFilePath(), fileImageLabelTreeItem.getState());
-					for(int i=0; i < fileImageLabelTreeItem.getChildCount(); i++) {
-						FileImageLabelTreeItem child = fileImageLabelTreeItem.getChild(i);
-						fillChildrenStates(child, retainedStates);
-					}
-				}
+
 				public void onFailure(Throwable caught) {
 					caught.printStackTrace();
 				}
 			}
 		);
+	}
+	
+	private Map<String, Boolean> getRetainedStates() {
+		Map<String, Boolean> retainedStates = new HashMap<String, Boolean>();
+		for(int i=0; i<view.getTree().getItemCount(); i++) {
+			FileImageLabelTreeItem fileImageLabelTreeItem = view.getTree().getItem(i);
+			fillChildrenStates(fileImageLabelTreeItem, retainedStates);
+		}
+		return retainedStates;
 	}
 
 	@Override
@@ -113,6 +103,15 @@ public class FileTreePresenter implements Presenter, FileTreeView.Presenter, IFi
 	
 	public FileSelectionHandler getFileSelectionHandler() { 
 		return this.fileSelectionHandler;
+	}
+	
+	private void fillChildrenStates(FileImageLabelTreeItem fileImageLabelTreeItem, Map<String, Boolean> retainedStates) {
+		if(fileImageLabelTreeItem.getFileInfo().getFilePath() != null)
+			retainedStates.put(fileImageLabelTreeItem.getFileInfo().getFilePath(), fileImageLabelTreeItem.getState());
+		for(int i=0; i < fileImageLabelTreeItem.getChildCount(); i++) {
+			FileImageLabelTreeItem child = fileImageLabelTreeItem.getChild(i);
+			fillChildrenStates(child, retainedStates);
+		}
 	}
 
 }
