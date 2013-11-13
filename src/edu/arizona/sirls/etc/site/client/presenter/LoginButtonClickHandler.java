@@ -2,6 +2,9 @@ package edu.arizona.sirls.etc.site.client.presenter;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -16,7 +19,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationResult;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 
-public class LoginButtonClickHandler implements ClickHandler {
+public class LoginButtonClickHandler implements ClickHandler, KeyUpHandler {
 
 	private PasswordTextBox passwordField;
 	private TextBox userField;
@@ -41,6 +44,10 @@ public class LoginButtonClickHandler implements ClickHandler {
 	}
 
 	public void onClick(ClickEvent event) {
+		login();
+	}
+
+	private void login() {
 		// First, we validate the input.
 		String userName = userField.getText();
 		String password = passwordField.getText();
@@ -77,5 +84,14 @@ public class LoginButtonClickHandler implements ClickHandler {
 	
 	public void setTarget(GwtEvent<?> target) {
 		this.target = target;
+	}
+
+	@Override
+	public void onKeyUp(KeyUpEvent event) {
+		switch(event.getNativeKeyCode()) {
+		case KeyCodes.KEY_ENTER:
+			login();
+			break;
+		}
 	}
 }

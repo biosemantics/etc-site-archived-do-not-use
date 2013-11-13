@@ -44,6 +44,9 @@ public class LoggedOutHeaderPresenter implements Presenter {
 				display.getPasswordField(), display.getLoginButton(), null);
 		handler.setTarget(new HomeEvent());
 		display.getLoginButton().addClickHandler(handler);
+		display.getUserField().addKeyUpHandler(handler);
+		display.getPasswordField().addKeyUpHandler(handler);
+		display.getLoginButton().addKeyUpHandler(handler);
 				/*new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				authenticationService.login(display.getUserField().getText(), 
