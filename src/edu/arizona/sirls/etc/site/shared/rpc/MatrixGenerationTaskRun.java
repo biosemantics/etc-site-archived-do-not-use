@@ -24,6 +24,4 @@ public class MatrixGenerationTaskRun extends AbstractTaskRun<MatrixGenerationCon
 	public void setConfiguration(MatrixGenerationConfiguration configuration) {
 		this.configuration = configuration;
 	}
-	
-
 }

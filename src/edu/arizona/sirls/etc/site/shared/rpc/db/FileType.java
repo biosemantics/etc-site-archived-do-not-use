@@ -3,22 +3,22 @@ package edu.arizona.sirls.etc.site.shared.rpc.db;
 import java.io.Serializable;
 import java.util.Date;
 
-import edu.arizona.sirls.etc.site.shared.rpc.InputTypeEnum;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FileTypeEnum;
 
-public class InputType implements Serializable {
+public class FileType implements Serializable {
 	
 	private static final long serialVersionUID = -5836126918662301203L;
 	private int id;
-	private InputTypeEnum inputTypeEnum;
+	private FileTypeEnum fileTypeEnum;
 	private Date created;
 	
-	public InputType(int id, InputTypeEnum inputTypeEnum, Date created) {
+	public FileType(int id, FileTypeEnum fileTypeEnum, Date created) {
 		super();
 		this.id = id;
-		this.inputTypeEnum = inputTypeEnum;
+		this.fileTypeEnum = fileTypeEnum;
 		this.created = created;
 	}
-	public InputType() {
+	public FileType() {
 		super();
 	}
 	public int getId() {
@@ -27,11 +27,11 @@ public class InputType implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public InputTypeEnum getInputTypeEnum() {
-		return inputTypeEnum;
+	public FileTypeEnum getFileTypeEnum() {
+		return fileTypeEnum;
 	}
-	public void setInputTypeEnum(InputTypeEnum inputTypeEnum) {
-		this.inputTypeEnum = inputTypeEnum;
+	public void setFileTypeEnum(FileTypeEnum fileType) {
+		this.fileTypeEnum = fileType;
 	}
 	public Date getCreated() {
 		return created;
@@ -52,8 +52,8 @@ public class InputType implements Serializable {
 		if (getClass() != object.getClass()) {
 	        return false;
 	    }
-		InputType inputType = (InputType)object;
-		if(inputType.getId()==this.id)
+		FileType fileType = (FileType)object;
+		if(fileType.getId()==this.id)
 			return true;
 		return false;
 	}

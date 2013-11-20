@@ -15,7 +15,7 @@ import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
-import edu.arizona.sirls.etc.site.shared.rpc.file.FileType;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FileTypeEnum;
 
 public class FileContentPresenter {
 
@@ -43,7 +43,7 @@ public class FileContentPresenter {
 
 	private void bind() {
 		final ListBox listBox = display.getFormatListBox();
-		for(FileType fileType : FileType.values())
+		for(FileTypeEnum fileType : FileTypeEnum.values())
 			listBox.addItem(fileType.toString());
 		listBox.addChangeHandler(new ChangeHandler() {
 			@Override
@@ -51,7 +51,7 @@ public class FileContentPresenter {
 				if(loadingPopup == null) 
 					loadingPopup = new LoadingPopup();
 				loadingPopup.start();
-				FileType fileType = FileType.valueOf(listBox.getValue(listBox.getSelectedIndex()));
+				FileTypeEnum fileType = FileTypeEnum.valueOf(listBox.getValue(listBox.getSelectedIndex()));
 				fileAccessService.getFileContent(
 						Authentication.getInstance().getAuthenticationToken(), 
 						path, fileType, new FileContentCallback());
@@ -71,7 +71,7 @@ public class FileContentPresenter {
 			loadingPopup = new LoadingPopup();
 		loadingPopup.start();
 		ListBox formatListBox = display.getFormatListBox();
-		FileType fileType = FileType.valueOf(formatListBox.getValue(formatListBox.getSelectedIndex()));
+		FileTypeEnum fileType = FileTypeEnum.valueOf(formatListBox.getValue(formatListBox.getSelectedIndex()));
 		
 		fileAccessService.getFileContent(Authentication.getInstance().getAuthenticationToken(), 
 				path, fileType, new FileContentCallback());

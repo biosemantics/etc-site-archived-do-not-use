@@ -1,4 +1,4 @@
-package edu.arizona.sirls.etc.site.client.view.matrixGeneration;
+package edu.arizona.sirls.etc.site.client.view.semanticMarkup;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -8,13 +8,13 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.view.ImageLabelComposite;
-import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
+import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
 
-public abstract class MatrixGenerationView extends Composite {
+public abstract class SemanticMarkupView extends Composite {
 
-	public MatrixGenerationView() {		
+	public SemanticMarkupView() {		
 		HTMLPanel htmlPanel = new HTMLPanel("<div class='content900pxCentered'>" +
-				"<div id='matrixGenerationContent'></div></div>");
+				"<div id='semanticMarkupContent'></div></div>");
 		
 		VerticalPanel verticalPanel = new VerticalPanel();
 		Label headingLabel = new Label("Matrix Generation");
@@ -33,7 +33,7 @@ public abstract class MatrixGenerationView extends Composite {
 		}
 		verticalPanel.add(this.getStepWidget());
 		
-		htmlPanel.addAndReplaceElement(verticalPanel, "matrixGenerationContent");
+		htmlPanel.addAndReplaceElement(verticalPanel, "semanticMarkupContent");
 		initWidget(htmlPanel);
 	}
 

@@ -1,4 +1,4 @@
-package edu.arizona.sirls.etc.site.client.presenter.matrixGeneration;
+package edu.arizona.sirls.etc.site.client.presenter.semanticMarkup;
 
 import java.util.List;
 
@@ -16,20 +16,20 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
-import edu.arizona.sirls.etc.site.client.event.MatrixGenerationEvent;
+import edu.arizona.sirls.etc.site.client.event.SemanticMarkupEvent;
 import edu.arizona.sirls.etc.site.client.event.ResumableTasksEvent;
 import edu.arizona.sirls.etc.site.client.event.ResumableTasksEventHandler;
 import edu.arizona.sirls.etc.site.client.event.TaskManagerEvent;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
-import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.ISemanticMarkupServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskServiceAsync;
-import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
+import edu.arizona.sirls.etc.site.shared.rpc.SemanticMarkupTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
-import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.db.SemanticMarkupConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
-import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.LearnInvocation;
+import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.LearnInvocation;
 
-public class LearnMatrixGenerationPresenter {
+public class LearnSemanticMarkupPresenter {
 
 	public interface Display {
 		void setSentences(int sentences);
@@ -44,15 +44,15 @@ public class LearnMatrixGenerationPresenter {
 	
 	private HandlerManager eventBus;
 	private Display display;
-	private MatrixGenerationTaskRun matrixGenerationTask;
-	private IMatrixGenerationServiceAsync matrixGenerationService;
+	private SemanticMarkupTaskRun semanticMarkupTask;
+	private ISemanticMarkupServiceAsync semanticMarkupService;
 	private LoadingPopup loadingPopup = new LoadingPopup();
 	private HandlerRegistration taskManagerHandlerRegistration;
 	private HandlerRegistration resumableClickableHandlerRegistration;
 
-	public LearnMatrixGenerationPresenter(HandlerManager eventBus,
-			final Display display, IMatrixGenerationServiceAsync matrixGenerationService) {
-		this.matrixGenerationService = matrixGenerationService;
+	public LearnSemanticMarkupPresenter(HandlerManager eventBus,
+			final Display display, ISemanticMarkupServiceAsync semanticMarkupService) {
+		this.semanticMarkupService = semanticMarkupService;
 		this.eventBus = eventBus;
 		this.display = display;
 		bind();
@@ -62,13 +62,13 @@ public class LearnMatrixGenerationPresenter {
 		display.getNextButton().addClickHandler(new ClickHandler() { 
 			@Override
 			public void onClick(ClickEvent event) { 
-				eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationTask));
+				eventBus.fireEvent(new SemanticMarkupEvent(semanticMarkupTask));
 			}
 		});
 		eventBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEventHandler() {	
 			@Override
 			public void onResumableTaskEvent(ResumableTasksEvent resumableTasksEvent) {
-				if(resumableTasksEvent.getTasks().containsKey(matrixGenerationTask.getTask().getId())) {
+				if(resumableTasksEvent.getTasks().containsKey(semanticMarkupTask.getTask().getId())) {
 					setResumable();
 				} else {
 					setNonResumable();
@@ -77,13 +77,13 @@ public class LearnMatrixGenerationPresenter {
 		});
 	}
 
-	public void go(final HasWidgets content, MatrixGenerationTaskRun matrixGenerationTask) {
+	public void go(final HasWidgets content, SemanticMarkupTaskRun semanticMarkupTask) {
 		loadingPopup.start();
 		setNonResumable();
 		
-		this.matrixGenerationTask = matrixGenerationTask;
-		matrixGenerationService.learn(Authentication.getInstance().getAuthenticationToken(),
-				matrixGenerationTask, new AsyncCallback<RPCResult<LearnInvocation>>() { 
+		this.semanticMarkupTask = semanticMarkupTask;
+		semanticMarkupService.learn(Authentication.getInstance().getAuthenticationToken(),
+				semanticMarkupTask, new AsyncCallback<RPCResult<LearnInvocation>>() { 
 			public void onSuccess(RPCResult<LearnInvocation> result) {
 				if(result.isSucceeded()) {
 					display.setWords(result.getData().getWords());
@@ -117,7 +117,7 @@ public class LearnMatrixGenerationPresenter {
 		resumableClickableHandlerRegistration = display.getResumableClickable().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationTask));
+				eventBus.fireEvent(new SemanticMarkupEvent(semanticMarkupTask));
 			}
 		});
 		if(taskManagerHandlerRegistration != null)

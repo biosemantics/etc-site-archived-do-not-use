@@ -12,7 +12,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationResult;
 import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskService;
-import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
+import edu.arizona.sirls.etc.site.shared.rpc.SemanticMarkupTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Share;
 import edu.arizona.sirls.etc.site.shared.rpc.db.ShareDAO;

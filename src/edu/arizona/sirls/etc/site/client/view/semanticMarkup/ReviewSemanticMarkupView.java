@@ -1,4 +1,4 @@
-package edu.arizona.sirls.etc.site.client.view.matrixGeneration;
+package edu.arizona.sirls.etc.site.client.view.semanticMarkup;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Frame;
@@ -6,10 +6,10 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
-import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.ReviewMatrixGenerationPresenter;
+import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
+import edu.arizona.sirls.etc.site.client.presenter.semanticMarkup.ReviewSemanticMarkupPresenter;
 
-public class ReviewMatrixGenerationView extends MatrixGenerationView implements ReviewMatrixGenerationPresenter.Display {
+public class ReviewSemanticMarkupView extends SemanticMarkupView implements ReviewSemanticMarkupPresenter.Display {
 
 	private Button nextButton;
 	private Frame frame;

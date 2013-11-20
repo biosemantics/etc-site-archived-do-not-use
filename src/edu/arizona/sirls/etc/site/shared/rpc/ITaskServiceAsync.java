@@ -6,7 +6,7 @@ import java.util.Set;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.db.SemanticMarkupConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Share;
 import edu.arizona.sirls.etc.site.shared.rpc.db.ShortUser;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;

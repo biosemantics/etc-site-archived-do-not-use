@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.event.MatrixGenerationEvent;
+import edu.arizona.sirls.etc.site.client.event.SemanticMarkupEvent;
 import edu.arizona.sirls.etc.site.client.event.PipelineEvent;
 import edu.arizona.sirls.etc.site.client.event.TaxonomyComparisonEvent;
 import edu.arizona.sirls.etc.site.client.event.TreeGenerationEvent;
@@ -17,17 +18,19 @@ public class StartPresenter implements Presenter {
 
 	private HandlerManager eventBus;
 	public interface Display {
-		HasClickHandlers getMatrixGenerationButton();
+		HasClickHandlers getSemanticMarkupButton();
 		Widget asWidget();
 		HasClickHandlers getPipelineButton();
 		HasClickHandlers getVisualizationButton();
 		HasClickHandlers getTaxonomyComparisonButton();
 		HasClickHandlers getTreeGenerationButton();
-		HasClickHandlers getMatrixGenerationLabel();
+		HasClickHandlers getSemanticMarkupLabel();
 		HasClickHandlers getVisualizationLabel();
 		HasClickHandlers getTaxonomyComparisonLabel();
 		HasClickHandlers getTreeGenerationLabel();
 		HasClickHandlers getPipelineLabel();
+		HasClickHandlers getMatrixGenerationButton();
+		HasClickHandlers getMatrixGenerationLabel();
 	}
 	private final Display display;
 
@@ -44,6 +47,11 @@ public class StartPresenter implements Presenter {
 	}
   
 	public void bind() {
+		ClickHandler semanticMarkupClickHandler = new ClickHandler() { 
+			public void onClick(ClickEvent event) {
+				eventBus.fireEvent(new SemanticMarkupEvent());
+			}
+		};
 		ClickHandler matrixGenerationClickHandler = new ClickHandler() { 
 			public void onClick(ClickEvent event) {
 				eventBus.fireEvent(new MatrixGenerationEvent());
@@ -70,6 +78,8 @@ public class StartPresenter implements Presenter {
 			}
 		};
 		
+		this.display.getSemanticMarkupLabel().addClickHandler(semanticMarkupClickHandler);
+		this.display.getSemanticMarkupButton().addClickHandler(semanticMarkupClickHandler);
 		this.display.getMatrixGenerationLabel().addClickHandler(matrixGenerationClickHandler);
 		this.display.getMatrixGenerationButton().addClickHandler(matrixGenerationClickHandler);
 		this.display.getTreeGenerationLabel().addClickHandler(treeGenerationClickHandler);

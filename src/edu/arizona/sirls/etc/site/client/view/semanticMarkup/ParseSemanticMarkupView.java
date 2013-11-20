@@ -1,4 +1,4 @@
-package edu.arizona.sirls.etc.site.client.view.matrixGeneration;
+package edu.arizona.sirls.etc.site.client.view.semanticMarkup;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Anchor;
@@ -12,10 +12,10 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
-import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.ParseMatrixGenerationPresenter;
+import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
+import edu.arizona.sirls.etc.site.client.presenter.semanticMarkup.ParseSemanticMarkupPresenter;
 
-public class ParseMatrixGenerationView extends MatrixGenerationView implements ParseMatrixGenerationPresenter.Display {
+public class ParseSemanticMarkupView extends SemanticMarkupView implements ParseSemanticMarkupPresenter.Display {
 
 	private Button nextButton;
 	private Anchor taskManagerAnchor;

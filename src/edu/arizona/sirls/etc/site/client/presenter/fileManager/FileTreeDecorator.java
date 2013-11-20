@@ -17,7 +17,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.Tree;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileInfo;
-import edu.arizona.sirls.etc.site.shared.rpc.file.FileType;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FileTypeEnum;
 
 public class FileTreeDecorator {
 	
@@ -28,7 +28,7 @@ public class FileTreeDecorator {
 		String filePath = fileInfo.getFilePath();
 		
 		FileImageLabelTreeItem root = new FileTreeItem(fileInfo.getName(), fileInfo);		
-		if(fileTree.getValue().getFileType().equals(FileType.DIRECTORY)) {
+		if(fileTree.getValue().getFileType().equals(FileTypeEnum.DIRECTORY)) {
 			String contentString = getContentString(fileTree);
 			root = new DirectoryTreeItem(fileInfo.getName() + " " + contentString, fileInfo);
 		} 
@@ -45,7 +45,7 @@ public class FileTreeDecorator {
 		if(selectionPath != null && filePath != null && filePath.equals(selectionPath))
 			tree.setSelectedItem(root);
 		
-		if(fileTree.getValue().getFileType().equals(FileType.DIRECTORY)) {
+		if(fileTree.getValue().getFileType().equals(FileTypeEnum.DIRECTORY)) {
 			for(edu.arizona.sirls.etc.site.shared.rpc.Tree<FileInfo> child : fileTree.getChildren()) {
 				decorate(tree, root, child, fileFilter, fileDragDropHandler, 1, selectionPath, retainedStates);
 			}
@@ -57,20 +57,20 @@ public class FileTreeDecorator {
 			root.setState(true);
 	}
 	
-	private boolean filter(FileType fileType, FileFilter fileFilter) {
+	private boolean filter(FileTypeEnum fileType, FileFilter fileFilter) {
 		switch(fileFilter) {
 		case TAXON_DESCRIPTION:
-			return !fileType.equals(FileType.TAXON_DESCRIPTION);
-		case GLOSSARY:
-			return !fileType.equals(FileType.GLOSSARY);
-		case EULER:
-			return !fileType.equals(FileType.EULER);
+			return !fileType.equals(FileTypeEnum.TAXON_DESCRIPTION);
+		case MARKED_UP_TAXON_DESCRIPTION:
+			return !fileType.equals(FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION);
+		case MATRIX:
+			return !fileType.equals(FileTypeEnum.MATRIX);
 		case ALL:
 			return false;
 		case FILE:
-			return fileType.equals(FileType.DIRECTORY);
+			return fileType.equals(FileTypeEnum.DIRECTORY);
 		case DIRECTORY:
-			return !fileType.equals(FileType.DIRECTORY);
+			return !fileType.equals(FileTypeEnum.DIRECTORY);
 		}
 		return true;
 	}
@@ -82,7 +82,7 @@ public class FileTreeDecorator {
 			//System.out.println(childTree);
 			//System.out.println(childTree.getValue());
 			//System.out.println(childTree.getValue().getFileType());
-			if(childTree.getValue().getFileType().equals(FileType.DIRECTORY)) {
+			if(childTree.getValue().getFileType().equals(FileTypeEnum.DIRECTORY)) {
 				numberOfChildDirectories++;
 			} else {
 				numberOfChildFiles++;
@@ -102,7 +102,7 @@ public class FileTreeDecorator {
 			FileImageLabelCompositeDoubleClickHandler fileDoubleClickHandler = new FileImageLabelCompositeDoubleClickHandler(fileComposite);
 			fileComposite.addDomHandler(fileDoubleClickHandler, DoubleClickEvent.getType());
 			
-			if(fileTree.getValue().getFileType().equals(FileType.DIRECTORY)) {
+			if(fileTree.getValue().getFileType().equals(FileTypeEnum.DIRECTORY)) {
 				//String name = fileTree.getValue() + " [" + getNumberOfContainers(fileTree.getChildren()) + " folder, " + getNumberOfFiles(fileTree.getChildren()) + " files]";
 				String contentString = getContentString(fileTree);
 				treeItem = new DirectoryTreeItem(fileInfo.getName() + " " + contentString, fileInfo);
@@ -121,7 +121,7 @@ public class FileTreeDecorator {
 				fileComposite.addDomHandler(fileDragAndDropHandler, DropEvent.getType());
 			}
 			
-			if(fileTree.getValue().getFileType().equals(FileType.DIRECTORY)) {
+			if(fileTree.getValue().getFileType().equals(FileTypeEnum.DIRECTORY)) {
 				level++;
 				for(edu.arizona.sirls.etc.site.shared.rpc.Tree<FileInfo> child : fileTree.getChildren()) {
 					decorate(tree, treeItem, child, fileFilter, fileDragAndDropHandler, level, selectionPath, retainedStates);

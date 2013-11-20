@@ -1,29 +1,19 @@
 package edu.arizona.sirls.etc.site.shared.rpc.db;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 public class MatrixGenerationConfiguration extends AbstractTaskConfiguration implements Serializable {
 
-	private static final long serialVersionUID = -2317947666906682233L;
 	private String input;
-	private int numberOfInputFiles;
-	private Glossary glossary;
-	private int otoUploadId;
-	private String otoSecret;
 	private String output;
+
+	public MatrixGenerationConfiguration () { }
 	
-	public MatrixGenerationConfiguration() { }
-	
-	public MatrixGenerationConfiguration(Configuration configuration, String input, int numberOfInputFiles, Glossary glossary, int otoUploadId, String otoSecret, String output) {
+	public MatrixGenerationConfiguration(Configuration configuration, String input, String output) {
 		super(configuration);
 		this.input = input;
-		this.numberOfInputFiles = numberOfInputFiles;
-		this.glossary = glossary;
-		this.otoUploadId = otoUploadId;
-		this.otoSecret = otoSecret;
 		this.output = output;
 	}
 
@@ -35,40 +25,8 @@ public class MatrixGenerationConfiguration extends AbstractTaskConfiguration imp
 		this.input = input;
 	}
 
-	public int getNumberOfInputFiles() {
-		return numberOfInputFiles;
-	}
-
-	public void setNumberOfInputFiles(int numberOfInputFiles) {
-		this.numberOfInputFiles = numberOfInputFiles;
-	}
-
-	public Glossary getGlossary() {
-		return glossary;
-	}
-
-	public void setGlossary(Glossary glossary) {
-		this.glossary = glossary;
-	}
-
-	public int getOtoUploadId() {
-		return otoUploadId;
-	}
-
-	public void setOtoUploadId(int otoUploadId) {
-		this.otoUploadId = otoUploadId;
-	}
-
 	public String getOutput() {
 		return output;
-	}
-	
-	public String getOtoSecret() {
-		return this.otoSecret;
-	}
-	
-	public void setOtoSecret(String otoSecret) {
-		this.otoSecret = otoSecret;
 	}
 
 	public void setOutput(String output) {
@@ -88,7 +46,5 @@ public class MatrixGenerationConfiguration extends AbstractTaskConfiguration imp
 		result.add(this.getOutput());
 		return result;
 	}
-
-
 	
 }

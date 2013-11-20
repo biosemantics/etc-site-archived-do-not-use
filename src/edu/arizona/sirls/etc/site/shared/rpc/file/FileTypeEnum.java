@@ -1,6 +1,6 @@
 package edu.arizona.sirls.etc.site.shared.rpc.file;
 
-public enum FileType {	
+public enum FileTypeEnum {	
 	/*TAXON_DESCRIPTION("Taxon Description"),
 	GLOSSARY("Glossary"),
 	EULER("Euler");
@@ -21,9 +21,8 @@ public enum FileType {
     }*/
 	
 	TAXON_DESCRIPTION,
-	MARKEDUP_TAXON_DESCRIPTION,
-	GLOSSARY,
-	EULER, 
+	MARKED_UP_TAXON_DESCRIPTION,
+	MATRIX, 
 	DIRECTORY
 
 

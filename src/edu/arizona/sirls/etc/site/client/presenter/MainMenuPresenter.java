@@ -7,7 +7,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.arizona.sirls.etc.site.client.event.MatrixGenerationEvent;
+import edu.arizona.sirls.etc.site.client.event.SemanticMarkupEvent;
 import edu.arizona.sirls.etc.site.client.event.TaxonomyComparisonEvent;
 import edu.arizona.sirls.etc.site.client.event.TreeGenerationEvent;
 import edu.arizona.sirls.etc.site.client.event.VisualizationEvent;
@@ -17,7 +17,7 @@ public class MainMenuPresenter implements Presenter {
 	private HandlerManager eventBus;
 	public interface Display {
 		Widget asWidget();
-		Widget getMatrixGenerationLinkPanel();
+		Widget getSemanticMarkupLinkPanel();
 		Widget getTreeGenerationLinkPanel();
 		Widget getTaxonomyComparisonLinkPanel();
 		Widget getVisualizationLinkPanel();
@@ -31,11 +31,11 @@ public class MainMenuPresenter implements Presenter {
 	}
 
 	private void bind() {
-		display.getMatrixGenerationLinkPanel().sinkEvents(Event.ONCLICK);	
-		display.getMatrixGenerationLinkPanel().addHandler(new ClickHandler() {
+		display.getSemanticMarkupLinkPanel().sinkEvents(Event.ONCLICK);	
+		display.getSemanticMarkupLinkPanel().addHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				eventBus.fireEvent(new MatrixGenerationEvent());
+				eventBus.fireEvent(new SemanticMarkupEvent());
 			}
 		}, ClickEvent.getType());
 		
@@ -78,10 +78,10 @@ public class MainMenuPresenter implements Presenter {
 	public static native void initNativeJavascriptAnimations() /*-{
 		var menuHighlightLayer = $doc.getElementById("menuHighlightLayer");
 		
-		var menuMatrixGeneration = $doc.getElementById("menuMatrixGeneration");
-		if(menuMatrixGeneration != null) {
-			menuMatrixGeneration.addEventListener("mouseover", menuMatrixGenerationSelect, false);
-			menuMatrixGeneration.addEventListener("mouseout", menuDeselect, false);
+		var menuSemanticMarkup = $doc.getElementById("menuSemanticMarkup");
+		if(menuSemanticMarkup != null) {
+			menuSemanticMarkup.addEventListener("mouseover", menuSemanticMarkupSelect, false);
+			menuSemanticMarkup.addEventListener("mouseout", menuDeselect, false);
 		}
 		
 		var menuTreeGeneration = $doc.getElementById("menuTreeGeneration");
@@ -102,7 +102,7 @@ public class MainMenuPresenter implements Presenter {
 			menuVisualization.addEventListener("mouseout", menuDeselect, false);
 		}
 		
-		function menuMatrixGenerationSelect() { 
+		function menuSemanticMarkupSelect() { 
 			var higlightLayerWidth = menuHighlightLayer.offsetWidth; //cannot be done globbally, window could have been resized
 			var top = 0; 
 			var bottom = menuHighlightLayer.offsetHeight;

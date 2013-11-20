@@ -3,7 +3,7 @@ package edu.arizona.sirls.etc.site.shared.rpc.db;
 import java.io.Serializable;
 import java.util.Date;
 
-import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
+import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
 
 public class TaskStage implements Serializable {
 

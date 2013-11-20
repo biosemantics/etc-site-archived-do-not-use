@@ -10,11 +10,13 @@ import edu.arizona.sirls.etc.site.client.presenter.StartPresenter;
 
 public class StartView extends Composite implements StartPresenter.Display {
 
-	private final Image matrixGenerationImage = new Image("images/ButtonGreen.gif");
+	private final Image semanticMarkupImage = new Image("images/ButtonGreen.gif");
+	private Image matrixGenerationImage = new Image("images/ButtonGreen.gif");
 	private Image treeGenerationImage = new Image("images/ButtonGreen.gif");
 	private Image taxonomyComparisonImage = new Image("images/ButtonGreen.gif");
 	private Image visualizationImage = new Image("images/ButtonGreen.gif");
 	private Image pipelineImage = new Image("images/ButtonGray.gif");
+	private Label semanticMarkupLabel = new Label("Begin Semantic Markup");
 	private Label matrixGenerationLabel = new Label("Begin Matrix Generation");;
 	private Label treeGenerationLabel = new Label("Begin Tree Generation");
 	private Label taxonomyComparisonLabel = new Label("Begin Taxonomy Comparison");
@@ -22,6 +24,8 @@ public class StartView extends Composite implements StartPresenter.Display {
 	private Label pipelineLabel = new Label("Begin New Pipeline");
 
 	public StartView() { 
+		semanticMarkupImage.setWidth("200px");
+		semanticMarkupImage.setHeight("50px");
 		matrixGenerationImage.setWidth("200px");
 		matrixGenerationImage.setHeight("50px");
 		treeGenerationImage.setWidth("200px");
@@ -34,6 +38,14 @@ public class StartView extends Composite implements StartPresenter.Display {
 		pipelineImage.setHeight("50px");
 		
 		HTMLPanel htmlPanel = new HTMLPanel("<div class='content900pxCentered'>" +
+				"<div id='semanticMarkupImage' class='actionImage'></div>" +
+				"<div id='semanticMarkupText' class='actionText'></div>" +
+				"<div id='semanticMarkupDescription' class='actionDescription'>" +
+						"Matrix generation generates taxon-character matrices from clean textual descriptions of organisms.	The matrices can be used to create " +
+						"specimen identification keys or be used as input to the Tree Generation tool. </div>" +
+				"<div id='semanticMarkupArrow' class='actionArrow'></div>" +
+				"<div id='semanticMarkupButton' class='actionButton clickable'></div>" +
+				"<div id='semanticMarkupButtonText' class='actionButtonText clickable'></div>" +
 				"<div id='matrixGenerationImage' class='actionImage'></div>" +
 				"<div id='matrixGenerationText' class='actionText'></div>" +
 				"<div id='matrixGenerationDescription' class='actionDescription'>" +
@@ -70,6 +82,8 @@ public class StartView extends Composite implements StartPresenter.Display {
 				"<div id='pipelineButtonText'></div>" +
 				"</div>" +
 				"</div>");
+		htmlPanel.add(semanticMarkupImage, "semanticMarkupButton");
+		htmlPanel.add(this.semanticMarkupLabel, "semanticMarkupButtonText");
 		htmlPanel.add(matrixGenerationImage, "matrixGenerationButton");
 		htmlPanel.add(this.matrixGenerationLabel, "matrixGenerationButtonText");
 		htmlPanel.add(this.treeGenerationImage, "treeGenerationButton");
@@ -85,8 +99,8 @@ public class StartView extends Composite implements StartPresenter.Display {
 	}
 	
 	@Override
-	public HasClickHandlers getMatrixGenerationButton() {
-		return matrixGenerationImage;
+	public HasClickHandlers getSemanticMarkupButton() {
+		return semanticMarkupImage;
 	}
 
 	@Override
@@ -110,8 +124,8 @@ public class StartView extends Composite implements StartPresenter.Display {
 	}
 
 	@Override
-	public HasClickHandlers getMatrixGenerationLabel() {
-		return this.matrixGenerationLabel;
+	public HasClickHandlers getSemanticMarkupLabel() {
+		return this.semanticMarkupLabel;
 	}
 	
 	@Override
@@ -132,5 +146,15 @@ public class StartView extends Composite implements StartPresenter.Display {
 	@Override
 	public HasClickHandlers getPipelineLabel() {
 		return this.pipelineLabel;
+	}
+
+	@Override
+	public HasClickHandlers getMatrixGenerationButton() {
+		return this.matrixGenerationImage;
+	}
+
+	@Override
+	public HasClickHandlers getMatrixGenerationLabel() {
+		return this.matrixGenerationLabel;
 	}
 }

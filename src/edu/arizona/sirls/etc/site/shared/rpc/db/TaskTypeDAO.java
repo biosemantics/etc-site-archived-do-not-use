@@ -27,9 +27,13 @@ public class TaskTypeDAO {
 			id = result.getInt(1);
 			String name = result.getString(2);
 			int inputTypeId = result.getInt(3);
-			InputType inputType = InputTypeDAO.getInstance().getInputType(inputTypeId);
-			Date created = result.getTimestamp(4);
-			taskType = new TaskType(id, edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.valueOf(name), inputType, created);
+			boolean inputDirectory = result.getString(4).equals("directory");
+			int outputTypeId = result.getInt(5);
+			boolean outputDirectory = result.getString(6).equals("directory");
+			FileType inputFileType = FileTypeDAO.getInstance().getFileType(inputTypeId);
+			FileType outputFileType = FileTypeDAO.getInstance().getFileType(outputTypeId);
+			Date created = result.getTimestamp(7);
+			taskType = new TaskType(id, edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.valueOf(name), inputFileType, inputDirectory, outputFileType, outputDirectory, created);
 		}
 		query.close();
 		return taskType;
@@ -44,9 +48,13 @@ public class TaskTypeDAO {
 			int id = result.getInt(1);
 			taskTypeEnum = TaskTypeEnum.valueOf(result.getString(2));
 			int inputTypeId = result.getInt(3);
-			InputType inputType = InputTypeDAO.getInstance().getInputType(inputTypeId);
-			Date created = result.getTimestamp(4);
-			taskType = new TaskType(id, taskTypeEnum, inputType, created);
+			boolean inputDirectory = result.getString(4).equals("directory");
+			int outputTypeId = result.getInt(5);
+			boolean outputDirectory = result.getString(6).equals("directory");
+			FileType inputFileType = FileTypeDAO.getInstance().getFileType(inputTypeId);
+			FileType outputFileType = FileTypeDAO.getInstance().getFileType(outputTypeId);
+			Date created = result.getTimestamp(7);
+			taskType = new TaskType(id, taskTypeEnum, inputFileType, inputDirectory, outputFileType, outputDirectory, created);
 		}
 		query.close();
 		return taskType;

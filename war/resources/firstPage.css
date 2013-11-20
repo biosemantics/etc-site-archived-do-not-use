@@ -87,10 +87,16 @@
 	left: 0px;
 }
 
-#matrixGenerationImage {
+#semanticMarkupImage {
     background-image: url('../images/MatrixGeneration.gif');
     top: 0px;
 }
+
+#matrixGenerationImage {
+    background-image: url('../images/MatrixGeneration.gif');
+    top: 100px;
+}
+
 
 .actionText {
     background-size: 100% 100%;
@@ -101,9 +107,14 @@
 }
 
 
-#matrixGenerationText {
+#semanticMarkupText {
     background-image: url('../images/Text.MatrixGeneration.gif');
     top: 0px;
+}
+
+#matrixGenerationText {
+    background-image: url('../images/Text.MatrixGeneration.gif');
+    top: 100px;
 }
 
 .actionDescription {
@@ -111,8 +122,11 @@
     position: absolute;
     left: 60px;
 }
-#matrixGenerationDescription {
+#semanticMarkupDescription {
     top: 35px;
+}
+#matrixGenerationDescription {
+    top: 135px;
 }
 .actionArrow {
     background-image: url('../images/Arrow.gif');
@@ -122,8 +136,11 @@
     position: absolute;
     left: 570px;
 }
-#matrixGenerationArrow {
+#semanticMarkupArrow {
     top: 0px;
+}
+#matrixGenerationArrow {
+    top: 100px;
 }
 .actionButton  {
     /*background-image: url('../images/ButtonGreen.gif'); */
@@ -133,88 +150,97 @@
     position: absolute;
     left: 620px;
 }
-#matrixGenerationButton {
+#semanticMarkupButton {
     top: 22px;
 }
-#matrixGenerationButtonText {
+#semanticMarkupButtonText {
     width: 240px;
     position: absolute;
     top: 40px;
     left: 655px;
 }
+#matrixGenerationButton {
+    top: 122px;
+}
+#matrixGenerationButtonText {
+    width: 240px;
+    position: absolute;
+    top: 140px;
+    left: 655px;
+}
 
 #treeGenerationImage {
     background-image: url('../images/TreeGeneration.gif');
-    top: 100px;
+    top: 200px;
 }
 #treeGenerationText {
     background-image: url('../images/Text.TreeGeneration.gif');
-    top: 100px;
+    top: 200px;
 }
 #treeGenerationDescription {
-    top: 135px;
+    top: 235px;
 }
 #treeGenerationArrow {
-    top: 100px;
+    top: 200px;
 }
 #treeGenerationButton {
-    top: 122px;
+    top: 222px;
 }
 #treeGenerationButtonText {
     width: 240px;
     position: absolute;
-    top: 140px;
+    top: 240px;
     left: 660px;
 }
 #taxonomyComparisonImage {
     background-image: url('../images/TaxonomyComparison.gif');
-    top: 200px;
+    top: 300px;
 }
 #taxonomyComparisonText {
     background-image: url('../images/Text.TaxonomyComparison.gif');
     width: 191px;
     height: 29px;
-    top: 200px;
+    top: 300px;
 }
 
 #taxonomyComparisonDescription {
-    top: 235px;
+    top: 335px;
 }
 #taxonomyComparisonArrow {
-    top: 200px;
+    top: 300px;
 }
 #taxonomyComparisonButton {
-    top: 222px;
+    top: 322px;
 }
 #taxonomyComparisonButtonText {
     width: 240px;
     position: absolute;
-    top: 240px;
+    top: 340px;
     left: 641px;
 }
 #visualizationImage {
     background-image: url('../images/Visualization.gif');
-    top: 300px;
+    top: 400px;
 }
 #visualizationText {
     background-image: url('../images/Text.Visualization.gif');
     width: 191px;
     height: 24px;
-    top: 300px;
+    top: 400px;
 }
 #visualizationDescription {
-    top: 335px;
+    top: 435px;
 }
 #visualizationArrow {
-    top: 300px;
+    top: 400px;
 }
 #visualizationButton {
-    top: 322px;
+    top: 422px;
 }
 #visualizationButtonText {
     width: 240px;
     position: absolute;
-    top: 340px;
+    top: 440px;
     left: 665px;
 }
 #orText {
@@ -223,7 +249,7 @@
     width: 50px;
     height: 39px;
     position: absolute;
-    top: 430px;
+    top: 530px;
     left: 560px;
 }
 #pipelineButton {
@@ -232,12 +258,12 @@
     width: 200px;
     height: 50px;
     position: absolute;
-    top: 422px;
+    top: 522px;
     left: 620px;
 }
 #pipelineButtonText {
     width: 240;
     position: absolute;
-    top: 440px;
+    top: 540px;
     left: 665px;
 }

@@ -2,6 +2,7 @@ package edu.arizona.sirls.etc.site.client.view;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.UriUtils;
+import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -16,6 +17,7 @@ public class ImageLabelComposite extends Composite {
 	private Image image;
 	private String path;
 
+	@UiConstructor
 	public ImageLabelComposite(String imageUri, String width, String height, String labelText) {
 		image = new Image(UriUtils.fromString(imageUri));
 		image.setWidth(width);

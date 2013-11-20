@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
-import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
+import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
 
 public class TaskStageDAO {
 

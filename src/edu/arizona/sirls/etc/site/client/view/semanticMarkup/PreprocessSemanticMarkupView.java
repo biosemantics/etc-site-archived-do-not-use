@@ -1,4 +1,4 @@
-package edu.arizona.sirls.etc.site.client.view.matrixGeneration;
+package edu.arizona.sirls.etc.site.client.view.semanticMarkup;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
@@ -11,12 +11,12 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.ChangeAwareRichTextArea;
-import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.PreprocessMatrixGenerationPresenter;
-import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
+import edu.arizona.sirls.etc.site.client.presenter.semanticMarkup.ChangeAwareRichTextArea;
+import edu.arizona.sirls.etc.site.client.presenter.semanticMarkup.PreprocessSemanticMarkupPresenter;
+import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
 
 
-public class PreprocessMatrixGenerationView extends MatrixGenerationView implements PreprocessMatrixGenerationPresenter.Display {
+public class PreprocessSemanticMarkupView extends SemanticMarkupView implements PreprocessSemanticMarkupPresenter.Display {
 
 	private ChangeAwareRichTextArea textArea;
 	private Button nextButton;

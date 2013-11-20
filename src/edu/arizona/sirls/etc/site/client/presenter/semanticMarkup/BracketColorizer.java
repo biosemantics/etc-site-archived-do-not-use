@@ -1,4 +1,4 @@
-package edu.arizona.sirls.etc.site.client.presenter.matrixGeneration;
+package edu.arizona.sirls.etc.site.client.presenter.semanticMarkup;
 
 import java.util.HashMap;
 import java.util.Map;

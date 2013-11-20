@@ -7,11 +7,11 @@ public class FileInfo implements Serializable {
 	private static final long serialVersionUID = 7766562389762413709L;
 	private String name;
 	private String filePath;
-	private FileType fileType;
+	private FileTypeEnum fileType;
 	
 	public FileInfo() { }
 	
-	public FileInfo(String name, String filePath, FileType fileType) {
+	public FileInfo(String name, String filePath, FileTypeEnum fileType) {
 		super();
 		this.name = name;
 		this.filePath = filePath;
@@ -23,10 +23,10 @@ public class FileInfo implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public FileType getFileType() {
+	public FileTypeEnum getFileType() {
 		return fileType;
 	}
-	public void setFileType(FileType fileType) {
+	public void setFileType(FileTypeEnum fileType) {
 		this.fileType = fileType;
 	}
 

@@ -33,8 +33,8 @@ import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
+import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
-import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 public class TaskManagerViewImpl extends Composite implements TaskManagerView, Handler {
 

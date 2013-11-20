@@ -29,7 +29,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.TaskConfigurationDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.UserDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileInfo;
-import edu.arizona.sirls.etc.site.shared.rpc.file.FileType;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FileTypeEnum;
 
 public class FileService extends RemoteServiceServlet implements IFileService {
 
@@ -61,9 +61,9 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		if(!authResult.getData().getResult())
 			return new RPCResult<Tree<FileInfo>>(false, "Authentication failed");
 		
-		Tree<FileInfo> resultTree = new Tree<FileInfo>(new FileInfo("", null, FileType.DIRECTORY));
-		Tree<FileInfo> ownedFiles = new Tree<FileInfo>(new FileInfo("Owned", null, FileType.DIRECTORY));
-		Tree<FileInfo> sharedFiles = new Tree<FileInfo>(new FileInfo("Shared", null, FileType.DIRECTORY));
+		Tree<FileInfo> resultTree = new Tree<FileInfo>(new FileInfo("", null, FileTypeEnum.DIRECTORY));
+		Tree<FileInfo> ownedFiles = new Tree<FileInfo>(new FileInfo("Owned", null, FileTypeEnum.DIRECTORY));
+		Tree<FileInfo> sharedFiles = new Tree<FileInfo>(new FileInfo("Shared", null, FileTypeEnum.DIRECTORY));
 		resultTree.addChild(ownedFiles);
 		resultTree.addChild(sharedFiles);
 		
@@ -83,14 +83,14 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		List<Share> shares = ShareDAO.getInstance().getSharesOfInvitee(user);
 		
 		for(Share share : shares) {
-			Tree<FileInfo> shareTree = new Tree<FileInfo>(new FileInfo(share.getTask().getName(), null, FileType.DIRECTORY));
+			Tree<FileInfo> shareTree = new Tree<FileInfo>(new FileInfo(share.getTask().getName(), null, FileTypeEnum.DIRECTORY));
 			sharedFiles.addChild(shareTree);
 			AbstractTaskConfiguration taskConfiguration = 
 					TaskConfigurationDAO.getInstance().getTaskConfiguration(share.getTask().getConfiguration());
 			if(taskConfiguration != null) {
 				List<String> inputFiles = taskConfiguration.getInputs();
 				List<String> outputFiles = taskConfiguration.getOutputs();
-				Tree<FileInfo> inputTree = new Tree<FileInfo>(new FileInfo("Input", null, FileType.DIRECTORY));
+				Tree<FileInfo> inputTree = new Tree<FileInfo>(new FileInfo("Input", null, FileTypeEnum.DIRECTORY));
 				shareTree.addChild(inputTree);
 				for(String input : inputFiles) {
 					File child = new File(input);
@@ -107,7 +107,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 						}
 					}
 				}
-				Tree<FileInfo> outputTree = new Tree<FileInfo>(new FileInfo("Output", null, FileType.DIRECTORY));
+				Tree<FileInfo> outputTree = new Tree<FileInfo>(new FileInfo("Output", null, FileTypeEnum.DIRECTORY));
 				shareTree.addChild(outputTree);
 				for(String output : outputFiles) {
 					File child = new File(output);
@@ -141,7 +141,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 					throw new Exception("Couldn't check permission");
 				if(permissionResult.getData()) {
 					String name = child.getName();
-					FileType fileType = getFileType(authenticationToken, child.getAbsolutePath());
+					FileTypeEnum fileType = getFileType(authenticationToken, child.getAbsolutePath());
 					if(fileType != null && !filter(fileType, fileFilter)) {
 						Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(name, child.getAbsolutePath(), fileType));
 						fileTree.addChild(childTree);
@@ -154,44 +154,38 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		}
 	}
 
-	private boolean filter(FileType fileType, FileFilter fileFilter) {
+	private boolean filter(FileTypeEnum fileType, FileFilter fileFilter) {
 		switch(fileFilter) {
 		case TAXON_DESCRIPTION:
-			return !fileType.equals(FileType.TAXON_DESCRIPTION);
-		case GLOSSARY:
-			return !fileType.equals(FileType.GLOSSARY);
-		case EULER:
-			return !fileType.equals(FileType.EULER);
+			return !fileType.equals(FileTypeEnum.TAXON_DESCRIPTION);
+		case MARKED_UP_TAXON_DESCRIPTION:
+			return !fileType.equals(FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION);	
+		case MATRIX:
+			return !fileType.equals(FileTypeEnum.MATRIX);	
 		case ALL:
 			return false;
 		case FILE:
-			return fileType.equals(FileType.DIRECTORY);
+			return fileType.equals(FileTypeEnum.DIRECTORY);
 		case DIRECTORY:
-			return !fileType.equals(FileType.DIRECTORY);
+			return !fileType.equals(FileTypeEnum.DIRECTORY);
 		}
 		return true;
 	}
 
-	private FileType getFileType(AuthenticationToken authenticationToken, String filePath) {
+	private FileTypeEnum getFileType(AuthenticationToken authenticationToken, String filePath) {
 		File file = new File(filePath);
 		if(file.isFile()) {
-			RPCResult<Boolean> validationResult = fileFormatService.isValidEuler(authenticationToken, filePath);
+			RPCResult<Boolean> validationResult = fileFormatService.isValidMarkedupTaxonDescription(authenticationToken, filePath);
 			if(validationResult.isSucceeded() && validationResult.getData())
-				return FileType.EULER;
-			validationResult = fileFormatService.isValidGlossary(authenticationToken, filePath);
+				return FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION;
+			validationResult = fileFormatService.isValidTaxonDescription(authenticationToken, filePath);
 			if(validationResult.isSucceeded() && validationResult.getData())
-				return FileType.GLOSSARY;
-			validationResult = fileFormatService.isValidGlossary(authenticationToken, filePath);
+				return FileTypeEnum.TAXON_DESCRIPTION;
+			validationResult = fileFormatService.isValidMatrix(authenticationToken, filePath);
 			if(validationResult.isSucceeded() && validationResult.getData())
-				return FileType.GLOSSARY;
-			validationResult = fileFormatService.isValidGlossary(authenticationToken, filePath);
-			if(validationResult.isSucceeded() && validationResult.getData())
-				return FileType.TAXON_DESCRIPTION;
-			validationResult = fileFormatService.isValidGlossary(authenticationToken, filePath);
-			if(validationResult.isSucceeded() && validationResult.getData())
-				return FileType.MARKEDUP_TAXON_DESCRIPTION;
+				return FileTypeEnum.MATRIX;
 		} else if (file.isDirectory())
-			return FileType.DIRECTORY;
+			return FileTypeEnum.DIRECTORY;
 		return null;
 	}
 

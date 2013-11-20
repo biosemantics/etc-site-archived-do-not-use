@@ -196,10 +196,10 @@ body {
     top: 0px;
   /*  z-index: 2; */
 }
-#menuMatrixGenerationLink {
+#menuSemanticMarkupLink {
 	outline:0;
 }
-#menuMatrixGeneration {
+#menuSemanticMarkup {
     left: 50%;
     margin-left: -400px;
 }
@@ -223,7 +223,7 @@ body {
     top: 40px;
     left: 30px;
 }
-#menuMatrixGenerationIcon { background-image: url('../images/MatrixGeneration.gif') }
+#menuSemanticMarkupIcon { background-image: url('../images/MatrixGeneration.gif') }
 #menuTreeGenerationIcon { background-image: url('../images/TreeGeneration.gif') }
 #menuTaxonomyComparisonIcon { background-image: url('../images/TaxonomyComparison.gif') }
 #menuVisualizationIcon { background-image: url('../images/Visualization.gif') }

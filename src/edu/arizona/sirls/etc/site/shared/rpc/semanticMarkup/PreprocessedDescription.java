@@ -1,4 +1,4 @@
-package edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration;
+package edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup;
 
 import java.io.Serializable;
 import java.util.Map;

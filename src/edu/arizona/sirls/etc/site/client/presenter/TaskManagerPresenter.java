@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.event.MatrixGenerationEvent;
+import edu.arizona.sirls.etc.site.client.event.SemanticMarkupEvent;
 import edu.arizona.sirls.etc.site.client.event.ResumableTasksEvent;
 import edu.arizona.sirls.etc.site.client.event.ResumableTasksEventHandler;
 import edu.arizona.sirls.etc.site.client.event.TaxonomyComparisonEvent;
@@ -24,20 +25,22 @@ import edu.arizona.sirls.etc.site.client.view.users.UserSelectView;
 import edu.arizona.sirls.etc.site.client.view.users.UserSelectViewImpl;
 import edu.arizona.sirls.etc.site.client.view.users.UsersViewImpl;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.ISemanticMarkupServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaxonomyComparisonServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ITreeGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IUserServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IVisualizationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
+import edu.arizona.sirls.etc.site.shared.rpc.SemanticMarkupTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
+import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
 import edu.arizona.sirls.etc.site.shared.rpc.TaxonomyComparisonTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.TreeGenerationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.VisualizationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Share;
 import edu.arizona.sirls.etc.site.shared.rpc.db.ShortUser;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
-import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 public class TaskManagerPresenter implements TaskManagerView.Presenter, Presenter {
 
@@ -45,6 +48,7 @@ public class TaskManagerPresenter implements TaskManagerView.Presenter, Presente
 	private TaskManagerView view;
 	private ITaskServiceAsync taskService;
 	private IUserServiceAsync userService;
+	private ISemanticMarkupServiceAsync semanticMarkupService;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
 	private ITreeGenerationServiceAsync treeGenerationService;
 	private ITaxonomyComparisonServiceAsync taxonomyComparisonService;
@@ -52,12 +56,12 @@ public class TaskManagerPresenter implements TaskManagerView.Presenter, Presente
 	//private HashMap<Integer, Integer> taskRowMap = new HashMap<Integer, Integer>();
 
 	public TaskManagerPresenter(HandlerManager eventBus, TaskManagerView view,
-			ITaskServiceAsync taskService, IMatrixGenerationServiceAsync matrixGenerationService, 
+			ITaskServiceAsync taskService, ISemanticMarkupServiceAsync semanticMarkupService, IMatrixGenerationServiceAsync matrixGenerationService,
 			ITreeGenerationServiceAsync treeGenerationService, ITaxonomyComparisonServiceAsync taxonomyComparisonService,
 			IVisualizationServiceAsync visualizationService, IUserServiceAsync userService) {
 		this.view = view;
 		this.taskService = taskService;
-		this.matrixGenerationService = matrixGenerationService;
+		this.semanticMarkupService = semanticMarkupService;
 		this.treeGenerationService = treeGenerationService;
 		this.taxonomyComparisonService = taxonomyComparisonService;
 		this.visualizationService = visualizationService;
@@ -142,7 +146,7 @@ public class TaskManagerPresenter implements TaskManagerView.Presenter, Presente
 	@Override
 	public void onDelete(final Task task) {
 		if(task.getUser().getName().equals(Authentication.getInstance().getUsername())) {
-			matrixGenerationService.cancel(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Void>>() {
+			semanticMarkupService.cancel(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Void>>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					caught.printStackTrace();
@@ -170,29 +174,29 @@ public class TaskManagerPresenter implements TaskManagerView.Presenter, Presente
 
 	@Override
 	public void onRewind(final Task task) {
-		matrixGenerationService.getMatrixGenerationTaskRun(Authentication.getInstance().getAuthenticationToken(), 
-				task, new AsyncCallback<RPCResult<MatrixGenerationTaskRun>>() {
+		semanticMarkupService.getSemanticMarkupTaskRun(Authentication.getInstance().getAuthenticationToken(), 
+				task, new AsyncCallback<RPCResult<SemanticMarkupTaskRun>>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
 					}
 					@Override
-					public void onSuccess(RPCResult<MatrixGenerationTaskRun> matrixGenerationTaskResult) {
+					public void onSuccess(RPCResult<SemanticMarkupTaskRun> semanticMarkupTaskResult) {
 						//could also have a popup here asking for a new task name to use..										
 						
 						//pickup again from review
-						if(matrixGenerationTaskResult.isSucceeded()) { 
-							MatrixGenerationTaskRun matrixGenerationTask = matrixGenerationTaskResult.getData();
-							matrixGenerationService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTask, 
-									TaskStageEnum.REVIEW_TERMS ,new AsyncCallback<RPCResult<MatrixGenerationTaskRun>>() {
+						if(semanticMarkupTaskResult.isSucceeded()) { 
+							SemanticMarkupTaskRun semanticMarkupTask = semanticMarkupTaskResult.getData();
+							semanticMarkupService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), semanticMarkupTask, 
+									TaskStageEnum.REVIEW_TERMS ,new AsyncCallback<RPCResult<SemanticMarkupTaskRun>>() {
 								@Override
 								public void onFailure(Throwable caught) {
 									caught.printStackTrace();
 								}
 								@Override
-								public void onSuccess(RPCResult<MatrixGenerationTaskRun> matrixGenerationTask) {
-									if(matrixGenerationTask.isSucceeded())
-										eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationTask.getData()));
+								public void onSuccess(RPCResult<SemanticMarkupTaskRun> semanticMarkupTask) {
+									if(semanticMarkupTask.isSucceeded())
+										eventBus.fireEvent(new SemanticMarkupEvent(semanticMarkupTask.getData()));
 								}
 							});
 						}
@@ -204,18 +208,33 @@ public class TaskManagerPresenter implements TaskManagerView.Presenter, Presente
 	@Override
 	public void onResume(final Task task) {
 		switch(task.getTaskStage().getTaskType().getTaskTypeEnum()) {
-		case MATRIX_GENERATION:
-			matrixGenerationService.getMatrixGenerationTaskRun(Authentication.getInstance().getAuthenticationToken(), 
-					task, new AsyncCallback<RPCResult<MatrixGenerationTaskRun>>() {
+		case SEMANTIC_MARKUP:
+			semanticMarkupService.getSemanticMarkupTaskRun(Authentication.getInstance().getAuthenticationToken(), 
+					task, new AsyncCallback<RPCResult<SemanticMarkupTaskRun>>() {
 						@Override
 						public void onFailure(Throwable caught) {
 							caught.printStackTrace();
 						}
 						@Override
-						public void onSuccess(RPCResult<MatrixGenerationTaskRun> result) {
+						public void onSuccess(RPCResult<SemanticMarkupTaskRun> result) {
 							if(result.isSucceeded())
-								eventBus.fireEvent(new MatrixGenerationEvent(result.getData()));
+								eventBus.fireEvent(new SemanticMarkupEvent(result.getData()));
 						}
+			});
+			break;
+		case MATRIX_GENERATION:
+			matrixGenerationService.getMatrixGenerationTaskRun(Authentication.getInstance().getAuthenticationToken(), 
+					task, new AsyncCallback<RPCResult<MatrixGenerationTaskRun>>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						caught.printStackTrace();
+					}
+
+					@Override
+					public void onSuccess(RPCResult<MatrixGenerationTaskRun> result) {
+						if(result.isSucceeded())
+							eventBus.fireEvent(new MatrixGenerationEvent(result.getData()));
+					}
 			});
 			break;
 		case TREE_GENERATION:

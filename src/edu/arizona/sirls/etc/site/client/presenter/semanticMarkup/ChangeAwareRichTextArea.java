@@ -1,4 +1,4 @@
-package edu.arizona.sirls.etc.site.client.presenter.matrixGeneration;
+package edu.arizona.sirls.etc.site.client.presenter.semanticMarkup;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;

@@ -25,7 +25,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFilePermissionService;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFormatter;
-import edu.arizona.sirls.etc.site.shared.rpc.file.FileType;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FileTypeEnum;
 
 public class FileAccessService extends RemoteServiceServlet implements IFileAccessService {
 
@@ -97,7 +97,7 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 	}
 
 	@Override
-	public RPCResult<String> getFileContent(AuthenticationToken authenticationToken, String filePath, FileType fileType) {		
+	public RPCResult<String> getFileContent(AuthenticationToken authenticationToken, String filePath, FileTypeEnum fileType) {		
 		RPCResult<String> fileContentResult = getFileContent(authenticationToken, filePath);
 		if(fileContentResult.isSucceeded()) 
 			return new RPCResult<String>(true, "", new FileFormatter().format(fileContentResult.getData(), fileType));
@@ -105,7 +105,7 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 	}
 
 	@Override
-	public RPCResult<String> getFileContentHighlighted(AuthenticationToken authenticationToken, String filePath, FileType fileType) {		
+	public RPCResult<String> getFileContentHighlighted(AuthenticationToken authenticationToken, String filePath, FileTypeEnum fileType) {		
 		RPCResult<String> fileContentResult = getFileContent(authenticationToken, filePath);
 		if(fileContentResult.isSucceeded()) {
 			MyXmlXhtmlRenderer renderer = new MyXmlXhtmlRenderer();

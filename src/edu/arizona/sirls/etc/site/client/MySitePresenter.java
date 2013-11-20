@@ -29,6 +29,8 @@ import edu.arizona.sirls.etc.site.client.event.MarkupReviewEvent;
 import edu.arizona.sirls.etc.site.client.event.MarkupReviewEventHandler;
 import edu.arizona.sirls.etc.site.client.event.MatrixGenerationEvent;
 import edu.arizona.sirls.etc.site.client.event.MatrixGenerationEventHandler;
+import edu.arizona.sirls.etc.site.client.event.SemanticMarkupEvent;
+import edu.arizona.sirls.etc.site.client.event.SemanticMarkupEventHandler;
 import edu.arizona.sirls.etc.site.client.event.ResumableTasksEvent;
 import edu.arizona.sirls.etc.site.client.event.SettingsEvent;
 import edu.arizona.sirls.etc.site.client.event.SettingsEventHandler;
@@ -57,11 +59,14 @@ import edu.arizona.sirls.etc.site.client.presenter.annotationReview.SearchPresen
 import edu.arizona.sirls.etc.site.client.presenter.annotationReview.XMLEditorPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.fileManager.FileManagerPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.InputMatrixGenerationPresenter;
-import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.LearnMatrixGenerationPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.OutputMatrixGenerationPresenter;
-import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.ParseMatrixGenerationPresenter;
-import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.PreprocessMatrixGenerationPresenter;
-import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.ReviewMatrixGenerationPresenter;
+import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.ProcessMatrixGenerationPresenter;
+import edu.arizona.sirls.etc.site.client.presenter.semanticMarkup.InputSemanticMarkupPresenter;
+import edu.arizona.sirls.etc.site.client.presenter.semanticMarkup.LearnSemanticMarkupPresenter;
+import edu.arizona.sirls.etc.site.client.presenter.semanticMarkup.OutputSemanticMarkupPresenter;
+import edu.arizona.sirls.etc.site.client.presenter.semanticMarkup.ParseSemanticMarkupPresenter;
+import edu.arizona.sirls.etc.site.client.presenter.semanticMarkup.PreprocessSemanticMarkupPresenter;
+import edu.arizona.sirls.etc.site.client.presenter.semanticMarkup.ReviewSemanticMarkupPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.taxonomyComparison.TaxonomyComparisonPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.treeGeneration.TreeGenerationPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.visualization.VisualizationPresenter;
@@ -75,6 +80,7 @@ import edu.arizona.sirls.etc.site.client.view.MessageResumeOrStartView;
 import edu.arizona.sirls.etc.site.client.view.SettingsViewImpl;
 import edu.arizona.sirls.etc.site.client.view.StartMenuView;
 import edu.arizona.sirls.etc.site.client.view.StartView;
+import edu.arizona.sirls.etc.site.client.view.TaskManagerView;
 import edu.arizona.sirls.etc.site.client.view.TaskManagerViewImpl;
 import edu.arizona.sirls.etc.site.client.view.annotationReview.AnnotationReviewViewImpl;
 import edu.arizona.sirls.etc.site.client.view.annotationReview.ResultViewImpl;
@@ -82,11 +88,15 @@ import edu.arizona.sirls.etc.site.client.view.annotationReview.SearchViewImpl;
 import edu.arizona.sirls.etc.site.client.view.annotationReview.XMLEditorViewImpl;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileManagerView;
 import edu.arizona.sirls.etc.site.client.view.matrixGeneration.InputMatrixGenerationView;
-import edu.arizona.sirls.etc.site.client.view.matrixGeneration.LearnMatrixGenerationView;
-import edu.arizona.sirls.etc.site.client.view.matrixGeneration.OutputMatrixGenerationView;
-import edu.arizona.sirls.etc.site.client.view.matrixGeneration.ParseMatrixGenerationView;
-import edu.arizona.sirls.etc.site.client.view.matrixGeneration.PreprocessMatrixGenerationView;
-import edu.arizona.sirls.etc.site.client.view.matrixGeneration.ReviewMatrixGenerationView;
+import edu.arizona.sirls.etc.site.client.view.matrixGeneration.InputMatrixGenerationViewImpl;
+import edu.arizona.sirls.etc.site.client.view.matrixGeneration.OutputMatrixGenerationViewImpl;
+import edu.arizona.sirls.etc.site.client.view.matrixGeneration.ProcessMatrixGenerationViewImpl;
+import edu.arizona.sirls.etc.site.client.view.semanticMarkup.InputSemanticMarkupView;
+import edu.arizona.sirls.etc.site.client.view.semanticMarkup.LearnSemanticMarkupView;
+import edu.arizona.sirls.etc.site.client.view.semanticMarkup.OutputSemanticMarkupView;
+import edu.arizona.sirls.etc.site.client.view.semanticMarkup.ParseSemanticMarkupView;
+import edu.arizona.sirls.etc.site.client.view.semanticMarkup.PreprocessSemanticMarkupView;
+import edu.arizona.sirls.etc.site.client.view.semanticMarkup.ReviewSemanticMarkupView;
 import edu.arizona.sirls.etc.site.client.view.taxonomyComparison.TaxonomyComparisonView;
 import edu.arizona.sirls.etc.site.client.view.treeGeneration.TreeGenerationView;
 import edu.arizona.sirls.etc.site.client.view.visualization.VisualizationView;
@@ -103,6 +113,8 @@ import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.ISemanticMarkupService;
+import edu.arizona.sirls.etc.site.shared.rpc.ISemanticMarkupServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaxonomyComparisonService;
@@ -114,9 +126,10 @@ import edu.arizona.sirls.etc.site.shared.rpc.IUserServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IVisualizationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IVisualizationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
+import edu.arizona.sirls.etc.site.shared.rpc.SemanticMarkupTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
+import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
-import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 public class MySitePresenter implements SitePresenter, ValueChangeHandler<String> {
 
@@ -126,6 +139,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	private final IFileAccessServiceAsync fileAccessService = GWT.create(IFileAccessService.class);
 	private final IFileSearchServiceAsync fileSearchService = GWT.create(IFileSearchService.class);
 	private final ITaskServiceAsync taskService = GWT.create(ITaskService.class);
+	private final ISemanticMarkupServiceAsync semanticMarkupService = GWT.create(ISemanticMarkupService.class);
 	private final IMatrixGenerationServiceAsync matrixGenerationService = GWT.create(IMatrixGenerationService.class);
 	private final ITreeGenerationServiceAsync treeGenerationService = GWT.create(ITreeGenerationService.class);
 	private final ITaxonomyComparisonServiceAsync taxonomyComparisonService = GWT.create(ITaxonomyComparisonService.class);
@@ -146,13 +160,19 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	protected LoggedOutHeaderPresenter loggedOutHeaderPresenter;
 	protected VisualizationPresenter visualizationPresenter;
 	protected TaxonomyComparisonPresenter taxonomyComparisonPresenter;
+	protected InputMatrixGenerationPresenter matrixGenerationPresenter;
 	protected TreeGenerationPresenter treeGenerationPresenter;
-	protected OutputMatrixGenerationPresenter outputMatrixGenerationPresenter;
-	protected ParseMatrixGenerationPresenter parseMatrixGenerationPresenter;
-	protected ReviewMatrixGenerationPresenter reviewMatrixGenerationPresenter;
-	protected LearnMatrixGenerationPresenter learnMatrixGenerationPresenter;
-	protected PreprocessMatrixGenerationPresenter preprocessMatrixGenerationPresenter;
+	protected OutputSemanticMarkupPresenter outputSemanticMarkupPresenter;
+	protected ParseSemanticMarkupPresenter parseSemanticMarkupPresenter;
+	protected ReviewSemanticMarkupPresenter reviewSemanticMarkupPresenter;
+	protected LearnSemanticMarkupPresenter learnSemanticMarkupPresenter;
+	protected PreprocessSemanticMarkupPresenter preprocessSemanticMarkupPresenter;
+	protected InputSemanticMarkupPresenter inputSemanticMarkupPresenter;
+	
 	protected InputMatrixGenerationPresenter inputMatrixGenerationPresenter;
+	protected ProcessMatrixGenerationPresenter processMatrixGenerationPresenter;
+	protected OutputMatrixGenerationPresenter outputMatrixGenerationPresenter;
+	
 	protected SettingsPresenter settingsPresenter;
 	protected FileManagerPresenter fileManagerPresenter;
 	protected TaskManagerPresenter taskManagerPresenter;
@@ -237,50 +257,58 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 		          }
 		        });
 	    
-	    eventBus.addHandler(MatrixGenerationEvent.TYPE,
-	    	new MatrixGenerationEventHandler() {
+	    eventBus.addHandler(SemanticMarkupEvent.TYPE,
+	    	new SemanticMarkupEventHandler() {
 	    	
 	    	  private MessageResumeOrStartView messageResumeOrStartView = new MessageResumeOrStartView();
 		    	
-	          public void onMatrixGeneration(final MatrixGenerationEvent matrixGenerationEvent) {	
-	        	  if(!matrixGenerationEvent.hasTaskConfiguration()) {
-		        	  matrixGenerationService.getLatestResumable(Authentication.getInstance().getAuthenticationToken(),
-								new AsyncCallback<RPCResult<MatrixGenerationTaskRun>>() {
+	          public void onSemanticMarkup(final SemanticMarkupEvent semanticMarkupEvent) {	
+	        	  if(!semanticMarkupEvent.hasTaskConfiguration()) {
+		        	  semanticMarkupService.getLatestResumable(Authentication.getInstance().getAuthenticationToken(),
+								new AsyncCallback<RPCResult<SemanticMarkupTaskRun>>() {
 							@Override
 							public void onFailure(Throwable caught) {
 								caught.printStackTrace();
 							}
 							@Override
-							public void onSuccess(final RPCResult<MatrixGenerationTaskRun> latestResumableResult) {
+							public void onSuccess(final RPCResult<SemanticMarkupTaskRun> latestResumableResult) {
 								if(latestResumableResult.isSucceeded()) {
 									MessageResumeOrStartPresenter messageResumeOrStartPresenter = 
 											new MessageResumeOrStartPresenter(messageResumeOrStartView, "Resumable Task", new ClickHandler() {
 												@Override
 												public void onClick(ClickEvent event) {
 													//resume
-													MatrixGenerationTaskRun latestResumable = latestResumableResult.getData();
-													matrixGenerationEvent.setTaskConfiguration(latestResumable);
+													SemanticMarkupTaskRun latestResumable = latestResumableResult.getData();
+													semanticMarkupEvent.setTaskConfiguration(latestResumable);
 													taskManager.setActiveTaskRun(latestResumable);
-													addToHistory(matrixGenerationEvent);
+													addToHistory(semanticMarkupEvent);
 												}
 											}, new ClickHandler() {
 												@Override
 												public void onClick(ClickEvent event) {
-													addToHistory(matrixGenerationEvent);
+													addToHistory(semanticMarkupEvent);
 												}
 											});
 									messageResumeOrStartPresenter.setMessage("You have a resumable Matrix Generation Task. Do you want to resume it or start a new task?");
 									messageResumeOrStartPresenter.go();
 								} else {
-									addToHistory(matrixGenerationEvent);
+									addToHistory(semanticMarkupEvent);
 								}
 							}
 		        	  });
 	        	  } else {
-	        		  taskManager.setActiveTaskRun(matrixGenerationEvent.getTaskConfiguration());
-	        		  addToHistory(matrixGenerationEvent);
+	        		  taskManager.setActiveTaskRun(semanticMarkupEvent.getTaskConfiguration());
+	        		  addToHistory(semanticMarkupEvent);
 	        	  }
 	          }
+	    });
+	    
+	    eventBus.addHandler(MatrixGenerationEvent.TYPE, new MatrixGenerationEventHandler() {
+			@Override
+			public void onMatrixGeneration(MatrixGenerationEvent event) {
+        		  taskManager.setActiveTaskRun(event.getTaskRun());
+        		  addToHistory(event);
+			}
 	    });
 	    
 	    eventBus.addHandler(TreeGenerationEvent.TYPE,
@@ -515,7 +543,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 					public void onSuccess() {
 						if (taskManagerPresenter == null) {
 							taskManagerPresenter = new TaskManagerPresenter(eventBus, 
-									new TaskManagerViewImpl(), taskService, matrixGenerationService, 
+									new TaskManagerViewImpl(), taskService, semanticMarkupService, matrixGenerationService,
 									treeGenerationService, taxonomyComparisonService, visualizationService, userService);
 						}
 						taskManagerPresenter.go(content);
@@ -548,21 +576,21 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 					}
 				});
 				break;
-			case MATRIX_GENERATION:
+			case SEMANTIC_MARKUP:
 				GWT.runAsync(new RunAsyncCallback() {
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
 					}
 					public void onSuccess() {
-						if(!taskManager.hasActiveTaskRun() || !(taskManager.getActiveTaskRun() instanceof MatrixGenerationTaskRun)) {
-							if (inputMatrixGenerationPresenter == null) {
-								inputMatrixGenerationPresenter = new InputMatrixGenerationPresenter(
-										eventBus, new InputMatrixGenerationView(), fileService, matrixGenerationService);
+						if(!taskManager.hasActiveTaskRun() || !(taskManager.getActiveTaskRun() instanceof SemanticMarkupTaskRun)) {
+							if (inputSemanticMarkupPresenter == null) {
+								inputSemanticMarkupPresenter = new InputSemanticMarkupPresenter(
+										eventBus, new InputSemanticMarkupView(), fileService, semanticMarkupService);
 							}
-							inputMatrixGenerationPresenter.go(content);
+							inputSemanticMarkupPresenter.go(content);
 						} else {
-							final MatrixGenerationTaskRun matrixGenerationTask = (MatrixGenerationTaskRun)taskManager.getActiveTaskRun();
-							taskService.isComplete(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTask.getTask(), 
+							final SemanticMarkupTaskRun semanticMarkupTask = (SemanticMarkupTaskRun)taskManager.getActiveTaskRun();
+							taskService.isComplete(Authentication.getInstance().getAuthenticationToken(), semanticMarkupTask.getTask(), 
 									new AsyncCallback<RPCResult<Boolean>>() {
 								@Override
 								public void onFailure(Throwable caught) {
@@ -572,14 +600,116 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 								public void onSuccess(RPCResult<Boolean> result) {
 									if(result.isSucceeded()) {
 										if(result.getData()) {
-											if (inputMatrixGenerationPresenter == null) {
+											if (inputSemanticMarkupPresenter == null) {
+												inputSemanticMarkupPresenter = new InputSemanticMarkupPresenter(
+														eventBus, new InputSemanticMarkupView(), fileService, semanticMarkupService);
+											}
+											inputSemanticMarkupPresenter.go(content);
+										} else {
+											semanticMarkupService.getSemanticMarkupTaskRun(Authentication.getInstance().getAuthenticationToken(), 
+													semanticMarkupTask.getTask(), 
+													new AsyncCallback<RPCResult<SemanticMarkupTaskRun>>() {
+														@Override
+														public void onFailure(Throwable caught) {
+															caught.printStackTrace();
+														}
+						
+														@Override
+														public void onSuccess(RPCResult<SemanticMarkupTaskRun> semanticMarkupTaskResult) {
+															if(semanticMarkupTaskResult.isSucceeded()) {
+																SemanticMarkupTaskRun semanticMarkupTask = semanticMarkupTaskResult.getData();
+																TaskStageEnum taskStage = semanticMarkupTask.getTask().getTaskStage().getTaskStageEnum();
+																switch(taskStage) {
+																case PREPROCESS_TEXT:
+																	if (preprocessSemanticMarkupPresenter == null) {
+																		preprocessSemanticMarkupPresenter = 									
+																				new PreprocessSemanticMarkupPresenter(eventBus, 
+																						new PreprocessSemanticMarkupView(), semanticMarkupService);
+																	}
+																	preprocessSemanticMarkupPresenter.go(content, semanticMarkupTask);
+																	break;
+																case LEARN_TERMS:
+																	if (learnSemanticMarkupPresenter == null) {
+																		learnSemanticMarkupPresenter = new 
+																				LearnSemanticMarkupPresenter(eventBus, 
+																						new LearnSemanticMarkupView(), semanticMarkupService);
+																	}
+																	learnSemanticMarkupPresenter.go(content, semanticMarkupTask);
+																	break;
+																case REVIEW_TERMS:
+																	if (reviewSemanticMarkupPresenter == null) {
+																		reviewSemanticMarkupPresenter = 
+																				new ReviewSemanticMarkupPresenter(eventBus, 
+																						new ReviewSemanticMarkupView(), semanticMarkupService);
+																	}
+																	reviewSemanticMarkupPresenter.go(content, semanticMarkupTask);
+																	break;
+																case PARSE_TEXT:
+																	if (parseSemanticMarkupPresenter == null) {
+																		parseSemanticMarkupPresenter = new ParseSemanticMarkupPresenter(
+																				eventBus, new ParseSemanticMarkupView(), semanticMarkupService);
+																	}
+																	parseSemanticMarkupPresenter.go(content, semanticMarkupTask);
+																	break;
+																case OUTPUT:
+																	if (outputSemanticMarkupPresenter == null) {
+																		outputSemanticMarkupPresenter = new 
+																				OutputSemanticMarkupPresenter(eventBus, 
+																						new OutputSemanticMarkupView(), fileService, semanticMarkupService);
+																	}
+																	outputSemanticMarkupPresenter.go(content, semanticMarkupTask);
+																	break;
+																default:
+																	if (inputSemanticMarkupPresenter == null) {
+																		inputSemanticMarkupPresenter = new InputSemanticMarkupPresenter(
+																				eventBus, new InputSemanticMarkupView(), fileService, semanticMarkupService);
+																	}
+																	inputSemanticMarkupPresenter.go(content);
+																	break;
+																}
+															}
+														}
+												});
+										}
+									}
+								}
+							});
+						}
+					}
+				});
+				break;
+			case MATRIX_GENERATION:
+				GWT.runAsync(new RunAsyncCallback() {
+					public void onFailure(Throwable caught) {
+						caught.printStackTrace();
+					}
+					public void onSuccess() {
+						if(!taskManager.hasActiveTaskRun() || !(taskManager.getActiveTaskRun() instanceof MatrixGenerationTaskRun)) {
+							if (inputMatrixGenerationPresenter == null) {
+								inputMatrixGenerationPresenter = new InputMatrixGenerationPresenter(
+										eventBus, new InputMatrixGenerationViewImpl(), matrixGenerationService, fileService);
+							}
+							inputMatrixGenerationPresenter.go(content);
+						} else {
+							final MatrixGenerationTaskRun matrixGenerationTaskRun = (MatrixGenerationTaskRun)taskManager.getActiveTaskRun();
+							taskService.isComplete(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTaskRun.getTask(), 
+									new AsyncCallback<RPCResult<Boolean>>() {
+								@Override
+								public void onFailure(Throwable caught) {
+									caught.printStackTrace();
+								}
+								@Override
+								public void onSuccess(RPCResult<Boolean> result) {
+									if(result.isSucceeded()) {
+										if(result.getData()) {
+											if (inputSemanticMarkupPresenter == null) {
 												inputMatrixGenerationPresenter = new InputMatrixGenerationPresenter(
-														eventBus, new InputMatrixGenerationView(), fileService, matrixGenerationService);
+														eventBus, new InputMatrixGenerationViewImpl(), matrixGenerationService, fileService);
 											}
 											inputMatrixGenerationPresenter.go(content);
 										} else {
 											matrixGenerationService.getMatrixGenerationTaskRun(Authentication.getInstance().getAuthenticationToken(), 
-													matrixGenerationTask.getTask(), 
+													matrixGenerationTaskRun.getTask(), 
 													new AsyncCallback<RPCResult<MatrixGenerationTaskRun>>() {
 														@Override
 														public void onFailure(Throwable caught) {
@@ -587,54 +717,31 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 														}
 						
 														@Override
-														public void onSuccess(RPCResult<MatrixGenerationTaskRun> matrixGenerationTaskResult) {
-															if(matrixGenerationTaskResult.isSucceeded()) {
-																MatrixGenerationTaskRun matrixGenerationTask = matrixGenerationTaskResult.getData();
-																TaskStageEnum taskStage = matrixGenerationTask.getTask().getTaskStage().getTaskStageEnum();
+														public void onSuccess(RPCResult<MatrixGenerationTaskRun> matrixGenerationTaskRunResult) {
+															if(matrixGenerationTaskRunResult.isSucceeded()) {
+																MatrixGenerationTaskRun matrixGenerationTaskRun = matrixGenerationTaskRunResult.getData();
+																TaskStageEnum taskStage = matrixGenerationTaskRun.getTask().getTaskStage().getTaskStageEnum();
 																switch(taskStage) {
-																case PREPROCESS_TEXT:
-																	if (preprocessMatrixGenerationPresenter == null) {
-																		preprocessMatrixGenerationPresenter = 									
-																				new PreprocessMatrixGenerationPresenter(eventBus, 
-																						new PreprocessMatrixGenerationView(), matrixGenerationService);
+																case PROCESS:
+																	if (processMatrixGenerationPresenter == null) {
+																		processMatrixGenerationPresenter = 									
+																				new ProcessMatrixGenerationPresenter(eventBus, 
+																						new ProcessMatrixGenerationViewImpl(), matrixGenerationService);
 																	}
-																	preprocessMatrixGenerationPresenter.go(content, matrixGenerationTask);
-																	break;
-																case LEARN_TERMS:
-																	if (learnMatrixGenerationPresenter == null) {
-																		learnMatrixGenerationPresenter = new 
-																				LearnMatrixGenerationPresenter(eventBus, 
-																						new LearnMatrixGenerationView(), matrixGenerationService);
-																	}
-																	learnMatrixGenerationPresenter.go(content, matrixGenerationTask);
-																	break;
-																case REVIEW_TERMS:
-																	if (reviewMatrixGenerationPresenter == null) {
-																		reviewMatrixGenerationPresenter = 
-																				new ReviewMatrixGenerationPresenter(eventBus, 
-																						new ReviewMatrixGenerationView(), matrixGenerationService);
-																	}
-																	reviewMatrixGenerationPresenter.go(content, matrixGenerationTask);
-																	break;
-																case PARSE_TEXT:
-																	if (parseMatrixGenerationPresenter == null) {
-																		parseMatrixGenerationPresenter = new ParseMatrixGenerationPresenter(
-																				eventBus, new ParseMatrixGenerationView(), matrixGenerationService);
-																	}
-																	parseMatrixGenerationPresenter.go(content, matrixGenerationTask);
+																	processMatrixGenerationPresenter.go(content, matrixGenerationTaskRun);
 																	break;
 																case OUTPUT:
 																	if (outputMatrixGenerationPresenter == null) {
 																		outputMatrixGenerationPresenter = new 
 																				OutputMatrixGenerationPresenter(eventBus, 
-																						new OutputMatrixGenerationView(), fileService, matrixGenerationService);
+																						new OutputMatrixGenerationViewImpl(), fileService, matrixGenerationService);
 																	}
-																	outputMatrixGenerationPresenter.go(content, matrixGenerationTask);
+																	outputMatrixGenerationPresenter.go(content, matrixGenerationTaskRun);
 																	break;
 																default:
 																	if (inputMatrixGenerationPresenter == null) {
 																		inputMatrixGenerationPresenter = new InputMatrixGenerationPresenter(
-																				eventBus, new InputMatrixGenerationView(), fileService, matrixGenerationService);
+																				eventBus, new InputMatrixGenerationViewImpl(), matrixGenerationService, fileService);
 																	}
 																	inputMatrixGenerationPresenter.go(content);
 																	break;

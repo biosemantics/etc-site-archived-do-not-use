@@ -41,6 +41,8 @@ import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskService;
 import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
+import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
+import edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum;
 import edu.arizona.sirls.etc.site.shared.rpc.db.ConfigurationDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Glossary;
 import edu.arizona.sirls.etc.site.shared.rpc.db.GlossaryDAO;
@@ -57,11 +59,6 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.TaskType;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TaskTypeDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.UserDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.file.XMLFileFormatter;
-import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.BracketValidator;
-import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.LearnInvocation;
-import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.ParseInvocation;
-import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.PreprocessedDescription;
-import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 public class MatrixGenerationService extends RemoteServiceServlet implements IMatrixGenerationService  {
 
@@ -70,11 +67,9 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	private IFileAccessService fileAccessService = new FileAccessService();
 	private ITaskService taskService = new TaskService();
 	private IFileService fileService = new FileService();
-	private BracketValidator bracketValidator = new BracketValidator();
 	private int maximumThreads = 10;
 	private ListeningExecutorService executorService;
-	private Map<Integer, ListenableFuture<LearnResult>> activeLearnFutures = new HashMap<Integer, ListenableFuture<LearnResult>>();
-	private Map<Integer, ListenableFuture<ParseResult>> activeParseFutures = new HashMap<Integer, ListenableFuture<ParseResult>>();
+	private Map<Integer, ListenableFuture<Boolean>> activeProcessFutures = new HashMap<Integer, ListenableFuture<Boolean>>();
 
 	
 	public MatrixGenerationService() {
@@ -82,7 +77,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 	
 	@Override
-	public RPCResult<MatrixGenerationTaskRun> start(AuthenticationToken authenticationToken, String taskName, String filePath, String glossaryName) {
+	public RPCResult<MatrixGenerationTaskRun> start(AuthenticationToken authenticationToken, String taskName, String input) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
 		
 		if(!authResult.isSucceeded()) 
@@ -91,16 +86,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			return new RPCResult<MatrixGenerationTaskRun>(false, "Authentication failed");
 		
 		try {
-			RPCResult<List<String>> directoriesFilesResult = fileService.getDirectoriesFiles(authenticationToken, filePath);
-			if(!directoriesFilesResult.isSucceeded()) {
-				return new RPCResult<MatrixGenerationTaskRun>(false, directoriesFilesResult.getMessage());
-			}
-			int numberOfInputFiles = directoriesFilesResult.getData().size();
-			Glossary glossary = GlossaryDAO.getInstance().getGlossary(glossaryName);
 			MatrixGenerationConfiguration matrixGenerationConfiguration = new MatrixGenerationConfiguration();
-			matrixGenerationConfiguration.setInput(filePath);	
-			matrixGenerationConfiguration.setGlossary(glossary);
-			matrixGenerationConfiguration.setNumberOfInputFiles(numberOfInputFiles);
+			matrixGenerationConfiguration.setInput(input);	
 			matrixGenerationConfiguration = MatrixGenerationConfigurationDAO.getInstance().addMatrixGenerationConfiguration(matrixGenerationConfiguration);
 			
 			edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum taskType = edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION;
@@ -120,214 +107,15 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				return new RPCResult<MatrixGenerationTaskRun>(false, addTaskResult.getMessage());
 			task = addTaskResult.getData();
 			
-			taskStage = TaskStageDAO.getInstance().getTaskStage(dbTaskType, TaskStageEnum.PREPROCESS_TEXT);
+			taskStage = TaskStageDAO.getInstance().getTaskStage(dbTaskType, TaskStageEnum.PROCESS);
 			task.setTaskStage(taskStage);
 			TaskDAO.getInstance().updateTask(task);
 
-			fileService.setInUse(authenticationToken, true, filePath, task);
+			fileService.setInUse(authenticationToken, true, input, task);
 			return new RPCResult<MatrixGenerationTaskRun>(true, new MatrixGenerationTaskRun(matrixGenerationConfiguration, task));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new RPCResult<MatrixGenerationTaskRun>(false, "Internal Server Error");
-		}
-	}
-	
-	@Override
-	public RPCResult<List<PreprocessedDescription>> preprocess(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTaskRun) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<List<PreprocessedDescription>>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<List<PreprocessedDescription>>(false, "Authentication failed");
-		
-		try {
-			List<PreprocessedDescription> result = new LinkedList<PreprocessedDescription>();
-			Task task = matrixGenerationTaskRun.getTask();
-			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
-			TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.PREPROCESS_TEXT);
-			task.setTaskStage(taskStage);
-			TaskDAO.getInstance().updateTask(task);
-			//do preprocessing here, return result immediately or always only return an invocation
-			//and make user come back when ready?
-			String inputDirectory = matrixGenerationTaskRun.getConfiguration().getInput();
-			
-			RPCResult<Boolean> isDirectoryResult = fileService.isDirectory(authenticationToken, inputDirectory);
-			if(isDirectoryResult.isSucceeded() && isDirectoryResult.getData()) {
-				RPCResult<List<String>> resultDirectoryFiles = fileService.getDirectoriesFiles(authenticationToken, inputDirectory);
-				if(resultDirectoryFiles.isSucceeded()) {
-					for(String file : resultDirectoryFiles.getData()) {
-						RPCResult<String> descriptionResult = getDescription(authenticationToken, inputDirectory + File.separator + file);
-						if(descriptionResult.isSucceeded()) {
-							String description = descriptionResult.getData();
-							if(!bracketValidator.validate(description)) {
-								PreprocessedDescription preprocessedDescription = new PreprocessedDescription(
-										inputDirectory + File.separator + file,
-										file, 0,
-										bracketValidator.getBracketCountDifferences(description));
-								result.add(preprocessedDescription);
-							}	
-						}
-					}
-				}
-			}
-			return new RPCResult<List<PreprocessedDescription>>(true, result);
-		} catch(Exception e) {
-			e.printStackTrace();
-			return new RPCResult<List<PreprocessedDescription>>(false, "Internal Server Error");
-		}
-	}
-	
-	@Override
-	public RPCResult<LearnInvocation> learn(AuthenticationToken authenticationToken, final MatrixGenerationTaskRun matrixGenerationTaskRun) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<LearnInvocation>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<LearnInvocation>(false, "Authentication failed");
-		
-		try {
-			int numberOfSentences = getNumberOfSentences();
-			int numberOfWords = getNumberOfWords();
-			
-			final MatrixGenerationConfiguration matrixGenerationConfiguration = matrixGenerationTaskRun.getConfiguration();
-			//browser back button may invoke another "learn"
-			if(activeLearnFutures.containsKey(matrixGenerationConfiguration.getConfiguration().getId())) {
-				return new RPCResult<LearnInvocation>(true, new LearnInvocation(numberOfSentences, numberOfWords));
-			} else {
-				final Task task = TaskDAO.getInstance().getTask(matrixGenerationConfiguration.getConfiguration());
-				final TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
-				TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.LEARN_TERMS);
-				task.setTaskStage(taskStage);
-				task.setResumable(false);
-				TaskDAO.getInstance().updateTask(task);
-				
-				String glossary = matrixGenerationConfiguration.getGlossary().getName();
-				String input = matrixGenerationConfiguration.getInput();
-				String tablePrefix = String.valueOf(task.getId());
-				String debugFile = "workspace" + File.separator + task.getId() + File.separator + "debug.log";
-				String errorFile = "workspace" + File.separator + task.getId() + File.separator + "error.log";
-				String source = input; //maybe something else later
-				String user = authenticationToken.getUsername();
-				String bioportalUserId = UserDAO.getInstance().getUser(authenticationToken.getUsername()).getBioportalUserId();
-				String bioportalAPIKey = UserDAO.getInstance().getUser(authenticationToken.getUsername()).getBioportalAPIKey();
-				ILearn learn = new Learn(authenticationToken, glossary, input, tablePrefix, debugFile, errorFile, source, user, bioportalUserId, bioportalAPIKey);
-				final ListenableFuture<LearnResult> futureResult = executorService.submit(learn);
-				activeLearnFutures.put(matrixGenerationConfiguration.getConfiguration().getId(), futureResult);
-				futureResult.addListener(new Runnable() {
-				     	public void run() {
-				     		try {
-				     			activeLearnFutures.remove(matrixGenerationConfiguration.getConfiguration().getId());
-				     			if(!futureResult.isCancelled()) {
-				     				LearnResult result = futureResult.get();
-					     			matrixGenerationConfiguration.setOtoUploadId(result.getOtoUploadId());
-					     			matrixGenerationConfiguration.setOtoSecret(result.getOtoSecret());
-									MatrixGenerationConfigurationDAO.getInstance().updateMatrixGenerationConfiguration(matrixGenerationConfiguration);
-									TaskStage newTaskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.REVIEW_TERMS);
-									task.setTaskStage(newTaskStage);
-									task.setResumable(true);
-									TaskDAO.getInstance().updateTask(task);
-				     			}
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-				     	}
-				     }, executorService);
-				
-				return new RPCResult<LearnInvocation>(true, new LearnInvocation(numberOfSentences, numberOfWords));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new RPCResult<LearnInvocation>(false, "Internal Server Error");
-		}
-	}
-
-	private int getNumberOfSentences() {
-		return 5423;
-	}
-
-	private int getNumberOfWords() {
-		return 21259;
-	}
-	
-	@Override
-	public RPCResult<MatrixGenerationTaskRun> review(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTaskRun) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<MatrixGenerationTaskRun>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<MatrixGenerationTaskRun>(false, "Authentication failed");
-		try {
-			Task task = matrixGenerationTaskRun.getTask();
-			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
-			TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.REVIEW_TERMS);
-			task.setTaskStage(taskStage);
-			TaskDAO.getInstance().updateTask(task);
-			MatrixGenerationConfiguration configuration = 
-					MatrixGenerationConfigurationDAO.getInstance().getMatrixGenerationConfiguration(
-							matrixGenerationTaskRun.getConfiguration().getConfiguration().getId());
-			
-			return new RPCResult<MatrixGenerationTaskRun>(true, new MatrixGenerationTaskRun(configuration, task));
-		} catch(Exception e) {
-			e.printStackTrace();
-			return new RPCResult<MatrixGenerationTaskRun>(false, "Internal Server Error");
-		}
-	}
-	
-	@Override
-	public RPCResult<ParseInvocation> parse(final AuthenticationToken authenticationToken, final MatrixGenerationTaskRun matrixGenerationTaskRun) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<ParseInvocation>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<ParseInvocation>(false, "Authentication failed");
-		
-		try {
-			final MatrixGenerationConfiguration matrixGenerationConfiguration = matrixGenerationTaskRun.getConfiguration();
-			if(activeParseFutures.containsKey(matrixGenerationConfiguration.getConfiguration().getId())) {
-				return new RPCResult<ParseInvocation>(true, new ParseInvocation());
-			} else {
-				final Task task = TaskDAO.getInstance().getTask(matrixGenerationConfiguration.getConfiguration());
-				final TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
-				TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.PARSE_TEXT);
-				task.setTaskStage(taskStage);
-				task.setResumable(false);
-				TaskDAO.getInstance().updateTask(task);
-				
-				String glossary = matrixGenerationConfiguration.getGlossary().getName();
-				String input = matrixGenerationConfiguration.getInput();
-				String tablePrefix = String.valueOf(task.getId());
-				String debugFile = "workspace" + File.separator + task.getId() + File.separator + "debug.log";
-				String errorFile = "workspace" + File.separator + task.getId() + File.separator + "error.log";
-				String source = input; //maybe something else later
-				String user = authenticationToken.getUsername();
-				String bioportalUserId = UserDAO.getInstance().getUser(authenticationToken.getUsername()).getBioportalUserId();
-				String bioportalAPIKey = UserDAO.getInstance().getUser(authenticationToken.getUsername()).getBioportalAPIKey();
-				IParse parse = new Parse(authenticationToken, glossary, input, tablePrefix, debugFile, errorFile, source, user, bioportalUserId, bioportalAPIKey);
-				final ListenableFuture<ParseResult> futureResult = executorService.submit(parse);
-				activeParseFutures.put(matrixGenerationConfiguration.getConfiguration().getId(), futureResult);
-				futureResult.addListener(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							activeParseFutures.remove(matrixGenerationConfiguration.getConfiguration().getId());
-							if(!futureResult.isCancelled()) {
-								task.setResumable(true);
-								TaskStage newTaskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.OUTPUT);
-								task.setTaskStage(newTaskStage);
-								TaskDAO.getInstance().updateTask(task);
-							}
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				}, executorService);
-				
-				return new RPCResult<ParseInvocation>(true, new ParseInvocation());
-			}
-				
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new RPCResult<ParseInvocation>(false, "Internal Server Error");
 		}
 	}
 
@@ -373,107 +161,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			e.printStackTrace();
 			return new RPCResult<Void>(false, "Internal Server Error");
 		}
-	}
-	
-	@Override
-	public RPCResult<MatrixGenerationTaskRun> goToTaskStage(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTaskRun, TaskStageEnum taskStageEnum) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<MatrixGenerationTaskRun>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<MatrixGenerationTaskRun>(false, "Authentication failed");
-		
-		try {
-			Task task = matrixGenerationTaskRun.getTask();
-			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
-			TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, taskStageEnum);
-			task.setTaskStage(taskStage);
-			task.setResumable(true);
-			task.setComplete(false);
-			task.setCompleted(null);
-			TaskDAO.getInstance().updateTask(task);
-			MatrixGenerationConfiguration configuration = 
-					MatrixGenerationConfigurationDAO.getInstance().getMatrixGenerationConfiguration(
-							matrixGenerationTaskRun.getConfiguration().getConfiguration().getId());
-			return new RPCResult<MatrixGenerationTaskRun>(true, 
-					new MatrixGenerationTaskRun(configuration, task));
-		} catch(Exception e) {
-			e.printStackTrace();
-			return new RPCResult<MatrixGenerationTaskRun>(false, "Internal Server Error");
-		}
-	}	
-
-	@Override
-	public RPCResult<String> getDescription(AuthenticationToken authenticationToken, String filePath) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<String>(false, authResult.getMessage(), "");
-		if(!authResult.getData().getResult())
-			return new RPCResult<String>(false, "Authentication failed", "");
-		
-		try {
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			RPCResult<String> fileContentResult = fileAccessService.getFileContent(authenticationToken, filePath);
-			if(fileContentResult.isSucceeded()) {
-				String fileContent = fileContentResult.getData();
-				Document document = db.parse(new InputSource(new ByteArrayInputStream(fileContent.getBytes("UTF-8"))));
-				XPath xPath = XPathFactory.newInstance().newXPath();
-				Node node = (Node)xPath.evaluate("/treatment/description",
-				        document.getDocumentElement(), XPathConstants.NODE);
-				return new RPCResult<String>(true, "", node.getTextContent());
-			}
-			return new RPCResult<String>(false, fileContentResult.getMessage(), "");
-		} catch(Exception e) {
-			e.printStackTrace();
-			return new RPCResult<String>(false, "Internal Server Error", "");
-		}
-	}
-	
-	private String replaceDescription(String content, String description) throws Exception {
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		DocumentBuilder db = dbf.newDocumentBuilder();
-		Document document = db.parse(new InputSource(new ByteArrayInputStream(content.getBytes("UTF-8"))));
-		
-		XPath xPath = XPathFactory.newInstance().newXPath();
-		Node node = (Node)xPath.evaluate("/treatment/description",
-		        document.getDocumentElement(), XPathConstants.NODE);
-		node.setTextContent(description);
-
-		DOMSource domSource = new DOMSource(document);
-		StringWriter writer = new StringWriter();
-		StreamResult result = new StreamResult(writer);
-		TransformerFactory tf = TransformerFactory.newInstance();
-		Transformer transformer = tf.newTransformer();
-		transformer.transform(domSource, result);
-		//return xmlFileFormatter.format(writer.toString());
-		return writer.toString();
-	}
-
-	@Override
-	public RPCResult<Void> setDescription(AuthenticationToken authenticationToken, String filePath, String description) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Void>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Void>(false, "Authentication failed");
-		
-		RPCResult<String> fileContentResult = fileAccessService.getFileContent(authenticationToken, filePath);
-		if(fileContentResult.isSucceeded()) {
-			String content = fileContentResult.getData();		
-			String newContent;
-			try {
-				newContent = replaceDescription(content, description);
-				RPCResult<Void> setContentResult = fileAccessService.setFileContent(authenticationToken, filePath, newContent);
-				if(!setContentResult.isSucceeded()) 
-					return new RPCResult<Void>(false, setContentResult.getMessage());
-				return new RPCResult<Void>(true);
-			} catch (Exception e) {
-				e.printStackTrace();
-				return new RPCResult<Void>(false, "Internal Server Error");
-			}
-		}
-		return new RPCResult<Void>(false, fileContentResult.getMessage());
 	}
 
 	@Override
@@ -557,23 +244,13 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 					switch(task.getTaskStage().getTaskStageEnum()) {
 					case INPUT:
 						break;
-					case LEARN_TERMS:
-						if(activeLearnFutures.containsKey(matrixGenerationConfiguration.getConfiguration().getId())) {
-							ListenableFuture<LearnResult> learnFuture = activeLearnFutures.get(matrixGenerationConfiguration.getConfiguration().getId());
-							learnFuture.cancel(true);
+					case PROCESS:
+						if(activeProcessFutures.containsKey(matrixGenerationConfiguration.getConfiguration().getId())) {
+							ListenableFuture<Boolean> processFuture = this.activeProcessFutures.get(matrixGenerationConfiguration.getConfiguration().getId());
+							processFuture.cancel(true);
 						}
 						break;
 					case OUTPUT:
-						break;
-					case PARSE_TEXT:
-						if(activeParseFutures.containsKey(matrixGenerationConfiguration.getConfiguration().getId())) {
-							ListenableFuture<ParseResult> parseFuture = activeParseFutures.get(matrixGenerationConfiguration.getConfiguration().getId());
-							parseFuture.cancel(true);
-						}
-						break;
-					case PREPROCESS_TEXT:
-						break;
-					case REVIEW_TERMS:
 						break;
 					default:
 						break;

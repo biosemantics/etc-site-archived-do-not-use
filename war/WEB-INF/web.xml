@@ -29,6 +29,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     <servlet-class>edu.arizona.sirls.etc.site.server.rpc.TaskService</servlet-class>
   </servlet>
   <servlet>
+    <servlet-name>semanticMarkupServlet</servlet-name>
+    <servlet-class>edu.arizona.sirls.etc.site.server.rpc.SemanticMarkupService</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>matrixGenerationServlet</servlet-name>
     <servlet-class>edu.arizona.sirls.etc.site.server.rpc.MatrixGenerationService</servlet-class>
   </servlet>
@@ -61,6 +65,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   <servlet-mapping>
     <servlet-name>taskServlet</servlet-name>
     <url-pattern>/etcsite/task</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>semanticMarkupServlet</servlet-name>
+    <url-pattern>/etcsite/semanticMarkup</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>matrixGenerationServlet</servlet-name>

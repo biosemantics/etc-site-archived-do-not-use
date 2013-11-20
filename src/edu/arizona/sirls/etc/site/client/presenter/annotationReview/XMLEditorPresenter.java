@@ -14,7 +14,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileFormatServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileSearchServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
-import edu.arizona.sirls.etc.site.shared.rpc.file.FileType;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FileTypeEnum;
 import edu.arizona.sirls.etc.site.shared.rpc.file.search.Search;
 
 
@@ -104,7 +104,7 @@ public class XMLEditorPresenter implements Presenter, XMLEditorView.Presenter {
 	public void setTarget(String target) {
 		this.setEnabled(true);
 		this.target = target;
-		fileAccessService.getFileContentHighlighted(new AuthenticationToken("test", ""), target, FileType.TAXON_DESCRIPTION, new AsyncCallback<RPCResult<String>>() {
+		fileAccessService.getFileContentHighlighted(new AuthenticationToken("test", ""), target, FileTypeEnum.TAXON_DESCRIPTION, new AsyncCallback<RPCResult<String>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();

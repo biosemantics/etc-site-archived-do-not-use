@@ -54,6 +54,21 @@ public class FileFormatService extends RemoteServiceServlet implements IFileForm
 		return new RPCResult<Boolean>(false, fileContentResult.getMessage());
 	}
 	
+	public RPCResult<Boolean> isValidMatrix(AuthenticationToken authenticationToken, String filePath) {
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<Boolean>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<Boolean>(false, "Authentication failed");
+		
+		RPCResult<String> fileContentResult = fileAccessService.getFileContent(authenticationToken, filePath);
+		if(fileContentResult.isSucceeded()) {
+			String fileContent = fileContentResult.getData();
+			return new RPCResult<Boolean>(true, csvValidator.validate(fileContent));
+		}
+		return new RPCResult<Boolean>(false, fileContentResult.getMessage());
+	}
+	
 	@Override
 	public RPCResult<Boolean> isValidMarkedupTaxonDescriptionContent(AuthenticationToken authenticationToken, String content) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);

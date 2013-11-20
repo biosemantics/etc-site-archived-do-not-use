@@ -15,7 +15,7 @@ public class TaskConfigurationDAO {
 	
 	public AbstractTaskConfiguration getTaskConfiguration(Configuration configuration) throws ClassNotFoundException, SQLException, IOException {
 		AbstractTaskConfiguration taskConfiguration = 
-				MatrixGenerationConfigurationDAO.getInstance().getMatrixGenerationConfiguration(configuration.getId());
+				SemanticMarkupConfigurationDAO.getInstance().getSemanticMarkupConfiguration(configuration.getId());
 		if(taskConfiguration == null)
 			taskConfiguration =	TreeGenerationConfigurationDAO.getInstance().getTreeGenerationConfiguration(configuration.getId());
 		if(taskConfiguration == null)

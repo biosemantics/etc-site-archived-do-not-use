@@ -21,7 +21,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
-import edu.arizona.sirls.etc.site.shared.rpc.file.FileType;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FileTypeEnum;
 
 public class FileDragDropHandler implements DragStartHandler, DropHandler, DragOverHandler {
 
@@ -66,7 +66,7 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 						if(isDirectory.isSucceeded()) {
 							//String targetAndAddonPath = fileImageLabelComposite.getFileInfo().getFilePath() + File.seperator + sourceName;
 							String targetPath = fileImageLabelComposite.getFileInfo().getFilePath();
-							if(!fileImageLabelComposite.getFileInfo().getFileType().equals(FileType.DIRECTORY))
+							if(!fileImageLabelComposite.getFileInfo().getFileType().equals(FileTypeEnum.DIRECTORY))
 								//targetAndAddonPath = getParentDirectory(fileImageLabelComposite.getPath()) + File.seperator + sourceName;
 								targetPath = getParent(fileImageLabelComposite.getFileTreeItem());
 							final int targetLevel = getLevel(fileImageLabelComposite.getFileTreeItem());

@@ -9,15 +9,21 @@ import edu.arizona.sirls.etc.site.client.presenter.MainMenuPresenter;
 
 public class MainMenuView extends Composite implements MainMenuPresenter.Display {
 
-	private Widget matrixGenerationLinkPanel;
+	private Widget semanticMarkupLinkPanel;
 	private Widget treeGenerationLinkPanel;
 	private Widget taxonomyComparisonLinkPanel;
 	private Widget visualizationLinkPanel;
+	private Widget matrixGenerationLinkPanel;
 
 	public MainMenuView() {
 		HTMLPanel htmlPanel = new HTMLPanel(
 				"<div id='menuBackgroundLayer'></div><div id='menuHighlightLayer'></div>" +
 				"<div id='menuLayer'>" +
+				"<div id='menuSemanticMarkup' class='menuAction clickable'>" +
+				"<div id='menuSemanticMarkupIcon' class='menuActionIcon'></div>" +
+				"<div id='menuSemanticMarkupText' class='menuActionText'>Semantic Markup</div>" +
+				"<div id='menuSemanticMarkupLink' class='menuAction'></div>" +
+				"</div>" +	
 				"<div id='menuMatrixGeneration' class='menuAction clickable'>" +
 				"<div id='menuMatrixGenerationIcon' class='menuActionIcon'></div>" +
 				"<div id='menuMatrixGenerationText' class='menuActionText'>Matrix Generation</div>" +
@@ -39,6 +45,11 @@ public class MainMenuView extends Composite implements MainMenuPresenter.Display
 				"<div id='menuVisualizationLink' class='menuAction'></div>" +
 				"</div>" +
 				"</div>");
+		
+		semanticMarkupLinkPanel = new SimplePanel();
+		semanticMarkupLinkPanel.setWidth("200px");
+		semanticMarkupLinkPanel.setHeight("130px");
+		htmlPanel.add(semanticMarkupLinkPanel, "menuSemanticMarkupLink");
 		
 		matrixGenerationLinkPanel = new SimplePanel();
 		matrixGenerationLinkPanel.setWidth("200px");
@@ -69,8 +80,8 @@ public class MainMenuView extends Composite implements MainMenuPresenter.Display
 	}
 
 	@Override
-	public Widget getMatrixGenerationLinkPanel() {
-		return this.matrixGenerationLinkPanel;
+	public Widget getSemanticMarkupLinkPanel() {
+		return this.semanticMarkupLinkPanel;
 	}
 
 	@Override

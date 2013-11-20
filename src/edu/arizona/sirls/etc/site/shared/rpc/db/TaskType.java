@@ -10,16 +10,22 @@ public class TaskType implements Serializable {
 	private static final long serialVersionUID = -655524918747896723L;
 	private int id;
 	private edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum taskTypeEnum;
-	private InputType inputType;
+	private FileType inputFileType;
+	private boolean inputDirectory;
+	private FileType outputFileType;
+	private boolean outputDirectory;
 	private Date created;
 	
 	public TaskType() { }
 	
-	public TaskType(int id, TaskTypeEnum taskTypeEnum, InputType inputType, Date created) {
+	public TaskType(int id, TaskTypeEnum taskTypeEnum, FileType inputFileType, boolean inputDirectory, FileType outputFileType, boolean outputDirectory, Date created) {
 		super();
 		this.id = id;
 		this.taskTypeEnum = taskTypeEnum;
-		this.inputType = inputType;
+		this.inputFileType = inputFileType;
+		this.inputDirectory = inputDirectory;
+		this.outputFileType = outputFileType;
+		this.outputDirectory = outputDirectory;
 		this.created = created;
 	}
 	public int getId() {
@@ -35,12 +41,36 @@ public class TaskType implements Serializable {
 		this.taskTypeEnum = taskTypeEnum;
 	}
 	
-	public InputType getInputType() {
-		return inputType;
+	public FileType getInputFileType() {
+		return this.inputFileType;
 	}
 
-	public void setInputType(InputType inputType) {
-		this.inputType = inputType;
+	public boolean isInputDirectory() {
+		return inputDirectory;
+	}
+
+	public void setInputDirectory(boolean inputDirectory) {
+		this.inputDirectory = inputDirectory;
+	}
+
+	public FileType getOutputFileType() {
+		return outputFileType;
+	}
+
+	public void setOutputFileType(FileType outputFileType) {
+		this.outputFileType = outputFileType;
+	}
+
+	public boolean isOutputDirectory() {
+		return outputDirectory;
+	}
+
+	public void setOutputDirectory(boolean outputDirectory) {
+		this.outputDirectory = outputDirectory;
+	}
+
+	public void setInputFileType(FileType inputFileType) {
+		this.inputFileType = inputFileType;
 	}
 
 	public Date getCreated() {

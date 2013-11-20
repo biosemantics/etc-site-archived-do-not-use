@@ -18,7 +18,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
-import edu.arizona.sirls.etc.site.shared.rpc.file.FileType;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FileTypeEnum;
 
 import gwtupload.client.BaseUploadStatus;
 import gwtupload.client.IUploadStatus;
@@ -354,7 +354,7 @@ public class ManagableFileTreePresenter implements Presenter {
 		@Override
 		public void onStart(final IUploader uploader) {
 			final FileImageLabelTreeItem selection = fileSelectionHandler.getSelection();
-			if(fileSelectionHandler.getSelection().getFileInfo().getFileType().equals(FileType.DIRECTORY)) {
+			if(fileSelectionHandler.getSelection().getFileInfo().getFileType().equals(FileTypeEnum.DIRECTORY)) {
 				uploader.setServletPath(uploader.getServletPath() + "&target=" + selection.getFileInfo().getFilePath());
 			} else {
 				String newFilePath = getParent(selection);

@@ -1,6 +1,7 @@
 package edu.arizona.sirls.etc.site.shared.rpc;
 
 public enum TaskTypeEnum {
+	SEMANTIC_MARKUP("Semantic Markup"),
 	MATRIX_GENERATION("Matrix Generation"),
 	TREE_GENERATION("ID Key Generation"),
 	TAXONOMY_COMPARISON("Taxonomy Comparison"), 

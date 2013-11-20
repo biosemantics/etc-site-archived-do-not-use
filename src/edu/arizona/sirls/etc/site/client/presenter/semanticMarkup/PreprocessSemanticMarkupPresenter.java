@@ -1,4 +1,4 @@
-package edu.arizona.sirls.etc.site.client.presenter.matrixGeneration;
+package edu.arizona.sirls.etc.site.client.presenter.semanticMarkup;
 
 import java.util.List;
 import java.util.Map;
@@ -17,19 +17,19 @@ import com.google.gwt.user.client.ui.RichTextArea.Formatter;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
-import edu.arizona.sirls.etc.site.client.event.MatrixGenerationEvent;
+import edu.arizona.sirls.etc.site.client.event.SemanticMarkupEvent;
 import edu.arizona.sirls.etc.site.client.presenter.MessagePresenter;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.client.view.MessageView;
-import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
-import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
+import edu.arizona.sirls.etc.site.shared.rpc.ISemanticMarkupServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.SemanticMarkupTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
-import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
-import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.BracketValidator;
-import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.PreprocessedDescription;
-import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
+import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
+import edu.arizona.sirls.etc.site.shared.rpc.db.SemanticMarkupConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.BracketValidator;
+import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.PreprocessedDescription;
 
-public class PreprocessMatrixGenerationPresenter {
+public class PreprocessSemanticMarkupPresenter {
 
 	public interface Display {
 		Widget asWidget();
@@ -43,8 +43,8 @@ public class PreprocessMatrixGenerationPresenter {
 
 	private HandlerManager eventBus;
 	private Display display;
-	private IMatrixGenerationServiceAsync matrixGenerationService;
-	private MatrixGenerationTaskRun matrixGenerationTask;
+	private ISemanticMarkupServiceAsync semanticMarkupService;
+	private SemanticMarkupTaskRun semanticMarkupTask;
 	private LoadingPopup loadingPopup = new LoadingPopup();
 	private List<PreprocessedDescription> preprocessedDescriptions;
 	private int currentPreprocessedDescription;
@@ -54,11 +54,11 @@ public class PreprocessMatrixGenerationPresenter {
 	private MessageView messageView = new MessageView();
 	private MessagePresenter messagePresenter = new MessagePresenter(messageView, "Unmatched brackets");
 
-	public PreprocessMatrixGenerationPresenter(HandlerManager eventBus,
-			Display display, IMatrixGenerationServiceAsync matrixGenerationService) {
+	public PreprocessSemanticMarkupPresenter(HandlerManager eventBus,
+			Display display, ISemanticMarkupServiceAsync semanticMarkupService) {
 		this.eventBus = eventBus;
 		this.display = display;
-		this.matrixGenerationService = matrixGenerationService;
+		this.semanticMarkupService = semanticMarkupService;
 		bind();
 	}
 
@@ -162,16 +162,16 @@ public class PreprocessMatrixGenerationPresenter {
 					}
 					@Override
 					public void onSuccess(RPCResult<Void> result) {	
-						matrixGenerationService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTask, 
-								TaskStageEnum.LEARN_TERMS, new AsyncCallback<RPCResult<MatrixGenerationTaskRun>>() {
+						semanticMarkupService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), semanticMarkupTask, 
+								TaskStageEnum.LEARN_TERMS, new AsyncCallback<RPCResult<SemanticMarkupTaskRun>>() {
 									@Override
 									public void onFailure(Throwable caught) {
 										caught.printStackTrace();
 									}
 									@Override
-									public void onSuccess(RPCResult<MatrixGenerationTaskRun> matrixGenerationTask) {
-										if(matrixGenerationTask.isSucceeded())
-											eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationTask.getData()));
+									public void onSuccess(RPCResult<SemanticMarkupTaskRun> semanticMarkupTask) {
+										if(semanticMarkupTask.isSucceeded())
+											eventBus.fireEvent(new SemanticMarkupEvent(semanticMarkupTask.getData()));
 									} 
 						});
 					}
@@ -193,15 +193,15 @@ public class PreprocessMatrixGenerationPresenter {
 	protected void store(AsyncCallback<RPCResult<Void>> asyncCallback) {
 		String target = preprocessedDescriptions.get(currentPreprocessedDescription).getFilePath();
 		String content = display.getTextArea().getText();
-		matrixGenerationService.setDescription(Authentication.getInstance().getAuthenticationToken(), 
+		semanticMarkupService.setDescription(Authentication.getInstance().getAuthenticationToken(), 
 				target, content, asyncCallback);
 	}
 	
-	public void go(final HasWidgets content, final MatrixGenerationTaskRun matrixGenerationTask) {
-		this.matrixGenerationTask = matrixGenerationTask;
+	public void go(final HasWidgets content, final SemanticMarkupTaskRun semanticMarkupTask) {
+		this.semanticMarkupTask = semanticMarkupTask;
 		loadingPopup.start();
-		matrixGenerationService.preprocess(Authentication.getInstance().getAuthenticationToken(), 
-				matrixGenerationTask, new AsyncCallback<RPCResult<List<PreprocessedDescription>>>() {
+		semanticMarkupService.preprocess(Authentication.getInstance().getAuthenticationToken(), 
+				semanticMarkupTask, new AsyncCallback<RPCResult<List<PreprocessedDescription>>>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
@@ -213,15 +213,15 @@ public class PreprocessMatrixGenerationPresenter {
 						if(result.isSucceeded()) {
 							if(result.getData().isEmpty()) {
 								loadingPopup.stop();
-								matrixGenerationService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTask, 
-										TaskStageEnum.LEARN_TERMS, new AsyncCallback<RPCResult<MatrixGenerationTaskRun>>() {
+								semanticMarkupService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), semanticMarkupTask, 
+										TaskStageEnum.LEARN_TERMS, new AsyncCallback<RPCResult<SemanticMarkupTaskRun>>() {
 											@Override
 											public void onFailure(Throwable caught) {
 												caught.printStackTrace();
 											}
 											@Override
-											public void onSuccess(RPCResult<MatrixGenerationTaskRun> matrixGenerationTask) {
-												eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationTask.getData()));
+											public void onSuccess(RPCResult<SemanticMarkupTaskRun> semanticMarkupTask) {
+												eventBus.fireEvent(new SemanticMarkupEvent(semanticMarkupTask.getData()));
 											}
 								});
 								return;
@@ -251,7 +251,7 @@ public class PreprocessMatrixGenerationPresenter {
 
 	private void setPreprocessedDescription(final PreprocessedDescription preprocessedDescription) {
 		try {
-			matrixGenerationService.getDescription(Authentication.getInstance().getAuthenticationToken(), 
+			semanticMarkupService.getDescription(Authentication.getInstance().getAuthenticationToken(), 
 					preprocessedDescription.getFilePath(), new AsyncCallback<RPCResult<String>>() {
 						@Override
 						public void onFailure(Throwable caught) {
