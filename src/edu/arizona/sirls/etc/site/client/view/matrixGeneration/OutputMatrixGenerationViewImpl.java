@@ -43,6 +43,17 @@ public class OutputMatrixGenerationViewImpl extends MatrixGenerationViewImpl imp
 		return TaskStageEnum.OUTPUT;
 	}
 	
+	@UiHandler("fileManagerAnchor") 
+	public void onFileManager(ClickEvent event) {
+		presenter.onFileManager();
+	}
+
+	@Override
+	public void setOutputText(String output) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	
 
 }

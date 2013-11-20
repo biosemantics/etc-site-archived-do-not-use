@@ -164,6 +164,7 @@ public class TaskDAO {
 		queryNumberInput.close();
 		*/
 		
+		
 		Task task = new Task(id, name, taskType, taskStage, configuration, user, resumable, complete, completed, created);
 		return task;
 	}

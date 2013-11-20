@@ -7,20 +7,25 @@
 			font-weight: bold;
 		}
 	</ui:style>
-		
-	<g:VerticalPanel>
-		<g:Label styleName="siteHeading">Matrix Generation</g:Label>
-		<g:HorizontalPanel styleName="submenu" ui:field="submenuPanel" />
-		<g:VerticalPanel styleName="contentPanel">
-			<g:HorizontalPanel>
-				<g:Image styleName="statusImage" ui:field="statusImage" url='images/loader3.gif'/>	
-				<g:FlowPanel>
-				    <g:InlineLabel>We are now parsing the descriptions. You will receive an email when processing has completed. You can come back to this task using the </g:InlineLabel>
-				    <g:Anchor ui:field="taskManagerAnchor">Task Manager</g:Anchor>
-				   	<g:InlineLabel>.</g:InlineLabel>
-				</g:FlowPanel>
-			</g:HorizontalPanel>
-			<g:Button ui:field="nextButton">Next</g:Button>
-		</g:VerticalPanel>
-	</g:VerticalPanel>
+	<g:HTMLPanel>
+		<div class='content900pxCentered'>
+		    <div id='matrixGenerationContent'>
+				<g:VerticalPanel>
+					<g:Label styleName="siteHeading">Matrix Generation</g:Label>
+					<g:HorizontalPanel styleName="submenu" ui:field="submenuPanel" />
+					<g:VerticalPanel styleName="contentPanel">
+						<g:HorizontalPanel ui:field="statusPanel">
+							<!-- <g:Image styleName="statusImage" ui:field="statusImage" url='images/loader3.gif'/>	
+							<g:FlowPanel>
+							    <g:InlineLabel>We are now generating a matrix. You will receive an email when processing has completed. You can come back to this task using the </g:InlineLabel>
+							    <g:Anchor ui:field="taskManagerAnchor">Task Manager</g:Anchor>
+							   	<g:InlineLabel>.</g:InlineLabel>
+							</g:FlowPanel> -->
+						</g:HorizontalPanel>
+						<g:Button ui:field="nextButton">Next</g:Button>
+					</g:VerticalPanel>
+				</g:VerticalPanel>
+			</div>
+		</div>
+	</g:HTMLPanel>
 </ui:UiBinder> 

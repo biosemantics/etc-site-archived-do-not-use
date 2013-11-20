@@ -7,10 +7,11 @@ import edu.arizona.sirls.etc.site.client.view.matrixGeneration.InputMatrixGenera
 public interface OutputMatrixGenerationView {
 
 	public interface Presenter {
-		
+		void onFileManager();
 	}
 	  
 	void setPresenter(Presenter presenter);
 	Widget asWidget();
+	void setOutputText(String output);
 	
 }

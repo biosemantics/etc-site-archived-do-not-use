@@ -7,10 +7,13 @@ import edu.arizona.sirls.etc.site.client.view.matrixGeneration.OutputMatrixGener
 public interface ProcessMatrixGenerationView {
 
 	public interface Presenter {
-		
+		void onNext();
+		void onTaskManager();
 	}
 	  
 	void setPresenter(Presenter presenter);
 	Widget asWidget();
+	void setNonResumable();
+	void setResumable();
 	
 }

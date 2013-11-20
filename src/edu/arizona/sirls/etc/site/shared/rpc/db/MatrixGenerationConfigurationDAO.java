@@ -59,8 +59,8 @@ public class MatrixGenerationConfigurationDAO {
 		String output = matrixGenerationConfiguration.getOutput();
 		Query query = new Query("UPDATE matrixgenerationconfigurations SET input = ?, output = ? WHERE configuration = ?");
 		query.setParameter(1, input);
-		query.setParameter(6, output);
-		query.setParameter(7, configuration.getId());
+		query.setParameter(2, output);
+		query.setParameter(3, configuration.getId());
 		query.executeAndClose();
 	}
 

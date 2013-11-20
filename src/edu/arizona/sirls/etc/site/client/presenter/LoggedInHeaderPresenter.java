@@ -59,8 +59,8 @@ public class LoggedInHeaderPresenter implements Presenter {
 			public void onResumableTaskEvent(ResumableTasksEvent event) {
 				if(taskManager != null) {
 					if(taskManager.hasActiveTaskRun()) {
-						AbstractTaskRun activeTaskConfiguration = taskManager.getActiveTaskRun();
-						if(event.getTasks().containsKey(activeTaskConfiguration.getTask().getId())) {
+						AbstractTaskRun activeTaskRun = taskManager.getActiveTaskRun();
+						if(event.getTasks().containsKey(activeTaskRun.getTask().getId())) {
 							display.setResumableTaskAvailable(event.getTasks().size() > 1);
 						}
 					} else {

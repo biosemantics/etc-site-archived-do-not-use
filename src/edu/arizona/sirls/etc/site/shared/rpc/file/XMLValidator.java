@@ -28,7 +28,7 @@ public class XMLValidator implements IContentValidator {
 			validator.validate(new StreamSource(new ByteArrayInputStream(input.getBytes("UTF-8"))));
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			return false;
 		}
 	}

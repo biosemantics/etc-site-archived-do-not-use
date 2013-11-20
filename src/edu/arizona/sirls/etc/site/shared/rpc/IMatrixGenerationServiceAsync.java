@@ -8,6 +8,8 @@ public interface IMatrixGenerationServiceAsync {
 
 	public void start(AuthenticationToken authenticationToken, String taskName, String filePath, AsyncCallback<RPCResult<MatrixGenerationTaskRun>> callback);
 	
+	public void process(AuthenticationToken authenticationToken,  MatrixGenerationTaskRun matrixGenerationTaskRun, AsyncCallback<RPCResult<MatrixGenerationTaskRun>> callback);
+	
 	public void output(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTask, AsyncCallback<RPCResult<Void>> callback);
 
 	public void getLatestResumable(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<MatrixGenerationTaskRun>> asyncCallback);

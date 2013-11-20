@@ -207,7 +207,7 @@ public class TaskManagerPresenter implements TaskManagerView.Presenter, Presente
 
 	@Override
 	public void onResume(final Task task) {
-		switch(task.getTaskStage().getTaskType().getTaskTypeEnum()) {
+		switch(task.getTaskType().getTaskTypeEnum()) {
 		case SEMANTIC_MARKUP:
 			semanticMarkupService.getSemanticMarkupTaskRun(Authentication.getInstance().getAuthenticationToken(), 
 					task, new AsyncCallback<RPCResult<SemanticMarkupTaskRun>>() {

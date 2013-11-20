@@ -41,6 +41,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskService;
 import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
+import edu.arizona.sirls.etc.site.shared.rpc.SemanticMarkupTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
 import edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum;
 import edu.arizona.sirls.etc.site.shared.rpc.db.ConfigurationDAO;
@@ -48,6 +49,8 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.Glossary;
 import edu.arizona.sirls.etc.site.shared.rpc.db.GlossaryDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfigurationDAO;
+import edu.arizona.sirls.etc.site.shared.rpc.db.SemanticMarkupConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.db.SemanticMarkupConfigurationDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Share;
 import edu.arizona.sirls.etc.site.shared.rpc.db.ShareDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.ShortUser;
@@ -59,6 +62,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.TaskType;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TaskTypeDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.UserDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.file.XMLFileFormatter;
+import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.LearnInvocation;
 
 public class MatrixGenerationService extends RemoteServiceServlet implements IMatrixGenerationService  {
 
@@ -118,6 +122,61 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			return new RPCResult<MatrixGenerationTaskRun>(false, "Internal Server Error");
 		}
 	}
+	
+	@Override
+	public RPCResult<MatrixGenerationTaskRun> process(AuthenticationToken authenticationToken, final MatrixGenerationTaskRun matrixGenerationTaskRun) {
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<MatrixGenerationTaskRun>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<MatrixGenerationTaskRun>(false, "Authentication failed");
+		
+		try {
+			final MatrixGenerationConfiguration matrixGenerationConfiguration = matrixGenerationTaskRun.getConfiguration();
+			//browser back button may invoke another "learn"
+			if(activeProcessFutures.containsKey(matrixGenerationConfiguration.getConfiguration().getId())) {
+				return new RPCResult<MatrixGenerationTaskRun>(true, matrixGenerationTaskRun);
+			} else {
+				final Task task = TaskDAO.getInstance().getTask(matrixGenerationConfiguration.getConfiguration());
+				final TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
+				TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.PROCESS);
+				task.setTaskStage(taskStage);
+				task.setResumable(false);
+				TaskDAO.getInstance().updateTask(task);
+				
+				String input = matrixGenerationConfiguration.getInput();
+				RPCResult<Void> createDirResult = fileService.createDirectory(new AdminAuthenticationToken(), Configuration.tempFileBase, String.valueOf(task.getId()));
+				if(!createDirResult.isSucceeded()) 
+					return new RPCResult<MatrixGenerationTaskRun>(false, createDirResult.getMessage());
+				String outputFile = Configuration.tempFileBase + File.separator + task.getId() + File.separator + "Matrix.mx";
+				
+				MatrixGeneration matrixGeneration = new MatrixGeneration(input, outputFile);
+				final ListenableFuture<Boolean> futureResult = executorService.submit(matrixGeneration);
+				this.activeProcessFutures.put(matrixGenerationConfiguration.getConfiguration().getId(), futureResult);
+				futureResult.addListener(new Runnable() {
+				     	public void run() {
+				     		try {
+				     			activeProcessFutures.remove(matrixGenerationConfiguration.getConfiguration().getId());
+				     			if(!futureResult.isCancelled()) {
+				     				Boolean result = futureResult.get();
+									TaskStage newTaskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.OUTPUT);
+									task.setTaskStage(newTaskStage);
+									task.setResumable(true);
+									TaskDAO.getInstance().updateTask(task);
+				     			}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+				     	}
+				     }, executorService);
+				
+				return new RPCResult<MatrixGenerationTaskRun>(true, matrixGenerationTaskRun);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new RPCResult<MatrixGenerationTaskRun>(false, "Internal Server Error");
+		}
+	}
 
 	@Override
 	public RPCResult<Void> output(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTaskRun) {
@@ -145,8 +204,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				return new RPCResult<Void>(false, createDirectoryResult.getMessage());
 			
 			//copy the output files to the directory
-			String charaParserOutputDirectory = "workspace" + File.separator + task.getId() + File.separator + "out";			
-			RPCResult<Void> copyResult = fileService.copyFiles(new AdminAuthenticationToken(), charaParserOutputDirectory, createDirectoryResult.getData());
+			String matrixGenerationOutputDirectory = Configuration.tempFileBase + File.separator + task.getId();		
+			RPCResult<Void> copyResult = fileService.copyFiles(new AdminAuthenticationToken(), matrixGenerationOutputDirectory, createDirectoryResult.getData());
 			if(!copyResult.isSucceeded())
 				return copyResult;
 			
@@ -269,4 +328,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		this.executorService.shutdownNow();
 		super.destroy();
 	}
+
+
 }

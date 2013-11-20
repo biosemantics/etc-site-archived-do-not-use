@@ -41,15 +41,15 @@ public class StartView extends Composite implements StartPresenter.Display {
 				"<div id='semanticMarkupImage' class='actionImage'></div>" +
 				"<div id='semanticMarkupText' class='actionText'></div>" +
 				"<div id='semanticMarkupDescription' class='actionDescription'>" +
-						"Matrix generation generates taxon-character matrices from clean textual descriptions of organisms.	The matrices can be used to create " +
-						"specimen identification keys or be used as input to the Tree Generation tool. </div>" +
+						"Semantic markup generates marked up descriptions from the textual descriptions of organisms. The marked up descriptions can be used to " +
+						" generate taxon-character matrices.</div>" +
 				"<div id='semanticMarkupArrow' class='actionArrow'></div>" +
 				"<div id='semanticMarkupButton' class='actionButton clickable'></div>" +
 				"<div id='semanticMarkupButtonText' class='actionButtonText clickable'></div>" +
 				"<div id='matrixGenerationImage' class='actionImage'></div>" +
 				"<div id='matrixGenerationText' class='actionText'></div>" +
 				"<div id='matrixGenerationDescription' class='actionDescription'>" +
-						"Matrix generation generates taxon-character matrices from clean textual descriptions of organisms.	The matrices can be used to create " +
+						"Matrix generation generates taxon-character matrices from marked up descriptions of organisms.	The matrices can be used to create " +
 						"specimen identification keys or be used as input to the Tree Generation tool. </div>" +
 				"<div id='matrixGenerationArrow' class='actionArrow'></div>" +
 				"<div id='matrixGenerationButton' class='actionButton clickable'></div>" +
