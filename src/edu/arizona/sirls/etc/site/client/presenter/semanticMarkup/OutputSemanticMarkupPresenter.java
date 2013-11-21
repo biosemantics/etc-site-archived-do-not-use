@@ -24,6 +24,7 @@ public class OutputSemanticMarkupPresenter {
 		Widget asWidget();
 		Label getOutputLabel();
 		Anchor getFileManager();
+		void setOutput(String output);
 	}
 
 	private Display display;
@@ -54,6 +55,9 @@ public class OutputSemanticMarkupPresenter {
 	public void go(final HasWidgets content, final Task task) {
 		loadingPopup.start();
 		this.task = task;
+		
+		display.setOutput(((SemanticMarkupConfiguration)task.getConfiguration()).getOutput());
+		
 		semanticMarkupService.output(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Void>>() {
 			@Override
 			public void onFailure(Throwable caught) {

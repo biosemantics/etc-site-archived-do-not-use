@@ -59,6 +59,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		try {
 			MatrixGenerationConfiguration matrixGenerationConfiguration = new MatrixGenerationConfiguration();
 			matrixGenerationConfiguration.setInput(input);	
+			matrixGenerationConfiguration.setOutput(matrixGenerationConfiguration.getInput() + "_" + taskName);
 			matrixGenerationConfiguration = MatrixGenerationConfigurationDAO.getInstance().addMatrixGenerationConfiguration(matrixGenerationConfiguration);
 			
 			edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum taskType = edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION;
@@ -72,7 +73,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			task.setTaskStage(taskStage);
 			task.setTaskConfiguration(matrixGenerationConfiguration);
 			task.setTaskType(dbTaskType);
-			
+						
 			task = TaskDAO.getInstance().addTask(task);
 			taskStage = TaskStageDAO.getInstance().getMatrixGenerationTaskStage(TaskStageEnum.PROCESS.toString());
 			task.setTaskStage(taskStage);
@@ -157,8 +158,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			if(!(configuration instanceof MatrixGenerationConfiguration))
 				return new RPCResult<Void>(false, "Not a compatible task");
 			final MatrixGenerationConfiguration matrixGenerationConfiguration = (MatrixGenerationConfiguration)configuration;
-			matrixGenerationConfiguration.setOutput(matrixGenerationConfiguration.getInput() + "_" + task.getName());
-			MatrixGenerationConfigurationDAO.getInstance().updateMatrixGenerationConfiguration(matrixGenerationConfiguration);
 
 			String outputDirectory = matrixGenerationConfiguration.getOutput();			
 			RPCResult<String> outputDirectoryParentResult = fileService.getParent(authenticationToken, outputDirectory);

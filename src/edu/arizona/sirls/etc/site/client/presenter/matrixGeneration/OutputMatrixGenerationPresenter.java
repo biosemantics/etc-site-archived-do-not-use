@@ -11,6 +11,7 @@ import edu.arizona.sirls.etc.site.client.view.matrixGeneration.OutputMatrixGener
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
+import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 
 public class OutputMatrixGenerationPresenter implements OutputMatrixGenerationView.Presenter {
@@ -29,6 +30,8 @@ public class OutputMatrixGenerationPresenter implements OutputMatrixGenerationVi
 
 	public void go(final HasWidgets container, final Task task) {
 		loadingPopup.start();
+		
+		view.setOutput(((MatrixGenerationConfiguration)task.getConfiguration()).getOutput());
 		matrixGenerationService.output(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Void>>() {
 			@Override
 			public void onFailure(Throwable caught) {

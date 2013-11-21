@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
@@ -27,6 +28,9 @@ public class OutputMatrixGenerationViewImpl extends MatrixGenerationViewImpl imp
 
 	@UiField
 	Anchor fileManagerAnchor;
+	
+	@UiField
+	InlineLabel outputLabel;
 	
 	public OutputMatrixGenerationViewImpl() {
 		super();
@@ -47,5 +51,12 @@ public class OutputMatrixGenerationViewImpl extends MatrixGenerationViewImpl imp
 	public void onFileManager(ClickEvent event) {
 		presenter.onFileManager();
 	}
+
+	@Override
+	public void setOutput(String output) {
+		this.outputLabel.setText(output);
+	}
+	
+	
 
 }

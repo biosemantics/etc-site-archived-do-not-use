@@ -15,7 +15,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.TaskStageEnum;
 public class OutputSemanticMarkupView extends SemanticMarkupView implements OutputSemanticMarkupPresenter.Display {
 
 	//private Button selectButton;
-	private Label outputLabel;
+	private InlineLabel outputLabel;
 	private Anchor fileManager;
 	//private Button completeButton;
 
@@ -48,6 +48,11 @@ public class OutputSemanticMarkupView extends SemanticMarkupView implements Outp
 	@Override
 	public Anchor getFileManager() {
 		return fileManager;
+	}
+	
+	@Override 
+	public void setOutput(String output) {
+		this.outputLabel.setText(output);
 	}
 
 }

@@ -99,6 +99,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			semanticMarkupConfiguration.setInput(filePath);	
 			semanticMarkupConfiguration.setGlossary(glossary);
 			semanticMarkupConfiguration.setNumberOfInputFiles(numberOfInputFiles);
+			semanticMarkupConfiguration.setOutput(semanticMarkupConfiguration.getInput() + "_" + taskName);
 			semanticMarkupConfiguration = SemanticMarkupConfigurationDAO.getInstance().addSemanticMarkupConfiguration(semanticMarkupConfiguration);
 			
 			edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum taskType = edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.SEMANTIC_MARKUP;
@@ -346,8 +347,6 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			if(!(configuration instanceof SemanticMarkupConfiguration))
 				return new RPCResult<Void>(false, "Not a compatible task");
 			final SemanticMarkupConfiguration semanticMarkupConfiguration = (SemanticMarkupConfiguration)configuration;
-			semanticMarkupConfiguration.setOutput(semanticMarkupConfiguration.getInput() + "_" + task.getName());
-			SemanticMarkupConfigurationDAO.getInstance().updateSemanticMarkupConfiguration(semanticMarkupConfiguration);
 
 			String outputDirectory = semanticMarkupConfiguration.getOutput();			
 			RPCResult<String> outputDirectoryParentResult = fileService.getParent(authenticationToken, outputDirectory);

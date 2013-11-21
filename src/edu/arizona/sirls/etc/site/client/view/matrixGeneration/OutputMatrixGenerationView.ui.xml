@@ -12,7 +12,9 @@
 					<g:Label styleName="siteHeading">Matrix Generation</g:Label>
 					<g:HorizontalPanel styleName="submenu" ui:field="submenuPanel" />
 					<g:FlowPanel styleName="contentPanel">
-					    <g:InlineLabel>Matrix Generation has completed. You can find the output files in the&nbsp;</g:InlineLabel>
+					    <g:InlineLabel>Matrix Generation has completed. You can find the output files in&nbsp;</g:InlineLabel>
+					    <g:InlineLabel ui:field="outputLabel"></g:InlineLabel>
+					    <g:InlineLabel>&nbsp;in the&nbsp;</g:InlineLabel>
 					    <g:Anchor ui:field="fileManagerAnchor">File Manager</g:Anchor>
 					    <g:InlineLabel>.</g:InlineLabel>	    
 					</g:FlowPanel>
