@@ -146,16 +146,18 @@ public class TaskManagerPresenter implements TaskManagerView.Presenter, Presente
 	@Override
 	public void onDelete(final Task task) {
 		if(task.getUser().getName().equals(Authentication.getInstance().getUsername())) {
-			semanticMarkupService.cancel(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Void>>() {
+			taskService.cancelTask(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Void>>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					caught.printStackTrace();
 				}
+
 				@Override
 				public void onSuccess(RPCResult<Void> result) {
 					if(result.isSucceeded())
 						view.removeTask(task);
 				}
+				
 			});
 		} else {
 			taskService.removeMeFromShare(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Void>>() {

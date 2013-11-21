@@ -46,8 +46,6 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.Glossary;
 import edu.arizona.sirls.etc.site.shared.rpc.db.GlossaryDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.SemanticMarkupConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.SemanticMarkupConfigurationDAO;
-import edu.arizona.sirls.etc.site.shared.rpc.db.Share;
-import edu.arizona.sirls.etc.site.shared.rpc.db.ShareDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.ShortUser;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TaskDAO;
@@ -68,7 +66,6 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	private static final long serialVersionUID = -7871896158610489838L;
 	private IAuthenticationService authenticationService = new AuthenticationService();
 	private IFileAccessService fileAccessService = new FileAccessService();
-	private ITaskService taskService = new TaskService();
 	private IFileService fileService = new FileService();
 	private BracketValidator bracketValidator = new BracketValidator();
 	private int maximumThreads = 10;
@@ -114,12 +111,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			task.setTaskStage(taskStage);
 			task.setTaskConfiguration(semanticMarkupConfiguration);
 			task.setTaskType(dbTaskType);
-			
-			RPCResult<Task> addTaskResult = taskService.addTask(authenticationToken, task);
-			if(!addTaskResult.isSucceeded())
-				return new RPCResult<SemanticMarkupTaskRun>(false, addTaskResult.getMessage());
-			task = addTaskResult.getData();
-			
+
+			task = TaskDAO.getInstance().addTask(task);			
 			taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.PREPROCESS_TEXT.toString());
 			task.setTaskStage(taskStage);
 			TaskDAO.getInstance().updateTask(task);
@@ -357,7 +350,10 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				return new RPCResult<Void>(false, createDirectoryResult.getMessage());
 			
 			//copy the output files to the directory
-			String charaParserOutputDirectory = "workspace" + File.separator + task.getId() + File.separator + "out";			
+			String charaParserOutputDirectory = "workspace" + File.separator + task.getId() + File.separator + "out";		
+			RPCResult<Void> deleteResult = fileService.deleteFile(new AdminAuthenticationToken(), charaParserOutputDirectory + File.separator + "config.txt");
+			if(!deleteResult.isSucceeded())
+				return deleteResult;
 			RPCResult<Void> copyResult = fileService.copyFiles(new AdminAuthenticationToken(), charaParserOutputDirectory, createDirectoryResult.getData());
 			if(!copyResult.isSucceeded())
 				return copyResult;

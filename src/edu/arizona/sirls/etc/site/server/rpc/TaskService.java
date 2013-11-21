@@ -11,6 +11,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationResult;
 import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
+import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationService;
+import edu.arizona.sirls.etc.site.shared.rpc.ISemanticMarkupService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskService;
 import edu.arizona.sirls.etc.site.shared.rpc.SemanticMarkupTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
@@ -26,6 +28,8 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 
 	private static final long serialVersionUID = -3080921351813858330L;
 	private IAuthenticationService authenticationService = new AuthenticationService();
+	private IMatrixGenerationService matrixGenerationService = new MatrixGenerationService();
+	private ISemanticMarkupService semanticMarkupService = new SemanticMarkupService();
 	
 	@Override
 	public RPCResult<List<Task>> getAllTasks(AuthenticationToken authenticationToken) {
@@ -213,19 +217,34 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	}*/
 	
 	@Override
-	public RPCResult<Task> addTask(AuthenticationToken authenticationToken, Task task) {
+	public RPCResult<Void> cancelTask(AuthenticationToken authenticationToken, Task task) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
 		if(!authResult.isSucceeded()) 
-			return new RPCResult<Task>(false, authResult.getMessage());
+			return new RPCResult<Void>(false, authResult.getMessage());
 		if(!authResult.getData().getResult())
-			return new RPCResult<Task>(false, "Authentication failed");
+			return new RPCResult<Void>(false, "Authentication failed");
 		
 		try {
-			Task result = TaskDAO.getInstance().addTask(task);
-			return new RPCResult<Task>(true, result);
+			switch(task.getTaskType().getTaskTypeEnum()) {
+			case MATRIX_GENERATION:
+				matrixGenerationService.cancel(authenticationToken, task);
+				break;
+			case SEMANTIC_MARKUP:
+				semanticMarkupService.cancel(authenticationToken, task);
+				break;
+			case TAXONOMY_COMPARISON:
+				break;
+			case TREE_GENERATION:
+				break;
+			case VISUALIZATION:
+				break;
+			default:
+				break;
+			}
+			return new RPCResult<Void>(true);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new RPCResult<Task>(false, "Internal Server Error");
+			return new RPCResult<Void>(false, "Internal Server Error");
 		}
 	}
 

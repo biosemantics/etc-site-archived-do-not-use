@@ -18,8 +18,6 @@ public interface ITaskServiceAsync {
 	public void getOwnedTasks(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<List<Task>>> callback);
 	
 	public void getSharedWithTasks(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<List<Task>>> callback);
-	
-	public void addTask(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Task>> callback);
 
 	public void getCompletedTasks(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<List<Task>>> callback);
 
@@ -48,5 +46,7 @@ public interface ITaskServiceAsync {
 	public void removeMeFromShare(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Void>> callback);
 	
 	public void updateShare(AuthenticationToken authenticationToken, Share share, AsyncCallback<RPCResult<Share>> callback);
+	
+	public void cancelTask(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Void>> callback);
 	
 }

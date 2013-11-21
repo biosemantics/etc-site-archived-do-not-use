@@ -66,7 +66,7 @@ public class MatrixGenerationConfigurationDAO {
 
 	public void remove(MatrixGenerationConfiguration matrixGenerationConfiguration) throws SQLException, ClassNotFoundException, IOException {
 		Configuration configuration = matrixGenerationConfiguration.getConfiguration();
-		Query query = new Query("DELETE FROM matrixgeneratinoconfigurations WHERE configuration = ?");
+		Query query = new Query("DELETE FROM matrixgenerationconfigurations WHERE configuration = ?");
 		query.setParameter(1, configuration.getId());
 		query.executeAndClose();
 	}

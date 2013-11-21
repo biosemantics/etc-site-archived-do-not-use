@@ -13,20 +13,24 @@
 					<g:VerticalPanel styleName="contentPanel">
 					    <g:FlowPanel>
 					        <g:InlineLabel>
-					            Please provide us with a folder that contains the input marked up taxon descriptions. You can upload the input using the 
+					            Please provide us with a folder that contains the input marked up taxon descriptions. You can upload the input using the&nbsp;
 					        </g:InlineLabel>
-					        <g:Anchor ui:field="fileManagerAnchor"> File Manager</g:Anchor>
+					        <g:Anchor ui:field="fileManagerAnchor">File Manager</g:Anchor>
 					        <g:InlineLabel>
 					            . See our
 					        </g:InlineLabel>
-					        <g:Anchor href="www.google.com"> format requirements </g:Anchor>
+					        <g:Anchor href="www.google.com">&nbsp;format requirements</g:Anchor>
 					        <g:InlineLabel>
-					            for marked up taxon descriptions.
+					            &nbsp;for marked up taxon descriptions.
 					        </g:InlineLabel>
 					    </g:FlowPanel>
-					    <g:HorizontalPanel>
-					        <g:Label>Task name:</g:Label>
-					        <g:TextBox ui:field="taskNameTextBox"></g:TextBox>
+					    <g:HorizontalPanel styleName="inputForm">
+					    	<g:cell verticalAlignment="ALIGN_MIDDLE">
+					        	<g:Label>Task name:</g:Label>
+					        </g:cell>
+					        <g:cell verticalAlignment="ALIGN_MIDDLE">
+					        	<g:TextBox ui:field="taskNameTextBox"></g:TextBox>
+					        	</g:cell>
 					    </g:HorizontalPanel>
 					    <g:HorizontalPanel>
 					        <g:Button ui:field="inputButton">Select Input</g:Button>

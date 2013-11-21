@@ -19,7 +19,6 @@ import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationService;
-import edu.arizona.sirls.etc.site.shared.rpc.ITaskService;
 import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.db.ConfigurationDAO;
@@ -40,7 +39,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	private static final long serialVersionUID = -7871896158610489838L;
 	private IAuthenticationService authenticationService = new AuthenticationService();
 	private IFileAccessService fileAccessService = new FileAccessService();
-	private ITaskService taskService = new TaskService();
 	private IFileService fileService = new FileService();
 	private int maximumThreads = 10;
 	private ListeningExecutorService executorService;
@@ -77,11 +75,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			task.setTaskConfiguration(matrixGenerationConfiguration);
 			task.setTaskType(dbTaskType);
 			
-			RPCResult<Task> addTaskResult = taskService.addTask(authenticationToken, task);
-			if(!addTaskResult.isSucceeded())
-				return new RPCResult<MatrixGenerationTaskRun>(false, addTaskResult.getMessage());
-			task = addTaskResult.getData();
-			
+			task = TaskDAO.getInstance().addTask(task);
 			taskStage = TaskStageDAO.getInstance().getMatrixGenerationTaskStage(TaskStageEnum.PROCESS.toString());
 			task.setTaskStage(taskStage);
 			TaskDAO.getInstance().updateTask(task);

@@ -22,8 +22,6 @@ public interface ITaskService extends RemoteService {
 	
 	public RPCResult<List<Task>> getSharedWithTasks(AuthenticationToken authenticationToken);
 	
-	public RPCResult<Task> addTask(AuthenticationToken authenticationToken, Task task);
-	
 	public RPCResult<List<Task>> getCompletedTasks(AuthenticationToken authenticationToken);
 	
 	public RPCResult<Boolean> isResumable(AuthenticationToken authenticationToken, Task task);
@@ -51,5 +49,7 @@ public interface ITaskService extends RemoteService {
 	public RPCResult<Void> removeMeFromShare(AuthenticationToken authenticationToken, Task task);
 
 	public RPCResult<Share> updateShare(AuthenticationToken authenticationToken, Share share);
+	
+	public RPCResult<Void> cancelTask(AuthenticationToken authenticationToken, Task task);
 	
 }
