@@ -191,7 +191,7 @@ public class TaskDAO {
 		query.setParameter(1, task.getName());
 		query.setParameter(2, task.getTaskType().getId());
 		query.setParameter(3, task.getTaskStage().getId());
-		query.setParameter(4, task.getTaskConfiguration().getConfiguration().getId());
+		query.setParameter(4, task.getConfiguration().getConfiguration().getId());
 		query.setParameter(5, task.getUser().getId());
 		query.setParameter(6, task.isResumable());
 		query.setParameter(7, task.isComplete());
@@ -209,7 +209,7 @@ public class TaskDAO {
 		String name = task.getName();
 		int taskTypeId = task.getTaskType().getId();
 		int taskStageId = task.getTaskStage().getId();
-		int configurationId = task.getTaskConfiguration().getConfiguration().getId();
+		int configurationId = task.getConfiguration().getConfiguration().getId();
 		int userId = task.getUser().getId();
 		boolean resumable = task.isResumable();
 		boolean complete = task.isComplete();

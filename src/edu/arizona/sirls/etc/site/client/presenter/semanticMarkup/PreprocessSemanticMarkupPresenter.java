@@ -22,9 +22,9 @@ import edu.arizona.sirls.etc.site.client.presenter.MessagePresenter;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.client.view.MessageView;
 import edu.arizona.sirls.etc.site.shared.rpc.ISemanticMarkupServiceAsync;
-import edu.arizona.sirls.etc.site.shared.rpc.SemanticMarkupTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.db.SemanticMarkupConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.BracketValidator;
 import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.PreprocessedDescription;
 import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.TaskStageEnum;
@@ -44,7 +44,7 @@ public class PreprocessSemanticMarkupPresenter {
 	private HandlerManager eventBus;
 	private Display display;
 	private ISemanticMarkupServiceAsync semanticMarkupService;
-	private SemanticMarkupTaskRun semanticMarkupTask;
+	private Task task;
 	private LoadingPopup loadingPopup = new LoadingPopup();
 	private List<PreprocessedDescription> preprocessedDescriptions;
 	private int currentPreprocessedDescription;
@@ -162,16 +162,16 @@ public class PreprocessSemanticMarkupPresenter {
 					}
 					@Override
 					public void onSuccess(RPCResult<Void> result) {	
-						semanticMarkupService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), semanticMarkupTask, 
-								TaskStageEnum.LEARN_TERMS, new AsyncCallback<RPCResult<SemanticMarkupTaskRun>>() {
+						semanticMarkupService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), task, 
+								TaskStageEnum.LEARN_TERMS, new AsyncCallback<RPCResult<Task>>() {
 									@Override
 									public void onFailure(Throwable caught) {
 										caught.printStackTrace();
 									}
 									@Override
-									public void onSuccess(RPCResult<SemanticMarkupTaskRun> semanticMarkupTask) {
-										if(semanticMarkupTask.isSucceeded())
-											eventBus.fireEvent(new SemanticMarkupEvent(semanticMarkupTask.getData()));
+									public void onSuccess(RPCResult<Task> taskResult) {
+										if(taskResult.isSucceeded())
+											eventBus.fireEvent(new SemanticMarkupEvent(taskResult.getData()));
 									} 
 						});
 					}
@@ -197,11 +197,11 @@ public class PreprocessSemanticMarkupPresenter {
 				target, content, asyncCallback);
 	}
 	
-	public void go(final HasWidgets content, final SemanticMarkupTaskRun semanticMarkupTask) {
-		this.semanticMarkupTask = semanticMarkupTask;
+	public void go(final HasWidgets content, final Task task) {
+		this.task = task;
 		loadingPopup.start();
 		semanticMarkupService.preprocess(Authentication.getInstance().getAuthenticationToken(), 
-				semanticMarkupTask, new AsyncCallback<RPCResult<List<PreprocessedDescription>>>() {
+				task, new AsyncCallback<RPCResult<List<PreprocessedDescription>>>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
@@ -213,15 +213,15 @@ public class PreprocessSemanticMarkupPresenter {
 						if(result.isSucceeded()) {
 							if(result.getData().isEmpty()) {
 								loadingPopup.stop();
-								semanticMarkupService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), semanticMarkupTask, 
-										TaskStageEnum.LEARN_TERMS, new AsyncCallback<RPCResult<SemanticMarkupTaskRun>>() {
+								semanticMarkupService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), task, 
+										TaskStageEnum.LEARN_TERMS, new AsyncCallback<RPCResult<Task>>() {
 											@Override
 											public void onFailure(Throwable caught) {
 												caught.printStackTrace();
 											}
 											@Override
-											public void onSuccess(RPCResult<SemanticMarkupTaskRun> semanticMarkupTask) {
-												eventBus.fireEvent(new SemanticMarkupEvent(semanticMarkupTask.getData()));
+											public void onSuccess(RPCResult<Task> taskResult) {
+												eventBus.fireEvent(new SemanticMarkupEvent(taskResult.getData()));
 											}
 								});
 								return;

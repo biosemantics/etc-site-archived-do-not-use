@@ -3,18 +3,17 @@ package edu.arizona.sirls.etc.site.client.event;
 import com.google.gwt.event.shared.GwtEvent;
 
 import edu.arizona.sirls.etc.site.client.HistoryState;
-import edu.arizona.sirls.etc.site.shared.rpc.VisualizationTaskRun;
-import edu.arizona.sirls.etc.site.shared.rpc.db.VisualizationConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 
-public class VisualizationEvent extends GwtEvent<VisualizationEventHandler> implements IETCSiteEvent, ITaskEvent<VisualizationTaskRun> {
+public class VisualizationEvent extends GwtEvent<VisualizationEventHandler> implements IETCSiteEvent, ITaskEvent {
 
 	public static Type<VisualizationEventHandler> TYPE = new Type<VisualizationEventHandler>();
-	private VisualizationTaskRun taskConfiguration;
+	private Task task;
 	
 	public VisualizationEvent() { }
 	
-	public VisualizationEvent(VisualizationTaskRun taskConfiguration) { 
-		this.taskConfiguration = taskConfiguration;
+	public VisualizationEvent(Task task) { 
+		this.task = task;
 	}
 
 	@Override
@@ -43,17 +42,17 @@ public class VisualizationEvent extends GwtEvent<VisualizationEventHandler> impl
 	}
 
 	@Override
-	public VisualizationTaskRun getTaskConfiguration() {
-		return taskConfiguration;
+	public Task getTask() {
+		return task;
 	}
 
 	@Override
-	public void setTaskConfiguration(VisualizationTaskRun task) {
-		this.taskConfiguration = task;
+	public void setTask(Task task) {
+		this.task = task;
 	}
 
 	@Override
-	public boolean hasTaskConfiguration() {
-		return taskConfiguration != null;
+	public boolean hasTask() {
+		return task != null;
 	}
 }

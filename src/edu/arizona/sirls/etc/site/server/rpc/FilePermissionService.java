@@ -89,7 +89,7 @@ public class FilePermissionService extends RemoteServiceServlet implements IFile
 		ShortUser user = UserDAO.getInstance().getShortUser(username);
 		List<Share> invitedShares = ShareDAO.getInstance().getSharesOfInvitee(user);
 		for(Share share : invitedShares) {
-			AbstractTaskConfiguration taskConfiguration = share.getTask().getTaskConfiguration();
+			AbstractTaskConfiguration taskConfiguration = share.getTask().getConfiguration();
 			for(String input : taskConfiguration.getInputs())
 				if(containedInPath(input, filePath))
 					return true;

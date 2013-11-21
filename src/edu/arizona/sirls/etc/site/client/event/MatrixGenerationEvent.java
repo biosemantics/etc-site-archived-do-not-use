@@ -3,17 +3,15 @@ package edu.arizona.sirls.etc.site.client.event;
 import com.google.gwt.event.shared.GwtEvent;
 
 import edu.arizona.sirls.etc.site.client.HistoryState;
-import edu.arizona.sirls.etc.site.shared.rpc.AbstractTaskRun;
-import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
-import edu.arizona.sirls.etc.site.shared.rpc.SemanticMarkupTaskRun;
+import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 
 public class MatrixGenerationEvent extends GwtEvent<MatrixGenerationEventHandler> implements IETCSiteEvent {
 
 	public static Type<MatrixGenerationEventHandler> TYPE = new Type<MatrixGenerationEventHandler>();
-	private MatrixGenerationTaskRun taskRun;
+	private Task task;
 	
-	public MatrixGenerationEvent(MatrixGenerationTaskRun taskRun) {
-		this.taskRun = taskRun;
+	public MatrixGenerationEvent(Task task) {
+		this.task = task;
 	}
 
 	public MatrixGenerationEvent() {}
@@ -43,12 +41,12 @@ public class MatrixGenerationEvent extends GwtEvent<MatrixGenerationEventHandler
 		return this;
 	}
 
-	public MatrixGenerationTaskRun getTaskRun() {
-		return taskRun;
+	public Task getTask() {
+		return task;
 	}
 
-	public void setTaskRun(MatrixGenerationTaskRun taskRun) {
-		this.taskRun = taskRun;
+	public void setTask(Task task) {
+		this.task = task;
 	}
 	
 }

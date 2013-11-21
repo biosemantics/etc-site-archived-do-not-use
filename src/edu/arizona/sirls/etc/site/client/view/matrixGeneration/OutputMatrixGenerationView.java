@@ -12,6 +12,5 @@ public interface OutputMatrixGenerationView {
 	  
 	void setPresenter(Presenter presenter);
 	Widget asWidget();
-	void setOutputText(String output);
 	
 }

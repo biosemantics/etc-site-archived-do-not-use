@@ -21,9 +21,9 @@ import edu.arizona.sirls.etc.site.client.event.TaskManagerEvent;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.shared.rpc.ISemanticMarkupServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskServiceAsync;
-import edu.arizona.sirls.etc.site.shared.rpc.SemanticMarkupTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.db.SemanticMarkupConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.ParseInvocation;
 
 public class ParseSemanticMarkupPresenter {
@@ -40,7 +40,7 @@ public class ParseSemanticMarkupPresenter {
 	private Display display;
 	private HandlerManager eventBus;
 	private ISemanticMarkupServiceAsync semanticMarkupService;
-	private SemanticMarkupTaskRun semanticMarkupTask;
+	private Task task;
 	private LoadingPopup loadingPopup = new LoadingPopup();
 	private HandlerRegistration taskManagerHandlerRegistration;
 	private HandlerRegistration resumableClickableHandlerRegistration;
@@ -57,13 +57,13 @@ public class ParseSemanticMarkupPresenter {
 		display.getNextButton().addClickHandler(new ClickHandler() { 
 			@Override
 			public void onClick(ClickEvent event) { 
-				eventBus.fireEvent(new SemanticMarkupEvent(semanticMarkupTask));
+				eventBus.fireEvent(new SemanticMarkupEvent(task));
 			}
 		});
 		eventBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEventHandler() {
 			@Override
 			public void onResumableTaskEvent(ResumableTasksEvent resumableTasksEvent) {
-				if(resumableTasksEvent.getTasks().containsKey(semanticMarkupTask.getTask().getId())) {
+				if(resumableTasksEvent.getTasks().containsKey(task.getId())) {
 					setResumable();
 				} else {
 					setNonResumable();
@@ -72,11 +72,11 @@ public class ParseSemanticMarkupPresenter {
 		});
 	}
 
-	public void go(final HasWidgets content, SemanticMarkupTaskRun semanticMarkupTask) {
+	public void go(final HasWidgets content, Task task) {
 		loadingPopup.start();
 		display.setNonResumableStatus();
-		this.semanticMarkupTask = semanticMarkupTask;
-		semanticMarkupService.parse(Authentication.getInstance().getAuthenticationToken(), semanticMarkupTask, new AsyncCallback<RPCResult<ParseInvocation>>() {
+		this.task = task;
+		semanticMarkupService.parse(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<ParseInvocation>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
@@ -108,7 +108,7 @@ public class ParseSemanticMarkupPresenter {
 		resumableClickableHandlerRegistration = display.getResumableClickable().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				eventBus.fireEvent(new SemanticMarkupEvent(semanticMarkupTask));
+				eventBus.fireEvent(new SemanticMarkupEvent(task));
 			}
 		});
 		if(taskManagerHandlerRegistration != null)

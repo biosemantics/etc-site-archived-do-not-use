@@ -48,5 +48,7 @@ public interface ITaskServiceAsync {
 	public void updateShare(AuthenticationToken authenticationToken, Share share, AsyncCallback<RPCResult<Share>> callback);
 	
 	public void cancelTask(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Void>> callback);
+
+	public void getTask(AuthenticationToken authenticationToken, Task semanticMarkupTask, AsyncCallback<RPCResult<Task>> asyncCallback);
 	
 }

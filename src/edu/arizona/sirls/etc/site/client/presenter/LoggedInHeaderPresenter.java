@@ -24,7 +24,6 @@ import edu.arizona.sirls.etc.site.client.event.ResumableTasksEventHandler;
 import edu.arizona.sirls.etc.site.client.event.SettingsEvent;
 import edu.arizona.sirls.etc.site.client.event.TaskManagerEvent;
 import edu.arizona.sirls.etc.site.client.view.ImageLabelComposite;
-import edu.arizona.sirls.etc.site.shared.rpc.AbstractTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 
@@ -58,9 +57,9 @@ public class LoggedInHeaderPresenter implements Presenter {
 		eventBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEventHandler() {
 			public void onResumableTaskEvent(ResumableTasksEvent event) {
 				if(taskManager != null) {
-					if(taskManager.hasActiveTaskRun()) {
-						AbstractTaskRun activeTaskRun = taskManager.getActiveTaskRun();
-						if(event.getTasks().containsKey(activeTaskRun.getTask().getId())) {
+					if(taskManager.hasActiveTask()) {
+						Task activeTask = taskManager.getActiveTask();
+						if(event.getTasks().containsKey(activeTask.getId())) {
 							display.setResumableTaskAvailable(event.getTasks().size() > 1);
 						}
 					} else {

@@ -7,6 +7,6 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.VisualizationConfiguration;
 
 public interface IVisualizationServiceAsync {
 
-	public void getVisualizationTask(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<VisualizationTaskRun>> asyncCallback);
+	public void getVisualizationTask(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Task>> asyncCallback);
 
 }

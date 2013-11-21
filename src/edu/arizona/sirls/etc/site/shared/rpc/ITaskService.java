@@ -52,4 +52,6 @@ public interface ITaskService extends RemoteService {
 	
 	public RPCResult<Void> cancelTask(AuthenticationToken authenticationToken, Task task);
 	
+	public RPCResult<Task> getTask(AuthenticationToken authenticationToken, Task semanticMarkupTask);
+	
 }

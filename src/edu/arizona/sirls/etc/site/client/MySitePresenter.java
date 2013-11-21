@@ -125,10 +125,9 @@ import edu.arizona.sirls.etc.site.shared.rpc.IUserService;
 import edu.arizona.sirls.etc.site.shared.rpc.IUserServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IVisualizationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IVisualizationServiceAsync;
-import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
-import edu.arizona.sirls.etc.site.shared.rpc.SemanticMarkupTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
+import edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum;
 
 public class MySitePresenter implements SitePresenter, ValueChangeHandler<String> {
 
@@ -212,7 +211,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(HomeEvent.TYPE,
 		    	new HomeEventHandler() {
 		          public void onHome(HomeEvent event) {
-		        	  taskManager.removeActiveTaskConfiguration();
+		        	  taskManager.removeActiveTask();
 		        	  addToHistory(event);
 		          }
 		        });
@@ -227,7 +226,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(TaskManagerEvent.TYPE,
 		    	new TaskManagerEventHandler() {
 		          public void onTaskManager(TaskManagerEvent event) {
-		        	  taskManager.removeActiveTaskConfiguration();
+		        	  taskManager.removeActiveTask();
 		        	  addToHistory(event);
 		          }
 		        });
@@ -235,7 +234,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(FileManagerEvent.TYPE,
 		    	new FileManagerEventHandler() {
 		          public void onFileManager(FileManagerEvent event) {
-		        	  taskManager.removeActiveTaskConfiguration();
+		        	  taskManager.removeActiveTask();
 		        	  addToHistory(event);
 		          }
 		        });
@@ -243,7 +242,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(HelpEvent.TYPE,
 		    	new HelpEventHandler() {
 		          public void onHelp(HelpEvent event) {
-		        	  taskManager.removeActiveTaskConfiguration();
+		        	  taskManager.removeActiveTask();
 		        	  addToHistory(event);
 		          }
 		        });
@@ -251,7 +250,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(SettingsEvent.TYPE,
 		    	new SettingsEventHandler() {
 		          public void onSettings(SettingsEvent event) {
-		        	  taskManager.removeActiveTaskConfiguration();
+		        	  taskManager.removeActiveTask();
 		        	  addToHistory(event);
 		          }
 		        });
@@ -262,24 +261,24 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    	  private MessageResumeOrStartView messageResumeOrStartView = new MessageResumeOrStartView();
 		    	
 	          public void onSemanticMarkup(final SemanticMarkupEvent semanticMarkupEvent) {	
-	        	  if(!semanticMarkupEvent.hasTaskConfiguration()) {
+	        	  if(!semanticMarkupEvent.hasTask()) {
 		        	  semanticMarkupService.getLatestResumable(Authentication.getInstance().getAuthenticationToken(),
-								new AsyncCallback<RPCResult<SemanticMarkupTaskRun>>() {
+								new AsyncCallback<RPCResult<Task>>() {
 							@Override
 							public void onFailure(Throwable caught) {
 								caught.printStackTrace();
 							}
 							@Override
-							public void onSuccess(final RPCResult<SemanticMarkupTaskRun> latestResumableResult) {
+							public void onSuccess(final RPCResult<Task> latestResumableResult) {
 								if(latestResumableResult.isSucceeded()) {
 									MessageResumeOrStartPresenter messageResumeOrStartPresenter = 
 											new MessageResumeOrStartPresenter(messageResumeOrStartView, "Resumable Task", new ClickHandler() {
 												@Override
 												public void onClick(ClickEvent event) {
 													//resume
-													SemanticMarkupTaskRun latestResumable = latestResumableResult.getData();
-													semanticMarkupEvent.setTaskConfiguration(latestResumable);
-													taskManager.setActiveTaskRun(latestResumable);
+													Task latestResumable = latestResumableResult.getData();
+													semanticMarkupEvent.setTask(latestResumable);
+													taskManager.setActiveTask(latestResumable);
 													addToHistory(semanticMarkupEvent);
 												}
 											}, new ClickHandler() {
@@ -296,7 +295,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 							}
 		        	  });
 	        	  } else {
-	        		  taskManager.setActiveTaskRun(semanticMarkupEvent.getTaskConfiguration());
+	        		  taskManager.setActiveTask(semanticMarkupEvent.getTask());
 	        		  addToHistory(semanticMarkupEvent);
 	        	  }
 	          }
@@ -305,7 +304,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(MatrixGenerationEvent.TYPE, new MatrixGenerationEventHandler() {
 			@Override
 			public void onMatrixGeneration(MatrixGenerationEvent event) {
-        		  taskManager.setActiveTaskRun(event.getTaskRun());
+        		  taskManager.setActiveTask(event.getTask());
         		  addToHistory(event);
 			}
 	    });
@@ -313,7 +312,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(TreeGenerationEvent.TYPE,
 		    	new TreeGenerationEventHandler() {
 		          public void onTreeGeneration(TreeGenerationEvent event) {
-		        	  taskManager.setActiveTaskRun(event.getTaskConfiguration());
+		        	  taskManager.setActiveTask(event.getTask());
 		        	  addToHistory(event);
 		          }
 		        });
@@ -321,7 +320,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(TaxonomyComparisonEvent.TYPE,
 		    	new TaxonomyComparisonEventHandler() {
 		          public void onTaxonomyComparison(TaxonomyComparisonEvent event) {
-		        	  taskManager.setActiveTaskRun(event.getTaskConfiguration());
+		        	  taskManager.setActiveTask(event.getTask());
 		        	  addToHistory(event);
 		          }
 		        });
@@ -329,7 +328,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    eventBus.addHandler(VisualizationEvent.TYPE,
 		    	new VisualizationEventHandler() {
 		          public void onVisualization(VisualizationEvent event) {
-		        	  taskManager.setActiveTaskRun(event.getTaskConfiguration());
+		        	  taskManager.setActiveTask(event.getTask());
 		        	  addToHistory(event);
 		          }
 		        });
@@ -581,15 +580,15 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 						caught.printStackTrace();
 					}
 					public void onSuccess() {
-						if(!taskManager.hasActiveTaskRun() || !(taskManager.getActiveTaskRun() instanceof SemanticMarkupTaskRun)) {
+						if(!taskManager.hasActiveTask() || !(taskManager.getActiveTask().getTaskType().getTaskTypeEnum().equals(TaskTypeEnum.SEMANTIC_MARKUP))) {
 							if (inputSemanticMarkupPresenter == null) {
 								inputSemanticMarkupPresenter = new InputSemanticMarkupPresenter(
 										eventBus, new InputSemanticMarkupView(), fileService, semanticMarkupService);
 							}
 							inputSemanticMarkupPresenter.go(content);
 						} else {
-							final SemanticMarkupTaskRun semanticMarkupTask = (SemanticMarkupTaskRun)taskManager.getActiveTaskRun();
-							taskService.isComplete(Authentication.getInstance().getAuthenticationToken(), semanticMarkupTask.getTask(), 
+							final Task semanticMarkupTask = taskManager.getActiveTask();
+							taskService.isComplete(Authentication.getInstance().getAuthenticationToken(), semanticMarkupTask, 
 									new AsyncCallback<RPCResult<Boolean>>() {
 								@Override
 								public void onFailure(Throwable caught) {
@@ -605,19 +604,19 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 											}
 											inputSemanticMarkupPresenter.go(content);
 										} else {
-											semanticMarkupService.getSemanticMarkupTaskRun(Authentication.getInstance().getAuthenticationToken(), 
-													semanticMarkupTask.getTask(), 
-													new AsyncCallback<RPCResult<SemanticMarkupTaskRun>>() {
+											taskService.getTask(Authentication.getInstance().getAuthenticationToken(), 
+													semanticMarkupTask, 
+													new AsyncCallback<RPCResult<Task>>() {
 														@Override
 														public void onFailure(Throwable caught) {
 															caught.printStackTrace();
 														}
 						
 														@Override
-														public void onSuccess(RPCResult<SemanticMarkupTaskRun> semanticMarkupTaskResult) {
+														public void onSuccess(RPCResult<Task> semanticMarkupTaskResult) {
 															if(semanticMarkupTaskResult.isSucceeded()) {
-																SemanticMarkupTaskRun semanticMarkupTask = semanticMarkupTaskResult.getData();
-																switch(edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.TaskStageEnum.valueOf(semanticMarkupTask.getTask().getTaskStage().getTaskStage())) {
+																Task semanticMarkupTask = semanticMarkupTaskResult.getData();
+																switch(edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.TaskStageEnum.valueOf(semanticMarkupTask.getTaskStage().getTaskStage())) {
 																case PREPROCESS_TEXT:
 																	if (preprocessSemanticMarkupPresenter == null) {
 																		preprocessSemanticMarkupPresenter = 									
@@ -682,15 +681,15 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 						caught.printStackTrace();
 					}
 					public void onSuccess() {
-						if(!taskManager.hasActiveTaskRun() || !(taskManager.getActiveTaskRun() instanceof MatrixGenerationTaskRun)) {
+						if(!taskManager.hasActiveTask() || !(taskManager.getActiveTask().getTaskType().getTaskTypeEnum().equals(TaskTypeEnum.MATRIX_GENERATION))) {
 							if (inputMatrixGenerationPresenter == null) {
 								inputMatrixGenerationPresenter = new InputMatrixGenerationPresenter(
 										eventBus, new InputMatrixGenerationViewImpl(), matrixGenerationService, fileService);
 							}
 							inputMatrixGenerationPresenter.go(content);
 						} else {
-							final MatrixGenerationTaskRun matrixGenerationTaskRun = (MatrixGenerationTaskRun)taskManager.getActiveTaskRun();
-							taskService.isComplete(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTaskRun.getTask(), 
+							final Task matrixGenerationTask = taskManager.getActiveTask();
+							taskService.isComplete(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTask, 
 									new AsyncCallback<RPCResult<Boolean>>() {
 								@Override
 								public void onFailure(Throwable caught) {
@@ -706,19 +705,19 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 											}
 											inputMatrixGenerationPresenter.go(content);
 										} else {
-											matrixGenerationService.getMatrixGenerationTaskRun(Authentication.getInstance().getAuthenticationToken(), 
-													matrixGenerationTaskRun.getTask(), 
-													new AsyncCallback<RPCResult<MatrixGenerationTaskRun>>() {
+											taskService.getTask(Authentication.getInstance().getAuthenticationToken(), 
+													matrixGenerationTask, 
+													new AsyncCallback<RPCResult<Task>>() {
 														@Override
 														public void onFailure(Throwable caught) {
 															caught.printStackTrace();
 														}
 						
 														@Override
-														public void onSuccess(RPCResult<MatrixGenerationTaskRun> matrixGenerationTaskRunResult) {
-															if(matrixGenerationTaskRunResult.isSucceeded()) {
-																MatrixGenerationTaskRun matrixGenerationTask = matrixGenerationTaskRunResult.getData();
-																switch(edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum.valueOf(matrixGenerationTask.getTask().getTaskStage().getTaskStage())) {
+														public void onSuccess(RPCResult<Task> matrixGenerationTaskResult) {
+															if(matrixGenerationTaskResult.isSucceeded()) {
+																Task matrixGenerationTask = matrixGenerationTaskResult.getData();
+																switch(edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum.valueOf(matrixGenerationTask.getTaskStage().getTaskStage())) {
 																case PROCESS:
 																	if (processMatrixGenerationPresenter == null) {
 																		processMatrixGenerationPresenter = 									

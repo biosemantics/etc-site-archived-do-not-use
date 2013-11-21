@@ -1,25 +1,25 @@
 package edu.arizona.sirls.etc.site.client;
 
-import edu.arizona.sirls.etc.site.shared.rpc.AbstractTaskRun;
+import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 
 public class TaskManager {
 
-	private AbstractTaskRun activeTaskRun; 
+	private Task activeTask; 
 	
-	public AbstractTaskRun getActiveTaskRun() {
-		return activeTaskRun;
+	public Task getActiveTask() {
+		return activeTask;
 	}
 	
-	public boolean hasActiveTaskRun() {
-		return this.activeTaskRun != null;
+	public boolean hasActiveTask() {
+		return this.activeTask != null;
 	}
 	
-	public void setActiveTaskRun(AbstractTaskRun taskRun) {
-		this.activeTaskRun = taskRun;
+	public void setActiveTask(Task task) {
+		this.activeTask = task;
 	}
 
-	public void removeActiveTaskConfiguration() {
-		this.activeTaskRun = null;
+	public void removeActiveTask() {
+		this.activeTask = null;
 	}
 	
 }

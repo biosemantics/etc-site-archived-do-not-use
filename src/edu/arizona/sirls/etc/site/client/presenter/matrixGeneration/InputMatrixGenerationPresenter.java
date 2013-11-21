@@ -22,9 +22,8 @@ import edu.arizona.sirls.etc.site.client.view.fileManager.SelectableFileTreeView
 import edu.arizona.sirls.etc.site.client.view.matrixGeneration.InputMatrixGenerationView;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
-import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
-import edu.arizona.sirls.etc.site.shared.rpc.SemanticMarkupTaskRun;
+import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 
 public class InputMatrixGenerationPresenter implements InputMatrixGenerationView.Presenter, Presenter {
@@ -58,17 +57,17 @@ public class InputMatrixGenerationPresenter implements InputMatrixGenerationView
 	@Override
 	public void onNext(String taskName, String input) {
 		matrixGenerationService.start(Authentication.getInstance().getAuthenticationToken(), 
-				taskName, input, new AsyncCallback<RPCResult<MatrixGenerationTaskRun>>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						caught.printStackTrace();
-					}
-					@Override
-					public void onSuccess(RPCResult<MatrixGenerationTaskRun> result) {
-						if(result.isSucceeded())
-							eventBus.fireEvent(new MatrixGenerationEvent(result.getData()));
-						//ConfigurationManager.getInstance().setMatrixGenerationConfiguration(result);
-					}
+				taskName, input, new AsyncCallback<RPCResult<Task>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+			}
+			@Override
+			public void onSuccess(RPCResult<Task> result) {
+				if(result.isSucceeded())
+					eventBus.fireEvent(new MatrixGenerationEvent(result.getData()));
+				//ConfigurationManager.getInstance().setMatrixGenerationConfiguration(result);
+			}
 		});
 	}
 

@@ -14,27 +14,25 @@ import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.TaskStageEnum;
 @RemoteServiceRelativePath("semanticMarkup")
 public interface ISemanticMarkupService extends RemoteService {
 
-	public RPCResult<SemanticMarkupTaskRun> start(AuthenticationToken authenticationToken, String taskName, String filePath, String glossaryName);
+	public RPCResult<Task> start(AuthenticationToken authenticationToken, String taskName, String filePath, String glossaryName);
 	
-	public RPCResult<List<PreprocessedDescription>> preprocess(AuthenticationToken authenticationToken, SemanticMarkupTaskRun semanticMarkupTask);
+	public RPCResult<List<PreprocessedDescription>> preprocess(AuthenticationToken authenticationToken, Task semanticMarkupTask);
 	
-	public RPCResult<LearnInvocation> learn(AuthenticationToken authenticationToken, SemanticMarkupTaskRun semanticMarkupTask);
+	public RPCResult<LearnInvocation> learn(AuthenticationToken authenticationToken, Task semanticMarkupTask);
 
-	public RPCResult<SemanticMarkupTaskRun> review(AuthenticationToken authenticationToken, SemanticMarkupTaskRun semanticMarkupTask);
+	public RPCResult<Task> review(AuthenticationToken authenticationToken, Task semanticMarkupTask);
 	
-	public RPCResult<ParseInvocation> parse(AuthenticationToken authenticationToken, SemanticMarkupTaskRun semanticMarkupTask);
+	public RPCResult<ParseInvocation> parse(AuthenticationToken authenticationToken, Task semanticMarkupTask);
 	
-	public RPCResult<Void> output(AuthenticationToken authenticationToken, SemanticMarkupTaskRun semanticMarkupTask);
+	public RPCResult<Void> output(AuthenticationToken authenticationToken, Task semanticMarkupTask);
 
-	public RPCResult<SemanticMarkupTaskRun> goToTaskStage(AuthenticationToken authenticationToken, SemanticMarkupTaskRun semanticMarkupTask, TaskStageEnum taskStage);
+	public RPCResult<Task> goToTaskStage(AuthenticationToken authenticationToken, Task semanticMarkupTask, TaskStageEnum taskStage);
 
 	public RPCResult<String> getDescription(AuthenticationToken authenticationToken, String filePath);
 	
 	public RPCResult<Void> setDescription(AuthenticationToken authenticationToken, String filePath, String description);
 	
-	public RPCResult<SemanticMarkupTaskRun> getLatestResumable(AuthenticationToken authenticationToken);
-	
-	public RPCResult<SemanticMarkupTaskRun> getSemanticMarkupTaskRun(AuthenticationToken authenticationToken, Task task);
+	public RPCResult<Task> getLatestResumable(AuthenticationToken authenticationToken);
 	
 	public RPCResult<Void> cancel(AuthenticationToken authenticationToken, Task task);
 

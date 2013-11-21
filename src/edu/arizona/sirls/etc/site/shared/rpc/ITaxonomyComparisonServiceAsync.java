@@ -7,6 +7,6 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.TaxonomyComparisonConfiguration;
 
 public interface ITaxonomyComparisonServiceAsync {
 
-	public void getTaxonomyComparisonTask(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<TaxonomyComparisonTaskRun>> asyncCallback);
+	public void getTaxonomyComparisonTask(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Task>> asyncCallback);
 
 }

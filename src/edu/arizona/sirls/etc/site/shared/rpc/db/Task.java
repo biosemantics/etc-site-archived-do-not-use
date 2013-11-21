@@ -65,7 +65,7 @@ public class Task implements Serializable, Comparable<Task> {
 		this.taskStage = taskStage;
 	}
 
-	public AbstractTaskConfiguration getTaskConfiguration() {
+	public AbstractTaskConfiguration getConfiguration() {
 		return taskConfiguration;
 	}
 

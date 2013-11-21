@@ -14,7 +14,6 @@ import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationService;
 import edu.arizona.sirls.etc.site.shared.rpc.ISemanticMarkupService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskService;
-import edu.arizona.sirls.etc.site.shared.rpc.SemanticMarkupTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Share;
 import edu.arizona.sirls.etc.site.shared.rpc.db.ShareDAO;
@@ -45,6 +44,23 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 		} catch(Exception e) {
 			e.printStackTrace();
 			return new RPCResult<List<Task>>(false, "Internal Server Error");
+		}
+	}
+	
+	@Override
+	public RPCResult<Task> getTask(AuthenticationToken authenticationToken, Task task) {
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<Task>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<Task>(false, "Authentication failed");
+		
+		try {
+			Task result = TaskDAO.getInstance().getTask(task.getId());
+			return new RPCResult<Task>(true, result);
+		} catch(Exception e) {
+			e.printStackTrace();
+			return new RPCResult<Task>(false, "Internal Server Error");
 		}
 	}
 
@@ -362,5 +378,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 			return new RPCResult<Void>(false, "Internal Server Error");
 		}
 	}
+
+
 
 }

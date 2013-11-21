@@ -10,15 +10,14 @@ import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.client.view.matrixGeneration.OutputMatrixGenerationView;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
-import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
+import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 
 public class OutputMatrixGenerationPresenter implements OutputMatrixGenerationView.Presenter {
 
 	private HandlerManager eventBus;
 	private OutputMatrixGenerationView view;
 	private LoadingPopup loadingPopup = new LoadingPopup();
-	private MatrixGenerationTaskRun matrixGenerationTaskRun;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
 
 	public OutputMatrixGenerationPresenter(HandlerManager eventBus, OutputMatrixGenerationView view, IFileServiceAsync fileService, IMatrixGenerationServiceAsync matrixGenerationService) {
@@ -28,10 +27,9 @@ public class OutputMatrixGenerationPresenter implements OutputMatrixGenerationVi
 		this.matrixGenerationService = matrixGenerationService;
 	}
 
-	public void go(final HasWidgets container, final MatrixGenerationTaskRun matrixGenerationTaskRun) {
+	public void go(final HasWidgets container, final Task task) {
 		loadingPopup.start();
-		this.matrixGenerationTaskRun = matrixGenerationTaskRun;
-		matrixGenerationService.output(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTaskRun, new AsyncCallback<RPCResult<Void>>() {
+		matrixGenerationService.output(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Void>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
@@ -39,7 +37,7 @@ public class OutputMatrixGenerationPresenter implements OutputMatrixGenerationVi
 			}
 			@Override
 			public void onSuccess(RPCResult<Void> result) {
-				view.setOutputText(matrixGenerationTaskRun.getConfiguration().getOutput());
+				//view.setOutputText(task.getConfiguration().getOutput());
 				container.clear();
 				container.add(view.asWidget());
 				loadingPopup.stop();

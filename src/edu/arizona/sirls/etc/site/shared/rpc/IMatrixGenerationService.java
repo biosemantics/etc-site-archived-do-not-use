@@ -14,15 +14,13 @@ import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.PreprocessedDescript
 @RemoteServiceRelativePath("matrixGeneration")
 public interface IMatrixGenerationService extends RemoteService {
 
-	public RPCResult<MatrixGenerationTaskRun> start(AuthenticationToken authenticationToken, String taskName, String input);
+	public RPCResult<Task> start(AuthenticationToken authenticationToken, String taskName, String input);
 	
-	public RPCResult<MatrixGenerationTaskRun> process(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTaskRun);
+	public RPCResult<Task> process(AuthenticationToken authenticationToken, Task task);
 	
-	public RPCResult<Void> output(AuthenticationToken authenticationToken, MatrixGenerationTaskRun matrixGenerationTaskRun);
+	public RPCResult<Void> output(AuthenticationToken authenticationToken, Task task);
 
-	public RPCResult<MatrixGenerationTaskRun> getLatestResumable(AuthenticationToken authenticationToken);
-	
-	public RPCResult<MatrixGenerationTaskRun> getMatrixGenerationTaskRun(AuthenticationToken authenticationToken, Task task);
+	public RPCResult<Task> getLatestResumable(AuthenticationToken authenticationToken);
 	
 	public RPCResult<Void> cancel(AuthenticationToken authenticationToken, Task task);
 

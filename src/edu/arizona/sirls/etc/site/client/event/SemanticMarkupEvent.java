@@ -3,27 +3,27 @@ package edu.arizona.sirls.etc.site.client.event;
 import com.google.gwt.event.shared.GwtEvent;
 
 import edu.arizona.sirls.etc.site.client.HistoryState;
-import edu.arizona.sirls.etc.site.shared.rpc.SemanticMarkupTaskRun;
+import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 
-public class SemanticMarkupEvent extends GwtEvent<SemanticMarkupEventHandler> implements IETCSiteEvent, ITaskEvent<SemanticMarkupTaskRun> {
+public class SemanticMarkupEvent extends GwtEvent<SemanticMarkupEventHandler> implements IETCSiteEvent, ITaskEvent {
 
 	public static Type<SemanticMarkupEventHandler> TYPE = new Type<SemanticMarkupEventHandler>();
-	private SemanticMarkupTaskRun taskConfiguration;
+	private Task task;
 		
 	public SemanticMarkupEvent() { }
 	
-	public SemanticMarkupEvent(SemanticMarkupTaskRun taskConfiguration) {
-		this.taskConfiguration = taskConfiguration;
+	public SemanticMarkupEvent(Task task) {
+		this.task = task;
 	}
 	
 	@Override
-	public SemanticMarkupTaskRun getTaskConfiguration() {
-		return taskConfiguration;
+	public Task getTask() {
+		return task;
 	}
 
 	@Override
-	public void setTaskConfiguration(SemanticMarkupTaskRun task) {
-		this.taskConfiguration = task;
+	public void setTask(Task task) {
+		this.task = task;
 	}
 
 	@Override
@@ -37,8 +37,8 @@ public class SemanticMarkupEvent extends GwtEvent<SemanticMarkupEventHandler> im
 	}
 
 	@Override
-	public boolean hasTaskConfiguration() {
-		return this.taskConfiguration != null;
+	public boolean hasTask() {
+		return this.task != null;
 	}
 
 	@Override

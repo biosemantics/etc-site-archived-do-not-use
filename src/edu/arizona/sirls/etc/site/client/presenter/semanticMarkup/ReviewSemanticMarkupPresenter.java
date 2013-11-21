@@ -4,11 +4,9 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
@@ -16,9 +14,9 @@ import edu.arizona.sirls.etc.site.client.event.SemanticMarkupEvent;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.shared.rpc.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.ISemanticMarkupServiceAsync;
-import edu.arizona.sirls.etc.site.shared.rpc.SemanticMarkupTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.db.SemanticMarkupConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.TaskStageEnum;
 
 public class ReviewSemanticMarkupPresenter {
@@ -31,7 +29,7 @@ public class ReviewSemanticMarkupPresenter {
 
 	private HandlerManager eventBus;
 	private Display display;
-	private SemanticMarkupTaskRun semanticMarkupTask;
+	private Task task;
 	private ISemanticMarkupServiceAsync semanticMarkupService;
 	private LoadingPopup loadingPopup = new LoadingPopup();
 	
@@ -53,36 +51,38 @@ public class ReviewSemanticMarkupPresenter {
 	}
 	
 	public void nextStep() {
-		semanticMarkupService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), semanticMarkupTask, 
-				TaskStageEnum.PARSE_TEXT, new AsyncCallback<RPCResult<SemanticMarkupTaskRun>>() {
+		semanticMarkupService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), task, 
+				TaskStageEnum.PARSE_TEXT, new AsyncCallback<RPCResult<Task>>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						caught.printStackTrace();
 					}
 					@Override
-					public void onSuccess(RPCResult<SemanticMarkupTaskRun> semanticMarkupTask) {
-						if(semanticMarkupTask.isSucceeded())
-							eventBus.fireEvent(new SemanticMarkupEvent(semanticMarkupTask.getData()));
+					public void onSuccess(RPCResult<Task> taskResult) {
+						if(taskResult.isSucceeded())
+							eventBus.fireEvent(new SemanticMarkupEvent(taskResult.getData()));
 					}
 		});
 	}
 
-	public void go(final HasWidgets content, SemanticMarkupTaskRun semanticMarkupTask) {
+	public void go(final HasWidgets content, Task task) {
 		loadingPopup.start();
-		this.semanticMarkupTask = semanticMarkupTask;
+		this.task = task;
 		semanticMarkupService.review(Authentication.getInstance().getAuthenticationToken(), 
-				semanticMarkupTask, new AsyncCallback<RPCResult<SemanticMarkupTaskRun>>() {
+				task, new AsyncCallback<RPCResult<Task>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
 				loadingPopup.stop();
 			}
 			@Override
-			public void onSuccess(RPCResult<SemanticMarkupTaskRun> semanticMarkupTask) {
-				if(semanticMarkupTask.isSucceeded()) {
-					display.getFrame().setUrl(Configuration.otoLiteURL + "&uploadID=" + semanticMarkupTask.getData().getConfiguration().getOtoUploadId() + 
-							"&secret=" + semanticMarkupTask.getData().getConfiguration().getOtoSecret());
-					ReviewSemanticMarkupPresenter.this.semanticMarkupTask = semanticMarkupTask.getData();
+			public void onSuccess(RPCResult<Task> taskResult) {
+				if(taskResult.isSucceeded()) {
+					Task task = taskResult.getData();
+					SemanticMarkupConfiguration configuration = (SemanticMarkupConfiguration)task.getConfiguration();
+					display.getFrame().setUrl(Configuration.otoLiteURL + "&uploadID=" + configuration.getOtoUploadId() + 
+							"&secret=" + configuration.getOtoSecret());
+					ReviewSemanticMarkupPresenter.this.task = taskResult.getData();
 					content.clear();
 					content.add(display.asWidget());
 				}

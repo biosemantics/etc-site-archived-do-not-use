@@ -12,28 +12,26 @@ import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.TaskStageEnum;
 
 public interface ISemanticMarkupServiceAsync {
 
-	public void start(AuthenticationToken authenticationToken, String taskName, String filePath, String glossaryName, AsyncCallback<RPCResult<SemanticMarkupTaskRun>> callback);
+	public void start(AuthenticationToken authenticationToken, String taskName, String filePath, String glossaryName, AsyncCallback<RPCResult<Task>> callback);
 	
-	public void preprocess(AuthenticationToken authenticationToken, SemanticMarkupTaskRun semanticMarkupTask, AsyncCallback<RPCResult<List<PreprocessedDescription>>> callback);
+	public void preprocess(AuthenticationToken authenticationToken, Task semanticMarkupTask, AsyncCallback<RPCResult<List<PreprocessedDescription>>> callback);
 
-	public void learn(AuthenticationToken authenticationToken, SemanticMarkupTaskRun semanticMarkupTask, AsyncCallback<RPCResult<LearnInvocation>> callback);
+	public void learn(AuthenticationToken authenticationToken, Task semanticMarkupTask, AsyncCallback<RPCResult<LearnInvocation>> callback);
 	
-	public void review(AuthenticationToken authenticationToken, SemanticMarkupTaskRun semanticMarkupTask, AsyncCallback<RPCResult<SemanticMarkupTaskRun>> callback);
+	public void review(AuthenticationToken authenticationToken, Task semanticMarkupTask, AsyncCallback<RPCResult<Task>> callback);
 
-	public void parse(AuthenticationToken authenticationToken, SemanticMarkupTaskRun semanticMarkupTask, AsyncCallback<RPCResult<ParseInvocation>> callback);
+	public void parse(AuthenticationToken authenticationToken, Task semanticMarkupTask, AsyncCallback<RPCResult<ParseInvocation>> callback);
 	
-	public void output(AuthenticationToken authenticationToken, SemanticMarkupTaskRun semanticMarkupTask, AsyncCallback<RPCResult<Void>> callback);
+	public void output(AuthenticationToken authenticationToken, Task semanticMarkupTask, AsyncCallback<RPCResult<Void>> callback);
 
-	public void goToTaskStage(AuthenticationToken authenticationToken, SemanticMarkupTaskRun semanticMarkupTask, TaskStageEnum taskStage, 
-			AsyncCallback<RPCResult<SemanticMarkupTaskRun>> callback);
+	public void goToTaskStage(AuthenticationToken authenticationToken, Task semanticMarkupTask, TaskStageEnum taskStage, 
+			AsyncCallback<RPCResult<Task>> callback);
 	
 	public void getDescription(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<String>> callback);
 	
 	public void setDescription(AuthenticationToken authenticationToken, String filePath, String description, AsyncCallback<RPCResult<Void>> callback);
 
-	public void getLatestResumable(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<SemanticMarkupTaskRun>> asyncCallback);
-
-	public void getSemanticMarkupTaskRun(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<SemanticMarkupTaskRun>> callback);
+	public void getLatestResumable(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<Task>> asyncCallback);
 	
 	public void cancel(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Void>> callback);
 

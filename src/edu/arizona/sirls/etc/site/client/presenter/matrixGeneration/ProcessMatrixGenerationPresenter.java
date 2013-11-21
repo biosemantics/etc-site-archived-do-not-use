@@ -14,8 +14,8 @@ import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.client.view.matrixGeneration.InputMatrixGenerationView;
 import edu.arizona.sirls.etc.site.client.view.matrixGeneration.ProcessMatrixGenerationView;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
-import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
+import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.LearnInvocation;
 
 public class ProcessMatrixGenerationPresenter implements ProcessMatrixGenerationView.Presenter {
@@ -23,8 +23,8 @@ public class ProcessMatrixGenerationPresenter implements ProcessMatrixGeneration
 	private HandlerManager eventBus;
 	private ProcessMatrixGenerationView view;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
-	private MatrixGenerationTaskRun matrixGenerationTaskRun;
 	private LoadingPopup loadingPopup = new LoadingPopup();
+	private Task task;
 
 	public ProcessMatrixGenerationPresenter(HandlerManager eventBus, ProcessMatrixGenerationView view, IMatrixGenerationServiceAsync matrixGenerationService) {
 		this.eventBus = eventBus;
@@ -33,15 +33,15 @@ public class ProcessMatrixGenerationPresenter implements ProcessMatrixGeneration
 		this.matrixGenerationService = matrixGenerationService;
 	}
 
-	public void go(final HasWidgets container, final MatrixGenerationTaskRun matrixGenerationTaskRun) {
+	public void go(final HasWidgets container, final Task task) {
 		loadingPopup.start();
 		view.setNonResumable();
-		this.matrixGenerationTaskRun = matrixGenerationTaskRun;
+		this.task = task;
 		
 		eventBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEventHandler() {	
 			@Override
 			public void onResumableTaskEvent(ResumableTasksEvent resumableTasksEvent) {
-				if(resumableTasksEvent.getTasks().containsKey(matrixGenerationTaskRun.getTask().getId())) {
+				if(resumableTasksEvent.getTasks().containsKey(task.getId())) {
 					view.setResumable();
 				} else {
 					view.setNonResumable();
@@ -49,8 +49,8 @@ public class ProcessMatrixGenerationPresenter implements ProcessMatrixGeneration
 			}
 		});
 		
-		matrixGenerationService.process(Authentication.getInstance().getAuthenticationToken(), matrixGenerationTaskRun, new AsyncCallback<RPCResult<MatrixGenerationTaskRun>>() { 
-			public void onSuccess(RPCResult<MatrixGenerationTaskRun> result) {
+		matrixGenerationService.process(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Task>>() { 
+			public void onSuccess(RPCResult<Task> result) {
 				if(result.isSucceeded()) {
 					container.clear();
 					container.add(view.asWidget());
@@ -66,7 +66,7 @@ public class ProcessMatrixGenerationPresenter implements ProcessMatrixGeneration
 
 	@Override
 	public void onNext() {
-		eventBus.fireEvent(new MatrixGenerationEvent(matrixGenerationTaskRun));
+		eventBus.fireEvent(new MatrixGenerationEvent(task));
 	}
 
 	@Override

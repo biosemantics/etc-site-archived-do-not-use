@@ -39,11 +39,12 @@ import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.ISemanticMarkupService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskService;
-import edu.arizona.sirls.etc.site.shared.rpc.SemanticMarkupTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
+import edu.arizona.sirls.etc.site.shared.rpc.db.AbstractTaskConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.ConfigurationDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Glossary;
 import edu.arizona.sirls.etc.site.shared.rpc.db.GlossaryDAO;
+import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.SemanticMarkupConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.SemanticMarkupConfigurationDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.ShortUser;
@@ -79,18 +80,18 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	}
 	
 	@Override
-	public RPCResult<SemanticMarkupTaskRun> start(AuthenticationToken authenticationToken, String taskName, String filePath, String glossaryName) {
+	public RPCResult<Task> start(AuthenticationToken authenticationToken, String taskName, String filePath, String glossaryName) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
 		
 		if(!authResult.isSucceeded()) 
-			return new RPCResult<SemanticMarkupTaskRun>(false, authResult.getMessage());
+			return new RPCResult<Task>(false, authResult.getMessage());
 		if(!authResult.getData().getResult())
-			return new RPCResult<SemanticMarkupTaskRun>(false, "Authentication failed");
+			return new RPCResult<Task>(false, "Authentication failed");
 		
 		try {
 			RPCResult<List<String>> directoriesFilesResult = fileService.getDirectoriesFiles(authenticationToken, filePath);
 			if(!directoriesFilesResult.isSucceeded()) {
-				return new RPCResult<SemanticMarkupTaskRun>(false, directoriesFilesResult.getMessage());
+				return new RPCResult<Task>(false, directoriesFilesResult.getMessage());
 			}
 			int numberOfInputFiles = directoriesFilesResult.getData().size();
 			Glossary glossary = GlossaryDAO.getInstance().getGlossary(glossaryName);
@@ -118,15 +119,15 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			TaskDAO.getInstance().updateTask(task);
 
 			fileService.setInUse(authenticationToken, true, filePath, task);
-			return new RPCResult<SemanticMarkupTaskRun>(true, new SemanticMarkupTaskRun(semanticMarkupConfiguration, task));
+			return new RPCResult<Task>(true, task);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new RPCResult<SemanticMarkupTaskRun>(false, "Internal Server Error");
+			return new RPCResult<Task>(false, "Internal Server Error");
 		}
 	}
 	
 	@Override
-	public RPCResult<List<PreprocessedDescription>> preprocess(AuthenticationToken authenticationToken, SemanticMarkupTaskRun semanticMarkupTaskRun) {
+	public RPCResult<List<PreprocessedDescription>> preprocess(AuthenticationToken authenticationToken, Task task) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
 		if(!authResult.isSucceeded()) 
 			return new RPCResult<List<PreprocessedDescription>>(false, authResult.getMessage());
@@ -135,14 +136,17 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		
 		try {
 			List<PreprocessedDescription> result = new LinkedList<PreprocessedDescription>();
-			Task task = semanticMarkupTaskRun.getTask();
 			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.SEMANTIC_MARKUP);
 			TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.PREPROCESS_TEXT.toString());
 			task.setTaskStage(taskStage);
 			TaskDAO.getInstance().updateTask(task);
 			//do preprocessing here, return result immediately or always only return an invocation
 			//and make user come back when ready?
-			String inputDirectory = semanticMarkupTaskRun.getConfiguration().getInput();
+			final AbstractTaskConfiguration configuration = task.getConfiguration();
+			if(!(configuration instanceof SemanticMarkupConfiguration))
+				return new RPCResult<List<PreprocessedDescription>>(false, "Not a compatible task");
+			final SemanticMarkupConfiguration semanticMarkupConfiguration = (SemanticMarkupConfiguration)configuration;
+			String inputDirectory = semanticMarkupConfiguration.getInput();
 			
 			RPCResult<Boolean> isDirectoryResult = fileService.isDirectory(authenticationToken, inputDirectory);
 			if(isDirectoryResult.isSucceeded() && isDirectoryResult.getData()) {
@@ -171,7 +175,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	}
 	
 	@Override
-	public RPCResult<LearnInvocation> learn(AuthenticationToken authenticationToken, final SemanticMarkupTaskRun semanticMarkupTaskRun) {
+	public RPCResult<LearnInvocation> learn(AuthenticationToken authenticationToken, final Task task) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
 		if(!authResult.isSucceeded()) 
 			return new RPCResult<LearnInvocation>(false, authResult.getMessage());
@@ -182,12 +186,15 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			int numberOfSentences = getNumberOfSentences();
 			int numberOfWords = getNumberOfWords();
 			
-			final SemanticMarkupConfiguration semanticMarkupConfiguration = semanticMarkupTaskRun.getConfiguration();
+			final AbstractTaskConfiguration configuration = task.getConfiguration();
+			if(!(configuration instanceof SemanticMarkupConfiguration))
+				return new RPCResult<LearnInvocation>(false, "Not a compatible task");
+			final SemanticMarkupConfiguration semanticMarkupConfiguration = (SemanticMarkupConfiguration)configuration;
+
 			//browser back button may invoke another "learn"
 			if(activeLearnFutures.containsKey(semanticMarkupConfiguration.getConfiguration().getId())) {
 				return new RPCResult<LearnInvocation>(true, new LearnInvocation(numberOfSentences, numberOfWords));
 			} else {
-				final Task task = TaskDAO.getInstance().getTask(semanticMarkupConfiguration.getConfiguration());
 				final TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.SEMANTIC_MARKUP);
 				TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.LEARN_TERMS.toString());
 				task.setTaskStage(taskStage);
@@ -243,31 +250,30 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	}
 	
 	@Override
-	public RPCResult<SemanticMarkupTaskRun> review(AuthenticationToken authenticationToken, SemanticMarkupTaskRun semanticMarkupTaskRun) {
+	public RPCResult<Task> review(AuthenticationToken authenticationToken, Task task) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
 		if(!authResult.isSucceeded()) 
-			return new RPCResult<SemanticMarkupTaskRun>(false, authResult.getMessage());
+			return new RPCResult<Task>(false, authResult.getMessage());
 		if(!authResult.getData().getResult())
-			return new RPCResult<SemanticMarkupTaskRun>(false, "Authentication failed");
+			return new RPCResult<Task>(false, "Authentication failed");
 		try {
-			Task task = semanticMarkupTaskRun.getTask();
 			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.SEMANTIC_MARKUP);
 			TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.REVIEW_TERMS.toString());
 			task.setTaskStage(taskStage);
 			TaskDAO.getInstance().updateTask(task);
 			SemanticMarkupConfiguration configuration = 
 					SemanticMarkupConfigurationDAO.getInstance().getSemanticMarkupConfiguration(
-							semanticMarkupTaskRun.getConfiguration().getConfiguration().getId());
+							task.getConfiguration().getConfiguration().getId());
 			
-			return new RPCResult<SemanticMarkupTaskRun>(true, new SemanticMarkupTaskRun(configuration, task));
+			return new RPCResult<Task>(true, task);
 		} catch(Exception e) {
 			e.printStackTrace();
-			return new RPCResult<SemanticMarkupTaskRun>(false, "Internal Server Error");
+			return new RPCResult<Task>(false, "Internal Server Error");
 		}
 	}
 	
 	@Override
-	public RPCResult<ParseInvocation> parse(final AuthenticationToken authenticationToken, final SemanticMarkupTaskRun semanticMarkupTaskRun) {
+	public RPCResult<ParseInvocation> parse(final AuthenticationToken authenticationToken, final Task task) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
 		if(!authResult.isSucceeded()) 
 			return new RPCResult<ParseInvocation>(false, authResult.getMessage());
@@ -275,11 +281,14 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			return new RPCResult<ParseInvocation>(false, "Authentication failed");
 		
 		try {
-			final SemanticMarkupConfiguration semanticMarkupConfiguration = semanticMarkupTaskRun.getConfiguration();
+			final AbstractTaskConfiguration configuration = task.getConfiguration();
+			if(!(configuration instanceof SemanticMarkupConfiguration))
+				return new RPCResult<ParseInvocation>(false, "Not a compatible task");
+			final SemanticMarkupConfiguration semanticMarkupConfiguration = (SemanticMarkupConfiguration)configuration;
+			
 			if(activeParseFutures.containsKey(semanticMarkupConfiguration.getConfiguration().getId())) {
 				return new RPCResult<ParseInvocation>(true, new ParseInvocation());
 			} else {
-				final Task task = TaskDAO.getInstance().getTask(semanticMarkupConfiguration.getConfiguration());
 				final TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.SEMANTIC_MARKUP);
 				TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.PARSE_TEXT.toString());
 				task.setTaskStage(taskStage);
@@ -325,7 +334,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	}
 
 	@Override
-	public RPCResult<Void> output(AuthenticationToken authenticationToken, SemanticMarkupTaskRun semanticMarkupTaskRun) {
+	public RPCResult<Void> output(AuthenticationToken authenticationToken, Task task) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
 		if(!authResult.isSucceeded()) 
 			return new RPCResult<Void>(false, authResult.getMessage());
@@ -333,8 +342,10 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			return new RPCResult<Void>(false, "Authentication failed");
 		
 		try {
-			Task task = semanticMarkupTaskRun.getTask();
-			SemanticMarkupConfiguration semanticMarkupConfiguration = semanticMarkupTaskRun.getConfiguration();
+			final AbstractTaskConfiguration configuration = task.getConfiguration();
+			if(!(configuration instanceof SemanticMarkupConfiguration))
+				return new RPCResult<Void>(false, "Not a compatible task");
+			final SemanticMarkupConfiguration semanticMarkupConfiguration = (SemanticMarkupConfiguration)configuration;
 			semanticMarkupConfiguration.setOutput(semanticMarkupConfiguration.getInput() + "_" + task.getName());
 			SemanticMarkupConfigurationDAO.getInstance().updateSemanticMarkupConfiguration(semanticMarkupConfiguration);
 
@@ -372,15 +383,14 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	}
 	
 	@Override
-	public RPCResult<SemanticMarkupTaskRun> goToTaskStage(AuthenticationToken authenticationToken, SemanticMarkupTaskRun semanticMarkupTaskRun, TaskStageEnum taskStageEnum) {
+	public RPCResult<Task> goToTaskStage(AuthenticationToken authenticationToken, Task task, TaskStageEnum taskStageEnum) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
 		if(!authResult.isSucceeded()) 
-			return new RPCResult<SemanticMarkupTaskRun>(false, authResult.getMessage());
+			return new RPCResult<Task>(false, authResult.getMessage());
 		if(!authResult.getData().getResult())
-			return new RPCResult<SemanticMarkupTaskRun>(false, "Authentication failed");
+			return new RPCResult<Task>(false, "Authentication failed");
 		
 		try {
-			Task task = semanticMarkupTaskRun.getTask();
 			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.SEMANTIC_MARKUP);
 			TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(taskStageEnum.toString());
 			task.setTaskStage(taskStage);
@@ -388,14 +398,10 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			task.setComplete(false);
 			task.setCompleted(null);
 			TaskDAO.getInstance().updateTask(task);
-			SemanticMarkupConfiguration configuration = 
-					SemanticMarkupConfigurationDAO.getInstance().getSemanticMarkupConfiguration(
-							semanticMarkupTaskRun.getConfiguration().getConfiguration().getId());
-			return new RPCResult<SemanticMarkupTaskRun>(true, 
-					new SemanticMarkupTaskRun(configuration, task));
+			return new RPCResult<Task>(true, task);
 		} catch(Exception e) {
 			e.printStackTrace();
-			return new RPCResult<SemanticMarkupTaskRun>(false, "Internal Server Error");
+			return new RPCResult<Task>(false, "Internal Server Error");
 		}
 	}	
 
@@ -473,47 +479,26 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	}
 
 	@Override
-	public RPCResult<SemanticMarkupTaskRun> getLatestResumable(AuthenticationToken authenticationToken) {
+	public RPCResult<Task> getLatestResumable(AuthenticationToken authenticationToken) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
 		if(!authResult.isSucceeded()) 
-			return new RPCResult<SemanticMarkupTaskRun>(false, authResult.getMessage());
+			return new RPCResult<Task>(false, authResult.getMessage());
 		if(!authResult.getData().getResult())
-			return new RPCResult<SemanticMarkupTaskRun>(false, "Authentication failed");
+			return new RPCResult<Task>(false, "Authentication failed");
 		
 		try {
 			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUsername());
 			List<Task> tasks = TaskDAO.getInstance().getOwnedTasks(user.getId());
 			for(Task task : tasks) {
 				if(task.isResumable()) {
-					SemanticMarkupConfiguration configuration = SemanticMarkupConfigurationDAO.getInstance().getSemanticMarkupConfiguration(task.getTaskConfiguration().getConfiguration().getId());
-					return new RPCResult<SemanticMarkupTaskRun>(true,
-							new SemanticMarkupTaskRun(configuration, task));
+					SemanticMarkupConfiguration configuration = SemanticMarkupConfigurationDAO.getInstance().getSemanticMarkupConfiguration(task.getConfiguration().getConfiguration().getId());
+					return new RPCResult<Task>(true, task);
 				}
 			}
-			return new RPCResult<SemanticMarkupTaskRun>(false, "No resumable task found");
+			return new RPCResult<Task>(false, "No resumable task found");
 		} catch(Exception e) {
 			e.printStackTrace();
-			return new RPCResult<SemanticMarkupTaskRun>(false, "Internal Server Error");
-		}
-	}
-
-	@Override
-	public RPCResult<SemanticMarkupTaskRun> getSemanticMarkupTaskRun(AuthenticationToken authenticationToken, Task task) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<SemanticMarkupTaskRun>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<SemanticMarkupTaskRun>(false, "Authentication failed");
-		
-		try {
-			task = TaskDAO.getInstance().getTask(task.getId());
-			SemanticMarkupConfiguration configuration = 
-					SemanticMarkupConfigurationDAO.getInstance().getSemanticMarkupConfiguration(task.getTaskConfiguration().getConfiguration().getId());
-			return new RPCResult<SemanticMarkupTaskRun>(true, 
-					new SemanticMarkupTaskRun(configuration, task));
-		} catch(Exception e) {
-			e.printStackTrace();
-			return new RPCResult<SemanticMarkupTaskRun>(false, "Internal Server Error");
+			return new RPCResult<Task>(false, "Internal Server Error");
 		}
 	}
 
@@ -525,14 +510,12 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		if(!authResult.getData().getResult())
 			return new RPCResult<Void>(false, "Authentication failed");
 		
-		try {
-			RPCResult<SemanticMarkupTaskRun> semanticMarkupTaskRunResult = 
-					getSemanticMarkupTaskRun(authenticationToken, task);
-			if(!semanticMarkupTaskRunResult.isSucceeded()) 
-				return new RPCResult<Void>(false, semanticMarkupTaskRunResult.getMessage());
-			SemanticMarkupTaskRun semanticMarkupTaskRun = semanticMarkupTaskRunResult.getData();
-			SemanticMarkupConfiguration semanticMarkupConfiguration = semanticMarkupTaskRun.getConfiguration();
-						
+		try {		
+			final AbstractTaskConfiguration configuration = task.getConfiguration();
+			if(!(configuration instanceof SemanticMarkupConfiguration))
+				return new RPCResult<Void>(false, "Not a compatible task");
+			final SemanticMarkupConfiguration semanticMarkupConfiguration = (SemanticMarkupConfiguration)configuration;
+			
 			//remove matrix generation configuration
 			if(semanticMarkupConfiguration != null) {
 				if(semanticMarkupConfiguration.getInput() != null)
@@ -543,10 +526,10 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			//remove task
 			if(task != null) {
 				TaskDAO.getInstance().removeTask(task);
-				if(task.getTaskConfiguration() != null)
+				if(task.getConfiguration() != null)
 					
 					//remove configuration
-					ConfigurationDAO.getInstance().remove(task.getTaskConfiguration().getConfiguration());
+					ConfigurationDAO.getInstance().remove(task.getConfiguration().getConfiguration());
 			
 				//cancel possible futures
 				if(task.getTaskStage() != null) {

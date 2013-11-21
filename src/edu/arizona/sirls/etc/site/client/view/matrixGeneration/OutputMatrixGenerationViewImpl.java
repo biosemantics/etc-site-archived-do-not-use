@@ -48,12 +48,4 @@ public class OutputMatrixGenerationViewImpl extends MatrixGenerationViewImpl imp
 		presenter.onFileManager();
 	}
 
-	@Override
-	public void setOutputText(String output) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	
-
 }

@@ -1,13 +1,13 @@
 package edu.arizona.sirls.etc.site.client.event;
 
-import edu.arizona.sirls.etc.site.shared.rpc.AbstractTaskRun;
+import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 
-public interface ITaskEvent <T extends AbstractTaskRun> {
+public interface ITaskEvent {
 
-	public T getTaskConfiguration();
+	public Task getTask();
 
-	public void setTaskConfiguration(T task);
+	public void setTask(Task task);
 	
-	public boolean hasTaskConfiguration();
+	public boolean hasTask();
 	
 }
