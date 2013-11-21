@@ -18,8 +18,8 @@ import edu.arizona.sirls.etc.site.shared.rpc.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.ISemanticMarkupServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.SemanticMarkupTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
-import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
 import edu.arizona.sirls.etc.site.shared.rpc.db.SemanticMarkupConfiguration;
+import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.TaskStageEnum;
 
 public class ReviewSemanticMarkupPresenter {
 

@@ -41,7 +41,6 @@ import edu.arizona.sirls.etc.site.shared.rpc.ISemanticMarkupService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskService;
 import edu.arizona.sirls.etc.site.shared.rpc.SemanticMarkupTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
-import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
 import edu.arizona.sirls.etc.site.shared.rpc.db.ConfigurationDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Glossary;
 import edu.arizona.sirls.etc.site.shared.rpc.db.GlossaryDAO;
@@ -62,6 +61,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.BracketValidator;
 import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.LearnInvocation;
 import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.ParseInvocation;
 import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.PreprocessedDescription;
+import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.TaskStageEnum;
 
 public class SemanticMarkupService extends RemoteServiceServlet implements ISemanticMarkupService  {
 
@@ -105,14 +105,14 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			
 			edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum taskType = edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.SEMANTIC_MARKUP;
 			TaskType dbTaskType = TaskTypeDAO.getInstance().getTaskType(taskType);
-			TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(dbTaskType, TaskStageEnum.INPUT);
+			TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.INPUT.toString());
 			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUsername());
 			Task task = new Task();
 			task.setName(taskName);
 			task.setResumable(true);
 			task.setUser(user);
 			task.setTaskStage(taskStage);
-			task.setConfiguration(semanticMarkupConfiguration.getConfiguration());
+			task.setTaskConfiguration(semanticMarkupConfiguration);
 			task.setTaskType(dbTaskType);
 			
 			RPCResult<Task> addTaskResult = taskService.addTask(authenticationToken, task);
@@ -120,7 +120,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				return new RPCResult<SemanticMarkupTaskRun>(false, addTaskResult.getMessage());
 			task = addTaskResult.getData();
 			
-			taskStage = TaskStageDAO.getInstance().getTaskStage(dbTaskType, TaskStageEnum.PREPROCESS_TEXT);
+			taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.PREPROCESS_TEXT.toString());
 			task.setTaskStage(taskStage);
 			TaskDAO.getInstance().updateTask(task);
 
@@ -144,7 +144,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			List<PreprocessedDescription> result = new LinkedList<PreprocessedDescription>();
 			Task task = semanticMarkupTaskRun.getTask();
 			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.SEMANTIC_MARKUP);
-			TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.PREPROCESS_TEXT);
+			TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.PREPROCESS_TEXT.toString());
 			task.setTaskStage(taskStage);
 			TaskDAO.getInstance().updateTask(task);
 			//do preprocessing here, return result immediately or always only return an invocation
@@ -196,7 +196,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			} else {
 				final Task task = TaskDAO.getInstance().getTask(semanticMarkupConfiguration.getConfiguration());
 				final TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.SEMANTIC_MARKUP);
-				TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.LEARN_TERMS);
+				TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.LEARN_TERMS.toString());
 				task.setTaskStage(taskStage);
 				task.setResumable(false);
 				TaskDAO.getInstance().updateTask(task);
@@ -222,7 +222,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 					     			semanticMarkupConfiguration.setOtoUploadId(result.getOtoUploadId());
 					     			semanticMarkupConfiguration.setOtoSecret(result.getOtoSecret());
 									SemanticMarkupConfigurationDAO.getInstance().updateSemanticMarkupConfiguration(semanticMarkupConfiguration);
-									TaskStage newTaskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.REVIEW_TERMS);
+									TaskStage newTaskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.REVIEW_TERMS.toString());
 									task.setTaskStage(newTaskStage);
 									task.setResumable(true);
 									TaskDAO.getInstance().updateTask(task);
@@ -259,7 +259,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		try {
 			Task task = semanticMarkupTaskRun.getTask();
 			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.SEMANTIC_MARKUP);
-			TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.REVIEW_TERMS);
+			TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.REVIEW_TERMS.toString());
 			task.setTaskStage(taskStage);
 			TaskDAO.getInstance().updateTask(task);
 			SemanticMarkupConfiguration configuration = 
@@ -288,7 +288,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			} else {
 				final Task task = TaskDAO.getInstance().getTask(semanticMarkupConfiguration.getConfiguration());
 				final TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.SEMANTIC_MARKUP);
-				TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.PARSE_TEXT);
+				TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.PARSE_TEXT.toString());
 				task.setTaskStage(taskStage);
 				task.setResumable(false);
 				TaskDAO.getInstance().updateTask(task);
@@ -312,7 +312,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 							activeParseFutures.remove(semanticMarkupConfiguration.getConfiguration().getId());
 							if(!futureResult.isCancelled()) {
 								task.setResumable(true);
-								TaskStage newTaskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.OUTPUT);
+								TaskStage newTaskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.OUTPUT.toString());
 								task.setTaskStage(newTaskStage);
 								TaskDAO.getInstance().updateTask(task);
 							}
@@ -386,7 +386,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		try {
 			Task task = semanticMarkupTaskRun.getTask();
 			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.SEMANTIC_MARKUP);
-			TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, taskStageEnum);
+			TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(taskStageEnum.toString());
 			task.setTaskStage(taskStage);
 			task.setResumable(true);
 			task.setComplete(false);
@@ -489,7 +489,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			List<Task> tasks = TaskDAO.getInstance().getOwnedTasks(user.getId());
 			for(Task task : tasks) {
 				if(task.isResumable()) {
-					SemanticMarkupConfiguration configuration = SemanticMarkupConfigurationDAO.getInstance().getSemanticMarkupConfiguration(task.getConfiguration().getId());
+					SemanticMarkupConfiguration configuration = SemanticMarkupConfigurationDAO.getInstance().getSemanticMarkupConfiguration(task.getTaskConfiguration().getConfiguration().getId());
 					return new RPCResult<SemanticMarkupTaskRun>(true,
 							new SemanticMarkupTaskRun(configuration, task));
 				}
@@ -512,7 +512,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		try {
 			task = TaskDAO.getInstance().getTask(task.getId());
 			SemanticMarkupConfiguration configuration = 
-					SemanticMarkupConfigurationDAO.getInstance().getSemanticMarkupConfiguration(task.getConfiguration().getId());
+					SemanticMarkupConfigurationDAO.getInstance().getSemanticMarkupConfiguration(task.getTaskConfiguration().getConfiguration().getId());
 			return new RPCResult<SemanticMarkupTaskRun>(true, 
 					new SemanticMarkupTaskRun(configuration, task));
 		} catch(Exception e) {
@@ -547,14 +547,14 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			//remove task
 			if(task != null) {
 				TaskDAO.getInstance().removeTask(task);
-				if(task.getConfiguration() != null)
+				if(task.getTaskConfiguration() != null)
 					
 					//remove configuration
-					ConfigurationDAO.getInstance().remove(task.getConfiguration());
+					ConfigurationDAO.getInstance().remove(task.getTaskConfiguration().getConfiguration());
 			
 				//cancel possible futures
 				if(task.getTaskStage() != null) {
-					switch(task.getTaskStage().getTaskStageEnum()) {
+					switch(TaskStageEnum.valueOf(task.getTaskStage().getTaskStage())) {
 					case INPUT:
 						break;
 					case LEARN_TERMS:

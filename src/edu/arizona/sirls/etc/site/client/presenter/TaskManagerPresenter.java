@@ -34,13 +34,13 @@ import edu.arizona.sirls.etc.site.shared.rpc.IVisualizationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.SemanticMarkupTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
-import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
 import edu.arizona.sirls.etc.site.shared.rpc.TaxonomyComparisonTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.TreeGenerationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.VisualizationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Share;
 import edu.arizona.sirls.etc.site.shared.rpc.db.ShortUser;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
+import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.TaskStageEnum;
 
 public class TaskManagerPresenter implements TaskManagerView.Presenter, Presenter {
 

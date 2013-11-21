@@ -14,8 +14,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
 import edu.arizona.sirls.etc.site.shared.rpc.file.search.Search;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 public class InputMatrixGenerationViewImpl extends MatrixGenerationViewImpl implements InputMatrixGenerationView {
 

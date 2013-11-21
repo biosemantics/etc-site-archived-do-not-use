@@ -13,7 +13,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 public class OutputMatrixGenerationViewImpl extends MatrixGenerationViewImpl implements OutputMatrixGenerationView {
 

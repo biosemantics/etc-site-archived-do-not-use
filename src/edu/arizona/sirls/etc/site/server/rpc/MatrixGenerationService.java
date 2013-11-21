@@ -1,31 +1,12 @@
 package edu.arizona.sirls.etc.site.server.rpc;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.StringWriter;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
-
-import com.google.common.io.Files;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -41,18 +22,9 @@ import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskService;
 import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
-import edu.arizona.sirls.etc.site.shared.rpc.SemanticMarkupTaskRun;
-import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
-import edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum;
 import edu.arizona.sirls.etc.site.shared.rpc.db.ConfigurationDAO;
-import edu.arizona.sirls.etc.site.shared.rpc.db.Glossary;
-import edu.arizona.sirls.etc.site.shared.rpc.db.GlossaryDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfigurationDAO;
-import edu.arizona.sirls.etc.site.shared.rpc.db.SemanticMarkupConfiguration;
-import edu.arizona.sirls.etc.site.shared.rpc.db.SemanticMarkupConfigurationDAO;
-import edu.arizona.sirls.etc.site.shared.rpc.db.Share;
-import edu.arizona.sirls.etc.site.shared.rpc.db.ShareDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.ShortUser;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TaskDAO;
@@ -61,8 +33,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.TaskStageDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TaskType;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TaskTypeDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.UserDAO;
-import edu.arizona.sirls.etc.site.shared.rpc.file.XMLFileFormatter;
-import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.LearnInvocation;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 public class MatrixGenerationService extends RemoteServiceServlet implements IMatrixGenerationService  {
 
@@ -96,14 +67,14 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			
 			edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum taskType = edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION;
 			TaskType dbTaskType = TaskTypeDAO.getInstance().getTaskType(taskType);
-			TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(dbTaskType, TaskStageEnum.INPUT);
+			TaskStage taskStage = TaskStageDAO.getInstance().getMatrixGenerationTaskStage(TaskStageEnum.INPUT.toString());
 			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUsername());
 			Task task = new Task();
 			task.setName(taskName);
 			task.setResumable(true);
 			task.setUser(user);
 			task.setTaskStage(taskStage);
-			task.setConfiguration(matrixGenerationConfiguration.getConfiguration());
+			task.setTaskConfiguration(matrixGenerationConfiguration);
 			task.setTaskType(dbTaskType);
 			
 			RPCResult<Task> addTaskResult = taskService.addTask(authenticationToken, task);
@@ -111,7 +82,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				return new RPCResult<MatrixGenerationTaskRun>(false, addTaskResult.getMessage());
 			task = addTaskResult.getData();
 			
-			taskStage = TaskStageDAO.getInstance().getTaskStage(dbTaskType, TaskStageEnum.PROCESS);
+			taskStage = TaskStageDAO.getInstance().getMatrixGenerationTaskStage(TaskStageEnum.PROCESS.toString());
 			task.setTaskStage(taskStage);
 			TaskDAO.getInstance().updateTask(task);
 
@@ -139,7 +110,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			} else {
 				final Task task = TaskDAO.getInstance().getTask(matrixGenerationConfiguration.getConfiguration());
 				final TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
-				TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.PROCESS);
+				TaskStage taskStage = TaskStageDAO.getInstance().getMatrixGenerationTaskStage(TaskStageEnum.PROCESS.toString());
 				task.setTaskStage(taskStage);
 				task.setResumable(false);
 				TaskDAO.getInstance().updateTask(task);
@@ -159,7 +130,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				     			activeProcessFutures.remove(matrixGenerationConfiguration.getConfiguration().getId());
 				     			if(!futureResult.isCancelled()) {
 				     				Boolean result = futureResult.get();
-									TaskStage newTaskStage = TaskStageDAO.getInstance().getTaskStage(taskType, TaskStageEnum.OUTPUT);
+									TaskStage newTaskStage = TaskStageDAO.getInstance().getMatrixGenerationTaskStage(TaskStageEnum.OUTPUT.toString());
 									task.setTaskStage(newTaskStage);
 									task.setResumable(true);
 									TaskDAO.getInstance().updateTask(task);
@@ -235,7 +206,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			List<Task> tasks = TaskDAO.getInstance().getOwnedTasks(user.getId());
 			for(Task task : tasks) {
 				if(task.isResumable()) {
-					MatrixGenerationConfiguration configuration = MatrixGenerationConfigurationDAO.getInstance().getMatrixGenerationConfiguration(task.getConfiguration().getId());
+					MatrixGenerationConfiguration configuration = MatrixGenerationConfigurationDAO.getInstance().getMatrixGenerationConfiguration(task.getTaskConfiguration().getConfiguration().getId());
 					return new RPCResult<MatrixGenerationTaskRun>(true,
 							new MatrixGenerationTaskRun(configuration, task));
 				}
@@ -258,7 +229,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		try {
 			task = TaskDAO.getInstance().getTask(task.getId());
 			MatrixGenerationConfiguration configuration = 
-					MatrixGenerationConfigurationDAO.getInstance().getMatrixGenerationConfiguration(task.getConfiguration().getId());
+					MatrixGenerationConfigurationDAO.getInstance().getMatrixGenerationConfiguration(task.getTaskConfiguration().getConfiguration().getId());
 			return new RPCResult<MatrixGenerationTaskRun>(true, 
 					new MatrixGenerationTaskRun(configuration, task));
 		} catch(Exception e) {
@@ -293,14 +264,14 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			//remove task
 			if(task != null) {
 				TaskDAO.getInstance().removeTask(task);
-				if(task.getConfiguration() != null)
+				if(task.getTaskConfiguration() != null)
 					
 					//remove configuration
-					ConfigurationDAO.getInstance().remove(task.getConfiguration());
+					ConfigurationDAO.getInstance().remove(task.getTaskConfiguration().getConfiguration());
 			
 				//cancel possible futures
 				if(task.getTaskStage() != null) {
-					switch(task.getTaskStage().getTaskStageEnum()) {
+					switch(TaskStageEnum.valueOf(task.getTaskStage().getTaskStage())) {
 					case INPUT:
 						break;
 					case PROCESS:

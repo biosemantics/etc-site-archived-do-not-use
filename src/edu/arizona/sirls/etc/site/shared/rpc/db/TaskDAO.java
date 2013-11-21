@@ -163,10 +163,25 @@ public class TaskDAO {
 		}
 		queryNumberInput.close();
 		*/
-		
-		
-		Task task = new Task(id, name, taskType, taskStage, configuration, user, resumable, complete, completed, created);
-		return task;
+		switch(taskType.getTaskTypeEnum()) {
+		case MATRIX_GENERATION:
+			MatrixGenerationTaskStage matrixGenerationTaskStage = TaskStageDAO.getInstance().getMatrixGenerationTaskStage(taskStageId);
+			MatrixGenerationConfiguration matrixGenerationConfiguration = MatrixGenerationConfigurationDAO.getInstance().getMatrixGenerationConfiguration(configurationId);
+			return new Task(id, name, taskType, matrixGenerationTaskStage, matrixGenerationConfiguration, user, resumable, complete, completed, created);
+		case SEMANTIC_MARKUP:
+			SemanticMarkupTaskStage semanticMarkupTaskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(taskStageId);
+			SemanticMarkupConfiguration semanticMarkupConfiguration = SemanticMarkupConfigurationDAO.getInstance().getSemanticMarkupConfiguration(configurationId);
+			return new Task(id, name, taskType, semanticMarkupTaskStage, semanticMarkupConfiguration, user, resumable, complete, completed, created);
+		case TAXONOMY_COMPARISON:
+			break;
+		case TREE_GENERATION:
+			break;
+		case VISUALIZATION:
+			break;
+		default:
+			break;
+		}
+		return null;
 	}
 
 	public Task addTask(Task task) throws SQLException, ClassNotFoundException, IOException {
@@ -176,7 +191,7 @@ public class TaskDAO {
 		query.setParameter(1, task.getName());
 		query.setParameter(2, task.getTaskType().getId());
 		query.setParameter(3, task.getTaskStage().getId());
-		query.setParameter(4, task.getConfiguration().getId());
+		query.setParameter(4, task.getTaskConfiguration().getConfiguration().getId());
 		query.setParameter(5, task.getUser().getId());
 		query.setParameter(6, task.isResumable());
 		query.setParameter(7, task.isComplete());
@@ -194,7 +209,7 @@ public class TaskDAO {
 		String name = task.getName();
 		int taskTypeId = task.getTaskType().getId();
 		int taskStageId = task.getTaskStage().getId();
-		int configurationId = task.getConfiguration().getId();
+		int configurationId = task.getTaskConfiguration().getConfiguration().getId();
 		int userId = task.getUser().getId();
 		boolean resumable = task.isResumable();
 		boolean complete = task.isComplete();

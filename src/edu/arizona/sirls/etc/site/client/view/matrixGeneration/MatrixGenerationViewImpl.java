@@ -5,7 +5,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
 import edu.arizona.sirls.etc.site.client.view.ImageLabelComposite;
-import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 public abstract class MatrixGenerationViewImpl extends Composite {
 	

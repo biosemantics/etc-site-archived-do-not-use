@@ -3,26 +3,22 @@ package edu.arizona.sirls.etc.site.shared.rpc.db;
 import java.io.Serializable;
 import java.util.Date;
 
-import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
-
-public class TaskStage implements Serializable {
+public abstract class TaskStage implements Serializable, Comparable<TaskStage> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7915389383513784433L;
 	private int id;
-	private TaskStageEnum taskStageEnum;
 	private TaskType taskType;
 	private Date created;
 
 	public TaskStage() { }
 	
-	public TaskStage(int id, TaskStageEnum taskStageEnum, TaskType taskType, Date created) {
+	public TaskStage(int id, TaskType taskType, Date created) {
 		super();
 		this.id = id;
 		this.taskType = taskType;
-		this.taskStageEnum = taskStageEnum;
 		this.created = created;
 	}
 	public int getId() {
@@ -38,15 +34,14 @@ public class TaskStage implements Serializable {
 		this.taskType = taskType;
 	}
 
-
-	public TaskStageEnum getTaskStageEnum() {
-		return taskStageEnum;
-	}
-
-	public void setTaskStageEnum(TaskStageEnum taskStageEnum) {
-		this.taskStageEnum = taskStageEnum;
-	}
-
+	public abstract int getTaskStageNumber();
+	
+	public abstract int getMaxTaskStageNumber();
+	
+	public abstract String getTaskStage();
+	
+	public abstract String getDisplayName();
+	
 	public Date getCreated() {
 		return created;
 	}

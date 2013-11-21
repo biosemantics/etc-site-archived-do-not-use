@@ -17,7 +17,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.event.SemanticMarkupEvent;
 import edu.arizona.sirls.etc.site.client.event.TaskManagerEvent;
-import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 public class ProcessMatrixGenerationViewImpl extends MatrixGenerationViewImpl implements ProcessMatrixGenerationView {
 

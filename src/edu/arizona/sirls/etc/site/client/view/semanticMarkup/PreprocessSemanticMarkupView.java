@@ -13,7 +13,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.presenter.semanticMarkup.ChangeAwareRichTextArea;
 import edu.arizona.sirls.etc.site.client.presenter.semanticMarkup.PreprocessSemanticMarkupPresenter;
-import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
+import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.TaskStageEnum;
 
 
 public class PreprocessSemanticMarkupView extends SemanticMarkupView implements PreprocessSemanticMarkupPresenter.Display {

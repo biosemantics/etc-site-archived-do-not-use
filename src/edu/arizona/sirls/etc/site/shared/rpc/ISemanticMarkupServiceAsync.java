@@ -8,6 +8,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.LearnInvocation;
 import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.ParseInvocation;
 import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.PreprocessedDescription;
+import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.TaskStageEnum;
 
 public interface ISemanticMarkupServiceAsync {
 

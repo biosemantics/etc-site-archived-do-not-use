@@ -85,8 +85,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		for(Share share : shares) {
 			Tree<FileInfo> shareTree = new Tree<FileInfo>(new FileInfo(share.getTask().getName(), null, FileTypeEnum.DIRECTORY));
 			sharedFiles.addChild(shareTree);
-			AbstractTaskConfiguration taskConfiguration = 
-					TaskConfigurationDAO.getInstance().getTaskConfiguration(share.getTask().getConfiguration());
+			AbstractTaskConfiguration taskConfiguration = share.getTask().getTaskConfiguration();
 			if(taskConfiguration != null) {
 				List<String> inputFiles = taskConfiguration.getInputs();
 				List<String> outputFiles = taskConfiguration.getOutputs();

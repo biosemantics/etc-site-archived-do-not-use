@@ -14,7 +14,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.presenter.semanticMarkup.InputSemanticMarkupPresenter;
-import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
+import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.TaskStageEnum;
 
 public class InputSemanticMarkupView extends SemanticMarkupView implements 
 		InputSemanticMarkupPresenter.Display {

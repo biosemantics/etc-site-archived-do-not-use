@@ -33,7 +33,6 @@ import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
-import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 
 public class TaskManagerViewImpl extends Composite implements TaskManagerView, Handler {
@@ -173,15 +172,7 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 			public String getValue(Task object) {
 				if(object.isComplete())
 					return "Completed";
-				int j = 0;
-				int x = 0;
-				for (TaskStageEnum step : TaskStageEnum.values()) {
-					j++;
-					if (step.equals(object.getTaskStage().getTaskStageEnum())) {
-						x = j;
-					}
-				}
-				return "Step " + x + " of " + j + ": " + object.getTaskStage().getTaskStageEnum().displayName();
+				return "Step " + object.getTaskStage().getTaskStageNumber() + " of " + object.getTaskStage().getMaxTaskStageNumber() + ": " + object.getTaskStage().getDisplayName();
 			}
 		};
 		Column<Task, String> statusImageColumn = new Column<Task, String>(new ImageCell()) {
@@ -207,7 +198,7 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 	    sortHandler.setComparator(statusColumn, new Comparator<Task>() {
 		      @Override
 		      public int compare(Task o1, Task o2) {
-		        return o1.getTaskStage().getTaskStageEnum().compareTo(o2.getTaskStage().getTaskStageEnum());
+		        return o1.getTaskStage().compareTo(o2.getTaskStage());
 		      }
 	    });
 	    taskTable.addColumn(statusColumn, "Status");

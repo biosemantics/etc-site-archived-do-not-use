@@ -128,7 +128,6 @@ import edu.arizona.sirls.etc.site.shared.rpc.IVisualizationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.MatrixGenerationTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.SemanticMarkupTaskRun;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
-import edu.arizona.sirls.etc.site.shared.rpc.TaskStageEnum;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 
 public class MySitePresenter implements SitePresenter, ValueChangeHandler<String> {
@@ -618,8 +617,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 														public void onSuccess(RPCResult<SemanticMarkupTaskRun> semanticMarkupTaskResult) {
 															if(semanticMarkupTaskResult.isSucceeded()) {
 																SemanticMarkupTaskRun semanticMarkupTask = semanticMarkupTaskResult.getData();
-																TaskStageEnum taskStage = semanticMarkupTask.getTask().getTaskStage().getTaskStageEnum();
-																switch(taskStage) {
+																switch(edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.TaskStageEnum.valueOf(semanticMarkupTask.getTask().getTaskStage().getTaskStage())) {
 																case PREPROCESS_TEXT:
 																	if (preprocessSemanticMarkupPresenter == null) {
 																		preprocessSemanticMarkupPresenter = 									
@@ -719,16 +717,15 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 														@Override
 														public void onSuccess(RPCResult<MatrixGenerationTaskRun> matrixGenerationTaskRunResult) {
 															if(matrixGenerationTaskRunResult.isSucceeded()) {
-																MatrixGenerationTaskRun matrixGenerationTaskRun = matrixGenerationTaskRunResult.getData();
-																TaskStageEnum taskStage = matrixGenerationTaskRun.getTask().getTaskStage().getTaskStageEnum();
-																switch(taskStage) {
+																MatrixGenerationTaskRun matrixGenerationTask = matrixGenerationTaskRunResult.getData();
+																switch(edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum.valueOf(matrixGenerationTask.getTask().getTaskStage().getTaskStage())) {
 																case PROCESS:
 																	if (processMatrixGenerationPresenter == null) {
 																		processMatrixGenerationPresenter = 									
 																				new ProcessMatrixGenerationPresenter(eventBus, 
 																						new ProcessMatrixGenerationViewImpl(), matrixGenerationService);
 																	}
-																	processMatrixGenerationPresenter.go(content, matrixGenerationTaskRun);
+																	processMatrixGenerationPresenter.go(content, matrixGenerationTask);
 																	break;
 																case OUTPUT:
 																	if (outputMatrixGenerationPresenter == null) {
@@ -736,7 +733,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 																				OutputMatrixGenerationPresenter(eventBus, 
 																						new OutputMatrixGenerationViewImpl(), fileService, matrixGenerationService);
 																	}
-																	outputMatrixGenerationPresenter.go(content, matrixGenerationTaskRun);
+																	outputMatrixGenerationPresenter.go(content, matrixGenerationTask);
 																	break;
 																default:
 																	if (inputMatrixGenerationPresenter == null) {
