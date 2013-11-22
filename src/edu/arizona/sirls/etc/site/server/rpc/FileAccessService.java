@@ -99,8 +99,10 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 	@Override
 	public RPCResult<String> getFileContent(AuthenticationToken authenticationToken, String filePath, FileTypeEnum fileType) {		
 		RPCResult<String> fileContentResult = getFileContent(authenticationToken, filePath);
-		if(fileContentResult.isSucceeded()) 
-			return new RPCResult<String>(true, "", new FileFormatter().format(fileContentResult.getData(), fileType));
+		if(fileContentResult.isSucceeded()) {
+			String formattedContent = new FileFormatter().format(fileContentResult.getData(), fileType);
+			return new RPCResult<String>(true, "", formattedContent);
+		}
 		return fileContentResult;
 	}
 

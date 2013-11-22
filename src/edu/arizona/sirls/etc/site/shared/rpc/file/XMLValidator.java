@@ -28,6 +28,8 @@ public class XMLValidator implements IContentValidator {
 			validator.validate(new StreamSource(new ByteArrayInputStream(input.getBytes("UTF-8"))));
 			return true;
 		} catch (Exception e) {
+			//System.out.println(schemaFile.getAbsolutePath());
+			//System.out.println(input);
 			//e.printStackTrace();
 			return false;
 		}

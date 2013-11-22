@@ -34,7 +34,7 @@ public class XMLFileFormatter implements IFileFormatter {
 					.newDocumentBuilder().parse(src).getDocumentElement();
 			Boolean keepDeclaration = Boolean.valueOf(input
 					.startsWith("<?xml"));
-			this.format(document, keepDeclaration);
+			input = this.format(document, keepDeclaration);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -57,7 +57,9 @@ public class XMLFileFormatter implements IFileFormatter {
 			writer.getDomConfig().setParameter("format-pretty-print", Boolean.TRUE); 
 			writer.getDomConfig().setParameter("xml-declaration", false);
 			writer.write(node, lsOutput);
-			return out.toString("UTF-8");
+			String outString = out.toString("UTF-8");
+			//System.out.println(outString);
+			return outString;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
