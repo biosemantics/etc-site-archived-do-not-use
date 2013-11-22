@@ -44,6 +44,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     <servlet-name>userServlet</servlet-name>
     <servlet-class>edu.arizona.sirls.etc.site.server.rpc.UserService</servlet-class>
   </servlet>
+    <servlet>
+    <servlet-name>setupServlet</servlet-name>
+    <servlet-class>edu.arizona.sirls.etc.site.server.rpc.SetupService</servlet-class>
+  </servlet>
   
   <!-- TODO: Add <servlet-mapping> tags for each <servlet> here. -->
   <servlet-mapping>
@@ -81,6 +85,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   <servlet-mapping>
     <servlet-name>userServlet</servlet-name>
     <url-pattern>/etcsite/user</url-pattern>
+  </servlet-mapping>
+    <servlet-mapping>
+    <servlet-name>setupServlet</servlet-name>
+    <url-pattern>/etcsite/setup</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->

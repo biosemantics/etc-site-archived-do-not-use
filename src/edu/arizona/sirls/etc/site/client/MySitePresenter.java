@@ -115,6 +115,8 @@ import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ISemanticMarkupService;
 import edu.arizona.sirls.etc.site.shared.rpc.ISemanticMarkupServiceAsync;
+import edu.arizona.sirls.etc.site.shared.rpc.ISetupService;
+import edu.arizona.sirls.etc.site.shared.rpc.ISetupServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaxonomyComparisonService;
@@ -126,6 +128,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.IUserServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IVisualizationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IVisualizationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
+import edu.arizona.sirls.etc.site.shared.rpc.Setup;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum;
 
@@ -142,6 +145,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	private final ITreeGenerationServiceAsync treeGenerationService = GWT.create(ITreeGenerationService.class);
 	private final ITaxonomyComparisonServiceAsync taxonomyComparisonService = GWT.create(ITaxonomyComparisonService.class);
 	private final IVisualizationServiceAsync visualizationService = GWT.create(IVisualizationService.class);
+	private final ISetupServiceAsync setupService = GWT.create(ISetupService.class);
 	private final IUserServiceAsync userService = GWT.create(IUserService.class);
 	
 	private HandlerManager eventBus;
@@ -385,6 +389,20 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 					@Override
 					public void onSuccess(RPCResult<AuthenticationResult> result) {
 						if(result.isSucceeded()) {
+							setupService.getSetup(Authentication.getInstance().getAuthenticationToken(), new AsyncCallback<RPCResult<Setup>>() {
+								@Override
+								public void onFailure(Throwable caught) {
+									caught.printStackTrace();
+								}
+								@Override
+								public void onSuccess(RPCResult<Setup> result) {
+									if(result.isSucceeded()) {
+										edu.arizona.sirls.etc.site.shared.rpc.Setup setup = result.getData();
+										ServerSetup.getInstance().setSetup(setup);
+									}
+								}
+							});
+							
 							manageResumableTasksTimer(result.getData().getResult());
 							presentHeader(result.getData().getResult());
 							presentMenu(historyState);

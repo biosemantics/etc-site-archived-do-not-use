@@ -1,5 +1,7 @@
 package edu.arizona.sirls.etc.site.client.presenter.semanticMarkup;
 
+import java.io.File;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerManager;
@@ -10,13 +12,16 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
+import edu.arizona.sirls.etc.site.client.ServerSetup;
 import edu.arizona.sirls.etc.site.client.event.FileManagerEvent;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
+import edu.arizona.sirls.etc.site.shared.rpc.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ISemanticMarkupServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.db.SemanticMarkupConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FilePathShortener;
 
 public class OutputSemanticMarkupPresenter {
 
@@ -33,6 +38,7 @@ public class OutputSemanticMarkupPresenter {
 	private ISemanticMarkupServiceAsync semanticMarkupService;
 	private Task task;
 	private LoadingPopup loadingPopup = new LoadingPopup();
+	private FilePathShortener filePathShortener = new FilePathShortener(ServerSetup.getInstance().getSeperator());
 	
 	public OutputSemanticMarkupPresenter(HandlerManager eventBus,
 			Display display, IFileServiceAsync fileService, ISemanticMarkupServiceAsync semanticMarkupService) {
@@ -56,8 +62,9 @@ public class OutputSemanticMarkupPresenter {
 		loadingPopup.start();
 		this.task = task;
 		
-		display.setOutput(((SemanticMarkupConfiguration)task.getConfiguration()).getOutput());
-		
+		String output = ((SemanticMarkupConfiguration)task.getConfiguration()).getOutput();
+		display.setOutput(filePathShortener.shorten(output, task.getUser().getName(), Authentication.getInstance().getUsername()));
+
 		semanticMarkupService.output(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Void>>() {
 			@Override
 			public void onFailure(Throwable caught) {
