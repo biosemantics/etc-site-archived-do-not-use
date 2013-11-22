@@ -1,5 +1,6 @@
 package edu.arizona.sirls.etc.site.client.view;
 
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 
@@ -7,7 +8,8 @@ public class LoadingPopup extends PopupPanel {
 	
     public LoadingPopup() { 
         super(false, true); 
-        
+        DOM.setIntStyleAttribute(this.getElement(), "zIndex", 2147483647);
+
         this.add(new Label("Loading..."));
         
         //loading task would have to be split into pieces because only one thread manages gif animation and js execution, hence image will 'freeze' otherwise

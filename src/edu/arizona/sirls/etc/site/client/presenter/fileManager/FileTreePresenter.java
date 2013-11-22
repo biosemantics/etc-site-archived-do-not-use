@@ -41,8 +41,7 @@ public class FileTreePresenter implements Presenter, FileTreeView.Presenter, IFi
 	}
 	
 	private void bind() {
-		view.getTree().addSelectionHandler(fileSelectionHandler);	
-		refresh();
+		view.getTree().addSelectionHandler(fileSelectionHandler);
 	}
 
 	@Override

@@ -90,6 +90,7 @@ public class InputMatrixGenerationPresenter implements InputMatrixGenerationView
 		dialogBox.setGlassEnabled(true);
  		dialogBox.show();
  		ManagableFileTreePresenter.setInputFileMultiple();
+ 		fileTreePresenter.refresh();
 	}
 
 }

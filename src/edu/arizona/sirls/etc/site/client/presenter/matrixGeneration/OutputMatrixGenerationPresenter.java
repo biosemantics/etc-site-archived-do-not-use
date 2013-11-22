@@ -16,7 +16,6 @@ import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.db.MatrixGenerationConfiguration;
-import edu.arizona.sirls.etc.site.shared.rpc.db.SemanticMarkupConfiguration;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FilePathShortener;
 
@@ -38,7 +37,7 @@ public class OutputMatrixGenerationPresenter implements OutputMatrixGenerationVi
 	public void go(final HasWidgets container, final Task task) {
 		loadingPopup.start();
 		
-		String output = ((SemanticMarkupConfiguration)task.getConfiguration()).getOutput();
+		String output = ((MatrixGenerationConfiguration)task.getConfiguration()).getOutput();
 		view.setOutput(filePathShortener.shorten(output, task.getUser().getName(), Authentication.getInstance().getUsername()));
 		
 		matrixGenerationService.output(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Void>>() {

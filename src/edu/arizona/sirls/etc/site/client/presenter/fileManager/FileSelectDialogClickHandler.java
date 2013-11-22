@@ -9,7 +9,10 @@ import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
+import edu.arizona.sirls.etc.site.shared.rpc.file.FilePathShortener;
 
+import edu.arizona.sirls.etc.site.client.Authentication;
+import edu.arizona.sirls.etc.site.client.ServerSetup;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileImageLabelTreeItem;
 import edu.arizona.sirls.etc.site.client.view.fileManager.SelectableFileTreeView;
 
@@ -18,6 +21,8 @@ public class FileSelectDialogClickHandler implements ClickHandler {
 	private TitleCloseDialogBox dialogBox = new TitleCloseDialogBox(true, "Select File");
 	private SelectableFileTreeView view;
 	private SelectableFileTreePresenter presenter;
+	private FilePathShortener filePathShortener = new FilePathShortener(ServerSetup.getInstance().getSetup().getFileBase(), 
+														ServerSetup.getInstance().getSetup().getSeperator());
 
 	public FileSelectDialogClickHandler(HandlerManager eventBus, IFileServiceAsync fileService, FileFilter fileFilter, 
 			final HasText text, final StringBuilder stringBuilder, 
@@ -28,7 +33,7 @@ public class FileSelectDialogClickHandler implements ClickHandler {
 			public void onClick(ClickEvent event) {
 				FileImageLabelTreeItem selection = presenter.getFileSelectionHandler().getSelection();
 				if (selection != null) {
-					text.setText(selection.getFileInfo().getFilePath());
+					text.setText(filePathShortener.shorten(selection.getFileInfo().getFilePath(), selection.getFileInfo().getOwner(), Authentication.getInstance().getUsername()));
 					stringBuilder.setLength(0);
 					stringBuilder.append(selection.getFileInfo().getFilePath());
 					if (requiredToContinue)
