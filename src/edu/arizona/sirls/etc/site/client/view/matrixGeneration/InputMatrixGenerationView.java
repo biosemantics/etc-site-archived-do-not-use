@@ -12,14 +12,15 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.ShortUser;
 public interface InputMatrixGenerationView {
 
 	public interface Presenter {
-		void onNext(String taskName, String input);
 		void onInputSelect();
 		void onFileManager();
+		void onNext();
 	}
 	  
 	void setPresenter(Presenter presenter);
 	Widget asWidget();
 	HasEnabled getNextButton();
 	HasText getInputLabel();
+	String getTaskName();
 
 }

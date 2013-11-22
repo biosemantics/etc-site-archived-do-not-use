@@ -17,6 +17,7 @@ public class FileInfo implements Serializable {
 		this.name = name;
 		this.filePath = filePath;
 		this.fileType = fileType;
+		this.owner = owner;
 	}
 	public String getName() {
 		return name;

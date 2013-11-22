@@ -63,7 +63,7 @@ public class InputMatrixGenerationViewImpl extends MatrixGenerationViewImpl impl
 	
 	@UiHandler("nextButton")
 	public void onSearchClick(ClickEvent event) {
-		presenter.onNext(taskNameTextBox.getText(), inputLabel.getText());
+		presenter.onNext();
     }
 
 	@Override
@@ -74,5 +74,10 @@ public class InputMatrixGenerationViewImpl extends MatrixGenerationViewImpl impl
 	@Override
 	public HasText getInputLabel() {
 		return inputLabel;
+	}
+
+	@Override
+	public String getTaskName() {
+		return this.taskNameTextBox.getText();
 	}
 }

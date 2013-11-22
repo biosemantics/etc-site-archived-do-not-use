@@ -55,9 +55,9 @@ public class InputMatrixGenerationPresenter implements InputMatrixGenerationView
 	}
 
 	@Override
-	public void onNext(String taskName, String input) {
+	public void onNext() {
 		matrixGenerationService.start(Authentication.getInstance().getAuthenticationToken(), 
-				taskName, input, new AsyncCallback<RPCResult<Task>>() {
+				view.getTaskName(), inputFile.toString(), new AsyncCallback<RPCResult<Task>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
