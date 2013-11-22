@@ -7,11 +7,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
+import edu.arizona.sirls.etc.site.client.Configuration;
 import edu.arizona.sirls.etc.site.client.ServerSetup;
 import edu.arizona.sirls.etc.site.client.event.FileManagerEvent;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
 import edu.arizona.sirls.etc.site.client.view.matrixGeneration.OutputMatrixGenerationView;
-import edu.arizona.sirls.etc.site.shared.rpc.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
@@ -26,7 +26,7 @@ public class OutputMatrixGenerationPresenter implements OutputMatrixGenerationVi
 	private OutputMatrixGenerationView view;
 	private LoadingPopup loadingPopup = new LoadingPopup();
 	private IMatrixGenerationServiceAsync matrixGenerationService;
-	private FilePathShortener filePathShortener = new FilePathShortener(ServerSetup.getInstance().getSeperator());
+	private FilePathShortener filePathShortener = new FilePathShortener(ServerSetup.getInstance().getSetup().getFileBase(), ServerSetup.getInstance().getSetup().getSeperator());
 
 	public OutputMatrixGenerationPresenter(HandlerManager eventBus, OutputMatrixGenerationView view, IFileServiceAsync fileService, IMatrixGenerationServiceAsync matrixGenerationService) {
 		this.eventBus = eventBus;

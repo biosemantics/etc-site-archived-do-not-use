@@ -9,11 +9,11 @@ import com.google.gwt.event.dom.client.DragStartEvent;
 import com.google.gwt.event.dom.client.DropEvent;
 import com.google.gwt.user.client.ui.TreeItem;
 
+import edu.arizona.sirls.etc.site.client.Configuration;
 import edu.arizona.sirls.etc.site.client.view.fileManager.DirectoryTreeItem;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileImageLabelTree;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileImageLabelTreeItem;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileTreeItem;
-import edu.arizona.sirls.etc.site.shared.rpc.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.Tree;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileInfo;

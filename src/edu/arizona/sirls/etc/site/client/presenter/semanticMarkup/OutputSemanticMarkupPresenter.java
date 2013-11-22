@@ -12,10 +12,10 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
+import edu.arizona.sirls.etc.site.client.Configuration;
 import edu.arizona.sirls.etc.site.client.ServerSetup;
 import edu.arizona.sirls.etc.site.client.event.FileManagerEvent;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
-import edu.arizona.sirls.etc.site.shared.rpc.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.ISemanticMarkupServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
@@ -38,7 +38,7 @@ public class OutputSemanticMarkupPresenter {
 	private ISemanticMarkupServiceAsync semanticMarkupService;
 	private Task task;
 	private LoadingPopup loadingPopup = new LoadingPopup();
-	private FilePathShortener filePathShortener = new FilePathShortener(ServerSetup.getInstance().getSeperator());
+	private FilePathShortener filePathShortener = new FilePathShortener(ServerSetup.getInstance().getSetup().getFileBase(), ServerSetup.getInstance().getSetup().getSeperator());
 	
 	public OutputSemanticMarkupPresenter(HandlerManager eventBus,
 			Display display, IFileServiceAsync fileService, ISemanticMarkupServiceAsync semanticMarkupService) {

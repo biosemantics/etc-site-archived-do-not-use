@@ -389,19 +389,21 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 					@Override
 					public void onSuccess(RPCResult<AuthenticationResult> result) {
 						if(result.isSucceeded()) {
-							setupService.getSetup(Authentication.getInstance().getAuthenticationToken(), new AsyncCallback<RPCResult<Setup>>() {
-								@Override
-								public void onFailure(Throwable caught) {
-									caught.printStackTrace();
-								}
-								@Override
-								public void onSuccess(RPCResult<Setup> result) {
-									if(result.isSucceeded()) {
-										edu.arizona.sirls.etc.site.shared.rpc.Setup setup = result.getData();
-										ServerSetup.getInstance().setSetup(setup);
+							if(!ServerSetup.getInstance().hasSetup()) {
+								setupService.getSetup(Authentication.getInstance().getAuthenticationToken(), new AsyncCallback<RPCResult<Setup>>() {
+									@Override
+									public void onFailure(Throwable caught) {
+										caught.printStackTrace();
 									}
-								}
-							});
+									@Override
+									public void onSuccess(RPCResult<Setup> result) {
+										if(result.isSucceeded()) {
+											Setup setup = result.getData();
+											ServerSetup.getInstance().setSetup(setup);
+										}
+									}
+								});
+							}
 							
 							manageResumableTasksTimer(result.getData().getResult());
 							presentHeader(result.getData().getResult());

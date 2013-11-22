@@ -10,9 +10,10 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
+import edu.arizona.sirls.etc.site.client.Configuration;
+import edu.arizona.sirls.etc.site.client.ServerSetup;
 import edu.arizona.sirls.etc.site.client.event.SemanticMarkupEvent;
 import edu.arizona.sirls.etc.site.client.view.LoadingPopup;
-import edu.arizona.sirls.etc.site.shared.rpc.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.ISemanticMarkupServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.db.SemanticMarkupConfiguration;
@@ -80,7 +81,7 @@ public class ReviewSemanticMarkupPresenter {
 				if(taskResult.isSucceeded()) {
 					Task task = taskResult.getData();
 					SemanticMarkupConfiguration configuration = (SemanticMarkupConfiguration)task.getConfiguration();
-					display.getFrame().setUrl(Configuration.otoLiteURL + "&uploadID=" + configuration.getOtoUploadId() + 
+					display.getFrame().setUrl(ServerSetup.getInstance().getSetup().getOtoLiteURL() + "&uploadID=" + configuration.getOtoUploadId() + 
 							"&secret=" + configuration.getOtoSecret());
 					ReviewSemanticMarkupPresenter.this.task = taskResult.getData();
 					content.clear();

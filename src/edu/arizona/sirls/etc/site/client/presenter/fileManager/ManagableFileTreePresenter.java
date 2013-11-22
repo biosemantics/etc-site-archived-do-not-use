@@ -3,6 +3,7 @@ package edu.arizona.sirls.etc.site.client.presenter.fileManager;
 import java.util.List;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
+import edu.arizona.sirls.etc.site.client.Configuration;
 import edu.arizona.sirls.etc.site.client.presenter.ILabelTextFieldDialogBoxHandler;
 import edu.arizona.sirls.etc.site.client.presenter.LabelTextFieldCancelConfirmPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.LabelTextFieldConfirmPresenter;
@@ -14,7 +15,6 @@ import edu.arizona.sirls.etc.site.client.view.LabelTextFieldConfirmView;
 import edu.arizona.sirls.etc.site.client.view.MessageView;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileImageLabelTreeItem;
 import edu.arizona.sirls.etc.site.client.view.fileManager.FileTreeView;
-import edu.arizona.sirls.etc.site.shared.rpc.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
