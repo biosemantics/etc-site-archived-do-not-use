@@ -8,6 +8,8 @@ public class FileFormatter {
 			return new XMLFileFormatter().format(input);
 		case MARKED_UP_TAXON_DESCRIPTION:
 			return new XMLFileFormatter().format(input);
+		case PLAIN_TEXT:
+			return input;
 		case MATRIX:
 			return new CSVFileFormatter().format(input);
 		}

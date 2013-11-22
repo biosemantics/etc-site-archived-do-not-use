@@ -44,7 +44,8 @@ CREATE TABLE IF NOT EXISTS `filetypes` (
 INSERT INTO `filetypes` (`id`, `name`, `created`) VALUES
 (1, 'TAXON_DESCRIPTION', '2013-10-22 02:02:26'),
 (2, 'MARKED_UP_TAXON_DESCRIPTION', '2013-11-19 23:55:51'),
-(3, 'MATRIX', '2013-11-19 22:25:17');
+(3, 'MATRIX', '2013-11-19 22:25:17'), 
+(4, 'PLAIN_TEXT', '2013-11-19 22:25:17');
 
 -- --------------------------------------------------------
 

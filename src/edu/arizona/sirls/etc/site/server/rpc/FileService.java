@@ -183,9 +183,10 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			validationResult = fileFormatService.isValidTaxonDescription(authenticationToken, filePath);
 			if(validationResult.isSucceeded() && validationResult.getData())
 				return FileTypeEnum.TAXON_DESCRIPTION;
-			validationResult = fileFormatService.isValidMatrix(authenticationToken, filePath);
+			return FileTypeEnum.PLAIN_TEXT;
+			/*validationResult = fileFormatService.isValidMatrix(authenticationToken, filePath);
 			if(validationResult.isSucceeded() && validationResult.getData())
-				return FileTypeEnum.MATRIX;
+				return FileTypeEnum.MATRIX;*/
 		} else if (file.isDirectory())
 			return FileTypeEnum.DIRECTORY;
 		return null;
