@@ -372,7 +372,22 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 				this.shareButton.setEnabled(true);
 			}
 			if(this.getSelectedTask().isComplete()) {
-				this.rewindButton.setEnabled(true);
+				switch(this.getSelectedTask().getTaskType().getTaskTypeEnum()) {
+				case MATRIX_GENERATION:
+					this.rewindButton.setEnabled(false);
+					break;
+				case SEMANTIC_MARKUP:
+					this.rewindButton.setEnabled(true);
+					break;
+				case TAXONOMY_COMPARISON:
+					break;
+				case TREE_GENERATION:
+					break;
+				case VISUALIZATION:
+					break;
+				default:
+					break;
+				}
 				this.resumeButton.setEnabled(false);
 			} else {
 				this.rewindButton.setEnabled(false);
