@@ -26,6 +26,7 @@ public class OutputMatrixGenerationPresenter implements OutputMatrixGenerationVi
 	private LoadingPopup loadingPopup = new LoadingPopup();
 	private IMatrixGenerationServiceAsync matrixGenerationService;
 	private FilePathShortener filePathShortener = new FilePathShortener(ServerSetup.getInstance().getSetup().getFileBase(), ServerSetup.getInstance().getSetup().getSeperator());
+	private String output;
 
 	public OutputMatrixGenerationPresenter(HandlerManager eventBus, OutputMatrixGenerationView view, IFileServiceAsync fileService, IMatrixGenerationServiceAsync matrixGenerationService) {
 		this.eventBus = eventBus;
@@ -37,7 +38,7 @@ public class OutputMatrixGenerationPresenter implements OutputMatrixGenerationVi
 	public void go(final HasWidgets container, final Task task) {
 		loadingPopup.start();
 		
-		String output = ((MatrixGenerationConfiguration)task.getConfiguration()).getOutput();
+		this.output = ((MatrixGenerationConfiguration)task.getConfiguration()).getOutput();
 		view.setOutput(filePathShortener.shorten(output, task.getUser().getName(), Authentication.getInstance().getUsername()));
 		
 		matrixGenerationService.output(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Void>>() {
@@ -58,7 +59,7 @@ public class OutputMatrixGenerationPresenter implements OutputMatrixGenerationVi
 
 	@Override
 	public void onFileManager() {
-		eventBus.fireEvent(new FileManagerEvent());
+		eventBus.fireEvent(new FileManagerEvent(output));
 	}
 
 }

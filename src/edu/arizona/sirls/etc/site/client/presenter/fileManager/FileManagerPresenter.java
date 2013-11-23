@@ -57,4 +57,8 @@ public class FileManagerPresenter implements Presenter {
 		managableFileTreePresenter.refresh();
 		ManagableFileTreePresenter.setInputFileMultiple();
 	}
+
+	public void setSelectedFile(String fileSelection) {
+		managableFileTreePresenter.getFileTreePresenter().setSelectedFile(fileSelection);
+	}
 }

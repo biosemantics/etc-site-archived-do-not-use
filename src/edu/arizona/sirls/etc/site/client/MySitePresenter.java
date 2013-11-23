@@ -239,6 +239,11 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 		    	new FileManagerEventHandler() {
 		          public void onFileManager(FileManagerEvent event) {
 		        	  taskManager.removeActiveTask();
+		        	  if (fileManagerPresenter == null) {
+		        		  fileManagerPresenter = new FileManagerPresenter(eventBus, new FileManagerView(), fileService);
+		        	  }
+		        	  if(event.hasFileSelection())
+		        		  fileManagerPresenter.setSelectedFile(event.getFileSelection());
 		        	  addToHistory(event);
 		          }
 		        });

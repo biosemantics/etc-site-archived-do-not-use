@@ -8,6 +8,25 @@ public class FileManagerEvent extends GwtEvent<FileManagerEventHandler> implemen
 
 	public static Type<FileManagerEventHandler> TYPE = new Type<FileManagerEventHandler>();
 	
+	private String fileSelection;
+	
+	public FileManagerEvent() {
+		
+	}
+	
+	public FileManagerEvent(String fileSelection) {
+		this.fileSelection = fileSelection;
+	}
+	
+	public String getFileSelection() {
+		return this.fileSelection;
+	}
+	
+	public boolean hasFileSelection() {
+		return this.fileSelection != null;
+	}
+	
+	
 	@Override
 	public Type<FileManagerEventHandler> getAssociatedType() {
 		return TYPE;

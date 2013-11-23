@@ -55,8 +55,7 @@ public class FileTreePresenter implements Presenter, FileTreeView.Presenter, IFi
 		final Map<String, Boolean> retainedStates = getRetainedStates();
 		
 		//retain selection
-		FileImageLabelTreeItem selection = fileSelectionHandler.getSelection();
-		final String selectionPath = selection == null ? null : selection.getFileInfo().getFilePath();
+		final String selectionPath = this.fileSelectionHandler.getSelectionPath();
 		
 		//remove previous data
 		view.getTree().clear();
@@ -70,10 +69,12 @@ public class FileTreePresenter implements Presenter, FileTreeView.Presenter, IFi
 						FileTreeDecorator fileTreeDecorator = new FileTreeDecorator();
 						fileDragDropHandler.addListener(FileTreePresenter.this);
 						
-						if(enableDragAndDrop) 
-							fileTreeDecorator.decorate(view.getTree(), result.getData(), fileFilter, fileDragDropHandler, selectionPath, retainedStates);
-						else
-							fileTreeDecorator.decorate(view.getTree(), result.getData(), fileFilter, null, selectionPath, retainedStates);
+						Map<String, FileImageLabelTreeItem> filePathTreeItemMap = new HashMap<String, FileImageLabelTreeItem>();
+						if(enableDragAndDrop) {
+							filePathTreeItemMap = fileTreeDecorator.decorate(view.getTree(), result.getData(), fileFilter, fileDragDropHandler, selectionPath, retainedStates);
+						} else {
+							filePathTreeItemMap = fileTreeDecorator.decorate(view.getTree(), result.getData(), fileFilter, null, selectionPath, retainedStates);
+						}
 						
 						loadingPopup.stop();
 					}
@@ -111,6 +112,10 @@ public class FileTreePresenter implements Presenter, FileTreeView.Presenter, IFi
 			FileImageLabelTreeItem child = fileImageLabelTreeItem.getChild(i);
 			fillChildrenStates(child, retainedStates);
 		}
+	}
+
+	public void setSelectedFile(String fileSelection) {
+		this.fileSelectionHandler.setSelectionPath(fileSelection);
 	}
 
 }

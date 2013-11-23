@@ -39,6 +39,7 @@ public class OutputSemanticMarkupPresenter {
 	private Task task;
 	private LoadingPopup loadingPopup = new LoadingPopup();
 	private FilePathShortener filePathShortener = new FilePathShortener(ServerSetup.getInstance().getSetup().getFileBase(), ServerSetup.getInstance().getSetup().getSeperator());
+	private String output;
 	
 	public OutputSemanticMarkupPresenter(HandlerManager eventBus,
 			Display display, IFileServiceAsync fileService, ISemanticMarkupServiceAsync semanticMarkupService) {
@@ -53,7 +54,7 @@ public class OutputSemanticMarkupPresenter {
 		display.getFileManager().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				eventBus.fireEvent(new FileManagerEvent());
+				eventBus.fireEvent(new FileManagerEvent(output));
 			}
 		});
 	}
@@ -62,7 +63,7 @@ public class OutputSemanticMarkupPresenter {
 		loadingPopup.start();
 		this.task = task;
 		
-		String output = ((SemanticMarkupConfiguration)task.getConfiguration()).getOutput();
+		output = ((SemanticMarkupConfiguration)task.getConfiguration()).getOutput();
 		display.setOutput(filePathShortener.shorten(output, task.getUser().getName(), Authentication.getInstance().getUsername()));
 
 		semanticMarkupService.output(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Void>>() {

@@ -423,4 +423,8 @@ public class ManagableFileTreePresenter implements Presenter {
 		}
 	}-*/;
 
+	public FileTreePresenter getFileTreePresenter() {
+		return fileTreePresenter;
+	}
+
 }

@@ -1,5 +1,6 @@
 package edu.arizona.sirls.etc.site.client.presenter.fileManager;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.dom.client.Element;
@@ -21,9 +22,10 @@ import edu.arizona.sirls.etc.site.shared.rpc.file.FileTypeEnum;
 
 public class FileTreeDecorator {
 	
-	public void decorate(FileImageLabelTree tree, edu.arizona.sirls.etc.site.shared.rpc.Tree<FileInfo> fileTree, FileFilter fileFilter, 
+	public Map<String, FileImageLabelTreeItem> decorate(FileImageLabelTree tree, edu.arizona.sirls.etc.site.shared.rpc.Tree<FileInfo> fileTree, FileFilter fileFilter, 
 			FileDragDropHandler fileDragDropHandler, String selectionPath, 
 			Map<String, Boolean> retainedStates) {
+		Map<String, FileImageLabelTreeItem> result = new HashMap<String, FileImageLabelTreeItem>();
 		FileInfo fileInfo = fileTree.getValue();
 		String filePath = fileInfo.getFilePath();
 		
@@ -47,7 +49,7 @@ public class FileTreeDecorator {
 		
 		if(fileTree.getValue().getFileType().equals(FileTypeEnum.DIRECTORY)) {
 			for(edu.arizona.sirls.etc.site.shared.rpc.Tree<FileInfo> child : fileTree.getChildren()) {
-				decorate(tree, root, child, fileFilter, fileDragDropHandler, 1, selectionPath, retainedStates);
+				decorate(tree, root, child, fileFilter, fileDragDropHandler, 1, selectionPath, retainedStates, result);
 			}
 		}
 		
@@ -55,6 +57,7 @@ public class FileTreeDecorator {
 			root.setState(retainedStates.get(filePath));
 		else
 			root.setState(true);
+		return result;
 	}
 	
 	private boolean filter(FileTypeEnum fileType, FileFilter fileFilter) {
@@ -93,7 +96,7 @@ public class FileTreeDecorator {
 
 	private void decorate(FileImageLabelTree tree, TreeItem root, edu.arizona.sirls.etc.site.shared.rpc.Tree<FileInfo> fileTree, FileFilter fileFilter, 
 			FileDragDropHandler fileDragAndDropHandler, 
-			int level, String selectionPath, Map<String, Boolean> retainedStates) {
+			int level, String selectionPath, Map<String, Boolean> retainedStates, Map<String, FileImageLabelTreeItem> filePathTreeItemMap) {
 		if(!filter(fileTree.getValue().getFileType(), fileFilter)) {
 			FileInfo fileInfo = fileTree.getValue();
 			String filePath = fileInfo.getFilePath();
@@ -110,6 +113,7 @@ public class FileTreeDecorator {
 					return;
 			} 
 			root.addItem(treeItem);
+			filePathTreeItemMap.put(treeItem.getFileInfo().getFilePath(), treeItem);
 			if(selectionPath != null && filePath != null && filePath.equals(selectionPath))
 				tree.setSelectedItem(treeItem);
 			
@@ -124,7 +128,7 @@ public class FileTreeDecorator {
 			if(fileTree.getValue().getFileType().equals(FileTypeEnum.DIRECTORY)) {
 				level++;
 				for(edu.arizona.sirls.etc.site.shared.rpc.Tree<FileInfo> child : fileTree.getChildren()) {
-					decorate(tree, treeItem, child, fileFilter, fileDragAndDropHandler, level, selectionPath, retainedStates);
+					decorate(tree, treeItem, child, fileFilter, fileDragAndDropHandler, level, selectionPath, retainedStates, filePathTreeItemMap);
 				}
 			}
 			
