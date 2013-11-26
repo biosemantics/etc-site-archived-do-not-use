@@ -1,24 +1,17 @@
 package edu.arizona.sirls.etc.site.client.presenter.matrixGeneration;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.event.MatrixGenerationEvent;
-import edu.arizona.sirls.etc.site.client.event.SemanticMarkupEvent;
 import edu.arizona.sirls.etc.site.client.presenter.Presenter;
 import edu.arizona.sirls.etc.site.client.presenter.fileManager.FileSelectDialogClickHandler;
 import edu.arizona.sirls.etc.site.client.presenter.fileManager.ManagableFileTreePresenter;
-import edu.arizona.sirls.etc.site.client.presenter.fileManager.SelectableFileTreePresenter;
-import edu.arizona.sirls.etc.site.client.view.fileManager.FileImageLabelTreeItem;
 import edu.arizona.sirls.etc.site.client.view.fileManager.ManagableFileTreeView;
-import edu.arizona.sirls.etc.site.client.view.fileManager.SelectableFileTreeView;
 import edu.arizona.sirls.etc.site.client.view.matrixGeneration.InputMatrixGenerationView;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationServiceAsync;

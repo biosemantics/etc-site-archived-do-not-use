@@ -4,6 +4,7 @@ public enum TaskStageEnum {
 	
     INPUT("Input"),
     PROCESS("Process"),
+    REVIEW("Review"),
     OUTPUT("Output");
 
     private String displayName;

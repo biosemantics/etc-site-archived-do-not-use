@@ -7,6 +7,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.Matrix;
 import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.LearnInvocation;
 import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.ParseInvocation;
 import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.PreprocessedDescription;
@@ -18,10 +19,15 @@ public interface IMatrixGenerationService extends RemoteService {
 	
 	public RPCResult<Task> process(AuthenticationToken authenticationToken, Task task);
 	
+	public RPCResult<Matrix> review(AuthenticationToken authenticationToken, Task task);
+	
+	public RPCResult<Task> completeReview(AuthenticationToken authenticationToken, Task task);
+	
 	public RPCResult<Void> output(AuthenticationToken authenticationToken, Task task);
 
 	public RPCResult<Task> getLatestResumable(AuthenticationToken authenticationToken);
 	
 	public RPCResult<Void> cancel(AuthenticationToken authenticationToken, Task task);
+
 
 }

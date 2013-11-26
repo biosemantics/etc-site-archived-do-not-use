@@ -61,6 +61,8 @@ import edu.arizona.sirls.etc.site.client.presenter.fileManager.FileManagerPresen
 import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.InputMatrixGenerationPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.OutputMatrixGenerationPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.ProcessMatrixGenerationPresenter;
+import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.ReviewMatrixGenerationPresenter;
+import edu.arizona.sirls.etc.site.client.presenter.matrixGeneration.ReviewMatrixPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.semanticMarkup.InputSemanticMarkupPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.semanticMarkup.LearnSemanticMarkupPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.semanticMarkup.OutputSemanticMarkupPresenter;
@@ -91,6 +93,8 @@ import edu.arizona.sirls.etc.site.client.view.matrixGeneration.InputMatrixGenera
 import edu.arizona.sirls.etc.site.client.view.matrixGeneration.InputMatrixGenerationViewImpl;
 import edu.arizona.sirls.etc.site.client.view.matrixGeneration.OutputMatrixGenerationViewImpl;
 import edu.arizona.sirls.etc.site.client.view.matrixGeneration.ProcessMatrixGenerationViewImpl;
+import edu.arizona.sirls.etc.site.client.view.matrixGeneration.ReviewMatrixGenerationViewImpl;
+import edu.arizona.sirls.etc.site.client.view.matrixGeneration.review.ViewImpl;
 import edu.arizona.sirls.etc.site.client.view.semanticMarkup.InputSemanticMarkupView;
 import edu.arizona.sirls.etc.site.client.view.semanticMarkup.LearnSemanticMarkupView;
 import edu.arizona.sirls.etc.site.client.view.semanticMarkup.OutputSemanticMarkupView;
@@ -173,6 +177,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	
 	protected InputMatrixGenerationPresenter inputMatrixGenerationPresenter;
 	protected ProcessMatrixGenerationPresenter processMatrixGenerationPresenter;
+	protected ReviewMatrixGenerationPresenter reviewMatrixGenerationPresenter;
 	protected OutputMatrixGenerationPresenter outputMatrixGenerationPresenter;
 	
 	protected SettingsPresenter settingsPresenter;
@@ -392,8 +397,8 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 						caught.printStackTrace();
 					}
 					@Override
-					public void onSuccess(RPCResult<AuthenticationResult> result) {
-						if(result.isSucceeded()) {
+					public void onSuccess(final RPCResult<AuthenticationResult> authenticationResult) {
+						if(authenticationResult.isSucceeded()) {			
 							if(!ServerSetup.getInstance().hasSetup()) {
 								setupService.getSetup(Authentication.getInstance().getAuthenticationToken(), new AsyncCallback<RPCResult<Setup>>() {
 									@Override
@@ -406,16 +411,22 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 											Setup setup = result.getData();
 											ServerSetup.getInstance().setSetup(setup);
 										}
+										initContent(authenticationResult.getData());
 									}
 								});
+							} else {
+								initContent(authenticationResult.getData());
 							}
-							
-							manageResumableTasksTimer(result.getData().getResult());
-							presentHeader(result.getData().getResult());
-							presentMenu(historyState);
-							presentContent(historyState);
-							presentFooter();
+						} else {
+							initContent(authenticationResult.getData());
 						}
+					}
+					private void initContent(AuthenticationResult authenticationResult) {
+						manageResumableTasksTimer(authenticationResult.getResult());
+						presentHeader(authenticationResult.getResult());
+						presentMenu(historyState);
+						presentContent(historyState);
+						presentFooter();
 					}
 		});
 	}
@@ -733,6 +744,9 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 											taskService.getTask(Authentication.getInstance().getAuthenticationToken(), 
 													matrixGenerationTask, 
 													new AsyncCallback<RPCResult<Task>>() {
+
+														private ReviewMatrixPresenter reviewMatrixPresenter;
+
 														@Override
 														public void onFailure(Throwable caught) {
 															caught.printStackTrace();
@@ -750,6 +764,16 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 																						new ProcessMatrixGenerationViewImpl(), matrixGenerationService);
 																	}
 																	processMatrixGenerationPresenter.go(content, matrixGenerationTask);
+																	break;
+																case REVIEW:
+																	if(reviewMatrixGenerationPresenter == null) {
+																		ViewImpl view = new ViewImpl();
+																		reviewMatrixPresenter = new ReviewMatrixPresenter(view);
+																		reviewMatrixGenerationPresenter = 
+																				new ReviewMatrixGenerationPresenter(eventBus, 
+																						new ReviewMatrixGenerationViewImpl(view), reviewMatrixPresenter, matrixGenerationService);
+																	}
+																	reviewMatrixGenerationPresenter.go(content, matrixGenerationTask);
 																	break;
 																case OUTPUT:
 																	if (outputMatrixGenerationPresenter == null) {

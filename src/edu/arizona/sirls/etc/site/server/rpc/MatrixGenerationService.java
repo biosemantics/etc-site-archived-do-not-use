@@ -1,6 +1,9 @@
 package edu.arizona.sirls.etc.site.server.rpc;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +34,9 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.TaskStageDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TaskType;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TaskTypeDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.UserDAO;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.Matrix;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.Taxon;
 
 public class MatrixGenerationService extends RemoteServiceServlet implements IMatrixGenerationService  {
 
@@ -126,7 +131,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				     			activeProcessFutures.remove(configuration.getConfiguration().getId());
 				     			if(!futureResult.isCancelled()) {
 				     				Boolean result = futureResult.get();
-									TaskStage newTaskStage = TaskStageDAO.getInstance().getMatrixGenerationTaskStage(TaskStageEnum.OUTPUT.toString());
+									TaskStage newTaskStage = TaskStageDAO.getInstance().getMatrixGenerationTaskStage(TaskStageEnum.REVIEW.toString());
 									task.setTaskStage(newTaskStage);
 									task.setResumable(true);
 									TaskDAO.getInstance().updateTask(task);
@@ -143,6 +148,88 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			e.printStackTrace();
 			return new RPCResult<Task>(false, "Internal Server Error");
 		}
+	}
+	
+	@Override
+	public RPCResult<Matrix> review(AuthenticationToken authenticationToken, Task task) {
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<Matrix>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<Matrix>(false, "Authentication failed");
+		
+		try {
+			final AbstractTaskConfiguration configuration = task.getConfiguration();
+			if(!(configuration instanceof MatrixGenerationConfiguration))
+				return new RPCResult<Matrix>(false, "Not a compatible task");
+			final MatrixGenerationConfiguration matrixGenerationConfiguration = (MatrixGenerationConfiguration)configuration;
+			
+			String outputFile = Configuration.tempFileBase + File.separator + task.getId() + File.separator + "Matrix.mx";
+			Matrix matrix = readFile(outputFile);
+			return new RPCResult<Matrix>(true, matrix);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new RPCResult<Matrix>(false, "Internal Server Error");
+		}
+	}
+	
+	@Override
+	public RPCResult<Task> completeReview(AuthenticationToken authenticationToken, Task task) {
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<Task>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<Task>(false, "Authentication failed");
+		
+		try {
+			final AbstractTaskConfiguration configuration = task.getConfiguration();
+			if(!(configuration instanceof MatrixGenerationConfiguration))
+				return new RPCResult<Task>(false, "Not a compatible task");
+			
+			final MatrixGenerationConfiguration matrixGenerationConfiguration = (MatrixGenerationConfiguration)configuration;
+			final TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
+			TaskStage taskStage = TaskStageDAO.getInstance().getMatrixGenerationTaskStage(TaskStageEnum.OUTPUT.toString());
+			task.setTaskStage(taskStage);
+			task.setResumable(true);
+			TaskDAO.getInstance().updateTask(task);
+			
+			return new RPCResult<Task>(true, task);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new RPCResult<Task>(false, "Internal Server Error");
+		}
+		
+
+	}
+
+	private Matrix readFile(String filePath) throws Exception {
+		Matrix result = new Matrix();
+		File file = new File(filePath);
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		String line;
+		boolean firstLine = true;
+		int id=0;
+		while ((line = br.readLine()) != null) {
+			String[] values = line.split("\t");
+			if(firstLine) {
+				for(int i=1; i<values.length; i++) {
+					String characterName = values[i];
+					result.addCharacterName(characterName);
+				}
+			} else {
+				Taxon taxon = new Taxon();
+				taxon.setName(values[0]);
+				taxon.setId(String.valueOf(id));
+				for(int i=1; i<values.length; i++) {
+					taxon.setCharacterState(result.getCharacterNames().get(i-1), values[i]);
+				}
+				result.addTaxon(taxon);
+				id++;
+			}
+			firstLine = false;
+		}
+		br.close();
+		return result;
 	}
 
 	@Override
@@ -272,6 +359,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		this.executorService.shutdownNow();
 		super.destroy();
 	}
+
+
 
 
 }
