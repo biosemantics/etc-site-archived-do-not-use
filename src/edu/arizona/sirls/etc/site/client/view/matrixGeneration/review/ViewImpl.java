@@ -144,7 +144,7 @@ public class ViewImpl extends Composite implements IView, Handler {
 			@Override
 		    public void render(Context context, String value, SafeHtmlBuilder sb) {
 		        String imagePath = "images/move.png";
-		        sb.appendHtmlConstant("<img src = '"+imagePath+"' height = '20px' width = '20px' />");
+		        sb.appendHtmlConstant("<img src = '"+imagePath+"' class='reviewMatrixActionIcon' height = '20px' width = '20px' />");
 		    }
 		};
 		Column<Taxon, String> dndImageColumn = new Column<Taxon, String>(dndImageCell) {
@@ -205,16 +205,22 @@ public class ViewImpl extends Composite implements IView, Handler {
 		dataGrid.addColumn(column, header);
 		
 		int maxLength = 0;
+		String maxName = "";
 		for(Taxon taxon : dataProvider.getList()) {
 			String state = taxon.getName();
-			if(state.length() > maxLength)
+			if(state.length() > maxLength) {
 				maxLength = state.length();
+				maxName = state;
+			}
 		}
-		dataGrid.setColumnWidth(column, maxLength * 0.8, Unit.EM);
+		Label label = new Label(maxName);
+		int maxWidth = label.getOffsetWidth();
+		dataGrid.setColumnWidth(column, 100, Unit.PX);
 		
 		//add taxon charater state columns
 		DnDHandler dndHandlerCharacters = new CharacterDnDHandler(this);
 		for(final String characterName : characterNames) {
+			final String displayCharacterName = characterName.replaceAll("_", " ");
 			Column<Taxon, String> characterColumn = new Column<Taxon, String>(
 					new EditTextCell()) {
 				@Override
@@ -227,8 +233,8 @@ public class ViewImpl extends Composite implements IView, Handler {
 					new Comparator<Taxon>() {
 						@Override
 						public int compare(Taxon o1, Taxon o2) {
-							return o1.getCharacterState(characterName)
-									.compareTo(o2.getCharacterState(characterName));
+							return o1.getCharacterState(displayCharacterName)
+									.compareTo(o2.getCharacterState(displayCharacterName));
 						}
 					});
 			
@@ -256,7 +262,7 @@ public class ViewImpl extends Composite implements IView, Handler {
 			cellList.add(characterNameColumn);
 			
 			DnDHeaderCell cell = new DnDHeaderCell(cellList); 
-			DnDHeader dndHeader = new DnDHeader(characterName, cell);
+			DnDHeader dndHeader = new DnDHeader(displayCharacterName, cell);
 			dataGrid.addColumn(characterColumn, dndHeader);
 			characterColumn.setFieldUpdater(new FieldUpdater<Taxon, String>() {
 						@Override
@@ -268,12 +274,17 @@ public class ViewImpl extends Composite implements IView, Handler {
 					});
 			
 			maxLength = 0;
+			String maxState = "";
 			for(Taxon taxon : dataProvider.getList()) {
 				String state = taxon.getCharacterState(characterName);
-				if(state.length() > maxLength)
+				if(state.length() > maxLength) {
 					maxLength = state.length();
+					maxState = state;
+				}
 			}
-			dataGrid.setColumnWidth(characterColumn, maxLength * 0.8, Unit.EM);
+			label = new Label(maxState);
+			maxWidth = label.getOffsetWidth();
+			dataGrid.setColumnWidth(characterColumn, 100, Unit.PX);
 		}
 	}
 	
