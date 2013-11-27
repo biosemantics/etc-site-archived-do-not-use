@@ -100,7 +100,8 @@ public class ViewImpl extends Composite implements IView, Handler {
 	}
 	
 	private ScrolledGrid<Taxon> createDataGrid() {
-		ScrolledGrid<Taxon> dataGrid = new ScrolledGrid<Taxon>(taxonKeyProvider);
+		MyDataGridResource myDataGridResource = GWT.create(MyDataGridResource.class);
+		ScrolledGrid<Taxon> dataGrid = new ScrolledGrid<Taxon>(50, myDataGridResource, taxonKeyProvider);
 		dataGrid.setAutoHeaderRefreshDisabled(false);
 		dataGrid.setAutoFooterRefreshDisabled(false);
 		buildDataGrid(dataGrid);
@@ -141,7 +142,7 @@ public class ViewImpl extends Composite implements IView, Handler {
 		DnDImageCell dndImageCell = new DnDImageCell(dndHandlerTaxons) {
 			@Override
 		    public void render(Context context, String value, SafeHtmlBuilder sb) {
-		        String imagePath = "images/Enumeration.gif";
+		        String imagePath = "images/move.png";
 		        sb.appendHtmlConstant("<img src = '"+imagePath+"' height = '20px' width = '20px' />");
 		    }
 		};
@@ -155,7 +156,7 @@ public class ViewImpl extends Composite implements IView, Handler {
 		ClickImageCell clickImageCell = new ClickImageCell(unusedCharactersClickHandler) {
 			@Override
 		    public void render(Context context, String value, SafeHtmlBuilder sb) {
-		        String imagePath = "images/Enumeration.gif";
+		        String imagePath = "images/back.png";
 		        sb.appendHtmlConstant("<img src = '"+imagePath+"' height = '20px' width = '20px' />");
 		    }
 		};
@@ -208,7 +209,7 @@ public class ViewImpl extends Composite implements IView, Handler {
 			if(state.length() > maxLength)
 				maxLength = state.length();
 		}
-		dataGrid.setColumnWidth(column, "200px");
+		dataGrid.setColumnWidth(column, maxLength * 0.8, Unit.EM);
 		
 		//add taxon charater state columns
 		DnDHandler dndHandlerCharacters = new CharacterDnDHandler(this);
@@ -234,7 +235,7 @@ public class ViewImpl extends Composite implements IView, Handler {
 			DnDImageCell characterImageCell = new DnDImageCell(dndHandlerCharacters) {
 				@Override
 			    public void render(Context context, String value, SafeHtmlBuilder sb) {
-			        String imagePath = "images/Enumeration.gif";
+			        String imagePath = "images/move.png";
 			        sb.appendHtmlConstant("<img src = '"+imagePath+"' height = '20px' width = '20px' />");
 			    }
 			};
@@ -271,7 +272,7 @@ public class ViewImpl extends Composite implements IView, Handler {
 				if(state.length() > maxLength)
 					maxLength = state.length();
 			}
-			dataGrid.setColumnWidth(characterColumn, "200px");
+			dataGrid.setColumnWidth(characterColumn, maxLength * 0.8, Unit.EM);
 		}
 	}
 	
@@ -289,6 +290,7 @@ public class ViewImpl extends Composite implements IView, Handler {
 		List<Taxon> taxonList = dataProvider.getList();
 		taxonList.clear();
 		taxonList.addAll(taxons);
+		buildDataGrid(dataGrid);
 	}
 
 	@Override

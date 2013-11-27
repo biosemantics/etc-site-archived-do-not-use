@@ -14,8 +14,8 @@ import com.google.gwt.view.client.ProvidesKey;
  */
 public class ScrolledGrid<T> extends DataGrid<T> {
 
-    public ScrolledGrid(ProvidesKey<T> taxonKeyProvider) {
-    	super(taxonKeyProvider);
+    public ScrolledGrid(int pageSize, DataGrid.Resources resources, ProvidesKey<T> taxonKeyProvider) {
+    	super(pageSize, resources, taxonKeyProvider);
     	this.updateContentWidget();
     }
     
