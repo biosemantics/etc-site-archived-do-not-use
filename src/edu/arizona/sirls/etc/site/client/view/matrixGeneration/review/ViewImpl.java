@@ -46,6 +46,7 @@ import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.Matrix;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.Taxon;
 
 
@@ -104,7 +105,7 @@ public class ViewImpl extends Composite implements IView, Handler {
 		ScrolledGrid<Taxon> dataGrid = new ScrolledGrid<Taxon>(50, myDataGridResource, taxonKeyProvider);
 		dataGrid.setAutoHeaderRefreshDisabled(false);
 		dataGrid.setAutoFooterRefreshDisabled(false);
-		buildDataGrid(dataGrid);
+		//buildDataGrid(dataGrid);
 		return dataGrid;
 	}
 
@@ -276,21 +277,14 @@ public class ViewImpl extends Composite implements IView, Handler {
 		}
 	}
 	
-
 	@Override
-	public void setCharacterNames(List<String> characterNames) {
-		this.characterNames = characterNames;
-		this.buildDataGrid(dataGrid);
-		//TODO refresh scrollpanel here somehow so it knows about changing width; e.g. set a longer charactername list and it will overflow, not visible parts then
-		this.dataGrid.redraw();
-	}
-	
-	@Override
-	public void setTaxons(List<Taxon> taxons) {
+	public void setMatrix(Matrix matrix) {
+		this.characterNames = matrix.getCharacterNames();
 		List<Taxon> taxonList = dataProvider.getList();
 		taxonList.clear();
-		taxonList.addAll(taxons);
-		buildDataGrid(dataGrid);
+		taxonList.addAll(matrix.getTaxons());
+		//TODO refresh scrollpanel here somehow so it knows about changing width; e.g. set a longer charactername list and it will overflow, not visible parts then
+		this.buildDataGrid(dataGrid);
 	}
 
 	@Override
@@ -339,9 +333,19 @@ public class ViewImpl extends Composite implements IView, Handler {
 		Collections.swap(taxons, rowIdA, rowIdB);
 	}
 	
-	public void swapCharacters(int columnIdA, int columnIdB) {
-		Collections.swap(this.characterNames, columnIdA, columnIdB);
-		buildDataGrid(dataGrid);
+	public void swapCharacters(int characterIdA, int characterIdB) {
+		int columnIdA = characterIdA + 1;
+		int columnIdB = characterIdB + 1;
+		Collections.swap(this.characterNames, characterIdA, characterIdB);
+		Column<Taxon, ?> sourceColumn = dataGrid.getColumn(columnIdA);
+		Header<?> sourceHeader = dataGrid.getHeader(columnIdA);
+		dataGrid.removeColumn(columnIdA);
+		if(columnIdA >= columnIdB) {
+			dataGrid.insertColumn(columnIdB, sourceColumn, sourceHeader);
+		} else {
+			dataGrid.insertColumn(columnIdB - 1, sourceColumn, sourceHeader);
+		}
+		//buildDataGrid(dataGrid);
 	}
 	
 	public void moveTaxon(int movingTaxon, int lowerNeighbor) {
@@ -362,13 +366,28 @@ public class ViewImpl extends Composite implements IView, Handler {
 			Collections.rotate(taxons.subList(movingTaxon, lowerNeighbor + 1), distance);*/
 	}
 	
-	public void moveCharacter(int movingCharacter, int lowerNeighbor) {
-		moveCharacterData(movingCharacter, lowerNeighbor);
-		buildDataGrid(dataGrid);
+	public void moveCharacter(int characterIdA, int characterIdB) {
+		int columnIdA = characterIdA + 1;
+		int columnIdB = characterIdB + 1;
+		Column<Taxon, ?> sourceColumn = dataGrid.getColumn(columnIdA);
+		Header<?> sourceHeader = dataGrid.getHeader(columnIdA);
+		dataGrid.removeColumn(columnIdA);
+		String character = characterNames.get(characterIdA);
+		characterNames.remove(characterIdA);
+		
+		if(columnIdA >= columnIdB) {
+			dataGrid.insertColumn(columnIdB, sourceColumn, sourceHeader);
+			characterNames.add(characterIdB, character);
+		} else {
+			dataGrid.insertColumn(columnIdB - 1, sourceColumn, sourceHeader);
+			characterNames.add(characterIdB - 1, character);
+		}
+		/*moveCharacterData(movingCharacter, lowerNeighbor);
+		buildDataGrid(dataGrid); */
 	}
 	
-	private void moveCharacterData(int movingCharacter, int lowerNeighbor) {
-		int distance = lowerNeighbor - movingCharacter;
+	private void moveCharacterData(int columnIdA, int columnIdB) {
+		/*int distance = lowerNeighbor - movingCharacter;
 		String character = characterNames.get(movingCharacter);
 		if(distance > 0) {
 			characterNames.add(lowerNeighbor, character);
@@ -376,7 +395,10 @@ public class ViewImpl extends Composite implements IView, Handler {
 		} else if(distance < 0) {
 			characterNames.remove(character);
 			characterNames.add(lowerNeighbor, character);
-		}
+		}*/
+		
+		
+		
 		/*if(distance > 0) 
 		Collections.rotate(characterNames.subList(movingCharacter, lowerNeighbor + 1), -distance);
 			else if(distance < 0)
@@ -394,12 +416,12 @@ public class ViewImpl extends Composite implements IView, Handler {
 			if(state.isEmpty() && i != insertPosition) {
 				if(!nonEmptyCharacterStateFound)
 					insertPosition--;
-				this.moveCharacterData(i, insertPosition);
+				this.moveCharacter(i, insertPosition);
 			} else {
 				nonEmptyCharacterStateFound = true;
 			}
 		}
-		buildDataGrid(dataGrid);
+		//buildDataGrid(dataGrid);
 	}
 
 	@Override

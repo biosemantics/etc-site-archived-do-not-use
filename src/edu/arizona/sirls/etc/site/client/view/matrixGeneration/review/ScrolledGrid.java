@@ -14,30 +14,28 @@ import com.google.gwt.view.client.ProvidesKey;
  */
 public class ScrolledGrid<T> extends DataGrid<T> {
 
+    private final Text cssText;
+    private boolean addedClass = false;
+    private int currentScrollLeft = 0;
+
     public ScrolledGrid(int pageSize, DataGrid.Resources resources, ProvidesKey<T> taxonKeyProvider) {
     	super(pageSize, resources, taxonKeyProvider);
-    	this.updateContentWidget();
-    }
-    
-    public void updateContentWidget() {
-    	final Text cssText = Document.get().createTextNode("");
-    	
+
+        cssText = Document.get().createTextNode("");
+
         StyleElement styleElement = Document.get().createStyleElement();
         styleElement.setType("text/css");
         styleElement.appendChild(cssText);
 
         HeaderPanel headerPanel = (HeaderPanel) getWidget();
         headerPanel.getElement().insertFirst(styleElement);
-        
-    	final ScrollPanel scrollPanel = (ScrollPanel) headerPanel.getContentWidget();
+
+        final ScrollPanel scrollPanel = (ScrollPanel) headerPanel.getContentWidget();
         scrollPanel.addScrollHandler(new ScrollHandler() {
 
             @Override
             public void onScroll(ScrollEvent event) {
-            	int currentScrollLeft = 0;
-                boolean addedClass = false;
-                
-            	int scrollLeft = scrollPanel.getHorizontalScrollPosition();
+                int scrollLeft = scrollPanel.getHorizontalScrollPosition();
                 if (scrollLeft != currentScrollLeft) {
                     StringBuilder css = new StringBuilder();
                     if (scrollLeft > 0) {
