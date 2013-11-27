@@ -51,7 +51,7 @@
 
 .dataGridCell {
   border: 1px solid #6f7277;
-  /*padding: 2px 15px;*/
+  padding: 2px 2px 2px 2px;
   overflow: hidden;
 }
 

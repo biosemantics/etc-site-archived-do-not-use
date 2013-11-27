@@ -45,6 +45,7 @@ import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.Matrix;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.Taxon;
@@ -63,7 +64,7 @@ public class ViewImpl extends Composite implements IView, Handler {
 	 * The main DataGrid.
 	 */
 	@UiField(provided = true)
-	ScrolledGrid<Taxon> dataGrid;
+	DataGrid<Taxon> dataGrid;
 
 	/**
 	 * The pager used to change the range of data.
@@ -100,9 +101,9 @@ public class ViewImpl extends Composite implements IView, Handler {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 	
-	private ScrolledGrid<Taxon> createDataGrid() {
+	private DataGrid<Taxon> createDataGrid() {
 		MyDataGridResource myDataGridResource = GWT.create(MyDataGridResource.class);
-		ScrolledGrid<Taxon> dataGrid = new ScrolledGrid<Taxon>(50, myDataGridResource, taxonKeyProvider);
+		DataGrid<Taxon> dataGrid = new DataGrid<Taxon>(50, myDataGridResource, taxonKeyProvider);
 		dataGrid.setAutoHeaderRefreshDisabled(false);
 		dataGrid.setAutoFooterRefreshDisabled(false);
 		//buildDataGrid(dataGrid);
@@ -143,8 +144,8 @@ public class ViewImpl extends Composite implements IView, Handler {
 		DnDImageCell dndImageCell = new DnDImageCell(dndHandlerTaxons) {
 			@Override
 		    public void render(Context context, String value, SafeHtmlBuilder sb) {
-		        String imagePath = "images/move.png";
-		        sb.appendHtmlConstant("<img src = '"+imagePath+"' class='reviewMatrixActionIcon' height = '20px' width = '20px' />");
+		        String imagePath = "images/move_vertical.png";
+		        sb.appendHtmlConstant("<img src = '"+imagePath+"' class='reviewMatrixActionIcon' height = '27px' width = '10px' />");
 		    }
 		};
 		Column<Taxon, String> dndImageColumn = new Column<Taxon, String>(dndImageCell) {
@@ -157,8 +158,8 @@ public class ViewImpl extends Composite implements IView, Handler {
 		ClickImageCell clickImageCell = new ClickImageCell(unusedCharactersClickHandler) {
 			@Override
 		    public void render(Context context, String value, SafeHtmlBuilder sb) {
-		        String imagePath = "images/back.png";
-		        sb.appendHtmlConstant("<img src = '"+imagePath+"' height = '20px' width = '20px' />");
+		        String imagePath = "images/curved_arrow.png";
+		        sb.appendHtmlConstant("<img src = '"+imagePath+"' height = '15px' width = '20px' />");
 		    }
 		};
 		Column<Taxon, String> unusedImageColumn = new Column<Taxon, String>(clickImageCell) {
@@ -171,7 +172,7 @@ public class ViewImpl extends Composite implements IView, Handler {
 				new EditTextCell()) {
 			@Override
 			public String getValue(Taxon object) {
-				return object.getName();
+				return object.getName().replace("_", " ");
 			}
 		};
 		nameColumn.setFieldUpdater(new FieldUpdater<Taxon, String>() {
@@ -242,8 +243,8 @@ public class ViewImpl extends Composite implements IView, Handler {
 			DnDImageCell characterImageCell = new DnDImageCell(dndHandlerCharacters) {
 				@Override
 			    public void render(Context context, String value, SafeHtmlBuilder sb) {
-			        String imagePath = "images/move.png";
-			        sb.appendHtmlConstant("<img src = '"+imagePath+"' height = '20px' width = '20px' />");
+			        String imagePath = "images/move_horizontal.png";
+			        sb.appendHtmlConstant("<img src = '"+imagePath+"' height = '10px' width = '27px' />");
 			    }
 			};
 			Column<String, String> characterImageColumn = new Column<String, String>(characterImageCell) {
