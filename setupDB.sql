@@ -317,9 +317,31 @@ CREATE TABLE IF NOT EXISTS `visualizationconfigurations` (
   PRIMARY KEY (`configuration`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+--
+-- Table structure for table `tasksoutputfiles`
+--
+
+CREATE TABLE IF NOT EXISTS `tasksoutputfiles` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `file` varchar(100) NOT NULL,
+  `task` bigint(20) unsigned DEFAULT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
+  KEY `tasks_tasksoutputfiles_CON` (`task`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `matrixgenerationconfigurations`
+--
+ALTER TABLE `tasksoutputfiles`
+  ADD CONSTRAINT `tasks_tasksoutputfiles_CON` FOREIGN KEY (`task`) REFERENCES `tasks` (`id`);
+
 
 --
 -- Constraints for table `matrixgenerationconfigurations`
