@@ -19,6 +19,7 @@ import edu.arizona.sirls.etc.site.server.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationResult;
 import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
+import edu.arizona.sirls.etc.site.shared.rpc.IFilePermissionService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.IMatrixGenerationService;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
@@ -44,6 +45,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	private static final long serialVersionUID = -7871896158610489838L;
 	private IAuthenticationService authenticationService = new AuthenticationService();
 	private IFileService fileService = new FileService();
+	private IFilePermissionService filePermissionService = new FilePermissionService();
 	private int maximumThreads = 10;
 	private ListeningExecutorService executorService;
 	private Map<Integer, ListenableFuture<Boolean>> activeProcessFutures = new HashMap<Integer, ListenableFuture<Boolean>>();
@@ -63,6 +65,21 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			return new RPCResult<Task>(false, "Authentication failed");
 		
 		try {
+			RPCResult<Boolean> sharedResult = filePermissionService.isSharedFilePath(authenticationToken.getUsername(), input);
+			if(!sharedResult.isSucceeded())
+				return new RPCResult<Task>(false, "Couldn't verify permission on input directory");
+			RPCResult<String> fileNameResult = fileService.getFileName(authenticationToken, input);
+			if(!fileNameResult.isSucceeded())
+				return new RPCResult<Task>(false, "Couldn't find file name for import");
+			if(sharedResult.getData()) {
+				RPCResult<String> destinationResult = 
+						fileService.createDirectoryForcibly(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUsername(), fileNameResult.getData());
+				RPCResult<Void> destination = fileService.copyFiles(authenticationToken, input, destinationResult.getData());
+				if(!destinationResult.isSucceeded() || !destination.isSucceeded())
+					return new RPCResult<Task>(false, "Couldn't copy shared files to an owned destination for input to task");
+				input = destinationResult.getData();
+			}
+			
 			MatrixGenerationConfiguration matrixGenerationConfiguration = new MatrixGenerationConfiguration();
 			matrixGenerationConfiguration.setInput(input);	
 			matrixGenerationConfiguration.setOutput(matrixGenerationConfiguration.getInput() + "_" + taskName);

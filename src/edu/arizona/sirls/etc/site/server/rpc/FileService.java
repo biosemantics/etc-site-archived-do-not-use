@@ -589,21 +589,21 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	}
 
 	@Override
-	public RPCResult<Void> copyFiles(AuthenticationToken authenticationToken, String sourceDirectory, String destinationDirectory) {
+	public RPCResult<Void> copyFiles(AuthenticationToken authenticationToken, String source, String destination) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
 		if(!authResult.isSucceeded()) 
 			return new RPCResult<Void>(false, authResult.getMessage());
 		if(!authResult.getData().getResult())
 			return new RPCResult<Void>(false, "Authentication failed");
 		
-		RPCResult<Boolean> permissionResultSource = filePermissionService.hasReadPermission(authenticationToken, sourceDirectory);
-		RPCResult<Boolean> permissionResultDestination = filePermissionService.hasWritePermission(authenticationToken, destinationDirectory);
+		RPCResult<Boolean> permissionResultSource = filePermissionService.hasReadPermission(authenticationToken, source);
+		RPCResult<Boolean> permissionResultDestination = filePermissionService.hasWritePermission(authenticationToken, destination);
 		if(!permissionResultSource.isSucceeded() || !permissionResultDestination.isSucceeded())
 			return new RPCResult<Void>(false, permissionResultSource.getMessage());
 		if(permissionResultSource.getData() && permissionResultDestination.getData()) {
-			File sourceDir = new File(sourceDirectory);
+			File sourceDir = new File(source);
 			for(File sourceFile : sourceDir.listFiles()) {
-				File destinationFile = new File(destinationDirectory, sourceFile.getName());
+				File destinationFile = new File(destination, sourceFile.getName());
 				try {
 					Files.copy(sourceFile, destinationFile);
 				} catch(Exception e) {
@@ -615,7 +615,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		}
 		return new RPCResult<Void>(false, "Permission denied");
 	}
-
+	
 	@Override
 	public RPCResult<String> createDirectoryForcibly(AuthenticationToken authenticationToken, String directory, String idealFolderName) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
@@ -643,4 +643,6 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		}
 		return new RPCResult<String>(false, "Permission denied", "");
 	}
+
+
 }

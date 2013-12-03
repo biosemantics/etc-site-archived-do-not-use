@@ -1,5 +1,6 @@
 package edu.arizona.sirls.etc.site.shared.rpc.file;
 
+import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 
 public class FilePathShortener {
@@ -27,6 +28,15 @@ public class FilePathShortener {
 		}
 		usersOutputPath = usersOutputPath.replace(seperator + seperator, seperator);
 		return usersOutputPath;
+	}
+	
+	public String shortenOwnedPath(String filePath) {
+		String fileOwnerUser = Authentication.getInstance().getUsername();
+		String result = filePath;
+		result = result.replace(fileBase + seperator + fileOwnerUser, "");
+		result = "OWNED" + result;
+		result = result.replace(seperator + seperator, seperator);
+		return result;
 	}
 
 	public String shorten(FileInfo fileInfo, String viewerUser) {

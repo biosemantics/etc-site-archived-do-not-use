@@ -36,10 +36,12 @@ public class FilePermissionService extends RemoteServiceServlet implements IFile
 		if(!authResult.getData().getResult())
 			return new RPCResult<Boolean>(false, "Authentication failed");
 		
-		if(isOwnedFilePath(authenticationToken.getUsername(), filePath))
+		RPCResult<Boolean> ownedResult = isOwnedFilePath(authenticationToken.getUsername(), filePath);
+		if(ownedResult.isSucceeded() && ownedResult.getData())
 			return new RPCResult<Boolean>(true, true);
 		try {
-			if(isSharedFilePath(authenticationToken.getUsername(), filePath)) 
+			RPCResult<Boolean> sharedResult = isSharedFilePath(authenticationToken.getUsername(), filePath);
+			if(sharedResult.isSucceeded() && sharedResult.getData()) 
 				return new RPCResult<Boolean>(true, true);
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -58,10 +60,12 @@ public class FilePermissionService extends RemoteServiceServlet implements IFile
 		if(!authResult.getData().getResult())
 			return new RPCResult<FilePermissionType>(false, "Authentication failed");
 		
-		if(isOwnedFilePath(authenticationToken.getUsername(), filePath))
+		RPCResult<Boolean> ownedResult = isOwnedFilePath(authenticationToken.getUsername(), filePath);
+		if(ownedResult.isSucceeded() && ownedResult.getData())
 			return new RPCResult<FilePermissionType>(true, FilePermissionType.OWNER);
 		try {
-			if(isSharedFilePath(authenticationToken.getUsername(), filePath)) 
+			RPCResult<Boolean> sharedResult = isSharedFilePath(authenticationToken.getUsername(), filePath);
+			if(sharedResult.isSucceeded() && sharedResult.getData()) 
 				return new RPCResult<FilePermissionType>(true, FilePermissionType.SHARED_WITH);
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -80,24 +84,31 @@ public class FilePermissionService extends RemoteServiceServlet implements IFile
 		if(!authResult.getData().getResult())
 			return new RPCResult<Boolean>(false, "Authentication failed");
 		
-		if(isOwnedFilePath(authenticationToken.getUsername(), filePath))
+		RPCResult<Boolean> ownedResult = isOwnedFilePath(authenticationToken.getUsername(), filePath);
+		if(ownedResult.isSucceeded() && ownedResult.getData())
 			return new RPCResult<Boolean>(true, true);
 		return new RPCResult<Boolean>(true, true);
 	}
 	
-	private boolean isSharedFilePath(String username, String filePath) throws ClassNotFoundException, SQLException, IOException {
-		ShortUser user = UserDAO.getInstance().getShortUser(username);
-		List<Share> invitedShares = ShareDAO.getInstance().getSharesOfInvitee(user);
-		for(Share share : invitedShares) {
-			AbstractTaskConfiguration taskConfiguration = share.getTask().getConfiguration();
-			for(String input : taskConfiguration.getInputs())
-				if(containedInPath(input, filePath))
-					return true;
-			for(String output : taskConfiguration.getOutputs())
-				if(containedInPath(output, filePath))
-					return true;
+	@Override
+	public RPCResult<Boolean> isSharedFilePath(String username, String filePath) {
+		try {
+			ShortUser user = UserDAO.getInstance().getShortUser(username);
+			List<Share> invitedShares = ShareDAO.getInstance().getSharesOfInvitee(user);
+			for(Share share : invitedShares) {
+				AbstractTaskConfiguration taskConfiguration = share.getTask().getConfiguration();
+				for(String input : taskConfiguration.getInputs())
+					if(containedInPath(input, filePath))
+						return new RPCResult<Boolean>(true, true);
+				for(String output : taskConfiguration.getOutputs())
+					if(containedInPath(output, filePath))
+						return new RPCResult<Boolean>(true, true);
+			}
+			return new RPCResult<Boolean>(true, false);
+		} catch(Exception e) {
+			e.printStackTrace();
+			return new RPCResult(false, "Internal Server Error");
 		}
-		return false;
 	}
 
 	private boolean containedInPath(String possibleParent, String filePath) {
@@ -112,9 +123,10 @@ public class FilePermissionService extends RemoteServiceServlet implements IFile
 		return filePath;
 	}
 	
-	private boolean isOwnedFilePath(String username, String filePath) {
+	@Override
+	public RPCResult<Boolean> isOwnedFilePath(String username, String filePath) {
 		String ownedFilesDirectory = Configuration.fileBase + File.separator + username;
-		return containedInPath(ownedFilesDirectory, filePath);
+		return new RPCResult<Boolean>(true, containedInPath(ownedFilesDirectory, filePath));
 	}
 
 }

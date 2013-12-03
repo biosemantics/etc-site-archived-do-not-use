@@ -36,6 +36,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationResult;
 import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationToken;
 import edu.arizona.sirls.etc.site.shared.rpc.IAuthenticationService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileAccessService;
+import edu.arizona.sirls.etc.site.shared.rpc.IFilePermissionService;
 import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.ISemanticMarkupService;
 import edu.arizona.sirls.etc.site.shared.rpc.ITaskService;
@@ -69,6 +70,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	private IAuthenticationService authenticationService = new AuthenticationService();
 	private IFileAccessService fileAccessService = new FileAccessService();
 	private IFileService fileService = new FileService();
+	private IFilePermissionService filePermissionService = new FilePermissionService();
 	private BracketValidator bracketValidator = new BracketValidator();
 	private int maximumThreads = 10;
 	private ListeningExecutorService executorService;
@@ -90,6 +92,21 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			return new RPCResult<Task>(false, "Authentication failed");
 		
 		try {
+			RPCResult<Boolean> sharedResult = filePermissionService.isSharedFilePath(authenticationToken.getUsername(), filePath);
+			if(!sharedResult.isSucceeded())
+				return new RPCResult<Task>(false, "Couldn't verify permission on input directory");
+			RPCResult<String> fileNameResult = fileService.getFileName(authenticationToken, filePath);
+			if(!fileNameResult.isSucceeded())
+				return new RPCResult<Task>(false, "Couldn't find file name for import");
+			if(sharedResult.getData()) {
+				RPCResult<String> destinationResult = 
+						fileService.createDirectoryForcibly(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUsername(), fileNameResult.getData());
+				RPCResult<Void> destination = fileService.copyFiles(authenticationToken, filePath, destinationResult.getData());
+				if(!destinationResult.isSucceeded() || !destination.isSucceeded())
+					return new RPCResult<Task>(false, "Couldn't copy shared files to an owned destination for input to task");
+				filePath = destinationResult.getData();
+			}
+			
 			RPCResult<List<String>> directoriesFilesResult = fileService.getDirectoriesFiles(authenticationToken, filePath);
 			if(!directoriesFilesResult.isSucceeded()) {
 				return new RPCResult<Task>(false, directoriesFilesResult.getMessage());

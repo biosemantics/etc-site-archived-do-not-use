@@ -95,7 +95,6 @@ public class InputSemanticMarkupPresenter {
 				ManagableFileTreeView fileTreeView = new ManagableFileTreeView();
 				ManagableFileTreePresenter fileTreePresenter = new ManagableFileTreePresenter(eventBus, 
 						fileTreeView, fileService, true, FileFilter.ALL);
-				fileTreePresenter.refresh();
 				TitleCloseDialogBox dialogBox = new TitleCloseDialogBox(false, "File Manager");
 				ScrollPanel scrollPanel = new ScrollPanel();
 				scrollPanel.addStyleName("fileManagerScrollPanel");
