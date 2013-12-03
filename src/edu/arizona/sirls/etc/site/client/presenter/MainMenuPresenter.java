@@ -7,6 +7,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
+import edu.arizona.sirls.etc.site.client.event.MatrixGenerationEvent;
 import edu.arizona.sirls.etc.site.client.event.SemanticMarkupEvent;
 import edu.arizona.sirls.etc.site.client.event.TaxonomyComparisonEvent;
 import edu.arizona.sirls.etc.site.client.event.TreeGenerationEvent;
@@ -21,6 +22,7 @@ public class MainMenuPresenter implements Presenter {
 		Widget getTreeGenerationLinkPanel();
 		Widget getTaxonomyComparisonLinkPanel();
 		Widget getVisualizationLinkPanel();
+		Widget getMatrixGenerationLinkPanel();
 	}
 	private final Display display;
 
@@ -36,6 +38,14 @@ public class MainMenuPresenter implements Presenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				eventBus.fireEvent(new SemanticMarkupEvent());
+			}
+		}, ClickEvent.getType());
+		
+		display.getMatrixGenerationLinkPanel().sinkEvents(Event.ONCLICK);
+		display.getMatrixGenerationLinkPanel().addHandler(new ClickHandler() { 
+			@Override
+			public void onClick(ClickEvent event) {
+				eventBus.fireEvent(new MatrixGenerationEvent());
 			}
 		}, ClickEvent.getType());
 		
@@ -84,6 +94,12 @@ public class MainMenuPresenter implements Presenter {
 			menuSemanticMarkup.addEventListener("mouseout", menuDeselect, false);
 		}
 		
+		var menuMatrixGeneration = $doc.getElementById("menuMatrixGeneration");
+		if(menuMatrixGeneration != null) {
+			menuMatrixGeneration.addEventListener("mouseover", menuMatrixGenerationSelect, false);
+			menuMatrixGeneration.addEventListener("mouseout", menuDeselect, false);
+		}
+		
 		var menuTreeGeneration = $doc.getElementById("menuTreeGeneration");
 		if(menuTreeGeneration != null) {
 			menuTreeGeneration.addEventListener("mouseover", menuTreeGenerationSelect, false);
@@ -106,8 +122,17 @@ public class MainMenuPresenter implements Presenter {
 			var higlightLayerWidth = menuHighlightLayer.offsetWidth; //cannot be done globbally, window could have been resized
 			var top = 0; 
 			var bottom = menuHighlightLayer.offsetHeight;
-			var start = (higlightLayerWidth / 2) - 400; 
-			var end = (higlightLayerWidth / 2) - 400 + 200;
+			var start = (higlightLayerWidth / 2) - 440; 
+			var end = (higlightLayerWidth / 2) - 260;
+			menuHighlightLayer.style.clip = 'rect(' + top + 'px, ' + end + 'px, ' + bottom + 'px, ' + start + 'px)';
+		}
+		
+		function menuMatrixGenerationSelect() { 
+			var higlightLayerWidth = menuHighlightLayer.offsetWidth; //cannot be done globbally, window could have been resized
+			var top = 0; 
+			var bottom = menuHighlightLayer.offsetHeight;
+			var start = (higlightLayerWidth / 2) - 260; 
+			var end = (higlightLayerWidth / 2) - 80;
 			menuHighlightLayer.style.clip = 'rect(' + top + 'px, ' + end + 'px, ' + bottom + 'px, ' + start + 'px)';
 		}
 		
@@ -115,8 +140,8 @@ public class MainMenuPresenter implements Presenter {
 			var higlightLayerWidth = menuHighlightLayer.offsetWidth; //cannot be done globbally, window could have been resized
 			var top = 0; 
 			var bottom = menuHighlightLayer.offsetHeight;
-			var start = (higlightLayerWidth / 2) - 200; 
-			var end = (higlightLayerWidth / 2) - 200 + 200;
+			var start = (higlightLayerWidth / 2) - 80; 
+			var end = (higlightLayerWidth / 2) + 95;
 			menuHighlightLayer.style.clip = 'rect(' + top + ', ' + end + ', ' + bottom + ', ' + start + ')';
 		}
 		
@@ -124,8 +149,8 @@ public class MainMenuPresenter implements Presenter {
 			var higlightLayerWidth = menuHighlightLayer.offsetWidth; //cannot be done globbally, window could have been resized
 			var top = 0; 
 			var bottom = menuHighlightLayer.offsetHeight;
-			var start = (higlightLayerWidth / 2) + 200 - 200; 
-			var end = (higlightLayerWidth / 2) + 240;
+			var start = (higlightLayerWidth / 2) + 95; 
+			var end = (higlightLayerWidth / 2) + 305;
 			menuHighlightLayer.style.clip = 'rect(' + top + ', ' + end + ', ' + bottom + ', ' + start + ')';
 		}
 		
@@ -133,8 +158,8 @@ public class MainMenuPresenter implements Presenter {
 			var higlightLayerWidth = menuHighlightLayer.offsetWidth; //cannot be done globbally, window could have been resized
 			var top = 0; 
 			var bottom = menuHighlightLayer.offsetHeight;
-			var start = (higlightLayerWidth / 2) + 440 - 200; 
-			var end = (higlightLayerWidth / 2) + 420;
+			var start = (higlightLayerWidth / 2) + 303; 
+			var end = (higlightLayerWidth / 2) + 455;
 			menuHighlightLayer.style.clip = 'rect(' + top + ', ' + end + ', ' + bottom + ', ' + start + ')';
 		}
 		

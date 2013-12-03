@@ -99,4 +99,9 @@ public class MainMenuView extends Composite implements MainMenuPresenter.Display
 		return this.visualizationLinkPanel;
 	}
 
+	@Override
+	public Widget getMatrixGenerationLinkPanel() {
+		return this.matrixGenerationLinkPanel;
+	}
+
 }

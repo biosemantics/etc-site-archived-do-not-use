@@ -38,18 +38,17 @@ public class OutputMatrixGenerationPresenter implements OutputMatrixGenerationVi
 	public void go(final HasWidgets container, final Task task) {
 		loadingPopup.start();
 		
-		this.output = ((MatrixGenerationConfiguration)task.getConfiguration()).getOutput();
-		view.setOutput(filePathShortener.shorten(output, task.getUser().getName(), Authentication.getInstance().getUsername()));
-		
-		matrixGenerationService.output(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Void>>() {
+		matrixGenerationService.output(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Task>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
 				loadingPopup.stop();
 			}
 			@Override
-			public void onSuccess(RPCResult<Void> result) {
+			public void onSuccess(RPCResult<Task> result) {
 				//view.setOutputText(task.getConfiguration().getOutput());
+				output = ((MatrixGenerationConfiguration)result.getData().getConfiguration()).getOutput();
+				view.setOutput(filePathShortener.shorten(output, task.getUser().getName(), Authentication.getInstance().getUsername()));
 				container.clear();
 				container.add(view.asWidget());
 				loadingPopup.stop();

@@ -233,46 +233,48 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 
 	@Override
-	public RPCResult<Void> output(AuthenticationToken authenticationToken, Task task) {
+	public RPCResult<Task> output(AuthenticationToken authenticationToken, Task task) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
 		if(!authResult.isSucceeded()) 
-			return new RPCResult<Void>(false, authResult.getMessage());
+			return new RPCResult<Task>(false, authResult.getMessage());
 		if(!authResult.getData().getResult())
-			return new RPCResult<Void>(false, "Authentication failed");
+			return new RPCResult<Task>(false, "Authentication failed");
 		
 		try {
 			AbstractTaskConfiguration configuration = task.getConfiguration();
 			if(!(configuration instanceof MatrixGenerationConfiguration))
-				return new RPCResult<Void>(false, "Not a compatible task");
+				return new RPCResult<Task>(false, "Not a compatible task");
 			final MatrixGenerationConfiguration matrixGenerationConfiguration = (MatrixGenerationConfiguration)configuration;
 
 			String outputDirectory = matrixGenerationConfiguration.getOutput();			
 			RPCResult<String> outputDirectoryParentResult = fileService.getParent(authenticationToken, outputDirectory);
 			RPCResult<String> outputDirectoryNameResult = fileService.getFileName(authenticationToken, outputDirectory);
 			if(!outputDirectoryParentResult.isSucceeded() || !outputDirectoryNameResult.isSucceeded())
-				return new RPCResult<Void>(false, outputDirectoryParentResult.getMessage());
+				return new RPCResult<Task>(false, outputDirectoryParentResult.getMessage());
 			
 			//find a suitable destination filePath
 			RPCResult<String> createDirectoryResult = fileService.createDirectoryForcibly(authenticationToken, outputDirectoryParentResult.getData(), outputDirectoryNameResult.getData());
 			if(!createDirectoryResult.isSucceeded()) 
-				return new RPCResult<Void>(false, createDirectoryResult.getMessage());
+				return new RPCResult<Task>(false, createDirectoryResult.getMessage());
 			
 			//copy the output files to the directory
 			String matrixGenerationOutputDirectory = Configuration.tempFileBase + File.separator + task.getId();		
 			RPCResult<Void> copyResult = fileService.copyFiles(new AdminAuthenticationToken(), matrixGenerationOutputDirectory, createDirectoryResult.getData());
-			if(!copyResult.isSucceeded())
-				return copyResult;
+			if(!copyResult.isSucceeded()) {
+				return new RPCResult<Task>(false, copyResult.getMessage());
+			}
 			
 			//update task
+			matrixGenerationConfiguration.setOutput(createDirectoryResult.getData());
 			task.setResumable(false);
 			task.setComplete(true);
 			task.setCompleted(new Date());
 			TaskDAO.getInstance().updateTask(task);
 			
-			return new RPCResult<Void>(true);
+			return new RPCResult<Task>(true, task);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new RPCResult<Void>(false, "Internal Server Error");
+			return new RPCResult<Task>(false, "Internal Server Error");
 		}
 	}
 

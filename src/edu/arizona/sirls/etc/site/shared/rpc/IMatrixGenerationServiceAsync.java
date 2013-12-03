@@ -15,7 +15,7 @@ public interface IMatrixGenerationServiceAsync {
 	
 	public void completeReview(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Task>> callback);
 	
-	public void output(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Void>> callback);
+	public void output(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Task>> callback);
 
 	public void getLatestResumable(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<Task>> asyncCallback);
 	

@@ -23,7 +23,7 @@ public interface IMatrixGenerationService extends RemoteService {
 	
 	public RPCResult<Task> completeReview(AuthenticationToken authenticationToken, Task task);
 	
-	public RPCResult<Void> output(AuthenticationToken authenticationToken, Task task);
+	public RPCResult<Task> output(AuthenticationToken authenticationToken, Task task);
 
 	public RPCResult<Task> getLatestResumable(AuthenticationToken authenticationToken);
 	

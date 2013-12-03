@@ -63,18 +63,18 @@ public class OutputSemanticMarkupPresenter {
 		loadingPopup.start();
 		this.task = task;
 		
-		output = ((SemanticMarkupConfiguration)task.getConfiguration()).getOutput();
-		display.setOutput(filePathShortener.shorten(output, task.getUser().getName(), Authentication.getInstance().getUsername()));
+		
 
-		semanticMarkupService.output(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Void>>() {
+		semanticMarkupService.output(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Task>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
 				loadingPopup.stop();
 			}
 			@Override
-			public void onSuccess(RPCResult<Void> result) {
-				display.getOutputLabel().setText(((SemanticMarkupConfiguration)task.getConfiguration()).getOutput());
+			public void onSuccess(RPCResult<Task> result) {
+				output = ((SemanticMarkupConfiguration)result.getData().getConfiguration()).getOutput();
+				display.setOutput(filePathShortener.shorten(output, task.getUser().getName(), Authentication.getInstance().getUsername()));
 				content.clear();
 				content.add(display.asWidget());
 				loadingPopup.stop();

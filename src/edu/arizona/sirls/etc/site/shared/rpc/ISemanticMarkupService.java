@@ -24,7 +24,7 @@ public interface ISemanticMarkupService extends RemoteService {
 	
 	public RPCResult<ParseInvocation> parse(AuthenticationToken authenticationToken, Task semanticMarkupTask);
 	
-	public RPCResult<Void> output(AuthenticationToken authenticationToken, Task semanticMarkupTask);
+	public RPCResult<Task> output(AuthenticationToken authenticationToken, Task semanticMarkupTask);
 
 	public RPCResult<Task> goToTaskStage(AuthenticationToken authenticationToken, Task semanticMarkupTask, TaskStageEnum taskStage);
 

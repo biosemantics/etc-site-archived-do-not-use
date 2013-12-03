@@ -22,7 +22,7 @@ public interface ISemanticMarkupServiceAsync {
 
 	public void parse(AuthenticationToken authenticationToken, Task semanticMarkupTask, AsyncCallback<RPCResult<ParseInvocation>> callback);
 	
-	public void output(AuthenticationToken authenticationToken, Task semanticMarkupTask, AsyncCallback<RPCResult<Void>> callback);
+	public void output(AuthenticationToken authenticationToken, Task semanticMarkupTask, AsyncCallback<RPCResult<Task>> callback);
 
 	public void goToTaskStage(AuthenticationToken authenticationToken, Task semanticMarkupTask, TaskStageEnum taskStage, 
 			AsyncCallback<RPCResult<Task>> callback);
