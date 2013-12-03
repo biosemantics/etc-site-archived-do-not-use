@@ -63,6 +63,7 @@ TRUNCATE TABLE  `pipelinestageconfigurations`;
 TRUNCATE TABLE  `configurations`;
 
 -- truncate tasks
+TRUNCATE TABLE `tasksoutputfiles`;
 TRUNCATE TABLE  `shares`;
 TRUNCATE TABLE  `tasks`;
 
