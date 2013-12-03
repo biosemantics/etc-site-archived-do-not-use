@@ -54,6 +54,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.TaskStage;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TaskStageDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TaskType;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TaskTypeDAO;
+import edu.arizona.sirls.etc.site.shared.rpc.db.TasksOutputFilesDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.UserDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.file.XMLFileFormatter;
 import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.BracketValidator;
@@ -373,6 +374,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			task.setComplete(true);
 			task.setCompleted(new Date());
 			TaskDAO.getInstance().updateTask(task);
+			
+			TasksOutputFilesDAO.getInstance().addOutput(task, createDirectoryResult.getData());
 			
 			return new RPCResult<Void>(true);
 		} catch (Exception e) {
