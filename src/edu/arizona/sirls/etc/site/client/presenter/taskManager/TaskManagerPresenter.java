@@ -1,11 +1,14 @@
-package edu.arizona.sirls.etc.site.client.presenter;
+package edu.arizona.sirls.etc.site.client.presenter.taskManager;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -19,10 +22,15 @@ import edu.arizona.sirls.etc.site.client.event.ResumableTasksEventHandler;
 import edu.arizona.sirls.etc.site.client.event.TaxonomyComparisonEvent;
 import edu.arizona.sirls.etc.site.client.event.TreeGenerationEvent;
 import edu.arizona.sirls.etc.site.client.event.VisualizationEvent;
+import edu.arizona.sirls.etc.site.client.presenter.MessageConfirmCancelPresenter;
+import edu.arizona.sirls.etc.site.client.presenter.Presenter;
 import edu.arizona.sirls.etc.site.client.presenter.users.UserSelectPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.users.UsersPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.users.UserSelectPresenter.ISelectHandler;
-import edu.arizona.sirls.etc.site.client.view.TaskManagerView;
+import edu.arizona.sirls.etc.site.client.view.MessageConfirmCancelView;
+import edu.arizona.sirls.etc.site.client.view.MessageView;
+import edu.arizona.sirls.etc.site.client.view.taskManager.TaskData;
+import edu.arizona.sirls.etc.site.client.view.taskManager.TaskManagerView;
 import edu.arizona.sirls.etc.site.client.view.users.UserSelectView;
 import edu.arizona.sirls.etc.site.client.view.users.UserSelectViewImpl;
 import edu.arizona.sirls.etc.site.client.view.users.UsersViewImpl;
@@ -51,6 +59,9 @@ public class TaskManagerPresenter implements TaskManagerView.Presenter, Presente
 	private ITaxonomyComparisonServiceAsync taxonomyComparisonService;
 	private IVisualizationServiceAsync visualizationService;
 	//private HashMap<Integer, Integer> taskRowMap = new HashMap<Integer, Integer>();
+	private Map<Task, Set<ShortUser>> inviteesForOwnedTasks = new HashMap<Task, Set<ShortUser>>();
+	private MessageConfirmCancelView messageView = new MessageConfirmCancelView();
+	private MessageConfirmCancelPresenter messagePresenter;
 
 	public TaskManagerPresenter(HandlerManager eventBus, TaskManagerView view,
 			ITaskServiceAsync taskService, ISemanticMarkupServiceAsync semanticMarkupService, IMatrixGenerationServiceAsync matrixGenerationService,
@@ -90,8 +101,13 @@ public class TaskManagerPresenter implements TaskManagerView.Presenter, Presente
 						}
 						@Override
 						public void onSuccess(RPCResult<Map<Task, Set<ShortUser>>> result) {
-							if(result.isSucceeded()) 
-								view.setTasks(taskResult.getData(), result.getData());
+							if(result.isSucceeded()) { 
+								inviteesForOwnedTasks = result.getData();
+								List<TaskData> taskData = new LinkedList<TaskData>();
+								for(Task task : taskResult.getData())
+									taskData.add(new TaskData(task, result.getData().get(task)));
+								view.setTaskData(taskData);
+							}
 						}
 					});
 				}
@@ -102,14 +118,15 @@ public class TaskManagerPresenter implements TaskManagerView.Presenter, Presente
 			@Override
 			public void onResumableTaskEvent(ResumableTasksEvent resumableTasksEvent) {
 				for(Task task : resumableTasksEvent.getTasks().values())
-					view.updateTask(task);
+					view.updateTaskData(new TaskData(task, inviteesForOwnedTasks.get(task)));
 			}
 		});
 	}
 
 
 	@Override
-	public void onShare(final Task task) {
+	public void onShare(final TaskData taskData) {
+		final Task task = taskData.getTask();
 		final Share share = new Share();
 		share.setTask(task);
 		
@@ -129,10 +146,11 @@ public class TaskManagerPresenter implements TaskManagerView.Presenter, Presente
 				UserSelectPresenter userSelectPresenter = new UserSelectPresenter(eventBus, userSelectView, new ISelectHandler() {
 					@Override
 					public void onSelect(Set<ShortUser> users) {
-						share.setInvitees(users);
-						view.setInvitees(task, users);
+						inviteesForOwnedTasks.put(task, users);
+						view.updateTaskData(new TaskData(task, users));
 						dialogBox.hide();
 						
+						share.setInvitees(users);
 						taskService.addOrUpdateShare(Authentication.getInstance().getAuthenticationToken(), share, new AsyncCallback<RPCResult<Share>>() {
 							@Override
 							public void onFailure(Throwable caught) {
@@ -151,23 +169,43 @@ public class TaskManagerPresenter implements TaskManagerView.Presenter, Presente
 		});
 	}
 
+	private void cancelTask(final TaskData taskData) {
+		taskService.cancelTask(Authentication.getInstance().getAuthenticationToken(), taskData.getTask(), new AsyncCallback<RPCResult<Void>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+			}
+
+			@Override
+			public void onSuccess(RPCResult<Void> result) {
+				if(result.isSucceeded()) {
+					inviteesForOwnedTasks.remove(taskData.getTask());
+					view.removeTaskData(taskData);
+				}
+			}
+		});
+	}
 
 	@Override
-	public void onDelete(final Task task) {
+	public void onDelete(final TaskData taskData) {
+		final Task task = taskData.getTask();
 		if(task.getUser().getName().equals(Authentication.getInstance().getUsername())) {
-			taskService.cancelTask(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Void>>() {
-				@Override
-				public void onFailure(Throwable caught) {
-					caught.printStackTrace();
-				}
-
-				@Override
-				public void onSuccess(RPCResult<Void> result) {
-					if(result.isSucceeded())
-						view.removeTask(task);
-				}
-				
-			});
+			if(!taskData.getInvitees().isEmpty()) {
+				//bring up popup asking
+				if(messagePresenter == null)
+					messagePresenter = new MessageConfirmCancelPresenter(messageView, "Format Requirements", new ClickHandler() {
+						@Override
+						public void onClick(ClickEvent event) {
+							cancelTask(taskData);
+							view.removeTaskData(taskData);
+							view.resetSelection();
+						}
+					});
+				messagePresenter.setMessage("If you delete this task it will be removed for all invitees of the share. Do you want to continue?");
+				messagePresenter.go();
+			} else {
+				cancelTask(taskData);
+			}
 		} else {
 			taskService.removeMeFromShare(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Void>>() {
 				@Override
@@ -176,7 +214,8 @@ public class TaskManagerPresenter implements TaskManagerView.Presenter, Presente
 				}
 				@Override
 				public void onSuccess(RPCResult<Void> result) {
-					view.removeTask(task);
+					inviteesForOwnedTasks.remove(task);
+					view.removeTaskData(taskData);
 				} 
 			});
 		}
@@ -184,8 +223,8 @@ public class TaskManagerPresenter implements TaskManagerView.Presenter, Presente
 
 
 	@Override
-	public void onRewind(final Task task) {
-		semanticMarkupService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), task, 
+	public void onRewind(final TaskData taskData) {
+		semanticMarkupService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), taskData.getTask(), 
 				TaskStageEnum.REVIEW_TERMS ,new AsyncCallback<RPCResult<Task>>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -201,22 +240,22 @@ public class TaskManagerPresenter implements TaskManagerView.Presenter, Presente
 
 
 	@Override
-	public void onResume(final Task task) {
-		switch(task.getTaskType().getTaskTypeEnum()) {
+	public void onResume(final TaskData taskData) {
+		switch(taskData.getTask().getTaskType().getTaskTypeEnum()) {
 		case SEMANTIC_MARKUP:
-			eventBus.fireEvent(new SemanticMarkupEvent(task));
+			eventBus.fireEvent(new SemanticMarkupEvent(taskData.getTask()));
 			break;
 		case MATRIX_GENERATION:
-			eventBus.fireEvent(new MatrixGenerationEvent(task));
+			eventBus.fireEvent(new MatrixGenerationEvent(taskData.getTask()));
 			break;
 		case TREE_GENERATION:
-			eventBus.fireEvent(new TreeGenerationEvent(task));
+			eventBus.fireEvent(new TreeGenerationEvent(taskData.getTask()));
 			break;
 		case TAXONOMY_COMPARISON:
-			eventBus.fireEvent(new TaxonomyComparisonEvent(task));
+			eventBus.fireEvent(new TaxonomyComparisonEvent(taskData.getTask()));
 			break;
 		case VISUALIZATION:
-			eventBus.fireEvent(new VisualizationEvent(task));
+			eventBus.fireEvent(new VisualizationEvent(taskData.getTask()));
 			break;
 		}
 	}

@@ -1,4 +1,4 @@
-package edu.arizona.sirls.etc.site.client.view;
+package edu.arizona.sirls.etc.site.client.view.taskManager;
 
 import java.util.Comparator;
 import java.util.Date;
@@ -48,7 +48,7 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 	}
 
 	@UiField(provided=true)
-	CellTable<Task> taskTable;
+	CellTable<TaskData> taskTable;
 	@UiField(provided=true)
 	SimplePager pager;
 	@UiField
@@ -61,18 +61,17 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 	Button shareButton;
 	
 	private Presenter presenter;
-	private ListDataProvider<Task> dataProvider;
-	private ProvidesKey<Task> taskKeyProvider = new ProvidesKey<Task>() {
+	private ListDataProvider<TaskData> dataProvider;
+	private ProvidesKey<TaskData> taskKeyProvider = new ProvidesKey<TaskData>() {
 		@Override
-		public Object getKey(Task item) {
-			return item == null ? null : item.getId();
+		public Object getKey(TaskData item) {
+			return item == null ? null : item.getTask().getId();
 		}
 	};
-	private SingleSelectionModel<Task> selectionModel;
-	private Map<Task, Set<ShortUser>> inviteesMap = new HashMap<Task, Set<ShortUser>>();
+	private SingleSelectionModel<TaskData> selectionModel;
 
 	public TaskManagerViewImpl() {
-		dataProvider = new ListDataProvider<Task>();
+		dataProvider = new ListDataProvider<TaskData>();
 		taskTable = createTaskTable();
 	    dataProvider.addDataDisplay(taskTable);
 		pager = createPager(taskTable);
@@ -80,68 +79,68 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 	
-	private SimplePager createPager(CellTable<Task> cellTable) {
+	private SimplePager createPager(CellTable<TaskData> cellTable) {
 	    SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
 	    SimplePager pager = new SimplePager(TextLocation.CENTER, pagerResources, false, 0, true);
 		return pager;
 	}
 	
-	private CellTable<Task> createTaskTable() {
-		CellTable<Task> taskTable = new CellTable<Task>(taskKeyProvider);
+	private CellTable<TaskData> createTaskTable() {
+		CellTable<TaskData> taskTable = new CellTable<TaskData>(taskKeyProvider);
 		taskTable.setAutoHeaderRefreshDisabled(true);
 		taskTable.setAutoFooterRefreshDisabled(true);
-	    ListHandler<Task> sortHandler = new ListHandler<Task>(dataProvider.getList());
+	    ListHandler<TaskData> sortHandler = new ListHandler<TaskData>(dataProvider.getList());
 	    taskTable.addColumnSortHandler(sortHandler);
-	    selectionModel = new SingleSelectionModel<Task>(taskKeyProvider);
+	    selectionModel = new SingleSelectionModel<TaskData>(taskKeyProvider);
 	    taskTable.setSelectionModel(selectionModel);//, DefaultSelectionEventManager.<Task> createCheckboxManager());
 	    initTableColumns(taskTable, selectionModel, sortHandler);
 		selectionModel.addSelectionChangeHandler(this);
 	    return taskTable;
 	}
 
-	private void initTableColumns(CellTable<Task> taskTable, SelectionModel<Task> selectionModel, ListHandler<Task> sortHandler) {
+	private void initTableColumns(CellTable<TaskData> taskTable, SelectionModel<TaskData> selectionModel, ListHandler<TaskData> sortHandler) {
 		TextCell nameCell = new TextCell();
-		Column<Task, String> nameColumn = new Column<Task, String>(nameCell) {
+		Column<TaskData, String> nameColumn = new Column<TaskData, String>(nameCell) {
 		      @Override
-		      public String getValue(Task object) {
-		    	  return object.getName();
+		      public String getValue(TaskData object) {
+		    	  return object.getTask().getName();
 		      }
 	    };
 	    nameColumn.setSortable(true);
 	    nameColumn.setDefaultSortAscending(false);
-	    sortHandler.setComparator(nameColumn, new Comparator<Task>() {
+	    sortHandler.setComparator(nameColumn, new Comparator<TaskData>() {
 	      @Override
-	      public int compare(Task o1, Task o2) {
-	        return o1.getName().compareTo(o2.getName());
+	      public int compare(TaskData o1, TaskData o2) {
+	        return o1.getTask().getName().compareTo(o2.getTask().getName());
 	      }
 	    });
 	    taskTable.addColumn(nameColumn, "Name");
 	    
 		DateCell dateCell = new DateCell();
-		Column<Task, Date> createdColumn = new Column<Task, Date>(dateCell) {
+		Column<TaskData, Date> createdColumn = new Column<TaskData, Date>(dateCell) {
 		      @Override
-		      public Date getValue(Task object) {
-		    	  return object.getCreated();
+		      public Date getValue(TaskData object) {
+		    	  return object.getTask().getCreated();
 		      }
 	    };
 	    createdColumn.setSortable(true);
 	    createdColumn.setDefaultSortAscending(false);
-	    sortHandler.setComparator(createdColumn, new Comparator<Task>() {
+	    sortHandler.setComparator(createdColumn, new Comparator<TaskData>() {
 	      @Override
-	      public int compare(Task o1, Task o2) {
-	        return o1.getCreated().compareTo(o2.getCreated());
+	      public int compare(TaskData o1, TaskData o2) {
+	        return o1.getTask().getCreated().compareTo(o2.getTask().getCreated());
 	      }
 	    });
 	    taskTable.addColumn(createdColumn, "Created");
 	    
 		TextCell accessCell = new TextCell();
-		Column<Task, String> accessColumn = new Column<Task, String>(accessCell) {
+		Column<TaskData, String> accessColumn = new Column<TaskData, String>(accessCell) {
 		      @Override
-		      public String getValue(Task object) {
-		    	  if(object.getUser().getName().equals(Authentication.getInstance().getUsername())) {
-		    		  if(inviteesMap.containsKey(object) && !inviteesMap.get(object).isEmpty()) {
+		      public String getValue(TaskData object) {
+		    	  if(object.getTask().getUser().getName().equals(Authentication.getInstance().getUsername())) {
+		    		  if(object.getInvitees() != null && !object.getInvitees().isEmpty()) {
 		    			  String shared = "and shared with ";
-		    			  for(ShortUser shortUser : inviteesMap.get(object)) {
+		    			  for(ShortUser shortUser : object.getInvitees()) {
 		    				  shared += shortUser.getName() + ", ";
 		    			  }
 		    			  return "Owned " + shared.substring(0, shared.length() - 2);
@@ -149,16 +148,16 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 		    			  return ("Owned");
 		    		  }
 		    	  } else {
-		    		  return "Shared by " + object.getUser().getName();
+		    		  return "Shared by " + object.getTask().getUser().getName();
 		    	  }
 		      }
 	    };
 	    accessColumn.setSortable(true);
 	    accessColumn.setDefaultSortAscending(false);
-	    sortHandler.setComparator(accessColumn, new Comparator<Task>() {
+	    sortHandler.setComparator(accessColumn, new Comparator<TaskData>() {
 	      @Override
-	      public int compare(Task o1, Task o2) {
-	    	boolean sameUser = o1.getUser().equals(Authentication.getInstance().getUsername());
+	      public int compare(TaskData o1, TaskData o2) {
+	    	boolean sameUser = o1.getTask().getUser().equals(Authentication.getInstance().getUsername());
 	    	if(sameUser)
 	    		return 0;
 	    	return -1;
@@ -167,55 +166,55 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 	    taskTable.addColumn(accessColumn, "Access");
 		
 	    TextCell taskTypeCell = new TextCell();
-		Column<Task, String> taskTypeColumn = new Column<Task, String>(taskTypeCell) {
+		Column<TaskData, String> taskTypeColumn = new Column<TaskData, String>(taskTypeCell) {
 		      @Override
-		      public String getValue(Task object) {
-		    	  return object.getTaskType().getTaskTypeEnum().displayName();
+		      public String getValue(TaskData object) {
+		    	  return object.getTask().getTaskType().getTaskTypeEnum().displayName();
 		      }
 	    };
 	    taskTypeColumn.setSortable(true);
 	    taskTypeColumn.setDefaultSortAscending(false);
-	    sortHandler.setComparator(taskTypeColumn, new Comparator<Task>() {
+	    sortHandler.setComparator(taskTypeColumn, new Comparator<TaskData>() {
 	      @Override
-	      public int compare(Task o1, Task o2) {
-	        return o1.getTaskType().getTaskTypeEnum().compareTo(o2.getTaskType().getTaskTypeEnum());
+	      public int compare(TaskData o1, TaskData o2) {
+	        return o1.getTask().getTaskType().getTaskTypeEnum().compareTo(o2.getTask().getTaskType().getTaskTypeEnum());
 	      }
 	    });
 	    taskTable.addColumn(taskTypeColumn, "Task Type");
 	    
 		TextCell statusTextCell = new TextCell();
-		Column<Task, String> statusTextColumn = new Column<Task, String>(statusTextCell) {
+		Column<TaskData, String> statusTextColumn = new Column<TaskData, String>(statusTextCell) {
 			@Override
-			public String getValue(Task object) {
-				if(object.isComplete())
+			public String getValue(TaskData object) {
+				if(object.getTask().isComplete())
 					return "Completed";
-				return "Step " + object.getTaskStage().getTaskStageNumber() + " of " + object.getTaskStage().getMaxTaskStageNumber() + ": " + object.getTaskStage().getDisplayName();
+				return "Step " + object.getTask().getTaskStage().getTaskStageNumber() + " of " + object.getTask().getTaskStage().getMaxTaskStageNumber() + ": " + object.getTask().getTaskStage().getDisplayName();
 			}
 		};
-		Column<Task, String> statusImageColumn = new Column<Task, String>(new ImageCell()) {
+		Column<TaskData, String> statusImageColumn = new Column<TaskData, String>(new ImageCell()) {
 			@Override
-			public String getValue(Task object) {
-				if(!object.isComplete() && !object.isResumable())
+			public String getValue(TaskData object) {
+				if(!object.getTask().isComplete() && !object.getTask().isResumable())
 					return "images/loader3.gif";
 				else return null;
 			} 
 		};
-		List<HasCell<Task, ?>> columns = new LinkedList<HasCell<Task, ?>>();
+		List<HasCell<TaskData, ?>> columns = new LinkedList<HasCell<TaskData, ?>>();
 		columns.add(statusTextColumn);
 		columns.add(statusImageColumn);
-		CompositeCell<Task> statusCell = new CompositeCell<Task>(columns);
-		Column<Task, Task> statusColumn = new Column<Task, Task>(statusCell) {
+		CompositeCell<TaskData> statusCell = new CompositeCell<TaskData>(columns);
+		Column<TaskData, TaskData> statusColumn = new Column<TaskData, TaskData>(statusCell) {
 			@Override
-			public Task getValue(Task object) {
+			public TaskData getValue(TaskData object) {
 				return object;
 			}
 	    };
 	    statusColumn.setSortable(true);
 	    statusColumn.setDefaultSortAscending(false);
-	    sortHandler.setComparator(statusColumn, new Comparator<Task>() {
+	    sortHandler.setComparator(statusColumn, new Comparator<TaskData>() {
 		      @Override
-		      public int compare(Task o1, Task o2) {
-		        return o1.getTaskStage().compareTo(o2.getTaskStage());
+		      public int compare(TaskData o1, TaskData o2) {
+		        return o1.getTask().getTaskStage().compareTo(o2.getTask().getTaskStage());
 		      }
 	    });
 	    taskTable.addColumn(statusColumn, "Status");
@@ -299,80 +298,76 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 	}
 
 	@Override
-	public void setTasks(List<Task> tasks, Map<Task, Set<ShortUser>> inviteesMap) {
-		this.inviteesMap = inviteesMap;
-		List<Task> tasksList = dataProvider.getList();
-		tasksList.clear();
-		tasksList.addAll(tasks);
+	public void setTaskData(List<TaskData> taskData) {
+		List<TaskData> taskDataList = dataProvider.getList();
+		taskDataList.clear();
+		taskDataList.addAll(taskData);
 	}
 	
-	@Override
-	public void setInvitees(Task task, Set<ShortUser> users) {
-		this.inviteesMap.put(task, users);
-		this.taskTable.redraw();
-	}
 
 	@Override
-	public void updateTask(Task task) {
-		List<Task> tasks = dataProvider.getList();
-		Iterator<Task> tasksIterator = tasks.iterator();
+	public void updateTaskData(TaskData taskData) {
+		List<TaskData> tasks = dataProvider.getList();
+		Iterator<TaskData> tasksIterator = tasks.iterator();
 		
+		boolean select = false;
 		boolean found = false;
 		while(tasksIterator.hasNext()) {
-			Task listTask = tasksIterator.next();
-			if(listTask.getId()==task.getId()) {
+			TaskData listTask = tasksIterator.next();
+			if(listTask.getTask().getId()==taskData.getTask().getId()) {
 				tasksIterator.remove();
+				select = selectionModel.isSelected(listTask);
 				found = true;
 			}
 		}
-		if(found)
-			tasks.add(task);
+		if(found) {
+			tasks.add(taskData);
+			selectionModel.setSelected(taskData, select);
+		}
 	}
 
 	@Override
-	public void removeTask(Task task) {
-		List<Task> tasks = dataProvider.getList();
-		Iterator<Task> tasksIterator = tasks.iterator();
+	public void removeTaskData(TaskData taskData) {
+		List<TaskData> tasks = dataProvider.getList();
+		Iterator<TaskData> tasksIterator = tasks.iterator();
 		while(tasksIterator.hasNext()) {
-			Task listTask = tasksIterator.next();
-			if(listTask.getId()==task.getId()) {
+			TaskData listTask = tasksIterator.next();
+			if(listTask.getTask().getId()==taskData.getTask().getId()) {
 				tasksIterator.remove();
 			}
 		}
 	}
 
 	@Override
-	public void addTask(Task task) {
-		List<Task> tasks = dataProvider.getList();
-		tasks.add(task);
+	public void addTaskData(TaskData taskData) {
+		List<TaskData> taskDataList = dataProvider.getList();
+		taskDataList.add(taskData);
 	}
 
 	@Override
-	public Task getSelectedTask() {
+	public TaskData getSelectedTaskData() {
 		return selectionModel.getSelectedObject();
 	}
 	
 	@UiHandler("resumeButton")
 	public void onResume(ClickEvent e) {
-		presenter.onResume(this.getSelectedTask());
+		presenter.onResume(this.getSelectedTaskData());
 	}
 	
 	
 	@UiHandler("rewindButton")
 	public void onRewind(ClickEvent e) {
-		presenter.onRewind(this.getSelectedTask());
+		presenter.onRewind(this.getSelectedTaskData());
 	}
 	
 	@UiHandler("deleteButton")
 	public void onDelete(ClickEvent e) {
-		presenter.onDelete(this.getSelectedTask());
-		this.removeTask(this.getSelectedTask());
-		this.selectionModel.clear();
+		presenter.onDelete(this.getSelectedTaskData());
 	}
 	
 	@UiHandler("shareButton")
 	public void onShare(ClickEvent e) {
-		presenter.onShare(this.getSelectedTask());
+		presenter.onShare(this.getSelectedTaskData());
 	}
 
 	@Override
@@ -389,14 +384,14 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 			this.shareButton.setEnabled(true);
 		}
 		
-		if(this.getSelectedTask() != null) {
-			if(!this.getSelectedTask().getUser().getName().equals(Authentication.getInstance().getUsername())) {
+		if(this.getSelectedTaskData() != null) {
+			if(!this.getSelectedTaskData().getTask().getUser().getName().equals(Authentication.getInstance().getUsername())) {
 				this.shareButton.setEnabled(false);
 			} else {
 				this.shareButton.setEnabled(true);
 			}
-			if(this.getSelectedTask().isComplete()) {
-				switch(this.getSelectedTask().getTaskType().getTaskTypeEnum()) {
+			if(this.getSelectedTaskData().getTask().isComplete()) {
+				switch(this.getSelectedTaskData().getTask().getTaskType().getTaskTypeEnum()) {
 				case MATRIX_GENERATION:
 					this.rewindButton.setEnabled(false);
 					break;

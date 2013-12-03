@@ -1,4 +1,4 @@
-package edu.arizona.sirls.etc.site.client.view;
+package edu.arizona.sirls.etc.site.client.view.taskManager;
 
 import java.util.List;
 import java.util.Map;
@@ -12,20 +12,19 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 public interface TaskManagerView {
 
 	public interface Presenter {
-		void onShare(Task task);
-		void onDelete(Task task);
-		void onRewind(Task task);
-		void onResume(Task task);
+		void onShare(TaskData taskData);
+		void onDelete(TaskData taskData);
+		void onRewind(TaskData taskData);
+		void onResume(TaskData taskData);
 	}
 	  
 	void setPresenter(Presenter presenter);
 	Widget asWidget();
-	void setTasks(List<Task> tasks, Map<Task, Set<ShortUser>> map);
-	void updateTask(Task task);
-	void removeTask(Task tasks);
-	void addTask(Task task);
-	Task getSelectedTask();
+	void setTaskData(List<TaskData> taskData);
+	void updateTaskData(TaskData taskData);
+	void removeTaskData(TaskData taskData);
+	void addTaskData(TaskData taskData);
+	TaskData getSelectedTaskData();
 	void resetSelection();
-	void setInvitees(Task task, Set<ShortUser> users);
 	
 }

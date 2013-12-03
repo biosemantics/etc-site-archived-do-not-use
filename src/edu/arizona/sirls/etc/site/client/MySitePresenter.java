@@ -52,7 +52,6 @@ import edu.arizona.sirls.etc.site.client.presenter.MessageResumeOrStartPresenter
 import edu.arizona.sirls.etc.site.client.presenter.SettingsPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.StartMenuPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.StartPresenter;
-import edu.arizona.sirls.etc.site.client.presenter.TaskManagerPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.annotationReview.AnnotationReviewPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.annotationReview.ResultPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.annotationReview.SearchPresenter;
@@ -69,6 +68,7 @@ import edu.arizona.sirls.etc.site.client.presenter.semanticMarkup.OutputSemantic
 import edu.arizona.sirls.etc.site.client.presenter.semanticMarkup.ParseSemanticMarkupPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.semanticMarkup.PreprocessSemanticMarkupPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.semanticMarkup.ReviewSemanticMarkupPresenter;
+import edu.arizona.sirls.etc.site.client.presenter.taskManager.TaskManagerPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.taxonomyComparison.TaxonomyComparisonPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.treeGeneration.TreeGenerationPresenter;
 import edu.arizona.sirls.etc.site.client.presenter.visualization.VisualizationPresenter;
@@ -82,8 +82,6 @@ import edu.arizona.sirls.etc.site.client.view.MessageResumeOrStartView;
 import edu.arizona.sirls.etc.site.client.view.SettingsViewImpl;
 import edu.arizona.sirls.etc.site.client.view.StartMenuView;
 import edu.arizona.sirls.etc.site.client.view.StartView;
-import edu.arizona.sirls.etc.site.client.view.TaskManagerView;
-import edu.arizona.sirls.etc.site.client.view.TaskManagerViewImpl;
 import edu.arizona.sirls.etc.site.client.view.annotationReview.AnnotationReviewViewImpl;
 import edu.arizona.sirls.etc.site.client.view.annotationReview.ResultViewImpl;
 import edu.arizona.sirls.etc.site.client.view.annotationReview.SearchViewImpl;
@@ -101,6 +99,8 @@ import edu.arizona.sirls.etc.site.client.view.semanticMarkup.OutputSemanticMarku
 import edu.arizona.sirls.etc.site.client.view.semanticMarkup.ParseSemanticMarkupView;
 import edu.arizona.sirls.etc.site.client.view.semanticMarkup.PreprocessSemanticMarkupView;
 import edu.arizona.sirls.etc.site.client.view.semanticMarkup.ReviewSemanticMarkupView;
+import edu.arizona.sirls.etc.site.client.view.taskManager.TaskManagerView;
+import edu.arizona.sirls.etc.site.client.view.taskManager.TaskManagerViewImpl;
 import edu.arizona.sirls.etc.site.client.view.taxonomyComparison.TaxonomyComparisonView;
 import edu.arizona.sirls.etc.site.client.view.treeGeneration.TreeGenerationView;
 import edu.arizona.sirls.etc.site.client.view.visualization.VisualizationView;
