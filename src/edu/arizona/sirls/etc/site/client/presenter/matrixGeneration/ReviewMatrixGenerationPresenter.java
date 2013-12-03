@@ -39,7 +39,7 @@ public class ReviewMatrixGenerationPresenter implements ReviewMatrixGenerationVi
 			public void onSuccess(RPCResult<Matrix> result) {
 				if(result.isSucceeded()) {
 					Matrix matrix = result.getData();
-					reviewMatrixPresenter.setData(matrix.getCharacterNames(), matrix.getTaxons());
+					reviewMatrixPresenter.setData(matrix);
 					container.clear();
 					container.add(view.asWidget());
 					loadingPopup.stop();

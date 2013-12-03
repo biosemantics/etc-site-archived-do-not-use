@@ -45,7 +45,9 @@ import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.Matrix;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.Taxon;
 
 
@@ -62,7 +64,7 @@ public class ViewImpl extends Composite implements IView, Handler {
 	 * The main DataGrid.
 	 */
 	@UiField(provided = true)
-	ScrolledGrid<Taxon> dataGrid;
+	DataGrid<Taxon> dataGrid;
 
 	/**
 	 * The pager used to change the range of data.
@@ -99,12 +101,12 @@ public class ViewImpl extends Composite implements IView, Handler {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 	
-	private ScrolledGrid<Taxon> createDataGrid() {
+	private DataGrid<Taxon> createDataGrid() {
 		MyDataGridResource myDataGridResource = GWT.create(MyDataGridResource.class);
-		ScrolledGrid<Taxon> dataGrid = new ScrolledGrid<Taxon>(50, myDataGridResource, taxonKeyProvider);
+		DataGrid<Taxon> dataGrid = new DataGrid<Taxon>(50, myDataGridResource, taxonKeyProvider);
 		dataGrid.setAutoHeaderRefreshDisabled(false);
 		dataGrid.setAutoFooterRefreshDisabled(false);
-		buildDataGrid(dataGrid);
+		//buildDataGrid(dataGrid);
 		return dataGrid;
 	}
 
@@ -142,8 +144,8 @@ public class ViewImpl extends Composite implements IView, Handler {
 		DnDImageCell dndImageCell = new DnDImageCell(dndHandlerTaxons) {
 			@Override
 		    public void render(Context context, String value, SafeHtmlBuilder sb) {
-		        String imagePath = "images/move.png";
-		        sb.appendHtmlConstant("<img src = '"+imagePath+"' height = '20px' width = '20px' />");
+		        String imagePath = "images/move_vertical.png";
+		        sb.appendHtmlConstant("<img src = '"+imagePath+"' class='reviewMatrixActionIcon' height = '27px' width = '10px' />");
 		    }
 		};
 		Column<Taxon, String> dndImageColumn = new Column<Taxon, String>(dndImageCell) {
@@ -156,8 +158,8 @@ public class ViewImpl extends Composite implements IView, Handler {
 		ClickImageCell clickImageCell = new ClickImageCell(unusedCharactersClickHandler) {
 			@Override
 		    public void render(Context context, String value, SafeHtmlBuilder sb) {
-		        String imagePath = "images/back.png";
-		        sb.appendHtmlConstant("<img src = '"+imagePath+"' height = '20px' width = '20px' />");
+		        String imagePath = "images/curved_arrow.png";
+		        sb.appendHtmlConstant("<img src = '"+imagePath+"' height = '15px' width = '20px' />");
 		    }
 		};
 		Column<Taxon, String> unusedImageColumn = new Column<Taxon, String>(clickImageCell) {
@@ -170,7 +172,7 @@ public class ViewImpl extends Composite implements IView, Handler {
 				new EditTextCell()) {
 			@Override
 			public String getValue(Taxon object) {
-				return object.getName();
+				return object.getName().replace("_", " ");
 			}
 		};
 		nameColumn.setFieldUpdater(new FieldUpdater<Taxon, String>() {
@@ -204,16 +206,22 @@ public class ViewImpl extends Composite implements IView, Handler {
 		dataGrid.addColumn(column, header);
 		
 		int maxLength = 0;
+		String maxName = "";
 		for(Taxon taxon : dataProvider.getList()) {
 			String state = taxon.getName();
-			if(state.length() > maxLength)
+			if(state.length() > maxLength) {
 				maxLength = state.length();
+				maxName = state;
+			}
 		}
-		dataGrid.setColumnWidth(column, maxLength * 0.8, Unit.EM);
+		Label label = new Label(maxName);
+		int maxWidth = label.getOffsetWidth();
+		dataGrid.setColumnWidth(column, 100, Unit.PX);
 		
 		//add taxon charater state columns
 		DnDHandler dndHandlerCharacters = new CharacterDnDHandler(this);
 		for(final String characterName : characterNames) {
+			final String displayCharacterName = characterName.replaceAll("_", " ");
 			Column<Taxon, String> characterColumn = new Column<Taxon, String>(
 					new EditTextCell()) {
 				@Override
@@ -226,8 +234,8 @@ public class ViewImpl extends Composite implements IView, Handler {
 					new Comparator<Taxon>() {
 						@Override
 						public int compare(Taxon o1, Taxon o2) {
-							return o1.getCharacterState(characterName)
-									.compareTo(o2.getCharacterState(characterName));
+							return o1.getCharacterState(displayCharacterName)
+									.compareTo(o2.getCharacterState(displayCharacterName));
 						}
 					});
 			
@@ -235,8 +243,8 @@ public class ViewImpl extends Composite implements IView, Handler {
 			DnDImageCell characterImageCell = new DnDImageCell(dndHandlerCharacters) {
 				@Override
 			    public void render(Context context, String value, SafeHtmlBuilder sb) {
-			        String imagePath = "images/move.png";
-			        sb.appendHtmlConstant("<img src = '"+imagePath+"' height = '20px' width = '20px' />");
+			        String imagePath = "images/move_horizontal.png";
+			        sb.appendHtmlConstant("<img src = '"+imagePath+"' height = '10px' width = '27px' />");
 			    }
 			};
 			Column<String, String> characterImageColumn = new Column<String, String>(characterImageCell) {
@@ -255,7 +263,7 @@ public class ViewImpl extends Composite implements IView, Handler {
 			cellList.add(characterNameColumn);
 			
 			DnDHeaderCell cell = new DnDHeaderCell(cellList); 
-			DnDHeader dndHeader = new DnDHeader(characterName, cell);
+			DnDHeader dndHeader = new DnDHeader(displayCharacterName, cell);
 			dataGrid.addColumn(characterColumn, dndHeader);
 			characterColumn.setFieldUpdater(new FieldUpdater<Taxon, String>() {
 						@Override
@@ -267,30 +275,28 @@ public class ViewImpl extends Composite implements IView, Handler {
 					});
 			
 			maxLength = 0;
+			String maxState = "";
 			for(Taxon taxon : dataProvider.getList()) {
 				String state = taxon.getCharacterState(characterName);
-				if(state.length() > maxLength)
+				if(state.length() > maxLength) {
 					maxLength = state.length();
+					maxState = state;
+				}
 			}
-			dataGrid.setColumnWidth(characterColumn, maxLength * 0.8, Unit.EM);
+			label = new Label(maxState);
+			maxWidth = label.getOffsetWidth();
+			dataGrid.setColumnWidth(characterColumn, 100, Unit.PX);
 		}
 	}
 	
-
 	@Override
-	public void setCharacterNames(List<String> characterNames) {
-		this.characterNames = characterNames;
-		this.buildDataGrid(dataGrid);
-		//TODO refresh scrollpanel here somehow so it knows about changing width; e.g. set a longer charactername list and it will overflow, not visible parts then
-		this.dataGrid.redraw();
-	}
-	
-	@Override
-	public void setTaxons(List<Taxon> taxons) {
+	public void setMatrix(Matrix matrix) {
+		this.characterNames = matrix.getCharacterNames();
 		List<Taxon> taxonList = dataProvider.getList();
 		taxonList.clear();
-		taxonList.addAll(taxons);
-		buildDataGrid(dataGrid);
+		taxonList.addAll(matrix.getTaxons());
+		//TODO refresh scrollpanel here somehow so it knows about changing width; e.g. set a longer charactername list and it will overflow, not visible parts then
+		this.buildDataGrid(dataGrid);
 	}
 
 	@Override
@@ -339,9 +345,19 @@ public class ViewImpl extends Composite implements IView, Handler {
 		Collections.swap(taxons, rowIdA, rowIdB);
 	}
 	
-	public void swapCharacters(int columnIdA, int columnIdB) {
-		Collections.swap(this.characterNames, columnIdA, columnIdB);
-		buildDataGrid(dataGrid);
+	public void swapCharacters(int characterIdA, int characterIdB) {
+		int columnIdA = characterIdA + 1;
+		int columnIdB = characterIdB + 1;
+		Collections.swap(this.characterNames, characterIdA, characterIdB);
+		Column<Taxon, ?> sourceColumn = dataGrid.getColumn(columnIdA);
+		Header<?> sourceHeader = dataGrid.getHeader(columnIdA);
+		dataGrid.removeColumn(columnIdA);
+		if(columnIdA >= columnIdB) {
+			dataGrid.insertColumn(columnIdB, sourceColumn, sourceHeader);
+		} else {
+			dataGrid.insertColumn(columnIdB - 1, sourceColumn, sourceHeader);
+		}
+		//buildDataGrid(dataGrid);
 	}
 	
 	public void moveTaxon(int movingTaxon, int lowerNeighbor) {
@@ -362,13 +378,28 @@ public class ViewImpl extends Composite implements IView, Handler {
 			Collections.rotate(taxons.subList(movingTaxon, lowerNeighbor + 1), distance);*/
 	}
 	
-	public void moveCharacter(int movingCharacter, int lowerNeighbor) {
-		moveCharacterData(movingCharacter, lowerNeighbor);
-		buildDataGrid(dataGrid);
+	public void moveCharacter(int characterIdA, int characterIdB) {
+		int columnIdA = characterIdA + 1;
+		int columnIdB = characterIdB + 1;
+		Column<Taxon, ?> sourceColumn = dataGrid.getColumn(columnIdA);
+		Header<?> sourceHeader = dataGrid.getHeader(columnIdA);
+		dataGrid.removeColumn(columnIdA);
+		String character = characterNames.get(characterIdA);
+		characterNames.remove(characterIdA);
+		
+		if(columnIdA >= columnIdB) {
+			dataGrid.insertColumn(columnIdB, sourceColumn, sourceHeader);
+			characterNames.add(characterIdB, character);
+		} else {
+			dataGrid.insertColumn(columnIdB - 1, sourceColumn, sourceHeader);
+			characterNames.add(characterIdB - 1, character);
+		}
+		/*moveCharacterData(movingCharacter, lowerNeighbor);
+		buildDataGrid(dataGrid); */
 	}
 	
-	private void moveCharacterData(int movingCharacter, int lowerNeighbor) {
-		int distance = lowerNeighbor - movingCharacter;
+	private void moveCharacterData(int columnIdA, int columnIdB) {
+		/*int distance = lowerNeighbor - movingCharacter;
 		String character = characterNames.get(movingCharacter);
 		if(distance > 0) {
 			characterNames.add(lowerNeighbor, character);
@@ -376,7 +407,10 @@ public class ViewImpl extends Composite implements IView, Handler {
 		} else if(distance < 0) {
 			characterNames.remove(character);
 			characterNames.add(lowerNeighbor, character);
-		}
+		}*/
+		
+		
+		
 		/*if(distance > 0) 
 		Collections.rotate(characterNames.subList(movingCharacter, lowerNeighbor + 1), -distance);
 			else if(distance < 0)
@@ -394,12 +428,12 @@ public class ViewImpl extends Composite implements IView, Handler {
 			if(state.isEmpty() && i != insertPosition) {
 				if(!nonEmptyCharacterStateFound)
 					insertPosition--;
-				this.moveCharacterData(i, insertPosition);
+				this.moveCharacter(i, insertPosition);
 			} else {
 				nonEmptyCharacterStateFound = true;
 			}
 		}
-		buildDataGrid(dataGrid);
+		//buildDataGrid(dataGrid);
 	}
 
 	@Override

@@ -549,3 +549,7 @@ green 307137
 .submenu {
 	padding-top: 10px;
 }
+
+.reviewMatrixActionIcon {
+	padding-right: 5px;	
+}
