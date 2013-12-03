@@ -48,7 +48,7 @@ public class OutputMatrixGenerationPresenter implements OutputMatrixGenerationVi
 			public void onSuccess(RPCResult<Task> result) {
 				//view.setOutputText(task.getConfiguration().getOutput());
 				output = ((MatrixGenerationConfiguration)result.getData().getConfiguration()).getOutput();
-				view.setOutput(filePathShortener.shorten(output, task.getUser().getName(), Authentication.getInstance().getUsername()));
+				view.setOutput(filePathShortener.shortenOutput(output, result.getData(), Authentication.getInstance().getUsername()));
 				container.clear();
 				container.add(view.asWidget());
 				loadingPopup.stop();

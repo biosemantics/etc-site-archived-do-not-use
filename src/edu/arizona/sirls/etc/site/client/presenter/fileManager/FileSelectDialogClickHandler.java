@@ -33,7 +33,7 @@ public class FileSelectDialogClickHandler implements ClickHandler {
 			public void onClick(ClickEvent event) {
 				FileImageLabelTreeItem selection = presenter.getFileSelectionHandler().getSelection();
 				if (selection != null) {
-					text.setText(filePathShortener.shorten(selection.getFileInfo().getFilePath(), selection.getFileInfo().getOwner(), Authentication.getInstance().getUsername()));
+					text.setText(filePathShortener.shorten(selection.getFileInfo(), Authentication.getInstance().getUsername()));
 					stringBuilder.setLength(0);
 					stringBuilder.append(selection.getFileInfo().getFilePath());
 					if (requiredToContinue)

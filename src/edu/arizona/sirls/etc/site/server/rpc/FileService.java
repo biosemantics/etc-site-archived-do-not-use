@@ -62,9 +62,9 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		if(!authResult.getData().getResult())
 			return new RPCResult<Tree<FileInfo>>(false, "Authentication failed");
 		
-		Tree<FileInfo> resultTree = new Tree<FileInfo>(new FileInfo("", null, FileTypeEnum.DIRECTORY, authenticationToken.getUsername()));
-		Tree<FileInfo> ownedFiles = new Tree<FileInfo>(new FileInfo("Owned", null, FileTypeEnum.DIRECTORY, authenticationToken.getUsername()));
-		Tree<FileInfo> sharedFiles = new Tree<FileInfo>(new FileInfo("Shared", null, FileTypeEnum.DIRECTORY, authenticationToken.getUsername()));
+		Tree<FileInfo> resultTree = new Tree<FileInfo>(new FileInfo("", null, "", FileTypeEnum.DIRECTORY, authenticationToken.getUsername()));
+		Tree<FileInfo> ownedFiles = new Tree<FileInfo>(new FileInfo("Owned", null, "Owned",FileTypeEnum.DIRECTORY, authenticationToken.getUsername()));
+		Tree<FileInfo> sharedFiles = new Tree<FileInfo>(new FileInfo("Shared", null, "Shared", FileTypeEnum.DIRECTORY, authenticationToken.getUsername()));
 		resultTree.addChild(ownedFiles);
 		resultTree.addChild(sharedFiles);
 		
@@ -85,12 +85,12 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		
 		for(Share share : shares) {
 			String shareOwner = share.getTask().getUser().getName();
-			Tree<FileInfo> shareTree = new Tree<FileInfo>(new FileInfo(share.getTask().getName(), null, FileTypeEnum.DIRECTORY, shareOwner));
+			Tree<FileInfo> shareTree = new Tree<FileInfo>(new FileInfo(share.getTask().getName(), null, share.getTask().getName(), FileTypeEnum.DIRECTORY, shareOwner));
 			sharedFiles.addChild(shareTree);
 			AbstractTaskConfiguration taskConfiguration = share.getTask().getConfiguration();
 			
 			List<String> outputs = TasksOutputFilesDAO.getInstance().getOutputs(share.getTask());
-			Tree<FileInfo> outputTree = new Tree<FileInfo>(new FileInfo("Output", null, FileTypeEnum.DIRECTORY, shareOwner));
+			Tree<FileInfo> outputTree = new Tree<FileInfo>(new FileInfo("Output", null, "Output", FileTypeEnum.DIRECTORY, shareOwner));
 			shareTree.addChild(outputTree);
 			for(String output : outputs) {
 				File child = new File(output);
@@ -99,7 +99,8 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 					if(!permissionResult.isSucceeded())
 						throw new Exception("Couldn't check permission");
 					if(permissionResult.getData()) {
-						Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(child.getName(), child.getAbsolutePath(), getFileType(authenticationToken, output), 
+						String displayPath = share.getTask().getName() + File.separator + "Output" + File.separator + child.getName();
+						Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(child.getName(), child.getAbsolutePath(), displayPath, getFileType(authenticationToken, output), 
 								shareOwner));
 						outputTree.addChild(childTree);
 						if(child.isDirectory()) {
@@ -111,7 +112,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			
 			if(taskConfiguration != null) {
 				List<String> inputFiles = taskConfiguration.getInputs();
-				Tree<FileInfo> inputTree = new Tree<FileInfo>(new FileInfo("Input", null, FileTypeEnum.DIRECTORY, shareOwner));
+				Tree<FileInfo> inputTree = new Tree<FileInfo>(new FileInfo("Input", null, "Input", FileTypeEnum.DIRECTORY, shareOwner));
 				shareTree.addChild(inputTree);
 				for(String input : inputFiles) {
 					File child = new File(input);
@@ -120,7 +121,8 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 						if(!permissionResult.isSucceeded())
 							throw new Exception("Couldn't check permission");
 						if(permissionResult.getData()) {
-							Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(child.getName(), child.getAbsolutePath(), getFileType(authenticationToken, input), 
+							String displayPath = share.getTask().getName() + File.separator + "Input" + File.separator + child.getName();
+							Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(child.getName(), child.getAbsolutePath(), displayPath, getFileType(authenticationToken, input), 
 									shareOwner));
 							inputTree.addChild(childTree);
 							if(child.isDirectory()) {
@@ -148,7 +150,8 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 					String name = child.getName();
 					FileTypeEnum fileType = getFileType(authenticationToken, child.getAbsolutePath());
 					if(fileType != null && !filter(fileType, fileFilter)) {
-						Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(name, child.getAbsolutePath(), fileType, authenticationToken.getUsername()));
+						String displayPath = childPath.replace(Configuration.fileBase + File.separator + authenticationToken.getUsername(), "");
+						Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(name, child.getAbsolutePath(), displayPath, fileType, authenticationToken.getUsername()));
 						fileTree.addChild(childTree);
 						if(child.isDirectory()) {
 							decorateOwnedTree(authenticationToken, childTree, fileFilter, childPath);

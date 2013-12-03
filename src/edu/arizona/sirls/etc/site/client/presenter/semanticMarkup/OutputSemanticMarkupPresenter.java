@@ -74,7 +74,7 @@ public class OutputSemanticMarkupPresenter {
 			@Override
 			public void onSuccess(RPCResult<Task> result) {
 				output = ((SemanticMarkupConfiguration)result.getData().getConfiguration()).getOutput();
-				display.setOutput(filePathShortener.shorten(output, task.getUser().getName(), Authentication.getInstance().getUsername()));
+				display.setOutput(filePathShortener.shortenOutput(output, result.getData(), Authentication.getInstance().getUsername()));
 				content.clear();
 				content.add(display.asWidget());
 				loadingPopup.stop();

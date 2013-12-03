@@ -246,7 +246,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			if(!(configuration instanceof MatrixGenerationConfiguration))
 				return new RPCResult<Task>(false, "Not a compatible task");
 			final MatrixGenerationConfiguration matrixGenerationConfiguration = (MatrixGenerationConfiguration)configuration;
-
+			matrixGenerationConfiguration.setOutput(matrixGenerationConfiguration.getInput() + "_" + task.getName());
+			
 			String outputDirectory = matrixGenerationConfiguration.getOutput();			
 			RPCResult<String> outputDirectoryParentResult = fileService.getParent(authenticationToken, outputDirectory);
 			RPCResult<String> outputDirectoryNameResult = fileService.getFileName(authenticationToken, outputDirectory);

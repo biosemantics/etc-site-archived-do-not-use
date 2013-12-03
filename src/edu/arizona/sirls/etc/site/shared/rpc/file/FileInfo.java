@@ -9,13 +9,15 @@ public class FileInfo implements Serializable {
 	private String filePath;
 	private FileTypeEnum fileType;
 	private String owner;
+	private String displayFilePath;
 	
 	public FileInfo() { }
 	
-	public FileInfo(String name, String filePath, FileTypeEnum fileType, String owner) {
+	public FileInfo(String name, String filePath, String displayFilePath, FileTypeEnum fileType, String owner) {
 		super();
 		this.name = name;
 		this.filePath = filePath;
+		this.displayFilePath = displayFilePath;
 		this.fileType = fileType;
 		this.owner = owner;
 	}
@@ -46,6 +48,10 @@ public class FileInfo implements Serializable {
 
 	public String getOwner() {
 		return owner;
+	}
+
+	public String getDisplayFilePath() {
+		return this.displayFilePath;
 	}
 	
 }
