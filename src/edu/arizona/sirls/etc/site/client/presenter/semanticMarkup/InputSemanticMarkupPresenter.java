@@ -69,7 +69,7 @@ public class InputSemanticMarkupPresenter {
 			public void onClick(ClickEvent event) {
 				messagePresenter.setMessage("Matrix Generation requires a set of XML files as input. The XML files have to be " +
 						"<ul>" +
-						"<li> valid against the specified XML <a target=\"_blank\" href=\"https://github.com/biosemantics/charaparser/blob/master/resources/io/iplant.xsd\">schema</a>" +
+						"<li> valid against the specified XML <a target=\"_blank\" href=\"https://raw.github.com/biosemantics/schemas/master/iplantInputTreatment.xsd\">schema</a>" +
 						"<li>  UTF-8 encoded" +
 						"</ul>");
 				messagePresenter.go();
