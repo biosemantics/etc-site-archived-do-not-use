@@ -240,9 +240,12 @@ public class TaskDAO {
 			ShareDAO.getInstance().removeShare(share);
 		}
 		
+		// remove task output files
+		TasksOutputFilesDAO.getInstance().removeOutputs(task);
+		
 		// remove files in use
 		FilesInUseDAO.getInstance().removeFilesInUse(task);
-				
+		
 		Query query = new Query("DELETE FROM tasks WHERE id = ?");
 		query.setParameter(1, id);
 		query.executeAndClose();

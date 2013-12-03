@@ -33,6 +33,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.TaskStage;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TaskStageDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TaskType;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TaskTypeDAO;
+import edu.arizona.sirls.etc.site.shared.rpc.db.TasksOutputFilesDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.UserDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.Matrix;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
@@ -270,6 +271,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			task.setComplete(true);
 			task.setCompleted(new Date());
 			TaskDAO.getInstance().updateTask(task);
+			
+			TasksOutputFilesDAO.getInstance().addOutput(task, createDirectoryResult.getData());
 			
 			return new RPCResult<Task>(true, task);
 		} catch (Exception e) {
