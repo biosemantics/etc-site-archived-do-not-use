@@ -1,5 +1,6 @@
 package edu.arizona.sirls.etc.site.server.rpc;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -379,6 +380,27 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 		}
 	}
 
-
-
+	@Override
+	public RPCResult<Map<Task, Set<ShortUser>>> getInviteesForOwnedTasks(AuthenticationToken authenticationToken) {
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<Map<Task, Set<ShortUser>>>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<Map<Task, Set<ShortUser>>>(false, "Authentication failed");
+		
+		try {
+			Map<Task, Set<ShortUser>> result = new HashMap<Task, Set<ShortUser>>();
+			RPCResult<List<Task>> ownedTasks = this.getOwnedTasks(authenticationToken);
+			if(ownedTasks.isSucceeded())
+				for(Task task : ownedTasks.getData()) {
+					RPCResult<Set<ShortUser>> invitees = this.getInvitees(authenticationToken, task);
+					if(invitees.isSucceeded())
+						result.put(task, invitees.getData());
+				}
+			return new RPCResult<Map<Task, Set<ShortUser>>>(true, result);
+		} catch(Exception e) {
+			e.printStackTrace();
+			return new RPCResult<Map<Task, Set<ShortUser>>>(false, "Internal Server Error");
+		}
+	}
 }

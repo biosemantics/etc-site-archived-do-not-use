@@ -54,4 +54,6 @@ public interface ITaskService extends RemoteService {
 	
 	public RPCResult<Task> getTask(AuthenticationToken authenticationToken, Task semanticMarkupTask);
 	
+	public RPCResult<Map<Task, Set<ShortUser>>> getInviteesForOwnedTasks(AuthenticationToken authenticationToken);
+	
 }

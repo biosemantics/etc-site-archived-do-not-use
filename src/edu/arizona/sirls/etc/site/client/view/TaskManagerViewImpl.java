@@ -2,9 +2,12 @@ package edu.arizona.sirls.etc.site.client.view;
 
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.DateCell;
@@ -33,6 +36,7 @@ import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
+import edu.arizona.sirls.etc.site.shared.rpc.db.ShortUser;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 
 public class TaskManagerViewImpl extends Composite implements TaskManagerView, Handler {
@@ -65,6 +69,7 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 		}
 	};
 	private SingleSelectionModel<Task> selectionModel;
+	private Map<Task, Set<ShortUser>> inviteesMap = new HashMap<Task, Set<ShortUser>>();
 
 	public TaskManagerViewImpl() {
 		dataProvider = new ListDataProvider<Task>();
@@ -133,7 +138,19 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 		Column<Task, String> accessColumn = new Column<Task, String>(accessCell) {
 		      @Override
 		      public String getValue(Task object) {
-		    	  return object.getUser().getName().equals(Authentication.getInstance().getUsername()) ? "Owned" : "Shared";
+		    	  if(object.getUser().getName().equals(Authentication.getInstance().getUsername())) {
+		    		  if(inviteesMap.containsKey(object) && !inviteesMap.get(object).isEmpty()) {
+		    			  String shared = "and shared with ";
+		    			  for(ShortUser shortUser : inviteesMap.get(object)) {
+		    				  shared += shortUser.getName() + ", ";
+		    			  }
+		    			  return "Owned " + shared.substring(0, shared.length() - 2);
+		    		  } else {
+		    			  return ("Owned");
+		    		  }
+		    	  } else {
+		    		  return "Shared by " + object.getUser().getName();
+		    	  }
 		      }
 	    };
 	    accessColumn.setSortable(true);
@@ -282,10 +299,17 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 	}
 
 	@Override
-	public void setTasks(List<Task> tasks) {
+	public void setTasks(List<Task> tasks, Map<Task, Set<ShortUser>> inviteesMap) {
+		this.inviteesMap = inviteesMap;
 		List<Task> tasksList = dataProvider.getList();
 		tasksList.clear();
 		tasksList.addAll(tasks);
+	}
+	
+	@Override
+	public void setInvitees(Task task, Set<ShortUser> users) {
+		this.inviteesMap.put(task, users);
+		this.taskTable.redraw();
 	}
 
 	@Override
@@ -400,5 +424,7 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 	public void resetSelection() {
 		this.selectionModel.clear();
 	}
+
+
 	
 }

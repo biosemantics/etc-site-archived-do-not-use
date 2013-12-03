@@ -1,7 +1,9 @@
 package edu.arizona.sirls.etc.site.client.presenter;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.event.shared.HandlerManager;
@@ -79,9 +81,20 @@ public class TaskManagerPresenter implements TaskManagerView.Presenter, Presente
 				caught.printStackTrace();
 			}
 			@Override
-			public void onSuccess(RPCResult<List<Task>> result) {
-				if(result.isSucceeded())
-					view.setTasks(result.getData());
+			public void onSuccess(final RPCResult<List<Task>> taskResult) {
+				if(taskResult.isSucceeded()) {
+					taskService.getInviteesForOwnedTasks(Authentication.getInstance().getAuthenticationToken(), new AsyncCallback<RPCResult<Map<Task, Set<ShortUser>>>>() {
+						@Override
+						public void onFailure(Throwable caught) {
+							caught.printStackTrace();
+						}
+						@Override
+						public void onSuccess(RPCResult<Map<Task, Set<ShortUser>>> result) {
+							if(result.isSucceeded()) 
+								view.setTasks(taskResult.getData(), result.getData());
+						}
+					});
+				}
 			}
 		});
 		
@@ -117,6 +130,7 @@ public class TaskManagerPresenter implements TaskManagerView.Presenter, Presente
 					@Override
 					public void onSelect(Set<ShortUser> users) {
 						share.setInvitees(users);
+						view.setInvitees(task, users);
 						dialogBox.hide();
 						
 						taskService.addOrUpdateShare(Authentication.getInstance().getAuthenticationToken(), share, new AsyncCallback<RPCResult<Share>>() {
