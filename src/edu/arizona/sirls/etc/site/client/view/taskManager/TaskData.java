@@ -28,6 +28,16 @@ public class TaskData {
 		this.invitees = invitees;
 	}
 	
+	@Override
+	public boolean equals(Object object) {
+		if(object == null)
+			return false;
+		if (getClass() != object.getClass()) {
+	        return false;
+	    }
+		TaskData taskData = (TaskData)object;
+		return this.getTask().equals(taskData.getTask());		
+	}
 	
 	
 }

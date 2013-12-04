@@ -1,5 +1,6 @@
 package edu.arizona.sirls.etc.site.client.view.taskManager;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -321,17 +322,17 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 		Iterator<TaskData> tasksIterator = tasks.iterator();
 		
 		boolean select = false;
-		boolean found = false;
+		TaskData foundTask = null;
 		while(tasksIterator.hasNext()) {
 			TaskData listTask = tasksIterator.next();
 			if(listTask.getTask().getId()==taskData.getTask().getId()) {
-				tasksIterator.remove();
+				//tasksIterator.remove();
+				foundTask = listTask;
 				select = selectionModel.isSelected(listTask);
-				found = true;
 			}
 		}
-		if(found) {
-			tasks.add(taskData);
+		if(foundTask != null) {
+			Collections.replaceAll(tasks, foundTask, taskData);
 			selectionModel.setSelected(taskData, select);
 		}
 	}
@@ -420,7 +421,7 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 				this.resumeButton.setEnabled(false);
 			} else {
 				this.rewindButton.setEnabled(false);
-				this.resumeButton.setEnabled(true);
+				this.resumeButton.setEnabled(this.getSelectedTaskData().getTask().isResumable());
 			}
 		}
 	}
