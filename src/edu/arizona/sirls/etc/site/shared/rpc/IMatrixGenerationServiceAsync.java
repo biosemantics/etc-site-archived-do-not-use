@@ -21,5 +21,7 @@ public interface IMatrixGenerationServiceAsync {
 	
 	public void cancel(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Void>> callback);
 
+	public void save(AuthenticationToken authenticationToken, Matrix matrix, Task task, AsyncCallback<RPCResult<Void>> callback);
+
 
 }

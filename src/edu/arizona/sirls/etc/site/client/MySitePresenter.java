@@ -767,11 +767,8 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 																	break;
 																case REVIEW:
 																	if(reviewMatrixGenerationPresenter == null) {
-																		ViewImpl view = new ViewImpl();
-																		reviewMatrixPresenter = new ReviewMatrixPresenter(view);
 																		reviewMatrixGenerationPresenter = 
-																				new ReviewMatrixGenerationPresenter(eventBus, 
-																						new ReviewMatrixGenerationViewImpl(view), reviewMatrixPresenter, matrixGenerationService);
+																				new ReviewMatrixGenerationPresenter(eventBus, matrixGenerationService);
 																	}
 																	reviewMatrixGenerationPresenter.go(content, matrixGenerationTask);
 																	break;

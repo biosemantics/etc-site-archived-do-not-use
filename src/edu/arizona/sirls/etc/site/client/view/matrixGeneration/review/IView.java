@@ -2,6 +2,8 @@ package edu.arizona.sirls.etc.site.client.view.matrixGeneration.review;
 
 import java.util.List;
 
+import com.google.gwt.user.client.ui.Widget;
+
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.Matrix;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.Taxon;
 
@@ -18,5 +20,7 @@ public interface IView {
 	Taxon getSelectedTaxon();
 	void resetSelection();
 	void setMatrix(Matrix matrix);
+	Matrix getMatrix();
+	Widget asWidget();
 
 }

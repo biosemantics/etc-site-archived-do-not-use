@@ -69,8 +69,8 @@ public class ViewImpl extends Composite implements IView, Handler {
 	/**
 	 * The pager used to change the range of data.
 	 */
-	@UiField(provided = true)
-	SimplePager pager;
+	//@UiField(provided = true)
+	//SimplePager pager;
 
 	private Presenter presenter;
 	
@@ -96,8 +96,8 @@ public class ViewImpl extends Composite implements IView, Handler {
 		dataProvider = new ListDataProvider<Taxon>();
 		dataGrid = createDataGrid();
 	    dataProvider.addDataDisplay(dataGrid);
-		pager = createPager();
-		pager.setDisplay(dataGrid);
+		//pager = createPager();
+		//pager.setDisplay(dataGrid);
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 	
@@ -445,6 +445,17 @@ public class ViewImpl extends Composite implements IView, Handler {
 	@Override
 	public Taxon getSelectedTaxon() {
 		return selectionModel.getSelectedObject();
+	}
+
+	@Override
+	public Matrix getMatrix() {
+		Matrix matrix = new Matrix();
+		//dataprovider gives a non-serializable list implementation
+		List<Taxon> taxons = new LinkedList<Taxon>();
+		taxons.addAll(dataProvider.getList());
+		matrix.setTaxons(taxons);
+		matrix.setCharacterNames(characterNames);
+		return matrix;
 	}
 
 }

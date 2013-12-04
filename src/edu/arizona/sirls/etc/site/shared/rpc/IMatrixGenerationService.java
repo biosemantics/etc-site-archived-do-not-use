@@ -29,5 +29,6 @@ public interface IMatrixGenerationService extends RemoteService {
 	
 	public RPCResult<Void> cancel(AuthenticationToken authenticationToken, Task task);
 
+	public RPCResult<Void> save(AuthenticationToken authenticationToken, Matrix matrix, Task task);
 
 }

@@ -30,6 +30,7 @@ public class ReviewMatrixGenerationViewImpl extends MatrixGenerationViewImpl imp
 	@UiField(provided = true)
 	ViewImpl view;
 	
+	
 	public ReviewMatrixGenerationViewImpl(ViewImpl view) {
 		super();
 		this.view = view;
@@ -46,6 +47,10 @@ public class ReviewMatrixGenerationViewImpl extends MatrixGenerationViewImpl imp
 		return TaskStageEnum.REVIEW;
 	}
 	
+	@UiHandler("nextButton")
+	public void onNext(ClickEvent event) {
+		presenter.onNext();
+	}
 	
 
 }

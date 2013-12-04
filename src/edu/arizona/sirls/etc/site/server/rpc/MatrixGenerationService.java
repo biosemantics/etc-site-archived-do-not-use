@@ -1,8 +1,10 @@
 package edu.arizona.sirls.etc.site.server.rpc;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
@@ -383,7 +385,47 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		super.destroy();
 	}
 
+	@Override
+	public RPCResult<Void> save(AuthenticationToken authenticationToken, Matrix matrix, Task task) {
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<Void>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<Void>(false, "Authentication failed");
+		
+		try {
+			final AbstractTaskConfiguration configuration = task.getConfiguration();
+			if(!(configuration instanceof MatrixGenerationConfiguration))
+				return new RPCResult<Void>(false, "Not a compatible task");
+			final MatrixGenerationConfiguration matrixGenerationConfiguration = (MatrixGenerationConfiguration)configuration;
+			
+			String outputFile = Configuration.tempFileBase + File.separator + task.getId() + File.separator + "Matrix.mx";
+			saveFile(matrix, outputFile);
+			return new RPCResult<Void>(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new RPCResult<Void>(false, "Internal Server Error");
+		}
+	}
 
-
+	private void saveFile(Matrix matrix, String outputFile) throws IOException {
+		File file = new File(outputFile);
+		BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+		
+		bw.write("Name\t");
+		for(String characterName : matrix.getCharacterNames()) {
+			bw.write(characterName + "\t");
+		}
+		bw.write("\n");
+		
+		for(Taxon taxon : matrix.getTaxons()) {
+			bw.write(taxon.getName() + "\t");
+			for(String characterName : matrix.getCharacterNames()) {
+				bw.write(taxon.getCharacterState(characterName) + "\t");
+			}
+			bw.write("\n");
+		}
+		bw.close();
+	}
 
 }

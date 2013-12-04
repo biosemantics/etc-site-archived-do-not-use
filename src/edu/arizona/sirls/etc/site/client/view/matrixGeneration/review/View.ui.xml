@@ -20,21 +20,9 @@
     <g:south
       size="3">
       <g:HTMLPanel>
-        <table
-          style="width:100%">
-          <tr>
-            <td
-              align='center'>
-              <c:SimplePager
-                ui:field='pager' />
-            </td>
-            <td>
-                <g:Button ui:field='saveButton'>
-                    Save
-                </g:Button>
-            </td>
-          </tr>
-        </table>
+        <g:Button ui:field='saveButton'>
+            Save
+        </g:Button>
       </g:HTMLPanel>
     </g:south>
   </g:DockLayoutPanel>
