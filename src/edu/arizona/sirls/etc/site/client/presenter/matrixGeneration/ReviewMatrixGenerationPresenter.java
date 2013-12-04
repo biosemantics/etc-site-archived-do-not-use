@@ -21,10 +21,11 @@ public class ReviewMatrixGenerationPresenter implements ReviewMatrixGenerationVi
 	private ReviewMatrixGenerationView view;
 	private Task task;
 	private ReviewMatrixPresenter reviewMatrixPresenter;
+	private IMatrixGenerationServiceAsync matrixGenerationService;
 
 	public ReviewMatrixGenerationPresenter(HandlerManager eventBus,	IMatrixGenerationServiceAsync matrixGenerationService) {
 		this.eventBus = eventBus;
-		
+		this.matrixGenerationService = matrixGenerationService;
 		ViewImpl viewImpl = new ViewImpl();
 		reviewMatrixPresenter = new ReviewMatrixPresenter(viewImpl, matrixGenerationService);
 		view = new ReviewMatrixGenerationViewImpl(viewImpl);
@@ -32,6 +33,7 @@ public class ReviewMatrixGenerationPresenter implements ReviewMatrixGenerationVi
 	}
 
 	public void go(final HasWidgets container, final Task task) {
+		this.task = task;
 		reviewMatrixPresenter.setTask(task);
 		reviewMatrixPresenter.refresh();
 		container.clear();
@@ -40,7 +42,17 @@ public class ReviewMatrixGenerationPresenter implements ReviewMatrixGenerationVi
 
 	@Override
 	public void onNext() {
-		eventBus.fireEvent(new MatrixGenerationEvent(task));
+		matrixGenerationService.completeReview(Authentication.getInstance().getAuthenticationToken(), task, new AsyncCallback<RPCResult<Task>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+			}
+			@Override
+			public void onSuccess(RPCResult<Task> result) {	
+				if(result.isSucceeded())
+					eventBus.fireEvent(new MatrixGenerationEvent(result.getData()));
+			}
+		});
 	}
 
 }
