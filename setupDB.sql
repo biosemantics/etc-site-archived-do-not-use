@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `configurations` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=127 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `filesinuse` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `file` (`file`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=49 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `filetypes` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `filetypes`
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `glossaries` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `glossaries`
@@ -158,7 +158,7 @@ CREATE TABLE IF NOT EXISTS `shares` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `tasks_shares_CON` (`task`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=20 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -183,7 +183,7 @@ CREATE TABLE IF NOT EXISTS `tasks` (
   KEY `users_tasks_CON` (`user`),
   KEY `configurations_tasks_CON` (`configuration`),
   KEY `tasktypes_tasks_CON` (`tasktype`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=119 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -213,7 +213,7 @@ CREATE TABLE IF NOT EXISTS `taskstages` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `tasktypes_taskstages_CON` (`tasktype`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `taskstages`
@@ -248,7 +248,7 @@ CREATE TABLE IF NOT EXISTS `tasktypes` (
   UNIQUE KEY `id` (`id`),
   KEY `inputfiletypes_tasktypes_CON` (`inputfiletype`),
   KEY `outputfiletypes_tasktypes_CON` (`outputfiletype`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `tasktypes`
@@ -294,7 +294,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `bioportalapikey` varchar(100) DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `users`
@@ -330,7 +330,7 @@ CREATE TABLE IF NOT EXISTS `tasksoutputfiles` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `tasks_tasksoutputfiles_CON` (`task`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Constraints for dumped tables
