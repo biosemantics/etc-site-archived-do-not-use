@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.HasCell;
@@ -34,6 +35,7 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.SingleSelectionModel;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.shared.rpc.db.ShortUser;
@@ -191,7 +193,15 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 				return "Step " + object.getTask().getTaskStage().getTaskStageNumber() + " of " + object.getTask().getTaskStage().getMaxTaskStageNumber() + ": " + object.getTask().getTaskStage().getDisplayName();
 			}
 		};
-		Column<TaskData, String> statusImageColumn = new Column<TaskData, String>(new ImageCell()) {
+		
+		ImageCell statusImageCell = new ImageCell() {
+			@Override
+			public void render(Context context, String value, SafeHtmlBuilder sb) {
+				if (value != null) 
+					sb.appendHtmlConstant("<img src = '" + value + "' height = '20px' width = '20px' />");
+			}
+		};
+		Column<TaskData, String> statusImageColumn = new Column<TaskData, String>(statusImageCell) {
 			@Override
 			public String getValue(TaskData object) {
 				if(!object.getTask().isComplete() && !object.getTask().isResumable())
