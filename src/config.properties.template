@@ -2,3 +2,23 @@
 databaseName=
 databaseUser=
 databasePassword=
+databaseHost=
+databasePort=
+
+#Charaparser
+charaparser_resources=/home/sirls/hongcui/etcsite/charaparser/resources
+charaparser_src=/home/sirls/hongcui/etcsite/charaparser/src
+taxonDescriptionSchemaFile=/home/sirls/hongcui/etcsite/charaparser/resources/io/schemas/iplantInputTreatment.xsd
+markedUpTaxonDescriptionSchemaFile=/home/sirls/hongcui/etcsite/charaparser/resources/io/schemas/iplantOutputTreatment.xsd
+otoLiteURL=http://biosemantics.arizona.edu:8080/OTOLite/?origin=etcsite&embed=true
+charaparser_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/charaparser
+
+#Matrix Generation
+matrixGeneration_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/matrixGeneration
+
+#File Management
+fileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/users
+compressedFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/compressedFiles
+
+#XPath Object Model
+xPathObjectModel=http://saxon.sf.net/jaxp/xpath/om

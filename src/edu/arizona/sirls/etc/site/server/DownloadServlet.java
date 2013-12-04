@@ -62,7 +62,7 @@ public class DownloadServlet extends HttpServlet {
 	}
 
 	private byte[] getZipFile(String username, String target) throws IOException {
-		Path path = Paths.get(Configuration.zipFileBase + File.separator + username + File.separator + target);
+		Path path = Paths.get(Configuration.compressedFileBase + File.separator + username + File.separator + target);
 		byte[] data = Files.readAllBytes(path);
 		return data;
 	}

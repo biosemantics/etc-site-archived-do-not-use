@@ -20,7 +20,7 @@ public class ETCSiteServletContextListener implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
-		if(event.getServletContext().getContextPath().contains("etcsite")) {
+		//if(event.getServletContext().getContextPath().contains("etcsite")) {
 			try {
 				//init connection pool
 				ConnectionPool connectionPool = ConnectionPool.getInstance();
@@ -30,7 +30,7 @@ public class ETCSiteServletContextListener implements ServletContextListener {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}
+		//}
 	}
 
 }

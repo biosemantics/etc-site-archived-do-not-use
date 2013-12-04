@@ -3,6 +3,8 @@ package edu.arizona.sirls.etc.site.server.rpc;
 import java.io.File;
 import java.util.Properties;
 
+import org.apache.commons.cli.Option;
+
 import semanticMarkup.LearnMain;
 import edu.arizona.sirls.etc.site.server.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationToken;
@@ -15,21 +17,17 @@ public class Learn implements ILearn {
 	private String input;
 	private String tablePrefix;
 	private AuthenticationToken authenticationToken;
-	private String debugFile;
-	private String errorFile;
 	private String source;
 	private String user;
 	private String bioportalUserId;
 	private String bioportalAPIKey;	
 
-	public Learn(AuthenticationToken authenticationToken, String config, String input, String tablePrefix, String debugFile, String errorFile,
+	public Learn(AuthenticationToken authenticationToken, String config, String input, String tablePrefix,
 			String source, String user, String bioportalUserId, String bioportalAPIKey) {
 		this.authenticationToken = authenticationToken;
 		this.config = config;
 		this.input = input;
 		this.tablePrefix = tablePrefix;
-		this.debugFile = debugFile;
-		this.errorFile = errorFile;
 		this.source = source;
 		this.user = user;
 		this.bioportalUserId = bioportalUserId;
@@ -38,17 +36,17 @@ public class Learn implements ILearn {
 	
 	@Override
 	public LearnResult call() throws Exception {
-		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		Properties properties = new Properties(); 
-		properties.load(loader.getResourceAsStream("config.properties"));
-		String databaseName = properties.getProperty("databaseName");
-		String databaseUser = properties.getProperty("databaseUser");
-		String databasePassword = properties.getProperty("databasePassword");
-		String databaseHost = "localhost";
-		String databasePort = "3306";
-		String resources = "resources" + File.separator + "charaparser" + File.separator + "resources";
-		String src = "resources" + File.separator + "charaparser" + File.separator + "src";
-		String[] args = new String[] { "-f", source, "-g", user, "-j", bioportalUserId, "-k", bioportalAPIKey, "-b", debugFile, "-e", errorFile, "-c", config, "-r", resources, "-l", src,
+		String databaseName = Configuration.databaseName;
+		String databaseUser = Configuration.databaseUser;
+		String databasePassword = Configuration.databasePassword;
+		String databaseHost = Configuration.databaseHost;
+		String databasePort = Configuration.databasePort;
+		String workspace = Configuration.charaparser_tempFileBase;
+		String resources = Configuration.charaparser_resources;
+		String src = Configuration.charaparser_src;
+		String debugFile = workspace + File.separator + tablePrefix + File.separator + "debug.log";
+		String errorFile = workspace + File.separator + tablePrefix + File.separator + "error.log";
+		String[] args = new String[] { "-a", workspace, "-f", source, "-g", user, "-j", bioportalUserId, "-k", bioportalAPIKey, "-b", debugFile, "-e", errorFile, "-c", config, "-r", resources, "-l", src,
 				"-n", databaseHost, "-p", databasePort, "-d", databaseName, "-u", databaseUser, 
 				"-s", databasePassword, "-i", input, "-z" , tablePrefix, "-y"};
 		LearnMain.main(args);

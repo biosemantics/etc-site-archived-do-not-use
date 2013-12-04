@@ -137,10 +137,10 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				TaskDAO.getInstance().updateTask(task);
 				
 				String input = matrixGenerationConfiguration.getInput();
-				RPCResult<Void> createDirResult = fileService.createDirectory(new AdminAuthenticationToken(), Configuration.tempFileBase, String.valueOf(task.getId()));
+				RPCResult<Void> createDirResult = fileService.createDirectory(new AdminAuthenticationToken(), Configuration.matrixGeneration_tempFileBase, String.valueOf(task.getId()));
 				if(!createDirResult.isSucceeded()) 
 					return new RPCResult<Task>(false, createDirResult.getMessage());
-				String outputFile = Configuration.tempFileBase + File.separator + task.getId() + File.separator + "Matrix.mx";
+				String outputFile = Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "Matrix.mx";
 				
 				MatrixGeneration matrixGeneration = new MatrixGeneration(input, outputFile);
 				final ListenableFuture<Boolean> futureResult = executorService.submit(matrixGeneration);
@@ -184,7 +184,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				return new RPCResult<Matrix>(false, "Not a compatible task");
 			final MatrixGenerationConfiguration matrixGenerationConfiguration = (MatrixGenerationConfiguration)configuration;
 			
-			String outputFile = Configuration.tempFileBase + File.separator + task.getId() + File.separator + "Matrix.mx";
+			String outputFile = Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "Matrix.mx";
 			Matrix matrix = readFile(outputFile);
 			return new RPCResult<Matrix>(true, matrix);
 		} catch (Exception e) {
@@ -279,7 +279,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				return new RPCResult<Task>(false, createDirectoryResult.getMessage());
 			
 			//copy the output files to the directory
-			String matrixGenerationOutputDirectory = Configuration.tempFileBase + File.separator + task.getId();		
+			String matrixGenerationOutputDirectory = Configuration.matrixGeneration_tempFileBase + File.separator + task.getId();		
 			RPCResult<Void> copyResult = fileService.copyFiles(new AdminAuthenticationToken(), matrixGenerationOutputDirectory, createDirectoryResult.getData());
 			if(!copyResult.isSucceeded()) {
 				return new RPCResult<Task>(false, copyResult.getMessage());
@@ -399,7 +399,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				return new RPCResult<Void>(false, "Not a compatible task");
 			final MatrixGenerationConfiguration matrixGenerationConfiguration = (MatrixGenerationConfiguration)configuration;
 			
-			String outputFile = Configuration.tempFileBase + File.separator + task.getId() + File.separator + "Matrix.mx";
+			String outputFile = Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "Matrix.mx";
 			saveFile(matrix, outputFile);
 			return new RPCResult<Void>(true);
 		} catch (Exception e) {

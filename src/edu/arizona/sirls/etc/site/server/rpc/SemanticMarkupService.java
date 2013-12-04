@@ -223,13 +223,11 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				String glossary = semanticMarkupConfiguration.getGlossary().getName();
 				String input = semanticMarkupConfiguration.getInput();
 				String tablePrefix = String.valueOf(task.getId());
-				String debugFile = "workspace" + File.separator + task.getId() + File.separator + "debug.log";
-				String errorFile = "workspace" + File.separator + task.getId() + File.separator + "error.log";
 				String source = input; //maybe something else later
 				String user = authenticationToken.getUsername();
 				String bioportalUserId = UserDAO.getInstance().getUser(authenticationToken.getUsername()).getBioportalUserId();
 				String bioportalAPIKey = UserDAO.getInstance().getUser(authenticationToken.getUsername()).getBioportalAPIKey();
-				ILearn learn = new Learn(authenticationToken, glossary, input, tablePrefix, debugFile, errorFile, source, user, bioportalUserId, bioportalAPIKey);
+				ILearn learn = new Learn(authenticationToken, glossary, input, tablePrefix, source, user, bioportalUserId, bioportalAPIKey);
 				final ListenableFuture<LearnResult> futureResult = executorService.submit(learn);
 				activeLearnFutures.put(semanticMarkupConfiguration.getConfiguration().getId(), futureResult);
 				futureResult.addListener(new Runnable() {
@@ -317,13 +315,11 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				String glossary = semanticMarkupConfiguration.getGlossary().getName();
 				String input = semanticMarkupConfiguration.getInput();
 				String tablePrefix = String.valueOf(task.getId());
-				String debugFile = "workspace" + File.separator + task.getId() + File.separator + "debug.log";
-				String errorFile = "workspace" + File.separator + task.getId() + File.separator + "error.log";
 				String source = input; //maybe something else later
 				String user = authenticationToken.getUsername();
 				String bioportalUserId = UserDAO.getInstance().getUser(authenticationToken.getUsername()).getBioportalUserId();
 				String bioportalAPIKey = UserDAO.getInstance().getUser(authenticationToken.getUsername()).getBioportalAPIKey();
-				IParse parse = new Parse(authenticationToken, glossary, input, tablePrefix, debugFile, errorFile, source, user, bioportalUserId, bioportalAPIKey);
+				IParse parse = new Parse(authenticationToken, glossary, input, tablePrefix, source, user, bioportalUserId, bioportalAPIKey);
 				final ListenableFuture<ParseResult> futureResult = executorService.submit(parse);
 				activeParseFutures.put(semanticMarkupConfiguration.getConfiguration().getId(), futureResult);
 				futureResult.addListener(new Runnable() {
@@ -379,7 +375,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				return new RPCResult<Task>(false, createDirectoryResult.getMessage());
 			
 			//copy the output files to the directory
-			String charaParserOutputDirectory = "workspace" + File.separator + task.getId() + File.separator + "out";		
+			String charaParserOutputDirectory = Configuration.charaparser_tempFileBase + File.separator + task.getId() + File.separator + "out";		
 			RPCResult<Void> deleteResult = fileService.deleteFile(new AdminAuthenticationToken(), charaParserOutputDirectory + File.separator + "config.txt");
 			if(!deleteResult.isSucceeded()) {
 				return new RPCResult<Task>(false, deleteResult.getMessage());
