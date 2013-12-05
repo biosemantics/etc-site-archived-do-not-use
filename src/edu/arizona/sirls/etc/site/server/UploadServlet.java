@@ -52,6 +52,7 @@ public class UploadServlet extends UploadAction {
 		contentValidators = new HashSet<IContentValidator>();
 		//contentValidators.add(new CSVValidator());
 		contentValidators.add(new XMLValidator(new File(Configuration.taxonDescriptionSchemaFile)));
+		contentValidators.add(new XMLValidator(new File(Configuration.markedUpTaxonDescriptionSchemaFile)));
 	}
 	
 	/**
