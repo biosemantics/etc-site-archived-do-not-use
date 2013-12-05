@@ -27,6 +27,7 @@ public class FileManagerView extends Composite implements FileManagerPresenter.D
 		verticalPanel.add(fileManagerPanel);
 		markupReviewAnchor = new Anchor("Review Markup");
 		verticalPanel.add(markupReviewAnchor);
+		markupReviewAnchor.setVisible(false);
 		
 		this.htmlPanel.add(verticalPanel, "fileManagerContent");
 		this.initWidget(htmlPanel);
