@@ -20,11 +20,26 @@ public enum FileTypeEnum {
     	return displayName; 
     }*/
 	
-	TAXON_DESCRIPTION,
-	MARKED_UP_TAXON_DESCRIPTION,
-	MATRIX, 
-	PLAIN_TEXT,
-	DIRECTORY
+	TAXON_DESCRIPTION("Taxon Description", true),
+	MARKED_UP_TAXON_DESCRIPTION("Marked Up Taxon Description", true),
+	MATRIX("Matrix", true), 
+	PLAIN_TEXT("Plain Text", true),
+	DIRECTORY("Directory", false);
+	
+    private String displayName;
+    private boolean viewable;
+
+    private FileTypeEnum(String displayName, boolean viewable) {
+        this.displayName = displayName;
+    }
+
+    public String displayName() { 
+    	return displayName; 
+    }
+    
+    public boolean isViewable() {
+    	return viewable;
+    }
 
 
 }

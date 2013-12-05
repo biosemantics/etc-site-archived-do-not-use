@@ -44,7 +44,8 @@ public class FileContentPresenter {
 	private void bind() {
 		final ListBox listBox = display.getFormatListBox();
 		for(FileTypeEnum fileType : FileTypeEnum.values())
-			listBox.addItem(fileType.toString());
+			if(fileType.isViewable())
+				listBox.addItem(fileType.toString());
 		listBox.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
