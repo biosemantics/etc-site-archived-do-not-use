@@ -1,5 +1,7 @@
 package edu.arizona.sirls.etc.site.shared.rpc.file;
 
+import edu.arizona.sirls.etc.site.shared.rpc.file.search.CharacterAttributeEnum;
+
 public enum FileTypeEnum {	
 	/*TAXON_DESCRIPTION("Taxon Description"),
 	GLOSSARY("Glossary"),
@@ -31,6 +33,7 @@ public enum FileTypeEnum {
 
     private FileTypeEnum(String displayName, boolean viewable) {
         this.displayName = displayName;
+        this.viewable = viewable;
     }
 
     public String displayName() { 
@@ -40,6 +43,14 @@ public enum FileTypeEnum {
     public boolean isViewable() {
     	return viewable;
     }
+    
+    public static FileTypeEnum getEnum(String value) {
+        if(value == null)
+            throw new IllegalArgumentException();
+        for(FileTypeEnum v : values())
+            if(value.equals(v.displayName())) return v;
+        throw new IllegalArgumentException();
+    }	
 
 
 }

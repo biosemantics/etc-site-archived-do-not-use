@@ -45,14 +45,14 @@ public class FileContentPresenter {
 		final ListBox listBox = display.getFormatListBox();
 		for(FileTypeEnum fileType : FileTypeEnum.values())
 			if(fileType.isViewable())
-				listBox.addItem(fileType.toString());
+				listBox.addItem(fileType.displayName());
 		listBox.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
 				if(loadingPopup == null) 
 					loadingPopup = new LoadingPopup();
 				loadingPopup.start();
-				FileTypeEnum fileType = FileTypeEnum.valueOf(listBox.getValue(listBox.getSelectedIndex()));
+				FileTypeEnum fileType = FileTypeEnum.getEnum(listBox.getValue(listBox.getSelectedIndex()));
 				fileAccessService.getFileContent(
 						Authentication.getInstance().getAuthenticationToken(), 
 						path, fileType, new FileContentCallback());
@@ -72,7 +72,7 @@ public class FileContentPresenter {
 			loadingPopup = new LoadingPopup();
 		loadingPopup.start();
 		ListBox formatListBox = display.getFormatListBox();
-		FileTypeEnum fileType = FileTypeEnum.valueOf(formatListBox.getValue(formatListBox.getSelectedIndex()));
+		FileTypeEnum fileType = FileTypeEnum.getEnum(formatListBox.getValue(formatListBox.getSelectedIndex()));
 		
 		fileAccessService.getFileContent(Authentication.getInstance().getAuthenticationToken(), 
 				path, fileType, new FileContentCallback());
