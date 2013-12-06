@@ -7,9 +7,14 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+
 import com.google.common.io.Files;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.server.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationResult;
 import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationToken;
@@ -62,9 +67,10 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		if(!authResult.getData().getResult())
 			return new RPCResult<Tree<FileInfo>>(false, "Authentication failed");
 		
-		Tree<FileInfo> resultTree = new Tree<FileInfo>(new FileInfo("", null, "", FileTypeEnum.DIRECTORY, authenticationToken.getUsername()));
-		Tree<FileInfo> ownedFiles = new Tree<FileInfo>(new FileInfo("Owned", null, "Owned",FileTypeEnum.DIRECTORY, authenticationToken.getUsername()));
-		Tree<FileInfo> sharedFiles = new Tree<FileInfo>(new FileInfo("Shared", null, "Shared", FileTypeEnum.DIRECTORY, authenticationToken.getUsername()));
+		Tree<FileInfo> resultTree = new Tree<FileInfo>(new FileInfo("", "Root", "", FileTypeEnum.DIRECTORY, authenticationToken.getUsername(), true, false));
+		Tree<FileInfo> ownedFiles = new Tree<FileInfo>(new FileInfo("Owned", Configuration.fileBase + File.separator + authenticationToken.getUsername(),
+				"Owned",FileTypeEnum.DIRECTORY, authenticationToken.getUsername(), true, true));
+		Tree<FileInfo> sharedFiles = new Tree<FileInfo>(new FileInfo("Shared", "Shared", "Shared", FileTypeEnum.DIRECTORY, authenticationToken.getUsername(), true, false));
 		resultTree.addChild(ownedFiles);
 		resultTree.addChild(sharedFiles);
 		
@@ -85,12 +91,14 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		
 		for(Share share : shares) {
 			String shareOwner = share.getTask().getUser().getName();
-			Tree<FileInfo> shareTree = new Tree<FileInfo>(new FileInfo(share.getTask().getName(), null, share.getTask().getName(), FileTypeEnum.DIRECTORY, shareOwner));
+			Tree<FileInfo> shareTree = new Tree<FileInfo>(new FileInfo(share.getTask().getName(), "Share." + share.getTask().getId(), 
+					share.getTask().getName(), FileTypeEnum.DIRECTORY, shareOwner, false, false));
 			sharedFiles.addChild(shareTree);
 			AbstractTaskConfiguration taskConfiguration = share.getTask().getConfiguration();
 			
 			List<String> outputs = TasksOutputFilesDAO.getInstance().getOutputs(share.getTask());
-			Tree<FileInfo> outputTree = new Tree<FileInfo>(new FileInfo("Output", null, "Output", FileTypeEnum.DIRECTORY, shareOwner));
+			Tree<FileInfo> outputTree = new Tree<FileInfo>(new FileInfo("Output", "Share.Output" + share.getTask().getId(), 
+					"Output", FileTypeEnum.DIRECTORY, shareOwner, false, false));
 			shareTree.addChild(outputTree);
 			for(String output : outputs) {
 				File child = new File(output);
@@ -100,8 +108,8 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 						throw new Exception("Couldn't check permission");
 					if(permissionResult.getData()) {
 						String displayPath = share.getTask().getName() + File.separator + "Output" + File.separator + child.getName();
-						Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(child.getName(), child.getAbsolutePath(), displayPath, getFileType(authenticationToken, output), 
-								shareOwner));
+						Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(child.getName(), child.getAbsolutePath(), displayPath, 
+								getFileType(authenticationToken, output), shareOwner, false, false));
 						outputTree.addChild(childTree);
 						if(child.isDirectory()) {
 							decorateOwnedTree(authenticationToken, childTree, fileFilter, child.getAbsolutePath());
@@ -112,7 +120,8 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			
 			if(taskConfiguration != null) {
 				List<String> inputFiles = taskConfiguration.getInputs();
-				Tree<FileInfo> inputTree = new Tree<FileInfo>(new FileInfo("Input", null, "Input", FileTypeEnum.DIRECTORY, shareOwner));
+				Tree<FileInfo> inputTree = new Tree<FileInfo>(new FileInfo("Input", "Share.Input" + share.getTask().getId(), "Input", 
+						FileTypeEnum.DIRECTORY, shareOwner, false, false));
 				shareTree.addChild(inputTree);
 				for(String input : inputFiles) {
 					File child = new File(input);
@@ -122,8 +131,8 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 							throw new Exception("Couldn't check permission");
 						if(permissionResult.getData()) {
 							String displayPath = share.getTask().getName() + File.separator + "Input" + File.separator + child.getName();
-							Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(child.getName(), child.getAbsolutePath(), displayPath, getFileType(authenticationToken, input), 
-									shareOwner));
+							Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(child.getName(), child.getAbsolutePath(), displayPath, 
+									getFileType(authenticationToken, input), shareOwner, false, false));
 							inputTree.addChild(childTree);
 							if(child.isDirectory()) {
 								decorateOwnedTree(authenticationToken, childTree, fileFilter, child.getAbsolutePath());
@@ -151,7 +160,8 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 					FileTypeEnum fileType = getFileType(authenticationToken, child.getAbsolutePath());
 					if(fileType != null && !filter(fileType, fileFilter)) {
 						String displayPath = childPath.replace(Configuration.fileBase + File.separator + authenticationToken.getUsername(), "");
-						Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(name, child.getAbsolutePath(), displayPath, fileType, authenticationToken.getUsername()));
+						Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(name, child.getAbsolutePath(), displayPath, fileType, 
+								authenticationToken.getUsername(), false, true));
 						fileTree.addChild(childTree);
 						if(child.isDirectory()) {
 							decorateOwnedTree(authenticationToken, childTree, fileFilter, childPath);
@@ -349,6 +359,8 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		if(!permissionResult.isSucceeded())
 			return new RPCResult<Boolean>(false, permissionResult.getMessage());
 		if(permissionResult.getData()) {
+			if(filePath.startsWith("Share.") || filePath.equals("Root") || filePath.equals("Owned") || filePath.equals("Shared"))
+				return new RPCResult<Boolean>(true, true);
 			File file = new File(filePath);
 			return new RPCResult<Boolean>(true, file.isDirectory());
 		}
@@ -462,29 +474,13 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		if(!authResult.getData().getResult())
 			return new RPCResult<String>(false, "Authentication failed", "");
 		
-		RPCResult<Boolean> permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
-		if(!permissionResult.isSucceeded())
-			return new RPCResult<String>(false, permissionResult.getMessage(), "");
-		if(permissionResult.getData()) {
-			Zipper zipper = new Zipper();
-			try {
-				File file = new File(filePath);
-				if(file.exists()) {
-					String copyDestination = Configuration.compressedFileBase + File.separator + authenticationToken.getUsername() + File.separator + 
-							file.getName();
-					this.createDirectory(authenticationToken, Configuration.compressedFileBase + File.separator + authenticationToken.getUsername(), file.getName());					
-					this.copyFiles(new AdminAuthenticationToken(), filePath, copyDestination);
-					String zipDestination = copyDestination + ".tar.gz";
-					zipper.zip(copyDestination, zipDestination);
-					return new RPCResult<String>(true, "", zipDestination);
-				}
-				return new RPCResult<String>(false, "File was not found", "");			
-			} catch (Exception e) {
-				e.printStackTrace();
-				return new RPCResult<String>(false, "Zipping failed", "");
-			}
-		}
-		return new RPCResult<String>(false, "Permission denied", "");
+		DirectoryDownload directoryDownload = new DirectoryDownload(authenticationToken, filePath);
+		
+		boolean result = directoryDownload.execute();
+		
+		if(result)
+			return new RPCResult<String>(true, "", directoryDownload.getZipPath());
+		return new RPCResult<String>(false, directoryDownload.getError(), "");
 	}
 
 	@Override
@@ -611,16 +607,23 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		if(!permissionResultSource.isSucceeded() || !permissionResultDestination.isSucceeded())
 			return new RPCResult<Void>(false, permissionResultSource.getMessage());
 		if(permissionResultSource.getData() && permissionResultDestination.getData()) {
-			File sourceDir = new File(source);
+			try {
+				FileUtils.copyDirectory(new File(source), new File(destination));
+			} catch(Exception e) {
+				e.printStackTrace();
+				return new RPCResult<Void>(false, e.getMessage());
+			} 
+			/*File sourceDir = new File(source);
 			for(File sourceFile : sourceDir.listFiles()) {
 				File destinationFile = new File(destination, sourceFile.getName());
 				try {
+					
 					Files.copy(sourceFile, destinationFile);
 				} catch(Exception e) {
 					e.printStackTrace();
 					return new RPCResult<Void>(false, e.getMessage());
 				}
-			}
+			}*/
 			return new RPCResult<Void>(true);
 		}
 		return new RPCResult<Void>(false, "Permission denied");
@@ -653,6 +656,30 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		}
 		return new RPCResult<String>(false, "Permission denied", "");
 	}
+	
 
+	@Override
+	public RPCResult<String> getDownloadPath(AuthenticationToken authenticationToken, String filePath) {
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<String>(false, authResult.getMessage(), "");
+		if(!authResult.getData().getResult())
+			return new RPCResult<String>(false, "Authentication failed", "");
+		
+		
+		RPCResult<Boolean> isDirectory = this.isDirectory(authenticationToken, filePath);
+		if(filePath.startsWith("Share.") || filePath.equals("Root") || filePath.equals("Owned") || filePath.equals("Shared") || 
+				isDirectory.isSucceeded() && isDirectory.getData()) {
+			RPCResult<String> zipResult = this.zipDirectory(authenticationToken, filePath);
+			if(!zipResult.isSucceeded())
+				return new RPCResult<String>(false, zipResult.getMessage(), "");
+			return zipResult;
+		} else if(!isDirectory.isSucceeded()) {
+			return new RPCResult<String>(false, isDirectory.getMessage(), "");
+		} else {
+			return new RPCResult<String>(true, "", filePath);
+		}
+	}
 
 }
+

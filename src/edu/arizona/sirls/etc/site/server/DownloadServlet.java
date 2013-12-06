@@ -35,22 +35,12 @@ public class DownloadServlet extends HttpServlet {
 		if(authenticationResult.isSucceeded() && authenticationResult.getData().getResult()) { 	
 			int BUFFER = 1024 * 100;
 			response.setContentType("application/octet-stream");
-			if(directory.equals("yes")) {
-				response.setHeader("Content-Disposition:", "attachment;filename=" + "\"" + 
-						target.substring(target.lastIndexOf(File.separator) + 1, target.length()) + "\"");	
-			} else {
-				response.setHeader("Content-Disposition:", "attachment;filename=" + "\"" + 
-						target.substring(target.lastIndexOf(File.separator) + 1, target.length()) + "\"");	
-			}
-			
+			response.setHeader("Content-Disposition:", "attachment;filename=" + "\"" + 
+					target.substring(target.lastIndexOf(File.separator) + 1, target.length()) + "\"");	
+
 			ServletOutputStream outputStream = response.getOutputStream();
-			
 			byte[] fileBytes;
-			//if(directory.equals("yes")) {
-			//	fileBytes = getZipFile(username, target);
-			//} else {
-				fileBytes = getFile(username, target);
-			//}
+			fileBytes = getFile(username, target);
 			
 			response.setContentLength(Long.valueOf(fileBytes.length).intValue());
 			response.setBufferSize(BUFFER);

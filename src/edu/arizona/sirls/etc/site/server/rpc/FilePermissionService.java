@@ -92,6 +92,8 @@ public class FilePermissionService extends RemoteServiceServlet implements IFile
 	
 	@Override
 	public RPCResult<Boolean> isSharedFilePath(String username, String filePath) {
+		if(filePath.startsWith("Share.") || filePath.equals("Shared"))
+			return new RPCResult<Boolean>(true, true);
 		try {
 			ShortUser user = UserDAO.getInstance().getShortUser(username);
 			List<Share> invitedShares = ShareDAO.getInstance().getSharesOfInvitee(user);
@@ -125,6 +127,8 @@ public class FilePermissionService extends RemoteServiceServlet implements IFile
 	
 	@Override
 	public RPCResult<Boolean> isOwnedFilePath(String username, String filePath) {
+		if(filePath.equals("Owned") || filePath.equals("Root"))
+			return new RPCResult<Boolean>(true, true);
 		String ownedFilesDirectory = Configuration.fileBase + File.separator + username;
 		return new RPCResult<Boolean>(true, containedInPath(ownedFilesDirectory, filePath));
 	}

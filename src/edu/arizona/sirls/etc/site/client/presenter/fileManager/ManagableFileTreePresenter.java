@@ -19,7 +19,6 @@ import edu.arizona.sirls.etc.site.shared.rpc.IFileServiceAsync;
 import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileTypeEnum;
-
 import gwtupload.client.BaseUploadStatus;
 import gwtupload.client.IUploadStatus;
 import gwtupload.client.IUploadStatus.Status;
@@ -30,6 +29,8 @@ import gwtupload.client.IUploader.OnStartUploaderHandler;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
@@ -77,6 +78,8 @@ public class ManagableFileTreePresenter implements Presenter {
 	}
 
 	private void bind() {
+		fileTreePresenter.addFileSelectionHandler(new ManageSelectionHandler());
+		
 		display.getDeleteButton().addClickHandler(new DeleteClickHandler());
 		display.getRenameButton().addClickHandler(new RenameClickHandler());
 		display.getCreateDirectoryButton().addClickHandler(new CreateDirectoryClickHandler());
@@ -96,7 +99,6 @@ public class ManagableFileTreePresenter implements Presenter {
 	    
 	    display.getDownloadButton().addClickHandler(new DownloadClickHandler());
 	    
-	    display.getAddButton().addClickHandler(new AddClickHandler());
 		display.getUploader().setFileInput(new MyFileInput(display.getAddButton()));
 	}
 
@@ -104,23 +106,6 @@ public class ManagableFileTreePresenter implements Presenter {
 	public void go(HasWidgets container) {
 		container.clear();
 		container.add(display.asWidget());
-	}
-	
-	protected class AddClickHandler implements ClickHandler {
-		@Override
-		public void onClick(ClickEvent event) {
-			final FileImageLabelTreeItem selection = fileSelectionHandler.getSelection();
-			if(selection == null) {
-				display.getUploader().setEnabled(false);
-				messagePresenter.setMessage("Please select a valid directory to add the files to");
-				messagePresenter.go();
-			} else if(selection.getFileInfo().getFilePath() == null) {
-				messagePresenter.setMessage("Please select a valid directory to add the files to");
-				messagePresenter.go();
-			} else {
-				display.getUploader().setEnabled(true);
-			}
-		}
 	}
 
 	protected class DownloadClickHandler implements ClickHandler {
@@ -130,35 +115,19 @@ public class ManagableFileTreePresenter implements Presenter {
 			if(selection != null) { 
 				final String selectionPath = selection.getFileInfo().getFilePath();
 				if(selectionPath != null) {
-					fileService.isDirectory(Authentication.getInstance().getAuthenticationToken(), selectionPath, new AsyncCallback<RPCResult<Boolean>>() {
+					fileService.getDownloadPath(Authentication.getInstance().getAuthenticationToken(), selectionPath, new AsyncCallback<RPCResult<String>>() {
 						@Override
 						public void onFailure(Throwable caught) {
-						
+							
 						}
 						@Override
-						public void onSuccess(RPCResult<Boolean> result) {
-							if(result.isSucceeded()) {
-								if(result.getData()) {
-									fileService.zipDirectory(Authentication.getInstance().getAuthenticationToken(), selectionPath, new AsyncCallback<RPCResult<String>>() {
-										@Override
-										public void onFailure(Throwable caught) {
-											caught.printStackTrace();
-										}
-										@Override
-										public void onSuccess(RPCResult<String> result) {
-											if(result.isSucceeded())
-											Window.open("/etcsite/download/?target=" + result.getData() + "&directory=yes&username=" + Authentication.getInstance().getUsername() + "&" + 
-													"sessionID=" + Authentication.getInstance().getSessionID()
-													, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes");
-										}
-									});
-								} else {
-									Window.open("/etcsite/download/?target=" + selectionPath + "&directory=no&username=" + Authentication.getInstance().getUsername() + "&" + 
-											"sessionID=" + Authentication.getInstance().getSessionID()
-											, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes");
-								}
-							}
-						} 
+						public void onSuccess(RPCResult<String> result) {
+							if(result.isSucceeded())
+								//target=" + result.getData() + "&directory=yes
+								Window.open("/etcsite/download/?target=" + result.getData() + "&username=" + Authentication.getInstance().getUsername() + "&" + 
+										"sessionID=" + Authentication.getInstance().getSessionID()
+										, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes");
+						}
 					});
 				} else {
 					messagePresenter.setMessage("Not downloadable");
@@ -176,7 +145,7 @@ public class ManagableFileTreePresenter implements Presenter {
 		public void onClick(ClickEvent event) {
 			FileImageLabelTreeItem selection = fileSelectionHandler.getSelection();
 			
-			if(selection != null && selection.getFileInfo().getFilePath() != null) {
+			if(selection != null && !selection.getFileInfo().isSystemFile()) {
 				fileService.deleteFile(Authentication.getInstance().getAuthenticationToken(), selection.getFileInfo().getFilePath(), new AsyncCallback<RPCResult<Void>>(){
 					@Override
 					public void onFailure(Throwable caught) {
@@ -189,7 +158,7 @@ public class ManagableFileTreePresenter implements Presenter {
 					}
 				});
 			} else {
-				messagePresenter.setMessage("Please select a file or directory to delete");
+				messagePresenter.setMessage("Please select a valid file or directory to delete");
 				messagePresenter.go();
 			}
 		}
@@ -201,13 +170,13 @@ public class ManagableFileTreePresenter implements Presenter {
 		public void onClick(ClickEvent event) {
 			FileImageLabelTreeItem selection = fileSelectionHandler.getSelection();
 			//don't allow rename of root node
-			if(selection != null) {
+			if(selection != null && !selection.getFileInfo().isSystemFile()) {
 				LabelTextFieldCancelConfirmView renameView = new LabelTextFieldCancelConfirmView();
 				LabelTextFieldCancelConfirmPresenter renameDialogBox = new LabelTextFieldCancelConfirmPresenter(
 						renameView, "Rename", "New name: ", selection.getFileInfo().getName(), this);
 				renameDialogBox.go();
 			} else {
-				messagePresenter.setMessage("Please select a file or directory to rename");
+				messagePresenter.setMessage("Please select a valid file or directory to rename");
 				messagePresenter.go();
 			}
 		}
@@ -215,7 +184,7 @@ public class ManagableFileTreePresenter implements Presenter {
 		@Override
 		public void confirmed(final String newFileName) {
 			final FileImageLabelTreeItem selection = fileSelectionHandler.getSelection();
-			if(selection != null && selection.getFileInfo().getFilePath() != null) {
+			if(selection != null && !selection.getFileInfo().isSystemFile()) {
 				fileService.renameFile(Authentication.getInstance().getAuthenticationToken(), selection.getFileInfo().getFilePath(), newFileName, 
 						new AsyncCallback<RPCResult<Void>>() {
 					public void onSuccess(RPCResult<Void> result) {
@@ -246,7 +215,7 @@ public class ManagableFileTreePresenter implements Presenter {
 		@Override
 		public void onClick(ClickEvent event) {
 			final FileImageLabelTreeItem selection = fileSelectionHandler.getSelection();
-			if(selection != null) {
+			if(selection != null && selection.getFileInfo().isAllowsNewChildren()) {
 				int level = getLevel(selection);
 				if(level < Configuration.fileManagerMaxDepth) {
 					LabelTextFieldConfirmView renameView = new LabelTextFieldConfirmView();
@@ -258,7 +227,7 @@ public class ManagableFileTreePresenter implements Presenter {
 					messagePresenter.go();
 				}
 			} else {
-				messagePresenter.setMessage("Please select a parent directory.");
+				messagePresenter.setMessage("Please select a valid parent directory.");
 				messagePresenter.go();
 			}
 		}
@@ -388,7 +357,7 @@ public class ManagableFileTreePresenter implements Presenter {
 		display.getAddButton().getElement().removeAttribute("aria-hidden");
 		display.getAddButton().setEnabled(false);
 	}
-	
+
 	private void enableManagement() {
 		display.getCreateDirectoryButton().setEnabled(true);
 		display.getRenameButton().setEnabled(true);
@@ -396,7 +365,37 @@ public class ManagableFileTreePresenter implements Presenter {
 		display.getAddButton().setEnabled(true);
 	}
 	
+	private class ManageSelectionHandler implements SelectionHandler<TreeItem> {
+
+		@Override
+		public void onSelection(SelectionEvent<TreeItem> event) {
+			if(event.getSelectedItem() instanceof FileImageLabelTreeItem) {
+				FileImageLabelTreeItem selection = (FileImageLabelTreeItem)event.getSelectedItem();
+				setSystemFile(selection.getFileInfo().isSystemFile());
+				setAllowsChildren(selection.getFileInfo().isAllowsNewChildren());
+			}
+		}		
+	}
 	
+	private void setAllowsChildren(boolean allowsNewChildren) {
+		display.getCreateDirectoryButton().setEnabled(allowsNewChildren);
+		/*if(allowsNewChildren) {
+			display.getUploader().getFileInput().getWidget().getElement().removeAttribute("aria-hidden");
+			display.getAddButton().getElement().removeAttribute("aria-hidden");
+		} else {
+			display.getUploader().getFileInput().getWidget().getElement().setAttribute("aria-hidden", "true");
+			display.getAddButton().getElement().setAttribute("aria-hidden", "true");
+		}*/
+		display.getAddButton().setEnabled(allowsNewChildren);
+		display.getUploader().setEnabled(allowsNewChildren);
+	}
+
+	private void setSystemFile(boolean systemFile) {
+		display.getRenameButton().setEnabled(!systemFile);
+		display.getDeleteButton().setEnabled(!systemFile);
+	}	
+
+
 	/**
 	 * There are only workarounds known to style the button inside of a input file element.
 	 * To overcome the problem:
@@ -427,5 +426,7 @@ public class ManagableFileTreePresenter implements Presenter {
 	public FileTreePresenter getFileTreePresenter() {
 		return fileTreePresenter;
 	}
+	
+
 
 }

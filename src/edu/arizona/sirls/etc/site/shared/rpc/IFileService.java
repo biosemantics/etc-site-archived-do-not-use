@@ -49,4 +49,6 @@ public interface IFileService extends RemoteService {
 
 	public RPCResult<String> createDirectoryForcibly(AuthenticationToken authenticationToken, String directory, String idealFolderName);
 	
+	public RPCResult<String> getDownloadPath(AuthenticationToken authenticationToken, String filePath);
+	
 }

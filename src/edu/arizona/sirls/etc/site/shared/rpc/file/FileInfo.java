@@ -10,16 +10,20 @@ public class FileInfo implements Serializable {
 	private FileTypeEnum fileType;
 	private String owner;
 	private String displayFilePath;
+	private boolean systemFile = true;
+	private boolean allowsNewChildren = true;
 	
 	public FileInfo() { }
 	
-	public FileInfo(String name, String filePath, String displayFilePath, FileTypeEnum fileType, String owner) {
+	public FileInfo(String name, String filePath, String displayFilePath, FileTypeEnum fileType, String owner, boolean systemFile, boolean allowsNewChildren) {
 		super();
 		this.name = name;
 		this.filePath = filePath;
 		this.displayFilePath = displayFilePath;
 		this.fileType = fileType;
 		this.owner = owner;
+		this.systemFile = systemFile;
+		this.allowsNewChildren = allowsNewChildren;
 	}
 	public String getName() {
 		return name;
@@ -53,5 +57,15 @@ public class FileInfo implements Serializable {
 	public String getDisplayFilePath() {
 		return this.displayFilePath;
 	}
+
+	public boolean isSystemFile() {
+		return systemFile;
+	}
+
+	public boolean isAllowsNewChildren() {
+		return allowsNewChildren;
+	}
+	
+	
 	
 }

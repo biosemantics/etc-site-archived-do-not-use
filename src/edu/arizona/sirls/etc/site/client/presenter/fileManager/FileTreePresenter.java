@@ -3,9 +3,12 @@ package edu.arizona.sirls.etc.site.client.presenter.fileManager;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.TreeItem;
 
 import edu.arizona.sirls.etc.site.client.Authentication;
 import edu.arizona.sirls.etc.site.client.presenter.Presenter;
@@ -116,6 +119,10 @@ public class FileTreePresenter implements Presenter, FileTreeView.Presenter, IFi
 
 	public void setSelectedFile(String fileSelection) {
 		this.fileSelectionHandler.setSelectionPath(fileSelection);
+	}
+
+	public void addFileSelectionHandler(SelectionHandler<TreeItem> selectionHandler) {
+		view.getTree().addSelectionHandler(selectionHandler);
 	}
 
 }
