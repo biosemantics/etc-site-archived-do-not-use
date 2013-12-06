@@ -455,27 +455,36 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	}
 
 	@Override
-	public RPCResult<Void> zipDirectory(AuthenticationToken authenticationToken, String filePath) {
+	public RPCResult<String> zipDirectory(AuthenticationToken authenticationToken, String filePath) {
 		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
 		if(!authResult.isSucceeded()) 
-			return new RPCResult<Void>(false, authResult.getMessage());
+			return new RPCResult<String>(false, authResult.getMessage(), "");
 		if(!authResult.getData().getResult())
-			return new RPCResult<Void>(false, "Authentication failed");
+			return new RPCResult<String>(false, "Authentication failed", "");
 		
 		RPCResult<Boolean> permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
 		if(!permissionResult.isSucceeded())
-			return new RPCResult<Void>(false, permissionResult.getMessage());
+			return new RPCResult<String>(false, permissionResult.getMessage(), "");
 		if(permissionResult.getData()) {
 			Zipper zipper = new Zipper();
 			try {
-				zipper.zip(filePath);
-				return new RPCResult<Void>(true);
+				File file = new File(filePath);
+				if(file.exists()) {
+					String copyDestination = Configuration.compressedFileBase + File.separator + authenticationToken.getUsername() + File.separator + 
+							file.getName();
+					this.createDirectory(authenticationToken, Configuration.compressedFileBase + File.separator + authenticationToken.getUsername(), file.getName());					
+					this.copyFiles(new AdminAuthenticationToken(), filePath, copyDestination);
+					String zipDestination = copyDestination + ".tar.gz";
+					zipper.zip(copyDestination, zipDestination);
+					return new RPCResult<String>(true, "", zipDestination);
+				}
+				return new RPCResult<String>(false, "File was not found", "");			
 			} catch (Exception e) {
 				e.printStackTrace();
-				return new RPCResult<Void>(false, "Zipping failed");
+				return new RPCResult<String>(false, "Zipping failed", "");
 			}
 		}
-		return new RPCResult<Void>(false, "Permission denied");
+		return new RPCResult<String>(false, "Permission denied", "");
 	}
 
 	@Override

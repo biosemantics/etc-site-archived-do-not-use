@@ -36,22 +36,21 @@ public class DownloadServlet extends HttpServlet {
 			int BUFFER = 1024 * 100;
 			response.setContentType("application/octet-stream");
 			if(directory.equals("yes")) {
-				target = target + ".tar.gz";
 				response.setHeader("Content-Disposition:", "attachment;filename=" + "\"" + 
-						target.substring(target.lastIndexOf(File.separator) + 2, target.length()) + "\"");	
+						target.substring(target.lastIndexOf(File.separator) + 1, target.length()) + "\"");	
 			} else {
 				response.setHeader("Content-Disposition:", "attachment;filename=" + "\"" + 
-						target.substring(target.lastIndexOf(File.separator) + 2, target.length()) + "\"");	
+						target.substring(target.lastIndexOf(File.separator) + 1, target.length()) + "\"");	
 			}
 			
 			ServletOutputStream outputStream = response.getOutputStream();
 			
 			byte[] fileBytes;
-			if(directory.equals("yes")) {
-				fileBytes = getZipFile(username, target);
-			} else {
+			//if(directory.equals("yes")) {
+			//	fileBytes = getZipFile(username, target);
+			//} else {
 				fileBytes = getFile(username, target);
-			}
+			//}
 			
 			response.setContentLength(Long.valueOf(fileBytes.length).intValue());
 			response.setBufferSize(BUFFER);
@@ -59,12 +58,6 @@ public class DownloadServlet extends HttpServlet {
 			outputStream.flush();
 			//outputStream.close();
 		}
-	}
-
-	private byte[] getZipFile(String username, String target) throws IOException {
-		Path path = Paths.get(Configuration.compressedFileBase + File.separator + username + File.separator + target);
-		byte[] data = Files.readAllBytes(path);
-		return data;
 	}
 
 	private byte[] getFile(String username, String target) throws IOException {		

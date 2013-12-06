@@ -4,8 +4,15 @@ import java.io.File;
 
 public class Zipper {
 
-	public void zip(String filePath) throws Exception {
-		String sourceDirectory = filePath;
+	public void zip(String source, String destination) throws Exception {
+		File sourceFile = new File(source);
+		if(sourceFile.exists()) {
+			String command = "tar -zcvf " + destination + " --directory=" + sourceFile.getParent() + " " + sourceFile.getName();
+			Process process = runCommand(command);
+			process.waitFor();
+		
+		
+		/*String sourceDirectory = filePath;
 		String tempFile = filePath + ".tar";
 		String destinationFile = filePath + ".tar.gz";
 		String commandTar = "7za.exe a -ttar " + tempFile + " " + sourceDirectory;
@@ -15,7 +22,8 @@ public class Zipper {
 		process = runCommand(commandGz);
 		process.waitFor();
 		File file = new File(tempFile);
-		file.delete();
+		file.delete();*/
+		}
 	}
 	
 	private Process runCommand(String command) throws Exception {

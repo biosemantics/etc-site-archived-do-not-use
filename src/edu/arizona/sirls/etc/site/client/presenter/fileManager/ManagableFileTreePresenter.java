@@ -139,20 +139,21 @@ public class ManagableFileTreePresenter implements Presenter {
 						public void onSuccess(RPCResult<Boolean> result) {
 							if(result.isSucceeded()) {
 								if(result.getData()) {
-									fileService.zipDirectory(Authentication.getInstance().getAuthenticationToken(), selectionPath, new AsyncCallback<RPCResult<Void>>() {
+									fileService.zipDirectory(Authentication.getInstance().getAuthenticationToken(), selectionPath, new AsyncCallback<RPCResult<String>>() {
 										@Override
 										public void onFailure(Throwable caught) {
 											caught.printStackTrace();
 										}
 										@Override
-										public void onSuccess(RPCResult<Void> result) {
-											Window.open("/etcsite/download/?target=" + selectionPath + "&directory=yes&username=" + Authentication.getInstance().getUsername() + "&" + 
+										public void onSuccess(RPCResult<String> result) {
+											if(result.isSucceeded())
+											Window.open("/etcsite/download/?target=" + result.getData() + "&directory=yes&username=" + Authentication.getInstance().getUsername() + "&" + 
 													"sessionID=" + Authentication.getInstance().getSessionID()
 													, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes");
 										}
 									});
 								} else {
-									Window.open("/etcsite/download/?target=" + selectionPath + "&username=" + Authentication.getInstance().getUsername() + "&" + 
+									Window.open("/etcsite/download/?target=" + selectionPath + "&directory=no&username=" + Authentication.getInstance().getUsername() + "&" + 
 											"sessionID=" + Authentication.getInstance().getSessionID()
 											, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes");
 								}

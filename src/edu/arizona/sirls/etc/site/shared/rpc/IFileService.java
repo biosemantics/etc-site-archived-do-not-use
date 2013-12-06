@@ -31,7 +31,7 @@ public interface IFileService extends RemoteService {
 	
 	public RPCResult<Integer> getDepth(AuthenticationToken authenticationToken, String filePath);
 	
-	public RPCResult<Void> zipDirectory(AuthenticationToken authenticationToken, String filePath);
+	public RPCResult<String> zipDirectory(AuthenticationToken authenticationToken, String filePath);
 
 	public RPCResult<Void> setInUse(AuthenticationToken authenticationToken, boolean value, String filePath, Task task);
 	

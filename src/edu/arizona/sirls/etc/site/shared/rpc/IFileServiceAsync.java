@@ -28,7 +28,7 @@ public interface IFileServiceAsync {
 
 	public void getDepth(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<Integer>> asyncCallback);
 
-	public void zipDirectory(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<Void>> callback);
+	public void zipDirectory(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<String>> callback);
 	
 	public void setInUse(AuthenticationToken authenticationToken, boolean value, String filePath, Task task, AsyncCallback<RPCResult<Void>> callback);
 	
