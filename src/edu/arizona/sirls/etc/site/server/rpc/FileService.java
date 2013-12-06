@@ -301,10 +301,11 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 					File newFile = new File(newFilePath);
 					if(file.getAbsolutePath().equals(newFile.getAbsolutePath()))
 						return new RPCResult<Void>(true);
-					if(newFile.exists())
+					if(!newFile.exists())
 						return new RPCResult<Void>(false, "File does not exist");
 					try {
-						Files.move(file, newFile);
+						FileUtils.moveToDirectory(file, newFile, false);
+						//Files.move(file, newFile);
 						return new RPCResult<Void>(true);
 					} catch (IOException e) {
 						e.printStackTrace();
