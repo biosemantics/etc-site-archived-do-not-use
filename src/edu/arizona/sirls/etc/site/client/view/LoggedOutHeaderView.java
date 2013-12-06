@@ -33,8 +33,11 @@ public class LoggedOutHeaderView extends Composite implements LoggedOutHeaderPre
 		
 		/** Style related; Override standard css of GWT and always apply these styles to textfield/button? */
 		userField.setHeight("25px");
+		userField.setWidth("150px");
 		passwordField.setHeight("25px");
+		passwordField.setWidth("150px");
 		loginButton.setHeight("25px");
+		loginButton.setWidth("60px");
 		loginButton.getElement().getStyle().setPaddingTop(2, Unit.PX);
 		
 		this.initWidget(htmlPanel);
