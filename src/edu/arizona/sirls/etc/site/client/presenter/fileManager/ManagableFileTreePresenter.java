@@ -100,6 +100,9 @@ public class ManagableFileTreePresenter implements Presenter {
 	    display.getDownloadButton().addClickHandler(new DownloadClickHandler());
 	    
 		display.getUploader().setFileInput(new MyFileInput(display.getAddButton()));
+		
+		this.setAllowsChildren(false);
+		this.setSystemFile(true);
 	}
 
 	@Override
