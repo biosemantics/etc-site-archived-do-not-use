@@ -24,8 +24,10 @@ import gwtupload.client.IUploadStatus;
 import gwtupload.client.IUploadStatus.Status;
 import gwtupload.client.IFileInput;
 import gwtupload.client.IUploader;
+import gwtupload.client.IUploader.OnChangeUploaderHandler;
 import gwtupload.client.IUploader.OnFinishUploaderHandler;
 import gwtupload.client.IUploader.OnStartUploaderHandler;
+import gwtupload.client.IUploader.OnStatusChangedHandler;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -62,6 +64,8 @@ public class ManagableFileTreePresenter implements Presenter {
 	private FileTreeView fileTreeView;
 	private FileTreePresenter fileTreePresenter;
 	private FileSelectionHandler fileSelectionHandler;
+	private ManageSelectionHandler manageSelectionHandler;
+	
 	private String defaultServletPath;
 	private MessageView messageView = new MessageView();
 	private MessagePresenter messagePresenter = new MessagePresenter(messageView, "File Selection");
@@ -95,6 +99,20 @@ public class ManagableFileTreePresenter implements Presenter {
 	    
 	    IUploadStatus statusWidget = new BaseUploadStatus();
 	    statusWidget.setCancelConfiguration(IUploadStatus.DEFAULT_CANCEL_CFG);
+	    //show uploading constantly, instead of the files
+	    /*display.getUploader().addOnStatusChangedHandler(new OnStatusChangedHandler() {
+			@Override
+			public void onStatusChanged(IUploader uploader) {
+				uploader.getStatusWidget().setFileName("Uploading...");
+			}
+	    });
+	    display.getUploader().addOnChangeUploadHandler(new OnChangeUploaderHandler() {
+			@Override
+			public void onChange(IUploader uploader) {
+				System.out.println("on change");
+			}
+	    });*/
+	    	
 	    display.getUploader().setStatusWidget(statusWidget);
 	    display.setStatusWidget(statusWidget.getWidget());
 	    
@@ -102,8 +120,12 @@ public class ManagableFileTreePresenter implements Presenter {
 	    
 		display.getUploader().setFileInput(new MyFileInput(display.getAddButton()));
 		
-		this.setAllowsChildren(false);
-		this.setSystemFile(true);
+		this.initActions();
+	}
+
+	private void initActions() {
+		setAllowsChildren(false);
+		setSystemFile(true);
 	}
 
 	@Override
@@ -160,6 +182,7 @@ public class ManagableFileTreePresenter implements Presenter {
 					}
 					@Override
 					public void onSuccess(RPCResult<Void> result) {
+						ManagableFileTreePresenter.this.initActions();
 						fileSelectionHandler.clear();
 						fileTreePresenter.refresh();
 					}
@@ -303,10 +326,7 @@ public class ManagableFileTreePresenter implements Presenter {
 	
 	public class OnFinishUploadHandler implements OnFinishUploaderHandler {
 		@Override
-		public void onFinish(IUploader uploader) {
-			if (uploader.getStatus() == Status.SUCCESS) {
-				fileTreePresenter.refresh();
-			}
+		public void onFinish(IUploader uploader) {	
 			
 			String serverResponse = uploader.getServerInfo().message;
 			if(serverResponse != null && !serverResponse.isEmpty()) {
@@ -314,6 +334,12 @@ public class ManagableFileTreePresenter implements Presenter {
 				messagePresenter.setMessage(serverResponse);
 				messagePresenter.go();
 			}
+			
+			if (uploader.getStatus() == Status.SUCCESS) {
+				uploader.getStatusWidget().setFileName("Done uploading.");
+				fileTreePresenter.refresh();
+			}
+			
 			//only needed when MultiUploader is used instead of SingleUploader. There somewhat of a new instance of MultiUploader
 			//is created for each additional upload.
 			//try to avoid MultiUploader, it will create a new HTML element for each uploader making it complex to style
@@ -330,6 +356,7 @@ public class ManagableFileTreePresenter implements Presenter {
 	public class OnStartUploadHandler implements OnStartUploaderHandler {
 		@Override
 		public void onStart(final IUploader uploader) {
+			uploader.getStatusWidget().setFileName("Uploading, please wait...");
 			final FileImageLabelTreeItem selection = fileSelectionHandler.getSelection();
 			if(fileSelectionHandler.getSelection().getFileInfo().getFileType().equals(FileTypeEnum.DIRECTORY)) {
 				uploader.setServletPath(uploader.getServletPath() + "&target=" + selection.getFileInfo().getFilePath());
@@ -360,8 +387,8 @@ public class ManagableFileTreePresenter implements Presenter {
 		display.getCreateDirectoryButton().setEnabled(false);
 		display.getRenameButton().setEnabled(false);
 		display.getDeleteButton().setEnabled(false);
-		display.getUploader().getFileInput().getWidget().getElement().removeAttribute("aria-hidden");
-		display.getAddButton().getElement().removeAttribute("aria-hidden");
+		display.getUploader().getFileInput().getWidget().getElement().setAttribute("aria-hidden", "false");
+		display.getAddButton().getElement().setAttribute("aria-hidden", "false");
 		display.getAddButton().setEnabled(false);
 	}
 

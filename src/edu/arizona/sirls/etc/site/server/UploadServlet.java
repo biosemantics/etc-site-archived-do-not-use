@@ -126,7 +126,11 @@ public class UploadServlet extends UploadAction {
 				}
 			}
 		}
-		response += numberNotAdded + " files where not added due to invalid file format and or name collisions";
+		
+		if(numberNotAdded == 1)
+			response += numberNotAdded + " file was not added due to invalid file format and or name collisions";
+		if(numberNotAdded > 1)
+			response += numberNotAdded + " files were not added due to invalid file format and or name collisions";
 
 		// / Remove files from session because we have a copy of them
 		removeSessionFileItems(request);
