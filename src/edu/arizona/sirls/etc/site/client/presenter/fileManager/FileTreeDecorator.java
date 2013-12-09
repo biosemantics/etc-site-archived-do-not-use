@@ -135,7 +135,7 @@ public class FileTreeDecorator {
 			if(retainedStates.containsKey(filePath)) {
 				treeItem.setState(retainedStates.get(filePath));
 			} else {
-				treeItem.setState(true);
+				treeItem.setState(false);
 			}
 		}
 	}
