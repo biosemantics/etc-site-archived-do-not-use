@@ -32,6 +32,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -127,9 +128,12 @@ public class ManagableFileTreePresenter implements Presenter {
 						public void onSuccess(RPCResult<String> result) {
 							if(result.isSucceeded())
 								//target=" + result.getData() + "&directory=yes
-								Window.open("/etcsite/download/?target=" + result.getData() + "&username=" + Authentication.getInstance().getUsername() + "&" + 
+								Window.Location.replace(URL.encode("/etcsite/download/?target=" + result.getData() + "&username=" + Authentication.getInstance().getUsername() + "&" + 
+										"sessionID=" + Authentication.getInstance().getSessionID()));
+								
+								/*Window.open("/etcsite/download/?target=" + result.getData() + "&username=" + Authentication.getInstance().getUsername() + "&" + 
 										"sessionID=" + Authentication.getInstance().getSessionID()
-										, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes");
+										, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes"); */
 						}
 					});
 				} else {
