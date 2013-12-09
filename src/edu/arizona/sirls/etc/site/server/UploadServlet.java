@@ -71,6 +71,8 @@ public class UploadServlet extends UploadAction {
 		IAuthenticationService authenticationService = new AuthenticationService();
 		RPCResult<AuthenticationResult> authenticationResult = 
 				authenticationService.isValidSession(new AuthenticationToken(username, sessionID));
+		
+		int numberNotAdded = 0;
 		if(authenticationResult.isSucceeded() && authenticationResult.getData().getResult()) {
 			int cont = 0;
 			for (FileItem item : sessionFiles) {
@@ -110,10 +112,13 @@ public class UploadServlet extends UploadAction {
 								// / Send a customized message to the client.
 								//response += "File saved as " + file.getAbsolutePath();
 							} else {
-								response += "File " + item.getName() + " was not added. Invalid file format.\n";
+								numberNotAdded++;
+								//error message would when too long (because many files are not valid) freeze the web page
+								//response += "File " + item.getName() + " was not added. Invalid file format.\n";
 							}
 						} else {
-							response += "File " + item.getName() + " was not added. File with same name exists in directory.\n";
+							numberNotAdded++;
+							//response += "File " + item.getName() + " was not added. File with same name exists in directory.\n";
 						}
 					} catch (Exception e) {
 						throw new UploadActionException(e);
@@ -121,6 +126,7 @@ public class UploadServlet extends UploadAction {
 				}
 			}
 		}
+		response += numberNotAdded + " files where not added due to invalid file format and or name collisions";
 
 		// / Remove files from session because we have a copy of them
 		removeSessionFileItems(request);
