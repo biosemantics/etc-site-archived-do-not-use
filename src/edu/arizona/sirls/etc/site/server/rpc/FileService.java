@@ -3,6 +3,7 @@ package edu.arizona.sirls.etc.site.server.rpc;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -150,7 +151,9 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			throw new Exception("Couldn't check permission");
 		if(permissionResult.getData()) {
 			File file = new File(filePath);
-			for(File child : file.listFiles()) {
+			File[] childFiles = file.listFiles();
+			Arrays.sort(childFiles);
+			for(File child : childFiles) {
 				String childPath = child.getAbsolutePath();
 				permissionResult = filePermissionService.hasReadPermission(authenticationToken, childPath);
 				if(!permissionResult.isSucceeded())
@@ -399,7 +402,9 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		if(permissionResult.getData()) {
 			List<String> resultList = new LinkedList<String>();
 			File file = new File(filePath);
-			for(File child : file.listFiles())
+			File[] childFiles = file.listFiles();
+			Arrays.sort(childFiles);
+			for(File child : childFiles)
 				if(child.isFile())
 					resultList.add(child.getName());
 			return new RPCResult<List<String>>(true, resultList);

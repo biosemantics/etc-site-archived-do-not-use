@@ -17,7 +17,7 @@ public abstract class SemanticMarkupView extends Composite {
 				"<div id='semanticMarkupContent'></div></div>");
 		
 		VerticalPanel verticalPanel = new VerticalPanel();
-		Label headingLabel = new Label("Matrix Generation");
+		Label headingLabel = new Label("Semantic Markup");
 		headingLabel.addStyleName("siteHeading");
 		verticalPanel.add(headingLabel);
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
