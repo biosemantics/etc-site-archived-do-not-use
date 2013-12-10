@@ -8,6 +8,7 @@ import org.apache.commons.cli.Option;
 import semanticMarkup.LearnMain;
 import edu.arizona.sirls.etc.site.server.Configuration;
 import edu.arizona.sirls.etc.site.shared.rpc.AuthenticationToken;
+import edu.arizona.sirls.etc.site.shared.rpc.IFileService;
 import edu.arizona.sirls.etc.site.shared.rpc.db.DatasetPrefix;
 import edu.arizona.sirls.etc.site.shared.rpc.db.DatasetPrefixDAO;
 
@@ -20,7 +21,8 @@ public class Learn implements ILearn {
 	private String source;
 	private String user;
 	private String bioportalUserId;
-	private String bioportalAPIKey;	
+	private String bioportalAPIKey;
+	private IFileService fileService = new FileService();
 
 	public Learn(AuthenticationToken authenticationToken, String config, String input, String tablePrefix,
 			String source, String user, String bioportalUserId, String bioportalAPIKey) {
@@ -46,6 +48,7 @@ public class Learn implements ILearn {
 		String src = Configuration.charaparser_src;
 		String debugFile = workspace + File.separator + tablePrefix + File.separator + "debug.log";
 		String errorFile = workspace + File.separator + tablePrefix + File.separator + "error.log";
+		fileService.createDirectory(new AdminAuthenticationToken(), workspace, tablePrefix);
 		String[] args = new String[] { "-a", workspace, "-f", source, "-g", user, "-j", bioportalUserId, "-k", bioportalAPIKey, "-b", debugFile, "-e", errorFile, "-c", config, "-r", resources, "-l", src,
 				"-n", databaseHost, "-p", databasePort, "-d", databaseName, "-u", databaseUser, 
 				"-s", databasePassword, "-i", input, "-z" , tablePrefix, "-y"};

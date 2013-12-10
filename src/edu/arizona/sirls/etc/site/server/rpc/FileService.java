@@ -304,8 +304,8 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 					File newFile = new File(newFilePath);
 					if(file.getAbsolutePath().equals(newFile.getAbsolutePath()))
 						return new RPCResult<Void>(true);
-					if(newFile.exists())
-						return new RPCResult<Void>(false, "File exists already");
+					if(!newFile.exists())
+						return new RPCResult<Void>(false, "Destination directory does not exist");
 					try {
 						FileUtils.moveToDirectory(file, newFile, false);
 						//Files.move(file, newFile);
@@ -580,7 +580,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 					if(file.getAbsolutePath().equals(newFile.getAbsolutePath()))
 						return new RPCResult<Void>(true);
 					try {
-						FileUtils.moveFile(file, newFile);
+						FileUtils.moveDirectory(file, newFile);
 						//Files.move(file, newFile);
 						return new RPCResult<Void>(true);
 					} catch (IOException e) {
