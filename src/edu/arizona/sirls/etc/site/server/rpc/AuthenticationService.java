@@ -26,7 +26,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	public RPCResult<AuthenticationResult> login(String user, String password) {
 		String hash = BCrypt.hashpw(password, BCrypt.gensalt());
 		//(create new user entry in db storing ONLY username and hash, *NOT* the password).
-		if(user.equals("test") || user.equals("test2"))
+		if(user.equals("hong") || user.equals("elvis") || user.equals("thomas"))
 			return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(true, "sessionID", user));
 		return new RPCResult<AuthenticationResult>(true, "Authentication failed", new AuthenticationResult(false, null, null));
 	}

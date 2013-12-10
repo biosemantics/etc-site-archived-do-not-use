@@ -304,8 +304,8 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 					File newFile = new File(newFilePath);
 					if(file.getAbsolutePath().equals(newFile.getAbsolutePath()))
 						return new RPCResult<Void>(true);
-					if(!newFile.exists())
-						return new RPCResult<Void>(false, "File does not exist");
+					if(newFile.exists())
+						return new RPCResult<Void>(false, "File exists already");
 					try {
 						FileUtils.moveToDirectory(file, newFile, false);
 						//Files.move(file, newFile);
@@ -559,8 +559,42 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 
 	@Override
 	public RPCResult<Void> renameFile(AuthenticationToken authenticationToken, String path, String newFileName) {
-		File file = new File(path);
-		return this.moveFile(authenticationToken, path, file.getParentFile().getAbsolutePath() + File.separator + newFileName);	
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<Void>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<Void>(false, "Authentication failed");
+		
+		RPCResult<Boolean> permissionResult = filePermissionService.hasWritePermission(authenticationToken, path);
+		if(!permissionResult.isSucceeded())
+			return new RPCResult<Void>(false, permissionResult.getMessage());
+		if(permissionResult.getData()) {
+			RPCResult<Boolean> inUseResult = this.isInUse(authenticationToken, path);
+			if(inUseResult.isSucceeded() && !inUseResult.getData()) {
+				File file = new File(path);
+				File newFile = new File(file.getParent() + File.separator + newFileName);
+				if(newFile.exists()) 
+					return new RPCResult<Void>(false, "File exists already");
+				inUseResult = this.isInUse(authenticationToken, newFile.getAbsolutePath());
+				if(inUseResult.isSucceeded() && !inUseResult.getData()) {
+					if(file.getAbsolutePath().equals(newFile.getAbsolutePath()))
+						return new RPCResult<Void>(true);
+					try {
+						FileUtils.moveFile(file, newFile);
+						//Files.move(file, newFile);
+						return new RPCResult<Void>(true);
+					} catch (IOException e) {
+						e.printStackTrace();
+						return new RPCResult<Void>(false, "Couldn't move a file");
+					}
+				} else {
+					return new RPCResult<Void>(false, createMessageFileInUse(authenticationToken, path));
+				}
+			} else {
+				return new RPCResult<Void>(false, createMessageFileInUse(authenticationToken, path));
+			}
+		} 
+		return new RPCResult<Void>(false, "Permission denied");	
 	}
 
 	@Override
