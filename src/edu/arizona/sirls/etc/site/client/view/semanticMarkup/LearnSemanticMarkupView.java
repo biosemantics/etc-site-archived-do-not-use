@@ -66,12 +66,12 @@ public class LearnSemanticMarkupView extends SemanticMarkupView implements Learn
 	}
 
 	@Override
-	public void setSentences(int sentences) {
+	public void setSentences(String sentences) {
 		this.sentencesLabel.setText(sentences + " sentences");
 	}
 
 	@Override
-	public void setWords(int words) {
+	public void setWords(String words) {
 		this.wordsLabel.setText(words + " words");
 	}
 

@@ -31,8 +31,8 @@ import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.LearnInvocation;
 public class LearnSemanticMarkupPresenter {
 
 	public interface Display {
-		void setSentences(int sentences);
-		void setWords(int words);
+		void setSentences(String sentences);
+		void setWords(String words);
 		Widget asWidget();
 		Button getNextButton();
 		Anchor getTaskManagerAnchor();

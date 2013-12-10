@@ -5,26 +5,26 @@ import java.io.Serializable;
 public class LearnInvocation implements Serializable {
 
 	private static final long serialVersionUID = -897176969621825980L;
-	private int sentences;
-	private int words;
+	private String sentences;
+	private String words;
 	
 	public LearnInvocation() {	}
 	
-	public LearnInvocation(int sentences, int words) {
+	public LearnInvocation(String sentences, String words) {
 		super();
 		this.sentences = sentences;
 		this.words = words;
 	}
-	public int getSentences() {
+	public String getSentences() {
 		return sentences;
 	}
-	public void setSentences(int sentences) {
+	public void setSentences(String sentences) {
 		this.sentences = sentences;
 	}
-	public int getWords() {
+	public String getWords() {
 		return words;
 	}
-	public void setWords(int words) {
+	public void setWords(String words) {
 		this.words = words;
 	}
 	

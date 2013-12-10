@@ -202,8 +202,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			return new RPCResult<LearnInvocation>(false, "Authentication failed");
 		
 		try {
-			int numberOfSentences = getNumberOfSentences();
-			int numberOfWords = getNumberOfWords();
+			String numberOfSentences = getNumberOfSentences();
+			String numberOfWords = getNumberOfWords();
 			
 			final AbstractTaskConfiguration configuration = task.getConfiguration();
 			if(!(configuration instanceof SemanticMarkupConfiguration))
@@ -258,12 +258,14 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		}
 	}
 
-	private int getNumberOfSentences() {
-		return 5423;
+	private String getNumberOfSentences() {
+		return "XXXXX";
+		//return 5423;
 	}
 
-	private int getNumberOfWords() {
-		return 21259;
+	private String getNumberOfWords() {
+		return "XXXXX";
+		//return 21259;
 	}
 	
 	@Override
