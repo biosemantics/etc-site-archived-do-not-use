@@ -301,10 +301,13 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `password`, `bioportaluserid`, `bioportalapikey`, `created`) VALUES
-(1, 'test', NULL, 'bpuid', 'bpak', '2013-10-22 01:13:18'),
-(2, 'test2', '', 'b', 'c', '2013-10-31 04:06:14'),
-(3, 'userA', NULL, NULL, NULL, '2013-11-09 00:59:11'),
-(4, 'userB', NULL, NULL, NULL, '2013-11-09 00:59:11');
+(1, 'thomas', '', 'bpuid', 'bpak', '2013-10-22 01:13:18'),
+(2, 'hong', '', 'b', 'c', '2013-10-31 04:06:14'),
+(3, 'elvis', '', 'bpuid' 'bppw', '2013-11-09 00:59:11'), 
+(4, 'james', '', 'b', 'c', '2013-10-31 04:06:14'),
+(5, 'bertram', '', 'b', 'c', '2013-10-31 04:06:14'),
+(6, 'bob', '', 'b', 'c', '2013-10-31 04:06:14'),
+(7, 'shizhuo', '', 'b', 'c', '2013-10-31 04:06:14');
 
 -- --------------------------------------------------------
 
