@@ -30,17 +30,10 @@ import edu.arizona.sirls.etc.site.shared.rpc.file.FileTypeEnum;
 public class FileAccessService extends RemoteServiceServlet implements IFileAccessService {
 
 	private static final long serialVersionUID = 5956919724639140570L;
-	private IAuthenticationService authenticationService = new AuthenticationService();
 	private IFilePermissionService filePermissionService = new FilePermissionService();
 	
 	@Override
 	public RPCResult<Void> setFileContent(AuthenticationToken authenticationToken, String filePath, String content) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Void>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Void>(false, "Authentication failed");
-
 		RPCResult<Boolean> permissionResult = filePermissionService.hasWritePermission(authenticationToken, filePath);
 		if(!permissionResult.isSucceeded())
 			return new RPCResult<Void>(false, permissionResult.getMessage());
@@ -64,13 +57,7 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 	}
 
 	@Override
-	public RPCResult<String> getFileContent(AuthenticationToken authenticationToken, String filePath) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<String>(false, authResult.getMessage(), "");
-		if(!authResult.getData().getResult())
-			return new RPCResult<String>(false, "Authentication failed", "");
-		
+	public RPCResult<String> getFileContent(AuthenticationToken authenticationToken, String filePath) {		
 		RPCResult<Boolean> permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
 		if(!permissionResult.isSucceeded())
 			return new RPCResult<String>(false, permissionResult.getMessage(), "");

@@ -47,16 +47,10 @@ public class FileSearchService extends RemoteServiceServlet implements IFileSear
 
 	private IFileAccessService fileAccessService = new FileAccessService();
 	private IFileService fileService = new FileService();
-	private IAuthenticationService authenticationService = new AuthenticationService();
 	private XMLFileFormatter xmlFileFormatter = new XMLFileFormatter();
 	
 	@Override
 	public RPCResult<List<SearchResult>> search(AuthenticationToken authenticationToken, String filePath, Search search) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<List<SearchResult>>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<List<SearchResult>>(false, "Authentication failed");
 		if(search == null)
 			return new RPCResult<List<SearchResult>>(false, "Invalid Search");
 		
@@ -149,11 +143,6 @@ public class FileSearchService extends RemoteServiceServlet implements IFileSear
 	
 	@Override
 	public RPCResult<String> getFileContentSearched(AuthenticationToken authenticationToken, String filePath, Search search) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<String>(false, authResult.getMessage(), "");
-		if(!authResult.getData().getResult())
-			return new RPCResult<String>(false, "Authentication failed", "");
 		if(search == null)
 			return new RPCResult<String>(false, "Invalid Search", "");
 		

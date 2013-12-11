@@ -12,27 +12,20 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.ShortUser;
 import edu.arizona.sirls.etc.site.shared.rpc.db.UserDAO;
 
 public class UserService extends RemoteServiceServlet implements IUserService {
-
-	private IAuthenticationService authenticationService = new AuthenticationService();
 	
 	@Override
 	public RPCResult<List<ShortUser>> getUsers(AuthenticationToken authenticationToken, boolean includeSelf) {
-		RPCResult<List<ShortUser>> result = new RPCResult<List<ShortUser>>(false, "Authentication failed");
-		if(authenticationService.isValidSession(authenticationToken).getData().getResult()) {
-			try {
-
-				List<ShortUser> usernames;
-				if(includeSelf)
-					usernames = UserDAO.getInstance().getUsers();
-				else
-					usernames = UserDAO.getInstance().getUsersWithout(authenticationToken.getUsername());
-				result = new RPCResult<List<ShortUser>>(true, usernames);
-			} catch (Exception e) {
-				e.printStackTrace();
-				result = new RPCResult<List<ShortUser>>(false, "Internal Server Error");
-			}
+		try {
+			List<ShortUser> usernames;
+			if(includeSelf)
+				usernames = UserDAO.getInstance().getUsers();
+			else
+				usernames = UserDAO.getInstance().getUsersWithout(authenticationToken.getUsername());
+			return new RPCResult<List<ShortUser>>(true, usernames);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new RPCResult<List<ShortUser>>(false, "Internal Server Error");
 		}
-		return result;
 	}
 
 }

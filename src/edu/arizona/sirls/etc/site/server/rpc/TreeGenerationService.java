@@ -11,16 +11,9 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TreeGenerationConfiguration;
 
 public class TreeGenerationService extends RemoteServiceServlet implements ITreeGenerationService {
-
-	private IAuthenticationService authenticationService = new AuthenticationService();
 	
 	@Override
 	public RPCResult<Task> getTreeGenerationTask(AuthenticationToken authenticationToken, Task task) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Task>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Task>(false, "Authentication failed");
 		
 		return null;
 	}

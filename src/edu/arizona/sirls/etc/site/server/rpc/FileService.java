@@ -32,6 +32,7 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.ShareDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.ShortUser;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TaskConfigurationDAO;
+import edu.arizona.sirls.etc.site.shared.rpc.db.TaskDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.TasksOutputFilesDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.db.UserDAO;
 import edu.arizona.sirls.etc.site.shared.rpc.file.FileFilter;
@@ -41,7 +42,6 @@ import edu.arizona.sirls.etc.site.shared.rpc.file.FileTypeEnum;
 public class FileService extends RemoteServiceServlet implements IFileService {
 
 	private static final long serialVersionUID = -9193602268703418530L;
-	private IAuthenticationService authenticationService = new AuthenticationService();
 	private IFilePermissionService filePermissionService = new FilePermissionService();
 	private IFileFormatService fileFormatService = new FileFormatService();
 	private SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MM-dd-yyyy");
@@ -62,11 +62,6 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		//will become part of 'target' and has effect on several things. therefore leave root as "" for now. Also will have to escape \\'s before it is inserted into SQL statements
 		//sql injection..
 		//Tree<FileInfo> result = new Tree<FileInfo>(new FileInfo(authenticationToken.getUsername() + "'s files", FileType.DIRECTORY));
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Tree<FileInfo>>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Tree<FileInfo>>(false, "Authentication failed");
 		
 		Tree<FileInfo> resultTree = new Tree<FileInfo>(new FileInfo("", "Root", "", FileTypeEnum.DIRECTORY, authenticationToken.getUsername(), true, false));
 		Tree<FileInfo> ownedFiles = new Tree<FileInfo>(new FileInfo("Owned", Configuration.fileBase + File.separator + authenticationToken.getUsername(),
@@ -214,11 +209,6 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 
 	@Override
 	public RPCResult<Void> deleteFile(AuthenticationToken authenticationToken, String filePath) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Void>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Void>(false, "Authentication failed");
 		RPCResult<Boolean> permissionResult = filePermissionService.hasWritePermission(authenticationToken, filePath);
 		if(!permissionResult.isSucceeded())
 			return new RPCResult<Void>(false, permissionResult.getMessage());
@@ -282,12 +272,6 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 
 	@Override
 	public RPCResult<Void> moveFile(AuthenticationToken authenticationToken, String filePath, String newFilePath) { 
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Void>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Void>(false, "Authentication failed");
-		
 		RPCResult<Boolean> permissionResult = filePermissionService.hasWritePermission(authenticationToken, filePath);
 		File newDirectory = new File(newFilePath).getParentFile();
 		if(newDirectory == null) 
@@ -326,11 +310,6 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	
 	@Override
 	public RPCResult<Void> createDirectory(AuthenticationToken authenticationToken, String filePath, String name) { 
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Void>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Void>(false, "Authentication failed");
 		if(name.trim().isEmpty()) 
 			return new RPCResult<Void>(false, "Directory name may not be empty");
 		
@@ -354,11 +333,6 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 
 	@Override
 	public RPCResult<Boolean> isDirectory(AuthenticationToken authenticationToken, String filePath) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Boolean>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Boolean>(false, "Authentication failed");
 		RPCResult<Boolean> permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
 		if(!permissionResult.isSucceeded())
 			return new RPCResult<Boolean>(false, permissionResult.getMessage());
@@ -373,11 +347,6 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 
 	@Override
 	public RPCResult<Boolean> isFile(AuthenticationToken authenticationToken, String filePath) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Boolean>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Boolean>(false, "Authentication failed");
 		RPCResult<Boolean> permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
 		if(!permissionResult.isSucceeded())
 			return new RPCResult<Boolean>(false, permissionResult.getMessage());
@@ -389,13 +358,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	}
 
 	@Override
-	public RPCResult<List<String>> getDirectoriesFiles(AuthenticationToken authenticationToken, String filePath) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<List<String>>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<List<String>>(false, "Authentication failed");
-	
+	public RPCResult<List<String>> getDirectoriesFiles(AuthenticationToken authenticationToken, String filePath) {	
 		RPCResult<Boolean> permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
 		if(!permissionResult.isSucceeded())
 			return new RPCResult<List<String>>(false, permissionResult.getMessage());
@@ -415,13 +378,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	}
 
 	@Override
-	public RPCResult<Void> createFile(AuthenticationToken authenticationToken, String filePath) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Void>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Void>(false, "Authentication failed");
-		
+	public RPCResult<Void> createFile(AuthenticationToken authenticationToken, String filePath) {		
 		File parentFile = new File(filePath).getParentFile();
 		if(parentFile == null)
 			return new RPCResult<Void>(false, "Invalid destination");
@@ -443,12 +400,6 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 
 	@Override
 	public RPCResult<Integer> getDepth(AuthenticationToken authenticationToken, String filePath) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Integer>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Integer>(false, "Authentication failed");
-
 		RPCResult<Boolean> permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
 		if(!permissionResult.isSucceeded())
 			return new RPCResult<Integer>(false, permissionResult.getMessage());
@@ -473,13 +424,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	}
 
 	@Override
-	public RPCResult<String> zipDirectory(AuthenticationToken authenticationToken, String filePath) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<String>(false, authResult.getMessage(), "");
-		if(!authResult.getData().getResult())
-			return new RPCResult<String>(false, "Authentication failed", "");
-		
+	public RPCResult<String> zipDirectory(AuthenticationToken authenticationToken, String filePath) {		
 		DirectoryDownload directoryDownload = new DirectoryDownload(authenticationToken, filePath);
 		
 		boolean result = directoryDownload.execute();
@@ -490,13 +435,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	}
 
 	@Override
-	public RPCResult<Void> setInUse(AuthenticationToken authenticationToken, boolean value, String filePath, Task task) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Void>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Void>(false, "Authentication failed");
-		
+	public RPCResult<Void> setInUse(AuthenticationToken authenticationToken, boolean value, String filePath, Task task) {		
 		RPCResult<Boolean> permissionResult = filePermissionService.hasWritePermission(authenticationToken, filePath);
 		if(!permissionResult.isSucceeded())
 			return new RPCResult<Void>(false, permissionResult.getMessage());
@@ -513,13 +452,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	}
 
 	@Override
-	public RPCResult<Boolean> isInUse(AuthenticationToken authenticationToken, String filePath) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Boolean>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Boolean>(false, "Authentication failed");
-		
+	public RPCResult<Boolean> isInUse(AuthenticationToken authenticationToken, String filePath) {		
 		//not required, isInUse doesn't read any actual content
 		//RPCResult<Boolean> permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
 		//if(!permissionResult.isSucceeded())
@@ -537,12 +470,6 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 
 	@Override
 	public RPCResult<List<Task>> getUsingTasks(AuthenticationToken authenticationToken, String filePath) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<List<Task>>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<List<Task>>(false, "Authentication failed");
-		
 		RPCResult<Boolean> permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
 		if(!permissionResult.isSucceeded())
 			return new RPCResult<List<Task>>(false, permissionResult.getMessage());
@@ -559,12 +486,6 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 
 	@Override
 	public RPCResult<Void> renameFile(AuthenticationToken authenticationToken, String path, String newFileName) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Void>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Void>(false, "Authentication failed");
-		
 		RPCResult<Boolean> permissionResult = filePermissionService.hasWritePermission(authenticationToken, path);
 		if(!permissionResult.isSucceeded())
 			return new RPCResult<Void>(false, permissionResult.getMessage());
@@ -599,12 +520,6 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 
 	@Override
 	public RPCResult<String> getParent(AuthenticationToken authenticationToken, String filePath) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<String>(false, authResult.getMessage(), "");
-		if(!authResult.getData().getResult())
-			return new RPCResult<String>(false, "Authentication failed", "");
-		
 		RPCResult<Boolean> permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
 		if(!permissionResult.isSucceeded())
 			return new RPCResult<String>(false, permissionResult.getMessage(), "");
@@ -618,12 +533,6 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 
 	@Override
 	public RPCResult<String> getFileName(AuthenticationToken authenticationToken, String filePath) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<String>(false, authResult.getMessage(), "");
-		if(!authResult.getData().getResult())
-			return new RPCResult<String>(false, "Authentication failed", "");
-		
 		RPCResult<Boolean> permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
 		if(!permissionResult.isSucceeded())
 			return new RPCResult<String>(false, permissionResult.getMessage(), "");
@@ -636,12 +545,6 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 
 	@Override
 	public RPCResult<Void> copyFiles(AuthenticationToken authenticationToken, String source, String destination) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Void>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Void>(false, "Authentication failed");
-		
 		RPCResult<Boolean> permissionResultSource = filePermissionService.hasReadPermission(authenticationToken, source);
 		RPCResult<Boolean> permissionResultDestination = filePermissionService.hasWritePermission(authenticationToken, destination);
 		if(!permissionResultSource.isSucceeded() || !permissionResultDestination.isSucceeded())
@@ -671,12 +574,6 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	
 	@Override
 	public RPCResult<String> createDirectoryForcibly(AuthenticationToken authenticationToken, String directory, String idealFolderName) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<String>(false, authResult.getMessage(), "");
-		if(!authResult.getData().getResult())
-			return new RPCResult<String>(false, "Authentication failed", "");
-		
 		RPCResult<Boolean> permissionResultDestination = filePermissionService.hasWritePermission(authenticationToken, directory);
 		if(!permissionResultDestination.isSucceeded())
 			return new RPCResult<String>(false, permissionResultDestination.getMessage(), "");
@@ -700,13 +597,6 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 
 	@Override
 	public RPCResult<String> getDownloadPath(AuthenticationToken authenticationToken, String filePath) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<String>(false, authResult.getMessage(), "");
-		if(!authResult.getData().getResult())
-			return new RPCResult<String>(false, "Authentication failed", "");
-		
-		
 		RPCResult<Boolean> isDirectory = this.isDirectory(authenticationToken, filePath);
 		if(filePath.startsWith("Share.") || filePath.equals("Root") || filePath.equals("Owned") || filePath.equals("Shared") || 
 				isDirectory.isSucceeded() && isDirectory.getData()) {

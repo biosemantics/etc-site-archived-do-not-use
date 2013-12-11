@@ -27,18 +27,11 @@ import edu.arizona.sirls.etc.site.shared.rpc.db.UserDAO;
 public class TaskService extends RemoteServiceServlet implements ITaskService {
 
 	private static final long serialVersionUID = -3080921351813858330L;
-	private IAuthenticationService authenticationService = new AuthenticationService();
 	private IMatrixGenerationService matrixGenerationService = new MatrixGenerationService();
 	private ISemanticMarkupService semanticMarkupService = new SemanticMarkupService();
 	
 	@Override
-	public RPCResult<List<Task>> getAllTasks(AuthenticationToken authenticationToken) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<List<Task>>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<List<Task>>(false, "Authentication failed");
-		
+	public RPCResult<List<Task>> getAllTasks(AuthenticationToken authenticationToken) {		
 		try {
 			List<Task> result = TaskDAO.getInstance().getAllTasks(authenticationToken.getUsername());
 			return new RPCResult<List<Task>>(true, result);
@@ -49,13 +42,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	}
 	
 	@Override
-	public RPCResult<Task> getTask(AuthenticationToken authenticationToken, Task task) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Task>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Task>(false, "Authentication failed");
-		
+	public RPCResult<Task> getTask(AuthenticationToken authenticationToken, Task task) {		
 		try {
 			Task result = TaskDAO.getInstance().getTask(task.getId());
 			return new RPCResult<Task>(true, result);
@@ -66,13 +53,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	}
 
 	@Override
-	public RPCResult<List<Task>> getOwnedTasks(AuthenticationToken authenticationToken) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<List<Task>>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<List<Task>>(false, "Authentication failed");
-		
+	public RPCResult<List<Task>> getOwnedTasks(AuthenticationToken authenticationToken) {		
 		try {
 			List<Task> result = TaskDAO.getInstance().getOwnedTasks(authenticationToken.getUsername());
 			return new RPCResult<List<Task>>(true, result);
@@ -83,13 +64,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	}
 
 	@Override
-	public RPCResult<List<Task>> getSharedWithTasks(AuthenticationToken authenticationToken) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<List<Task>>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<List<Task>>(false, "Authentication failed");
-		
+	public RPCResult<List<Task>> getSharedWithTasks(AuthenticationToken authenticationToken) {		
 		try {
 			List<Task> result = TaskDAO.getInstance().getSharedWithTasks(authenticationToken.getUsername());
 			return new RPCResult<List<Task>>(true, result);
@@ -100,13 +75,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	}
 
 	@Override
-	public RPCResult<List<Task>> getCompletedTasks(AuthenticationToken authenticationToken) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<List<Task>>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<List<Task>>(false, "Authentication failed");
-		
+	public RPCResult<List<Task>> getCompletedTasks(AuthenticationToken authenticationToken) {		
 		try {
 			List<Task> result = TaskDAO.getInstance().getCompletedTasks(authenticationToken.getUsername());
 			return new RPCResult<List<Task>>(true, result);
@@ -118,13 +87,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	
 
 	@Override
-	public RPCResult<Map<Integer, Task>> getResumableTasks(AuthenticationToken authenticationToken) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Map<Integer, Task>>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Map<Integer, Task>>(false, "Authentication failed");
-		
+	public RPCResult<Map<Integer, Task>> getResumableTasks(AuthenticationToken authenticationToken) {		
 		try {
 			Map<Integer, Task> result = new LinkedHashMap<Integer, Task>();
 			for(Task task : TaskDAO.getInstance().getResumableTasks(authenticationToken.getUsername()))
@@ -137,13 +100,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	}
 
 	@Override
-	public RPCResult<Boolean> isResumable(AuthenticationToken authenticationToken, Task task) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Boolean>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Boolean>(false, "Authentication failed");
-		
+	public RPCResult<Boolean> isResumable(AuthenticationToken authenticationToken, Task task) {	
 		try {
 			Boolean result = TaskDAO.getInstance().getTask(task.getId()).isResumable();
 			return new RPCResult<Boolean>(true, result);
@@ -154,13 +111,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	}
 
 	@Override
-	public RPCResult<Boolean> isComplete(AuthenticationToken authenticationToken, Task task) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Boolean>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Boolean>(false, "Authentication failed");
-		
+	public RPCResult<Boolean> isComplete(AuthenticationToken authenticationToken, Task task) {	
 		try {
 			Boolean result =  TaskDAO.getInstance().getTask(task.getId()).isComplete();
 			return new RPCResult<Boolean>(true, result);
@@ -171,13 +122,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	}
 
 	@Override
-	public RPCResult<Boolean> hasResumable(AuthenticationToken authenticationToken) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Boolean>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Boolean>(false, "Authentication failed");
-		
+	public RPCResult<Boolean> hasResumable(AuthenticationToken authenticationToken) {		
 		try {
 			Boolean result = !TaskDAO.getInstance().getResumableTasks(authenticationToken.getUsername()).isEmpty();
 			return new RPCResult<Boolean>(true, result);
@@ -234,13 +179,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	}*/
 	
 	@Override
-	public RPCResult<Void> cancelTask(AuthenticationToken authenticationToken, Task task) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Void>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Void>(false, "Authentication failed");
-		
+	public RPCResult<Void> cancelTask(AuthenticationToken authenticationToken, Task task) {		
 		try {
 			switch(task.getTaskType().getTaskTypeEnum()) {
 			case MATRIX_GENERATION:
@@ -267,11 +206,6 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 
 	@Override
 	public RPCResult<Share> addShare(AuthenticationToken authenticationToken, Share share) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Share>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Share>(false, "Authentication failed");
 		try {
 			Share shareResult = ShareDAO.getInstance().addShare(share);
 			return new RPCResult<Share>(true, shareResult);
@@ -283,11 +217,6 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 
 	@Override
 	public RPCResult<List<Share>> getOwnedShares(AuthenticationToken authenticationToken) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<List<Share>>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<List<Share>>(false, "Authentication failed");
 		try {
 			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUsername());
 			List<Share> sharesResult = ShareDAO.getInstance().getSharesOfOwner(user);
@@ -300,11 +229,6 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 
 	@Override
 	public RPCResult<List<Share>> getInvitedShares(AuthenticationToken authenticationToken) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<List<Share>>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<List<Share>>(false, "Authentication failed");
 		try {
 			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUsername());
 			List<Share> sharesResult = ShareDAO.getInstance().getSharesOfInvitee(user);
@@ -317,11 +241,6 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 
 	@Override
 	public RPCResult<Set<ShortUser>> getInvitees(AuthenticationToken authenticationToken, Task task) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Set<ShortUser>>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Set<ShortUser>>(false, "Authentication failed");
 		try {
 			Set<ShortUser> invitees = ShareDAO.getInstance().getInvitees(task);
 			return new RPCResult<Set<ShortUser>>(true, invitees);
@@ -333,11 +252,6 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 
 	@Override
 	public RPCResult<Share> addOrUpdateShare(AuthenticationToken authenticationToken, Share share) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Share>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Share>(false, "Authentication failed");
 		try {
 			Share shareResult = ShareDAO.getInstance().addOrUpdateShare(share);
 			return new RPCResult<Share>(true, shareResult);
@@ -349,11 +263,6 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	
 	@Override
 	public RPCResult<Share> updateShare(AuthenticationToken authenticationToken, Share share) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Share>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Share>(false, "Authentication failed");
 		try {
 			Share shareResult = ShareDAO.getInstance().updateShare(share);
 			return new RPCResult<Share>(true, shareResult);
@@ -381,13 +290,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	}
 
 	@Override
-	public RPCResult<Map<Task, Set<ShortUser>>> getInviteesForOwnedTasks(AuthenticationToken authenticationToken) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Map<Task, Set<ShortUser>>>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Map<Task, Set<ShortUser>>>(false, "Authentication failed");
-		
+	public RPCResult<Map<Task, Set<ShortUser>>> getInviteesForOwnedTasks(AuthenticationToken authenticationToken) {	
 		try {
 			Map<Task, Set<ShortUser>> result = new HashMap<Task, Set<ShortUser>>();
 			RPCResult<List<Task>> ownedTasks = this.getOwnedTasks(authenticationToken);

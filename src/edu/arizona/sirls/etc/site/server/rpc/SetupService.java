@@ -13,17 +13,9 @@ import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.Setup;
 
 public class SetupService extends RemoteServiceServlet implements ISetupService {
-
-	private IAuthenticationService authenticationService = new AuthenticationService();
 	
 	@Override
-	public RPCResult<Setup> getSetup(AuthenticationToken authenticationToken) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Setup>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Setup>(false, "Authentication failed");
-		
+	public RPCResult<Setup> getSetup(AuthenticationToken authenticationToken) {		
 		String seperator = File.separator;
 		Setup setup = new Setup();
 		setup.setSeperator(seperator);

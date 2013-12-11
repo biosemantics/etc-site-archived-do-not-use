@@ -45,7 +45,6 @@ import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.Taxon;
 public class MatrixGenerationService extends RemoteServiceServlet implements IMatrixGenerationService  {
 
 	private static final long serialVersionUID = -7871896158610489838L;
-	private IAuthenticationService authenticationService = new AuthenticationService();
 	private IFileService fileService = new FileService();
 	private IFilePermissionService filePermissionService = new FilePermissionService();
 	private int maximumThreads = 10;
@@ -58,14 +57,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 	
 	@Override
-	public RPCResult<Task> start(AuthenticationToken authenticationToken, String taskName, String input) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Task>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Task>(false, "Authentication failed");
-		
+	public RPCResult<Task> start(AuthenticationToken authenticationToken, String taskName, String input) {	
 		try {
 			RPCResult<Boolean> sharedResult = filePermissionService.isSharedFilePath(authenticationToken.getUsername(), input);
 			if(!sharedResult.isSucceeded())
@@ -113,13 +105,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 	
 	@Override
-	public RPCResult<Task> process(AuthenticationToken authenticationToken, final Task task) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Task>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Task>(false, "Authentication failed");
-		
+	public RPCResult<Task> process(AuthenticationToken authenticationToken, final Task task) {	
 		try {
 			final AbstractTaskConfiguration configuration = task.getConfiguration();
 			if(!(configuration instanceof MatrixGenerationConfiguration))
@@ -173,12 +159,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	
 	@Override
 	public RPCResult<Matrix> review(AuthenticationToken authenticationToken, Task task) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Matrix>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Matrix>(false, "Authentication failed");
-		
 		try {
 			final AbstractTaskConfiguration configuration = task.getConfiguration();
 			if(!(configuration instanceof MatrixGenerationConfiguration))
@@ -196,12 +176,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	
 	@Override
 	public RPCResult<Task> completeReview(AuthenticationToken authenticationToken, Task task) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Task>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Task>(false, "Authentication failed");
-		
 		try {
 			final AbstractTaskConfiguration configuration = task.getConfiguration();
 			if(!(configuration instanceof MatrixGenerationConfiguration))
@@ -255,12 +229,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 
 	@Override
 	public RPCResult<Task> output(AuthenticationToken authenticationToken, Task task) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Task>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Task>(false, "Authentication failed");
-		
 		try {
 			AbstractTaskConfiguration configuration = task.getConfiguration();
 			if(!(configuration instanceof MatrixGenerationConfiguration))
@@ -304,12 +272,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 
 	@Override
 	public RPCResult<Task> getLatestResumable(AuthenticationToken authenticationToken) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Task>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Task>(false, "Authentication failed");
-		
 		try {
 			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUsername());
 			List<Task> tasks = TaskDAO.getInstance().getOwnedTasks(user.getId());
@@ -329,12 +291,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 
 	@Override
 	public RPCResult<Void> cancel(AuthenticationToken authenticationToken, Task task) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Void>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Void>(false, "Authentication failed");
-		
 		try {
 			AbstractTaskConfiguration configuration = task.getConfiguration();
 			if(!(configuration instanceof MatrixGenerationConfiguration))
@@ -389,12 +345,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 
 	@Override
 	public RPCResult<Void> save(AuthenticationToken authenticationToken, Matrix matrix, Task task) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Void>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Void>(false, "Authentication failed");
-		
 		try {
 			final AbstractTaskConfiguration configuration = task.getConfiguration();
 			if(!(configuration instanceof MatrixGenerationConfiguration))
@@ -432,12 +382,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 
 	@Override
 	public RPCResult<Task> goToTaskStage(AuthenticationToken authenticationToken, Task task, TaskStageEnum taskStageEnum) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Task>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Task>(false, "Authentication failed");
-		
 		try {
 			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
 			TaskStage taskStage = TaskStageDAO.getInstance().getMatrixGenerationTaskStage(taskStageEnum.toString());

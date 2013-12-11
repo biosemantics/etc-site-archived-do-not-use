@@ -24,17 +24,11 @@ import edu.arizona.sirls.etc.site.shared.rpc.file.FilePermissionType;
 public class FilePermissionService extends RemoteServiceServlet implements IFilePermissionService {
 
 	private static final long serialVersionUID = 7670782397695216737L;
-	private IAuthenticationService authenticationService = new AuthenticationService();
 
 	@Override
 	public RPCResult<Boolean> hasReadPermission(AuthenticationToken authenticationToken, String filePath) {
 		if(authenticationToken instanceof AdminAuthenticationToken)
 			return new RPCResult<Boolean>(true, true);
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Boolean>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Boolean>(false, "Authentication failed");
 		
 		RPCResult<Boolean> ownedResult = isOwnedFilePath(authenticationToken.getUsername(), filePath);
 		if(ownedResult.isSucceeded() && ownedResult.getData())
@@ -54,11 +48,6 @@ public class FilePermissionService extends RemoteServiceServlet implements IFile
 	public RPCResult<FilePermissionType> getPermissionType(AuthenticationToken authenticationToken, String filePath) {
 		if(authenticationToken instanceof AdminAuthenticationToken)
 			return new RPCResult<FilePermissionType>(true, FilePermissionType.ADMIN);
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<FilePermissionType>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<FilePermissionType>(false, "Authentication failed");
 		
 		RPCResult<Boolean> ownedResult = isOwnedFilePath(authenticationToken.getUsername(), filePath);
 		if(ownedResult.isSucceeded() && ownedResult.getData())
@@ -78,11 +67,6 @@ public class FilePermissionService extends RemoteServiceServlet implements IFile
 	public RPCResult<Boolean> hasWritePermission(AuthenticationToken authenticationToken, String filePath) {
 		if(authenticationToken instanceof AdminAuthenticationToken)
 			return new RPCResult<Boolean>(true, true);
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Boolean>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Boolean>(false, "Authentication failed");
 		
 		RPCResult<Boolean> ownedResult = isOwnedFilePath(authenticationToken.getUsername(), filePath);
 		if(ownedResult.isSucceeded() && ownedResult.getData())

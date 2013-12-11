@@ -12,17 +12,9 @@ import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 
 public class VisualizationService extends RemoteServiceServlet implements IVisualizationService {
-
-	private IAuthenticationService authenticationService = new AuthenticationService();
 	
 	@Override
-	public RPCResult<Task> getVisualizationTask(AuthenticationToken authenticationToken, Task task) {
-		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
-		if(!authResult.isSucceeded()) 
-			return new RPCResult<Task>(false, authResult.getMessage());
-		if(!authResult.getData().getResult())
-			return new RPCResult<Task>(false, "Authentication failed");
-		
+	public RPCResult<Task> getVisualizationTask(AuthenticationToken authenticationToken, Task task) {		
 		return null;
 	}
 
