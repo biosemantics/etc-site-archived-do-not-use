@@ -404,7 +404,7 @@ public class TaskManagerViewImpl extends Composite implements TaskManagerView, H
 			if(this.getSelectedTaskData().getTask().isComplete()) {
 				switch(this.getSelectedTaskData().getTask().getTaskType().getTaskTypeEnum()) {
 				case MATRIX_GENERATION:
-					this.rewindButton.setEnabled(false);
+					this.rewindButton.setEnabled(true);
 					break;
 				case SEMANTIC_MARKUP:
 					this.rewindButton.setEnabled(true);

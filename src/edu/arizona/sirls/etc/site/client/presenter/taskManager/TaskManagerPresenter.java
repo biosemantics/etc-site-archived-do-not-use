@@ -45,7 +45,6 @@ import edu.arizona.sirls.etc.site.shared.rpc.RPCResult;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Share;
 import edu.arizona.sirls.etc.site.shared.rpc.db.ShortUser;
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
-import edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.TaskStageEnum;
 
 public class TaskManagerPresenter implements TaskManagerView.Presenter, Presenter {
 
@@ -70,6 +69,7 @@ public class TaskManagerPresenter implements TaskManagerView.Presenter, Presente
 		this.view = view;
 		this.taskService = taskService;
 		this.semanticMarkupService = semanticMarkupService;
+		this.matrixGenerationService = matrixGenerationService;
 		this.treeGenerationService = treeGenerationService;
 		this.taxonomyComparisonService = taxonomyComparisonService;
 		this.visualizationService = visualizationService;
@@ -224,18 +224,35 @@ public class TaskManagerPresenter implements TaskManagerView.Presenter, Presente
 
 	@Override
 	public void onRewind(final TaskData taskData) {
-		semanticMarkupService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), taskData.getTask(), 
-				TaskStageEnum.REVIEW_TERMS ,new AsyncCallback<RPCResult<Task>>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				caught.printStackTrace();
-			}
-			@Override
-			public void onSuccess(RPCResult<Task> semanticMarkupTask) {
-				if(semanticMarkupTask.isSucceeded())
-					eventBus.fireEvent(new SemanticMarkupEvent(semanticMarkupTask.getData()));
-			}
-		});
+		switch(taskData.getTask().getTaskType().getTaskTypeEnum()) {
+		case SEMANTIC_MARKUP:
+			semanticMarkupService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), taskData.getTask(), 
+					edu.arizona.sirls.etc.site.shared.rpc.semanticMarkup.TaskStageEnum.REVIEW_TERMS ,new AsyncCallback<RPCResult<Task>>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+				}
+				@Override
+				public void onSuccess(RPCResult<Task> semanticMarkupTask) {
+					if(semanticMarkupTask.isSucceeded())
+						eventBus.fireEvent(new SemanticMarkupEvent(semanticMarkupTask.getData()));
+				}
+			});
+		case MATRIX_GENERATION:
+			matrixGenerationService.goToTaskStage(Authentication.getInstance().getAuthenticationToken(), taskData.getTask(), 
+					edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum.REVIEW, new AsyncCallback<RPCResult<Task>>() {
+						@Override
+						public void onFailure(Throwable caught) {
+							caught.printStackTrace();
+						}
+						@Override
+						public void onSuccess(RPCResult<Task> result) {
+							if(result.isSucceeded()) {
+								eventBus.fireEvent(new MatrixGenerationEvent(result.getData()));
+							}
+						}
+			});
+		}
 	}
 
 

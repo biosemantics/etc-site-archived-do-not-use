@@ -4,6 +4,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.arizona.sirls.etc.site.shared.rpc.db.Task;
 import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.Matrix;
+import edu.arizona.sirls.etc.site.shared.rpc.matrixGeneration.TaskStageEnum;
 
 public interface IMatrixGenerationServiceAsync {
 
@@ -22,6 +23,8 @@ public interface IMatrixGenerationServiceAsync {
 	public void cancel(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Void>> callback);
 
 	public void save(AuthenticationToken authenticationToken, Matrix matrix, Task task, AsyncCallback<RPCResult<Void>> callback);
+
+	public void goToTaskStage(AuthenticationToken authenticationToken, Task task, TaskStageEnum review, AsyncCallback<RPCResult<Task>> callback);
 
 
 }

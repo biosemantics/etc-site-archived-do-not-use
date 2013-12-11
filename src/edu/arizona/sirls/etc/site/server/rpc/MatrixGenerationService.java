@@ -429,4 +429,27 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		bw.close();
 	}
 
+	@Override
+	public RPCResult<Task> goToTaskStage(AuthenticationToken authenticationToken, Task task, TaskStageEnum taskStageEnum) {
+		RPCResult<AuthenticationResult> authResult = authenticationService.isValidSession(authenticationToken);
+		if(!authResult.isSucceeded()) 
+			return new RPCResult<Task>(false, authResult.getMessage());
+		if(!authResult.getData().getResult())
+			return new RPCResult<Task>(false, "Authentication failed");
+		
+		try {
+			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION);
+			TaskStage taskStage = TaskStageDAO.getInstance().getMatrixGenerationTaskStage(taskStageEnum.toString());
+			task.setTaskStage(taskStage);
+			task.setResumable(true);
+			task.setComplete(false);
+			task.setCompleted(null);
+			TaskDAO.getInstance().updateTask(task);
+			return new RPCResult<Task>(true, task);
+		} catch(Exception e) {
+			e.printStackTrace();
+			return new RPCResult<Task>(false, "Internal Server Error");
+		}
+	}
+
 }
