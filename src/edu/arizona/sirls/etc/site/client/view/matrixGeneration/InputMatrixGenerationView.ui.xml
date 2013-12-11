@@ -19,7 +19,7 @@
 					        <g:InlineLabel>
 					            . See our
 					        </g:InlineLabel>
-					        <g:Anchor href="www.google.com">&nbsp;format requirements</g:Anchor>
+					        <g:Anchor href="https://github.com/biosemantics/schemas/blob/master/iplantOutputTreatment.xsd">&nbsp;format requirements</g:Anchor>
 					        <g:InlineLabel>
 					            &nbsp;for marked up taxon descriptions.
 					        </g:InlineLabel>
