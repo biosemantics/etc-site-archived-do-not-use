@@ -48,5 +48,9 @@ public class MatrixGenerationEvent extends GwtEvent<MatrixGenerationEventHandler
 	public void setTask(Task task) {
 		this.task = task;
 	}
+
+	public boolean hasTask() {
+		return this.task != null;
+	}
 	
 }

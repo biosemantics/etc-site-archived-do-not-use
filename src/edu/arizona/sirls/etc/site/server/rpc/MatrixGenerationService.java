@@ -314,9 +314,10 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUsername());
 			List<Task> tasks = TaskDAO.getInstance().getOwnedTasks(user.getId());
 			for(Task task : tasks) {
-				if(task.isResumable()) {
-					MatrixGenerationConfiguration configuration = MatrixGenerationConfigurationDAO.getInstance().getMatrixGenerationConfiguration(task.getConfiguration().getConfiguration().getId());
-					return new RPCResult<Task>(true, task);
+				if(task.isResumable() && 
+						task.getTaskType().getTaskTypeEnum().equals(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.MATRIX_GENERATION)) {
+							//SemanticMarkupConfiguration configuration = SemanticMarkupConfigurationDAO.getInstance().getSemanticMarkupConfiguration(task.getConfiguration().getConfiguration().getId());
+							return new RPCResult<Task>(true, task);
 				}
 			}
 			return new RPCResult<Task>(false, "No resumable task found");

@@ -512,9 +512,10 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUsername());
 			List<Task> tasks = TaskDAO.getInstance().getOwnedTasks(user.getId());
 			for(Task task : tasks) {
-				if(task.isResumable()) {
-					SemanticMarkupConfiguration configuration = SemanticMarkupConfigurationDAO.getInstance().getSemanticMarkupConfiguration(task.getConfiguration().getConfiguration().getId());
-					return new RPCResult<Task>(true, task);
+				if(task.isResumable() && 
+					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.sirls.etc.site.shared.rpc.TaskTypeEnum.SEMANTIC_MARKUP)) {
+						//SemanticMarkupConfiguration configuration = SemanticMarkupConfigurationDAO.getInstance().getSemanticMarkupConfiguration(task.getConfiguration().getConfiguration().getId());
+						return new RPCResult<Task>(true, task);
 				}
 			}
 			return new RPCResult<Task>(false, "No resumable task found");

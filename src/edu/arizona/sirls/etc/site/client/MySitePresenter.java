@@ -301,7 +301,7 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 													addToHistory(semanticMarkupEvent);
 												}
 											});
-									messageResumeOrStartPresenter.setMessage("You have a resumable Matrix Generation Task. Do you want to resume it or start a new task?");
+									messageResumeOrStartPresenter.setMessage("You have a resumable Semantic Markup task. Do you want to resume it or start a new task?");
 									messageResumeOrStartPresenter.go();
 								} else {
 									addToHistory(semanticMarkupEvent);
@@ -316,11 +316,48 @@ public class MySitePresenter implements SitePresenter, ValueChangeHandler<String
 	    });
 	    
 	    eventBus.addHandler(MatrixGenerationEvent.TYPE, new MatrixGenerationEventHandler() {
-			@Override
-			public void onMatrixGeneration(MatrixGenerationEvent event) {
-        		  taskManager.setActiveTask(event.getTask());
-        		  addToHistory(event);
-			}
+		    	
+	    	  private MessageResumeOrStartView messageResumeOrStartView = new MessageResumeOrStartView();
+		    	
+	    	  public void onMatrixGeneration(final MatrixGenerationEvent event) {
+	        	  if(!event.hasTask()) {
+		        	  matrixGenerationService.getLatestResumable(Authentication.getInstance().getAuthenticationToken(),
+								new AsyncCallback<RPCResult<Task>>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								caught.printStackTrace();
+							}
+							@Override
+							public void onSuccess(final RPCResult<Task> latestResumableResult) {
+								if(latestResumableResult.isSucceeded()) {
+									MessageResumeOrStartPresenter messageResumeOrStartPresenter = 
+											new MessageResumeOrStartPresenter(messageResumeOrStartView, "Resumable Task", new ClickHandler() {
+												@Override
+												public void onClick(ClickEvent clickEvent) {
+													//resume
+													Task latestResumable = latestResumableResult.getData();
+													event.setTask(latestResumable);
+													taskManager.setActiveTask(latestResumable);
+													addToHistory(event);
+												}
+											}, new ClickHandler() {
+												@Override
+												public void onClick(ClickEvent clickEvent) {
+													addToHistory(event);
+												}
+											});
+									messageResumeOrStartPresenter.setMessage("You have a resumable Matrix Generation task. Do you want to resume it or start a new task?");
+									messageResumeOrStartPresenter.go();
+								} else {
+									addToHistory(event);
+								}
+							}
+		        	  });
+	        	  } else {
+	        		  taskManager.setActiveTask(event.getTask());
+	        		  addToHistory(event);
+	        	  }
+	          }
 	    });
 	    
 	    eventBus.addHandler(TreeGenerationEvent.TYPE,
