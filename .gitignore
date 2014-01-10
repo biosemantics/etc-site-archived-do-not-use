@@ -1,23 +1,12 @@
 *.class
 
 # Package Files #
+*.jar
 *.war
 *.ear
-/.settings
-/.classpath
-/.project
+/target
 
 
-/war/etcsite
-
-/war/WEB-INF/deploy
-/gwt-unitCache
-/war/WEB-INF/classes
-
-/war/WEB-INF/lib/gwt-servlet.jar
-
-*.properties
-/war/workspace
-/war/resources/charaparser
-
-/bin/*
+.classpath
+.project
+.settings/*
