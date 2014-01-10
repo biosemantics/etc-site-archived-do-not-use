@@ -1,0 +1,108 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.menuStart {
+		    background-image: url('images/Menu_start.gif');
+		    background-size: 100% 100%;
+		    width: 100%;
+		    height: 130px;
+		    min-width: 900px;
+		    font-size: 11px;
+		    position: absolute;
+		    top: 143px;
+		    left: 0px;
+		}
+		.etcPipelineText {
+		    background-image: url('images/Text.TheETCPipeLine.gif');
+		    background-size: 100% 100%;
+		    width: 200px;
+		    height: 34px;
+		    position: absolute;
+		    top: 47px;
+		    left: 50%;
+		    margin-left: -400px;
+		}
+		.features {
+		    background-image: url('images/Features.gif');
+		    background-size: 100% 100%;
+		    width: 167px;
+		    height: 100px;
+		    position: absolute;
+		    top: 23px;
+		    right: 50%;
+		    margin-right: -370px;
+		}
+		.menuStartText {
+		    width: 300px;
+		    height: 50px;
+		    position: absolute;
+		    top: 17px;
+		    left: 50%;
+		    margin-left: -150px;
+		}
+		.featuresText {
+		    background-image: url('images/Text.Features.gif');
+		    background-size: 100% 100%;
+		    width: 79px;
+		    height: 19px;
+		    position: absolute;
+		    top: 10px;
+		    right: 45px;
+		}
+		.featuresFirstBullet {
+			position: absolute;
+		    top: 40px;
+		    left: 20px;
+		}
+		.featuresFirstText {
+		    position: absolute;
+		    top: 38px;
+		    left: 45px;
+		}
+		.featuresSecondBullet {
+		    position: absolute;
+		    top: 60px;
+		    left: 20px;
+		}
+		.featuresSecondText {
+		    position: absolute;
+		    top: 58px;
+		    left: 45px;
+		}
+		.featuresThirdBullet {
+		    position: absolute;
+		    top: 80px;
+		    left: 20px;
+		}
+		.featuresThirdText {
+		    position: absolute;
+		    top: 78px;
+		    left: 45px;
+		}
+		.bullet {
+			background-image: url('images/Success.gif');
+    		background-size: 100% 100%;
+   			width: 15px;
+    		height: 12px;
+		}
+	</ui:style>
+	<g:HTMLPanel>
+		<div class="{style.menuStart}">	
+		    <div class="{style.etcPipelineText}"></div>
+		    <div class="{style.menuStartText}">ETC toolbox consists of four tools that can be used as a pipe line that takes clean textual phenotypical 
+				descriptions and outputs taxon-character data for taxon concept analysis. The tools may also be used separately if their required input data is available. 
+				The tools are produced through a collaborative project (NSF-DBI-1147266) between the University of Arizona and University of California at Davis. 
+			</div>
+		    <div class="{style.features}">
+				<div class="{style.featuresText}"></div>
+				<div class="{style.featuresFirstBullet} {style.bullet}"></div>
+				<div class="{style.featuresFirstText}">Data Sharing</div>
+				<div class="{style.featuresSecondBullet} {style.bullet}"></div>
+				<div class="{style.featuresSecondText}">Begin at any step</div>
+				<div class="{style.featuresThirdBullet} {style.bullet}"></div>
+				<div class="{style.featuresThirdText}">Full pipeline creation</div>
+			</div>
+		</div>
+	</g:HTMLPanel>
+</ui:UiBinder> 

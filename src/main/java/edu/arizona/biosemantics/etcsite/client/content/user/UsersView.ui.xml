@@ -1,0 +1,26 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:c="urn:import:com.google.gwt.user.cellview.client">
+	<ui:style>
+		.usersList {
+			height: 300px;
+			max-height: 300px;
+			max-width: 900px;
+			min-width: 300px;
+			width: 300px;
+		}
+	</ui:style>
+	<g:VerticalPanel>
+	    <!-- <g:cell>
+	        <g:SuggestBox ui:field="suggestBox"></g:SuggestBox>
+	    </g:cell> -->
+	    <g:cell>
+	        <g:ScrollPanel styleName="{style.usersList}">
+		        <g:HTMLPanel>
+	        		<c:CellList ui:field="usersList" />
+		       	</g:HTMLPanel>
+	       	</g:ScrollPanel>
+	    </g:cell>
+	</g:VerticalPanel>
+</ui:UiBinder>

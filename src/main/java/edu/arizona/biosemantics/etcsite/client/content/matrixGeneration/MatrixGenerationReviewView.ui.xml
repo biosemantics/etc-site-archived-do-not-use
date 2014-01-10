@@ -1,0 +1,22 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.matrixGeneration"
+	xmlns:re="urn:import:edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review">
+	<ui:style>
+		.important {
+			font-weight: bold;
+		}
+	</ui:style>
+	<g:VerticalPanel>
+		<my:SubMenu ui:field="subMenu" step="REVIEW"/>
+		<g:VerticalPanel>
+			<g:cell>
+				<re:IReviewView ui:field="view"/>
+			</g:cell>
+			<g:cell>
+				<g:Button ui:field="nextButton">Next</g:Button>
+			</g:cell>
+		</g:VerticalPanel>
+	</g:VerticalPanel>
+</ui:UiBinder> 

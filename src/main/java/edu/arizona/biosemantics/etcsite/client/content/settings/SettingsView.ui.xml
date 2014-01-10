@@ -1,0 +1,82 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>      
+		.label {
+			padding-right: 10px;
+		}
+		.infoImage {
+			height: 20px;
+			width: 20px;
+			padding-right: 5px;
+		}
+	</ui:style>
+	<g:HTMLPanel>
+	    <div class='content900pxCentered'>
+			<g:VerticalPanel>
+			    <g:cell>
+			    	<g:Label styleName="siteHeading">Settings</g:Label>
+			    </g:cell>
+			    <g:cell>
+				    <g:Grid>
+				        <g:row>
+				            <g:customCell>
+				              <g:HorizontalPanel>
+				                  <g:Label styleName="{style.label}">BioPortal user ID</g:Label>
+				                  <g:Image url="images/Info.gif" title="BioPortal user ID is used to submit learned terminology to the BioPortal ontology service"
+				                      styleName="{style.infoImage}"></g:Image>
+				              </g:HorizontalPanel>
+						    </g:customCell>
+						    <g:customCell>
+						      <g:TextBox ui:field="bioportalUserId"></g:TextBox>
+						    </g:customCell>
+				        </g:row>
+				        <g:row>
+				            <g:customCell>
+				              <g:HorizontalPanel>
+				                   <g:Label styleName="{style.label}">BioPortal API key</g:Label>
+				                  <g:Image url="images/Info.gif" title="BioPortal API key is used to submit learned terminology to the BioPortal ontology service"
+				                      styleName="{style.infoImage}"></g:Image>
+				              </g:HorizontalPanel>
+						    </g:customCell>
+						    <g:customCell>
+						      <g:TextBox ui:field="bioportalApiKey"></g:TextBox>
+						    </g:customCell>
+				        </g:row>
+				        <g:row>
+				            <g:customCell>
+						      <g:Label>Old password</g:Label>
+						    </g:customCell>
+						    <g:customCell>
+						      <g:PasswordTextBox ui:field="oldPassword"></g:PasswordTextBox>
+						    </g:customCell>
+				        </g:row>
+				        <g:row>
+				            <g:customCell>
+						      <g:Label>New password</g:Label>
+						    </g:customCell>
+						    <g:customCell>
+						      <g:PasswordTextBox ui:field="newPassword"></g:PasswordTextBox>
+						    </g:customCell>
+				        </g:row>
+				        <g:row>
+				            <g:customCell>
+						      <g:Label>Confirm new password</g:Label>
+						    </g:customCell>
+						    <g:customCell>
+						      <g:PasswordTextBox ui:field="confirmNewPassword"></g:PasswordTextBox>
+						    </g:customCell>
+				        </g:row>
+				        <g:row>
+				            <g:cell></g:cell>
+						    <g:customCell>
+						      <g:Button ui:field="submit">Submit</g:Button>
+						    </g:customCell>
+				        </g:row>
+				        
+				    </g:Grid>
+			    </g:cell>
+			</g:VerticalPanel>
+		</div>	
+	</g:HTMLPanel>
+</ui:UiBinder> 

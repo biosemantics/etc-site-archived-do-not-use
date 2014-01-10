@@ -1,0 +1,31 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:up="urn:import:gwtupload.client"
+	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.common.files">
+	<ui:style>
+		.uploader {
+
+		}
+	</ui:style>
+	<g:VerticalPanel>
+	    <g:Label>Your files:</g:Label>
+	    <my:IFileTreeView ui:field="fileTreeView"></my:IFileTreeView>
+	    <g:HorizontalPanel>
+		    <g:Button ui:field="createButton">Create Folder</g:Button>
+		    <g:Button ui:field="renameButton">Rename</g:Button>
+		    <g:Button ui:field="deleteButton">Delete</g:Button>
+		    <g:Button ui:field="downloadButton">Download</g:Button>
+	        <up:SingleUploader 
+	           	ui:field="uploader"
+	           	styleName="{style.uploader}"
+	           	type="BUTTON"
+	           	autoSubmit="true"
+	           	avoidRepeatFiles="true" 
+	           	validExtensions="xml"
+	           	/> 
+		     <g:Button ui:field="addButton">Add files</g:Button>
+	    </g:HorizontalPanel>
+	    <g:SimplePanel addStyleNames="GWTUpld" ui:field="statusWidgetContainer"></g:SimplePanel>
+	</g:VerticalPanel>
+</ui:UiBinder>

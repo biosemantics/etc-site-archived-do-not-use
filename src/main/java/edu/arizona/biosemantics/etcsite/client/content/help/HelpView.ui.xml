@@ -1,0 +1,13 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		
+	</ui:style>
+	<g:HTMLPanel>
+		<g:HorizontalPanel>
+		    <g:Image url="images/video.png" ui:field="image"></g:Image>
+		    <g:Label>Watch the video tutorial</g:Label>
+		</g:HorizontalPanel>
+	</g:HTMLPanel>
+</ui:UiBinder> 

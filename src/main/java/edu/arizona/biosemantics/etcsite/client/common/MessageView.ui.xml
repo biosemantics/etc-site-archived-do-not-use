@@ -1,0 +1,23 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.verticalPanel {
+
+		}
+		.infoImage {
+			height: 20px;
+			width: 20px;
+			padding-right: 5px;
+		}
+	</ui:style>
+	<g:HTMLPanel>
+	    <g:VerticalPanel styleName="{style.verticalPanel}" horizontalAlignment="ALIGN_RIGHT">
+	        <g:HorizontalPanel>
+	            <g:Image url="images/Info.gif" styleName="{style.infoImage}" />
+	            <g:HTML ui:field="messageHTML"></g:HTML>
+			</g:HorizontalPanel>
+			<g:Button ui:field="closeButton">Close</g:Button>
+	    </g:VerticalPanel>
+	</g:HTMLPanel>
+</ui:UiBinder> 

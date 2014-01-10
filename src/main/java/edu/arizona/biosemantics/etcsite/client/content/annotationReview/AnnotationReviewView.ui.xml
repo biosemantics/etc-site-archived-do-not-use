@@ -1,0 +1,40 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+    xmlns:g="urn:import:com.google.gwt.user.client.ui"
+    xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.annotationReview">
+    <ui:style>     
+        .westPanel {
+			padding: 20px;
+        }
+		.northPanel {
+			margin-left: auto;
+			margin-right: auto;
+		}
+        .centerPanel {
+            width:100%;
+			padding: 20px;
+        }
+    </ui:style>
+    <g:HTMLPanel >
+    <g:VerticalPanel>
+        <g:cell>
+         <g:Label styleName="siteHeading">
+             Markup Review
+         </g:Label>   
+        </g:cell>
+    	<g:cell>
+    	 <g:DockLayoutPanel height="1000px" width="950px" ui:field="dockLayoutPanel">
+	       <g:north size='194' styleName="{style.northPanel}">
+	       	   <my:ISearchView ui:field="search"></my:ISearchView>
+	       </g:north>
+	       <g:west size='200' styleName="{style.westPanel}">
+	           <my:IResultView ui:field="result"></my:IResultView>
+	       </g:west>
+	       <g:center styleName="{style.centerPanel}">
+	           <my:IXMLEditorView ui:field="xmlEditor"></my:IXMLEditorView>
+	       </g:center>      
+	     </g:DockLayoutPanel>
+    	</g:cell>
+     </g:VerticalPanel>
+     </g:HTMLPanel>
+</ui:UiBinder> 

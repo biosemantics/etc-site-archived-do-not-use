@@ -1,0 +1,113 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.headerPanel {
+			/*display: none; only for while loading*/
+			/*background-color:green; */
+		}
+		.top {
+			background-image: url(images/Header.gif);
+   			background-size: 100% 100%;
+    		/* width: 100%; */
+    		height: 30px;
+		}
+		.etcLogo {
+    		background-image: url('images/ETCLogo.gif');
+    		background-size: 100% 100%;
+    		height: 73px;
+			width: 500px;
+			position: absolute;
+    		top: 50px;
+    		left: 50%;
+    		margin-left: -250px;
+		}
+		.menu {
+
+		}
+
+		.scrollPanel {
+		
+		}
+		
+		.contentPanel {
+			/* maximize to 900px width, optimized for 1024x768 resolution */
+			width: 950px; 
+			min-width:950px; 
+			/* center content horizontally */
+			/*margin-left: auto;
+			margin-right: auto;*/
+			margin-top:20px;
+			position:absolute;
+			left: 50%;
+			margin-left:-475px;
+		}
+
+		.footerPanel {
+			background-image:url('images/Footer.gif'); 
+			background-size: 100% 100%; 
+			width: 100%; 
+			height:80px;
+		}
+		.footerText {
+			position:absolute;
+			left:50%;
+			margin-left: -450px;
+			top:10px;
+		}
+		.collaboratorsText {
+			position:absolute; 
+			top: 25px; 
+			left:50%; 
+			margin-left: -120px;
+		}
+		.footerLogo1 {
+			background-image:url('images/CharaparserLogo.gif'); 
+			background-size: 100% 100%; 
+			width: 254px; 
+			height: 54px; 
+			position:absolute; 
+			top:5px; 
+			left:50%; 
+			margin-left: -30px;
+		}
+		.footerLogo2 {
+			background-image:url('images/CharaparserLogo.gif'); 
+			background-size: 100% 100%; 
+			width: 254px; 
+			height: 54px; 
+			position:absolute;
+			top:5px; 
+			left:50%; 
+			margin-left: 210px;
+		}
+	</ui:style>
+	
+	 <g:DockLayoutPanel unit='PX'>
+		   <g:north size='273'>
+		     <!-- horizontal panel or similar that gives top + logo + menu -->  
+                <g:HTMLPanel styleName="{style.headerPanel}">
+					<g:SimplePanel styleName="{style.top}" ui:field="topPanel"></g:SimplePanel>
+					<div class='{style.etcLogo}'/>
+					<g:SimplePanel styleName="{style.menu}" ui:field="menuPanel">
+					</g:SimplePanel>
+					<!-- <div class='{style.menu}'> </div> -->
+                </g:HTMLPanel>
+		   </g:north>
+		   <g:center>
+		     	<!--  this will be a placeholder for the later content widget -->
+		     	<g:ScrollPanel styleName="{style.scrollPanel}">
+		     		<g:SimplePanel styleName="{style.contentPanel}" ui:field="contentPanel"></g:SimplePanel>
+                </g:ScrollPanel>
+		   </g:center>
+		   <g:south size='80'>
+		     	<!--  the footer in a simple panel -->
+		        <g:HTMLPanel styleName="{style.footerPanel}">
+                   	<div class="{style.footerText}">School of Information Resources and Library Science<br/>1515 East First Street<br/>Tucson, AZ 85719</div>
+                    <div class="{style.collaboratorsText}">Collaborators:</div>
+                    <div class="{style.footerLogo1}"></div>
+                    <div class="{style.footerLogo2}"></div>
+                </g:HTMLPanel>
+		   </g:south>
+	 </g:DockLayoutPanel>
+</ui:UiBinder> 

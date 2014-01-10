@@ -1,0 +1,43 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.semanticMarkup"
+	xmlns:co="urn:import:edu.arizona.biosemantics.etcsite.client.common">
+	<ui:style>
+		.preprocessTextArea {
+			width:100%;
+			height:300px;
+		}
+		.bracketCounts {
+			padding-left: 10px;	
+		}
+	</ui:style>
+	<g:VerticalPanel>
+		<my:SubMenu ui:field="subMenu" step="PREPROCESS_TEXT"/>
+		<g:VerticalPanel>
+		
+			<g:Label>We found unmatched brackets in the descriptions you provided. 
+			Please take the time to review the descriptions for which this is the case.
+			</g:Label>
+			
+			<g:HorizontalPanel>
+				<g:Label ui:field="descriptionIdLabel"></g:Label>
+			</g:HorizontalPanel>
+			
+			<g:HorizontalPanel>
+				<g:Label>Bracket counts:</g:Label>
+				<g:HTML styleName="{style.bracketCounts}" ui:field="bracketCounts"></g:HTML>
+			</g:HorizontalPanel>
+			
+			<co:ChangeAwareRichTextArea ui:field="textArea" 
+			styleName="{style.preprocessTextArea}"></co:ChangeAwareRichTextArea>
+			
+			<g:HorizontalPanel>
+				<g:Button ui:field="previousDescriptionButton">Previous Description</g:Button>
+				<g:Button ui:field="nextDescriptionButton">Next Description</g:Button>
+			</g:HorizontalPanel>
+			
+			<g:Button ui:field="nextButton">Next</g:Button>
+		</g:VerticalPanel>
+	</g:VerticalPanel>
+</ui:UiBinder>

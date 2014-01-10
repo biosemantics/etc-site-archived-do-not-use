@@ -1,0 +1,28 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+  xmlns:ui="urn:ui:com.google.gwt.uibinder"
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:c="urn:import:com.google.gwt.user.cellview.client">
+  <ui:style>
+		.size {
+			width: 900px;
+			height: 500px;
+		}
+  </ui:style>
+  <g:DockLayoutPanel styleName="{style.size}"
+    unit="EM">
+    <g:center>
+      <c:DataGrid 
+        ui:field='dataGrid' />
+    </g:center>
+
+    <g:south
+      size="3">
+      <g:HTMLPanel>
+        <g:Button ui:field='saveButton'>
+            Save
+        </g:Button>
+      </g:HTMLPanel>
+    </g:south>
+  </g:DockLayoutPanel>
+</ui:UiBinder>

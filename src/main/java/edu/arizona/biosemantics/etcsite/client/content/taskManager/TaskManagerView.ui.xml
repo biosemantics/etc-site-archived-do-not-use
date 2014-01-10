@@ -1,0 +1,39 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:c="urn:import:com.google.gwt.user.cellview.client">
+	<ui:style>
+		.cellTable {
+	      border-bottom: 1px solid #ccc;
+	      text-align: left;
+	      margin-bottom: 4px;
+	    }
+
+		.cellTable td {
+			border-style: none; 
+		}
+	</ui:style>
+	<g:HTMLPanel>
+	    <div class='content900pxCentered'>
+	        <div id='taskManagerContent'>
+	            <g:VerticalPanel>
+	                <g:Label styleName="siteHeading">
+	                    Task Manager
+	                </g:Label>
+		          	<c:CellTable
+			            addStyleNames='{style.cellTable}'
+			            pageSize='15'
+		           	 	ui:field='taskTable' />
+					<c:SimplePager
+		           		ui:field='pager' />
+					<g:HorizontalPanel>
+					    <g:Button ui:field='resumeButton'>Resume</g:Button>
+					    <g:Button ui:field='rewindButton'>Rewind</g:Button>
+					    <g:Button ui:field='deleteButton'>Delete</g:Button>
+					    <g:Button ui:field='shareButton'>Share</g:Button>
+					</g:HorizontalPanel>
+	            </g:VerticalPanel> 
+	        </div>
+	    </div>
+	</g:HTMLPanel>
+</ui:UiBinder> 

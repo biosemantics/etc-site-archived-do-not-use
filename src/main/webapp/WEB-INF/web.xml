@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+              http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5"
+         xmlns="http://java.sun.com/xml/ns/javaee">
+	<display-name>etcsite</display-name>
+
+	<!-- Servlets -->
+	<servlet>
+		<servlet-name>authenticationServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.AuthenticationService</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>fileServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.FileService</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>fileAccessServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.FileAccessService</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>fileSearchServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.FileSearchService</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>taskServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.TaskService</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>semanticMarkupServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.SemanticMarkupService</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>matrixGenerationServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.MatrixGenerationService</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>fileFormatServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.FileFormatService</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>userServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.UserService</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>setupServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.SetupService</servlet-class>
+	</servlet>
+
+	<!-- http://www.gwtproject.org/doc/latest/DevGuideServerCommunication.html#DevGuideImplementingServices
+	       -> Common pitfalls: for url-pattern help -->
+	<servlet-mapping>
+		<servlet-name>authenticationServlet</servlet-name>
+		<url-pattern>/etcsite/auth</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>fileServlet</servlet-name>
+		<url-pattern>/etcsite/file</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>fileSearchServlet</servlet-name>
+		<url-pattern>/etcsite/fileSearch</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>fileAccessServlet</servlet-name>
+		<url-pattern>/etcsite/fileAccess</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>taskServlet</servlet-name>
+		<url-pattern>/etcsite/task</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>semanticMarkupServlet</servlet-name>
+		<url-pattern>/etcsite/semanticMarkup</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>matrixGenerationServlet</servlet-name>
+		<url-pattern>/etcsite/matrixGeneration</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>fileFormatServlet</servlet-name>
+		<url-pattern>/etcsite/fileFormat</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>userServlet</servlet-name>
+		<url-pattern>/etcsite/user</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>setupServlet</servlet-name>
+		<url-pattern>/etcsite/setup</url-pattern>
+	</servlet-mapping> 
+
+
+	<servlet>
+		<servlet-name>downloadServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.DownloadServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>downloadServlet</servlet-name>
+		<url-pattern>/etcsite/download/</url-pattern>
+	</servlet-mapping>
+
+
+	<context-param>
+		<!-- max size of the upload request -->
+		<param-name>maxSize</param-name>
+		<param-value>31457280</param-value>
+	</context-param>
+	<context-param>
+		<!-- Useful in development mode to slow down the uploads in fast networks.
+	         Put the number of milliseconds to sleep in each block received in the server.
+	         false or 0, means don't use slow uploads  -->
+		<param-name>slowUploads</param-name>
+		<param-value>200</param-value>
+	</context-param>
+
+	<servlet>
+		<servlet-name>uploadServlet</servlet-name>
+		<!-- This is the default servlet, it puts files in session -->
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.UploadServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>uploadServlet</servlet-name>
+		<url-pattern>*.gupld</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet>
+		<servlet-name>remoteLoggingServiceImpl</servlet-name>
+		<servlet-class>com.google.gwt.libideas.logging.server.RemoteLoggingServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>remoteLoggingServiceImpl</servlet-name>
+		<url-pattern>/etcsite/logging</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>jUnitHostImpl</servlet-name>
+		<servlet-class>com.google.gwt.junit.server.JUnitHostImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>jUnitHostImpl</servlet-name>
+		<url-pattern>/etcsite/junithost/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>jUnitHostImpl</servlet-name>
+		<url-pattern>/edu.arizona.sirls.etc.site.EtcSiteJUnit/junithost/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>remoteLoggingServiceImpl</servlet-name>
+		<url-pattern>/edu.arizona.sirls.etc.site.EtcSiteJUnit/logging</url-pattern>
+	</servlet-mapping>
+
+	<listener>
+		<listener-class>
+  		edu.arizona.biosemantics.etcsite.server.ETCSiteServletContextListener
+		</listener-class>
+	</listener>
+
+	<!-- Default page to serve -->
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+
+</web-app>

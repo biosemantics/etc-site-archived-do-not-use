@@ -1,0 +1,27 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:my='urn:import:edu.arizona.biosemantics.etcsite.client.common.files'>
+	<ui:style>      
+		.fileTree {
+			height: 300px;
+			max-height: 300px;
+			max-width: 900px;
+			min-width: 900px;
+			width:900px;
+		}
+		.scrollPanel {
+			width:950px;
+		}
+		@external gwt-TreeItem-selected;
+		.gwt-TreeItem-selected {
+			background:#a8d04d;
+		}
+		.gwt-TreeItem-selected  {
+		  display: table !important;
+		}
+	</ui:style>
+	<g:ScrollPanel styleName="{style.scrollPanel}">
+		<my:FileImageLabelTree ui:field='fileTree' styleName="{style.fileTree}"></my:FileImageLabelTree>
+	</g:ScrollPanel> 
+</ui:UiBinder> 

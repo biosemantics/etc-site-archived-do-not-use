@@ -1,0 +1,18 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.user">
+	<ui:style>
+
+	</ui:style>
+	<g:VerticalPanel>
+	    <g:cell>
+	        <my:IUsersView ui:field="usersView"></my:IUsersView>
+	    </g:cell>
+		<g:cell>
+		    <g:HorizontalPanel>
+	    		<g:Button ui:field="selectButton">Select</g:Button>
+			</g:HorizontalPanel>
+		</g:cell>
+	</g:VerticalPanel>
+</ui:UiBinder> 

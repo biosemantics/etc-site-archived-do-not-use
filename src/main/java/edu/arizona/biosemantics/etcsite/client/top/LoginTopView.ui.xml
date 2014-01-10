@@ -1,0 +1,74 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.common">
+	<ui:style>
+		.helpIcon {
+		    /*background-image: url('images/Help.gif');*/
+		    position: absolute; 
+		    background-size: contain; 
+		    top: 5px;
+		    right: 10px;
+		    width: 120px;
+		    height: 20px;
+		}
+		.helpText {
+		    position: absolute;
+		    top: 8px;
+		    right: 15px;
+		}
+		.loginButtonDiv {
+		    /*background-image: url('images/Button.gif');
+		    background-size: 100% 100%;
+		    width: 70px;
+		    height: 20px; */
+		    position: absolute;
+		    top: 2px;
+		    right: 150px;
+		}
+		.loginButton {
+			height: 25px;
+			width: 60px;
+			padding-top: 2px;
+		}
+		.passwordField {
+		    width: 130px;
+		    position: absolute;
+		    top: 2px;
+		    right: 240px;
+		}
+		.passwordTextBox {
+			height: 13px;
+			width: 130px;	
+		}
+		.userField {
+		    width: 130px;
+		    position: absolute;
+		    top: 2px;
+		    right: 400px;
+		    height: 25px;
+		}
+		.userTextBox {
+			height: 13px;
+			width: 130px;
+		}
+		.loginText {
+		    width: 100px;
+		    position: absolute;
+		    top: 8px;
+		    right: 510px;
+		}
+		.clickable {
+			cursor: pointer;
+		}
+	</ui:style>
+	<g:HTMLPanel>
+		<div class="{style.helpIcon} {style.clickable}">
+			<my:ImageLabel imagePath="images/Help.gif" imageWidth="20px" imageHeight="20px" text="Video Tutorial" ui:field="help"></my:ImageLabel>
+		</div>
+		<div class="{style.loginButtonDiv}"><g:Button addStyleNames="{style.loginButton}" ui:field="loginButton">Login</g:Button></div>
+		<div class="{style.userField}"><g:TextBox addStyleNames="{style.userTextBox}"  ui:field="userTextBox"></g:TextBox></div>
+		<div class="{style.passwordField}"><g:PasswordTextBox addStyleNames="{style.passwordTextBox}" ui:field="passwordTextBox"></g:PasswordTextBox></div>
+		<div class="{style.loginText}">User Login:</div>
+	</g:HTMLPanel>
+</ui:UiBinder> 

@@ -1,0 +1,121 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.common">
+	<ui:style>
+		.home{
+		    /*background-image: url('images/Home.gif'); */
+		    position: absolute;
+		    top: 5px;
+		    left: 5px;
+		    background-size: contain;
+		    width: 20px;
+		    height: 20px;
+		}
+		.homeText {
+		    width: 100px;
+		    position: absolute;
+		    top: 8px;
+		    left: 35px;
+		}
+		.greetingText {
+		    width: 100px;
+		    position: absolute;
+		    top: 8px;
+		    right: 600px;
+		}
+		.taskManager {
+		    /*background-image: url('images/TaskManager.gif'); */
+		    position: absolute;
+		    top: 5px;
+		    right: 450px;
+		    background-size: contain;
+		    width: 150px;
+		    height: 20px;
+		}
+		.taskManagerText {
+			width: 100px; 
+			position:absolute; 
+			top:8px; 
+			right:410px;
+		}
+		.fileManager {
+		    /*background-image: url('images/FileManager.gif'); */
+		    position: absolute;
+		    top: 5px;
+		    right: 300px;
+		    background-size: contain;
+		    width: 150px;
+		    height: 20px;
+		}
+		.fileManagerText {
+		    width: 100px;
+		    position: absolute;
+		    top: 8px;
+		    right: 290px;
+		}
+		.settings {
+		    /*background-image: url('images/Settings.gif'); */
+		    position: absolute;
+		    top: 5px;
+		    right: 280px;
+		    background-size: contain;
+		    width: 20px;
+		    height: 20px;
+		}
+		.settingsText {
+		    width: 100px;
+		    position: absolute;
+		    top: 8px;
+		    right: 170px;
+		}
+		.logoutButtonDiv {	
+		    /*background-image: url('images/Button.gif');
+		    background-size: 100% 100%;
+		    width: 70px;
+		    height: 20px;*/
+		    position: absolute;
+		    top: 2px;
+		    right: 140px;
+		}
+		.logoutButton {
+			height: 25px;
+			padding-top: 2px;
+		}
+		.clickable {
+			cursor: pointer;
+		}
+		.helpIcon {
+		    /*background-image: url('images/Help.gif');*/
+		    position: absolute; 
+		    background-size: contain; 
+		    top: 5px;
+		    right: 10px;
+		    width: 120px;
+		    height: 20px;
+		}
+	</ui:style>
+	<g:HTMLPanel>
+		<div class="{style.home} {style.clickable}">
+			<my:ImageLabel ui:field="home" imagePath="images/Home.gif" imageWidth="20px" imageHeight="20px" text="Home"></my:ImageLabel>
+		</div>
+		<div class="{style.greetingText}">
+			<g:Label ui:field="greetingLabel"></g:Label>
+		</div>
+		<div class="{style.taskManager} {style.clickable}">
+			<my:ImageLabel ui:field="taskManager" imagePath="images/TaskManager.gif" imageWidth="20px" imageHeight="20px" text="Task Manager"></my:ImageLabel>
+		</div>
+		<div class="{style.fileManager} {style.clickable}">
+			<my:ImageLabel ui:field="fileManager" imagePath="images/FileManager.gif" imageWidth="20px" imageHeight="20px" text="File Manager"></my:ImageLabel>
+		</div>
+		<div class="{style.settings} {style.clickable}">
+			<my:ImageLabel ui:field="settings" imagePath="images/Settings.gif" imageWidth="20px" imageHeight="20px" text="Settings"></my:ImageLabel>
+		</div>
+		<div class="{style.logoutButtonDiv}">
+			<g:Button addStyleNames="{style.logoutButton}" ui:field="logoutButton">Logout</g:Button>
+		</div>
+		<div class="{style.helpIcon} {style.clickable}">
+			<my:ImageLabel ui:field="help" imagePath="images/Help.gif" imageWidth="20px" imageHeight="20px" text="Video Tutorial"></my:ImageLabel>
+		</div>
+	</g:HTMLPanel>
+</ui:UiBinder> 

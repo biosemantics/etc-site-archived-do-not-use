@@ -1,0 +1,106 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.horizontalPanel {
+			width:900px;
+			/*margin-left: auto;
+			margin-right: auto;*/
+		}
+		.verticalPanel {
+			padding: 10px;
+        }
+        .searchParameter {
+			width: 170px;
+		}
+		.inputLabel {
+			padding-left: 10px;
+			width: 150px;
+		}
+		.xpathLabel {
+			width: 100px;
+		}
+		
+		</ui:style>
+	<g:HorizontalPanel addStyleNames="{style.horizontalPanel}">
+       <g:cell verticalAlignment="ALIGN_TOP">
+	       <g:VerticalPanel addStyleNames="{style.verticalPanel}">
+	       	 <g:Label>Input:</g:Label>
+	       	 <g:HorizontalPanel>
+	       	   <g:cell verticalAlignment="ALIGN_MIDDLE">
+	       	    <g:Button ui:field="inputButton">Browse</g:Button>
+	       	   </g:cell>
+	       	   <g:cell verticalAlignment="ALIGN_MIDDLE">
+	       	   	 <g:Label ui:field="inputLabel" addStyleNames="{style.inputLabel}" ></g:Label>
+	       	   </g:cell>
+	       	 </g:HorizontalPanel>
+	       </g:VerticalPanel>
+       </g:cell>
+       <g:cell verticalAlignment="ALIGN_TOP">
+	       <g:VerticalPanel addStyleNames="{style.verticalPanel}">
+	       	 <g:Label addStyleNames="{style.searchParameter}">Search:</g:Label>
+	         <g:ListBox ui:field="typeListBox"></g:ListBox>
+	       </g:VerticalPanel>
+	   </g:cell>
+	   <g:cell verticalAlignment="ALIGN_TOP">
+	       <g:VerticalPanel addStyleNames="{style.verticalPanel}">
+	       	 <g:Label ui:field="typeLabel" addStyleNames="{style.searchParameter}"></g:Label>
+      	     <g:Grid>
+		       <g:row>
+		       	<g:customCell>
+		       	  <g:Label ui:field="elementListBoxLabel">Element:</g:Label>
+		       	</g:customCell>
+		       	<g:customCell>
+		          <g:ListBox ui:field="elementListBox" addStyleNames="{style.searchParameter}"></g:ListBox>
+		        </g:customCell>
+		       </g:row>
+		       <g:row>
+		        <g:customCell>
+		          <g:Label ui:field="attributeListBoxLabel">Attribute:</g:Label>
+		        </g:customCell>
+		        <g:customCell>
+		          <g:ListBox ui:field="attributeListBox" addStyleNames="{style.searchParameter}"></g:ListBox>
+		        </g:customCell>
+		       </g:row> 
+		       <g:row> 
+	    	    <g:customCell>
+		          <g:Label ui:field="valueTextBoxLabel">Value (optional):</g:Label>
+		        </g:customCell>
+		        <g:customCell>
+		          <g:TextBox ui:field="valueTextBox" addStyleNames="{style.searchParameter}"></g:TextBox>
+		        </g:customCell>
+		       </g:row>
+     		   <g:row> 
+	    	    <g:customCell>
+		          <g:Label ui:field="xpathTextBoxLabel">XPath:</g:Label>
+		        </g:customCell>
+		        <g:customCell>
+		          <g:TextBox ui:field="xpathTextBox" addStyleNames="{style.searchParameter}"></g:TextBox>
+		        </g:customCell>
+		       </g:row>
+         	   <g:row> 
+	    	    <g:cell></g:cell>
+		        <g:customCell>
+		          <g:Button ui:field="searchButton" addStyleNames="{style.searchParameter}">Search</g:Button>
+		        </g:customCell>
+		       </g:row>
+		     </g:Grid>
+	       </g:VerticalPanel>
+	    </g:cell>
+	    <g:cell verticalAlignment="ALIGN_TOP" width="300px">
+	       <g:VerticalPanel addStyleNames="{style.verticalPanel}">
+	       	 <g:Label addStyleNames="{style.searchParameter}">XPath:</g:Label>
+	       	 <g:Grid>
+	       	  <g:row>
+	       	  	<g:customCell>
+		          <g:Label>Constructed:</g:Label>
+		        </g:customCell>
+		        <g:customCell>
+		          <g:Label ui:field="xpathLabel" addStyleNames="{style.xpathLabel}"></g:Label>
+		        </g:customCell>
+	       	  </g:row>
+	       	 </g:Grid>
+	       </g:VerticalPanel>
+	   </g:cell>
+    </g:HorizontalPanel>	
+</ui:UiBinder> 
