@@ -30,6 +30,9 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 
 	/** XPath object model **/
 	public static String xPathObjectModel;
+	
+	/** Compress Command **/
+	public static String compressCommand;
 
 	static {
 		try {
@@ -56,6 +59,8 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			compressedFileBase = properties.getProperty("compressedFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			
 			xPathObjectModel = properties.getProperty("xPathObjectModel");
+			
+			compressCommand = properties.getProperty("compressCommand");
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

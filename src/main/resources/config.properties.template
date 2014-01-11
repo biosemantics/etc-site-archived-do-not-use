@@ -22,3 +22,7 @@ compressedFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/compressedFiles
 
 #XPath Object Model
 xPathObjectModel=http://saxon.sf.net/jaxp/xpath/om
+
+#Compress Command
+#compressCommand=tar [source.parent]/[source.filename] [destination]
+compressCommand=tar -zcvf [destination] --directory=[source.parent] [source.filename]
