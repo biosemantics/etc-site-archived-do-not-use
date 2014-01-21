@@ -26,6 +26,9 @@
   <inherits name="com.google.gwt.activity.Activity"/>
   <inherits name="com.google.gwt.place.Place"/>
   
+  <!-- Oto lite module -->
+  <inherits name='edu.arizona.biosemantics.otolite.OTOLite_part2'/>
+  
   <!-- Include GWTUpload library -->
   <inherits name="gwtupload.GWTUpload"/>
   
@@ -35,6 +38,12 @@
   
   <!-- Load dinamically predefined styles in the library when the application starts -->
   <stylesheet src="Upload.css"/>
+  
+  <!-- Otolite css -->
+  <stylesheet src="oto_lite_css/general.css"/>
+  <stylesheet src="oto_lite_css/hierarchy.css"/>
+  <stylesheet src="oto_lite_css/order.css"/>
+  <stylesheet src="oto_lite_css/to_ontologies.css"/>
   
   <!-- Specify the app entry point class.                         -->
   <entry-point class='edu.arizona.biosemantics.etcsite.client.Client'/>

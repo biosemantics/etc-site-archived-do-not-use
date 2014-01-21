@@ -45,7 +45,7 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 	}
 
 	@Override
-	public IsWidget getView() {
+	public ISemanticMarkupReviewView getView() {
 		return view;
 	}
 

@@ -8,6 +8,8 @@ import java.util.Set;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+import edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration.MatrixGenerationService;
+import edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup.SemanticMarkupService;
 import edu.arizona.biosemantics.etcsite.shared.db.Share;
 import edu.arizona.biosemantics.etcsite.shared.db.ShareDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.ShortUser;

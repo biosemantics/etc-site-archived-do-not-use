@@ -29,11 +29,11 @@
 	</servlet>
 	<servlet>
 		<servlet-name>semanticMarkupServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.SemanticMarkupService</servlet-class>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup.SemanticMarkupService</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>matrixGenerationServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.MatrixGenerationService</servlet-class>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration.MatrixGenerationService</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>fileFormatServlet</servlet-name>
@@ -147,11 +147,11 @@
 
 	<servlet-mapping>
 		<servlet-name>jUnitHostImpl</servlet-name>
-		<url-pattern>/edu.arizona.sirls.etc.site.EtcSiteJUnit/junithost/*</url-pattern>
+		<url-pattern>/edu.arizona.biosemantics.etcsite.EtcSiteJUnit/junithost/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>remoteLoggingServiceImpl</servlet-name>
-		<url-pattern>/edu.arizona.sirls.etc.site.EtcSiteJUnit/logging</url-pattern>
+		<url-pattern>/edu.arizona.biosemantics.etcsite.EtcSiteJUnit/logging</url-pattern>
 	</servlet-mapping>
 
 	<listener>
@@ -164,5 +164,59 @@
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
+	
+	
+	
+	<!-- oto lite -->
+	<servlet>
+		<servlet-name>GeneralServiceIml</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.otolite.server.rpc.GeneralServiceIml</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>GeneralServiceIml</servlet-name>
+		<url-pattern>/etcsite/general</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet>
+		<servlet-name>TermInfoServiceIml</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.otolite.server.rpc.TermInfoServiceIml</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>TermInfoServiceIml</servlet-name>
+		<url-pattern>/etcsite/termInfo</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>ToOntologiesServiceImpl</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.otolite.server.rpc.ToOntologiesServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>ToOntologiesServiceImpl</servlet-name>
+		<url-pattern>/etcsite/toOntologies</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>HierarchyServiceImpl</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.otolite.server.rpc.HierarchyServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>HierarchyServiceImpl</servlet-name>
+		<url-pattern>/etcsite/hierarchy</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>OrderServiceImpl</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.otolite.server.rpc.OrderServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>OrderServiceImpl</servlet-name>
+		<url-pattern>/etcsite/orders</url-pattern>
+	</servlet-mapping>
 
 </web-app>

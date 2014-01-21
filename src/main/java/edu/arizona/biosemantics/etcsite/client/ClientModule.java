@@ -4,6 +4,7 @@ import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.activity.shared.MyActivityManager;
 import com.google.gwt.activity.shared.MyActivityMapper;
+import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
@@ -82,16 +83,23 @@ import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGe
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review.IReviewView;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review.ReviewPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review.ReviewView;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupHierarchyView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupInputView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupLearnView;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupOrdersView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupOutputView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupParseView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupPreprocessView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupReviewView;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupToOntologiesView;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupHierarchyPresenter;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupHierarchyView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupLearnPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupLearnView;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupOrdersPresenter;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupOrdersView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupOutputPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupOutputView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupParsePresenter;
@@ -100,6 +108,8 @@ import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMa
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupPreprocessView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupReviewPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupReviewView;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupToOntologiesPresenter;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupToOntologiesView;
 import edu.arizona.biosemantics.etcsite.client.content.settings.ISettingsView;
 import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsView;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.ITaskManagerView;
@@ -222,6 +232,12 @@ public class ClientModule extends AbstractGinModule {
 		bind(ISemanticMarkupParseView.Presenter.class).to(SemanticMarkupParsePresenter.class);
 		bind(ISemanticMarkupOutputView.class).to(SemanticMarkupOutputView.class);
 		bind(ISemanticMarkupOutputView.Presenter.class).to(SemanticMarkupOutputPresenter.class);
+		bind(ISemanticMarkupToOntologiesView.class).to(SemanticMarkupToOntologiesView.class);
+		bind(ISemanticMarkupToOntologiesView.Presenter.class).to(SemanticMarkupToOntologiesPresenter.class);
+		bind(ISemanticMarkupHierarchyView.class).to(SemanticMarkupHierarchyView.class);
+		bind(ISemanticMarkupHierarchyView.Presenter.class).to(SemanticMarkupHierarchyPresenter.class);
+		bind(ISemanticMarkupOrdersView.class).to(SemanticMarkupOrdersView.class);
+		bind(ISemanticMarkupOrdersView.Presenter.class).to(SemanticMarkupOrdersPresenter.class);
 		
 		//activites, places, eventbus
 		bind(EventBus.class).annotatedWith(Names.named("ActivitiesBus")).to(SimpleEventBus.class).in(Singleton.class);
@@ -244,6 +260,7 @@ public class ClientModule extends AbstractGinModule {
 		
 		bind(EventBus.class).annotatedWith(Names.named("Tasks")).to(SimpleEventBus.class).in(Singleton.class);
 		bind(EventBus.class).annotatedWith(Names.named("AnnotationReview")).to(SimpleEventBus.class).in(Singleton.class);
+		bind(HandlerManager.class).annotatedWith(Names.named("OTOLite")).toProvider(HandlerManagerProvider.class).in(Singleton.class);
 		
 		//services
 		bind(IAuthenticationServiceAsync.class).in(Singleton.class);
@@ -263,6 +280,17 @@ public class ClientModule extends AbstractGinModule {
 		
 		//misc
 		bind(FilePathShortener.class).in(Singleton.class);
+	}
+	
+	public static class HandlerManagerProvider implements Provider<HandlerManager> {
+		private HandlerManager handlerManager;
+		public HandlerManagerProvider() {
+			this.handlerManager = new HandlerManager(null);
+		}
+		@Override
+		public HandlerManager get() {
+			return handlerManager;
+		}
 	}
 	
 	public static class FileManagerPresenterProvider implements Provider<IFileManagerView.Presenter> {

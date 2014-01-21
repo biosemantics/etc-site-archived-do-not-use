@@ -21,6 +21,12 @@ public class Query {
 		preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 	}
 	
+	public Query(String sql, String pool) throws ClassNotFoundException, SQLException, IOException {
+		this.sql = sql;
+		connection = ConnectionPool.getInstance().getConnection(pool);
+		preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+	}
+	
 	public void setParameter(int index, String parameter) throws SQLException {
 		preparedStatement.setString(index, parameter);
 	}

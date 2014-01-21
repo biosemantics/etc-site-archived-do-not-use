@@ -13,6 +13,7 @@ import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMa
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupParsePlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupPreprocessPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupReviewPlace;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupToOntologiesPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonPlace;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationPlace;
 import edu.arizona.biosemantics.etcsite.client.content.visualization.VisualizationPlace;
@@ -32,6 +33,12 @@ public class ResumeTaskPlaceMapper {
 					return new SemanticMarkupLearnPlace(task);
 				case REVIEW_TERMS:
 					return new SemanticMarkupReviewPlace(task);
+				case TO_ONTOLOGIES:
+					return new SemanticMarkupToOntologiesPlace(task);
+				case HIERARCHY:
+					return new SemanticMarkupToOntologiesPlace(task);
+				case ORDERS:
+					return new SemanticMarkupToOntologiesPlace(task);
 				case PARSE_TEXT:
 					return new SemanticMarkupParsePlace(task);
 				case OUTPUT:

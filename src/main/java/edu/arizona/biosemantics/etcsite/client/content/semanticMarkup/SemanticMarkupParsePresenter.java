@@ -13,6 +13,7 @@ import edu.arizona.biosemantics.etcsite.shared.db.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.ParseInvocation;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.TaskStageEnum;
 
 public class SemanticMarkupParsePresenter implements ISemanticMarkupParseView.Presenter {
 
@@ -46,7 +47,12 @@ public class SemanticMarkupParsePresenter implements ISemanticMarkupParseView.Pr
 
 	@Override
 	public void onNext() {
-		placeController.goTo(new SemanticMarkupReviewPlace(task));
+		semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), task, TaskStageEnum.TO_ONTOLOGIES, new RPCCallback<Task>() {
+			@Override
+			public void onResult(Task result) {
+				placeController.goTo(new SemanticMarkupToOntologiesPlace(task));
+			}
+		});
 	}
 
 	@Override

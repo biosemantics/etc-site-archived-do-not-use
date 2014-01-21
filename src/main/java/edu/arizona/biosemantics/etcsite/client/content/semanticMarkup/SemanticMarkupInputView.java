@@ -42,9 +42,6 @@ public class SemanticMarkupInputView extends Composite implements ISemanticMarku
 	@UiField
 	TextBox taskNameTextBox;
 	
-	@UiField
-	SubMenu subMenu;
-	
 	public SemanticMarkupInputView() {
 		initWidget(uiBinder.createAndBindUi(this));
 		for(Glossary glossary : Glossary.values()) {

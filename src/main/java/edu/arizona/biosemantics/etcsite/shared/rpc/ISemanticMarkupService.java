@@ -2,6 +2,7 @@ package edu.arizona.biosemantics.etcsite.shared.rpc;
 
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -35,5 +36,7 @@ public interface ISemanticMarkupService extends RemoteService {
 	public RPCResult<Task> getLatestResumable(AuthenticationToken authenticationToken);
 	
 	public RPCResult<Void> cancel(AuthenticationToken authenticationToken, Task task);
+	
+	public RPCResult<Void> prepareOptionalOtoLiteSteps(AuthenticationToken authenticationToken, Task task);
 
 }

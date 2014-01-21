@@ -20,10 +20,13 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 	private ISemanticMarkupPreprocessView.Presenter preprocessPresenter;
 	private ISemanticMarkupLearnView.Presenter learnPresenter;
 	private ISemanticMarkupReviewView.Presenter reviewPresenter;
+	private ISemanticMarkupToOntologiesView.Presenter toOntologyPresenter;
 	private ISemanticMarkupParseView.Presenter parsePresenter;
 	private ISemanticMarkupOutputView.Presenter outputPresenter;
 	private AcceptsOneWidget panel;
 	private Task task;
+	private edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupHierarchyView.Presenter hierarchyPresenter;
+	private edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupOrdersView.Presenter ordersPresenter;
 
 	@Inject
 	public SemanticMarkupActivity(
@@ -32,6 +35,9 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 			ISemanticMarkupPreprocessView.Presenter preprocessPresenter,
 			ISemanticMarkupLearnView.Presenter learnPresenter,
 			ISemanticMarkupReviewView.Presenter reviewPresenter,
+			ISemanticMarkupToOntologiesView.Presenter toOntologyPresenter,
+			ISemanticMarkupHierarchyView.Presenter hierarchyPresenter,
+			ISemanticMarkupOrdersView.Presenter ordersPresenter,
 			ISemanticMarkupParseView.Presenter parsePresenter,
 			ISemanticMarkupOutputView.Presenter outputPresenter) {
 		super();
@@ -40,6 +46,9 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 		this.preprocessPresenter = preprocessPresenter;
 		this.learnPresenter = learnPresenter;
 		this.reviewPresenter = reviewPresenter;
+		this.hierarchyPresenter = hierarchyPresenter;
+		this.ordersPresenter = ordersPresenter;
+		this.toOntologyPresenter = toOntologyPresenter;
 		this.parsePresenter = parsePresenter;
 		this.outputPresenter = outputPresenter;
 	}
@@ -87,6 +96,18 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 								case REVIEW_TERMS:
 									reviewPresenter.setTask(task);
 									panel.setWidget(reviewPresenter.getView());
+									break;
+								case TO_ONTOLOGIES:
+									toOntologyPresenter.setTask(task);
+									panel.setWidget(toOntologyPresenter.getView());
+									break;
+								case HIERARCHY:
+									hierarchyPresenter.setTask(task);
+									panel.setWidget(hierarchyPresenter.getView());
+									break;
+								case ORDERS:
+									ordersPresenter.setTask(task);
+									panel.setWidget(ordersPresenter.getView());
 									break;
 								case PARSE_TEXT:
 									parsePresenter.setTask(task);

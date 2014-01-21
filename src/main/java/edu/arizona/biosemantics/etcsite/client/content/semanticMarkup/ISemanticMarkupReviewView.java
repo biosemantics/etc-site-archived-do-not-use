@@ -10,7 +10,7 @@ public interface ISemanticMarkupReviewView extends IsWidget {
 
 		void setTask(Task task);
 
-		IsWidget getView();
+		ISemanticMarkupReviewView getView();
 
 		void onNext();
 		
