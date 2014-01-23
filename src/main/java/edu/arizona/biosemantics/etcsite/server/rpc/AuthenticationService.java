@@ -1,7 +1,11 @@
 package edu.arizona.biosemantics.etcsite.server.rpc;
 
+import java.io.IOException;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+import edu.arizona.biosemantics.etcsite.shared.db.User;
+import edu.arizona.biosemantics.etcsite.shared.db.UserDAO;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationService;
@@ -21,11 +25,18 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	}
 	
 	@Override
-	public RPCResult<AuthenticationResult> login(String user, String password) {
+	public RPCResult<AuthenticationResult> login(String username, String password) {
 		//String hash = BCrypt.hashpw(password, BCrypt.gensalt());
 		//(create new user entry in db storing ONLY username and hash, *NOT* the password).
-		if(user.equals("hong") || user.equals("elvis") || user.equals("thomas"))
-			return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(true, "sessionID", user));
+		try {
+			User user = UserDAO.getInstance().getUser(username);
+			if(user != null) {
+				return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(true, "sessionID", username));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new RPCResult<AuthenticationResult>(false, "Internal Server Error");
+		}			
 		return new RPCResult<AuthenticationResult>(true, "Authentication failed", new AuthenticationResult(false, null, null));
 	}
 
