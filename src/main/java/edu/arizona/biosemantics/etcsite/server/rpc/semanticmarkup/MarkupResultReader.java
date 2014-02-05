@@ -45,9 +45,13 @@ public class MarkupResultReader {
 				if(charType != null && charType.equals("range_value")) {
 					String toValue = element.getAttributeValue("to");
 					String fromValue = element.getAttributeValue("from");
-					if(!numericalsPattern.matcher(toValue).matches() || !numericalsPattern.matcher(fromValue).matches()) {
-						String name = element.getAttributeValue("name");
+					
+					String name = element.getAttributeValue("name");
+					if(toValue != null && !numericalsPattern.matcher(toValue).matches()) {
 						result.add(new Character(toValue, name));
+					}
+					
+					if(fromValue != null && !numericalsPattern.matcher(fromValue).matches()) {
 						result.add(new Character(fromValue, name));
 					}
 				}
@@ -94,6 +98,7 @@ public class MarkupResultReader {
 		List<String> result = new LinkedList<String>();
 		SAXBuilder saxBuilder = new SAXBuilder();
 		for(File file : input.listFiles()) {
+			System.out.println(file.getName());
 			Document document = null;
 			try {
 				document = saxBuilder.build(file);
@@ -112,6 +117,8 @@ public class MarkupResultReader {
 				if(constraint != null)
 					name = constraint + " " + name;
 				result.add(name);
+				if(name.equals("in staminate flowers ovate or obovate to narrowly elliptic; in pistillate ovate to elliptic , 6--11 mm petal"))
+					System.out.println("here");
 			}
 		}
 		return result;

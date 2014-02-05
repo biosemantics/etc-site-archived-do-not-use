@@ -26,6 +26,11 @@ public class Character {
 		this.category = category;
 	}
 	
+	@Override
+	public String toString() {
+		return this.category + ": " + this.value;
+	}
+	
 	
 
 }

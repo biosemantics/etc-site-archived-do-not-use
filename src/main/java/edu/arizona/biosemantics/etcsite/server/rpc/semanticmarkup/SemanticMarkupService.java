@@ -299,19 +299,32 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			TermCategoryPairDAO termCategoryPairDAO = TermCategoryPairDAO.getInstance();
 			SynonymsDAO synonymsDAO = SynonymsDAO.getInstance();
 			for(String structure : structures) {
-				List<String> synonyms = synonymsDAO.getSynonyms(uploadId, structure, "structure");
-				termCategoryPairDAO.addTermCategoryPair(uploadId, structure, "structure", synonyms);
+				try {
+					List<String> synonyms = synonymsDAO.getSynonyms(uploadId, structure, "structure");
+					termCategoryPairDAO.addTermCategoryPair(uploadId, structure, "structure", synonyms);
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
 			}
 			for(Character character : characters) {
-				//character types such as range_value for e.g. size do not have a value attribute
-				List<String> synonyms = synonymsDAO.getSynonyms(uploadId, character.getValue(), character.getCategory());
-				termCategoryPairDAO.addTermCategoryPair(uploadId, character.getValue(), character.getCategory(), synonyms);
+				System.out.println(character.toString());
+				try {
+					//character types such as range_value for e.g. size do not have a value attribute
+					List<String> synonyms = synonymsDAO.getSynonyms(uploadId, character.getValue(), character.getCategory());
+					termCategoryPairDAO.addTermCategoryPair(uploadId, character.getValue(), character.getCategory(), synonyms);
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
 			}
 			
 			//for hierarchies view
 			StructuresDAO structuresDAO = StructuresDAO.getInstance();
 			for(String structure : structures) {
-				structuresDAO.addStructure(uploadId, structure);
+				try {
+					structuresDAO.addStructure(uploadId, structure);
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
 			}
 			
 			//for orders view
