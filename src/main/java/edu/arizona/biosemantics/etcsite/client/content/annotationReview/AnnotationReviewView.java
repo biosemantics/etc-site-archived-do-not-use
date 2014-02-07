@@ -30,11 +30,11 @@ public class AnnotationReviewView extends Composite implements IAnnotationReview
 	private Presenter presenter;
 
 	@Inject
-    public AnnotationReviewView(ISearchView search, IResultView result, IXMLEditorView xmlEditor,
+    public AnnotationReviewView(ISearchView.Presenter searchPresenter, IResultView.Presenter resultPresenter, IXMLEditorView.Presenter xmlEditorPresenter,
     		IFileAccessServiceAsync fileAccessService, IFileFormatServiceAsync fileFormatService, IFileSearchServiceAsync fileSearchService) {
-    	this.search = search;
-        this.result = result;
-        this.xmlEditor = xmlEditor;
+    	this.search = searchPresenter.getView();
+        this.result = resultPresenter.getView();
+        this.xmlEditor = xmlEditorPresenter.getView();
     	initWidget(uiBinder.createAndBindUi(this));
     }
 

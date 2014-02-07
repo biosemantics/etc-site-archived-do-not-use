@@ -31,16 +31,15 @@ public class SearchPresenter implements ISearchView.Presenter {
 
 	@Inject
 	public SearchPresenter(@Named("AnnotationReview")EventBus eventBus, ISearchView view, IFileServiceAsync fileService, IFileSearchServiceAsync fileSearchService, 
-			ISelectableFileTreeView.Presenter selectableFileTreePresenter, IFileTreeView.Presenter fileTreePresenter) {
+			ISelectableFileTreeView.Presenter selectableFileTreePresenter) {
 		this.eventBus = eventBus;
 		this.view = view;
 		view.setPresenter(this);
+		view.setEnabled(false);
 		this.fileService = fileService;
 		this.fileSearchService = fileSearchService;
-		this.fileTreePresenter = fileTreePresenter;
+		this.fileTreePresenter = selectableFileTreePresenter.getFileTreePresenter();
 		this.selectableFileTreePresenter = selectableFileTreePresenter;
-		view.setPresenter(this);
-		view.setEnabled(false);
 	}
 
 	@Override
@@ -70,6 +69,11 @@ public class SearchPresenter implements ISearchView.Presenter {
 				}
 			}
 		});
+	}
+
+	@Override
+	public ISearchView getView() {
+		return view;
 	}
 
 }

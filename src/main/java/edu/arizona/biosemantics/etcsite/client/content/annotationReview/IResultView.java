@@ -11,6 +11,7 @@ public interface IResultView extends IsWidget {
 	
 	  public interface Presenter {
 		void onTargetClicked(String target);
+		IResultView getView();
 	  }
 	  
 	  void setPresenter(Presenter presenter);

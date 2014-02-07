@@ -472,7 +472,10 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				XPath xPath = XPathFactory.newInstance().newXPath();
 				Node node = (Node)xPath.evaluate("/treatment/description",
 				        document.getDocumentElement(), XPathConstants.NODE);
-				return new RPCResult<String>(true, "", node.getTextContent());
+				if(node != null)
+					return new RPCResult<String>(true, "", node.getTextContent());
+				else 
+					return new RPCResult<String>(false, "No description found in this file", null);
 			}
 			return new RPCResult<String>(false, fileContentResult.getMessage(), "");
 		} catch(Exception e) {

@@ -163,8 +163,10 @@ public class ClientModule extends AbstractGinModule {
 	//A view should in the general case be a widget, which can only be attached to one parent at a time.
 	//If defined as singleton, it will with multiple use be attached to a new parent, hence disappear in another view.
 	//This is usually not the desired behavior. 
-	//Use providers or make presenter singleton and responsible of view 
-	protected void configure() {		
+	//Use providers or make presenter singleton and responsible of view/return the view when necessary for third party
+	protected void configure() {
+		bind(Integer.class).annotatedWith(Names.named("CheckResumables")).toProvider(CheckResumablesProvider.class);
+		
 		//views, presenter
 		bind(IEtcSiteView.class).to(EtcSiteView.class);
 		bind(ITopView.class).to(TopView.class);
@@ -370,5 +372,12 @@ public class ClientModule extends AbstractGinModule {
 			return selectableFileTreePresenter;
 		}
 		
+	}
+	
+	public static class CheckResumablesProvider implements Provider<Integer> {
+		@Override
+		public Integer get() {
+			return 100000;
+		}
 	}
 }

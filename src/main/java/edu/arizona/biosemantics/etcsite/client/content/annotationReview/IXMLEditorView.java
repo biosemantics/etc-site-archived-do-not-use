@@ -10,6 +10,7 @@ public interface IXMLEditorView extends IsWidget {
     void onValidateButtonClicked();
 	//void setTarget(Search search, String target);
 	void setTarget(String target);
+	IXMLEditorView getView();
   }
   
   void setPresenter(Presenter presenter);

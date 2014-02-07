@@ -10,7 +10,7 @@
 		}
 	</ui:style>
 	<g:VerticalPanel>
-	    <my:SubMenu ui:field="subMenu" step="INPUT"/>
+	    <my:SubMenu ui:field="subMenu" step="REVIEW_TERMS"/>
 		<g:Label>Please review the terms we learned. 
 		You can select terms in the left column and drag them into the categories on the 
 		right hand side.

@@ -27,12 +27,14 @@ public class LoggedInActivity implements Activity, Presenter {
 	private PlaceController placeController;
 	private ITopView topView;
 	private Timer resumableTasksTimer;
+	private int resumableTasksTime;
 
 	@Inject
 	public LoggedInActivity(ITopView topView, PlaceController placeController, 
-			final ITaskServiceAsync taskService, @Named("Tasks") final EventBus tasksBus) {
+			final ITaskServiceAsync taskService, @Named("Tasks") final EventBus tasksBus, @Named("CheckResumables")int resumableTasksTime) {
 		this.topView = topView;
 		this.placeController = placeController;
+		this.resumableTasksTime = resumableTasksTime;
 		this.resumableTasksTimer = new Timer() {
 	        public void run() {
 	        	taskService.getResumableTasks(Authentication.getInstance().getToken(), new RPCCallback<Map<Integer, Task>>() {
@@ -50,7 +52,7 @@ public class LoggedInActivity implements Activity, Presenter {
 		topView.setPresenter(this);
 		topView.setGreeting("Hello " + Authentication.getInstance().getUsername());
 		panel.setWidget(topView.asWidget());
-		this.resumableTasksTimer.scheduleRepeating(1000);
+		this.resumableTasksTimer.scheduleRepeating(resumableTasksTime);
 	}
 	
 	@Override

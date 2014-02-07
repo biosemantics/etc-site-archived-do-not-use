@@ -10,6 +10,7 @@ public interface ISearchView extends IsWidget {
 	public interface Presenter {
 		void onSearchButtonClicked(Search search);
 		void onInputButtonClicked();
+		ISearchView getView();
 	}
 	  
 	void setPresenter(Presenter presenter);

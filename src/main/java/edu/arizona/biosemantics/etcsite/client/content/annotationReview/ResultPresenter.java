@@ -29,4 +29,9 @@ public class ResultPresenter implements IResultView.Presenter {
 		eventBus.fireEvent(new TargetEvent(target));
 	}
 
+	@Override
+	public IResultView getView() {
+		return view;
+	}
+
 }

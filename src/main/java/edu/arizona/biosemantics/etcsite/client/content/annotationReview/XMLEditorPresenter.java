@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.google.web.bindery.event.shared.EventBus;
 
+import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessServiceAsync;
@@ -44,11 +45,11 @@ public class XMLEditorPresenter implements IXMLEditorView.Presenter {
 	
 	@Override
 	public void onSaveButtonClicked() {
-		fileFormatService.isValidMarkedupTaxonDescriptionContent(new AuthenticationToken("test", ""), view.getText(), new RPCCallback<Boolean>() {
+		fileFormatService.isValidMarkedupTaxonDescriptionContent(Authentication.getInstance().getToken(), view.getText(), new RPCCallback<Boolean>() {
 			@Override
 			public void onResult(Boolean result) {
 				if(result) {
-					fileAccessService.setFileContent(new AuthenticationToken("test", ""), target, view.getText(), new RPCCallback<Void>() {
+					fileAccessService.setFileContent(Authentication.getInstance().getToken(), target, view.getText(), new RPCCallback<Void>() {
 						@Override
 						public void onResult(Void result) {
 							Window.alert("Saved successfully");
@@ -70,7 +71,7 @@ public class XMLEditorPresenter implements IXMLEditorView.Presenter {
 	    }
 	    System.out.println(sb.toString());*/
 		
-		fileFormatService.isValidMarkedupTaxonDescriptionContent(new AuthenticationToken("test", ""), view.getText(), new AsyncCallback<RPCResult<Boolean>>() {
+		fileFormatService.isValidMarkedupTaxonDescriptionContent(Authentication.getInstance().getToken(), view.getText(), new AsyncCallback<RPCResult<Boolean>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
@@ -91,7 +92,7 @@ public class XMLEditorPresenter implements IXMLEditorView.Presenter {
 	public void setTarget(String target) {
 		this.setEnabled(true);
 		this.target = target;
-		fileAccessService.getFileContentHighlighted(new AuthenticationToken("test", ""), target, FileTypeEnum.TAXON_DESCRIPTION, new AsyncCallback<RPCResult<String>>() {
+		fileAccessService.getFileContentHighlighted(Authentication.getInstance().getToken(), target, FileTypeEnum.TAXON_DESCRIPTION, new AsyncCallback<RPCResult<String>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
@@ -106,5 +107,10 @@ public class XMLEditorPresenter implements IXMLEditorView.Presenter {
 
 	public void setEnabled(boolean value) {
 		this.view.setEnabled(value);
+	}
+
+	@Override
+	public IXMLEditorView getView() {
+		return view;
 	}
 }
