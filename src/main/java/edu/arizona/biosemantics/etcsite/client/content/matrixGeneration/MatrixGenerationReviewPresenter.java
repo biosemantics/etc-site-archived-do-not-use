@@ -7,8 +7,8 @@ import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review.IReviewView;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review.IReviewView.Presenter;
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
 
 public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewView.Presenter {
 

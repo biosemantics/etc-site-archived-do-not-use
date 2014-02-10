@@ -1,11 +1,11 @@
-package edu.arizona.biosemantics.etcsite.shared.rpc;
+package edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
-import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.Matrix;
-import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 
 @RemoteServiceRelativePath("matrixGeneration")
 public interface IMatrixGenerationService extends RemoteService {
@@ -27,5 +27,8 @@ public interface IMatrixGenerationService extends RemoteService {
 	public RPCResult<Void> save(AuthenticationToken authenticationToken, Matrix matrix, Task task);
 	
 	public RPCResult<Task> goToTaskStage(AuthenticationToken authenticationToken, Task task, TaskStageEnum review);
+
+	public RPCResult<Boolean> isValidInput(AuthenticationToken authenticationToken,
+			String filePath);
 
 }

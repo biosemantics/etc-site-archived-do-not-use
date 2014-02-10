@@ -19,6 +19,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.rpc.AdminAuthenticationToken;
+import edu.arizona.biosemantics.etcsite.server.rpc.FileFormatService;
 import edu.arizona.biosemantics.etcsite.server.rpc.FilePermissionService;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileService;
 import edu.arizona.biosemantics.etcsite.shared.db.AbstractTaskConfiguration;
@@ -35,10 +36,11 @@ import edu.arizona.biosemantics.etcsite.shared.db.TaskTypeDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.TasksOutputFilesDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.UserDAO;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFilePermissionService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IMatrixGenerationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
+import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.Matrix;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.Taxon;
@@ -47,6 +49,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 
 	private static final long serialVersionUID = -7871896158610489838L;
 	private IFileService fileService = new FileService();
+	private IFileFormatService fileFormatService = new FileFormatService();
 	private IFilePermissionService filePermissionService = new FilePermissionService();
 	private int maximumThreads = 10;
 	private ListeningExecutorService executorService;
@@ -396,6 +399,32 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			e.printStackTrace();
 			return new RPCResult<Task>(false, "Internal Server Error");
 		}
+	}
+	
+	@Override
+	public RPCResult<Boolean> isValidInput(AuthenticationToken authenticationToken, String filePath) {
+		RPCResult<Boolean> readPermission = filePermissionService.hasReadPermission(authenticationToken, filePath);
+		if(!readPermission.isSucceeded())
+			return new RPCResult<Boolean>(false, readPermission.getMessage());
+		if(!readPermission.getData()) 
+			return new RPCResult<Boolean>(true, false);
+		RPCResult<Boolean> directoryResult = fileService.isDirectory(authenticationToken, filePath);
+		if(!directoryResult.isSucceeded())
+			return new RPCResult<Boolean>(false, directoryResult.getMessage());
+		if(!directoryResult.getData())
+			return new RPCResult<Boolean>(true, false);
+		RPCResult<List<String>> filesResult = fileService.getDirectoriesFiles(authenticationToken, filePath);
+		if(!filesResult.isSucceeded())
+			return new RPCResult<Boolean>(false, filesResult.getMessage());
+		List<String> files = filesResult.getData();
+		for(String file : files) {
+			RPCResult<Boolean> validResult = fileFormatService.isValidMarkedupTaxonDescription(authenticationToken, filePath + File.separator + file);
+			if(!validResult.isSucceeded())
+				return new RPCResult<Boolean>(false, validResult.getMessage());
+			if(!validResult.getData())
+				return new RPCResult<Boolean>(true, false);
+		}
+		return new RPCResult<Boolean>(true, true);
 	}
 
 }

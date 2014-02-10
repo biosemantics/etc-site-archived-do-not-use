@@ -6,7 +6,9 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.client.common.Configuration;
 import edu.arizona.biosemantics.etcsite.client.common.IMessageView;
+import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileImageLabelTreeItem;
 import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView;
@@ -15,8 +17,8 @@ import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerD
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
 import edu.arizona.biosemantics.etcsite.shared.file.FileFilter;
 import edu.arizona.biosemantics.etcsite.shared.file.FilePathShortener;
-import edu.arizona.biosemantics.etcsite.shared.rpc.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.TaskStageEnum;
 
 public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Presenter {
@@ -58,19 +60,28 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 
 	@Override
 	public void onNext() {
-		semanticMarkupService.start(Authentication.getInstance().getToken(), 
-				view.getTaskName(), inputFile, view.getGlossaryName(), new RPCCallback<Task>() {
-					@Override
-					public void onResult(Task result) {
-						switch(TaskStageEnum.valueOf(result.getTaskStage().getTaskStage())) {
-						case LEARN_TERMS:
-							placeController.goTo(new SemanticMarkupLearnPlace(result));
-							break;
-						default:
-							placeController.goTo(new SemanticMarkupPreprocessPlace(result));
-							break;
-						}
-					}
+		semanticMarkupService.isValidInput(Authentication.getInstance().getToken(), inputFile, new RPCCallback<Boolean>() {
+			@Override
+			public void onResult(Boolean result) {
+				if(!result) {
+					messagePresenter.showMessage("Input", "Not a valid input directory");
+				} else {
+					semanticMarkupService.start(Authentication.getInstance().getToken(), 
+							view.getTaskName(), inputFile, view.getGlossaryName(), new RPCCallback<Task>() {
+								@Override
+								public void onResult(Task result) {
+									switch(TaskStageEnum.valueOf(result.getTaskStage().getTaskStage())) {
+									case LEARN_TERMS:
+										placeController.goTo(new SemanticMarkupLearnPlace(result));
+										break;
+									default:
+										placeController.goTo(new SemanticMarkupPreprocessPlace(result));
+										break;
+									}
+								}
+					});
+				}
+			}
 		});
 	}
 

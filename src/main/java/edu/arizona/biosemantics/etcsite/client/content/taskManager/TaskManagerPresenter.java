@@ -23,10 +23,10 @@ import edu.arizona.biosemantics.etcsite.client.content.user.UsersPresenter;
 import edu.arizona.biosemantics.etcsite.shared.db.Share;
 import edu.arizona.biosemantics.etcsite.shared.db.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IMatrixGenerationServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ITaskServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.ISemanticMarkupServiceAsync;
 
 public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 

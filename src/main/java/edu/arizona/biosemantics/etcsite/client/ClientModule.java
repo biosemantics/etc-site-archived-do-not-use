@@ -148,14 +148,14 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFilePermissionServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileSearchServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IMatrixGenerationServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ISetupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ITaskServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ITaxonomyComparisonServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ITreeGenerationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IUserServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IVisualizationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.ISemanticMarkupServiceAsync;
 
 public class ClientModule extends AbstractGinModule {
 	

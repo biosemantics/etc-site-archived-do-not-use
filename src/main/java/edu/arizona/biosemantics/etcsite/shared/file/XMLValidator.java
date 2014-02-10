@@ -30,7 +30,7 @@ public class XMLValidator implements IContentValidator {
 		} catch (Exception e) {
 			//System.out.println(schemaFile.getAbsolutePath());
 			//System.out.println(input);
-			//e.printStackTrace();
+			e.printStackTrace();
 			return false;
 		}
 	}

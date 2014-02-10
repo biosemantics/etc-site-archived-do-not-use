@@ -10,8 +10,8 @@ import edu.arizona.biosemantics.etcsite.client.content.taskManager.ResumableTask
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.ResumableTasksEventHandler;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
-import edu.arizona.biosemantics.etcsite.shared.rpc.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.ParseInvocation;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.TaskStageEnum;
 

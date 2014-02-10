@@ -33,7 +33,7 @@
 				   	<g:InlineLabel>.</g:InlineLabel>
 				</g:FlowPanel>
 			</g:HorizontalPanel>
-			<g:Button ui:field="nextButton">Next</g:Button>
+			<g:Button ui:field="nextButton" visible="false">Next</g:Button>
 		</g:VerticalPanel>
 	</g:VerticalPanel>
 </ui:UiBinder> 

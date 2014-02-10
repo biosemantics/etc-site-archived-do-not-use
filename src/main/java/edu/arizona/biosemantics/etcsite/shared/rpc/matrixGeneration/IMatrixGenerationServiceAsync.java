@@ -1,10 +1,10 @@
-package edu.arizona.biosemantics.etcsite.shared.rpc;
+package edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
-import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.Matrix;
-import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 
 public interface IMatrixGenerationServiceAsync {
 
@@ -26,5 +26,6 @@ public interface IMatrixGenerationServiceAsync {
 
 	public void goToTaskStage(AuthenticationToken authenticationToken, Task task, TaskStageEnum review, AsyncCallback<RPCResult<Task>> callback);
 
+	public void isValidInput(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<Boolean>> callback);
 
 }

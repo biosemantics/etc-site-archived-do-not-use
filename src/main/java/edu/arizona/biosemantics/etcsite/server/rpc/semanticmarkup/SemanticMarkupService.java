@@ -32,6 +32,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.rpc.AdminAuthenticationToken;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileAccessService;
+import edu.arizona.biosemantics.etcsite.server.rpc.FileFormatService;
 import edu.arizona.biosemantics.etcsite.server.rpc.FilePermissionService;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileService;
 import edu.arizona.biosemantics.etcsite.shared.db.AbstractTaskConfiguration;
@@ -54,13 +55,15 @@ import edu.arizona.biosemantics.etcsite.shared.db.otolite.StructuresDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.otolite.SynonymsDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.otolite.TermCategoryPairDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.otolite.TermsInOrderCategoryDAO;
+import edu.arizona.biosemantics.etcsite.shared.file.search.SearchResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFilePermissionService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.ISemanticMarkupService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.BracketValidator;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.ISemanticMarkupService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.LearnInvocation;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.ParseInvocation;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.PreprocessedDescription;
@@ -71,6 +74,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	private static final long serialVersionUID = -7871896158610489838L;
 	private IFileAccessService fileAccessService = new FileAccessService();
 	private IFileService fileService = new FileService();
+	private IFileFormatService fileFormatService = new FileFormatService();
 	private IFilePermissionService filePermissionService = new FilePermissionService();
 	private BracketValidator bracketValidator = new BracketValidator();
 	private int maximumThreads = 10;
@@ -613,5 +617,30 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		super.destroy();
 	}
 
+	@Override
+	public RPCResult<Boolean> isValidInput(AuthenticationToken authenticationToken, String filePath) {
+		RPCResult<Boolean> readPermission = filePermissionService.hasReadPermission(authenticationToken, filePath);
+		if(!readPermission.isSucceeded())
+			return new RPCResult<Boolean>(false, readPermission.getMessage());
+		if(!readPermission.getData()) 
+			return new RPCResult<Boolean>(true, false);
+		RPCResult<Boolean> directoryResult = fileService.isDirectory(authenticationToken, filePath);
+		if(!directoryResult.isSucceeded())
+			return new RPCResult<Boolean>(false, directoryResult.getMessage());
+		if(!directoryResult.getData())
+			return new RPCResult<Boolean>(true, false);
+		RPCResult<List<String>> filesResult = fileService.getDirectoriesFiles(authenticationToken, filePath);
+		if(!filesResult.isSucceeded())
+			return new RPCResult<Boolean>(false, filesResult.getMessage());
+		List<String> files = filesResult.getData();
+		for(String file : files) {
+			RPCResult<Boolean> validResult = fileFormatService.isValidTaxonDescription(authenticationToken, filePath + File.separator + file);
+			if(!validResult.isSucceeded())
+				return new RPCResult<Boolean>(false, validResult.getMessage());
+			if(!validResult.getData())
+				return new RPCResult<Boolean>(true, false);
+		}
+		return new RPCResult<Boolean>(true, true);
+	}
 
 }

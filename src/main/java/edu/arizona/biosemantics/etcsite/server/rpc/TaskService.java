@@ -17,10 +17,10 @@ import edu.arizona.biosemantics.etcsite.shared.db.Task;
 import edu.arizona.biosemantics.etcsite.shared.db.TaskDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.UserDAO;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IMatrixGenerationService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.ISemanticMarkupService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ITaskService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
+import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.ISemanticMarkupService;
 
 public class TaskService extends RemoteServiceServlet implements ITaskService {
 

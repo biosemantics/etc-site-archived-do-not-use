@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.shared.rpc;
+package edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup;
 
 import java.util.List;
 
@@ -7,15 +7,15 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.LearnInvocation;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.ParseInvocation;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.PreprocessedDescription;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 
 @RemoteServiceRelativePath("semanticMarkup")
 public interface ISemanticMarkupService extends RemoteService {
 
 	public RPCResult<Task> start(AuthenticationToken authenticationToken, String taskName, String filePath, String glossaryName);
+	
+	public RPCResult<Boolean> isValidInput(AuthenticationToken authenticationToken, String filePath);
 	
 	public RPCResult<List<PreprocessedDescription>> preprocess(AuthenticationToken authenticationToken, Task semanticMarkupTask);
 	

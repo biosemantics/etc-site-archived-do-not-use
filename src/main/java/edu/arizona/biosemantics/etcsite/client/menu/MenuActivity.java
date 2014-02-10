@@ -17,9 +17,9 @@ import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenera
 import edu.arizona.biosemantics.etcsite.client.content.visualization.VisualizationPlace;
 import edu.arizona.biosemantics.etcsite.client.menu.IMenuView.Presenter;
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IMatrixGenerationServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.ISemanticMarkupServiceAsync;
 
 public class MenuActivity extends AbstractActivity implements Presenter {
 

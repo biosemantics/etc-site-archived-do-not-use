@@ -8,8 +8,8 @@ import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerPl
 import edu.arizona.biosemantics.etcsite.shared.db.SemanticMarkupConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
 import edu.arizona.biosemantics.etcsite.shared.file.FilePathShortener;
-import edu.arizona.biosemantics.etcsite.shared.rpc.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.ISemanticMarkupServiceAsync;
 
 public class SemanticMarkupOutputPresenter implements ISemanticMarkupOutputView.Presenter {
 

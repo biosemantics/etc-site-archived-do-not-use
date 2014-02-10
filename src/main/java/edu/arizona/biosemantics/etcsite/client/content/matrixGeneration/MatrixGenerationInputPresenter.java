@@ -14,8 +14,8 @@ import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerD
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
 import edu.arizona.biosemantics.etcsite.shared.file.FileFilter;
 import edu.arizona.biosemantics.etcsite.shared.file.FilePathShortener;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IMatrixGenerationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
 
 public class MatrixGenerationInputPresenter implements IMatrixGenerationInputView.Presenter {
 
@@ -78,12 +78,21 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 
 	@Override
 	public void onNext() {
-		matrixGenerationService.start(Authentication.getInstance().getToken(), 
-				view.getTaskName(), inputFile, new RPCCallback<Task>() {
-					@Override
-					public void onResult(Task result) {
-						placeController.goTo(new MatrixGenerationProcessPlace(result));
-					}
+		matrixGenerationService.isValidInput(Authentication.getInstance().getToken(), inputFile, new RPCCallback<Boolean>() {
+			@Override
+			public void onResult(Boolean result) {
+				if(!result) {
+					messagePresenter.showMessage("Input", "Not a valid input directory");
+				} else {
+					matrixGenerationService.start(Authentication.getInstance().getToken(), 
+							view.getTaskName(), inputFile, new RPCCallback<Task>() {
+								@Override
+								public void onResult(Task result) {
+									placeController.goTo(new MatrixGenerationProcessPlace(result));
+								}
+					});
+				}
+			}
 		});
 	}
 

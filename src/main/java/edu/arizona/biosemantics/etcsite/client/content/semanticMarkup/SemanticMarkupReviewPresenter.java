@@ -8,8 +8,8 @@ import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.ServerSetup;
 import edu.arizona.biosemantics.etcsite.shared.db.SemanticMarkupConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
-import edu.arizona.biosemantics.etcsite.shared.rpc.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.TaskStageEnum;
 
 public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.Presenter {

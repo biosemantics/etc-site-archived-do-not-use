@@ -2,7 +2,7 @@ package edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup;
 
 import java.io.File;
 
-import edu.arizona.biosemantics.semanticmarkup.LearnMain;
+import edu.arizona.biosemantics.semanticmarkup.ETCLearnMain;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.rpc.AdminAuthenticationToken;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileService;
@@ -51,7 +51,7 @@ public class Learn implements ILearn {
 		String[] args = new String[] { "-a", workspace, "-f", source, "-g", user, "-j", bioportalUserId, "-k", bioportalAPIKey, "-b", debugFile, "-e", errorFile, "-c", config, "-w", wordnet, "-l", perl,
 				"-n", databaseHost, "-p", databasePort, "-d", databaseName, "-u", databaseUser, 
 				"-s", databasePassword, "-i", input, "-z" , tablePrefix, "-y"};
-		LearnMain.main(args);
+		ETCLearnMain.main(args);
 		DatasetPrefix datasetPrefix = DatasetPrefixDAO.getInstance().getDatasetPrefix(tablePrefix);
 		LearnResult result = new LearnResult(datasetPrefix.getOtoUploadId(), datasetPrefix.getOtoSecret());
 		return result;

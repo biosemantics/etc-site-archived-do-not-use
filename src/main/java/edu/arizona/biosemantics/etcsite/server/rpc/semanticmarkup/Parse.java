@@ -3,7 +3,7 @@ package edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup;
 import java.io.File;
 import java.util.HashSet;
 
-import edu.arizona.biosemantics.semanticmarkup.MarkupMain;
+import edu.arizona.biosemantics.semanticmarkup.ETCMarkupMain;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
 
@@ -53,7 +53,7 @@ public class Parse implements IParse {
 		}
 		System.out.println();
 		
-		MarkupMain.main(args);
+		ETCMarkupMain.main(args);
 		//File outputFile = new File("workspace" + File.separator + tablePrefix + File.separator + "out");
 		//for(File outFile : outputFile.listFiles()) {
 		//	result.getOutputFiles().add(outFile);

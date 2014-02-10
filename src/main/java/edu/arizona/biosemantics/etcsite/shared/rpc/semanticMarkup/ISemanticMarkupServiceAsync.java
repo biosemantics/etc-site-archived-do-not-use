@@ -1,18 +1,18 @@
-package edu.arizona.biosemantics.etcsite.shared.rpc;
+package edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup;
 
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.LearnInvocation;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.ParseInvocation;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.PreprocessedDescription;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 
 public interface ISemanticMarkupServiceAsync {
 
 	public void start(AuthenticationToken authenticationToken, String taskName, String filePath, String glossaryName, AsyncCallback<RPCResult<Task>> callback);
+	
+	public void isValidInput(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<Boolean>> callback);
 	
 	public void preprocess(AuthenticationToken authenticationToken, Task semanticMarkupTask, AsyncCallback<RPCResult<List<PreprocessedDescription>>> callback);
 
