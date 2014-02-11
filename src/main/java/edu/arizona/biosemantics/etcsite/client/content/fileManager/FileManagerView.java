@@ -25,8 +25,8 @@ public class FileManagerView extends Composite implements IFileManagerView {
 	@UiField(provided = true)
 	IManagableFileTreeView managableFileTreeView;
 	
-	@UiField
-	Anchor annotationReviewAnchor;
+	//@UiField
+	//Anchor annotationReviewAnchor;
 	
 	@Inject
 	public FileManagerView(IManagableFileTreeView.Presenter managableFileTreePresenter) {
@@ -39,9 +39,9 @@ public class FileManagerView extends Composite implements IFileManagerView {
 		this.presenter = presenter;
 	}
 	
-	@UiHandler("annotationReviewAnchor")
+	/*@UiHandler("annotationReviewAnchor")
 	public void onAnnotationReview(ClickEvent event) {
 		presenter.onAnnotationReview();
-	}
+	}*/
 
 }

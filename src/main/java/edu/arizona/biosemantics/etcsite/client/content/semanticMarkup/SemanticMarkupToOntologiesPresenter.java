@@ -7,6 +7,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.client.common.LoadingPopup;
 import edu.arizona.biosemantics.etcsite.client.common.ServerSetup;
 import edu.arizona.biosemantics.etcsite.shared.db.SemanticMarkupConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
@@ -28,6 +29,7 @@ public class SemanticMarkupToOntologiesPresenter implements ISemanticMarkupToOnt
 	private PlaceController placeController;
 	private HandlerManager eventBus;
 	private ISemanticMarkupServiceAsync semanticMarkupService;
+	private LoadingPopup loadingPopup = new LoadingPopup();
 	
 	@Inject
 	public SemanticMarkupToOntologiesPresenter(ISemanticMarkupToOntologiesView view, PlaceController placeController, ISemanticMarkupServiceAsync semanticMarkupService,
@@ -42,6 +44,7 @@ public class SemanticMarkupToOntologiesPresenter implements ISemanticMarkupToOnt
 	@Override
 	public void setTask(final Task task) {
 		SemanticMarkupConfiguration configuration = (SemanticMarkupConfiguration)task.getConfiguration();
+		loadingPopup.start();
 		
 		this.semanticMarkupService.prepareOptionalOtoLiteSteps(Authentication.getInstance().getToken(), task, new RPCCallback<Void>() {
 			@Override
@@ -65,6 +68,7 @@ public class SemanticMarkupToOntologiesPresenter implements ISemanticMarkupToOnt
 				processingMsgPresenter.go(null);
 
 				SemanticMarkupToOntologiesPresenter.this.task = task;
+				loadingPopup.stop();
 			}
 		});
 	}

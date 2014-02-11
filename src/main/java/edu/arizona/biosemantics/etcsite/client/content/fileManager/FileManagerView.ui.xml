@@ -12,8 +12,8 @@
 	    <g:cell>
 	        <my:IManagableFileTreeView ui:field="managableFileTreeView"></my:IManagableFileTreeView>
 	    </g:cell>
-	    <g:cell>
+	    <!-- <g:cell>
 	    	<g:Anchor ui:field="annotationReviewAnchor">Annotation Review</g:Anchor>
-    	</g:cell>
+    	</g:cell> -->
 	</g:VerticalPanel>
 </ui:UiBinder>
