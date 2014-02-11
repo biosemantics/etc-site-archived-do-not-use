@@ -22,7 +22,7 @@
 				<g:InlineLabel>There are&nbsp;</g:InlineLabel>
 				<g:InlineLabel>x words</g:InlineLabel>
 				<g:InlineLabel>&nbsp;and&nbsp;</g:InlineLabel>
-				<g:InlineLabel>x sentences</g:InlineLabel>
+				<g:InlineLabel>x sentences&nbsp;</g:InlineLabel>
 				<g:InlineLabel>in this collection of descriptions.</g:InlineLabel>
 			</g:FlowPanel>
 			<g:HorizontalPanel ui:field="resumablePanel" visible="false">

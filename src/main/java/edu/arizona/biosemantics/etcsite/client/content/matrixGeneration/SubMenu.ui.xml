@@ -8,6 +8,7 @@
 		}
 		.subMenu {
 			padding-top: 10px;
+			padding-bottom: 10px;
 		}
 	</ui:style>
 	<g:VerticalPanel>

@@ -214,7 +214,7 @@
 
 	<xs:complexType name="description">
 		<xs:sequence>
-			<xs:element maxOccurs="unbounded" type="statement" name="statement" />
+			<xs:element minOccurs="0" maxOccurs="unbounded" type="statement" name="statement" />
 		</xs:sequence>
 		<xs:attribute name="type" type="description_type" />
 	</xs:complexType>
