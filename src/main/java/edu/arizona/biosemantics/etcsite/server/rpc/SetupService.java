@@ -16,7 +16,7 @@ public class SetupService extends RemoteServiceServlet implements ISetupService 
 		String seperator = File.separator;
 		Setup setup = new Setup();
 		setup.setSeperator(seperator);
-		setup.setOtoLiteURL(Configuration.otoLiteURL);
+		setup.setOtoLiteReviewURL(Configuration.otoLiteReviewURL);
 		setup.setFileBase(Configuration.fileBase);
 		return new RPCResult<Setup>(true, setup);
 	}

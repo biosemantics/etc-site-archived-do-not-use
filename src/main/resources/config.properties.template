@@ -10,7 +10,8 @@ charaparser_wordnet=/home/sirls/hongcui/charaparser/wordnet/wn31/dict
 charaparser_perl=/home/sirls/hongcui/charaparser/src/main/perl/edu/arizona/biosemantics/semanticmarkup/markupelement/description/ling/learn/lib/perl
 taxonDescriptionSchemaFile=/home/sirls/hongcui/etc-site/src/main/resources/edu/arizona/biosemantics/etcsite/server/rpc/io/semanticMarkupInput.xsd
 markedUpTaxonDescriptionSchemaFile=/home/sirls/hongcui/etc-site/src/main/resources/edu/arizona/biosemantics/etcsite/server/rpc/io/semanticMarkupOutput.xsd
-otoLiteURL=http://biosemantics.arizona.edu:8080/OTOLite/?origin=etcsite&embed=true
+otoLiteURL=http://biosemantics.arizona.edu:8080/OTOLite/
+otoLiteReviewURL=http://biosemantics.arizona.edu:8080/OTOLite/?origin=etcsite&embed=true
 charaparser_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/charaparser
 
 #Matrix Generation

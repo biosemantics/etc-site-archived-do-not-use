@@ -20,6 +20,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 	public static String taxonDescriptionSchemaFile;
 	public static String markedUpTaxonDescriptionSchemaFile;
 	public static String otoLiteURL;
+	public static String otoLiteReviewURL;
 	
 	/** Matrix Generation **/
 	public static String matrixGeneration_tempFileBase;
@@ -52,6 +53,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			taxonDescriptionSchemaFile = properties.getProperty("taxonDescriptionSchemaFile").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			markedUpTaxonDescriptionSchemaFile = properties.getProperty("markedUpTaxonDescriptionSchemaFile").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			otoLiteURL = properties.getProperty("otoLiteURL");
+			otoLiteReviewURL = properties.getProperty("otoLiteReviewURL");
 			
 			matrixGeneration_tempFileBase = properties.getProperty("matrixGeneration_tempFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			

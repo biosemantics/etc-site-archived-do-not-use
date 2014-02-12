@@ -37,7 +37,7 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 			@Override
 			public void onResult(Task task) {
 				SemanticMarkupConfiguration configuration = (SemanticMarkupConfiguration)task.getConfiguration();
-				view.setFrameUrl(ServerSetup.getInstance().getSetup().getOtoLiteURL() + "&uploadID=" + configuration.getOtoUploadId() + 
+				view.setFrameUrl(ServerSetup.getInstance().getSetup().getOtoLiteReviewURL() + "&uploadID=" + configuration.getOtoUploadId() + 
 						"&secret=" + configuration.getOtoSecret());
 				SemanticMarkupReviewPresenter.this.task = task;
 			}

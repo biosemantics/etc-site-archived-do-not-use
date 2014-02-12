@@ -45,12 +45,13 @@ public class Learn implements ILearn {
 		String workspace = Configuration.charaparser_tempFileBase;
 		String wordnet = Configuration.charaparser_wordnet;
 		String perl = Configuration.charaparser_perl;
+		String otoLiteURL = Configuration.otoLiteURL;
 		String debugFile = workspace + File.separator + tablePrefix + File.separator + "debug.log";
 		String errorFile = workspace + File.separator + tablePrefix + File.separator + "error.log";
 		fileService.createDirectory(new AdminAuthenticationToken(), workspace, tablePrefix);
 		String[] args = new String[] { "-a", workspace, "-f", source, "-g", user, "-j", bioportalUserId, "-k", bioportalAPIKey, "-b", debugFile, "-e", errorFile, "-c", config, "-w", wordnet, "-l", perl,
 				"-n", databaseHost, "-p", databasePort, "-d", databaseName, "-u", databaseUser, 
-				"-s", databasePassword, "-i", input, "-z" , tablePrefix, "-y"};
+				"-s", databasePassword, "-i", input, "-z" , tablePrefix, "-y", "-o", otoLiteURL};
 		ETCLearnMain.main(args);
 		DatasetPrefix datasetPrefix = DatasetPrefixDAO.getInstance().getDatasetPrefix(tablePrefix);
 		LearnResult result = new LearnResult(datasetPrefix.getOtoUploadId(), datasetPrefix.getOtoSecret());

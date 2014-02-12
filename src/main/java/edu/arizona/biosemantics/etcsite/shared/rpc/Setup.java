@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class Setup implements Serializable {
 	
 	private String seperator;
-	private String otoLiteURL;
+	private String otoLiteReviewURL;
 	private String fileBase;
 	
 	public String getSeperator() {
@@ -16,12 +16,12 @@ public class Setup implements Serializable {
 		this.seperator = seperator;
 	}
 
-	public String getOtoLiteURL() {
-		return otoLiteURL;
+	public String getOtoLiteReviewURL() {
+		return otoLiteReviewURL;
 	}
 
-	public void setOtoLiteURL(String otoLiteURL) {
-		this.otoLiteURL = otoLiteURL;
+	public void setOtoLiteReviewURL(String otoLiteReviewURL) {
+		this.otoLiteReviewURL = otoLiteReviewURL;
 	}
 
 	public String getFileBase() {
