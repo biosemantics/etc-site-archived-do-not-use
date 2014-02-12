@@ -8,6 +8,7 @@ import com.google.inject.name.Named;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.Configuration;
 import edu.arizona.biosemantics.etcsite.client.common.IMessageView;
+import edu.arizona.biosemantics.etcsite.client.common.LoadingPopup;
 import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileImageLabelTreeItem;
 import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView;
@@ -32,6 +33,7 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 	private FilePathShortener filePathShortener;
 	private String inputFile;
 	private IFileManagerDialogView.Presenter fileManagerDialogPresenter;
+	private LoadingPopup loadingPopup = new LoadingPopup();
 
 	@Inject
 	public SemanticMarkupInputPresenter(ISemanticMarkupInputView view, PlaceController 
@@ -60,6 +62,7 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 
 	@Override
 	public void onNext() {
+		loadingPopup.start();
 		semanticMarkupService.isValidInput(Authentication.getInstance().getToken(), inputFile, new RPCCallback<Boolean>() {
 			@Override
 			public void onResult(Boolean result) {
@@ -81,6 +84,7 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 								}
 					});
 				}
+				loadingPopup.stop();
 			}
 		});
 	}

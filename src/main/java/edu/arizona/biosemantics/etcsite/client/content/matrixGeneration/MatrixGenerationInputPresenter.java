@@ -6,11 +6,13 @@ import com.google.inject.name.Named;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.IMessageView;
+import edu.arizona.biosemantics.etcsite.client.common.LoadingPopup;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileImageLabelTreeItem;
 import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePresenter.ISelectListener;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupInputView;
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
 import edu.arizona.biosemantics.etcsite.shared.file.FileFilter;
 import edu.arizona.biosemantics.etcsite.shared.file.FilePathShortener;
@@ -28,6 +30,7 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 	private FilePathShortener filePathShortener;
 	private String inputFile;
 	private IFileManagerDialogView.Presenter fileManagerDialogPresenter;
+	private LoadingPopup loadingPopup = new LoadingPopup();
 	
 	@Inject
 	public MatrixGenerationInputPresenter(IMatrixGenerationInputView view, 
@@ -78,6 +81,7 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 
 	@Override
 	public void onNext() {
+		loadingPopup.start();
 		matrixGenerationService.isValidInput(Authentication.getInstance().getToken(), inputFile, new RPCCallback<Boolean>() {
 			@Override
 			public void onResult(Boolean result) {
@@ -92,6 +96,7 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 								}
 					});
 				}
+				loadingPopup.stop();
 			}
 		});
 	}
