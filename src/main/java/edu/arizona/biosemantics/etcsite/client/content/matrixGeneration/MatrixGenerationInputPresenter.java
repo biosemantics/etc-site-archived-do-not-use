@@ -87,16 +87,18 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 			public void onResult(Boolean result) {
 				if(!result) {
 					messagePresenter.showMessage("Input", "Not a valid input directory");
+					loadingPopup.stop();
 				} else {
 					matrixGenerationService.start(Authentication.getInstance().getToken(), 
 							view.getTaskName(), inputFile, new RPCCallback<Task>() {
 								@Override
 								public void onResult(Task result) {
 									placeController.goTo(new MatrixGenerationProcessPlace(result));
+									loadingPopup.stop();
 								}
 					});
 				}
-				loadingPopup.stop();
+				
 			}
 		});
 	}

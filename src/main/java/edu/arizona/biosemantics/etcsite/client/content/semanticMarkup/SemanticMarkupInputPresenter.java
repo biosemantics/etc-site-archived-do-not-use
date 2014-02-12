@@ -68,6 +68,7 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 			public void onResult(Boolean result) {
 				if(!result) {
 					messagePresenter.showMessage("Input", "Not a valid input directory");
+					loadingPopup.stop();
 				} else {
 					semanticMarkupService.start(Authentication.getInstance().getToken(), 
 							view.getTaskName(), inputFile, view.getGlossaryName(), new RPCCallback<Task>() {
@@ -81,10 +82,10 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 										placeController.goTo(new SemanticMarkupPreprocessPlace(result));
 										break;
 									}
+									loadingPopup.stop();
 								}
 					});
 				}
-				loadingPopup.stop();
 			}
 		});
 	}
