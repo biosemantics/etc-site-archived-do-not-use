@@ -98,7 +98,6 @@ public class MarkupResultReader {
 		List<String> result = new LinkedList<String>();
 		SAXBuilder saxBuilder = new SAXBuilder();
 		for(File file : input.listFiles()) {
-			System.out.println(file.getName());
 			Document document = null;
 			try {
 				document = saxBuilder.build(file);
@@ -117,8 +116,6 @@ public class MarkupResultReader {
 				if(constraint != null)
 					name = constraint + " " + name;
 				result.add(name);
-				if(name.equals("in staminate flowers ovate or obovate to narrowly elliptic; in pistillate ovate to elliptic , 6--11 mm petal"))
-					System.out.println("here");
 			}
 		}
 		return result;

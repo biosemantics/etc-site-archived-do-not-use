@@ -47,11 +47,11 @@ public class Parse implements IParse {
 				"-n", databaseHost, "-p", databasePort, "-d", databaseName, "-u", databaseUser, 
 				"-s", databasePassword, "-i", input, "-z" , tablePrefix, "-y" };
 		
-		System.out.println();
-		for(String arg : args) {
-			System.out.print(arg + " ");
-		}
-		System.out.println();
+		//System.out.println();
+		//for(String arg : args) {
+		//	System.out.print(arg + " ");
+		//}
+		//System.out.println();
 		
 		ETCMarkupMain.main(args);
 		//File outputFile = new File("workspace" + File.separator + tablePrefix + File.separator + "out");

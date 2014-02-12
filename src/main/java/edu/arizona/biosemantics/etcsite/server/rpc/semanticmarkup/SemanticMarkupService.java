@@ -299,6 +299,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			List<Character> characters = reader.getCharacters(input);
 			List<Character> rangeValueCharacters = reader.getRangeValueCharacters(input);
 			
+			
 			//for to ontologies view
 			TermCategoryPairDAO termCategoryPairDAO = TermCategoryPairDAO.getInstance();
 			SynonymsDAO synonymsDAO = SynonymsDAO.getInstance();
@@ -310,8 +311,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 					e.printStackTrace();
 				}
 			}
+			
 			for(Character character : characters) {
-				System.out.println(character.toString());
 				try {
 					//character types such as range_value for e.g. size do not have a value attribute
 					List<String> synonyms = synonymsDAO.getSynonyms(uploadId, character.getValue(), character.getCategory());
@@ -330,7 +331,6 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 					e.printStackTrace();
 				}
 			}
-			
 			//for orders view
 			OrderCategoriesDAO orderCategoriesDAO = OrderCategoriesDAO.getInstance();
 			TermsInOrderCategoryDAO termsInOrderCategoryDAO = TermsInOrderCategoryDAO.getInstance();
@@ -338,11 +338,11 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				int categoryId = orderCategoriesDAO.addOrderCategory(uploadId, character.getCategory());
 				termsInOrderCategoryDAO.addTermsInOrderCategory(categoryId, character.getValue());
 			}
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 			return new RPCResult<Void>(false, "Internal Server Error");
 		}
-
 		return new RPCResult<Void>(true);
 	}
 	

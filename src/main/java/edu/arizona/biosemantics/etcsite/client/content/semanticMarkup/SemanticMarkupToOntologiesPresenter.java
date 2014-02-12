@@ -51,9 +51,8 @@ public class SemanticMarkupToOntologiesPresenter implements ISemanticMarkupToOnt
 			public void onResult(Void result) { 
 				SemanticMarkupConfiguration configuration = (SemanticMarkupConfiguration)task.getConfiguration();
 				
-				MainPresenter mainPresenter = new MainPresenter(1, "123");
-				//MainPresenter mainPresenter = new MainPresenter(configuration.getOtoUploadId(), configuration.getOtoSecret());
-				
+				//MainPresenter mainPresenter = new MainPresenter(1, "123");
+				MainPresenter mainPresenter = new MainPresenter(configuration.getOtoUploadId(), configuration.getOtoSecret());
 				ToOntologyView toOntologyView = new ToOntologyView();
 				toOntologyView.setSize("950px", "300px");
 				ToOntologyPresenter toOntologyPresenter = new ToOntologyPresenter(toOntologyView, eventBus);
