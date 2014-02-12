@@ -3,6 +3,7 @@ package edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.client.common.LoadingPopup;
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
@@ -13,6 +14,7 @@ public class ReviewPresenter implements IReviewView.Presenter {
 	private IReviewView view;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
 	private Task task;
+	private LoadingPopup loadingPopup = new LoadingPopup();
 	
 	@Inject
 	public ReviewPresenter(IReviewView view, IMatrixGenerationServiceAsync matrixGenerationService) {
@@ -32,9 +34,11 @@ public class ReviewPresenter implements IReviewView.Presenter {
 	@Override
 	public void refresh(Task task) {
 		this.task = task;
+		loadingPopup.start();
 		matrixGenerationService.review(Authentication.getInstance().getToken(), task, new RPCCallback<Matrix>() { 
 			public void onResult(Matrix result) {
 				view.setMatrix(result);
+				loadingPopup.stop();
 			}
 		});
 	}
