@@ -6,10 +6,10 @@ public enum TaskStageEnum {
     PREPROCESS_TEXT("Preprocess Text"),
     LEARN_TERMS("Learn Terms"),
     REVIEW_TERMS("Review Terms"),
+    PARSE_TEXT("Parse Text"),
     TO_ONTOLOGIES("To Ontologies"), 
     HIERARCHY("Hierarchy"), 
     ORDERS("Orders"),
-    PARSE_TEXT("Parse Text"),
     OUTPUT("Output");
 
     private String displayName;
