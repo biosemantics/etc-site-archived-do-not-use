@@ -39,8 +39,8 @@ public class SemanticMarkupOrdersPresenter implements ISemanticMarkupOrdersView.
 	public void setTask(Task task) {
 		SemanticMarkupConfiguration configuration = (SemanticMarkupConfiguration)task.getConfiguration();
 		
-		MainPresenter mainPresenter = new MainPresenter(1, "123");
-		//MainPresenter mainPresenter = new MainPresenter(configuration.getOtoUploadId(), configuration.getOtoSecret());
+		//MainPresenter mainPresenter = new MainPresenter(1, "123");
+		MainPresenter mainPresenter = new MainPresenter(configuration.getOtoUploadId(), configuration.getOtoSecret());
 		
 		OrdersPageView ordersPageView = new OrdersPageView();
 		ordersPageView.setSize("950px", "500px");

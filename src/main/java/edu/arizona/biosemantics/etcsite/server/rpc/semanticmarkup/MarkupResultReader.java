@@ -20,7 +20,7 @@ import org.xml.sax.SAXParseException;
 
 public class MarkupResultReader {
 	
-	private Pattern numericalsPattern = Pattern.compile("\\d+");
+	private Pattern numericalsPattern = Pattern.compile(".*\\d+.*");
 	
 	public List<Character> getRangeValueCharacters(File input) throws JDOMException, IOException {
 		List<Character> result = new LinkedList<Character>();
