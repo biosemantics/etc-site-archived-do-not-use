@@ -33,6 +33,7 @@ public class SemanticMarkupParsePresenter implements ISemanticMarkupParseView.Pr
 		this.semanticMarkupService = semanticMarkupService;
 		this.placeController = placeController;
 		
+		view.setNonResumable();
 		tasksBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEventHandler() {	
 			@Override
 			public void onResumableTaskEvent(ResumableTasksEvent resumableTasksEvent) {

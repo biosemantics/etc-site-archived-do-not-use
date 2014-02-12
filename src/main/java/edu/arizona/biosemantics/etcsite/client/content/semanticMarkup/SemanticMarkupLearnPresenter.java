@@ -33,6 +33,7 @@ public class SemanticMarkupLearnPresenter implements ISemanticMarkupLearnView.Pr
 		this.placeController = placeController;
 		view.setNonResumable();
 		
+		view.setNonResumable();
 		tasksBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEventHandler() {	
 			@Override
 			public void onResumableTaskEvent(ResumableTasksEvent resumableTasksEvent) {
