@@ -380,7 +380,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 							activeParseFutures.remove(semanticMarkupConfiguration.getConfiguration().getId());
 							if(!futureResult.isCancelled()) {
 								task.setResumable(true);
-								TaskStage newTaskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.OUTPUT.toString());
+								TaskStage newTaskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.TO_ONTOLOGIES.toString());
 								task.setTaskStage(newTaskStage);
 								TaskDAO.getInstance().updateTask(task);
 							}
