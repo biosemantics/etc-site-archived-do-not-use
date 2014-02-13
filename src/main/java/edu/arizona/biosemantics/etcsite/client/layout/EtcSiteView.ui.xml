@@ -84,11 +84,11 @@
 	</ui:style>
 	
 	 <g:DockLayoutPanel unit='PX'>
-		   <g:north size='273'>
+		   <g:north size='163'>
 		     <!-- horizontal panel or similar that gives top + logo + menu -->  
                 <g:HTMLPanel styleName="{style.headerPanel}">
 					<g:SimplePanel styleName="{style.top}" ui:field="topPanel"></g:SimplePanel>
-					<div class='{style.etcLogo}'/>
+					<!-- <div class='{style.etcLogo}'/> -->
 					<g:SimplePanel styleName="{style.menu}" ui:field="menuPanel">
 					</g:SimplePanel>
 					<!-- <div class='{style.menu}'> </div> -->
@@ -100,7 +100,7 @@
 		     		<g:SimplePanel styleName="{style.contentPanel}" ui:field="contentPanel"></g:SimplePanel>
                 </g:ScrollPanel>
 		   </g:center>
-		   <g:south size='80'>
+		   <g:south size='0'>
 		     	<!--  the footer in a simple panel -->
 		        <g:HTMLPanel styleName="{style.footerPanel}">
                    	<div class="{style.footerText}">School of Information Resources and Library Science<br/>1515 East First Street<br/>Tucson, AZ 85719</div>

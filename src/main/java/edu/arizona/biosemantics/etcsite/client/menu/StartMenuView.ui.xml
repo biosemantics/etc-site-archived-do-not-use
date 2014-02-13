@@ -10,8 +10,18 @@
 		    min-width: 900px;
 		    font-size: 11px;
 		    position: absolute;
-		    top: 143px;
+		    top: 30px;
 		    left: 0px;
+		}
+		.etcLogo {
+    		background-image: url('images/ETCLogo2.gif');
+    		background-size: 100% 100%;
+    		height: 80px;
+			width: 236px;
+			position: absolute;
+    		top: 30px;
+    		left: 50%;
+    		margin-left: -440px;
 		}
 		.etcPipelineText {
 		    background-image: url('images/Text.TheETCPipeLine.gif');
@@ -31,15 +41,15 @@
 		    position: absolute;
 		    top: 23px;
 		    right: 50%;
-		    margin-right: -370px;
+		    margin-right: -410px;
 		}
 		.menuStartText {
 		    width: 300px;
 		    height: 50px;
 		    position: absolute;
-		    top: 17px;
+		    top: 14px;
 		    left: 50%;
-		    margin-left: -150px;
+		    margin-left: -130px;
 		}
 		.featuresText {
 		    background-image: url('images/Text.Features.gif');
@@ -89,7 +99,8 @@
 	</ui:style>
 	<g:HTMLPanel>
 		<div class="{style.menuStart}">	
-		    <div class="{style.etcPipelineText}"></div>
+			<div class='{style.etcLogo}'/>
+		    <!-- <div class="{style.etcPipelineText}"></div> -->
 		    <div class="{style.menuStartText}">ETC toolbox consists of four tools that can be used as a pipe line that takes clean textual phenotypical 
 				descriptions and outputs taxon-character data for taxon concept analysis. The tools may also be used separately if their required input data is available. 
 				The tools are produced through a collaborative project (NSF-DBI-1147266) between the University of Arizona and University of California at Davis. 
