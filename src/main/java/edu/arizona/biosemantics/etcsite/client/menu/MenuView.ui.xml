@@ -9,7 +9,7 @@
 		    background-image: url('images/Menu_nonHighlighted_cut.gif');
 		    background-size: 100% 100%;
 		    width: 100%;
-		    height: 130px;
+		    height: 65px;
 		    min-width: 900px;
 		    position: absolute;
 		    left: 0px;
@@ -20,7 +20,7 @@
 		    background-image: url('images/Menu_highlighted_cut.gif');
 		    background-size: 100% 100%;
 		    width: 100%;
-		    height: 130px;
+		    height: 65px;
 		    min-width: 900px;
 		    position: absolute;
 		    top: 35px;
@@ -30,7 +30,7 @@
 		}
 		.menuLayer {
 		    width: 100%;
-		    height: 130px;
+		    height: 65px;
 		    min-width: 900px;
 		    position: absolute;
 		    top: 35px;
@@ -71,7 +71,7 @@
 		    width: 40px;
 		    height: 40px;
 		    position: absolute;
-		    top: 40px;
+		    top: 13px;
 		    left: 30px;
 		}
 		.menuSemanticMarkupIcon { background-image: url('images/SemanticMarkup.gif') }
@@ -83,7 +83,7 @@
 		    width: 300px;
 		    height: 50px;
 		    position: absolute;
-		    top: 50px;
+		    top: 22px;
 		    left: 80px;
 		}
 	</ui:style>

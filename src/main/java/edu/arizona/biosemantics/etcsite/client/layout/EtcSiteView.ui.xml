@@ -83,10 +83,10 @@
 		}
 	</ui:style>
 	
-	 <g:DockLayoutPanel unit='PX'>
+	 <g:DockLayoutPanel unit='PX' ui:field='dockLayoutPanel'>
 		   <g:north size='163'>
 		     <!-- horizontal panel or similar that gives top + logo + menu -->  
-                <g:HTMLPanel styleName="{style.headerPanel}">
+                <g:HTMLPanel styleName="{style.headerPanel}" ui:field="headerPanel">
 					<g:SimplePanel styleName="{style.top}" ui:field="topPanel"></g:SimplePanel>
 					<!-- <div class='{style.etcLogo}'/> -->
 					<g:SimplePanel styleName="{style.menu}" ui:field="menuPanel">
@@ -96,7 +96,7 @@
 		   </g:north>
 		   <g:center>
 		     	<!--  this will be a placeholder for the later content widget -->
-		     	<g:ScrollPanel styleName="{style.scrollPanel}">
+		     	<g:ScrollPanel styleName="{style.scrollPanel}" ui:field="contentScrollPanel">
 		     		<g:SimplePanel styleName="{style.contentPanel}" ui:field="contentPanel"></g:SimplePanel>
                 </g:ScrollPanel>
 		   </g:center>

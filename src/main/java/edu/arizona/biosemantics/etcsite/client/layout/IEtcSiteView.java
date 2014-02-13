@@ -16,5 +16,6 @@ public interface IEtcSiteView extends IsWidget {
 	AcceptsOneWidget getContentContainer();
 	AcceptsOneWidget getMenuContainer();
 	AcceptsOneWidget getTopContainer();
+	void setHeaderSize(int size);
 	
 }
