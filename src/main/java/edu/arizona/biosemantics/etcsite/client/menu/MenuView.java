@@ -57,7 +57,7 @@ public class MenuView extends Composite implements IMenuView {
 	 */
 	public native void initNativeJavascriptAnimations() /*-{
 		var menuHighlightLayer = $doc.getElementById("menuHighlightLayer");
-		
+
 		var menuSemanticMarkup = $doc.getElementById("menuSemanticMarkup");
 		if(menuSemanticMarkup != null) {
 			menuSemanticMarkup.addEventListener("mouseover", menuSemanticMarkupSelect, false);

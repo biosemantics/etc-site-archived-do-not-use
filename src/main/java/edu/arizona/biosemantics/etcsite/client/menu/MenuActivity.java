@@ -48,6 +48,7 @@ public class MenuActivity extends AbstractActivity implements Presenter {
 	public void start(AcceptsOneWidget panel, EventBus eventBus) {
 		menuView.setPresenter(this);
 		panel.setWidget(menuView.asWidget());
+		menuView.initNativeJavascriptAnimations();
 	}
 
 	@Override
