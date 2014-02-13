@@ -2,9 +2,10 @@ package edu.arizona.biosemantics.etcsite.client.content.matrixGeneration;
 
 import com.google.gwt.place.shared.Place;
 
+import edu.arizona.biosemantics.etcsite.client.menu.MenuPlace;
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
 
-public class MatrixGenerationPlace extends Place {
+public class MatrixGenerationPlace extends Place implements MenuPlace {
 
 	private Task task;
 	

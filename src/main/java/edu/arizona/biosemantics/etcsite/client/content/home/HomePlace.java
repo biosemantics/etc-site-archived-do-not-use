@@ -3,7 +3,9 @@ package edu.arizona.biosemantics.etcsite.client.content.home;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 
-public class HomePlace extends Place {
+import edu.arizona.biosemantics.etcsite.client.menu.StartMenuPlace;
+
+public class HomePlace extends Place  implements StartMenuPlace {
 
 	public static class Tokenizer implements PlaceTokenizer<HomePlace> {
 
