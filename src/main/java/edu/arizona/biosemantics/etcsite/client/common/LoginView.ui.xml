@@ -1,0 +1,21 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+	</ui:style>
+	<g:VerticalPanel>
+	 	<g:Label>You have to login to use this functionality</g:Label>
+	    <g:HorizontalPanel>
+	        <g:Label>Username:</g:Label>
+	        <g:TextBox ui:field="usernameTextBox"></g:TextBox>
+	    </g:HorizontalPanel>
+	    <g:HorizontalPanel>
+	        <g:Label>Password:</g:Label>
+	        <g:TextBox ui:field="passwordTextBox"></g:TextBox>
+	    </g:HorizontalPanel>
+	    <g:HorizontalPanel>
+	        <g:Button ui:field="cancelButton">Cancel</g:Button>
+			<g:Button ui:field="loginButton">Login</g:Button>
+	    </g:HorizontalPanel>
+	</g:VerticalPanel>
+</ui:UiBinder> 

@@ -8,7 +8,7 @@ import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView;
-import edu.arizona.biosemantics.etcsite.client.common.MessageConfirmPresenter.IConfirmListener;
+import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView.IConfirmListener;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.ResumeTaskPlaceMapper;
@@ -57,15 +57,18 @@ public class MenuActivity extends AbstractActivity implements Presenter {
 				new RPCCallback<Task>() {
 			@Override
 			public void onResult(final Task task) {
-				messageConfirmPresenter.show(
-					"Resumable Task", "You have a resumable task of this type", "Start new", "Resume", new IConfirmListener() {
-						public void onConfirm() {
-							placeController.goTo(resumeTaskPlaceMapper.getPlace(task));
-						}
-						public void onCancel() {
-							placeController.goTo(new SemanticMarkupInputPlace());
-						}
-					});
+				if(task != null)
+					messageConfirmPresenter.show(
+						"Resumable Task", "You have a resumable task of this type", "Start new", "Resume", new IConfirmListener() {
+							public void onConfirm() {
+								placeController.goTo(resumeTaskPlaceMapper.getPlace(task));
+							}
+							public void onCancel() {
+								placeController.goTo(new SemanticMarkupInputPlace());
+							}
+						});
+				else 
+					placeController.goTo(new SemanticMarkupInputPlace());
 			}
 		});
 	}
@@ -76,15 +79,18 @@ public class MenuActivity extends AbstractActivity implements Presenter {
 				new RPCCallback<Task>() {
 			@Override
 			public void onResult(final Task task) {
-				messageConfirmPresenter.show(
-					"Resumable Task", "You have a resumable task of this type", "Start new", "Resume", new IConfirmListener() {
-						public void onConfirm() {
-							placeController.goTo(resumeTaskPlaceMapper.getPlace(task));
-						}
-						public void onCancel() {
-							placeController.goTo(new MatrixGenerationInputPlace());
-						}
-					});
+				if(task != null) 
+					messageConfirmPresenter.show(
+						"Resumable Task", "You have a resumable task of this type", "Start new", "Resume", new IConfirmListener() {
+							public void onConfirm() {
+								placeController.goTo(resumeTaskPlaceMapper.getPlace(task));
+							}
+							public void onCancel() {
+								placeController.goTo(new MatrixGenerationInputPlace());
+							}
+						});
+				else 
+					placeController.goTo(new MatrixGenerationInputPlace());
 			}
 		});
 	}

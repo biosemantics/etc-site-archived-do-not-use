@@ -3,10 +3,15 @@ package edu.arizona.biosemantics.etcsite.client.content.home;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.activity.shared.MyAbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 
+import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
+import edu.arizona.biosemantics.etcsite.client.common.ILoginView.ILoginListener;
+import edu.arizona.biosemantics.etcsite.client.common.ILoginView.Presenter;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.pipeline.PipelinePlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPlace;
@@ -14,16 +19,19 @@ import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.Taxono
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationPlace;
 import edu.arizona.biosemantics.etcsite.client.content.visualization.VisualizationPlace;
 import edu.arizona.biosemantics.etcsite.client.menu.IStartMenuView;
+import edu.arizona.biosemantics.etcsite.client.top.LoggedInPlace;
 
 public class HomeActivity extends MyAbstractActivity implements IStartMenuView.Presenter, IHomeContentView.Presenter {
 
     private PlaceController placeController;
 	private IHomeContentView homeContentView;
+	private Presenter loginPresenter;
 
 	@Inject
-	public HomeActivity(IHomeContentView homeContentView, PlaceController placeController) {
+	public HomeActivity(IHomeContentView homeContentView, PlaceController placeController, ILoginView.Presenter loginPresenter) {
 		this.homeContentView = homeContentView;
     	this.placeController = placeController;
+    	this.loginPresenter = loginPresenter;
     }
 
 	@Override
@@ -34,32 +42,50 @@ public class HomeActivity extends MyAbstractActivity implements IStartMenuView.P
 
 	@Override
 	public void onMatrixGeneration() {
-		placeController.goTo(new MatrixGenerationInputPlace());
+		checkLogin(new MatrixGenerationInputPlace());
 	}
 
 	@Override
 	public void onSemanticMarkup() {
-		placeController.goTo(new SemanticMarkupInputPlace());
+		checkLogin(new SemanticMarkupInputPlace());
 	}
 
 	@Override
 	public void onTaxonomyComparison() {
-		placeController.goTo(new TaxonomyComparisonPlace());
+		checkLogin(new TaxonomyComparisonPlace());
 	}
 
 	@Override
 	public void onVisualization() {
-		placeController.goTo(new VisualizationPlace());
+		checkLogin(new VisualizationPlace());
 	}
 
 	@Override
 	public void onPipeline() {
-		placeController.goTo(new PipelinePlace());
+		checkLogin(new PipelinePlace());
 	}
 
 	@Override
 	public void onTreeGeneration() {
-		placeController.goTo(new TreeGenerationPlace());
+		checkLogin(new TreeGenerationPlace());
+	}
+	
+	private void checkLogin(final Place gotoPlace) {
+		if(Authentication.getInstance().isSet()) {
+			placeController.goTo(new LoggedInPlace());
+			placeController.goTo(gotoPlace);
+		} else {
+			loginPresenter.show(new ILoginListener() {
+				@Override
+				public void onLogin() {
+					placeController.goTo(new LoggedInPlace());
+					placeController.goTo(gotoPlace);
+				}
+				@Override
+				public void onLoginFailure() {
+				}
+			});
+		}
 	}
 
 	@Override

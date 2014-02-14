@@ -4,6 +4,8 @@ import com.google.gwt.user.client.ui.ICancelConfirmHandler;
 import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 import com.google.inject.Inject;
 
+import edu.arizona.biosemantics.etcsite.client.common.ITextInputView.ITextInputListener;
+
 public class TextInputPresenter implements ITextInputView.Presenter {
 
 	private ITextInputView view;

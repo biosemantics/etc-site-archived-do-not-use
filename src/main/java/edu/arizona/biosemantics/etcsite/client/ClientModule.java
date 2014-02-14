@@ -18,9 +18,12 @@ import com.google.inject.name.Names;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 
+import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView;
 import edu.arizona.biosemantics.etcsite.client.common.IMessageView;
 import edu.arizona.biosemantics.etcsite.client.common.ITextInputView;
+import edu.arizona.biosemantics.etcsite.client.common.LoginPresenter;
+import edu.arizona.biosemantics.etcsite.client.common.LoginView;
 import edu.arizona.biosemantics.etcsite.client.common.MessageConfirmPresenter;
 import edu.arizona.biosemantics.etcsite.client.common.MessageConfirmView;
 import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
@@ -168,7 +171,7 @@ public class ClientModule extends AbstractGinModule {
 		bind(Integer.class).annotatedWith(Names.named("CheckResumables")).toProvider(CheckResumablesProvider.class);
 		
 		//views, presenter
-		bind(IEtcSiteView.class).to(EtcSiteView.class);
+		bind(IEtcSiteView.class).to(EtcSiteView.class).in(Singleton.class);
 		bind(ITopView.class).to(TopView.class);
 		bind(ILoginTopView.class).to(LoginTopView.class);
 		bind(IMenuView.class).to(MenuView.class);
@@ -201,6 +204,8 @@ public class ClientModule extends AbstractGinModule {
 		bind(IMessageView.Presenter.class).to(MessagePresenter.class);
 		bind(IMessageConfirmView.class).to(MessageConfirmView.class);
 		bind(IMessageConfirmView.Presenter.class).to(MessageConfirmPresenter.class);
+		bind(ILoginView.class).to(LoginView.class);
+		bind(ILoginView.Presenter.class).to(LoginPresenter.class);
 		
 		bind(IAnnotationReviewView.class).to(AnnotationReviewView.class);
 		bind(IAnnotationReviewView.Presenter.class).to(AnnotationReviewPresenter.class);

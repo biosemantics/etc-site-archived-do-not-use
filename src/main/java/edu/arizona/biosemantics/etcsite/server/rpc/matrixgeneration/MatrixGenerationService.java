@@ -286,7 +286,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 							return new RPCResult<Task>(true, task);
 				}
 			}
-			return new RPCResult<Task>(false, "No resumable task found");
+			return new RPCResult<Task>(true, "", null);
 		} catch(Exception e) {
 			e.printStackTrace();
 			return new RPCResult<Task>(false, "Internal Server Error");

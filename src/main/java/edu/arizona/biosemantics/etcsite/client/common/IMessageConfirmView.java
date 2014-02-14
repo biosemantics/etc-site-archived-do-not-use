@@ -2,8 +2,6 @@ package edu.arizona.biosemantics.etcsite.client.common;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-import edu.arizona.biosemantics.etcsite.client.common.MessageConfirmPresenter.IConfirmListener;
-
 public interface IMessageConfirmView extends IsWidget {
 
 	public interface Presenter { 
@@ -12,6 +10,11 @@ public interface IMessageConfirmView extends IsWidget {
 		void show(String title, String message, String cancelText,
 				String confirmText, IConfirmListener listener);
 		void show(String title, String message, IConfirmListener listener);
+	}
+	
+	public interface IConfirmListener {
+		public void onConfirm();
+		public void onCancel();
 	}
 	
 	void setHtmlMessage(String htmlMessage);

@@ -3,6 +3,8 @@ package edu.arizona.biosemantics.etcsite.client.common;
 import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 import com.google.inject.Inject;
 
+import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView.IConfirmListener;
+
 public class MessageConfirmPresenter implements IMessageConfirmView.Presenter {
 
 	private IMessageConfirmView view;
@@ -39,19 +41,16 @@ public class MessageConfirmPresenter implements IMessageConfirmView.Presenter {
 	
 	@Override
 	public void onConfirm() {
+		dialogBox.hide();
 		if(currentListener != null)
 			currentListener.onConfirm();
-		dialogBox.hide();
 	}
 
 	@Override
 	public void onCancel() {
 		dialogBox.hide();
-	}
-
-	public interface IConfirmListener {
-		public void onConfirm();
-		public void onCancel();
+		if(currentListener != null)
+			currentListener.onCancel();
 	}
 	
 	public abstract static class AbstractConfirmListener implements IConfirmListener {

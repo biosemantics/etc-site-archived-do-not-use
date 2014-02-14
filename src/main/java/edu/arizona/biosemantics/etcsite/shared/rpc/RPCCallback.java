@@ -25,6 +25,8 @@ public abstract class RPCCallback<T> implements AsyncCallback<RPCResult<T>> {
 	public void onSuccess(RPCResult<T> result) {
 		if(result.isSucceeded()) {
 			this.onResult(result.getData());
+		} else {
+			System.out.println("rpc call failed on the server with message: " + result.getMessage());
 		}
 		if(loadingPopup != null)
 			loadingPopup.stop();

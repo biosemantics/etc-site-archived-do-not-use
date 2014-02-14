@@ -13,6 +13,14 @@ public interface ITextInputView extends IsWidget {
 		void onCancel();
 		
 	}
+	
+	public interface ITextInputListener {
+
+		void onConfirm(String text);
+
+		void onCancel();
+
+	}
 
 	void setPresenter(Presenter presenter);
 
