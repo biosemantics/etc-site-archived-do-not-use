@@ -6,7 +6,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
 
 @RemoteServiceRelativePath("visualization")
-public interface IVisualizationService extends RemoteService {
+public interface IVisualizationService extends RemoteService, IHasTasksService {
 
 	public RPCResult<Task> getVisualizationTask(AuthenticationToken authenticationToken, Task task);
 

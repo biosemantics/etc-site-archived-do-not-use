@@ -5,10 +5,11 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 
 @RemoteServiceRelativePath("matrixGeneration")
-public interface IMatrixGenerationService extends RemoteService {
+public interface IMatrixGenerationService extends RemoteService, IHasTasksService {
 
 	public RPCResult<Task> start(AuthenticationToken authenticationToken, String taskName, String input);
 	
@@ -19,11 +20,7 @@ public interface IMatrixGenerationService extends RemoteService {
 	public RPCResult<Task> completeReview(AuthenticationToken authenticationToken, Task task);
 	
 	public RPCResult<Task> output(AuthenticationToken authenticationToken, Task task);
-
-	public RPCResult<Task> getLatestResumable(AuthenticationToken authenticationToken);
 	
-	public RPCResult<Void> cancel(AuthenticationToken authenticationToken, Task task);
-
 	public RPCResult<Void> save(AuthenticationToken authenticationToken, Matrix matrix, Task task);
 	
 	public RPCResult<Task> goToTaskStage(AuthenticationToken authenticationToken, Task task, TaskStageEnum review);

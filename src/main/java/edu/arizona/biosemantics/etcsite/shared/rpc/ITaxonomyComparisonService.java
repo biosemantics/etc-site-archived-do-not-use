@@ -6,7 +6,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
 
 @RemoteServiceRelativePath("taxonomyComparison")
-public interface ITaxonomyComparisonService extends RemoteService  {
+public interface ITaxonomyComparisonService extends RemoteService, IHasTasksService {
 	
 	public RPCResult<Task> getTaxonomyComparisonTask(AuthenticationToken authenticationToken, Task task);
 

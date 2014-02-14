@@ -1,27 +1,14 @@
 package edu.arizona.biosemantics.etcsite.client.content.matrixGeneration;
 
-import com.google.gwt.place.shared.Place;
-
+import edu.arizona.biosemantics.etcsite.client.common.HasTaskPlace;
 import edu.arizona.biosemantics.etcsite.client.menu.MenuPlace;
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
 
-public class MatrixGenerationPlace extends Place implements MenuPlace {
+public class MatrixGenerationPlace extends HasTaskPlace implements MenuPlace {
 
-	private Task task;
-	
 	public MatrixGenerationPlace(Task task) {
-		super();
-		this.task = task;
+		super(task);
 	}
-
-	public Task getTask() {
-		return task;
-	}
-
-	public void setTask(Task task) {
-		this.task = task;
-	}
-	
 	
 	
 }

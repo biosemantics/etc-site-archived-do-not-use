@@ -10,9 +10,21 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 public class TaxonomyComparisonService extends RemoteServiceServlet implements ITaxonomyComparisonService {
 	
 	@Override
-	public RPCResult<Task> getTaxonomyComparisonTask(AuthenticationToken authenticationToken, Task task) {
-		
-		return null;
+	public RPCResult<Task> getLatestResumable(
+			AuthenticationToken authenticationToken) {
+		return new RPCResult<Task>(true, "", null);
+	}
+
+	@Override
+	public RPCResult<Void> cancel(AuthenticationToken authenticationToken,
+			Task task) {
+		return new RPCResult<Void>(true, "", null);
+	}
+
+	@Override
+	public RPCResult<Task> getTaxonomyComparisonTask(
+			AuthenticationToken authenticationToken, Task task) {
+		return new RPCResult<Task>(true, "", null);
 	}
 
 }

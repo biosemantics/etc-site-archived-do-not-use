@@ -6,9 +6,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 
-public interface ISemanticMarkupServiceAsync {
+public interface ISemanticMarkupServiceAsync extends IHasTasksServiceAsync {
 
 	public void start(AuthenticationToken authenticationToken, String taskName, String filePath, String glossaryName, AsyncCallback<RPCResult<Task>> callback);
 	
@@ -30,10 +31,6 @@ public interface ISemanticMarkupServiceAsync {
 	public void getDescription(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<String>> callback);
 	
 	public void setDescription(AuthenticationToken authenticationToken, String filePath, String description, AsyncCallback<RPCResult<Void>> callback);
-
-	public void getLatestResumable(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<Task>> asyncCallback);
-	
-	public void cancel(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Void>> callback);
 	
 	public void prepareOptionalOtoLiteSteps(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Void>> callback);
 

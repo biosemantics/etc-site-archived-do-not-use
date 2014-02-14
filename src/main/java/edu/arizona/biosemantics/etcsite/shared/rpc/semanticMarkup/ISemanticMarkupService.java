@@ -8,10 +8,11 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 
 @RemoteServiceRelativePath("semanticMarkup")
-public interface ISemanticMarkupService extends RemoteService {
+public interface ISemanticMarkupService extends RemoteService, IHasTasksService {
 
 	public RPCResult<Task> start(AuthenticationToken authenticationToken, String taskName, String filePath, String glossaryName);
 	
@@ -32,10 +33,6 @@ public interface ISemanticMarkupService extends RemoteService {
 	public RPCResult<String> getDescription(AuthenticationToken authenticationToken, String filePath);
 	
 	public RPCResult<Void> setDescription(AuthenticationToken authenticationToken, String filePath, String description);
-	
-	public RPCResult<Task> getLatestResumable(AuthenticationToken authenticationToken);
-	
-	public RPCResult<Void> cancel(AuthenticationToken authenticationToken, Task task);
 	
 	public RPCResult<Void> prepareOptionalOtoLiteSteps(AuthenticationToken authenticationToken, Task task);
 

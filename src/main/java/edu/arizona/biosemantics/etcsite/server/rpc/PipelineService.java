@@ -4,10 +4,11 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
-import edu.arizona.biosemantics.etcsite.shared.rpc.ITreeGenerationService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.IPipelineService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.IVisualizationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 
-public class TreeGenerationService extends RemoteServiceServlet implements ITreeGenerationService {
+public class PipelineService extends RemoteServiceServlet implements IPipelineService {
 	
 	@Override
 	public RPCResult<Task> getLatestResumable(
@@ -21,9 +22,5 @@ public class TreeGenerationService extends RemoteServiceServlet implements ITree
 		return new RPCResult<Void>(true, "", null);
 	}
 
-	@Override
-	public RPCResult<Task> getTreeGenerationTask(AuthenticationToken authenticationToken, Task task) {
-		return new RPCResult<Task>(true, "", null);
-	}
 
 }

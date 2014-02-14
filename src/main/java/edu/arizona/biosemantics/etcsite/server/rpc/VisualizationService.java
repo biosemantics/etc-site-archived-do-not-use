@@ -10,8 +10,21 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 public class VisualizationService extends RemoteServiceServlet implements IVisualizationService {
 	
 	@Override
-	public RPCResult<Task> getVisualizationTask(AuthenticationToken authenticationToken, Task task) {		
-		return null;
+	public RPCResult<Task> getLatestResumable(
+			AuthenticationToken authenticationToken) {
+		return new RPCResult<Task>(true, "", null);
+	}
+
+	@Override
+	public RPCResult<Void> cancel(AuthenticationToken authenticationToken,
+			Task task) {
+		return new RPCResult<Void>(true, "", null);
+	}
+
+	@Override
+	public RPCResult<Task> getVisualizationTask(
+			AuthenticationToken authenticationToken, Task task) {
+		return new RPCResult<Task>(true, "", null);
 	}
 
 }

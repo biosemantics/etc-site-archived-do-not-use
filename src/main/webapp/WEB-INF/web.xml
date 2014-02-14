@@ -47,6 +47,22 @@
 		<servlet-name>setupServlet</servlet-name>
 		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.SetupService</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>pipelineServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.PipelineService</servlet-class>
+	</servlet>
+		<servlet>
+		<servlet-name>visualizationServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.VisualizationService</servlet-class>
+	</servlet>
+		<servlet>
+		<servlet-name>taxonomyComparisonServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.TaxonomyComparisonService</servlet-class>
+	</servlet>
+		<servlet>
+		<servlet-name>treeGenerationServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.TreeGenerationService</servlet-class>
+	</servlet>
 
 	<!-- http://www.gwtproject.org/doc/latest/DevGuideServerCommunication.html#DevGuideImplementingServices
 	       -> Common pitfalls: for url-pattern help -->
@@ -90,6 +106,18 @@
 		<servlet-name>setupServlet</servlet-name>
 		<url-pattern>/etcsite/setup</url-pattern>
 	</servlet-mapping> 
+	<servlet-mapping>
+		<servlet-name>visualizationServlet</servlet-name>
+		<url-pattern>/etcsite/visualization</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>treeGenerationServlet</servlet-name>
+		<url-pattern>/etcsite/treeGeneration</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>taxonomyComparisonServlet</servlet-name>
+		<url-pattern>/etcsite/taxonomyComparison</url-pattern>
+	</servlet-mapping>
 
 
 	<servlet>
