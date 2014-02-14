@@ -50,6 +50,7 @@ public class MatrixGenerationConfigurationDAO {
 			matrixGenerationQuery.close();
 			result = this.getMatrixGenerationConfiguration(generatedKeys.getInt(1));
 		}
+		query.close();
 		return result;
 	}
 

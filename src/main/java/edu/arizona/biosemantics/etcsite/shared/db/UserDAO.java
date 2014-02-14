@@ -79,6 +79,7 @@ public class UserDAO {
 		while(resultSet.next()) {
 			result.add(new ShortUser(resultSet.getInt(1), resultSet.getString(2)));
 		}
+		query.close();
 		return result;
 	}
 	
@@ -90,6 +91,7 @@ public class UserDAO {
 		while(resultSet.next()) {
 			result.add(new ShortUser(resultSet.getInt(1), resultSet.getString(2)));
 		}
+		query.close();
 		return result;
 	}
 

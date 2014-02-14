@@ -61,6 +61,7 @@ public class SemanticMarkupConfigurationDAO {
 			semanticMarkupQuery.close();
 			result = this.getSemanticMarkupConfiguration(generatedKeys.getInt(1));
 		}
+		query.close();
 		return result;
 	}
 

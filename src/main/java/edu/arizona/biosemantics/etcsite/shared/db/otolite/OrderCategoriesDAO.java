@@ -41,8 +41,8 @@ public class OrderCategoriesDAO {
 			ResultSet keySet = insertQuery.getGeneratedKeys();
 			if(keySet.next()) {
 				id = keySet.getInt(1);
-				insertQuery.close();
 			}
+			insertQuery.close();
 		}
 		query.close();
 		return id;
