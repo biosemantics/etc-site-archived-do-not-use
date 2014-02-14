@@ -8,6 +8,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class SemanticMarkupLearnView extends Composite implements ISemanticMarkupLearnView {
@@ -26,7 +27,7 @@ public class SemanticMarkupLearnView extends Composite implements ISemanticMarku
 	HorizontalPanel resumablePanel;
 
 	@UiField
-	HorizontalPanel nonResumablePanel;
+	VerticalPanel nonResumablePanel;
 	
 	private Presenter presenter;
 

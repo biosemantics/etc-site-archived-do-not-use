@@ -10,7 +10,7 @@
 	<g:VerticalPanel>
 		<my:SubMenu ui:field="subMenu" step="OUTPUT"/>
 		<g:FlowPanel>
-		    <g:InlineLabel>Matrix Generation has completed. You can find the output files in&nbsp;</g:InlineLabel>
+		    <g:InlineLabel>Semantic Markup has completed. You can find the output files in&nbsp;</g:InlineLabel>
 		    <g:InlineLabel ui:field="outputLabel"></g:InlineLabel>
 		    <g:InlineLabel>&nbsp;in the&nbsp;</g:InlineLabel>
 		    <g:Anchor ui:field="fileManagerAnchor">File Manager</g:Anchor>
