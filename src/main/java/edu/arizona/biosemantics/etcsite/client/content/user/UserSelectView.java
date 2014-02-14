@@ -27,8 +27,8 @@ public class UserSelectView extends Composite implements IUserSelectView {
 	private Presenter presenter;
 	
 	@Inject
-	public UserSelectView(IUsersView usersView) {
-		this.usersView = usersView;
+	public UserSelectView(IUsersView.Presenter usersPresenter) {
+		this.usersView = usersPresenter.getView();
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 

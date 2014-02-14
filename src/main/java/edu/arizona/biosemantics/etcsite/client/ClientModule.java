@@ -187,9 +187,9 @@ public class ClientModule extends AbstractGinModule {
 		bind(ISelectableFileTreeView.Presenter.class).toProvider(SelectableFileTreePresenterProvider.class).in(Singleton.class);
 		
 		bind(IUsersView.class).to(UsersView.class);
-		bind(IUsersView.Presenter.class).to(UsersPresenter.class);
+		bind(IUsersView.Presenter.class).to(UsersPresenter.class).in(Singleton.class);
 		bind(IUserSelectView.class).to(UserSelectView.class);
-		bind(IUserSelectView.Presenter.class).to(UserSelectPresenter.class);
+		bind(IUserSelectView.Presenter.class).to(UserSelectPresenter.class).in(Singleton.class);
 				
 		bind(IFileTreeView.Presenter.class).to(FileTreePresenter.class);
 		bind(IFileTreeView.class).to(FileTreeView.class);

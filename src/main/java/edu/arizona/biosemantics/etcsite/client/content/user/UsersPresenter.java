@@ -38,4 +38,9 @@ public class UsersPresenter implements IUsersView.Presenter {
 		view.setSelectedUsers(selectedUsers);
 	}
 
+	@Override
+	public IUsersView getView() {
+		return view;
+	}
+
 }

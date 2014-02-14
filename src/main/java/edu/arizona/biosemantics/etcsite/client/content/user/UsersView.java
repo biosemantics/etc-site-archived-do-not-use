@@ -1,19 +1,23 @@
 package edu.arizona.biosemantics.etcsite.client.content.user;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.cellview.client.CellList;
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
 
+import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskData;
 import edu.arizona.biosemantics.etcsite.shared.db.ShortUser;
 
 public class UsersView extends Composite implements IUsersView {
@@ -47,7 +51,7 @@ public class UsersView extends Composite implements IUsersView {
 	}
 
 	private CellList<ShortUser> createUsersList() {
-		usersList = new CellList<ShortUser>(new ShortUserCell(), userKeyProvider);
+		CellList<ShortUser> usersList = new CellList<ShortUser>(new ShortUserCell(), userKeyProvider);
 		selectionModel = new MultiSelectionModel<ShortUser>(userKeyProvider);
 		usersList.setSelectionModel(selectionModel);
 	    return usersList;

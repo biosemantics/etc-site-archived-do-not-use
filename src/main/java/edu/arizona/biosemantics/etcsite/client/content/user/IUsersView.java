@@ -15,6 +15,8 @@ public interface IUsersView extends IsWidget {
 		void setSelected(Set<ShortUser> selectedUsers);
 
 		void refresh();
+
+		IUsersView getView();
 		
 	}
 	  
