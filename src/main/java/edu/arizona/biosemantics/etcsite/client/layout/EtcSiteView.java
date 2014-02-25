@@ -76,45 +76,36 @@ public class EtcSiteView extends Composite implements IEtcSiteView {
 	}
 
 	@Override
-	public AcceptsOneWidget getContentContainer() {
+	public SimplePanel getContentContainer() {
 		return this.contentPanel;
 	}
 
 	@Override
-	public AcceptsOneWidget getMenuContainer() {
+	public SimplePanel getMenuContainer() {
 		return this.menuPanel;
 	}
 
 	@Override
-	public AcceptsOneWidget getTopContainer() {
+	public SimplePanel getTopContainer() {
 		return this.topPanel;
 	}
 
 	@Override
-	public void setHeaderSize(int size) {
+	public void setHeaderSize(int size, boolean animated) {
+		dockLayoutPanel.forceLayout(); //makes fast mouse movement not to collapse the menu without animation (for some reason)
 		dockLayoutPanel.setWidgetSize(headerPanel, size);
+		if(animated)
+			dockLayoutPanel.animate(500);
 	}
 		
 	@UiHandler("headerPanel") 
 	public void onMouseOverMenu(MouseOverEvent event) {
-		if(menuPanel.getWidget() instanceof IMenuView) {
-			expandMenu();
-		}
+		presenter.onMouseOverHeader(event);
 	}
 	
 	@UiHandler("headerPanel") 
 	public void onMouseOutMenu(MouseOutEvent event) {
-		if(menuPanel.getWidget() instanceof IMenuView) {
-			//not in the area above of browser content, e.g. tabls, url
-			//if(event.getY() >= 0) {
-			//	collapseMenu();
-			//}
-			/*System.out.println("x/y" + event.getX() + " " +  event.getY());
-			System.out.println("relative x/y" + event.getRelativeX(this.getElement()) + " " +  event.getRelativeY(this.getElement()));
-			System.out.println("client x/y" + event.getClientX() + " " +  event.getClientY());
-			System.out.println("screen x/y" + event.getScreenX() + " " +  event.getScreenY()); */
-			collapseMenu();
-		}
+		presenter.onMouseOutHeader(event);
 	}
 	
 	/**
@@ -129,16 +120,4 @@ public class EtcSiteView extends Composite implements IEtcSiteView {
 			collapseMenu();
 		}
 	}*/
-
-	private void collapseMenu() {
-		dockLayoutPanel.forceLayout(); //makes fast mouse movement not to collapse the menu without animation (for some reason)
-		dockLayoutPanel.setWidgetSize(headerPanel, 38);
-		dockLayoutPanel.animate(500);
-	}
-	
-	private void expandMenu() {
-		dockLayoutPanel.forceLayout(); //makes fast mouse movement not to expand the menu without animation (for some reason)
-		dockLayoutPanel.setWidgetSize(headerPanel, 100);
-		dockLayoutPanel.animate(500);
-	}
 }

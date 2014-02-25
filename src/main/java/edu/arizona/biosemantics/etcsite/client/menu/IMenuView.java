@@ -14,5 +14,10 @@ public interface IMenuView extends IsWidget {
 	
 	void setPresenter(Presenter presenter);
 	void initNativeJavascriptAnimations();
+	void highlightMatrixGeneration();
+	void highlightTaxonomyComparison();
+	void highlightVisualization();
+	void highlightTreeGeneration();
+	void highlightSemanticMarkup();
 
 }

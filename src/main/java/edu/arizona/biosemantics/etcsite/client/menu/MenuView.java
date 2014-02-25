@@ -55,6 +55,7 @@ public class MenuView extends Composite implements IMenuView {
 	 * retrievable yet)
 	 * http://stackoverflow.com/questions/5613026/gwt-jsni-function-call-to-getelementbyid-returns-null
 	 */
+	@Override
 	public native void initNativeJavascriptAnimations() /*-{
 		var menuHighlightLayer = $doc.getElementById("menuHighlightLayer");
 
@@ -136,6 +137,81 @@ public class MenuView extends Composite implements IMenuView {
 		
 		function menuDeselect() {
 			menuHighlightLayer.style.clip = 'rect(0px, 0px, 0px, 0px)';
+		}
+	}-*/;
+
+	@Override
+	public native void highlightSemanticMarkup() /*-{
+		var menuHighlightLayer = $doc.getElementById("menuHighlightLayer");
+		menuSemanticMarkupSelect();
+
+		function menuSemanticMarkupSelect() { 
+			var higlightLayerWidth = menuHighlightLayer.offsetWidth; //cannot be done globbally, window could have been resized
+			var top = 0; 
+			var bottom = menuHighlightLayer.offsetHeight;
+			var start = (higlightLayerWidth / 2) - 440; 
+			var end = (higlightLayerWidth / 2) - 260;
+			menuHighlightLayer.style.clip = 'rect(' + top + 'px, ' + end + 'px, ' + bottom + 'px, ' + start + 'px)';
+		}
+	}-*/;
+
+	@Override
+	public native void highlightMatrixGeneration() /*-{
+		var menuHighlightLayer = $doc.getElementById("menuHighlightLayer");
+		menuMatrixGenerationSelect();
+		
+		function menuMatrixGenerationSelect() { 
+			var higlightLayerWidth = menuHighlightLayer.offsetWidth; //cannot be done globbally, window could have been resized
+			var top = 0; 
+			var bottom = menuHighlightLayer.offsetHeight;
+			var start = (higlightLayerWidth / 2) - 260; 
+			var end = (higlightLayerWidth / 2) - 80;
+			menuHighlightLayer.style.clip = 'rect(' + top + 'px, ' + end + 'px, ' + bottom + 'px, ' + start + 'px)';
+		}
+	}-*/;
+
+	@Override
+	public native void highlightTreeGeneration() /*-{
+		var menuHighlightLayer = $doc.getElementById("menuHighlightLayer");
+		menuTreeGenerationSelect();
+	
+		function menuTreeGenerationSelect() { 
+			var higlightLayerWidth = menuHighlightLayer.offsetWidth; //cannot be done globbally, window could have been resized
+			var top = 0; 
+			var bottom = menuHighlightLayer.offsetHeight;
+			var start = (higlightLayerWidth / 2) - 80; 
+			var end = (higlightLayerWidth / 2) + 95;
+			menuHighlightLayer.style.clip = 'rect(' + top + 'px, ' + end + 'px, ' + bottom + 'px, ' + start + 'px)';
+		}
+	}-*/;
+
+	@Override
+	public native void highlightTaxonomyComparison() /*-{
+		var menuHighlightLayer = $doc.getElementById("menuHighlightLayer");
+		menuTaxonomyComparisonSelect();
+	
+		function menuTaxonomyComparisonSelect() { 
+			var higlightLayerWidth = menuHighlightLayer.offsetWidth; //cannot be done globbally, window could have been resized
+			var top = 0; 
+			var bottom = menuHighlightLayer.offsetHeight;
+			var start = (higlightLayerWidth / 2) + 95; 
+			var end = (higlightLayerWidth / 2) + 305;
+			menuHighlightLayer.style.clip = 'rect(' + top + 'px, ' + end + 'px, ' + bottom + 'px, ' + start + 'px)';
+		}
+	}-*/;
+
+	@Override
+	public native void highlightVisualization() /*-{
+		var menuHighlightLayer = $doc.getElementById("menuHighlightLayer");
+		menuVisualizationSelect();
+	
+		function menuVisualizationSelect() { 
+			var higlightLayerWidth = menuHighlightLayer.offsetWidth; //cannot be done globbally, window could have been resized
+			var top = 0; 
+			var bottom = menuHighlightLayer.offsetHeight;
+			var start = (higlightLayerWidth / 2) + 303; 
+			var end = (higlightLayerWidth / 2) + 455;
+			menuHighlightLayer.style.clip = 'rect(' + top + 'px, ' + end + 'px, ' + bottom + 'px, ' + start + 'px)';
 		}
 	}-*/;
 }

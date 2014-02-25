@@ -273,4 +273,8 @@ public class MyActivityManager extends ActivityManager implements PlaceChangeEve
 			}
 		}
 	}
+	
+	public MyActivity getCurrentActivity() {
+		return this.currentActivity;
+	}
 }

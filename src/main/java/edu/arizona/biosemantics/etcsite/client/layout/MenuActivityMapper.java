@@ -15,13 +15,13 @@ public class MenuActivityMapper implements ActivityMapper {
 	private MenuActivity menuActivity;
 	private StartMenuActivity startMenuActivity;
 	private Activity currentActivity;
-	private IEtcSiteView etcSiteView;
+	private IEtcSiteView.Presenter etcSitePresenter;
 
 	@Inject
-	public MenuActivityMapper(MenuActivity menuActivity, StartMenuActivity startMenuActivity, IEtcSiteView etcSiteView) {
+	public MenuActivityMapper(MenuActivity menuActivity, StartMenuActivity startMenuActivity, IEtcSiteView.Presenter etcSitePresenter) {
 		this.menuActivity = menuActivity;
 		this.startMenuActivity = startMenuActivity;
-		this.etcSiteView = etcSiteView;
+		this.etcSitePresenter = etcSitePresenter;
 	}
 	
 	@Override
@@ -31,11 +31,11 @@ public class MenuActivityMapper implements ActivityMapper {
 		
 		if(place instanceof MenuPlace) {
 			currentActivity = menuActivity;
-			etcSiteView.setHeaderSize(100);
+			etcSitePresenter.setHeaderSize(100, false);
 		}
 		if(place instanceof StartMenuPlace) {
 			currentActivity = startMenuActivity;
-			etcSiteView.setHeaderSize(163);
+			etcSitePresenter.setHeaderSize(163, false);
 		}
 		
 		return currentActivity;

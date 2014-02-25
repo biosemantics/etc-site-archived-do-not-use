@@ -83,5 +83,5 @@ public class ContentActivityMapper implements MyActivityMapper {
 		
 		return currentActivity;
 	}
-
+	
 }

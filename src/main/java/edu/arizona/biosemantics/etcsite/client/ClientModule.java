@@ -126,6 +126,7 @@ import edu.arizona.biosemantics.etcsite.client.content.user.UsersPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.user.UsersView;
 import edu.arizona.biosemantics.etcsite.client.layout.ContentActivityManagerProvider;
 import edu.arizona.biosemantics.etcsite.client.layout.ContentActivityMapper;
+import edu.arizona.biosemantics.etcsite.client.layout.EtcSitePresenter;
 import edu.arizona.biosemantics.etcsite.client.layout.EtcSiteView;
 import edu.arizona.biosemantics.etcsite.client.layout.IEtcSiteView;
 import edu.arizona.biosemantics.etcsite.client.layout.MenuActivityManagerProvider;
@@ -171,7 +172,8 @@ public class ClientModule extends AbstractGinModule {
 		bind(Integer.class).annotatedWith(Names.named("CheckResumables")).toProvider(CheckResumablesProvider.class);
 		
 		//views, presenter
-		bind(IEtcSiteView.class).to(EtcSiteView.class).in(Singleton.class);
+		bind(IEtcSiteView.class).to(EtcSiteView.class);
+		bind(IEtcSiteView.Presenter.class).to(EtcSitePresenter.class).in(Singleton.class);
 		bind(ITopView.class).to(TopView.class);
 		bind(ILoginTopView.class).to(LoginTopView.class);
 		bind(IMenuView.class).to(MenuView.class);

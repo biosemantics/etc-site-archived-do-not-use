@@ -18,12 +18,12 @@ public class RootLayoutPanelDecorator {
 	private ActivityManager topActivityManager;
 
 	@Inject
-	public RootLayoutPanelDecorator(IEtcSiteView etcSiteView, 
+	public RootLayoutPanelDecorator(IEtcSiteView.Presenter etcSitePresenter, 
 			@Named("Top")ActivityManager topActivityManager,
 			@Named("Menu")ActivityManager menuActivityManager,
 			@Named("Content")MyActivityManager contentActivityManager,
 			PlaceHistoryHandler placeHistoryHandler) {
-		this.etcSiteView = etcSiteView; 
+		this.etcSiteView = etcSitePresenter.getView(); 
 		this.topActivityManager = topActivityManager;
 		this.menuActivityManager = menuActivityManager;
 		this.contentActivityManager = contentActivityManager;
