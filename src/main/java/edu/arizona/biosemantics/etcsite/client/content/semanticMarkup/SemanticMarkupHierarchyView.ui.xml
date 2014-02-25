@@ -1,16 +1,19 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.semanticMarkup">
+	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.semanticMarkup"
+	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout">
 	<ui:style>
 		.important {
 			font-weight: bold;
 		}
 	</ui:style>
-	<g:VerticalPanel>
-	    <my:SubMenu ui:field="subMenu" step="HIERARCHY"/>
-		<g:SimplePanel ui:field="container">
-		</g:SimplePanel>
-		<g:Button ui:field="nextButton">Next</g:Button>
-	</g:VerticalPanel>
+	<lay:CenteredContentPanel>
+		<g:VerticalPanel>
+		    <my:SubMenu ui:field="subMenu" step="HIERARCHY"/>
+			<g:SimplePanel ui:field="container">
+			</g:SimplePanel>
+			<g:Button ui:field="nextButton">Next</g:Button>
+		</g:VerticalPanel>
+	</lay:CenteredContentPanel>
 </ui:UiBinder> 

@@ -12,7 +12,7 @@
 		}
 	</ui:style>
 	<g:VerticalPanel>
-		<g:Label styleName="siteHeading">Matrix Generation</g:Label>
+		<!-- <g:Label styleName="siteHeading">Matrix Generation</g:Label> -->
 		<g:HorizontalPanel styleName="{style.subMenu}">
 			<my:ImageLabel ui:field="input" styleName="{style.subMenuEntry}" imagePath="images/Enumeration_unselected_1.gif" imageWidth="20px" imageHeight="20px" text="Input"></my:ImageLabel>
 			<my:ImageLabel ui:field="process" styleName="{style.subMenuEntry}" imagePath="images/Enumeration_unselected_2.gif" imageWidth="20px" imageHeight="20px" text="Process"></my:ImageLabel>
