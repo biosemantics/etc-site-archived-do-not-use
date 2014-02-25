@@ -7,6 +7,7 @@ public interface IEtcSiteView extends IsWidget {
 
 	public interface Presenter {
 
+
 	}
 
 	void setTop(IsWidget content);	

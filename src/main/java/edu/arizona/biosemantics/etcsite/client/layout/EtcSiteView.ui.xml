@@ -85,19 +85,19 @@
 	
 	 <g:DockLayoutPanel unit='PX' ui:field='dockLayoutPanel'>
 		   <g:north size='163'>
-		     <!-- horizontal panel or similar that gives top + logo + menu -->  
-                <g:HTMLPanel styleName="{style.headerPanel}" ui:field="headerPanel">
-					<g:SimplePanel styleName="{style.top}" ui:field="topPanel"></g:SimplePanel>
-					<!-- <div class='{style.etcLogo}'/> -->
-					<g:SimplePanel styleName="{style.menu}" ui:field="menuPanel">
-					</g:SimplePanel>
-					<!-- <div class='{style.menu}'> </div> -->
-                </g:HTMLPanel>
+		     	<!-- FocusPanel for mouse events to animate menu, HTMLPanel doesn't support those -->   
+                <g:FocusPanel styleName="{style.headerPanel}" ui:field="headerPanel">
+                	<!-- HTMLPanel for multiple child widgets html-like layed out -->
+	                <g:HTMLPanel>
+						<g:SimplePanel styleName="{style.top}" ui:field="topPanel"></g:SimplePanel>
+						<g:SimplePanel styleName="{style.menu}" ui:field="menuPanel"></g:SimplePanel>
+	                </g:HTMLPanel>
+                </g:FocusPanel>
 		   </g:north>
 		   <g:center>
-		     	<!--  this will be a placeholder for the later content widget -->
+		     	<!--  content widget will be added to contentPanel -->
 		     	<g:ScrollPanel styleName="{style.scrollPanel}" ui:field="contentScrollPanel">
-		     		<g:SimplePanel styleName="{style.contentPanel}" ui:field="contentPanel"></g:SimplePanel>
+		     		<g:FocusPanel styleName="{style.contentPanel}" ui:field="contentPanel"></g:FocusPanel>
                 </g:ScrollPanel>
 		   </g:center>
 		   <g:south size='0'>
