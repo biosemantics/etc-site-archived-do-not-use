@@ -31,7 +31,8 @@ public class MenuActivityMapper implements ActivityMapper {
 		
 		if(place instanceof MenuPlace) {
 			currentActivity = menuActivity;
-			etcSitePresenter.setHeaderSize(100, false);
+			//100 for expanded, 38 for collapsed
+			etcSitePresenter.setHeaderSize(38, false);
 		}
 		if(place instanceof StartMenuPlace) {
 			currentActivity = startMenuActivity;
