@@ -2,7 +2,7 @@ package edu.arizona.biosemantics.etcsite.shared.db;
 
 import java.util.Date;
 
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.TaskStageEnum;
 
 public class SemanticMarkupTaskStage extends TaskStage {
 

@@ -23,6 +23,8 @@ public interface IManagableFileTreeView extends IsWidget {
 		
 		void refresh(FileFilter fileFilter);
 
+		void onSemanticMarkupInput();
+
 	}
 
 	void setPresenter(Presenter presenter);

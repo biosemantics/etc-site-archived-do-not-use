@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup;
+package edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup;
 
 public enum TaskStageEnum {
 	

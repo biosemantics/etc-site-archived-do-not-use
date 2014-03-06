@@ -19,8 +19,8 @@ import edu.arizona.biosemantics.etcsite.shared.db.Task;
 import edu.arizona.biosemantics.etcsite.shared.file.FileFilter;
 import edu.arizona.biosemantics.etcsite.shared.file.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.ISemanticMarkupServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.TaskStageEnum;
 
 public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Presenter {
 

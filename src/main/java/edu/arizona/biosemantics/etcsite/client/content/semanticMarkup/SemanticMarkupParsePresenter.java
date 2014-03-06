@@ -11,9 +11,9 @@ import edu.arizona.biosemantics.etcsite.client.content.taskManager.ResumableTask
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.ISemanticMarkupServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.ParseInvocation;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ParseInvocation;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.TaskStageEnum;
 
 public class SemanticMarkupParsePresenter implements ISemanticMarkupParseView.Presenter {
 

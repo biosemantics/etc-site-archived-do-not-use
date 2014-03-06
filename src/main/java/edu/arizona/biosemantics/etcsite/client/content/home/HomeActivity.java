@@ -32,7 +32,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.ITreeGenerationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IVisualizationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.ISemanticMarkupServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
 
 public class HomeActivity extends MyAbstractActivity implements IStartMenuView.Presenter, IHomeContentView.Presenter {
 

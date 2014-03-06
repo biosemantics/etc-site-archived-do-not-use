@@ -26,7 +26,7 @@ import edu.arizona.biosemantics.etcsite.shared.db.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ITaskServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.ISemanticMarkupServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
 
 public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 
@@ -139,7 +139,7 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 		switch(taskData.getTask().getTaskType().getTaskTypeEnum()) {
 		case SEMANTIC_MARKUP:
 			semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), taskData.getTask(), 
-					edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.TaskStageEnum.REVIEW_TERMS ,new RPCCallback<Task>() {
+					edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.TaskStageEnum.REVIEW_TERMS ,new RPCCallback<Task>() {
 				@Override
 				public void onResult(Task result) {
 					placeController.goTo(new edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupReviewPlace(result));

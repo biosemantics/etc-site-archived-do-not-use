@@ -20,7 +20,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ITaskService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.ISemanticMarkupService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupService;
 
 public class TaskService extends RemoteServiceServlet implements ITaskService {
 

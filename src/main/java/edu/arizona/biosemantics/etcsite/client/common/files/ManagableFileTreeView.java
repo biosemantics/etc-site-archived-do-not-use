@@ -45,6 +45,9 @@ public class ManagableFileTreeView extends Composite implements IManagableFileTr
 	@UiField
 	Button addButton;
 	
+	@UiField
+	Button createSemanticMarkupInputButton;
+	
 	@Inject
 	public ManagableFileTreeView(IFileTreeView.Presenter fileTreePresenter) {
 		this.fileTreeView = fileTreePresenter.getView();
@@ -70,6 +73,11 @@ public class ManagableFileTreeView extends Composite implements IManagableFileTr
 	@UiHandler("downloadButton")
 	public void onDownload(ClickEvent event) {
 		presenter.onDownload();
+	}
+	
+	@UiHandler("createSemanticMarkupInputButton")
+	public void onCreateSemanticMarkupInput(ClickEvent event) {
+		presenter.onSemanticMarkupInput();
 	}
 
 	@Override

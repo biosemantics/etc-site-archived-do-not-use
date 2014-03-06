@@ -16,6 +16,7 @@ import edu.arizona.biosemantics.etcsite.client.common.ITextInputView.ITextInputL
 import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.client.common.MessageView;
 import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView.IFileTreeSelectionListener;
+import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
 import edu.arizona.biosemantics.etcsite.shared.file.FileFilter;
 import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileServiceAsync;
@@ -38,12 +39,14 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	private IMessageView.Presenter messagePresenter;
 	private String defaultServletPath;
 	private ITextInputView.Presenter textInputPresenter;
+	private ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter;
 	
 	@Inject
 	public ManagableFileTreePresenter(IManagableFileTreeView view, 
 			IFileTreeView.Presenter fileTreePresenter, 
 			IFileServiceAsync fileService, MessageView.Presenter messagePresenter, 
-			ITextInputView.Presenter textInputPresenter) {
+			ITextInputView.Presenter textInputPresenter, 
+			ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter) {
 		this.fileService = fileService;
 		this.view = view;
 		this.view.setPresenter(this);
@@ -51,6 +54,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		fileTreePresenter.addSelectionListener(this);
 		this.messagePresenter = messagePresenter;
 		this.textInputPresenter = textInputPresenter;
+		this.createSemanticMarkupFilesDialogPresenter = createSemanticMarkupFilesDialogPresenter;
 		
 		this.defaultServletPath = view.getUploader().getServletPath() + "?username=" + Authentication.getInstance().getUsername()
 				+ "&sessionID=" + Authentication.getInstance().getSessionID();
@@ -86,6 +90,11 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		this.fileFilter = fileFilter;
 		fileTreePresenter.refresh(fileFilter);
 		setInputFileMultiple();
+	}
+	
+	@Override
+	public void onSemanticMarkupInput() {
+		createSemanticMarkupFilesDialogPresenter.show();
 	}
 	
 	@Override

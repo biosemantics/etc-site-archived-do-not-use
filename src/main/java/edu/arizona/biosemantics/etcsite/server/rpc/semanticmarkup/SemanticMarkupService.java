@@ -62,12 +62,12 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFilePermissionService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.BracketValidator;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.ISemanticMarkupService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.LearnInvocation;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.ParseInvocation;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.PreprocessedDescription;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.BracketValidator;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.LearnInvocation;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ParseInvocation;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.PreprocessedDescription;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.TaskStageEnum;
 
 public class SemanticMarkupService extends RemoteServiceServlet implements ISemanticMarkupService  {
 

@@ -87,7 +87,7 @@ public class TaskStageDAO {
 		case MATRIX_GENERATION:
 			return new MatrixGenerationTaskStage(id, taskType, created, edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.TaskStageEnum.valueOf(taskStage));
 		case SEMANTIC_MARKUP:
-			return new SemanticMarkupTaskStage(id, taskType, created, edu.arizona.biosemantics.etcsite.shared.rpc.semanticMarkup.TaskStageEnum.valueOf(taskStage));
+			return new SemanticMarkupTaskStage(id, taskType, created, edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.TaskStageEnum.valueOf(taskStage));
 		case TAXONOMY_COMPARISON:
 			break;
 		case TREE_GENERATION:

@@ -25,6 +25,7 @@
   <inherits name="com.google.gwt.inject.Inject"/>
   <inherits name="com.google.gwt.activity.Activity"/>
   <inherits name="com.google.gwt.place.Place"/>
+  <inherits name='com.sencha.gxt.ui.GXT' />
   
   <!-- Oto lite module -->
   <inherits name='edu.arizona.biosemantics.otolite.OTOLite_part2'/>
