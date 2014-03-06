@@ -5,18 +5,19 @@ import com.google.inject.Inject;
 public class CreateSemanticMarkupFilesDialogPresenter implements ICreateSemanticMarkupFilesDialogView.Presenter {
 
 	private ICreateSemanticMarkupFilesDialogView view;
-	private ICreateSemanticMarkupFilesView.Presenter presenter;
+	private ICreateSemanticMarkupFilesView.Presenter createSemanticMarkupFilesPresenter;
 
 	@Inject
 	public CreateSemanticMarkupFilesDialogPresenter(ICreateSemanticMarkupFilesDialogView view, 
-			ICreateSemanticMarkupFilesView.Presenter presenter) {
+			ICreateSemanticMarkupFilesView.Presenter createSemanticMarkupFilesPresenter) {
 		this.view = view;
 		view.setPresenter(this);
-		this.presenter = presenter;
+		this.createSemanticMarkupFilesPresenter = createSemanticMarkupFilesPresenter;
 	}
 	
 	@Override
-	public void show() {
+	public void show(String destinationFilePath) {
+		createSemanticMarkupFilesPresenter.setDestinationFilePath(destinationFilePath);
 		view.show();
 	}
 

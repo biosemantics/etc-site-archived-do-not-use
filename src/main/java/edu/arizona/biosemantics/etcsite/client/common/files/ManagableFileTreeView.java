@@ -77,7 +77,7 @@ public class ManagableFileTreeView extends Composite implements IManagableFileTr
 	
 	@UiHandler("createSemanticMarkupInputButton")
 	public void onCreateSemanticMarkupInput(ClickEvent event) {
-		presenter.onSemanticMarkupInput();
+		presenter.onCreateSemanticMarkupFiles();
 	}
 
 	@Override

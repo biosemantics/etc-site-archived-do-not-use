@@ -8,9 +8,16 @@ import com.google.inject.Inject;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 
+import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.client.common.IMessageView;
+import edu.arizona.biosemantics.etcsite.client.common.ServerSetup;
+import edu.arizona.biosemantics.etcsite.shared.file.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.shared.file.MyXmlWriter;
 import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.TaxonIdentificationEntry;
 import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModel.*;
+import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.IFileServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 
 public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkupFilesView.Presenter {
 
@@ -31,11 +38,20 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	private XmlAutoBeanFactory factory = GWT.create(XmlAutoBeanFactory.class);
 	private MyXmlWriter<Treatment> writer = new MyXmlWriter<Treatment>(factory,
 			Treatment.class, "treatment");
-
+	private IFileServiceAsync fileService;
+	private IFileAccessServiceAsync fileAccessService;
+	private String destinationFilePath;
+	private IMessageView.Presenter messagePresenter;
+	private FilePathShortener filePathShortener = new FilePathShortener();
+	
 	@Inject
-	public CreateSemanticMarkupFilesPresenter(ICreateSemanticMarkupFilesView view) {
+	public CreateSemanticMarkupFilesPresenter(ICreateSemanticMarkupFilesView view, IFileServiceAsync fileService, 
+			IFileAccessServiceAsync fileAccessService, IMessageView.Presenter messagePresenter) {
 		this.view = view;
 		view.setPresenter(this);
+		this.fileService = fileService;
+		this.fileAccessService = fileAccessService;
+		this.messagePresenter = messagePresenter;
 	}
 
 	public void onSend() {
@@ -143,36 +159,29 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 			return;
 		}
 
-		String xml = writer.write(treatment);
-
+		final String xml = writer.write(treatment);
+		view.setResult(xml);
+		
 		// TODO validate
 		// XMLValidator validator = new XMLValidator(new File("")); //TODO
 		// client can not use File, how to access schema file?
 		// validator.validate(xml);
 
-		// Then, we send the input to the server.
-		view.setResult(xml);
-
-		System.out.println(xml);
-		System.out.println(filename);
-
-		/*
-		 * greetingService.greetServer(xml, filename, new
-		 * AsyncCallback<String>() { public void onFailure(Throwable caught) {
-		 * // Show the RPC error message to the user dialogBox
-		 * .setText("Remote Procedure Call - Failure"); serverResponseLabel
-		 * .addStyleName("serverResponseLabelError");
-		 * serverResponseLabel.setHTML(SERVER_ERROR); dialogBox.center();
-		 * closeButton.setFocus(true); }
-		 * 
-		 * public void onSuccess(String result) {
-		 * dialogBox.setText(" generated with the following content"); //TODO:
-		 * onSuccess should report "filename generated!" serverResponseLabel
-		 * //no need to reset the form.
-		 * .removeStyleName("serverResponseLabelError");
-		 * serverResponseLabel.setHTML(result); dialogBox.center();
-		 * closeButton.setFocus(true); } });
-		 */
+		
+		
+		
+		final String fileDestination = this.destinationFilePath + ServerSetup.getInstance().getSetup().getSeperator() + filename;
+		fileService.createFile(Authentication.getInstance().getToken(), fileDestination, new RPCCallback<Void>() {
+			@Override
+			public void onResult(Void result) {
+				fileAccessService.setFileContent(Authentication.getInstance().getToken(), fileDestination, xml, new RPCCallback<Void>() {
+					@Override
+					public void onResult(Void result) {
+						messagePresenter.showMessage("File created", "File successfully created in " + filePathShortener.shortenOwnedPath(destinationFilePath));
+					}
+				});
+			}
+		});
 	}
 
 	private String errorChecking(String text, String type) {
@@ -264,18 +273,8 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	private TaxonIdentification makeTaxonIdentification() {
 		AutoBean<TaxonIdentification> taxonIdentification = factory
 				.taxonIdentification();
-		// change ti here won't solve the problem as we want only name elements
-		// with a value to be included in the final xml
 		return taxonIdentification.as();
 	}
-
-	/*
-	 * private List<Description> makeDescriptions() {
-	 * List<AutoBean<Description>> descriptions = factory.descriptions();
-	 * List<Description> list = new ArrayList<Description>();
-	 * for(AutoBean<Description> bean: descriptions) list.add(bean.as()); return
-	 * list; }
-	 */
 
 	private Description makeDescription() {
 		AutoBean<Description> description = factory.description();
@@ -285,5 +284,10 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	@Override
 	public ICreateSemanticMarkupFilesView getView() {
 		return view;
+	}
+	
+	@Override
+	public void setDestinationFilePath(String destinationFilePath) {
+		this.destinationFilePath = destinationFilePath;
 	}
 }

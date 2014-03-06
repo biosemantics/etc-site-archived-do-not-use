@@ -14,6 +14,7 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -36,12 +37,14 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	private TextArea ddescriptionField;
 	private TextBox strainsrcField;
 	private Button sendButton;
-	private Label textToServerLabel;
-	private HTML serverResponseLabel;
+	//private Label textToServerLabel;
+	//private HTML serverResponseLabel;
 	private Grid nametable;
 	
 	public CreateSemanticMarkupFilesView() {
+		ScrollPanel scrollPanel = new ScrollPanel();
 		VerticalPanel body = new VerticalPanel();
+		scrollPanel.add(body);
 		
 		// introduction text
 		final Label pagetitle = new Label("Create Input XML File for Semantic Markup Task");
@@ -170,7 +173,7 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		body.add(sendButton);
 
 		// Create the popup dialog box
-		final DialogBox dialogBox = new DialogBox();
+		/*final DialogBox dialogBox = new DialogBox();
 		dialogBox.setText("Remote Procedure Call");
 		dialogBox.setAnimationEnabled(true);
 		final Button closeButton = new Button("Close");
@@ -196,8 +199,9 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 				sendButton.setFocus(true);
 			}
 		});
-
-		this.initWidget(body);
+		*/
+		this.initWidget(scrollPanel);
+		this.setSize("800px", "600px");
 	}
 
 	private ListBox getRanks() {
@@ -280,9 +284,9 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	}
 
 	public void setResult(String xml) {
-		sendButton.setEnabled(false);
-		textToServerLabel.setText(xml);
-		serverResponseLabel.setText("");
+		//sendButton.setEnabled(false);
+		//textToServerLabel.setText(xml);
+		//serverResponseLabel.setText("");
 	}
 
 	@Override

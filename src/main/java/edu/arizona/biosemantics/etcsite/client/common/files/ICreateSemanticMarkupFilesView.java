@@ -14,6 +14,8 @@ public interface ICreateSemanticMarkupFilesView extends IsWidget {
 
 		void onSend();
 
+		void setDestinationFilePath(String destinationFilePath);
+
 	}
 
 	void setPresenter(ICreateSemanticMarkupFilesView.Presenter presenter);

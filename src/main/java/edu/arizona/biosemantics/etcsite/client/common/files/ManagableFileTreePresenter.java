@@ -93,8 +93,12 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	}
 	
 	@Override
-	public void onSemanticMarkupInput() {
-		createSemanticMarkupFilesDialogPresenter.show();
+	public void onCreateSemanticMarkupFiles() {
+		final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
+		if(selection != null)
+			createSemanticMarkupFilesDialogPresenter.show(fileTreePresenter.getSelectedItem().getFileInfo().getFilePath());
+		else
+			messagePresenter.showMessage("No destination selected", "Please select a destination folder first");
 	}
 	
 	@Override
