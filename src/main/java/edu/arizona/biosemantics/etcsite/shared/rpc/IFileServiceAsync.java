@@ -16,7 +16,7 @@ public interface IFileServiceAsync {
 	
 	public void moveFile(AuthenticationToken authenticationToken, String filePath, String newFilePath, AsyncCallback<RPCResult<Void>> callback);
 
-	public void createDirectory(AuthenticationToken authenticationToken, String filePath, String name, AsyncCallback<RPCResult<Void>> callback);
+	public void createDirectory(AuthenticationToken authenticationToken, String filePath, String idealFolderName, boolean force, AsyncCallback<RPCResult<String>> callback);
 	
 	public void isDirectory(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<Boolean>> callback);
 	
@@ -24,7 +24,7 @@ public interface IFileServiceAsync {
 
 	public void getDirectoriesFiles(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<List<String>>> callback);
 
-	public void createFile(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<Void>> callback);
+	public void createFile(AuthenticationToken authenticationToken, String directory, String idealFileName, boolean force, AsyncCallback<RPCResult<String>> callback);
 
 	public void getDepth(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<Integer>> asyncCallback);
 
@@ -44,7 +44,5 @@ public interface IFileServiceAsync {
 
 	public void copyFiles(AuthenticationToken authenticationToken, String source, String destination, AsyncCallback<RPCResult<Void>> callback);
 	
-	public void createDirectoryForcibly(AuthenticationToken authenticationToken, String directory, String idealFolderName, AsyncCallback<RPCResult<String>> callback);
-
 	public void getDownloadPath(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<String>> callback);
 }

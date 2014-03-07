@@ -6,7 +6,12 @@ public class CreateSemanticMarkupFilesDialogPresenter implements ICreateSemantic
 
 	private ICreateSemanticMarkupFilesDialogView view;
 	private ICreateSemanticMarkupFilesView.Presenter createSemanticMarkupFilesPresenter;
+	private ICloseHandler closeHandler;
 
+	public interface ICloseHandler {
+		public void onClose(int filesCreated);
+	}
+	
 	@Inject
 	public CreateSemanticMarkupFilesDialogPresenter(ICreateSemanticMarkupFilesDialogView view, 
 			ICreateSemanticMarkupFilesView.Presenter createSemanticMarkupFilesPresenter) {
@@ -17,6 +22,7 @@ public class CreateSemanticMarkupFilesDialogPresenter implements ICreateSemantic
 	
 	@Override
 	public void show(String destinationFilePath) {
+		createSemanticMarkupFilesPresenter.init();
 		createSemanticMarkupFilesPresenter.setDestinationFilePath(destinationFilePath);
 		view.show();
 	}
@@ -24,6 +30,16 @@ public class CreateSemanticMarkupFilesDialogPresenter implements ICreateSemantic
 	@Override
 	public void hide() {
 		view.hide();
+	}
+
+	@Override
+	public void onCancel() {
+		closeHandler.onClose(createSemanticMarkupFilesPresenter.getFilesCreated());
+	}
+	
+	@Override
+	public void setCloseHandler(ICloseHandler closeHandler) {
+		this.closeHandler = closeHandler;
 	}
 
 }

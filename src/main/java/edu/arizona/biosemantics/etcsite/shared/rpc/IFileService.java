@@ -18,7 +18,7 @@ public interface IFileService extends RemoteService {
 
 	public RPCResult<Void> moveFile(AuthenticationToken authenticationToken, String filePath, String newFilePath);
 
-	public RPCResult<Void> createDirectory(AuthenticationToken authenticationToken, String filePath, String name);
+	public RPCResult<String> createDirectory(AuthenticationToken authenticationToken, String filePath, String idealFolderName, boolean force);
 
 	public RPCResult<Boolean> isDirectory(AuthenticationToken authenticationToken, String filePath);
 	
@@ -26,7 +26,7 @@ public interface IFileService extends RemoteService {
 
 	public RPCResult<List<String>> getDirectoriesFiles(AuthenticationToken authenticationToken, String filePath);
 
-	public RPCResult<Void> createFile(AuthenticationToken authenticationToken, String filePath);
+	public RPCResult<String> createFile(AuthenticationToken authenticationToken, String directory, String idealFileName, boolean force);
 	
 	public RPCResult<Integer> getDepth(AuthenticationToken authenticationToken, String filePath);
 	
@@ -45,8 +45,6 @@ public interface IFileService extends RemoteService {
 	public RPCResult<String> getFileName(AuthenticationToken authenticationToken, String filePath);
 
 	public RPCResult<Void> copyFiles(AuthenticationToken authenticationToken, String source, String destination);
-
-	public RPCResult<String> createDirectoryForcibly(AuthenticationToken authenticationToken, String directory, String idealFolderName);
 	
 	public RPCResult<String> getDownloadPath(AuthenticationToken authenticationToken, String filePath);
 	

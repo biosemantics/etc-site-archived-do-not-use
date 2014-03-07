@@ -22,11 +22,11 @@ public class TextInputPresenter implements ITextInputView.Presenter {
 		dialogBox.setCancelConfirmHandler(new ICancelConfirmHandler() {
 			@Override
 			public void cancel() {
-				onCancel();
+				TextInputPresenter.this.cancel();
 			}
 			@Override
 			public void confirm() {
-				onConfirm(view.getTextBox());
+				TextInputPresenter.this.confirm(view.getTextBox());
 			}
 		});
 	}
@@ -43,12 +43,20 @@ public class TextInputPresenter implements ITextInputView.Presenter {
 	@Override
 	public void onConfirm(String text) {
 		dialogBox.hide();
-		currentListener.onConfirm(text);
+		this.confirm(text);
 	}
-
+	
 	@Override
 	public void onCancel() {
-		dialogBox.hide();
+		dialogBox.hide();		
+	}
+	
+	private void confirm(String text) {
+		currentListener.onConfirm(text);
+	}
+	
+	private void cancel() {
 		currentListener.onCancel();
 	}
+
 }

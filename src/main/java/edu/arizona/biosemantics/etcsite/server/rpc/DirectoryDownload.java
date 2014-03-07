@@ -116,7 +116,7 @@ public class DirectoryDownload {
 	private String gatherFiles(File file, String destination) {
 		File destinationFile = new File(destination);
 		fileService.deleteFile(authenticationToken, destination);
-		fileService.createDirectory(authenticationToken, destinationFile.getParent(), destinationFile.getName());				
+		fileService.createDirectory(authenticationToken, destinationFile.getParent(), destinationFile.getName(), false);				
 		fileService.copyFiles(new AdminAuthenticationToken(), file.getAbsolutePath(), destination);
 		return destination;
 	}
@@ -181,7 +181,7 @@ public class DirectoryDownload {
 	private void cleanup(String destination) {
 		File destinationFile = new File(destination);
 		fileService.deleteFile(authenticationToken, destination);
-		fileService.createDirectory(authenticationToken, destinationFile.getParent(), destinationFile.getName());				
+		fileService.createDirectory(authenticationToken, destinationFile.getParent(), destinationFile.getName(), false);				
 	}
 
 

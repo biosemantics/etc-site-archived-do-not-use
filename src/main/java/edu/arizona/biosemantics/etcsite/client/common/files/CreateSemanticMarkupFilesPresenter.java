@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView;
+import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView.IConfirmListener;
 import edu.arizona.biosemantics.etcsite.client.common.IMessageView;
 import edu.arizona.biosemantics.etcsite.client.common.ServerSetup;
 import edu.arizona.biosemantics.etcsite.shared.file.FilePathShortener;
@@ -18,6 +21,7 @@ import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModel.*;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 
 public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkupFilesView.Presenter {
 
@@ -42,24 +46,25 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	private IFileAccessServiceAsync fileAccessService;
 	private String destinationFilePath;
 	private IMessageView.Presenter messagePresenter;
+	private IMessageConfirmView.Presenter messageConfirmPresenter;
 	private FilePathShortener filePathShortener = new FilePathShortener();
+	private int filesCreated;
 	
 	@Inject
 	public CreateSemanticMarkupFilesPresenter(ICreateSemanticMarkupFilesView view, IFileServiceAsync fileService, 
-			IFileAccessServiceAsync fileAccessService, IMessageView.Presenter messagePresenter) {
+			IFileAccessServiceAsync fileAccessService, IMessageView.Presenter messagePresenter, IMessageConfirmView.Presenter messageConfirmPresenter) {
 		this.view = view;
 		view.setPresenter(this);
 		this.fileService = fileService;
 		this.fileAccessService = fileAccessService;
 		this.messagePresenter = messagePresenter;
+		this.messageConfirmPresenter = messageConfirmPresenter;
 	}
 
 	public void onSend() {
 		Treatment treatment = makeTreatment();
 
-		view.setErrorText("");
 		String error = "";
-
 		// source document information
 		String text = view.getAuthor();
 		if (text.length() == 0) {
@@ -155,31 +160,55 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 			// treatment.setDescription(text);
 		}
 		if (error.length() > 0) {
-			view.setErrorText(error.trim());
+			messagePresenter.showMessage("Input Error", error.trim());
 			return;
 		}
 
 		final String xml = writer.write(treatment);
-		view.setResult(xml);
-		
+	
 		// TODO validate
 		// XMLValidator validator = new XMLValidator(new File("")); //TODO
 		// client can not use File, how to access schema file?
 		// validator.validate(xml);
 
 		
-		
-		
-		final String fileDestination = this.destinationFilePath + ServerSetup.getInstance().getSetup().getSeperator() + filename;
-		fileService.createFile(Authentication.getInstance().getToken(), fileDestination, new RPCCallback<Void>() {
+		final String theFileName = filename;
+		fileService.createFile(Authentication.getInstance().getToken(), destinationFilePath, theFileName, false, new AsyncCallback<RPCResult<String>>() {
+			@Override
+			public void onFailure(Throwable caught) { }
+
+			@Override
+			public void onSuccess(RPCResult<String> result) {
+				if(result.isSucceeded()) {
+					setFileContent(xml, destinationFilePath + ServerSetup.getInstance().getSetup().getSeperator() + theFileName);
+				} else {
+					messageConfirmPresenter.show("File creation failed", "File with name \"" + theFileName + "\" could not be created. " +
+							"Do you want to create with a unique filename suffix?", new IConfirmListener() {
+								@Override
+								public void onConfirm() {
+									fileService.createFile(Authentication.getInstance().getToken(), destinationFilePath, theFileName, 
+											true, new RPCCallback<String>() {
+										@Override
+										public void onResult(String result) {
+											setFileContent(xml, result);
+										}
+									});
+								}
+								@Override
+								public void onCancel() { }
+					});
+				}
+			}
+		});
+	}
+	
+	private void setFileContent(String content, final String fileDestination) {
+		fileAccessService.setFileContent(Authentication.getInstance().getToken(), fileDestination, content, new RPCCallback<Void>() {
 			@Override
 			public void onResult(Void result) {
-				fileAccessService.setFileContent(Authentication.getInstance().getToken(), fileDestination, xml, new RPCCallback<Void>() {
-					@Override
-					public void onResult(Void result) {
-						messagePresenter.showMessage("File created", "File successfully created in " + filePathShortener.shortenOwnedPath(destinationFilePath));
-					}
-				});
+				messagePresenter.showMessage("File created", "File " + filePathShortener.shortenOwnedPath(fileDestination) + " " +
+						"successfully created in " + filePathShortener.shortenOwnedPath(destinationFilePath));
+				filesCreated++;
 			}
 		});
 	}
@@ -271,9 +300,10 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	}
 
 	private TaxonIdentification makeTaxonIdentification() {
-		AutoBean<TaxonIdentification> taxonIdentification = factory
-				.taxonIdentification();
-		return taxonIdentification.as();
+		AutoBean<TaxonIdentification> taxonIdentification = factory.taxonIdentification();
+		TaxonIdentification t = taxonIdentification.as();
+		t.setStatus("ACCEPTED");
+		return t;
 	}
 
 	private Description makeDescription() {
@@ -288,6 +318,17 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	
 	@Override
 	public void setDestinationFilePath(String destinationFilePath) {
+		this.filesCreated = 0;
 		this.destinationFilePath = destinationFilePath;
+	}
+
+	@Override
+	public int getFilesCreated() {
+		return this.filesCreated;
+	}
+
+	@Override
+	public void init() {
+		view.removeAddtionalTaxonRanks();
 	}
 }

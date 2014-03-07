@@ -151,7 +151,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 					if(fileType != null && !filter(fileType, fileFilter)) {
 						String displayPath = childPath.replace(Configuration.fileBase + File.separator + authenticationToken.getUsername(), "");
 						Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(name, child.getAbsolutePath(), displayPath, fileType, 
-								authenticationToken.getUsername(), false, true));
+								authenticationToken.getUsername(), false, child.isDirectory()));
 						fileTree.addChild(childTree);
 						if(child.isDirectory()) {
 							decorateOwnedTree(authenticationToken, childTree, fileFilter, childPath);
@@ -263,28 +263,68 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	}
 	
 	@Override
-	public RPCResult<Void> createDirectory(AuthenticationToken authenticationToken, String filePath, String name) { 
-		if(name.trim().isEmpty()) 
-			return new RPCResult<Void>(false, "Directory name may not be empty");
+	public RPCResult<String> createDirectory(AuthenticationToken authenticationToken, String filePath, String idealFolderName, boolean force) { 
+		if(idealFolderName.trim().isEmpty()) 
+			return new RPCResult<String>(false, "Directory name may not be empty", "");
 		
 		RPCResult<Boolean> permissionResult = filePermissionService.hasWritePermission(authenticationToken, filePath);
 		if(!permissionResult.isSucceeded())
-			return new RPCResult<Void>(false, permissionResult.getMessage());
+			return new RPCResult<String>(false, permissionResult.getMessage(), "");
 		if(permissionResult.getData()) {
 			RPCResult<Boolean> inUseResult = this.isInUse(authenticationToken, filePath);
 			if(!inUseResult.isSucceeded())
-				return new RPCResult<Void>(false, inUseResult.getMessage());
+				return new RPCResult<String>(false, inUseResult.getMessage(), "");
 			if(!inUseResult.getData()) {
-				File file = new File(filePath + File.separator + name);
+				File file = new File(filePath + File.separator + idealFolderName);
 				boolean resultMkDir = file.mkdir();
-				return new RPCResult<Void>(resultMkDir);
+				if(!resultMkDir && force) {
+					String date = dateTimeFormat.format(new Date());
+					idealFolderName = idealFolderName + "_" + date;
+					file = new File(filePath + File.separator + idealFolderName);
+					resultMkDir = file.mkdir();
+					int i = 1;
+					while(!resultMkDir) {
+						file = new File(filePath + File.separator + idealFolderName + "_" + i++);
+						resultMkDir = file.mkdir();
+					}
+				}
+				if(!resultMkDir) 
+					return new RPCResult<String>(resultMkDir, "Internal Server Error", "");
+				else
+					return new RPCResult<String>(resultMkDir, "", file.getAbsolutePath());
 			} else {
-				return new RPCResult<Void>(false, createMessageFileInUse(authenticationToken, filePath));
+				return new RPCResult<String>(false, createMessageFileInUse(authenticationToken, filePath), "");
 			}
 		}
-		return new RPCResult<Void>(false, "Permission denied");
+		return new RPCResult<String>(false, "Permission denied", "");
 	}
-
+	
+	@Override
+	public RPCResult<String> createFile(AuthenticationToken authenticationToken, String directory, String idealFileName, boolean force) {		
+		RPCResult<Boolean> permissionResult = filePermissionService.hasWritePermission(authenticationToken, directory);
+		if(!permissionResult.isSucceeded())
+			return new RPCResult<String>(false, permissionResult.getMessage(), "");
+		if(permissionResult.getData()) {
+			File file = new File(directory + File.separator + idealFileName);
+			try {
+				boolean createResult = file.createNewFile();
+				int i = 1;
+				while(!createResult && force) {
+					file = new File(directory + File.separator + idealFileName + "_" + i++);
+					createResult = file.createNewFile();
+				}
+				if(createResult)
+					return new RPCResult<String>(createResult, "", file.getAbsolutePath());
+				else
+					return new RPCResult<String>(createResult, "creating file failed", "");
+			} catch (IOException e) {
+				e.printStackTrace();
+				return new RPCResult<String>(false, "creating file failed", "");
+			}
+		}
+		return new RPCResult<String>(false, "Permission denied", "");
+	}
+	
 	@Override
 	public RPCResult<Boolean> isDirectory(AuthenticationToken authenticationToken, String filePath) {
 		RPCResult<Boolean> permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
@@ -329,27 +369,6 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		return new RPCResult<List<String>>(false, "Permission denied");
 		
 		
-	}
-
-	@Override
-	public RPCResult<Void> createFile(AuthenticationToken authenticationToken, String filePath) {		
-		File parentFile = new File(filePath).getParentFile();
-		if(parentFile == null)
-			return new RPCResult<Void>(false, "Invalid destination");
-		RPCResult<Boolean> permissionResult = filePermissionService.hasWritePermission(authenticationToken, parentFile.getAbsolutePath());
-		if(!permissionResult.isSucceeded())
-			return new RPCResult<Void>(false, permissionResult.getMessage());
-		if(permissionResult.getData()) {
-			File file = new File(filePath);
-			try {
-				boolean createResult = file.createNewFile();
-				return new RPCResult<Void>(createResult, createResult ? "" : "creating file failed");
-			} catch (IOException e) {
-				e.printStackTrace();
-				return new RPCResult<Void>(false, "creating file failed");
-			}
-		}
-		return new RPCResult<Void>(false, "Permission denied");
 	}
 
 	@Override
@@ -565,30 +584,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			return new RPCResult<Void>(true);
 		}
 		return new RPCResult<Void>(false, "Permission denied");
-	}
-	
-	@Override
-	public RPCResult<String> createDirectoryForcibly(AuthenticationToken authenticationToken, String directory, String idealFolderName) {
-		RPCResult<Boolean> permissionResultDestination = filePermissionService.hasWritePermission(authenticationToken, directory);
-		if(!permissionResultDestination.isSucceeded())
-			return new RPCResult<String>(false, permissionResultDestination.getMessage(), "");
-		if(permissionResultDestination.getData()) {
-			RPCResult<Void> createResult = this.createDirectory(authenticationToken, directory, idealFolderName);
-			if(!createResult.isSucceeded()) {
-				String date = dateTimeFormat.format(new Date());
-				idealFolderName = idealFolderName + "_" + date;
-				createResult = this.createDirectory(authenticationToken, directory, idealFolderName);
-				int i = 1;
-				while(!createResult.isSucceeded()) {
-					idealFolderName = idealFolderName + "_" + i++;
-					createResult = this.createDirectory(authenticationToken, directory, idealFolderName);
-				}
-			}
-			return new RPCResult<String>(true, "", new File(directory, idealFolderName).getAbsolutePath());
-		}
-		return new RPCResult<String>(false, "Permission denied", "");
-	}
-	
+	}	
 
 	@Override
 	public RPCResult<String> getDownloadPath(AuthenticationToken authenticationToken, String filePath) {

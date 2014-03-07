@@ -15,12 +15,14 @@ public interface ICreateSemanticMarkupFilesView extends IsWidget {
 		void onSend();
 
 		void setDestinationFilePath(String destinationFilePath);
+		
+		int getFilesCreated();
+
+		void init();
 
 	}
 
 	void setPresenter(ICreateSemanticMarkupFilesView.Presenter presenter);
-
-	void setErrorText(String string);
 
 	String getAuthor();
 
@@ -42,7 +44,6 @@ public interface ICreateSemanticMarkupFilesView extends IsWidget {
 
 	String getDistributionDescriptionField();
 
-	void setResult(String xml);
-
+	void removeAddtionalTaxonRanks();
 	
 }

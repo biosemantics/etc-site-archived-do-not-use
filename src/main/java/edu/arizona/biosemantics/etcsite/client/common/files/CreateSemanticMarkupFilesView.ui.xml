@@ -1,0 +1,89 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.title {
+			font-weight: bold;
+		}
+		.instruction {
+			padding: 10px;
+		}
+		.scrollPanel {
+			height: 600px;
+			width: 800px;
+		}
+		.descriptionArea {
+			height: 60px;
+			width: 700px;
+		}
+	</ui:style>
+	<g:ScrollPanel styleName="{style.scrollPanel}">
+		<g:VerticalPanel>
+			<g:Label styleName="{style.title}">Create Input XML File for Semantic Markup Task</g:Label>
+			<g:Label styleName="{style.instruction}">Fill out the form for each taxon. Save the form to create
+				one input file as required by the semantic markup tool.
+				The file name will be the taxon name you provided. All applicable
+				fields are required</g:Label>
+			<g:DisclosurePanel>
+				<g:header>Source Document Information</g:header>
+				<g:FlowPanel>
+					<g:Label>Author:</g:Label>
+					<g:TextBox ui:field="author"></g:TextBox>
+					<g:Label>Date:</g:Label>
+					<g:TextBox ui:field="date"></g:TextBox>
+					<g:Label>Title:</g:Label>
+					<g:TextBox ui:field="title"></g:TextBox>
+				</g:FlowPanel>
+			</g:DisclosurePanel>
+			<g:DisclosurePanel>
+				<g:header>Taxon Name Information</g:header>
+				<g:Grid ui:field="ranksGrid">
+					<g:row>
+						<g:cell>Rank</g:cell>
+						<g:cell>Name</g:cell>
+					</g:row> 
+					<g:row>
+						<g:customCell>
+							<g:ListBox ui:field="ranksList"></g:ListBox>
+						</g:customCell>
+						<g:customCell>
+							<g:TextBox></g:TextBox>
+						</g:customCell>
+					</g:row>
+					<g:row>
+						<g:customCell>
+							<g:Button ui:field="addRankButton">Add rank</g:Button>
+						</g:customCell>
+						<g:cell></g:cell>
+					</g:row>
+				</g:Grid> 
+			</g:DisclosurePanel>
+			<g:DisclosurePanel>
+				<g:header>Strain Information (for microbes only)</g:header>
+				<g:FlowPanel>
+					<g:Label>Strain:</g:Label>
+					<g:TextBox ui:field="strain"></g:TextBox>
+					<g:Label>Strain Source:</g:Label>
+					<g:TextBox ui:field="strainSource"></g:TextBox>
+				</g:FlowPanel>
+			</g:DisclosurePanel>
+			<g:DisclosurePanel>
+				<g:header>Descriptions</g:header>
+				<g:FlowPanel>
+					<g:Label>If copy/paste from another source, check word by word
+						(especially special symbols) that the content is copied correctly.</g:Label>
+					<g:Label>Do not include any HTML or XML tag in the text.</g:Label>
+					<g:Label>Morphological Description or Microbial Description::</g:Label>
+					<g:TextArea ui:field="morphologicalDescription" styleName="{style.descriptionArea}"></g:TextArea>
+					<g:Label>Phenology Description:</g:Label>
+					<g:TextArea ui:field="phenologicalDescription" styleName="{style.descriptionArea}"></g:TextArea>
+					<g:Label>Habitat Description:</g:Label>
+					<g:TextArea ui:field="habitatDescription" styleName="{style.descriptionArea}"></g:TextArea>
+					<g:Label>Taxon Distribution:</g:Label>
+					<g:TextArea ui:field="distributionDescription" styleName="{style.descriptionArea}"></g:TextArea>
+				</g:FlowPanel>
+			</g:DisclosurePanel>
+			<g:Button ui:field="createButton">Create</g:Button>
+		</g:VerticalPanel>
+	</g:ScrollPanel>
+</ui:UiBinder> 

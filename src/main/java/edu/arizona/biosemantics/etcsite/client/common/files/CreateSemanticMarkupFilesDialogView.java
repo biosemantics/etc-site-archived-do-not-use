@@ -1,5 +1,6 @@
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
+import com.google.gwt.user.client.ui.ICancelConfirmHandler;
 import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 import com.google.inject.Inject;
 
@@ -12,7 +13,7 @@ public class CreateSemanticMarkupFilesDialogView implements ICreateSemanticMarku
 	@Inject
 	public CreateSemanticMarkupFilesDialogView(ICreateSemanticMarkupFilesView.Presenter presenter) {
 		this.createSemanticMarkupFilesView = presenter.getView();
-		this.dialogBox = new TitleCloseDialogBox(false, "File Manager");
+		this.dialogBox = new TitleCloseDialogBox(true, "File Manager");
 		dialogBox.setWidget(createSemanticMarkupFilesView);
 		dialogBox.setGlassEnabled(true);
 	}
@@ -20,6 +21,15 @@ public class CreateSemanticMarkupFilesDialogView implements ICreateSemanticMarku
 	@Override
 	public void show() {
 		dialogBox.center();
+		dialogBox.setCancelConfirmHandler(new ICancelConfirmHandler() {
+			@Override
+			public void cancel() {
+				presenter.onCancel();
+			}
+			@Override
+			public void confirm() {
+			}
+		});
 	}
 
 	@Override

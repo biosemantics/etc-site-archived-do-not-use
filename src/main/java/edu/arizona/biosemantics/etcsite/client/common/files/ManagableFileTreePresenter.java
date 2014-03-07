@@ -15,6 +15,7 @@ import edu.arizona.biosemantics.etcsite.client.common.ITextInputView;
 import edu.arizona.biosemantics.etcsite.client.common.ITextInputView.ITextInputListener;
 import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.client.common.MessageView;
+import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkupFilesDialogPresenter.ICloseHandler;
 import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView.IFileTreeSelectionListener;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
 import edu.arizona.biosemantics.etcsite.shared.file.FileFilter;
@@ -95,10 +96,18 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	@Override
 	public void onCreateSemanticMarkupFiles() {
 		final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
-		if(selection != null)
+		if(selection != null && selection.getFileInfo().isAllowsNewChildren()) {
+			createSemanticMarkupFilesDialogPresenter.setCloseHandler(new ICloseHandler() {
+				@Override
+				public void onClose(int filesCreated) {
+					if(filesCreated > 0)
+						refresh(fileFilter);
+				}
+			});
 			createSemanticMarkupFilesDialogPresenter.show(fileTreePresenter.getSelectedItem().getFileInfo().getFilePath());
+		}
 		else
-			messagePresenter.showMessage("No destination selected", "Please select a destination folder first");
+			messagePresenter.showMessage("No destination selected", "Please select a valid parent directory");
 	}
 	
 	@Override
@@ -119,10 +128,10 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 								if(!result)
 									newDirectoryParent = getParent(selection);
 								if(newDirectoryParent != null) {
-									fileService.createDirectory(Authentication.getInstance().getToken(), newDirectoryParent, directoryName, 
-											new RPCCallback<Void>() {
+									fileService.createDirectory(Authentication.getInstance().getToken(), newDirectoryParent, directoryName, false,
+											new RPCCallback<String>() {
 												@Override
-												public void onResult(Void result) {
+												public void onResult(String result) {
 													fileTreePresenter.refresh(fileFilter);
 												}
 									});

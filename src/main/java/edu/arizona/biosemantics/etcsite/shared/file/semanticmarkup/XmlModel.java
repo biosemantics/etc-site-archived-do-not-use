@@ -46,6 +46,8 @@ public class XmlModel {
 	}
 	
 	public interface TaxonIdentification{
+		@PropertyName("@status")
+		String getStatus();
 		@PropertyName("order_name")
 		String getOrderName();
 		@PropertyName("suborder_name")
@@ -85,6 +87,8 @@ public class XmlModel {
 		@PropertyName("strain_source")
 		String getStrainSource();
 		
+		@PropertyName("@status")
+		String setStatus(String status);
 		@PropertyName("order_name")
 		void setOrderName(String ordername);
 		@PropertyName("suborder_name")

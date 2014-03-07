@@ -98,7 +98,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				return new RPCResult<Task>(false, "Couldn't find file name for import");
 			if(sharedResult.getData()) {
 				RPCResult<String> destinationResult = 
-						fileService.createDirectoryForcibly(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUsername(), fileNameResult.getData());
+						fileService.createDirectory(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUsername(), 
+								fileNameResult.getData(), true);
 				RPCResult<Void> destination = fileService.copyFiles(authenticationToken, filePath, destinationResult.getData());
 				if(!destinationResult.isSucceeded() || !destination.isSucceeded())
 					return new RPCResult<Task>(false, "Couldn't copy shared files to an owned destination for input to task");
@@ -415,7 +416,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				return new RPCResult<Task>(false, outputDirectoryParentResult.getMessage());
 			
 			//find a suitable destination filePath
-			RPCResult<String> createDirectoryResult = fileService.createDirectoryForcibly(authenticationToken, outputDirectoryParentResult.getData(), outputDirectoryNameResult.getData());
+			RPCResult<String> createDirectoryResult = fileService.createDirectory(authenticationToken, outputDirectoryParentResult.getData(), 
+					outputDirectoryNameResult.getData(), true);
 			if(!createDirectoryResult.isSucceeded()) 
 				return new RPCResult<Task>(false, createDirectoryResult.getMessage());
 			
