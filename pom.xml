@@ -152,6 +152,12 @@
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>semantic-markup</artifactId>
 			<version>0.1.6</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>app</artifactId>
+					<groupId>org.eclipse.equinox</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.matrixgeneration</groupId>
