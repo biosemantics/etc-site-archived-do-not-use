@@ -304,8 +304,6 @@ private ICancelConfirmHandler cancelConfirmHandler;
       resizeHandlerRegistration.removeHandler();
       resizeHandlerRegistration = null;
     }
-    if(this.cancelConfirmHandler != null)
-    	this.cancelConfirmHandler.cancel();
     super.hide();
   }
 
