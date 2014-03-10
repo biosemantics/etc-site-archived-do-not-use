@@ -88,7 +88,7 @@ public class XmlModel {
 		String getStrainSource();
 		
 		@PropertyName("@status")
-		String setStatus(String status);
+		void setStatus(String status);
 		@PropertyName("order_name")
 		void setOrderName(String ordername);
 		@PropertyName("suborder_name")
