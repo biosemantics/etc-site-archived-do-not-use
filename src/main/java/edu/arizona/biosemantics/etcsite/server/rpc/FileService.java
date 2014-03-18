@@ -310,8 +310,14 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 				boolean createResult = file.createNewFile();
 				int i = 1;
 				while(!createResult && force) {
-					file = new File(directory + File.separator + idealFileName + "_" + i++);
+					String namePart = idealFileName;
+					if(idealFileName.lastIndexOf(".") != -1) {
+						namePart = idealFileName.substring(0, idealFileName.lastIndexOf("."));
+					}
+					file = new File(directory + File.separator + namePart + "_" + i++ + "." + 
+							idealFileName.substring(idealFileName.lastIndexOf(".") + 1, idealFileName.length()));
 					createResult = file.createNewFile();
+					
 				}
 				if(createResult)
 					return new RPCResult<String>(createResult, "", file.getAbsolutePath());

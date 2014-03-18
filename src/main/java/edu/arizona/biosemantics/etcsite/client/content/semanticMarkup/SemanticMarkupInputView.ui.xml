@@ -15,7 +15,8 @@
 			<g:VerticalPanel>
 			    <g:FlowPanel>
 			        <g:InlineLabel>
-			            Please provide us with a folder that contains the input taxon descriptions and the closest taxon group to be processed. You can upload the input taxon descriptions using the&nbsp;
+			            Please provide us with a folder that contains the input taxon descriptions and the closest taxon group to be processed. 
+			            You can upload or create the input taxon descriptions using the&nbsp;
 			        </g:InlineLabel>
 			        <g:Anchor ui:field="fileManagerAnchor">File Manager</g:Anchor>
 			        <g:InlineLabel>

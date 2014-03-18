@@ -23,10 +23,58 @@ public class XmlModel {
 	}
 	
 	public interface Meta {
+		@PropertyName("other_info_on_meta")
+		List<OtherInfoOnMeta> getOtherInfoOnMeta();
 		@PropertyName("source")
 		Source getSource();
+		@PropertyName("processed_by")
+		ProcessedBy getProcessedBy();
 		@PropertyName("source")
 		void setSource(Source source);
+		@PropertyName("other_info_on_meta")
+		void setOtherInfoOnMeta(List<OtherInfoOnMeta> otherInfoOnMeta);
+		@PropertyName("processed_by")
+		void setProcessedBy(ProcessedBy processedBy);
+	}
+	
+	public interface ProcessedBy {
+		@PropertyName("processor")
+		List<Processor> getProcessor();
+		@PropertyName("processor")
+		void setProcessor(List<Processor> processor);
+	}
+	
+	public interface Processor {
+		@PropertyName("date")
+		String getDate();
+		@PropertyName("software")
+		Software getSoftware();
+		@PropertyName("operator")
+		String getOperator();
+		@PropertyName("date")
+		void setDate(String date);
+		@PropertyName("software")
+		void setSoftware(Software software);
+		@PropertyName("operator")
+		void setOperator(String operator);
+	}
+	
+	public interface Software {
+		@PropertyName("@version")
+		String getVersion();
+		@PropertyName("@type")
+		String getType();
+		@PropertyName("@version")
+		void setVersion(String version);
+		@PropertyName("@type")
+		void setType(String type);
+	}
+	
+	public interface OtherInfoOnMeta {
+		@PropertyName("")
+		String getText();
+		@PropertyName("")
+		void setText(String text);
 	}
 		 	
 	public interface Source{
@@ -140,5 +188,7 @@ public class XmlModel {
 		@PropertyName("")
 		void setText(String text);
 	}
+	
+
 
 }

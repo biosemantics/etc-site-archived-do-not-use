@@ -544,11 +544,13 @@ private ICancelConfirmHandler cancelConfirmHandler;
 		    		if(cancelConfirmHandler != null)
 		    			this.cancelConfirmHandler.cancel();
 		    		break;
-		    	case KeyCodes.KEY_ENTER:
+		    	/* can't do this, may contain a text area which should obviously allow "Enter". How else to do this?
+		    	 * case KeyCodes.KEY_ENTER:
 		    		this.hide();
 		    		if(cancelConfirmHandler != null)
 		    			this.cancelConfirmHandler.confirm();
 		    		break;
+		    		*/
 	    	}
 	    	break;
 	    case Event.ONMOUSEDOWN: 

@@ -12,7 +12,7 @@ public interface ICreateSemanticMarkupFilesView extends IsWidget {
 
 		ICreateSemanticMarkupFilesView getView();
 
-		void onSend();
+		void onCreate();
 
 		void setDestinationFilePath(String destinationFilePath);
 		
@@ -20,13 +20,15 @@ public interface ICreateSemanticMarkupFilesView extends IsWidget {
 
 		void init();
 
+		void onBatch(String text);
+
 	}
 
 	void setPresenter(ICreateSemanticMarkupFilesView.Presenter presenter);
 
 	String getAuthor();
 
-	String getDate();
+	String getYear();
 
 	String getTitleText();
 
@@ -38,12 +40,16 @@ public interface ICreateSemanticMarkupFilesView extends IsWidget {
 
 	String getMorphologicalDescription();
 
-	String getPhenologzDescriptionField();
+	String getPhenologyDescription();
 
-	String getHabitatDescriptionField();
+	String getHabitatDescription();
 
-	String getDistributionDescriptionField();
+	String getDistributionDescription();
 
 	void removeAddtionalTaxonRanks();
+
+	String getDOI();
+
+	String getFullCitation();
 	
 }

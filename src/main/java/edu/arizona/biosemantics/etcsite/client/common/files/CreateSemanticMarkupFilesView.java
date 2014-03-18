@@ -11,12 +11,15 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.TaxonIdentificationEntry;
+import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModelFileCreator;
 
 
 public class CreateSemanticMarkupFilesView extends Composite implements ICreateSemanticMarkupFilesView {
@@ -26,19 +29,25 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	interface CreateSemanticMarkupFilesViewUiBinder extends UiBinder<Widget, CreateSemanticMarkupFilesView> { }
 	
 	@UiField
+	TextBox doi;
+	
+	@UiField
+	TextBox fullCitation;
+	
+	@UiField
 	TextBox author;
 	
 	@UiField
-	TextBox date;
+	TextBox year;
 	
 	@UiField
 	TextBox title;
 	
-	@UiField
-	TextBox strain;
+	//@UiField
+	//TextBox strain;
 	
-	@UiField
-	TextBox strainSource;
+	//@UiField
+	//TextBox strainSource;
 	
 	@UiField
 	TextArea morphologicalDescription;
@@ -64,13 +73,23 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	@UiField
 	Button addRankButton;
 	
+	@UiField
+	Button batchButton;
+	
+	@UiField
+	TextArea batchArea;
+	
+	@UiField
+	TabPanel tabPanel;
+	
 	private ICreateSemanticMarkupFilesView.Presenter presenter;
 
 	public CreateSemanticMarkupFilesView() {
 		initWidget(uiBinder.createAndBindUi(this));
+		tabPanel.selectTab(0);
 		initRanksListBox(ranksList);
 	}
-	
+
 	private ListBox initRanksListBox(ListBox ranksList) {
 		ranksList.addItem("order");
 		ranksList.addItem("suborder");
@@ -111,15 +130,15 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	
 	@UiHandler("createButton") 
 	public void onCreate(ClickEvent event) {
-		presenter.onSend();
+		presenter.onCreate();
 	}
 
 	public String getAuthor() {
 		return author.getText().trim();
 	}
 
-	public String getDate() {
-		return date.getText().trim();
+	public String getYear() {
+		return year.getText().trim();
 	}
 
 	public String getTitleText() {
@@ -127,11 +146,13 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	}
 	
 	public String getStrain() {
-		return strain.getText().trim();
+		return "";
+		//return strain.getText().trim();
 	}
 	
 	public String getStrainsSource() {
-		return strainSource.getText().trim();
+		return "";
+		//return strainSource.getText().trim();
 	}
 
 	public List<TaxonIdentificationEntry> getTaxonIdentificationEntries() {
@@ -155,16 +176,24 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		return morphologicalDescription.getText().trim();
 	}
 
-	public String getPhenologzDescriptionField() {
+	public String getPhenologyDescription() {
 		return phenologicalDescription.getText().trim();
 	}
 
-	public String getHabitatDescriptionField() {
+	public String getHabitatDescription() {
 		return habitatDescription.getText().trim();
 	}
 
-	public String getDistributionDescriptionField() {
+	public String getDistributionDescription() {
 		return distributionDescription.getText().trim();
+	}
+	
+	public String getDOI() {
+		return this.doi.getText().trim();
+	}
+	
+	public String getFullCitation() {
+		return this.fullCitation.getText().trim();
 	}
 
 	@Override
@@ -177,5 +206,10 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		while(ranksGrid.getRowCount() > 3) {
 			ranksGrid.removeRow(ranksGrid.getRowCount() - 2);
 		}
+	}
+	
+	@UiHandler("batchButton")
+	public void onBatch(ClickEvent event) {
+		this.presenter.onBatch(this.batchArea.getText());
 	}
 }

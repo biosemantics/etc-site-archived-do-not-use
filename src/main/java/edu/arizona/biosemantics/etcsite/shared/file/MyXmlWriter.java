@@ -13,7 +13,6 @@ import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 import com.google.web.bindery.autobean.shared.AutoBeanVisitor;
 import com.sencha.gxt.data.client.writer.XmlWriter;
-import com.sencha.gxt.data.shared.writer.AutoBeanWriter;
 
 /**
  * A <code>AutoBeanWriter</code> that outputs XML.

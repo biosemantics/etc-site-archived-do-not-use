@@ -2,88 +2,165 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
-		.title {
-			font-weight: bold;
-		}
 		.instruction {
 			padding: 10px;
 		}
-		.scrollPanel {
-			height: 600px;
-			width: 800px;
+		.tabPanel {
+			height: 500px;
+			width: 750px;
 		}
 		.descriptionArea {
 			height: 60px;
-			width: 700px;
+			width: 720px;
+		}
+		.batchArea {
+			height: 400px;
+			width: 720px;
 		}
 	</ui:style>
-	<g:ScrollPanel styleName="{style.scrollPanel}">
-		<g:VerticalPanel>
-			<g:Label styleName="{style.title}">Create Input XML File for Semantic Markup Task</g:Label>
-			<g:Label styleName="{style.instruction}">Fill out the form for each taxon. Save the form to create
-				one input file as required by the semantic markup tool.
-				The file name will be the taxon name you provided. All applicable
-				fields are required</g:Label>
-			<g:DisclosurePanel>
-				<g:header>Source Document Information</g:header>
-				<g:FlowPanel>
-					<g:Label>Author:</g:Label>
-					<g:TextBox ui:field="author"></g:TextBox>
-					<g:Label>Date:</g:Label>
-					<g:TextBox ui:field="date"></g:TextBox>
-					<g:Label>Title:</g:Label>
-					<g:TextBox ui:field="title"></g:TextBox>
-				</g:FlowPanel>
-			</g:DisclosurePanel>
-			<g:DisclosurePanel>
-				<g:header>Taxon Name Information</g:header>
-				<g:Grid ui:field="ranksGrid">
-					<g:row>
-						<g:cell>Rank</g:cell>
-						<g:cell>Name</g:cell>
-					</g:row> 
-					<g:row>
-						<g:customCell>
-							<g:ListBox ui:field="ranksList"></g:ListBox>
-						</g:customCell>
-						<g:customCell>
-							<g:TextBox></g:TextBox>
-						</g:customCell>
-					</g:row>
-					<g:row>
-						<g:customCell>
-							<g:Button ui:field="addRankButton">Add rank</g:Button>
-						</g:customCell>
-						<g:cell></g:cell>
-					</g:row>
-				</g:Grid> 
-			</g:DisclosurePanel>
-			<g:DisclosurePanel>
-				<g:header>Strain Information (for microbes only)</g:header>
-				<g:FlowPanel>
-					<g:Label>Strain:</g:Label>
-					<g:TextBox ui:field="strain"></g:TextBox>
-					<g:Label>Strain Source:</g:Label>
-					<g:TextBox ui:field="strainSource"></g:TextBox>
-				</g:FlowPanel>
-			</g:DisclosurePanel>
-			<g:DisclosurePanel>
-				<g:header>Descriptions</g:header>
-				<g:FlowPanel>
-					<g:Label>If copy/paste from another source, check word by word
-						(especially special symbols) that the content is copied correctly.</g:Label>
-					<g:Label>Do not include any HTML or XML tag in the text.</g:Label>
-					<g:Label>Morphological Description or Microbial Description::</g:Label>
-					<g:TextArea ui:field="morphologicalDescription" styleName="{style.descriptionArea}"></g:TextArea>
-					<g:Label>Phenology Description:</g:Label>
-					<g:TextArea ui:field="phenologicalDescription" styleName="{style.descriptionArea}"></g:TextArea>
-					<g:Label>Habitat Description:</g:Label>
-					<g:TextArea ui:field="habitatDescription" styleName="{style.descriptionArea}"></g:TextArea>
-					<g:Label>Taxon Distribution:</g:Label>
-					<g:TextArea ui:field="distributionDescription" styleName="{style.descriptionArea}"></g:TextArea>
-				</g:FlowPanel>
-			</g:DisclosurePanel>
-			<g:Button ui:field="createButton">Create</g:Button>
-		</g:VerticalPanel>
-	</g:ScrollPanel>
+	<g:TabPanel ui:field="tabPanel" styleName="{style.tabPanel}">
+	    <g:Tab text="Single-File Creation">
+	        <g:ScrollPanel >
+				<g:VerticalPanel>
+					<g:DisclosurePanel>
+						<g:header>Instructions</g:header>
+						<g:HTML styleName="{style.instruction}">You can create 
+					   	the input file for one taxonomic treatment to input into the semantic markup tool. 
+					   	Create multiple files by repeatedly submitting the form, or use 
+					   	the "Batch Creation" tab. The file name will be composed of the author, year and taxon names. 
+						<br/>
+						(*) marks required fields.</g:HTML>
+					</g:DisclosurePanel>
+					
+					<g:DisclosurePanel>
+						<g:header>Create File</g:header>
+						<g:VerticalPanel>
+							<g:DisclosurePanel>
+								<g:header>Source Document Information</g:header>
+								<g:FlowPanel>
+									<g:Label>Author *</g:Label>
+									<g:TextBox ui:field="author"></g:TextBox>
+									<g:Label>Year *</g:Label>
+									<g:TextBox ui:field="year"></g:TextBox>
+									<g:Label>Title</g:Label>
+									<g:TextBox ui:field="title"></g:TextBox>
+									<g:Label>DOI</g:Label>
+									<g:TextBox ui:field="doi"></g:TextBox>
+									<g:Label>Full Citation</g:Label>
+									<g:TextBox ui:field="fullCitation"></g:TextBox>
+								</g:FlowPanel>
+							</g:DisclosurePanel>
+							<g:DisclosurePanel>
+								<g:header>Taxon Name Information *</g:header>
+								<g:Grid ui:field="ranksGrid">
+									<g:row>
+										<g:cell>Rank</g:cell>
+										<g:cell>Name</g:cell>
+									</g:row> 
+									<g:row>
+										<g:customCell>
+											<g:ListBox ui:field="ranksList"></g:ListBox>
+										</g:customCell>
+										<g:customCell>
+											<g:TextBox></g:TextBox>
+										</g:customCell>
+									</g:row>
+									<g:row>
+										<g:customCell>
+											<g:Button ui:field="addRankButton">Add rank</g:Button>
+										</g:customCell>
+										<g:cell></g:cell>
+									</g:row>
+								</g:Grid> 
+							</g:DisclosurePanel>
+							<!-- 
+							<g:DisclosurePanel>
+								<g:header>Strain Information (* for microbes only)</g:header>
+								<g:FlowPanel>
+									<g:Label>Strain</g:Label>
+									<g:TextBox ui:field="strain"></g:TextBox>
+									<g:Label>Strain Source</g:Label>
+									<g:TextBox ui:field="strainSource"></g:TextBox>
+								</g:FlowPanel>
+							</g:DisclosurePanel> -->
+							<g:DisclosurePanel>
+								<g:header>Descriptions (* at least one)</g:header>
+								<g:FlowPanel>
+									<g:Label>If copy/paste from another source, check word by word
+										(especially special symbols) that the content is copied correctly.</g:Label>
+									<g:Label>Do not include any HTML or XML tag in the text.</g:Label>
+									<g:Label>Morphological<!-- /Microbial--> Description</g:Label>
+									<g:TextArea ui:field="morphologicalDescription" styleName="{style.descriptionArea}"></g:TextArea>
+									<g:Label>Phenology Description</g:Label>
+									<g:TextArea ui:field="phenologicalDescription" styleName="{style.descriptionArea}"></g:TextArea>
+									<g:Label>Habitat Description</g:Label>
+									<g:TextArea ui:field="habitatDescription" styleName="{style.descriptionArea}"></g:TextArea>
+									<g:Label>Taxon Distribution</g:Label>
+									<g:TextArea ui:field="distributionDescription" styleName="{style.descriptionArea}"></g:TextArea>
+								</g:FlowPanel>
+							</g:DisclosurePanel>
+							<g:Button ui:field="createButton">Create</g:Button>
+						</g:VerticalPanel>
+					</g:DisclosurePanel>
+				</g:VerticalPanel>
+			</g:ScrollPanel>
+	    </g:Tab>
+	    <g:Tab text="Batch Creation">
+	        <g:ScrollPanel>
+	            <g:VerticalPanel>
+	                <g:DisclosurePanel>
+						<g:header>Instructions</g:header>
+		                <g:HTMLPanel>
+		      				The batch creation allows you to upload multiple taxonomic treatments formatted in the same way as the single file creation.
+		      				
+		      				<ul>
+		      					<li>Use an empty line to seperate taxonomic treatments</li>
+		      					<li>The system will generate one file for each taxonomic treatment given</li>
+		      					<li>You can include any of the following field names in your input text.<br/>
+		      					    Required fields: author, year, title, 
+		      					   	at least one of {order, suborder, superfamily, family, subfamily, tribe, subtribe, genus, subgenus, 
+									section, subsection, series, species, subspecies, variety, forma, unranked},
+		      					    at least one of {morphology, phenology, habitat, distribution}<br/>
+		      					    Optional fields: doi, full citation
+		      					    </li>
+		      					<li>Use a colon to seperate field name from its value</li>
+		      					<li>Use a new line for each field</li>
+		      					<li><b>If you have multiple paragraphs for any of the description fields (morphology, phenology, habitat, distribution), 
+		      				insert an empty line between the paragraphs and enclose all the paragraphs with one pair of qutation marks (").</b></li>
+								<li>A paragraph is a string without any line break</li>
+								<li>If you copy/paste from another source, check word by word (especially special symbols) that the content is copied correctly</li>
+								<li>Do not include any HTML or XML tag in the text</li>
+		      				</ul>
+		                </g:HTMLPanel>
+		            </g:DisclosurePanel>
+		            <g:DisclosurePanel>
+						<g:header>Example</g:header>
+		                <g:HTML>
+		                    author: James Macklin<br/>
+							year: 2010<br/>
+							title: Flora of North America<br/>
+							genus: rubus<br/>
+							morphology: Shrubs, subshrubs, or herbs, perennial, 0.5--30(--50) dm; ...<br/>
+							<br/>
+							author: Anonymus<br/>
+							year: 2001<br/>
+							title: Mushroom Description<br/>
+							genus: Agaricus<br/>
+							species: altipes<br/>
+							morphology: "Macroscopic description: Pileus (4-)6-10(-11.2) cm in diameter, globose at first...<br/>
+							<br/>
+							Microscopic description: Spores 5.8-8(-8.5) x (3.8-)4-5(-5.5) μm..."<br/>
+		                </g:HTML>
+		            </g:DisclosurePanel>
+		            <g:DisclosurePanel>
+		                <g:header>Create Files</g:header>
+		                <g:VerticalPanel>
+		                	<g:TextArea ui:field="batchArea" styleName="{style.batchArea}"></g:TextArea>
+	               	 		<g:Button ui:field="batchButton">Create</g:Button>
+		            	</g:VerticalPanel>
+		            </g:DisclosurePanel> 
+	            </g:VerticalPanel>
+	        </g:ScrollPanel>
+	    </g:Tab>
+	</g:TabPanel>
 </ui:UiBinder> 
