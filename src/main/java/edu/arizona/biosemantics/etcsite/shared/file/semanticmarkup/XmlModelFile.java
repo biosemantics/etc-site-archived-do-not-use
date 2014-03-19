@@ -1,19 +1,17 @@
 package edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup;
 
-import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModel.Treatment;
-
 public class XmlModelFile {
 
 	private String fileName;
-	private Treatment treatment;
+	private String xml;
 	private String error = "";
 	
 	public XmlModelFile() { }
 	
-	public XmlModelFile(String fileName, Treatment treatment, String error) {
+	public XmlModelFile(String fileName, String xml, String error) {
 		super();
 		this.fileName = fileName;
-		this.treatment = treatment;
+		this.xml = xml;
 		this.error = error;
 	}
 	public String getFileName() {
@@ -22,11 +20,11 @@ public class XmlModelFile {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
-	public Treatment getTreatment() {
-		return treatment;
+	public String getXML() {
+		return xml;
 	}
-	public void setTreatment(Treatment treatment) {
-		this.treatment = treatment;
+	public void setXML(String xml) {
+		this.xml = xml;
 	}
 	public String getError() {
 		return error.trim();

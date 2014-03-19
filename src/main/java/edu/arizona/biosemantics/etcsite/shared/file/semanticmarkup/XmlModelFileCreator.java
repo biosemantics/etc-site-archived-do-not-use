@@ -13,11 +13,9 @@ import java.util.Set;
 
 import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.i18n.shared.DateTimeFormat.PredefinedFormat;
-
-import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModel.Description;
-import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModel.OtherInfoOnMeta;
-import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModel.ProcessedBy;
-import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModel.Treatment;
+import com.google.gwt.xml.client.Document;
+import com.google.gwt.xml.client.Element;
+import com.google.gwt.xml.client.XMLParser;
 
 public class XmlModelFileCreator {
 
@@ -27,15 +25,13 @@ public class XmlModelFileCreator {
 			"strain", "strain source",
 			"morphology", "phenology",  "habitat", "distribution", };
 	
-	protected XmlModelMaker modelMaker;
 	protected BracketChecker bracketChecker = new BracketChecker();
 	protected String[] descriptionTypes = { "morphology", "habitat", "distribution", "phenology" };
 	protected String[] nameTypes = { "order", "suborder", "superfamily", "family", "subfamily", "tribe", "subtribe", "genus", "subgenus", 
 			"section", "subsection", "series", "species", "subspecies", "variety", "forma", "unranked" };
 	protected Set<String> allLabels = new HashSet<String>();
 	
-	public XmlModelFileCreator(XmlModelMaker modelMaker) {
-		this.modelMaker = modelMaker;
+	public XmlModelFileCreator() {
 		this.allLabels.addAll(Arrays.asList(fields));
 	}
 	
@@ -161,77 +157,120 @@ public class XmlModelFileCreator {
 		if(!descriptionValid)
 			modelFile.appendError("You have to provide at least one of the description types: morphology, phenology, habitat, or distribution");
 		
-		List<OtherInfoOnMeta> otherInfoOnMetas = new LinkedList<OtherInfoOnMeta>();
+
+		//build xml
+		Document xml = createXML(data, username, modelFile);
+		modelFile.setFileName(createFileName(data, modelFile));
+		modelFile.setXML(xml.toString());
+		return modelFile;
+	}
+	
+	private Document createXML(Map<String, String> data, String username, XmlModelFile modelFile) {
+		Document doc = XMLParser.createDocument();
+		Element treatment = doc.createElement("treatment");
+		doc.appendChild(treatment);
+		Element meta = doc.createElement("meta");
+		treatment.appendChild(meta);
+		Element source = doc.createElement("source");
+		Element author = doc.createElement("author");
+		Element srcDate = doc.createElement("date");
+		Element title = doc.createElement("title");
+		source.appendChild(author);
+		source.appendChild(srcDate);
+		source.appendChild(title);
+		author.appendChild(doc.createTextNode(data.get("author")));
+		srcDate.appendChild(doc.createTextNode(data.get("year")));
+		title.appendChild(doc.createTextNode(data.get("title")));
+		meta.appendChild(source);
+		Element processedBy = doc.createElement("processed_by");
+		Element processor = doc.createElement("processor");
+		processedBy.appendChild(processor);
+		Element date = doc.createElement("date");
+		processor.appendChild(date);
+		String formattedDate = DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_FULL).format(new Date());
+		date.appendChild(doc.createTextNode(formattedDate));
+		Element software = doc.createElement("software");
+		software.setAttribute("type", "Semantic Markup Input Generator");
+		software.setAttribute("version", "1.0");
+		processor.appendChild(software);
+		Element operator = doc.createElement("operator");
+		operator.appendChild(doc.createTextNode(username));
+		processor.appendChild(operator);
+		meta.appendChild(processedBy);
+		List<String> otherInfoOnMetas = new LinkedList<String>();
 		if(data.containsKey("doi") && data.get("doi") != null && !data.get("doi").trim().isEmpty()) {
-			OtherInfoOnMeta otherInfoOnMeta = modelMaker.makeOtherInfoOnMeta();
-			otherInfoOnMeta.setText("doi: " + data.get("doi"));
+			String otherInfoOnMeta = "doi: " + data.get("doi");
 			otherInfoOnMetas.add(otherInfoOnMeta);
 		}
 		if(data.containsKey("full citation") && data.get("full citation") != null && !data.get("full citation").trim().isEmpty()) {
-			OtherInfoOnMeta otherInfoOnMeta = modelMaker.makeOtherInfoOnMeta();
-			otherInfoOnMeta.setText("full citation: " + data.get("full citation"));
+			String otherInfoOnMeta = "full citation: " + data.get("full citation");
 			otherInfoOnMetas.add(otherInfoOnMeta);
 		}
-			
-		//fill all data
-		Treatment treatment = modelMaker.makeTreatment();
-		ProcessedBy processedBy = modelMaker.makeProcessedBy();
-		String formattedDate = DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_FULL).format(new Date());
-		processedBy.getProcessor().get(0).setDate(formattedDate);
-		processedBy.getProcessor().get(0).setOperator(username);
-		processedBy.getProcessor().get(0).getSoftware().setType("Semantic Markup Input Generator");
-		processedBy.getProcessor().get(0).getSoftware().setVersion("1.0");
 		
-		treatment.getMeta().setProcessedBy(processedBy);
-		treatment.getMeta().setOtherInfoOnMeta(otherInfoOnMetas);
-		treatment.getMeta().getSource().setAuthor(data.get("author"));
-		treatment.getMeta().getSource().setDate(data.get("year"));
-		treatment.getMeta().getSource().setTitle(data.get("title"));
-		treatment.getTaxonIdentification().setFamilyName(data.get("family"));
-		treatment.getTaxonIdentification().setFormaName(data.get("forma"));
-		treatment.getTaxonIdentification().setGenusName(data.get("genus"));
-		treatment.getTaxonIdentification().setOrderName(data.get("order"));
-		treatment.getTaxonIdentification().setSectionName(data.get("section"));
-		treatment.getTaxonIdentification().setSeriesName(data.get("series"));
-		treatment.getTaxonIdentification().setSpeciesName(data.get("species"));
-		treatment.getTaxonIdentification().setStrainName(data.get("strain"));
-		treatment.getTaxonIdentification().setStrainSource(data.get("strain source"));
-		treatment.getTaxonIdentification().setSubgenusName(data.get("subgenus"));
-		treatment.getTaxonIdentification().setVarietyName(data.get("variety"));
-		treatment.getTaxonIdentification().setUnrankedName(data.get("unkranked"));
-		treatment.getTaxonIdentification().setTribeName(data.get("tribe"));
-		treatment.getTaxonIdentification().setSuperfamilyName(data.get("superfamily"));
-		treatment.getTaxonIdentification().setSubtribeName(data.get("subtribe"));
-		treatment.getTaxonIdentification().setSubspeciesName(data.get("subspecies"));
-		treatment.getTaxonIdentification().setSubsectionName(data.get("subsection"));
-		treatment.getTaxonIdentification().setSuborderName(data.get("suborder"));
-		treatment.getTaxonIdentification().setSubfamilyName(data.get("subfamily"));
-		treatment.getTaxonIdentification().setStatus("ACCEPTED");
+		if(!otherInfoOnMetas.isEmpty()) {
+			for(String otherInfoOnMetaText : otherInfoOnMetas) {
+				Element otherInfoOnMeta = doc.createElement("other_info_on_meta");
+				otherInfoOnMeta.appendChild(doc.createTextNode(otherInfoOnMetaText));
+				meta.appendChild(otherInfoOnMeta);
+			}
+		}
+		Element taxonIdentification = doc.createElement("taxon_identification");
+		treatment.appendChild(taxonIdentification);
+		
+		addAsElementIfExists(taxonIdentification, data, "family", "family_name", doc);
+		addAsElementIfExists(taxonIdentification, data, "forma", "forma_name", doc);
+		addAsElementIfExists(taxonIdentification, data, "unranked", "unranked_epithet_name", doc);
+		addAsElementIfExists(taxonIdentification, data, "order", "order_name", doc);
+		addAsElementIfExists(taxonIdentification, data, "suborder", "suborder_name", doc);
+		addAsElementIfExists(taxonIdentification, data, "superfamily", "superfamily_name", doc);
+		addAsElementIfExists(taxonIdentification, data, "subfamily", "subfamily_name", doc);
+		addAsElementIfExists(taxonIdentification, data, "tribe", "tribe_name", doc);
+		addAsElementIfExists(taxonIdentification, data, "subtribe", "subtribe_name", doc);
+		addAsElementIfExists(taxonIdentification, data, "genus", "genus_name", doc);
+		addAsElementIfExists(taxonIdentification, data, "subgenus", "subgenus_name", doc);
+		addAsElementIfExists(taxonIdentification, data, "section", "section_name", doc);
+		addAsElementIfExists(taxonIdentification, data, "subsection", "subsection_name", doc);
+		addAsElementIfExists(taxonIdentification, data, "series", "series_name", doc);
+		addAsElementIfExists(taxonIdentification, data, "species", "species_name", doc);
+		addAsElementIfExists(taxonIdentification, data, "subspecies", "subspecies_name", doc);
+		addAsElementIfExists(taxonIdentification, data, "variety", "variety_name", doc);
+		//addAsElementIfExists(taxonIdentification, data, "strain", "strain_name", doc);
+		//addAsElementIfExists(taxonIdentification, data, "strain source", "strain_source", doc);
+		taxonIdentification.setAttribute("status", "ACCEPTED");
+		
 		
 		for(String descriptionType : descriptionTypes) {
 			if(data.containsKey(descriptionType)) {
 				String descriptionText = data.get(descriptionType);
-				if(descriptionText != null) {
+				if(descriptionText != null && !descriptionText.trim().isEmpty()) {
 					String[] paragraphs = descriptionText.split("\n");
 					for(String paragraph : paragraphs) {
-						Description description = modelMaker.makeDescription();
-						description.setText(paragraph);
-						description.setDescriptionType(descriptionType);
-						treatment.getDescriptions().add(description);
-						
-						String bracketError = bracketChecker.checkBrackets(paragraph, descriptionType);
-						if(!bracketError.isEmpty())
-							modelFile.appendError(bracketError.substring(0, bracketError.length() - 2));
+						if(!paragraph.isEmpty()) {
+							Element description = doc.createElement("description");
+							treatment.appendChild(description);
+							description.setAttribute("type", descriptionType);
+							description.appendChild(doc.createTextNode(paragraph));
+							
+							String bracketError = bracketChecker.checkBrackets(paragraph, descriptionType);
+							if(!bracketError.isEmpty())
+								modelFile.appendError(bracketError.substring(0, bracketError.length() - 2));
+						}
 					}
 				}
 			}
 		}
-
-		modelFile.setFileName(createFileName(data, modelFile));
-		modelFile.setTreatment(treatment);
-		return modelFile;
+		return doc;
 	}
-	
+
+	private void addAsElementIfExists(Element parentElement,
+			Map<String, String> data, String dataName, String xmlName, Document document) {
+		if(data.containsKey(dataName) && data.get(dataName) != null && !data.get(dataName).trim().isEmpty()) {
+			Element element = document.createElement(xmlName);
+			parentElement.appendChild(element);
+			element.appendChild(document.createTextNode(data.get(dataName)));
+		}
+	}
+
 	public String createFileName(Map<String, String> data, XmlModelFile modelFile) {
 		List<TaxonIdentificationEntry> taxonIdentificationEntries = new LinkedList<TaxonIdentificationEntry>();
 		for(String nameType : nameTypes) {

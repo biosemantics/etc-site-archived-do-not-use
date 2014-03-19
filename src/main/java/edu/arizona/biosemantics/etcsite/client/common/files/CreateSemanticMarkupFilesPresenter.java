@@ -16,11 +16,8 @@ import edu.arizona.biosemantics.etcsite.shared.file.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.shared.file.MyXmlWriter;
 import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.BracketChecker;
 import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.TaxonIdentificationEntry;
-import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModel.Treatment;
 import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModelFile;
 import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModelFileCreator;
-import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModelMaker;
-import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModel.*;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ParallelRPCCallback;
@@ -31,16 +28,12 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkupFilesView.Presenter {
 
 	private ICreateSemanticMarkupFilesView view;
-	private XmlModelMaker.XmlAutoBeanFactory factory = GWT.create(XmlModelMaker.XmlAutoBeanFactory.class);
-	private XmlModelMaker modelMaker = new XmlModelMaker(factory);
-	private MyXmlWriter<Treatment> writer = new MyXmlWriter<Treatment>(factory,
-			Treatment.class, "treatment");
 	private IFileServiceAsync fileService;
 	private IFileAccessServiceAsync fileAccessService;
 	private IMessageView.Presenter messagePresenter;
 	private IMessageConfirmView.Presenter messageConfirmPresenter;
 	private FilePathShortener filePathShortener = new FilePathShortener();
-	private XmlModelFileCreator xmlModelFileCreator = new XmlModelFileCreator(modelMaker);
+	private XmlModelFileCreator xmlModelFileCreator = new XmlModelFileCreator();
 	private int filesCreated;
 	private String destinationFilePath;
 	private BracketChecker bracketChecker = new BracketChecker();
@@ -96,7 +89,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 				@Override
 				public void onResult(final String data) {
 					// TODO validate
-					final String content = writer.write(modelFile.getTreatment());
+					final String content = modelFile.getXML();
 					fileAccessService.setFileContent(Authentication.getInstance().getToken(), data, content, new RPCCallback<Void>() {
 						@Override
 						public void onResult(Void result) {
