@@ -229,7 +229,7 @@ INSERT INTO `taskstages` (`id`, `name`, `tasktype`, `created`) VALUES
 (18, 'INPUT', 7, '2013-11-19 22:30:35'),
 (19, 'PROCESS', 7, '2013-11-19 22:30:35'),
 (20, 'OUTPUT', 7, '2013-11-19 22:30:35'),
-(21, 'REVIEW', 7, '2013-11-19 22:30:35');
+(21, 'REVIEW', 7, '2013-11-19 22:30:35'),
 (22, 'TO_ONTOLOGIES', 6, '2014-01-15 22:30:35'),
 (23, 'HIERARCHY', 6, '2014-01-15 22:30:35'),
 (24, 'ORDERS', 6, '2014-01-15 22:30:35');
@@ -306,7 +306,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 INSERT INTO `users` (`id`, `name`, `password`, `bioportaluserid`, `bioportalapikey`, `created`) VALUES
 (1, 'thomas', '', 'bpuid', 'bpak', '2013-10-22 01:13:18'),
 (2, 'hong', '', 'b', 'c', '2013-10-31 04:06:14'),
-(3, 'elvis', '', 'bpuid' 'bppw', '2013-11-09 00:59:11'), 
+(3, 'elvis', '', 'bpuid', 'bppw', '2013-11-09 00:59:11'), 
 (4, 'james', '', 'b', 'c', '2013-10-31 04:06:14'),
 (5, 'bertram', '', 'b', 'c', '2013-10-31 04:06:14'),
 (6, 'bob', '', 'b', 'c', '2013-10-31 04:06:14'),
