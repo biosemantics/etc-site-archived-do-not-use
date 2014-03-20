@@ -19,7 +19,7 @@
 		    left: 35px;
 		}
 		.greetingText {
-		    width: 100px;
+		    width: 200px;
 		    position: absolute;
 		    top: 8px;
 		    right: 600px;
