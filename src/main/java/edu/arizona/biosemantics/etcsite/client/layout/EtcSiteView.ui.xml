@@ -80,7 +80,7 @@
 	 <g:DockLayoutPanel unit='PX' ui:field='dockLayoutPanel'>
 		   <g:north size='163'>
 		     	<!-- FocusPanel for mouse events to animate menu, HTMLPanel doesn't support those -->   
-                <g:FocusPanel addStyleNames="{style.headerPanel} {style.noOutline}" ui:field="headerPanel">
+                <g:FocusPanel addStyleNames="{style.headerPanel}" ui:field="headerPanel"> <!-- {style.noOutline} -->
                 	<!-- HTMLPanel for multiple child widgets html-like layed out -->
 	                <g:HTMLPanel>
 						<g:SimplePanel styleName="{style.top}" ui:field="topPanel"></g:SimplePanel>
@@ -91,7 +91,8 @@
 		   <g:center>
 		     	<!--  content widget will be added to contentPanel -->
 		     	<g:ScrollPanel styleName="{style.scrollPanel}" ui:field="contentScrollPanel">
-		     		<g:FocusPanel addStyleNames="{style.contentPanel} {style.noOutline}" ui:field="contentPanel"></g:FocusPanel>
+		     		<g:FocusPanel addStyleNames="{style.contentPanel}"ui:field="contentPanel"> <!-- {style.noOutline} --> 
+		     		</g:FocusPanel> 
                 </g:ScrollPanel>
 		   </g:center>
 		   <g:south size='0'>
