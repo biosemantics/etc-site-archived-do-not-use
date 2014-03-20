@@ -86,9 +86,6 @@
 		    top: 22px;
 		    left: 80px;
 		}
-		.noOutline {
-			outline: 0;
-		}
 	</ui:style>
 	<g:HTMLPanel>
 		<!-- some ids are needed for native javascript retrieval of the elements -->
@@ -99,35 +96,35 @@
 				<div class="{style.menuSemanticMarkupIcon} {style.menuActionIcon}"></div>
 				<div class="{style.menuActionText}">Semantic Markup</div>
 				<div class="{style.menuActionLink} {style.menuAction}">
-				    <g:FocusPanel ui:field="semanticMarkupPanel" width="200px" height="130px" <!-- styleName="{style.noOutline}" -->></g:FocusPanel>
+				    <g:FocusPanel ui:field="semanticMarkupPanel" width="200px" height="130px"></g:FocusPanel>
 				</div>
 			</div>
 			<div class="{style.menuMatrixGeneration} {style.menuAction} {style.clickable}" id="menuMatrixGeneration">
 				<div class="{style.menuMatrixGenerationIcon} {style.menuActionIcon}"></div>
 				<div class="{style.menuActionText}">Matrix Generation</div>
 				<div class="{style.menuActionLink} {style.menuAction}">
-				    <g:FocusPanel ui:field="matrixGenerationPanel" width="200px" height="130px" <!-- styleName="{style.noOutline}"-->></g:FocusPanel>
+				    <g:FocusPanel ui:field="matrixGenerationPanel" width="200px" height="130px"></g:FocusPanel>
 				</div>
 			</div>
 			<div class="{style.menuTreeGeneration} {style.menuAction} {style.clickable}" id="menuTreeGeneration">
 				<div class="{style.menuTreeGenerationIcon} {style.menuActionIcon}"></div>
 				<div class="{style.menuActionText}">Tree Generation</div>
 				<div class="{style.menuActionLink} {style.menuAction}">
-				    <g:FocusPanel ui:field="treeGenerationPanel" width="200px" height="130px" <!-- styleName="{style.noOutline}"-->></g:FocusPanel>
+				    <g:FocusPanel ui:field="treeGenerationPanel" width="200px" height="130px"></g:FocusPanel>
 				</div>
 			</div>
 			<div class="{style.menuTaxonomyComparison} {style.menuAction} {style.clickable}" id="menuTaxonomyComparison">
 				<div class="{style.menuTaxonomyComparisonIcon} {style.menuActionIcon}"></div>
 				<div class="{style.menuActionText}">Taxonomy Comparison</div>
 				<div class="{style.menuActionLink} {style.menuAction}">
-				    <g:FocusPanel ui:field="taxonomyComparisonPanel" width="240px" height="130px" <!-- styleName="{style.noOutline}" -->></g:FocusPanel>
+				    <g:FocusPanel ui:field="taxonomyComparisonPanel" width="240px" height="130px"></g:FocusPanel>
 				</div>
 			</div>
 			<div class="{style.menuVisualization} {style.menuAction} {style.clickable}" id="menuVisualization">
 				<div class="{style.menuVisualizationIcon} {style.menuActionIcon}"></div>
 				<div class="{style.menuActionText}">Visualization</div>
 				<div class="{style.menuActionLink} {style.menuAction}">
-				    <g:FocusPanel ui:field="visualizationPanel" width="180px" height="130px" <!-- styleName="{style.noOutline}" -->></g:FocusPanel>
+				    <g:FocusPanel ui:field="visualizationPanel" width="180px" height="130px"></g:FocusPanel>
 				</div>
 			</div>
 		</div>
