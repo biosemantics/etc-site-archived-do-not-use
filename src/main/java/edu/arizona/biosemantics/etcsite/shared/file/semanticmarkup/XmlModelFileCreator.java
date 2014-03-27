@@ -137,6 +137,8 @@ public class XmlModelFileCreator {
 			modelFile.appendError("You have to provide an author");
 		if(!data.containsKey("year") || data.get("year") == null || data.get("year").trim().isEmpty())
 			modelFile.appendError("You have to provide a year");
+		if(!data.containsKey("title") || data.get("title") == null || data.get("title").trim().isEmpty())
+			modelFile.appendError("You have to provide a title");
 		
 		boolean nameValid = false;
 		for(String nameType : nameTypes) {

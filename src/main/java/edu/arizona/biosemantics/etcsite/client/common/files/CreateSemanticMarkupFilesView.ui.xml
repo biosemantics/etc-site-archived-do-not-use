@@ -42,7 +42,7 @@
 									<g:TextBox ui:field="author"></g:TextBox>
 									<g:Label>Year *</g:Label>
 									<g:TextBox ui:field="year"></g:TextBox>
-									<g:Label>Title</g:Label>
+									<g:Label>Title *</g:Label>
 									<g:TextBox ui:field="title"></g:TextBox>
 									<g:Label>DOI</g:Label>
 									<g:TextBox ui:field="doi"></g:TextBox>
