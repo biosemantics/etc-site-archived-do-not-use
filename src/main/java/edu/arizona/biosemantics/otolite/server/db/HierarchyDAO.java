@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
-import edu.arizona.biosemantics.oto.ontologylookup.OntologyLookupClient;
-import edu.arizona.biosemantics.oto.ontologylookup.data.SimpleEntity;
+import edu.arizona.biosemantics.oto.common.ontologylookup.search.OntologyLookupClient;
+import edu.arizona.biosemantics.oto.common.ontologylookup.search.data.SimpleEntity;
 import edu.arizona.biosemantics.otolite.server.beans.TermForTreePopulation;
 import edu.arizona.biosemantics.otolite.server.utilities.Utilities;
 import edu.arizona.biosemantics.otolite.shared.beans.hierarchy.Structure;

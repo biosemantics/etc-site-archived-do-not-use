@@ -7,10 +7,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import edu.arizona.biosemantics.oto.ontologylookup.OntologyLookupClient;
-import edu.arizona.biosemantics.oto.ontologylookup.data.Entity;
-import edu.arizona.biosemantics.oto.ontologylookup.data.EntityProposals;
-import edu.arizona.biosemantics.oto.ontologylookup.data.FormalConcept;
+import edu.arizona.biosemantics.oto.common.ontologylookup.search.OntologyLookupClient;
+import edu.arizona.biosemantics.oto.common.ontologylookup.search.data.Entity;
+import edu.arizona.biosemantics.oto.common.ontologylookup.search.data.EntityProposals;
+import edu.arizona.biosemantics.oto.common.ontologylookup.search.data.FormalConcept;
 import edu.arizona.biosemantics.otolite.server.utilities.Utilities;
 import edu.arizona.biosemantics.otolite.shared.beans.UploadInfo;
 import edu.arizona.biosemantics.otolite.shared.beans.terminfo.TermGlossary;

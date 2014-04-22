@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.arizona.biosemantics.oto.full.OTOClient;
-import edu.arizona.biosemantics.oto.full.beans.GlossaryDictionaryEntry;
+import edu.arizona.biosemantics.oto.client.oto.OTOClient;
+import edu.arizona.biosemantics.oto.common.model.GlossaryDictionaryEntry;
 import edu.arizona.biosemantics.otolite.shared.beans.terminfo.TermGlossary;
 
 public class QueryOTO extends AbstractOTOAccessObject {

@@ -3,8 +3,10 @@ package edu.arizona.biosemantics.otolite.server.bioportal;
 import java.io.IOException;
 import java.io.StringReader;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.Future;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -17,12 +19,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import edu.arizona.biosemantics.oto.bioportal.beans.Filter;
-import edu.arizona.biosemantics.oto.bioportal.beans.ProvisionalTerm;
-import edu.arizona.biosemantics.oto.bioportal.beans.response.Entry;
-import edu.arizona.biosemantics.oto.bioportal.beans.response.Relations;
-import edu.arizona.biosemantics.oto.bioportal.beans.response.Success;
-import edu.arizona.biosemantics.oto.bioportal.client.BioPortalClient;
+import edu.arizona.biosemantics.bioportal.client.BioPortalClient;
+import edu.arizona.biosemantics.bioportal.client.Filter;
+import edu.arizona.biosemantics.bioportal.model.ProvisionalClass;
 import edu.arizona.biosemantics.otolite.server.db.ToOntologiesDAO;
 import edu.arizona.biosemantics.otolite.shared.beans.toontologies.OntologySubmission;
 
@@ -38,8 +37,7 @@ public class TermsToOntologiesClient {
 		Properties properties = new Properties();
 		properties.load(loader.getResourceAsStream("config.properties"));
 		String url = properties.getProperty("bioportalUrl");
-		bioPortalClient = new BioPortalClient(url, bioportalUserId,
-				bioportalAPIKey);
+		bioPortalClient = new BioPortalClient(url, bioportalAPIKey);
 	}
 
 	/**
@@ -63,26 +61,10 @@ public class TermsToOntologiesClient {
 							thisUploadOnly);
 			for (OntologySubmission submission : pendingSubmissions) {
 				String permanentId = null;
-				Success success = bioPortalClient.getProvisionalTerm(submission
-						.getTmpID());
-				List<Object> fullIdOrIdOrLabels = success.getData()
-						.getClassBean().getFullIdOrIdOrLabel();
-				for (Object fullIdOrIdOrLabel : fullIdOrIdOrLabels) {
-					if (fullIdOrIdOrLabel instanceof Relations) {
-						Relations relations = (Relations) fullIdOrIdOrLabel;
-						List<Entry> entries = relations.getEntry();
-						for (Entry entry : entries) {
-							List<Object> objects = entry.getStringOrList();
-							if (objects.size() >= 2
-									&& objects.get(0).equals(
-											"provisionalPermanentId")) {
-								permanentId = (String) objects.get(1);
-							}
-						}
-					}
-				}
-
-				if (permanentId == null)
+				Future<ProvisionalClass> result = bioPortalClient.getProvisionalClass(submission.getTmpID());
+				ProvisionalClass provisionalClass = result.get();
+				permanentId = provisionalClass.getPermanentId();
+				if (permanentId == null && !permanentId.isEmpty())
 					continue;
 				else {
 					submission.setPermanentID(permanentId);
@@ -101,22 +83,6 @@ public class TermsToOntologiesClient {
 		return count;
 	}
 
-	private String getIdFromSuccessfulCreate(Success createSuccess,
-			String idName) {
-		List<Object> fullIdOrIdOrLabel = createSuccess.getData().getClassBean()
-				.getFullIdOrIdOrLabel();
-		for (Object object : fullIdOrIdOrLabel) {
-			if (object instanceof JAXBElement) {
-				@SuppressWarnings("unchecked")
-				JAXBElement<String> possibleIdElement = (JAXBElement<String>) object;
-				if (possibleIdElement.getName().toString().equals(idName)) {
-					return possibleIdElement.getValue();
-				}
-			}
-		}
-		return null;
-	}
-
 	/**
 	 * submit a term to bioportal
 	 * 
@@ -129,16 +95,25 @@ public class TermsToOntologiesClient {
 				+ "[this term has been used in sentence '"
 				+ submission.getSampleSentence() + "' in source '"
 				+ submission.getSource() + "']";
-		ProvisionalTerm termForSubmit = new ProvisionalTerm(
-				submission.getTerm(), definitionToSubmit,
-				submission.getSuperClass(), submission.getSynonyms(),
-				submission.getOntologyID(), bioportalUserID,
-				submission.getTmpID(), submission.getPermanentID());
-
+		ProvisionalClass provisionalClass = new ProvisionalClass();
+		provisionalClass.setLabel(submission.getTerm());
+		List<String> definitions = new LinkedList<String>();
+		definitions.add(submission.getDefinition());
+		provisionalClass.setDefinition(definitions);
+		provisionalClass.setSubclassOf(submission.getSuperClass());
+		List<String> synonyms = new LinkedList<String>();
+		//need to split ?
+		synonyms.add(submission.getSynonyms());
+		provisionalClass.setSynonym(synonyms);
+		List<String> ontologies = new LinkedList<String>();
+		ontologies.add(submission.getOntologyID());
+		provisionalClass.setOntology(ontologies);
+		provisionalClass.setCreator(bioportalUserID);
+		
 		// interact with the server
-		Success success = bioPortalClient.createProvisionalTerm(termForSubmit);
-		String temporaryId = getIdFromSuccessfulCreate(success, "id");
-
+		Future<ProvisionalClass> result = bioPortalClient.postProvisionalClass(provisionalClass);
+		String temporaryId = result.get().getId();
+		
 		// modify local database
 		submission.setTmpID(temporaryId);
 		return temporaryId;
@@ -150,29 +125,38 @@ public class TermsToOntologiesClient {
 				+ "[this term has been used in sentence '"
 				+ submission.getSampleSentence() + "' in source '"
 				+ submission.getSource() + "']";
-		ProvisionalTerm termForSubmit = new ProvisionalTerm(
-				submission.getTerm(), definitionToSubmit,
-				submission.getSuperClass(), submission.getSynonyms(),
-				submission.getOntologyID(), bioportalUserID,
-				submission.getTmpID(), submission.getPermanentID());
-		bioPortalClient.updateProvisionalTerm(submission.getTmpID(),
-				termForSubmit);
+		ProvisionalClass provisionalClass = new ProvisionalClass();
+		provisionalClass.setId(submission.getTmpID());
+		provisionalClass.setLabel(submission.getTerm());
+		List<String> definitions = new LinkedList<String>();
+		definitions.add(submission.getDefinition());
+		provisionalClass.setDefinition(definitions);
+		provisionalClass.setSubclassOf(submission.getSuperClass());
+		List<String> synonyms = new LinkedList<String>();
+		//need to split ?
+		synonyms.add(submission.getSynonyms());
+		provisionalClass.setSynonym(synonyms);
+		List<String> ontologies = new LinkedList<String>();
+		ontologies.add(submission.getOntologyID());
+		provisionalClass.setOntology(ontologies);
+		provisionalClass.setCreator(bioportalUserID);
+		
+		bioPortalClient.patchProvisionalClass(provisionalClass);
 	}
 
 	public void deleteTerm(OntologySubmission submission) throws Exception {
-		bioPortalClient.deleteProvisionalTerm(submission.getTmpID());
+		bioPortalClient.deleteProvisionalClass(submission.getTmpID());
 	}
 
 	public static void main(String[] args) throws IOException, JAXBException,
 			SAXException, ParserConfigurationException {
-		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		/*ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		Properties properties = new Properties();
 		properties.load(loader.getResourceAsStream("config.properties"));
 		String url = properties.getProperty("bioportalUrl");
 		String userId = properties.getProperty("bioportalUserId");
 		String apiKey = properties.getProperty("bioportalApiKey");
-		BioPortalClient bioPortalClient = new BioPortalClient(url, userId,
-				apiKey);
+		BioPortalClient bioPortalClient = new BioPortalClient(url, apiKey);
 
 		Filter filter = new Filter();
 		filter.setSubmittedBy(userId);
@@ -204,6 +188,6 @@ public class TermsToOntologiesClient {
 				}
 			}
 		}
-
+		*/
 	}
 }

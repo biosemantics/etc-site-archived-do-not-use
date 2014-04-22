@@ -3,7 +3,7 @@ package edu.arizona.biosemantics.otolite.server.oto;
 import java.io.IOException;
 import java.util.Properties;
 
-import edu.arizona.biosemantics.oto.full.OTOClient;
+import edu.arizona.biosemantics.oto.client.oto.OTOClient;
 
 public abstract class AbstractOTOAccessObject {
 	protected String OTO_url;
