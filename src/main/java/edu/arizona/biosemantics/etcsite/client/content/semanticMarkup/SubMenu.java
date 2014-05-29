@@ -28,7 +28,7 @@ public class SubMenu extends Composite {
 	@UiField
 	ImageLabel review;
 	
-	@UiField
+	/*@UiField
 	ImageLabel toOntologies;
 	
 	@UiField
@@ -36,6 +36,7 @@ public class SubMenu extends Composite {
 	
 	@UiField
 	ImageLabel orders;
+	*/
 	
 	@UiField
 	ImageLabel parse;
@@ -64,7 +65,7 @@ public class SubMenu extends Composite {
 		case PARSE_TEXT:
 			parse.setImage("images/Enumeration_5.gif");
 			break;
-		case TO_ONTOLOGIES:
+		/*case TO_ONTOLOGIES:
 			toOntologies.setImage("images/Enumeration_6.gif");
 			break;
 		case HIERARCHY:
@@ -72,7 +73,7 @@ public class SubMenu extends Composite {
 			break;
 		case ORDERS:
 			orders.setImage("images/Enumeration_8.gif");
-			break;
+			break; */
 		case OUTPUT:
 			output.setImage("images/Enumeration_9.gif");
 			break;

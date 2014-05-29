@@ -35,9 +35,9 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 			ISemanticMarkupPreprocessView.Presenter preprocessPresenter,
 			ISemanticMarkupLearnView.Presenter learnPresenter,
 			ISemanticMarkupReviewView.Presenter reviewPresenter,
-			ISemanticMarkupToOntologiesView.Presenter toOntologyPresenter,
-			ISemanticMarkupHierarchyView.Presenter hierarchyPresenter,
-			ISemanticMarkupOrdersView.Presenter ordersPresenter,
+			//ISemanticMarkupToOntologiesView.Presenter toOntologyPresenter,
+			//ISemanticMarkupHierarchyView.Presenter hierarchyPresenter,
+			//ISemanticMarkupOrdersView.Presenter ordersPresenter,
 			ISemanticMarkupParseView.Presenter parsePresenter,
 			ISemanticMarkupOutputView.Presenter outputPresenter) {
 		super();
@@ -97,7 +97,7 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 									reviewPresenter.setTask(task);
 									panel.setWidget(reviewPresenter.getView());
 									break;
-								case TO_ONTOLOGIES:
+								/*case TO_ONTOLOGIES:
 									toOntologyPresenter.setTask(task);
 									panel.setWidget(toOntologyPresenter.getView());
 									break;
@@ -108,7 +108,7 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 								case ORDERS:
 									ordersPresenter.setTask(task);
 									panel.setWidget(ordersPresenter.getView());
-									break;
+									break;*/
 								case PARSE_TEXT:
 									parsePresenter.setTask(task);
 									panel.setWidget(parsePresenter.getView());
