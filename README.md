@@ -14,8 +14,8 @@ In Eclipse you can therefore use:
 * Google Plugin for Eclipse (https://developers.google.com/eclipse/)
 
 and 
-1. configure your Eclipse project to be a Maven Project and to use Google Web Toolkit (2.6).
-2. run mvn package to set up /src/main/webapp/ files for GWT dev mode. Run again for changes in the directory.
+1. configure your Eclipse project to be a Maven Project and to use Google Web Toolkit (2.6)
+2. run mvn package to set up /src/main/webapp/ files for GWT dev mode. Run again for changes in the directory
 
 ### Run Dev Mode:
 
