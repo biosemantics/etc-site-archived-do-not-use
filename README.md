@@ -2,9 +2,6 @@ etc-site
 ============
 
 Contribution
-
-
-Contribution
 ----------
 
 ### Setup
