@@ -126,10 +126,11 @@
 		      					<li>Use a colon to seperate field name from its value</li>
 		      					<li>Use a new line for each field</li>
 		      					<li><b>If you have multiple paragraphs for any of the description fields (morphology, phenology, habitat, distribution), 
-		      				insert an empty line between the paragraphs and enclose all the paragraphs with one pair of qutation marks (").</b></li>
+		      				insert an empty line between the paragraphs and enclose all the paragraphs with one pair of number signs (#). Do not use # in description content (they can be replaced with 'no.'). </b></li>
 								<li>A paragraph is a string without any line break</li>
 								<li>If you copy/paste from another source, check word by word (especially special symbols) that the content is copied correctly</li>
-								<li>Do not include any HTML or XML tag in the text</li>
+								<li>Do not include any HTML or XML tag in the text.</li>
+								<li>Superscripts (e.g. "squared") should be typed as a regular character, for example cm2 for square centimeter.</li>
 		      				</ul>
 		                </g:HTMLPanel>
 		            </g:DisclosurePanel>

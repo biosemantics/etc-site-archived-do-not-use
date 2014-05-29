@@ -109,6 +109,12 @@
 	<xs:complexType name="taxon_identification">
 		<xs:choice minOccurs="1" maxOccurs="unbounded">
 			<!--extending this list with other ranks by adding rank_name and rank_authority -->
+			<xs:element name="class_name" type="xs:string" minOccurs="0" />
+			<xs:element name="class_authority" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="subclass_name" type="xs:string" minOccurs="0" />
+			<xs:element name="subclass_authority" type="xs:string"
+				minOccurs="0" />
 			<xs:element name="order_name" type="xs:string" minOccurs="0" />
 			<xs:element name="order_authority" type="xs:string"
 				minOccurs="0" />
@@ -154,6 +160,9 @@
 			<xs:element name="series_name" type="xs:string" minOccurs="0" />
 			<xs:element name="series_authority" type="xs:string"
 				minOccurs="0" />
+			<xs:element name="subseries_name" type="xs:string" minOccurs="0" />
+			<xs:element name="subseries_authority" type="xs:string"
+				minOccurs="0" />
 			<xs:element name="species_name" type="xs:string"
 				minOccurs="0" />
 			<xs:element name="species_group_name" type="xs:string"
@@ -168,9 +177,17 @@
 				minOccurs="0" />
 			<xs:element name="variety_authority" type="xs:string"
 				minOccurs="0" />
+			<xs:element name="subvarietas_name" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="subvarietas_authority" type="xs:string"
+				minOccurs="0" />
 			<xs:element name="forma_name" type="xs:string"
 				minOccurs="0" />
 			<xs:element name="forma_authority" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="subforma_name" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="subforma_authority" type="xs:string"
 				minOccurs="0" />
 			<xs:element name="unranked_epithet_name" type="xs:string"
 				minOccurs="0" />

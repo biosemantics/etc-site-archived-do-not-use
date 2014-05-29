@@ -91,6 +91,9 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	}
 
 	private ListBox initRanksListBox(ListBox ranksList) {
+		//reference http://en.wikipedia.org/wiki/Taxonomic_rank
+		ranksList.addItem("class");
+		ranksList.addItem("subclass");
 		ranksList.addItem("order");
 		ranksList.addItem("suborder");
 		ranksList.addItem("superfamily");
@@ -106,7 +109,9 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		ranksList.addItem("species");
 		ranksList.addItem("subspecies");
 		ranksList.addItem("variety");
+		ranksList.addItem("subvarietas");
 		ranksList.addItem("forma");
+		ranksList.addItem("subforma");
 		ranksList.addItem("unranked");
 		return ranksList;
 	}
