@@ -15,11 +15,11 @@ and
 1. configure your Eclipse project to be a Maven Project and to use Google Web Toolkit (2.6)
 2. run mvn package to set up /src/main/webapp/ files for GWT dev mode. Run again for changes in the directory
 
-### Run Dev Mode:
+### Run Dev Mode
 
-#### Class:
+#### Class
 com.google.gwt.dev.DevMode
 
-#### Arguments:
--remoteUI "${gwt_remote_ui_server_port}:${unique_id}" -startupUrl index.html -logLevel INFO -codeServerPort auto -port auto -war ..git\etc-site\target\etc-site-0.0.1-SNAPSHOT edu.arizona.biosemantics.etcsite.EtcSite edu.arizona.biosemantics.otolite.OTOLite_part2
+#### Arguments
+-remoteUI "${gwt_remote_ui_server_port}:${unique_id}" -startupUrl index.html -logLevel INFO -codeServerPort auto -port auto -war ..your_git_dir\etc-site\target\etc-site-0.0.1-SNAPSHOT edu.arizona.biosemantics.etcsite.EtcSite edu.arizona.biosemantics.otolite.OTOLite_part2
 
