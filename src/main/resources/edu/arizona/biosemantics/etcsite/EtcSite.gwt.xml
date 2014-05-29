@@ -30,6 +30,9 @@
   <!-- Oto lite module -->
   <inherits name='edu.arizona.biosemantics.otolite.OTOLite_part2'/>
   
+  <!-- Matrix Review Module -->
+  <inherits name='edu.arizona.biosemantics.matrixreview.Matrix_review'/>
+  
   <!-- Include GWTUpload library -->
   <inherits name="gwtupload.GWTUpload"/>
   

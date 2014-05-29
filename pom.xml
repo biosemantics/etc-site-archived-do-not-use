@@ -34,10 +34,22 @@
 	<!-- Created from archetype -->
 	<dependencies>
 		<dependency>
+		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
+		  <artifactId>matrix-review</artifactId>
+		  <version>0.0.1-SNAPSHOT</version>
+		  <classifier>classes</classifier>
+		</dependency>
+		<dependency>
+		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
+		  <artifactId>matrix-review</artifactId>
+		  <version>0.0.1-SNAPSHOT</version>
+		  <classifier>sources</classifier>
+		</dependency>
+		<dependency>
 			<groupId>com.sencha.gxt</groupId>
 			<artifactId>gxt</artifactId>
 			<version>3.1.0-beta</version>
-		</dependency>
+		</dependency> 
 
 		<dependency>
 			<groupId>com.google.gwt</groupId>
