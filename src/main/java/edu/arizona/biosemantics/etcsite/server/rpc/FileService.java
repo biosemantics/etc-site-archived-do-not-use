@@ -300,7 +300,10 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	}
 	
 	@Override
-	public RPCResult<String> createFile(AuthenticationToken authenticationToken, String directory, String idealFileName, boolean force) {		
+	public RPCResult<String> createFile(AuthenticationToken authenticationToken, String directory, String idealFileName, String content, boolean force) {		
+		RPCResult<Boolean> validationResult = fileFormatService.isValidTaxonDescriptionContent(authenticationToken, content);	
+		if(!validationResult.getData().booleanValue()) return new RPCResult<String>(true, idealFileName+" is not valid. Check it against the schema", "");
+		
 		RPCResult<Boolean> permissionResult = filePermissionService.hasWritePermission(authenticationToken, directory);
 		if(!permissionResult.isSucceeded())
 			return new RPCResult<String>(false, permissionResult.getMessage(), "");

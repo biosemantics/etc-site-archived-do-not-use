@@ -107,101 +107,91 @@
 	</xs:complexType>
 
 	<xs:complexType name="taxon_identification">
+		<xs:sequence>
 		<xs:choice minOccurs="1" maxOccurs="unbounded">
-			<!--extending this list with other ranks by adding rank_name and rank_authority -->
-			<xs:element name="class_name" type="xs:string" minOccurs="0" />
-			<xs:element name="class_authority" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="subclass_name" type="xs:string" minOccurs="0" />
-			<xs:element name="subclass_authority" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="order_name" type="xs:string" minOccurs="0" />
-			<xs:element name="order_authority" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="suborder_name" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="suborder_authority" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="superfamily_name" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="superfamily_authority" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="family_name" type="xs:string" minOccurs="0" />
-			<xs:element name="family_authority" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="subfamily_name" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="subfamily_authority" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="tribe_name" type="xs:string" minOccurs="0" />
-			<xs:element name="tribe_authority" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="subtribe_name" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="subtribe_authority" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="genus_name" type="xs:string" minOccurs="0" />
-			<xs:element name="genus_group_name" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="genus_authority" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="subgenus_name" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="subgenus_authority" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="section_name" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="section_authority" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="subsection_name" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="subsection_authority" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="series_name" type="xs:string" minOccurs="0" />
-			<xs:element name="series_authority" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="subseries_name" type="xs:string" minOccurs="0" />
-			<xs:element name="subseries_authority" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="species_name" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="species_group_name" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="species_authority" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="subspecies_name" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="subspecies_authority" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="variety_name" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="variety_authority" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="subvarietas_name" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="subvarietas_authority" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="forma_name" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="forma_authority" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="subforma_name" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="subforma_authority" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="unranked_epithet_name" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="unranked_epithet_authority" type="xs:string"
-				minOccurs="0" />
-			<xs:element type="other_info_on_name" name="other_info_on_name"
-				minOccurs="0" />
-			<xs:element type="place_of_publication" name="place_of_publication"
-				minOccurs="0" />
-			<xs:element type="xs:string" name="taxon_hierarchy"
-				minOccurs="0" />
+			<xs:element maxOccurs="unbounded" ref="taxon_name"/>
+			<xs:element maxOccurs="unbounded" ref="strain_number"/>
 		</xs:choice>
-		<xs:attribute name="status" type="xs:NCName" use="required" />
+			<xs:element type="place_of_publication" name="place_of_publication" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element type="xs:string" name="taxon_hierarchy" minOccurs="0"/>
+			<xs:element type="other_info_on_name" name="other_info_on_name" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="status" type="xs:NCName" use="required"/>
 	</xs:complexType>
+	<xs:element name="taxon_name">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="rank" type="xs:string" use="required"/>
+					<xs:attribute name="authority"/>
+					<xs:attribute name="date"/>	
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="strain_number">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="equivalent_strain_numbers" type="xs:string" />
+					<xs:attribute name="accession_number_16s_rrna" type="xs:string"/>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	
+<!--	<xs:simpleType name="rank_type">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="superdomain" />
+			<xs:enumeration value="domain" />
+			<xs:enumeration value="subdomain" />
+			<xs:enumeration value="superkingdom" />
+			<xs:enumeration value="kingdom" />
+			<xs:enumeration value="subkingdom" />
+			<xs:enumeration value="superphylum" />
+			<xs:enumeration value="phylum" />
+			<xs:enumeration value="subphylum" />
+			<xs:enumeration value="superdivision" />
+			<xs:enumeration value="division" />
+			<xs:enumeration value="subdivsion" />
+			<xs:enumeration value="superclass" />
+			<xs:enumeration value="class" />
+			<xs:enumeration value="subclass" />
+			<xs:enumeration value="superorder" />
+			<xs:enumeration value="order" />
+			<xs:enumeration value="suborder" />
+			<xs:enumeration value="superfamily" />
+			<xs:enumeration value="family" />
+			<xs:enumeration value="subfamily" />
+			<xs:enumeration value="supertribe" />
+			<xs:enumeration value="tribe" />
+			<xs:enumeration value="subtribe" />
+			<xs:enumeration value="supergenus" />
+			<xs:enumeration value="genus" />
+			<xs:enumeration value="subgenus" />
+			<xs:enumeration value="supersection" />
+			<xs:enumeration value="section" />
+			<xs:enumeration value="subsection" />
+			<xs:enumeration value="superseries" />
+			<xs:enumeration value="series" />
+			<xs:enumeration value="subseries" />
+			<xs:enumeration value="superspecies" />
+			<xs:enumeration value="species" />
+			<xs:enumeration value="subspecies" />
+			<xs:enumeration value="supervariety" />
+			<xs:enumeration value="variety" />
+			<xs:enumeration value="subvarietas" />
+			<xs:enumeration value="superforma" />
+			<xs:enumeration value="forma" />
+			<xs:enumeration value="subforma" />
+			<xs:enumeration value="supergroup" />
+			<xs:enumeration value="group" />
+			<xs:enumeration value="subgroup" />
+			<xs:enumeration value="unranked" />
+		</xs:restriction>
+	</xs:simpleType>
+-->
 
 	<xs:complexType name="place_of_publication">
 		<xs:sequence>
@@ -233,7 +223,7 @@
 		<xs:sequence>
 			<xs:element minOccurs="0" maxOccurs="unbounded" type="statement" name="statement" />
 		</xs:sequence>
-		<xs:attribute name="type" type="description_type" />
+		<xs:attribute name="type" type="description_type" use="required" />
 	</xs:complexType>
 
 	<xs:simpleType name="description_type">
@@ -244,6 +234,7 @@
 			<xs:enumeration value="elevation" />
 			<xs:enumeration value="ecology" />
 			<xs:enumeration value="distribution" />
+			<xs:enumeration value="other" />
 		</xs:restriction>
 	</xs:simpleType>
 

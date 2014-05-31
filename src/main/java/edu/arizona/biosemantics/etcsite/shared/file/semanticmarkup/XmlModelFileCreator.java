@@ -1,6 +1,7 @@
 package edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,16 +20,17 @@ import com.google.gwt.xml.client.XMLParser;
 
 public class XmlModelFileCreator {
 
-	public static String[] fields =  new String[] {  "author", "year", "title", "doi", "full citation",
-			"order", "suborder", "superfamily", "family", "subfamily", "tribe", "subtribe", "genus", "subgenus", 
-			"section", "subsection", "series", "species", "subspecies", "variety", "forma", "unranked",
-			"strain", "strain source",
-			"morphology", "phenology",  "habitat", "distribution", };
+	public static String[] fields =  new String[] {"author", "year", "title", "doi", "full citation",
+			/*"order", "suborder", "superfamily", "family", "subfamily", "tribe", "subtribe", "genus", "subgenus", 
+			"section", "subsection", "series", "species", "subspecies", "variety", "forma", "unranked",*/
+			"strain number", "equivalent strain numbers", "accession number 16s rrna",
+			"morphology", "phenology",  "habitat", "distribution" };
 	
 	protected BracketChecker bracketChecker = new BracketChecker();
 	protected String[] descriptionTypes = { "morphology", "habitat", "distribution", "phenology" };
-	protected String[] nameTypes = { "order", "suborder", "superfamily", "family", "subfamily", "tribe", "subtribe", "genus", "subgenus", 
-			"section", "subsection", "series", "species", "subspecies", "variety", "forma", "unranked" };
+	//protected String[] nameTypes = { "order", "suborder", "superfamily", "family", "subfamily", "tribe", "subtribe", "genus", "subgenus", 
+	//		"section", "subsection", "series", "species", "subspecies", "variety", "forma", "unranked" };
+	protected ArrayList<String> nameTypes = new ArrayList<String> ();
 	protected Set<String> allLabels = new HashSet<String>();
 	
 	public XmlModelFileCreator() {
@@ -37,7 +39,7 @@ public class XmlModelFileCreator {
 	
 	public List<XmlModelFile> createXmlModelFiles(String text, String username) {
 		List<XmlModelFile> result = new LinkedList<XmlModelFile>();
-		text = text.replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "");	//remove all leading/trailing non-visible characters
+		text = text.replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "");	//remove all leading/trailing non-visible characters (ASCII)
 		text = text.replaceAll("\\r\\n", "\n");
 		text = text.replaceAll("\\r", "\n"); 
 		text = text.replaceAll("\\n{3,}", "\n\n");
@@ -91,6 +93,7 @@ public class XmlModelFileCreator {
 
 	public XmlModelFile createXmlModelFile(String text, String username) {
 		XmlModelFile modelFile = new XmlModelFile();
+		nameTypes = new ArrayList<String> ();
 		
 		//prepare data map
 		Map<String, String> data = new HashMap<String, String>();
@@ -105,8 +108,9 @@ public class XmlModelFileCreator {
 				modelFile.appendError("Line format invalid. Need a ':' to seperate field name from its text: " + line);
 				continue;
 			}
-			String key = line.substring(0, colonIndex).toLowerCase().trim();
-			String value = line.substring(colonIndex + 1, line.length()).trim();
+
+			String key = line.substring(0, colonIndex).toLowerCase().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "").trim();
+			String value = line.substring(colonIndex + 1, line.length()).replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "").trim();
 			
 			for(String descriptionType : descriptionTypes) {
 				if(descriptionType.equals(key)) {
@@ -129,13 +133,15 @@ public class XmlModelFileCreator {
 			}
 			data.put(key, value.isEmpty()? null : value);
 		}
+		
+		
 		for(String key : data.keySet()) {
-			if(!this.allLabels.contains(key)) {
+			if(key.endsWith(" name")) nameTypes.add(key);
+			if(!this.allLabels.contains(key) && !key.endsWith(" name")) {
 				modelFile.appendError("Don't know what " +key + " is.");
 			}
 		}
-		
-		
+	
 		//check data required to generate error if necessary
 		if(!data.containsKey("author") || data.get("author") == null || data.get("author").trim().isEmpty())
 			modelFile.appendError("You need to provide an author");
@@ -145,12 +151,14 @@ public class XmlModelFileCreator {
 			modelFile.appendError("You need to provide a title");
 		
 		boolean nameValid = false;
-		for(String nameType : nameTypes) {
-			nameValid = data.containsKey(nameType) && data.get(nameType) != null && !data.get(nameType).trim().isEmpty();
-			if(nameValid)
-				break;
+		if(nameTypes.size()>0){
+			for(String nameType : nameTypes) {
+				nameValid = data.containsKey(nameType) && data.get(nameType) != null && !data.get(nameType).trim().isEmpty();
+				if(nameValid)
+					break;
+			}
 		}
-		nameValid = nameValid || (!nameValid && data.containsKey("strain") && data.get("strain") != null && !data.get("strain").trim().isEmpty()); 
+		nameValid = nameValid || (!nameValid && data.containsKey("strain number") && data.get("strain number") != null && !data.get("strain number").trim().isEmpty()); 
 		if(!nameValid)
 			modelFile.appendError("You need to provide at least either a taxon rank or a strain");
 		
@@ -235,8 +243,38 @@ public class XmlModelFileCreator {
 		}*/
 		Element taxonIdentification = doc.createElement("taxon_identification");
 		treatment.appendChild(taxonIdentification);
-		
-		addAsElementIfExists(taxonIdentification, data, "class", "class_name", doc);
+		for(String nameType: nameTypes){
+			String rank = nameType.replaceFirst(" name$", "");
+			String nameString = data.get(nameType).trim();
+			String name = nameString;
+			String authority = null;
+			String ndate = null;
+			if(nameString.contains(" ")){
+				name = nameString.substring(0, nameString.indexOf(" "));
+				String authorityStr = nameString.substring(nameString.indexOf(" ")).trim();
+				if(authorityStr.contains(",")){
+					authority = authorityStr.substring(0, authorityStr.indexOf(",")).trim();
+					ndate = authorityStr.substring(authorityStr.indexOf(",")+1).trim();
+				}
+			}
+			Element element = doc.createElement("taxon_name");
+			taxonIdentification.appendChild(element);
+			element.appendChild(doc.createTextNode(name));
+			element.setAttribute("rank", rank);
+			if(authority!=null) element.setAttribute("authority", authority);
+			if(ndate!=null) element.setAttribute("date", ndate);
+		}
+
+		if(data.containsKey("strain number") && data.get("strain number") != null && !data.get("strain number").trim().isEmpty()) {
+			Element element = doc.createElement("strain_number");
+			taxonIdentification.appendChild(element);
+			element.appendChild(doc.createTextNode(data.get("strain number")));
+			if(data.get("equivalent strain numbers") != null && !data.get("equivalent strain numbers").trim().isEmpty()) element.setAttribute("equivalent_strain_numbers", data.get("equivalent strain numbers"));
+			if(data.get("accession number 16s rrna") != null && !data.get("accession number 16s rrna").trim().isEmpty()) element.setAttribute("accession_number_16s_rrna", data.get("accession number 16s rrna"));
+		}
+
+		taxonIdentification.setAttribute("status", "ACCEPTED");
+		/*addAsElementIfExists(taxonIdentification, data, "class", "class_name", doc);
 		addAsElementIfExists(taxonIdentification, data, "subclass", "subclass_name", doc);
 		addAsElementIfExists(taxonIdentification, data, "order", "order_name", doc);
 		addAsElementIfExists(taxonIdentification, data, "suborder", "suborder_name", doc);
@@ -257,14 +295,10 @@ public class XmlModelFileCreator {
 		addAsElementIfExists(taxonIdentification, data, "subvarietas", "series_name", doc);
 		addAsElementIfExists(taxonIdentification, data, "forma", "forma_name", doc);
 		addAsElementIfExists(taxonIdentification, data, "subforma", "subforma_name", doc);
-		addAsElementIfExists(taxonIdentification, data, "unranked", "unranked_epithet_name", doc);
-
-	
+		addAsElementIfExists(taxonIdentification, data, "unranked", "unranked_epithet_name", doc);*/
 		//addAsElementIfExists(taxonIdentification, data, "strain", "strain_name", doc);
 		//addAsElementIfExists(taxonIdentification, data, "strain source", "strain_source", doc);
-		taxonIdentification.setAttribute("status", "ACCEPTED");
-		
-		
+
 		for(String descriptionType : descriptionTypes) {
 			if(data.containsKey(descriptionType)) {
 				String descriptionText = data.get(descriptionType);
@@ -285,6 +319,11 @@ public class XmlModelFileCreator {
 				}
 			}
 		}
+		/* for debug purpose: to generate some random invalid xml files.
+		if(Math.random()>0.5){
+		Element element = doc.createElement("bad_element");
+		taxonIdentification.appendChild(element);
+		}*/
 		return doc;
 	}
 
@@ -301,7 +340,7 @@ public class XmlModelFileCreator {
 		List<TaxonIdentificationEntry> taxonIdentificationEntries = new LinkedList<TaxonIdentificationEntry>();
 		for(String nameType : nameTypes) {
 			if(data.containsKey(nameType) && data.get(nameType) != null && !data.get(nameType).trim().isEmpty()) {
-				taxonIdentificationEntries.add(new TaxonIdentificationEntry(nameType, data.get(nameType)));
+				taxonIdentificationEntries.add(new TaxonIdentificationEntry(nameType.replaceFirst(" name$", ""), data.get(nameType)));
 			}
 		}
 				
@@ -311,8 +350,8 @@ public class XmlModelFileCreator {
 				modelFile.appendError("Redundant rank '" + taxonIdentificationEntry.getRank() + "'");
 			filename += taxonIdentificationEntry.getRank() + "_" + taxonIdentificationEntry.getValue() + "_";
 		}
-		if(data.containsKey("strain") && data.get("strain") != null && !data.get("strain").trim().isEmpty())
-			filename += "strain_" + data.get("strain") + "_";
+		if(data.containsKey("strain number") && data.get("strain number") != null && !data.get("strain number").trim().isEmpty())
+			filename += "strain_" + data.get("strain number") + "_";
 		
 		filename = filename.replaceAll("_+", "_").replaceFirst("_$", ".xml");
 		return filename;

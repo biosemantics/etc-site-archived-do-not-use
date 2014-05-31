@@ -4,6 +4,7 @@ public class ParallelRPCCallback<T> extends RPCCallback<T> {
 
     private T data;
     private ParentRPCCallback parent;
+	private boolean failed;
 
     public T getData() {
         return data;
@@ -17,5 +18,14 @@ public class ParallelRPCCallback<T> extends RPCCallback<T> {
 	public void onResult(T result) {
 		this.data = result;
         parent.done();
+	}
+	
+	public void setFailure() {
+		failed = true;
+		parent.done();
+	}
+	
+	public boolean getFailure(){
+		return failed;
 	}
 }

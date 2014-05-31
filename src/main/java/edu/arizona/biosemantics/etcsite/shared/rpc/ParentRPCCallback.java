@@ -25,19 +25,37 @@ public abstract class ParentRPCCallback {
         doneCount++;
 
         if (doneCount == childCallbacks.size()) {
+        	boolean allIsWell = true;
+        	for(ParallelRPCCallback parallelRPCCallback : childCallbacks) {
+        		if(parallelRPCCallback.getFailure()){
+        			allIsWell = false;
+        			break;
+        		}
+        	}
             handleSuccess();
+            if(!allIsWell)
+            	handleFailure();
         }
-
     }
 
+    protected abstract void handleFailure();
     protected abstract void handleSuccess();
 
     protected <D extends Object> D getCallbackData(int index) {
         if (index < 0 || index >= childCallbacks.size()) {
             throw new RuntimeException("Invalid child callback index");
         }
-
         return (D) childCallbacks.get(index).getData();
     }
 
+    protected boolean getCallbackFailureState(int index) {
+        if (index < 0 || index >= childCallbacks.size()) {
+            throw new RuntimeException("Invalid child callback index");
+        }
+        return childCallbacks.get(index).getFailure();
+    }
+    
+    protected List<ParallelRPCCallback> getChildCallbacks(){
+    	return this.childCallbacks;
+    }
 }

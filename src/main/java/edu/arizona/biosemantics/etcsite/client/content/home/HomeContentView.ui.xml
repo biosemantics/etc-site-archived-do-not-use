@@ -193,19 +193,18 @@
 			<div class="{style.semanticMarkupImage} {style.actionImage}"></div>
 			<div class="{style.semanticMarkupText} {style.actionText}"></div>
 			<div class="{style.semanticMarkupDescription} {style.actionDescription}">
-			    Semantic markup generates marked up descriptions from the textual descriptions of organisms. The marked up descriptions can be used to
-				generate taxon-character matrices.
+			    Captures text from taxonomic descriptions, and performs so called "semantic markup" to generate machine-readable files that are used to generate a taxon-character matrix.
 			</div>
 			<div class="{style.semanticMarkupArrow} {style.actionArrow}"></div>
 			<g:HTML ui:field="semanticMarkupButton">
 				<div class="{style.semanticMarkupButton} {style.actionButton} {style.clickable}"><img src="images/ButtonGreen.gif" width="200px" height="50px"/></div>
-				<div class="{style.semanticMarkupButtonText} {style.clickable}">Begin Semantic Markup</div> 
+				<div class="{style.semanticMarkupButtonText} {style.clickable}">Begin Text Capture</div> 
 			</g:HTML>
 			
 			<div class="{style.matrixGenerationImage} {style.actionImage}"></div>
 			<div class="{style.matrixGenerationText} {style.actionText}"></div>
 			<div class="{style.matrixGenerationDescription} {style.actionDescription}">
-				Matrix generation generates taxon-character matrices from marked up descriptions of organisms.	The matrices can be used to create
+				Generates taxon-character matrices from marked up descriptions of organisms.	The matrices can be used to create
 				specimen identification keys or be used as input to the Tree Generation tool. 
 			</div>
 			<div class="{style.matrixGenerationArrow} {style.actionArrow}"></div>
@@ -217,8 +216,8 @@
 			<div class="{style.treeGenerationImage} {style.actionImage}"></div>
 			<div class="{style.treeGenerationText} {style.actionText}"></div>
 			<div class="{style.treeGenerationDescription} {style.actionDescription}">
-				Tree Generation generates candidate taxonomies from taxon-character matrices, based on the similarity of characters of taxa. The character-similarity based
-				taxonomies may be one source of input for the Taxonomy Comparison tool.
+				Generates interactive identification keys and candidate taxonomies from taxon-character matrices, based on the similarity of characters of taxa. The character-similarity based
+				taxonomies may be one source of input for the Taxonomy Alignment tool.
 			</div>
 			<div class="{style.treeGenerationArrow} {style.actionArrow}"></div>
 			<g:HTML ui:field="treeGenerationButton">
@@ -229,7 +228,7 @@
 			<div class="{style.taxonomyComparisonImage} {style.actionImage}"></div>
 			<div class="{style.taxonomyComparisonText} {style.actionText}"></div>
 			<div class="{style.taxonomyComparisonDescription} {style.actionDescription}">
-				Taxonomy Comparison takes expert provided relationships among taxa and optionally the result from the Tree Generation to perform 
+				Takes expert-provided inter-taxon relationships and performs. and optionally the result from Identification Key and Taxonomy Generation to perform 
 				logic reasoning and identify logic conflicts and/or ambiguities.
 			</div>
 			<div class="{style.taxonomyComparisonArrow} {style.actionArrow}"></div>

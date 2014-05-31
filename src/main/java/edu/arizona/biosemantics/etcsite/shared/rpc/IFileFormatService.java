@@ -9,6 +9,8 @@ public interface IFileFormatService extends RemoteService {
 
 	public RPCResult<Boolean> isValidTaxonDescription(AuthenticationToken authenticationToken, String filePath);
 	
+	public RPCResult<Boolean> isValidTaxonDescriptionContent(AuthenticationToken authenticationToken, String fileContent);	
+
 	public RPCResult<Boolean> isValidMarkedupTaxonDescription(AuthenticationToken authenticationToken, String filePath);
 	
 	public RPCResult<Boolean> isValidMatrix(AuthenticationToken authenticationToken, String filePath);
