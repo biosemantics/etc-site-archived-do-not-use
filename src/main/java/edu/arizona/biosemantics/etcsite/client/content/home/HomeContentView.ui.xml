@@ -26,7 +26,7 @@
 		    left: 60px;
 		}
 		.semanticMarkupText {
-		    background-image: url('images/Text.SemanticMarkup2.gif');
+		    background-image: url('images/Text.SemanticMarkup.gif');
 		    top: 0px;
 		}
 		.matrixGenerationText {
@@ -193,7 +193,7 @@
 			<div class="{style.semanticMarkupImage} {style.actionImage}"></div>
 			<div class="{style.semanticMarkupText} {style.actionText}"></div>
 			<div class="{style.semanticMarkupDescription} {style.actionDescription}">
-			    Captures text from taxonomic descriptions, and performs so called "semantic markup" to generate machine-readable files that are used to generate a taxon-character matrix.
+			    Captures text from taxonomic descriptions, and performs what is called "semantic markup" to generate machine-readable files that are used to generate a taxon-character matrix.
 			</div>
 			<div class="{style.semanticMarkupArrow} {style.actionArrow}"></div>
 			<g:HTML ui:field="semanticMarkupButton">
@@ -216,36 +216,36 @@
 			<div class="{style.treeGenerationImage} {style.actionImage}"></div>
 			<div class="{style.treeGenerationText} {style.actionText}"></div>
 			<div class="{style.treeGenerationDescription} {style.actionDescription}">
-				Generates interactive identification keys and candidate taxonomies from taxon-character matrices, based on the similarity of characters of taxa. The character-similarity based
-				taxonomies may be one source of input for the Taxonomy Alignment tool.
+				Generates interactive identification keys and candidate taxonomies from taxon-character matrices, based on character similarity of taxa. The character-similarity based
+				taxonomies may be one kind of input for the Taxonomy Comparison tool.
 			</div>
 			<div class="{style.treeGenerationArrow} {style.actionArrow}"></div>
 			<g:HTML ui:field="treeGenerationButton">
 				<div class="{style.treeGenerationButton} {style.actionButton} {style.clickable}"><img src="images/ButtonGreen.gif" width="200px" height="50px"/></div>
-				<div class="{style.treeGenerationButtonText} {style.clickable}">Begin Tree Generation</div>
+				<div class="{style.treeGenerationButtonText} {style.clickable}">Begin Key Generation</div>
 			</g:HTML>
 			
 			<div class="{style.taxonomyComparisonImage} {style.actionImage}"></div>
 			<div class="{style.taxonomyComparisonText} {style.actionText}"></div>
 			<div class="{style.taxonomyComparisonDescription} {style.actionDescription}">
-				Takes expert-provided inter-taxon relationships and performs. and optionally the result from Identification Key and Taxonomy Generation to perform 
-				logic reasoning and identify logic conflicts and/or ambiguities.
+				Given two taxonomies, how are they different? Taxonomy comparision tool takes user-provided relationships between taxa (e.g.=,>) and optionally the result from Key Generation, performs 
+				logic reasoning to identify conflicts and/or ambiguity and finally align two taxomonies.
 			</div>
 			<div class="{style.taxonomyComparisonArrow} {style.actionArrow}"></div>
 			<g:HTML ui:field="taxonomyComparisonButton">
-				<div class="{style.taxonomyComparisonButton} {style.actionButton} {style.clickable}"><img src="images/ButtonGreen.gif" width="200px" height="50px"/></div>
-				<div class="{style.taxonomyComparisonButtonText} {style.clickable}">Begin Taxonomy Comparison</div>
+				<div class="{style.taxonomyComparisonButton} {style.actionButton} {style.clickable}"><img src="images/ButtonGray.gif" width="200px" height="50px"/></div>
+				<div class="{style.taxonomyComparisonButtonText}">Begin Taxonomy Comparison</div>
 			</g:HTML>
 			
 			<div class="{style.visualizationImage} {style.actionImage}"></div>
 			<div class="{style.visualizationText} {style.actionText}"></div>
-			<div class="{style.visualizationDescription} {style.actionDescription}">Visualization integrates
+			<div class="{style.visualizationDescription} {style.actionDescription}">Integrates
 				relationships among taxa and relationships between character and taxa in a visual way to facilitate taxon concept comparison and analysis.
 			</div>
 			<div class="{style.visualizationArrow} {style.actionArrow}"></div>
 			<g:HTML ui:field="visualizationButton">
-				<div class="{style.visualizationButton} {style.actionButton} {style.clickable}"><img src="images/ButtonGreen.gif" width="200px" height="50px"/></div>
-				<div class="{style.visualizationButtonText} {style.clickable}">Begin Visualization</div>
+				<div class="{style.visualizationButton} {style.actionButton} {style.clickable}"><img src="images/ButtonGray.gif" width="200px" height="50px"/></div>
+				<div class="{style.visualizationButtonText}">Begin Visualization</div>
 			</g:HTML>
 			
 			<div class="{style.orText}"></div>
