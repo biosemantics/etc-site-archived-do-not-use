@@ -27,7 +27,7 @@ public class CreateSemanticMarkupFilesDialogView implements ICreateSemanticMarku
 	public CreateSemanticMarkupFilesDialogView(ICreateSemanticMarkupFilesView.Presenter presenter) {
 		this.createSemanticMarkupFilesView = presenter.getView();
 		Widget scrollPanelView = uiBinder.createAndBindUi(this);
-		this.dialogBox = new TitleCloseDialogBox(true, "Create Input XML File for Semantic Markup Task");
+		this.dialogBox = new TitleCloseDialogBox(true, "Create Input XML File for Text Capture Task");
 		dialogBox.setWidget(scrollPanelView);
 		dialogBox.setGlassEnabled(true);
 	}

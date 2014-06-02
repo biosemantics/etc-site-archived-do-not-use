@@ -204,7 +204,7 @@ public class XmlModelFileCreator {
 		String formattedDate = DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_FULL).format(new Date());
 		date.appendChild(doc.createTextNode(formattedDate));
 		Element software = doc.createElement("software");
-		software.setAttribute("type", "Semantic Markup Input Generator");
+		software.setAttribute("type", "Text Capture Input Generator");
 		software.setAttribute("version", "1.0");
 		processor.appendChild(software);
 		Element operator = doc.createElement("operator");

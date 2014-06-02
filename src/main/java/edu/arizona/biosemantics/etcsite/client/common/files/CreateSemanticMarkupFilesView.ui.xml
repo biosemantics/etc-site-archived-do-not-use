@@ -25,7 +25,7 @@
 					<g:DisclosurePanel>
 						<g:header>Instructions</g:header>
 						<g:HTML styleName="{style.instruction}">You can create 
-					   	the input file for one taxonomic treatment to input into the semantic markup tool. 
+					   	the input file for one taxonomic treatment to input into the Text Capture tool. 
 					   	Create multiple files by repeatedly submitting the form, or use 
 					   	the "Batch Creation" tab. The file name will be composed of the author, year and taxon names. 
 						<br/>

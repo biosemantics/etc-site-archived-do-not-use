@@ -2,6 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.semanticMarkup"
+	xmlns:my2="urn:import:edu.arizona.biosemantics.etcsite.client.common"
 	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout">
 	<ui:style>
 		.waitImage {
@@ -15,27 +16,42 @@
 			padding-right: 5px;
 			cursor: pointer;
 		}
+		.padding{
+			padding-top: 10px;
+			padding-bottom:10px;
+		}
+		.subMenuEntry {
+			margin-left: 0px;
+			padding-top: 10px;
+			padding-bottom:10px;
+		}
 	</ui:style>
 	<lay:CenteredContentPanel>
-		<g:VerticalPanel>
-			<my:SubMenu ui:field="subMenu" step="PARSE_TEXT"/>
-			<g:VerticalPanel>
+		<g:VerticalPanel  styleName="{style.padding}">
+ 		<g:HorizontalPanel>
+			    <my2:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.SemanticMarkupShort.gif" imageWidth="65px" imageHeight="20px" text="" />
+			    <my:SubMenu ui:field="subMenu" step="PARSE_TEXT"/>
+			</g:HorizontalPanel>
+			<g:VerticalPanel  styleName="{style.padding}">
 				<g:HorizontalPanel ui:field="resumablePanel" visible="false">
 					<g:Image styleName="{style.playImage}" ui:field="playImage" url="images/play.png"></g:Image>
-					<g:FlowPanel>
-						<g:InlineLabel>We are done parsing the descriptions.</g:InlineLabel>
-					</g:FlowPanel>
+					<g:InlineLabel>The parse step is completed.</g:InlineLabel>
 				</g:HorizontalPanel>
 				<g:HorizontalPanel ui:field="nonResumablePanel">
 					<g:Image styleName="{style.waitImage}" ui:field="waitImage" url="images/loader3.gif"/>	
-					<g:FlowPanel>
-					    <g:InlineLabel>We are now parsing the descriptions. 
-					    You will receive an email when processing has completed. You can come back to this task using the&nbsp;</g:InlineLabel>
+					<g:VerticalPanel>
+					    <g:InlineLabel>Parsing the descriptions. </g:InlineLabel>
+					    <g:InlineLabel>You will be notified by an email when the process is complete.</g:InlineLabel>
+					    <g:FlowPanel>
+					    <g:InlineLabel>You can also come back to this task at any time via the&nbsp;</g:InlineLabel>
 					    <g:Anchor ui:field="taskManagerAnchor">Task Manager</g:Anchor>
 					   	<g:InlineLabel>.</g:InlineLabel>
-					</g:FlowPanel>
+					   	</g:FlowPanel>
+					</g:VerticalPanel>
 				</g:HorizontalPanel>
+				<g:FlowPanel styleName="{style.padding}">
 				<g:Button ui:field="nextButton" visible="false">Next</g:Button>
+				</g:FlowPanel>
 			</g:VerticalPanel>
 		</g:VerticalPanel>
 	</lay:CenteredContentPanel>

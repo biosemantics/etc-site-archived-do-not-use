@@ -115,7 +115,7 @@
 			<g:Button addStyleNames="{style.logoutButton}" ui:field="logoutButton">Logout</g:Button>
 		</div>
 		<div class="{style.helpIcon} {style.clickable}">
-			<my:ImageLabel ui:field="help" imagePath="images/Help.gif" imageWidth="20px" imageHeight="20px" text="Video Tutorial"></my:ImageLabel>
+			<my:ImageLabel ui:field="help" imagePath="images/Help.gif" imageWidth="20px" imageHeight="20px" text="How to start"></my:ImageLabel>
 		</div>
 	</g:HTMLPanel>
 </ui:UiBinder> 

@@ -1,9 +1,9 @@
 package edu.arizona.biosemantics.etcsite.shared.rpc;
 
 public enum TaskTypeEnum {
-	SEMANTIC_MARKUP("Semantic Markup"),
+	SEMANTIC_MARKUP("Text Capture"),
 	MATRIX_GENERATION("Matrix Generation"),
-	TREE_GENERATION("ID Key Generation"),
+	TREE_GENERATION("Key Generation"),
 	TAXONOMY_COMPARISON("Taxonomy Comparison"), 
 	VISUALIZATION("Visualization");
 	

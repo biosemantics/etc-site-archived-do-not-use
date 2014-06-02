@@ -25,7 +25,7 @@
 	           	validExtensions="xml"
 	           	/> 
 		     <g:Button ui:field="addButton">Upload files</g:Button>
-		     <g:Button ui:field="createSemanticMarkupInputButton" title="As input for Semantic Markup">Create Files</g:Button>
+		     <g:Button ui:field="createSemanticMarkupInputButton" title="As input for Text Capture tool">Create Files</g:Button>
 	    </g:HorizontalPanel>
 	    <g:SimplePanel addStyleNames="GWTUpld" ui:field="statusWidgetContainer"></g:SimplePanel>
 	</g:VerticalPanel>

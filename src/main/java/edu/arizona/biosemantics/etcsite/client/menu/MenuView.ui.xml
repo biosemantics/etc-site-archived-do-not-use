@@ -83,6 +83,7 @@
 		    width: 300px;
 		    height: 50px;
 		    position: absolute;
+			color: 888888;
 		    top: 22px;
 		    left: 80px;
 		}
@@ -94,7 +95,7 @@
 		<div class="{style.menuLayer}">
 			<div class="{style.menuSemanticMarkup} {style.menuAction} {style.clickable}" id="menuSemanticMarkup">
 				<div class="{style.menuSemanticMarkupIcon} {style.menuActionIcon}"></div>
-				<div class="{style.menuActionText}">Semantic Markup</div>
+				<div class="{style.menuActionText}">Text Capture</div>
 				<div class="{style.menuActionLink} {style.menuAction}">
 				    <g:FocusPanel ui:field="semanticMarkupPanel" width="200px" height="130px"></g:FocusPanel>
 				</div>
@@ -108,7 +109,7 @@
 			</div>
 			<div class="{style.menuTreeGeneration} {style.menuAction} {style.clickable}" id="menuTreeGeneration">
 				<div class="{style.menuTreeGenerationIcon} {style.menuActionIcon}"></div>
-				<div class="{style.menuActionText}">Tree Generation</div>
+				<div class="{style.menuActionText}">Key Generation</div>
 				<div class="{style.menuActionLink} {style.menuAction}">
 				    <g:FocusPanel ui:field="treeGenerationPanel" width="200px" height="130px"></g:FocusPanel>
 				</div>
