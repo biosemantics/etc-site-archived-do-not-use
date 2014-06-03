@@ -21,7 +21,7 @@
 		    <div class='content900pxCentered'>
 				<g:VerticalPanel styleName="{style.padding}">
 				 
-				    	<!-- <g:Label styleName="siteHeading">Your Account</g:Label>-->
+				    	<!-- <g:Label styleName="siteHeading">Setting</g:Label>-->
 				    	<g:Label styleName="siteHeading">Your Account</g:Label>
 				   
 				    

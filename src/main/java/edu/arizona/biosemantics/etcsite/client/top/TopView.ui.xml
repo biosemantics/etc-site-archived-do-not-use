@@ -12,11 +12,45 @@
 		    width: 20px;
 		    height: 20px;
 		}
+
 		.homeText {
-		    width: 100px;
+		    width: 50px;
 		    position: absolute;
 		    top: 8px;
 		    left: 35px;
+		}
+
+		.about{
+		    /*background-image: url('images/About.gif'); */
+		    position: absolute;
+		    top: 5px;
+		    left: 90px;
+		    background-size: contain;
+		    width: 20px;
+		    height: 20px;
+		}
+
+		.aboutText {
+		    width: 50px;
+		    position: absolute;
+		    top: 8px;
+		    left: 120px;
+		}
+		.news{
+		    /*background-image: url('images/News.gif'); */
+		    position: absolute;
+		    top: 5px;
+		    left: 185px;
+		    background-size: contain;
+		    width: 20px;
+		    height: 20px;
+		}
+
+		.newsText {
+		    width: 150px;
+		    position: absolute;
+		    top: 8px;
+		    left: 195px;
 		}
 		.greetingText {
 		    width: 200px;
@@ -98,6 +132,14 @@
 	<g:HTMLPanel>
 		<div class="{style.home} {style.clickable}">
 			 <my:ImageLabel ui:field="home" imagePath="images/Home.gif" imageWidth="20px" imageHeight="20px" text="Home"></my:ImageLabel>  
+			<!--<my:ImageLabel ui:field="home" imagePath="images/ETCLogoHome.gif" imageWidth="60px" imageHeight="30px" text=""></my:ImageLabel>-->
+		</div>
+		<div class="{style.about} {style.clickable}">
+			 <my:ImageLabel ui:field="about" imagePath="images/Home.gif" imageWidth="20px" imageHeight="20px" text="About"></my:ImageLabel>  
+			<!--<my:ImageLabel ui:field="home" imagePath="images/ETCLogoHome.gif" imageWidth="60px" imageHeight="30px" text=""></my:ImageLabel>-->
+		</div>
+		<div class="{style.news} {style.clickable}">
+			 <my:ImageLabel ui:field="news" imagePath="images/Home.gif" imageWidth="20px" imageHeight="20px" text="News"></my:ImageLabel>  
 			<!--<my:ImageLabel ui:field="home" imagePath="images/ETCLogoHome.gif" imageWidth="60px" imageHeight="30px" text=""></my:ImageLabel>-->
 		</div>
 		<div class="{style.greetingText}">

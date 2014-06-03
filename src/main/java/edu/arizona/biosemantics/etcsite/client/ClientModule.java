@@ -54,6 +54,8 @@ import edu.arizona.biosemantics.etcsite.client.common.files.SavableFileTreePrese
 import edu.arizona.biosemantics.etcsite.client.common.files.SavableFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePresenter;
 import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreeView;
+import edu.arizona.biosemantics.etcsite.client.content.about.AboutView;
+import edu.arizona.biosemantics.etcsite.client.content.about.IAboutView;
 import edu.arizona.biosemantics.etcsite.client.content.annotationReview.AnnotationReviewPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.annotationReview.AnnotationReviewView;
 import edu.arizona.biosemantics.etcsite.client.content.annotationReview.IAnnotationReviewView;
@@ -92,6 +94,8 @@ import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGe
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review.IReviewView;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review.ReviewPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review.ReviewView;
+import edu.arizona.biosemantics.etcsite.client.content.news.INewsView;
+import edu.arizona.biosemantics.etcsite.client.content.news.NewsView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupHierarchyView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupInputView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupLearnView;
@@ -185,6 +189,8 @@ public class ClientModule extends AbstractGinModule {
 		bind(IMenuView.class).to(MenuView.class);
 		bind(IStartMenuView.class).to(StartMenuView.class);
 		bind(IHomeContentView.class).to(HomeContentView.class);
+		bind(IAboutView.class).to(AboutView.class);
+		bind(INewsView.class).to(NewsView.class);
 		bind(IHelpView.class).to(HelpView.class);
 		bind(ISettingsView.class).to(SettingsView.class);
 		bind(ITaskManagerView.class).to(TaskManagerView.class);

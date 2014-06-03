@@ -20,8 +20,8 @@
 		}
 		.actionText {
 		    background-size: 100% 100%;
-			width: 156px;
-		    height: 29px;
+			width: 175px;
+		    height: 24px;
 		    position: absolute;
 		    left: 60px;
 		}
@@ -113,8 +113,6 @@
 		}
 		.taxonomyComparisonText {
 		    background-image: url('images/Text.TaxonomyComparison.gif');
-		    width: 191px;
-		    height: 29px;
 		    top: 300px;
 		}
 		.taxonomyComparisonDescription {
@@ -138,8 +136,8 @@
 		}
 		.visualizationText {
 		    background-image: url('images/Text.Visualization.gif');
-		    width: 191px;
-		    height: 24px;
+		    /*width: 191px;
+		    height: 24px;*/
 		    top: 400px;
 		}
 		.visualizationDescription {

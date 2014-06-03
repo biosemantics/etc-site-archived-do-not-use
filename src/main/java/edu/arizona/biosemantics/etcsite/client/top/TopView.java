@@ -28,6 +28,12 @@ public class TopView extends Composite implements ITopView {
 	ImageLabel home;
 	
 	@UiField
+	ImageLabel about;
+	
+	@UiField
+	ImageLabel news;
+	
+	@UiField
 	ImageLabel taskManager;
 	
 	@UiField
@@ -76,6 +82,15 @@ public class TopView extends Composite implements ITopView {
 		presenter.onHome();
 	}
 	
+	@UiHandler("about")
+	public void onAbout(ClickEvent event) {
+		presenter.onAbout();
+	}
+	
+	@UiHandler("news")
+	public void onNews(ClickEvent event) {
+		presenter.onNews();
+	}
 	@UiHandler("logoutButton")
 	public void onLogout(ClickEvent event) {
 		presenter.onLogout();

@@ -67,23 +67,23 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	
 	private XmlModelFile createModelFile() {
 		StringBuilder textBuilder = new StringBuilder();
-		textBuilder.append("author: " + view.getAuthor().trim() + "\n");
-		textBuilder.append("year: " + view.getYear().trim() + "\n");
-		textBuilder.append("title: " + view.getTitleText().trim() + "\n");
-		textBuilder.append("doi: " + view.getDOI().trim() + "\n");
-		textBuilder.append("full citation: " + view.getFullCitation().trim() + "\n");
+		textBuilder.append("author: " + view.getAuthor().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
+		textBuilder.append("year: " + view.getYear().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
+		textBuilder.append("title: " + view.getTitleText().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "").trim() + "\n");
+		textBuilder.append("doi: " + view.getDOI().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
+		textBuilder.append("full citation: " + view.getFullCitation().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
 		List<TaxonIdentificationEntry> taxonIdentificationEntries = view.getTaxonIdentificationEntries();
 		for(TaxonIdentificationEntry taxonIdentificationEntry : taxonIdentificationEntries) {
-			textBuilder.append(taxonIdentificationEntry.getRank().trim() + " name: " + taxonIdentificationEntry.getValue().trim() + "\n");
+			textBuilder.append(taxonIdentificationEntry.getRank().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + " name: " + taxonIdentificationEntry.getValue().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
 		}
-		textBuilder.append("strain number: " + view.getStrainNumber().trim() + "\n");
-		textBuilder.append("equivalent strain numbers: " + view.getEqStrainNumbers().trim() + "\n");
-		textBuilder.append("accession number 16s rrna: " + view.getStrainAccession().trim() + "\n");
+		textBuilder.append("strain number: " + view.getStrainNumber().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
+		textBuilder.append("equivalent strain numbers: " + view.getEqStrainNumbers().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
+		textBuilder.append("accession number 16s rrna: " + view.getStrainAccession().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
 		
-		textBuilder.append("morphology: #" + view.getMorphologicalDescription().trim() + "#\n");
-		textBuilder.append("habitat: #" + view.getHabitatDescription().trim() + "#\n");
-		textBuilder.append("distribution: #" + view.getDistributionDescription().trim() + "#\n");
-		textBuilder.append("phenology: #" + view.getPhenologyDescription().trim() + "#\n");		
+		textBuilder.append("morphology: #" + view.getMorphologicalDescription().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "#\n");
+		textBuilder.append("habitat: #" + view.getHabitatDescription().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "#\n");
+		textBuilder.append("distribution: #" + view.getDistributionDescription().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "#\n");
+		textBuilder.append("phenology: #" + view.getPhenologyDescription().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "#\n");		
 		
 		XmlModelFile result = xmlModelFileCreator.createXmlModelFile(textBuilder.toString(), Authentication.getInstance().getUsername());
 		return result;
