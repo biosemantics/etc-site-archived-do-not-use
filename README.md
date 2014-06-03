@@ -14,7 +14,7 @@ and
 
 1. configure your Eclipse project to be a Maven Project and to use Google Web Toolkit (2.6)
 2. run mvn package to set up /src/main/webapp/ files for GWT dev mode. Run again for changes in the directory
-3. Import SetupDB.sql dump to a database dedicated for the project
+3. Import setupDB.sql dump to a database dedicated for the project
 6. Create config.properties from at /src/main/resources according to .template and your environment
 
 #### Windows
