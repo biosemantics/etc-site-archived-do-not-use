@@ -13,6 +13,15 @@
 		.cellTable td {
 			border-style: none; 
 		}
+
+		.leftMargin {
+  		 	margin-left: 5px;
+		}
+
+		.padding {
+			padding-top: 10px;
+			padding-bottom: 10px;
+		}
 	</ui:style>
 	<my:CenteredContentPanel>
 		<g:HTMLPanel>
@@ -22,17 +31,25 @@
 		                <g:Label styleName="siteHeading">
 		                    Task Manager
 		                </g:Label>
-			          	<c:CellTable
+			          	<c:CellTable styleName="{style.padding}"
 				            addStyleNames='{style.cellTable}'
 				            pageSize='15'
 			           	 	ui:field='taskTable' />
 						<c:SimplePager
 			           		ui:field='pager' />
 						<g:HorizontalPanel>
-						    <g:Button ui:field='resumeButton'>Resume</g:Button>
-						    <g:Button ui:field='rewindButton'>Rewind</g:Button>
-						    <g:Button ui:field='deleteButton'>Delete</g:Button>
-						    <g:Button ui:field='shareButton'>Share</g:Button>
+						    <g:FlowPanel styleName="{style.leftMargin}">
+						    <g:Button ui:field='resumeButton' title="continue with the selected task">Resume</g:Button>
+						    </g:FlowPanel>
+						    <g:FlowPanel styleName="{style.leftMargin}">
+						    <g:Button ui:field='rewindButton' title="re-categorize the terms for the selected task">Rewind</g:Button>
+						    </g:FlowPanel>
+						    <g:FlowPanel styleName="{style.leftMargin}">
+						    <g:Button ui:field='deleteButton' title="remove the selected task - the task will be removed but related files will not be deleted">Delete</g:Button>
+						    </g:FlowPanel>
+						    <g:FlowPanel styleName="{style.leftMargin}">
+						    <g:Button ui:field='shareButton' title="share the selected task with other users - the task and related files will be added to others' workspace">Share</g:Button>
+						    </g:FlowPanel>
 						</g:HorizontalPanel>
 		            </g:VerticalPanel> 
 		        </div>

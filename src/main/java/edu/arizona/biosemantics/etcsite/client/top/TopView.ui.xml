@@ -97,7 +97,8 @@
 	</ui:style>
 	<g:HTMLPanel>
 		<div class="{style.home} {style.clickable}">
-			<my:ImageLabel ui:field="home" imagePath="images/Home.gif" imageWidth="20px" imageHeight="20px" text="Home"></my:ImageLabel>
+			 <my:ImageLabel ui:field="home" imagePath="images/Home.gif" imageWidth="20px" imageHeight="20px" text="Home"></my:ImageLabel>  
+			<!--<my:ImageLabel ui:field="home" imagePath="images/ETCLogoHome.gif" imageWidth="60px" imageHeight="30px" text=""></my:ImageLabel>-->
 		</div>
 		<div class="{style.greetingText}">
 			<g:Label ui:field="greetingLabel"></g:Label>
@@ -109,7 +110,7 @@
 			<my:ImageLabel ui:field="fileManager" imagePath="images/FileManager.gif" imageWidth="20px" imageHeight="20px" text="File Manager"></my:ImageLabel>
 		</div>
 		<div class="{style.settings} {style.clickable}">
-			<my:ImageLabel ui:field="settings" imagePath="images/Settings.gif" imageWidth="20px" imageHeight="20px" text="Settings"></my:ImageLabel>
+			<my:ImageLabel ui:field="settings" imagePath="images/Settings.gif" imageWidth="20px" imageHeight="20px" text="Your Account"></my:ImageLabel>
 		</div>
 		<div class="{style.logoutButtonDiv}">
 			<g:Button addStyleNames="{style.logoutButton}" ui:field="logoutButton">Logout</g:Button>

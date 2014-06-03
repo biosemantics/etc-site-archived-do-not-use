@@ -11,14 +11,22 @@
 			width: 20px;
 			padding-right: 5px;
 		}
+		.padding{
+			padding-top: 10px;
+			padding-bottom: 10px;
+		}
 	</ui:style>
 	<lay:CenteredContentPanel>
 		<g:HTMLPanel>
 		    <div class='content900pxCentered'>
+				<g:VerticalPanel styleName="{style.padding}">
+				 
+				    	<!-- <g:Label styleName="siteHeading">Your Account</g:Label>-->
+				    	<g:Label styleName="siteHeading">Your Account</g:Label>
+				   
+				    
+				</g:VerticalPanel>
 				<g:VerticalPanel>
-				    <g:cell>
-				    	<g:Label styleName="siteHeading">Settings</g:Label>
-				    </g:cell>
 				    <g:cell>
 					    <g:Grid>
 					        <g:row>
@@ -69,15 +77,18 @@
 							      <g:PasswordTextBox ui:field="confirmNewPassword"></g:PasswordTextBox>
 							    </g:customCell>
 					        </g:row>
-					        <g:row>
+					        <!-- <g:row>
 					            <g:cell></g:cell>
 							    <g:customCell>
 							      <g:Button ui:field="submit">Submit</g:Button>
 							    </g:customCell>
 					        </g:row>
-					        
+					         -->
 					    </g:Grid>
 				    </g:cell>
+				    <g:VerticalPanel styleName="{style.padding}">
+				         <g:Button ui:field="submit">Submit</g:Button>
+					</g:VerticalPanel>
 				</g:VerticalPanel>
 			</div>	
 		</g:HTMLPanel>

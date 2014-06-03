@@ -132,7 +132,7 @@ public class HomeActivity extends MyAbstractActivity implements IStartMenuView.P
 			public void onResult(final Task task) {
 				if(task != null) 
 					messageConfirmPresenter.show(
-						"Resumable Task", "You have a resumable task of this type", "Start new", "Resume", new IConfirmListener() {
+						"Resumable Task", "You have a resumable task of this type",  "Start new", "Resume", new IConfirmListener() {
 							public void onConfirm() {
 								gotoPlace.setTask(task);
 								placeController.goTo(gotoPlace);
