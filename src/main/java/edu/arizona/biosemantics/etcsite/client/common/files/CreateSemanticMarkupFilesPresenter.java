@@ -14,6 +14,7 @@ import edu.arizona.biosemantics.etcsite.client.common.IMessageView;
 import edu.arizona.biosemantics.etcsite.client.common.ServerSetup;
 //import edu.arizona.biosemantics.etcsite.server.rpc.FileFormatService;
 import edu.arizona.biosemantics.etcsite.shared.file.FilePathShortener;
+import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.file.MyXmlWriter;
 import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.BracketChecker;
 import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.TaxonIdentificationEntry;

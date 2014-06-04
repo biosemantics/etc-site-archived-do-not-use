@@ -55,6 +55,7 @@ import edu.arizona.biosemantics.etcsite.shared.db.otolite.StructuresDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.otolite.SynonymsDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.otolite.TermCategoryPairDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.otolite.TermsInOrderCategoryDAO;
+import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.file.search.SearchResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessService;
