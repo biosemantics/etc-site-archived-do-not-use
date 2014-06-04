@@ -2,8 +2,8 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" 
 	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.common"
-	xmlns:ma="urn:import:edu.arizona.biosemantics.matrixreview.client"
 	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container">
+	<!-- xmlns:ma="urn:import:edu.arizona.biosemantics.matrixreview.client" -->
 	<ui:style>
 		.headerPanel {
 		/*display: none; only for while loading*/

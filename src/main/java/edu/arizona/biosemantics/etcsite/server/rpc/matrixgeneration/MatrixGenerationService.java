@@ -8,11 +8,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.Executors;
+
+import au.com.bytecode.opencsv.CSVReader;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
@@ -44,6 +48,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.IFileService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.TaskStageEnum;
+import edu.arizona.biosemantics.matrixgeneration.taxonomy.TaxonRank;
 import edu.arizona.biosemantics.matrixreview.shared.model.Character;
 import edu.arizona.biosemantics.matrixreview.shared.model.Organ;
 import edu.arizona.biosemantics.matrixreview.shared.model.Taxon;
@@ -53,6 +58,111 @@ import edu.arizona.biosemantics.matrixreview.shared.model.Taxon.Level;
 
 public class MatrixGenerationService extends RemoteServiceServlet implements IMatrixGenerationService  {
 
+	private static class RankData {
+		
+		private Level rank;
+		private String value;
+		private String authority;
+		private String date;
+		
+		private static HashMap<RankData, RankData> instances = new HashMap<RankData, RankData>();
+		
+		public static RankData getInstanceFor(Level rank, String value, String authority, String date) {
+			RankData rankData = new RankData(rank, value, authority, date);
+			if(!instances.containsKey(rankData))
+				instances.put(rankData, rankData);
+			return instances.get(rankData);
+		}
+		
+		private RankData(Level rank, String value, String authority, String date) {
+			super();
+			this.rank = rank;
+			this.value = value;
+			this.authority = authority;
+			this.date = date;
+		}
+		public Level getRank() {
+			return rank;
+		}
+		public String getValue() {
+			return value;
+		}
+		public String getAuthority() {
+			return authority;
+		}
+		public String getDate() {
+			return date;
+		}		
+		public String toString() {
+			return rank + "=" + value;// + "," + authority + "," + date;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result
+					+ ((authority == null) ? 0 : authority.hashCode());
+			result = prime * result + ((date == null) ? 0 : date.hashCode());
+			result = prime * result + ((rank == null) ? 0 : rank.hashCode());
+			result = prime * result + ((value == null) ? 0 : value.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			RankData other = (RankData) obj;
+			if (authority == null) {
+				if (other.authority != null)
+					return false;
+			} else if (!authority.equals(other.authority))
+				return false;
+			if (date == null) {
+				if (other.date != null)
+					return false;
+			} else if (!date.equals(other.date))
+				return false;
+			if (rank != other.rank)
+				return false;
+			if (value == null) {
+				if (other.value != null)
+					return false;
+			} else if (!value.equals(other.value))
+				return false;
+			return true;
+		}
+	}
+	
+	private class TaxonName {
+		private LinkedList<RankData> rankData;
+		private String author;
+		private String date;		
+		public TaxonName(LinkedList<RankData> rankData, String author, String date) {
+			super();
+			this.rankData = rankData;
+			this.author = author;
+			this.date = date;
+		}
+		public LinkedList<RankData> getRankData() {
+			return rankData;
+		}
+		public String getAuthor() {
+			return author;
+		}
+		public String getDate() {
+			return date;
+		}
+		public String toString() {
+			return rankData.toString() + ":" + author + "," + date;
+		}
+	}
+	
 	private static final long serialVersionUID = -7871896158610489838L;
 	private IFileService fileService = new FileService();
 	private IFileFormatService fileFormatService = new FileFormatService();
@@ -288,37 +398,103 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 
 	private TaxonMatrix readFile(String filePath) throws Exception {
-		return createSampleMatrix();
+		//return createSampleMatrix();
+
+		CSVReader reader = new CSVReader(new FileReader(filePath), '\t');
 		
-		/*Matrix result = new Matrix();
-		File file = new File(filePath);
-		BufferedReader br = new BufferedReader(new FileReader(file));
-		String line;
-		boolean firstLine = true;
-		int id=0;
-		while ((line = br.readLine()) != null) {
-			String[] values = line.split("\t");
-			if(firstLine) {
-				for(int i=1; i<values.length; i++) {
-					String characterName = values[i];
-					result.addCharacterName(characterName);
-				}
-			} else {
-				Taxon taxon = new Taxon();
-				taxon.setName(values[0]);
-				taxon.setId(String.valueOf(id));
-				for(int i=1; i<values.length; i++) {
-					taxon.setCharacterState(result.getCharacterNames().get(i-1), values[i]);
-				}
-				result.addTaxon(taxon);
-				id++;
-			}
-			firstLine = false;
+		List<Character> characters = new LinkedList<Character>();
+		String[] head = reader.readNext();
+		for(int i=1; i<head.length; i++) {
+			String character = head[i];
+			characters.add(new Character(character));
 		}
-		br.close();
-		return result;*/
+		TaxonMatrix taxonMatrix = new TaxonMatrix(characters);
+		
+	    List<TaxonName> taxonNames = new LinkedList<TaxonName>();
+	    Map<RankData, Taxon> rankTaxaMap = new HashMap<RankData, Taxon>();
+	    List<String[]> allLines = reader.readAll();
+	    //init all taxa
+	    for(int i=0; i<allLines.size(); i++) {
+	    	String[] line = allLines.get(i);
+	    	String name = line[0];
+	    	TaxonName taxonName = createTaxonName(name);
+	    	taxonNames.add(taxonName);
+	    	Taxon taxon = createPlainTaxon(String.valueOf(i), taxonName);
+	    	rankTaxaMap.put(taxonName.getRankData().getLast(), taxon);
+	    }
+	    
+	    //assign parents or root
+	    for(TaxonName taxonName : taxonNames) {
+	    	LinkedList<RankData> rankData = taxonName.getRankData();
+	    	Taxon taxon = rankTaxaMap.get(rankData.getLast());
+	    	if(rankData.size() == 1) 
+	    		taxonMatrix.addRootTaxon(taxon);
+		    if(rankData.size() > 1) {
+		    	RankData parentRankData = rankData.get(rankData.size() - 2);
+		    	Taxon parent = rankTaxaMap.get(parentRankData);
+		    	taxonMatrix.addTaxon(parent, taxon);
+		    }
+	    }
+	    
+	    //set values
+	    for(int i=0; i<allLines.size(); i++) {
+	    	String[] line = allLines.get(i);
+		    for(int j=1; j<line.length; j++) {
+	    		taxonMatrix.setValue(rankTaxaMap.get(taxonNames.get(i).getRankData().getLast()), characters.get(j-1), new Value(line[j]));
+	    	}
+	    }
+	    
+	    reader.close();
+	    return taxonMatrix; 
 	}
 
+
+
+	private TaxonName createTaxonName(String name) {
+		String[] ranksAuthorParts = name.split(":");
+    	String[] authorParts = ranksAuthorParts[1].split(",");
+    	String author = authorParts[0];
+    	String date = authorParts[1];
+    	
+    	String[] ranks = ranksAuthorParts[0].split(";");
+    	LinkedList<RankData> rankData = new LinkedList<RankData>();
+    	
+    	for(String rank : ranks) {
+    		String[] rankParts = rank.split(",");
+    		String authority = "";
+    		String rankDate = "";
+    		String value = "";
+    		Level level = Level.UNRANKED;
+    		for(String rankPart : rankParts) {
+        		String[] rankPartValues = rankPart.split("=");
+        		if(rankPartValues[0].equals("authority")) {
+        			authority = rankPartValues[1];
+        			continue;
+        		}
+        		if(rankPartValues[0].equals("date")) {
+        			rankDate = rankPartValues[1];
+        			continue;
+        		}
+        		try {
+        			level = Level.valueOf(rankPartValues[0].toUpperCase());
+        			value = rankPartValues[1];
+        		} catch(Exception e) {
+        		}
+        	}
+    		
+    		rankData.add(RankData.getInstanceFor(level, value, authority, rankDate));
+    	}
+    			
+		TaxonName result = new TaxonName(rankData, author, date);
+		return result;
+	}
+
+	//TODO: Integrate rank authority and date
+	private Taxon createPlainTaxon(String id, TaxonName taxonName) {
+		RankData lowestRank = taxonName.getRankData().getLast();
+		return new Taxon("server" + id, lowestRank.getRank(), lowestRank.getValue(), taxonName.getAuthor(), taxonName.getDate(), "");
+	}
+	
 	@Override
 	public RPCResult<Task> output(AuthenticationToken authenticationToken, Task task) {
 		try {

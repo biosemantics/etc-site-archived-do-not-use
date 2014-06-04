@@ -4,8 +4,8 @@
 	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.matrixGeneration"
 	xmlns:re="urn:import:edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review"
 	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout"
-	xmlns:ma="urn:import:edu.arizona.biosemantics.matrixreview.client"
 	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container">
+	<!-- xmlns:ma="urn:import:edu.arizona.biosemantics.matrixreview.client" -->
 	<ui:style>
 		.centered {
 			/* maximize to 900px width, optimized for 1024x768 resolution */

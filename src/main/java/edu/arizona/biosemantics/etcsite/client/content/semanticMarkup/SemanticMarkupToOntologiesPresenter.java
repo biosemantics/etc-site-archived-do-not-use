@@ -79,12 +79,12 @@ public class SemanticMarkupToOntologiesPresenter implements ISemanticMarkupToOnt
 	
 	@Override
 	public void onNext() {
-		semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), task, TaskStageEnum.HIERARCHY, new RPCCallback<Task>() {
+		/*semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), task, TaskStageEnum.HIERARCHY, new RPCCallback<Task>() {
 			@Override
 			public void onResult(Task result) {
 				placeController.goTo(new SemanticMarkupHierarchyPlace(task));
 			}
-		});
+		}); */
 	}
 
 }

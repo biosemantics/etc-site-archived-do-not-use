@@ -9,7 +9,7 @@ import com.google.inject.Inject;
 import edu.arizona.biosemantics.etcsite.client.content.user.IUsersView.Presenter;
 import edu.arizona.biosemantics.etcsite.shared.db.ShortUser;
 
-public class UserSelectPresenter implements UserSelectView.Presenter {
+public class UserSelectPresenter implements IUserSelectView.Presenter {
 
 	private IUserSelectView view;
 	private TitleCloseDialogBox dialogBox;

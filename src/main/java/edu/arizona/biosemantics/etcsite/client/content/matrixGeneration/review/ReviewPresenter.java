@@ -36,7 +36,7 @@ public class ReviewPresenter implements IReviewView.Presenter {
 				view.setMatrixReviewView(matrixReviewView);
 				loadingPopup.stop();
 			}
-		});
+		}); 
 		
 	}
 	
@@ -45,7 +45,7 @@ public class ReviewPresenter implements IReviewView.Presenter {
 			matrixGenerationService.save(Authentication.getInstance().getToken(), taxonMatrix, task, new RPCCallback<Void>() {
 				@Override
 				public void onResult(Void result) { }
-			});
+			}); 
 	}
 
 	@Override

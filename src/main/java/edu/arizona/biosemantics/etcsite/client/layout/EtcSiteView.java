@@ -26,16 +26,6 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.Composite;
 
-import edu.arizona.biosemantics.etcsite.client.menu.IMenuView;
-import edu.arizona.biosemantics.etcsite.client.menu.MenuView;
-import edu.arizona.biosemantics.matrixreview.client.MatrixReviewView;
-import edu.arizona.biosemantics.matrixreview.shared.model.Character;
-import edu.arizona.biosemantics.matrixreview.shared.model.Organ;
-import edu.arizona.biosemantics.matrixreview.shared.model.Taxon;
-import edu.arizona.biosemantics.matrixreview.shared.model.TaxonMatrix;
-import edu.arizona.biosemantics.matrixreview.shared.model.Value;
-import edu.arizona.biosemantics.matrixreview.shared.model.Taxon.Level;
-
 public class EtcSiteView extends Composite implements IEtcSiteView {
 
 	private static EtcSiteUiBinder uiBinder = GWT.create(EtcSiteUiBinder.class);

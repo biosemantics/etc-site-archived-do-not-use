@@ -1,5 +1,8 @@
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -242,7 +245,9 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 			}
 			
 			if (uploader.getStatus() == Status.SUCCESS) {
-				uploader.getStatusWidget().setFileName("Done uploading.");
+				List<String> fileNames = new LinkedList<String>();
+				fileNames.add("Done uploading.");
+				uploader.getStatusWidget().setFileNames(fileNames);
 				fileTreePresenter.refresh(fileFilter);
 			}
 			
@@ -262,7 +267,9 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	public class OnStartUploadHandler implements OnStartUploaderHandler {
 		@Override
 		public void onStart(final IUploader uploader) {
-			uploader.getStatusWidget().setFileName("Uploading, please wait...");
+			List<String> fileNames = new LinkedList<String>();
+			fileNames.add("Uploading, please wait...");
+			uploader.getStatusWidget().setFileNames(fileNames);
 			final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
 			if(selection.getFileInfo().getFileType().equals(FileTypeEnum.DIRECTORY)) {
 				uploader.setServletPath(uploader.getServletPath() + "&target=" + selection.getFileInfo().getFilePath());

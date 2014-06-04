@@ -52,12 +52,12 @@ public class SemanticMarkupHierarchyPresenter implements ISemanticMarkupHierarch
 
 	@Override
 	public void onNext() {
-		semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), task, TaskStageEnum.ORDERS, new RPCCallback<Task>() {
+		/*semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), task, TaskStageEnum.ORDERS, new RPCCallback<Task>() {
 			@Override
 			public void onResult(Task result) {
 				placeController.goTo(new SemanticMarkupOrdersPlace(task));
 			}
-		});
+		}); */
 	}
 	
 	@Override
