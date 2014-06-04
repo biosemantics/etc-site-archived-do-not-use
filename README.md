@@ -17,10 +17,6 @@ and
 3. Import setupDB.sql dump to a database dedicated for the project
 6. Create config.properties from at /src/main/resources according to .template and your environment
 
-#### Windows
-It may be necessary to setup maven to generate smaller cmd commands as described [here](http://stackoverflow.com/questions/8181098/the-command-line-is-too-long-in-java-project-with-maven)
-or switch to another OS for development
-
 ### Run Dev Mode
 
 #### Class
