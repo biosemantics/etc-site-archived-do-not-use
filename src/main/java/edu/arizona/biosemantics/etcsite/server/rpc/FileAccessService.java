@@ -28,6 +28,10 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 	private static final long serialVersionUID = 5956919724639140570L;
 	private IFilePermissionService filePermissionService = new FilePermissionService();
 	
+	/**
+	 * if set successfully, message =""
+	 * else message = error
+	 */
 	@Override
 	public RPCResult<Void> setFileContent(AuthenticationToken authenticationToken, String filePath, String content) {
 		RPCResult<Boolean> permissionResult = filePermissionService.hasWritePermission(authenticationToken, filePath);
@@ -43,7 +47,7 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 				writer.append(content);
 				writer.flush();
 				writer.close();
-				return new RPCResult<Void>(true);
+				return new RPCResult<Void>(true, "");
 			} catch (Exception e) {
 				e.printStackTrace();
 				return new RPCResult<Void>(false, "Internal Server Error");

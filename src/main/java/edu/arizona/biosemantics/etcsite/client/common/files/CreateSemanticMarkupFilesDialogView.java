@@ -45,7 +45,8 @@ public class CreateSemanticMarkupFilesDialogView implements ICreateSemanticMarku
 			}
 		});
 	}
-
+	
+	
 	@Override
 	public void hide() {
 		dialogBox.hide();

@@ -199,6 +199,10 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		return null;
 	}
 
+	/**
+	 * if delete successfully, leave result message blank "".
+	 * otherwise, pass the error in result message.
+	 */
 	@Override
 	public RPCResult<Void> deleteFile(AuthenticationToken authenticationToken, String filePath) {
 		RPCResult<Boolean> permissionResult = filePermissionService.hasWritePermission(authenticationToken, filePath);
@@ -210,13 +214,13 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 				File file = new File(filePath);
 				try {
 					boolean resultDelete = deleteRecursively(authenticationToken, file);
-					return new RPCResult<Void>(resultDelete, resultDelete ? "" : "file delete failed");
+					return new RPCResult<Void>(resultDelete, resultDelete ? "" : "File delete failed");
 				} catch(Exception e) {
 					e.printStackTrace();
 					return new RPCResult<Void>(false, e.getMessage());
 				}
 			} else {
-				return new RPCResult<Void>(false, createMessageFileInUse(authenticationToken, filePath));
+				return new RPCResult<Void>(false, createMessageFileInUse(authenticationToken, filePath)+". File was not deleted.");
 			}
 		}
 		return new RPCResult<Void>(false, "Permission denied");
@@ -227,7 +231,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		if(!tasksResult.isSucceeded()) 
 			return "Couldn't retrieve tasks using the file";
 		List<Task> tasks = tasksResult.getData();
-		StringBuilder messageBuilder = new StringBuilder("File is in use by tasks: ");
+		StringBuilder messageBuilder = new StringBuilder("File is in use by task(s): ");
 		for(Task task : tasks) 
 			messageBuilder.append(task.getName() + ", ");
 		String message = messageBuilder.toString();
@@ -262,18 +266,22 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		return result;
 	}
 	
+	/**
+	 * create directory successfully: message="", result = folder created
+	 * failed to create directory: message=error, result = "";
+	 */
 	@Override
 	public RPCResult<String> createDirectory(AuthenticationToken authenticationToken, String filePath, String idealFolderName, boolean force) { 
 		if(idealFolderName.trim().isEmpty()) 
-			return new RPCResult<String>(false, "Directory name may not be empty", "");
+			return new RPCResult<String>(false, "Directory name may not be empty. The directory was not created.", "");
 		
 		RPCResult<Boolean> permissionResult = filePermissionService.hasWritePermission(authenticationToken, filePath);
 		if(!permissionResult.isSucceeded())
-			return new RPCResult<String>(false, permissionResult.getMessage(), "");
+			return new RPCResult<String>(false, permissionResult.getMessage()+ ". The directory was not created.", "");
 		if(permissionResult.getData()) {
 			RPCResult<Boolean> inUseResult = this.isInUse(authenticationToken, filePath);
 			if(!inUseResult.isSucceeded())
-				return new RPCResult<String>(false, inUseResult.getMessage(), "");
+				return new RPCResult<String>(false, inUseResult.getMessage()+". The directory was not created.", "");
 			if(!inUseResult.getData()) {
 				File file = new File(filePath + File.separator + idealFolderName);
 				boolean resultMkDir = file.mkdir();
@@ -289,24 +297,28 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 					}
 				}
 				if(!resultMkDir) 
-					return new RPCResult<String>(resultMkDir, "Internal Server Error", "");
+					return new RPCResult<String>(false, "Internal Server Error. The directory was not created.", "");
 				else
-					return new RPCResult<String>(resultMkDir, "", file.getAbsolutePath());
+					return new RPCResult<String>(true, "", file.getAbsolutePath());
 			} else {
-				return new RPCResult<String>(false, createMessageFileInUse(authenticationToken, filePath), "");
+				return new RPCResult<String>(false, createMessageFileInUse(authenticationToken, filePath)+" The directory was not created.", "");
 			}
 		}
-		return new RPCResult<String>(false, "Permission denied", "");
+		return new RPCResult<String>(false, "Permission denied. The directory was not created.", "");
 	}
 	
+	/**
+	 * create file successfully: message="", result = file created
+	 * failed to create file: message=error, result = "";
+	 */
 	@Override
 	public RPCResult<String> createFile(AuthenticationToken authenticationToken, String directory, String idealFileName, String content, boolean force) {		
 		RPCResult<Boolean> validationResult = fileFormatService.isValidTaxonDescriptionContent(authenticationToken, content);	
-		if(!validationResult.getData().booleanValue()) return new RPCResult<String>(true, idealFileName+" is not valid. Check it against the schema", "");
+		if(!validationResult.getData().booleanValue()) return new RPCResult<String>(false, idealFileName+" is not valid. Check it against the schema", "");
 		
 		RPCResult<Boolean> permissionResult = filePermissionService.hasWritePermission(authenticationToken, directory);
 		if(!permissionResult.isSucceeded())
-			return new RPCResult<String>(false, permissionResult.getMessage(), "");
+			return new RPCResult<String>(false, permissionResult.getMessage() +". The file was not created.", "");
 		if(permissionResult.getData()) {
 			File file = new File(directory + File.separator + idealFileName);
 			try {
@@ -323,15 +335,15 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 					
 				}
 				if(createResult)
-					return new RPCResult<String>(createResult, "", file.getAbsolutePath());
+					return new RPCResult<String>(true, "", file.getAbsolutePath());
 				else
-					return new RPCResult<String>(createResult, "creating file failed", "");
+					return new RPCResult<String>(false, "Creating file failed. The file was not created.", "");
 			} catch (IOException e) {
 				e.printStackTrace();
-				return new RPCResult<String>(false, "creating file failed", "");
+				return new RPCResult<String>(false, "Creating file failed. The file was not created.", "");
 			}
 		}
-		return new RPCResult<String>(false, "Permission denied", "");
+		return new RPCResult<String>(false, "Permission denied. The file was not created.", "");
 	}
 	
 	@Override

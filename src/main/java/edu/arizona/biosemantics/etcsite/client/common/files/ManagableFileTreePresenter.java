@@ -1,10 +1,12 @@
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
 import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TreeItem;
+import com.google.gwt.user.client.ui.UIObject;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -24,6 +26,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.IFileServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 import gwtupload.client.BaseUploadStatus;
+import gwtupload.client.IFileInput;
 import gwtupload.client.IFileInput.ButtonFileInput;
 import gwtupload.client.IUploadStatus;
 import gwtupload.client.IUploadStatus.Status;
@@ -132,8 +135,10 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 											new RPCCallback<String>() {
 												@Override
 												public void onResult(String result) {
+													//handled by onSuccess
 													fileTreePresenter.refresh(fileFilter);
 												}
+	
 									});
 								}
 							}
@@ -199,6 +204,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 					fileTreePresenter.clearSelection();
 					fileTreePresenter.refresh(fileFilter);
 				}
+				
 			});
 		} else {
 			messagePresenter.showMessage("File Manager", "Please select a valid file or directory to delete");
@@ -251,8 +257,9 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 			//try to avoid MultiUploader, it will create a new HTML element for each uploader making it complex to style
 			//also MultiUploader is not needed, in comparison to SingleUploader it only allows to append additional uploads once
 			//a previous upload is still running. It doesn't mean multiple files, this can also be done with SingleUploader
-			/*IFileInput ctrl = display.getUploader().getFileInput();
-		    DOM.setElementProperty(((UIObject) ctrl).getElement(), "multiple", "multiple");*/
+			//IFileInput ctrl = view.getUploader().getFileInput();
+			//((UIObject) ctrl).getElement().setPropertyString("multiple", "multiple");
+		    //DOM.setElementProperty(((UIObject) ctrl).getElement(), "multiple", "multiple");
 			
 			uploader.setServletPath(defaultServletPath);
 			enableManagement();
@@ -263,7 +270,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		@Override
 		public void onStart(final IUploader uploader) {
 			uploader.getStatusWidget().setFileName("Uploading, please wait...");
-			final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
+			final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem(); //parent folder selected
 			if(selection.getFileInfo().getFileType().equals(FileTypeEnum.DIRECTORY)) {
 				uploader.setServletPath(uploader.getServletPath() + "&target=" + selection.getFileInfo().getFilePath());
 			} else {
@@ -272,7 +279,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 			}				
 
 			//only needed when MultiUploader is used instead of SingleUploader
-			//display.setStatusWidget(display.getUploader().getStatusWidget().getWidget());
+			//view.setStatusWidget(view.getUploader().getStatusWidget().getWidget());
 			
 			/*
 			 * Creation of directories directly inside of the upload target should not be possible (possible name clash)

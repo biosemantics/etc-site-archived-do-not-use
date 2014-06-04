@@ -2,6 +2,7 @@ package edu.arizona.biosemantics.etcsite.client.common.files;
 
 import gwtupload.client.IUploader;
 import gwtupload.client.SingleUploader;
+//import gwtupload.client.MultiUploader;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -14,6 +15,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import com.google.gwt.user.client.ui.UIObject;
 
 public class ManagableFileTreeView extends Composite implements IManagableFileTreeView {
 
@@ -26,6 +28,9 @@ public class ManagableFileTreeView extends Composite implements IManagableFileTr
 	
 	@UiField
 	SingleUploader uploader;
+	
+	//@UiField
+	//MultiUploader uploader;
 	
 	@UiField
 	SimplePanel statusWidgetContainer;
@@ -52,6 +57,7 @@ public class ManagableFileTreeView extends Composite implements IManagableFileTr
 	public ManagableFileTreeView(IFileTreeView.Presenter fileTreePresenter) {
 		this.fileTreeView = fileTreePresenter.getView();
 		initWidget(uiBinder.createAndBindUi(this));
+		((UIObject)uploader.getFileInput()).getElement().setPropertyString("multiple", "multiple");
 		statusWidgetContainer.setWidget(uploader.getStatusWidget().getWidget());
 	}
 	

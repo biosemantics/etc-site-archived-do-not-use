@@ -24,6 +24,7 @@ public class LoginPresenter implements ILoginView.Presenter {
 		dialogBox.setGlassEnabled(true);
 		dialogBox.add(view.asWidget());
 		dialogBox.setTitle("Login required");
+		dialogBox.setText("Login required");
 	}
 
 	@Override

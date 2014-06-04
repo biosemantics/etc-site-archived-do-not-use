@@ -93,11 +93,6 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 		List<ParallelRPCCallback> parallelRPCCallbacks = new LinkedList<ParallelRPCCallback>();
 		for(final XmlModelFile modelFile : modelFiles) {
 			ParallelRPCCallback parallelRPCCallback = new ParallelRPCCallback<String>() {
-				//@Override
-				//public void onFailure(final Throwable data) {
-					//setFailure();
-					//messagePresenter.showMessage("Failure" "Failed to create file for "+modelFile.getFileName(), messageBuilder.toString().replace("\n", "<br>"));
-				//}
 				@Override
 				public void onResult(final String data) {
 					if(data.isEmpty()){

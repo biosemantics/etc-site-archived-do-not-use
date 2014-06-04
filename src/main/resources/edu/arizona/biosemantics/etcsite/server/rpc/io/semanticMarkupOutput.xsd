@@ -219,7 +219,7 @@
 		</xs:simpleContent>
 	</xs:complexType>
 
-	<xs:complexType name="description">
+	<xs:complexType name="description" mixed="true">
 		<xs:sequence>
 			<xs:element minOccurs="0" maxOccurs="unbounded" type="statement" name="statement" />
 		</xs:sequence>

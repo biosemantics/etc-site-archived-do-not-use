@@ -9,7 +9,7 @@ import edu.arizona.biosemantics.etcsite.client.common.MessageView;
 public abstract class RPCCallback<T> implements AsyncCallback<RPCResult<T>> {
 
 	private LoadingPopup loadingPopup;
-	//private MessageView.Presenter messagePresenter = new MessagePresenter(new MessageView());
+	private MessageView.Presenter messagePresenter = new MessagePresenter(new MessageView());
 	
 	public RPCCallback() { }
 	
@@ -29,8 +29,8 @@ public abstract class RPCCallback<T> implements AsyncCallback<RPCResult<T>> {
 		if(result.isSucceeded()) {
 			this.onResult(result.getData());
 		} else {
-			//messagePresenter.showMessage("Error", result.getMessage());
-			System.out.println("rpc call failed on the server with message: " + result.getMessage());
+			messagePresenter.showMessage("Error", result.getMessage());
+			//System.out.println("rpc call failed on the server with message: " + result.getMessage());
 		}
 		if(loadingPopup != null)
 			loadingPopup.stop();

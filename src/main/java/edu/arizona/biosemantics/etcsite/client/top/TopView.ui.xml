@@ -4,7 +4,6 @@
 	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.common">
 	<ui:style>
 		.home{
-		    /*background-image: url('images/Home.gif'); */
 		    position: absolute;
 		    top: 5px;
 		    left: 5px;
@@ -13,15 +12,7 @@
 		    height: 20px;
 		}
 
-		.homeText {
-		    width: 50px;
-		    position: absolute;
-		    top: 8px;
-		    left: 35px;
-		}
-
 		.about{
-		    /*background-image: url('images/About.gif'); */
 		    position: absolute;
 		    top: 5px;
 		    left: 90px;
@@ -30,14 +21,7 @@
 		    height: 20px;
 		}
 
-		.aboutText {
-		    width: 50px;
-		    position: absolute;
-		    top: 8px;
-		    left: 120px;
-		}
 		.news{
-		    /*background-image: url('images/News.gif'); */
 		    position: absolute;
 		    top: 5px;
 		    left: 185px;
@@ -46,12 +30,6 @@
 		    height: 20px;
 		}
 
-		.newsText {
-		    width: 150px;
-		    position: absolute;
-		    top: 8px;
-		    left: 195px;
-		}
 		.greetingText {
 		    width: 200px;
 		    position: absolute;
@@ -59,7 +37,6 @@
 		    right: 600px;
 		}
 		.taskManager {
-		    /*background-image: url('images/TaskManager.gif'); */
 		    position: absolute;
 		    top: 5px;
 		    right: 450px;
@@ -67,47 +44,26 @@
 		    width: 150px;
 		    height: 20px;
 		}
-		.taskManagerText {
-			width: 100px; 
-			position:absolute; 
-			top:8px; 
-			right:410px;
-		}
+
 		.fileManager {
-		    /*background-image: url('images/FileManager.gif'); */
 		    position: absolute;
 		    top: 5px;
-		    right: 300px;
+		    right: 320px;
 		    background-size: contain;
 		    width: 150px;
 		    height: 20px;
 		}
-		.fileManagerText {
-		    width: 100px;
-		    position: absolute;
-		    top: 8px;
-		    right: 290px;
-		}
+
 		.settings {
-		    /*background-image: url('images/Settings.gif'); */
 		    position: absolute;
 		    top: 5px;
-		    right: 280px;
+		    right: 200px;
 		    background-size: contain;
-		    width: 20px;
+		    width: 150px;
 		    height: 20px;
 		}
-		.settingsText {
-		    width: 100px;
-		    position: absolute;
-		    top: 8px;
-		    right: 170px;
-		}
+
 		.logoutButtonDiv {	
-		    /*background-image: url('images/Button.gif');
-		    background-size: 100% 100%;
-		    width: 70px;
-		    height: 20px;*/
 		    position: absolute;
 		    top: 2px;
 		    right: 140px;
@@ -120,7 +76,6 @@
 			cursor: pointer;
 		}
 		.helpIcon {
-		    /*background-image: url('images/Help.gif');*/
 		    position: absolute; 
 		    background-size: contain; 
 		    top: 5px;

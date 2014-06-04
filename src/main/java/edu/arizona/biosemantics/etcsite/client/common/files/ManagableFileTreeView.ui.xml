@@ -20,7 +20,7 @@
 	</ui:style>
 	<g:VerticalPanel styleName="{style.padding}">
 	    <my:IFileTreeView ui:field="fileTreeView"></my:IFileTreeView>
-	    <g:HorizontalPanel>
+	    <g:HorizontalPanel styleName="{style.padding}">
 		     <g:Button ui:field="createButton" title="Select a parent folder before adding a folder">Add Folder</g:Button>
 		     <g:FlowPanel styleName="{style.leftMargin}">
 	         <up:SingleUploader 
@@ -30,7 +30,15 @@
 	           	autoSubmit="true"
 	           	avoidRepeatFiles="true" 
 	           	validExtensions="xml"
-	           	/>
+	           	/> 
+	         <!-- <up:MultiUploader 
+	           	ui:field="uploader"
+	           	styleName="{style.uploader}"
+	           	type="BUTTON"
+	           	autoSubmit="true"
+	           	avoidRepeatFiles="true" 
+	           	validExtensions="xml"
+	           	/> -->
 		     <g:Button ui:field="addButton" title="Select a parent folder before uploading one or more files">Upload Files</g:Button>
 		     </g:FlowPanel>
 		     <g:FlowPanel styleName="{style.leftMargin}">
@@ -49,7 +57,7 @@
     	<g:HorizontalPanel>
 			<g:InlineLabel>Want to create valid input files for the Text Capture tool?</g:InlineLabel>
 			<g:HorizontalPanel styleName="{style.leftMargin}">
-			<g:Button ui:field="createSemanticMarkupInputButton" title="...for the Text Capture tool">Create Files</g:Button>
+			<g:Button ui:field="createSemanticMarkupInputButton" title="select a parent folder before creating files for the Text Capture tool">Create Files</g:Button>
 			</g:HorizontalPanel>
 	    </g:HorizontalPanel>
 	    <g:SimplePanel addStyleNames="GWTUpld" ui:field="statusWidgetContainer"></g:SimplePanel>

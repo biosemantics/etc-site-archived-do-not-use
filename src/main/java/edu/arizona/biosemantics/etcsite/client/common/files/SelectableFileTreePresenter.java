@@ -30,6 +30,7 @@ public class SelectableFileTreePresenter implements ISelectableFileTreeView.Pres
 	public void show(String title, FileFilter fileFilter, ISelectListener listener) {
 		this.currentListener = listener;
 		dialogBox.setTitle(title);
+		dialogBox.setText(title);
 		dialogBox.center();
 		this.fileFilter = fileFilter;
 		fileTreePresenter.refresh(fileFilter);
