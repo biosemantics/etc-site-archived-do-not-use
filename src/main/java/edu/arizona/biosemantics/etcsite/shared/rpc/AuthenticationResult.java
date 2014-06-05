@@ -35,5 +35,4 @@ public class AuthenticationResult implements Serializable {
 	public void setUserId(String user) {
 		this.userId = user;
 	}
-	
 }

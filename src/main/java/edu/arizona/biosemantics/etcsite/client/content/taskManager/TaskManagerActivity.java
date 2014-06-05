@@ -40,5 +40,4 @@ public class TaskManagerActivity extends MyAbstractActivity {
 		// TODO Auto-generated method stub
 		
 	}
-
 }

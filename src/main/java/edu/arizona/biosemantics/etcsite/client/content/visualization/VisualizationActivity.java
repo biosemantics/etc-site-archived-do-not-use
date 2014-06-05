@@ -33,5 +33,4 @@ public class VisualizationActivity extends MyAbstractActivity {
 		// TODO Auto-generated method stub
 		
 	}
-
 }

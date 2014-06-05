@@ -1,0 +1,26 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout">
+	<ui:style>
+		.padding{
+			padding-top: 10px;
+			padding-bottom: 10px;
+		}
+	</ui:style>
+	<lay:CenteredContentPanel>
+		<g:VerticalPanel>
+		    <g:Label styleName="siteHeading">About ETC Toolkit</g:Label>
+		    
+		    <g:VerticalPanel styleName="{style.padding}">
+		    <g:InlineLabel>The ETC toolbox consists of a set of software tools that can be used as a pipeline that takes clean textual morphological descriptions and outputs taxon-character matrices for taxon concept or phylogenetic analysis. The tools may also be used separately if their required input data is available. The tools are produced through a collaborative project (NSF DBI-1147266) between the University of Arizona and University of California at Davis and with collaboration from the project Next Generation Phenomics for the Tree of Life sponsored by NSF’s Assembling, Visualizing and Analysing the Tree of Life program (NSF DEB-1208567).</g:InlineLabel>
+		    </g:VerticalPanel>
+		    
+		    <g:VerticalPanel styleName="{style.padding}">
+		    <g:InlineLabel>What is a taxon concept?</g:InlineLabel>    
+		    <g:InlineLabel>A taxon is not defined by its name. </g:InlineLabel>
+		    </g:VerticalPanel>
+		    
+		</g:VerticalPanel>
+	</lay:CenteredContentPanel>
+</ui:UiBinder> 
