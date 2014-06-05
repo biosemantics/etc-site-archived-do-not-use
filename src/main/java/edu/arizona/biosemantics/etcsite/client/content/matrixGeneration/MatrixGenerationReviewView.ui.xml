@@ -4,10 +4,31 @@
 	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.matrixGeneration"
 	xmlns:my2="urn:import:edu.arizona.biosemantics.etcsite.client.common"
 	xmlns:re="urn:import:edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review"
-	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout">
+	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout"
+	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container">
+	<!-- xmlns:ma="urn:import:edu.arizona.biosemantics.matrixreview.client" -->
 	<ui:style>
-		.important {
-			font-weight: bold;
+		.centered {
+			/* maximize to 900px width, optimized for 1024x768 resolution */
+			/*width: 950px; 
+			min-width:950px; */ 
+			/* center content horizontally */
+			margin: auto;
+			
+			/* maximize to 900px width, optimized for 1024x768 resolution */
+			/*width: 950px; 
+			min-width:950px; */ 
+			/* center content horizontally */
+			/*position:absolute;
+			margin-left: auto;
+			margin-right: auto;
+			left: 50%;
+			margin-left:-475px;*/
+		}
+
+		.nextButton {
+			margin-top: 4px;
+   			margin-left: 20px;
 		}
 		.subMenuEntry {
 			margin-left: 0px;
@@ -15,20 +36,59 @@
 			padding-bottom:10px;
 		}
 	</ui:style>
-	<lay:CenteredContentPanel>
-		<g:VerticalPanel>
-			<g:HorizontalPanel>
-		       <my2:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.MatrixGenerationShort.gif" imageWidth="80px" imageHeight="20px" text="" />
-		        <my:SubMenu ui:field="subMenu" step="REVIEW"/>
-		    </g:HorizontalPanel>
+
+	<!--  <lay:CenteredContentPanel> -->
+	<!-- <g:SimplePanel styleName="{style.centered}"> -->
+		
+		
+		<!-- 
+		 <container:VerticalLayoutContainer>
+		     <container:child>
+	          <my:SubMenu ui:field="subMenu" step="REVIEW"/>
+	        </container:child>
+	        <container:child>
+	            <ma:MatrixReviewView ui:field="view"></ma:MatrixReviewView> -->
+	          <!-- <re:IReviewView ui:field="view"/>-->
+	        <!-- </container:child>
+	        <container:child>
+	          <g:Button ui:field="nextButton">Next</g:Button>
+	        </container:child>
+      </container:VerticalLayoutContainer>
+		-->
+		
+		<!--  <ma:MatrixReviewView ui:field="view"></ma:MatrixReviewView> -->
+		
+		 
+		<g:DockLayoutPanel unit='PX' ui:field='dockLayoutPanel'>
+		    	<g:north size='50'>
+		    	    <g:HorizontalPanel styleName="{style.centered}">
+		    	        <g:cell>
+		    	            <my:SubMenu ui:field="subMenu" step="REVIEW"/>
+		    	        </g:cell>
+		    	      	<g:cell>
+		    	            <g:Button addStyleNames="{style.nextButton}" ui:field="nextButton">Next</g:Button>
+		    	        </g:cell>
+		    	    </g:HorizontalPanel>
+		    	</g:north>
+			   <g:center>
+			       <re:IReviewView ui:field="view"/>
+			     	<!-- <ma:MatrixReviewView ui:field="view"></ma:MatrixReviewView> -->
+			   </g:center>
+		 </g:DockLayoutPanel>
+	
+		
+		<!-- <g:VerticalPanel>
+			<my:SubMenu ui:field="subMenu" step="REVIEW"/>
 			<g:VerticalPanel>
-				<g:cell>
-					<re:IReviewView ui:field="view"/>
+				<g:cell> -->
+					<!-- <re:IReviewView ui:field="view"/>-->
+					<!-- <ma:MatrixReviewView ui:field="view"></ma:MatrixReviewView>
 				</g:cell>
 				<g:cell>
 					<g:Button ui:field="nextButton">Next</g:Button>
 				</g:cell>
 			</g:VerticalPanel>
-		</g:VerticalPanel>
-	</lay:CenteredContentPanel>
+		</g:VerticalPanel> --> 
+	<!-- </lay:CenteredContentPanel> -->
+	<!-- </g:SimplePanel> -->
 </ui:UiBinder> 

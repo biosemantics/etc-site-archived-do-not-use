@@ -34,10 +34,22 @@
 	<!-- Created from archetype -->
 	<dependencies>
 		<dependency>
+		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
+		  <artifactId>matrix-review</artifactId>
+		  <version>0.0.3-SNAPSHOT</version>
+		  <classifier>classes</classifier>
+		</dependency>
+		<dependency>
+		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
+		  <artifactId>matrix-review</artifactId>
+		  <version>0.0.3-SNAPSHOT</version>
+		  <classifier>sources</classifier>
+		</dependency>
+		<dependency>
 			<groupId>com.sencha.gxt</groupId>
 			<artifactId>gxt</artifactId>
 			<version>3.1.0-beta</version>
-		</dependency>
+		</dependency> 
 
 		<dependency>
 			<groupId>com.google.gwt</groupId>
@@ -75,7 +87,7 @@
 		<dependency>
 			<groupId>com.googlecode.gwtupload</groupId>
 			<artifactId>gwtupload</artifactId>
-			<version>0.6.6</version>
+			<version>1.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.inject</groupId>
@@ -162,7 +174,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.matrixgeneration</groupId>
 			<artifactId>matrix-generation</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.oto</groupId>
@@ -194,6 +206,11 @@
 			<artifactId>jaxen</artifactId>
 			<version>1.1.6</version>
 		</dependency>
+		<dependency>
+			<groupId>net.sf.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>2.3</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -206,9 +223,12 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
-				<version>2.6.0</version>
+				<version>2.6.1</version>
 				<executions>
 					<execution>
+						<configuration>
+			              <extraJvmArgs>-Xmx4096M</extraJvmArgs>
+			            </configuration>
 						<goals>
 							<goal>compile</goal>
 							<!--<goal>test</goal> -->
@@ -236,7 +256,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.1.1</version>
+				<version>2.4</version>
 				<executions>
 					<execution>
 						<phase>compile</phase>
@@ -252,7 +272,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>3.1</version>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
@@ -262,6 +282,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -275,6 +296,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>

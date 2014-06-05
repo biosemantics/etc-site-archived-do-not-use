@@ -48,7 +48,8 @@ public class SemanticMarkupParsePresenter implements ISemanticMarkupParseView.Pr
 
 	@Override
 	public void onNext() {
-		semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), task, TaskStageEnum.TO_ONTOLOGIES, new RPCCallback<Task>() {
+		semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), task, TaskStageEnum.OUTPUT, new RPCCallback<Task>() {
+		//semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), task, TaskStageEnum.TO_ONTOLOGIES, new RPCCallback<Task>() {
 			@Override
 			public void onResult(Task result) {
 				placeController.goTo(new SemanticMarkupToOntologiesPlace(task));

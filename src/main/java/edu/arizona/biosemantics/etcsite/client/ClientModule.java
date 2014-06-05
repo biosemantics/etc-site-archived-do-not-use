@@ -257,12 +257,12 @@ public class ClientModule extends AbstractGinModule {
 		bind(ISemanticMarkupParseView.Presenter.class).to(SemanticMarkupParsePresenter.class);
 		bind(ISemanticMarkupOutputView.class).to(SemanticMarkupOutputView.class);
 		bind(ISemanticMarkupOutputView.Presenter.class).to(SemanticMarkupOutputPresenter.class);
-		bind(ISemanticMarkupToOntologiesView.class).to(SemanticMarkupToOntologiesView.class);
-		bind(ISemanticMarkupToOntologiesView.Presenter.class).to(SemanticMarkupToOntologiesPresenter.class);
-		bind(ISemanticMarkupHierarchyView.class).to(SemanticMarkupHierarchyView.class);
-		bind(ISemanticMarkupHierarchyView.Presenter.class).to(SemanticMarkupHierarchyPresenter.class);
-		bind(ISemanticMarkupOrdersView.class).to(SemanticMarkupOrdersView.class);
-		bind(ISemanticMarkupOrdersView.Presenter.class).to(SemanticMarkupOrdersPresenter.class);
+		//bind(ISemanticMarkupToOntologiesView.class).to(SemanticMarkupToOntologiesView.class);
+		//bind(ISemanticMarkupToOntologiesView.Presenter.class).to(SemanticMarkupToOntologiesPresenter.class);
+		//bind(ISemanticMarkupHierarchyView.class).to(SemanticMarkupHierarchyView.class);
+		//bind(ISemanticMarkupHierarchyView.Presenter.class).to(SemanticMarkupHierarchyPresenter.class);
+		//bind(ISemanticMarkupOrdersView.class).to(SemanticMarkupOrdersView.class);
+		//bind(ISemanticMarkupOrdersView.Presenter.class).to(SemanticMarkupOrdersPresenter.class);
 		
 		//activites, places, eventbus
 		bind(EventBus.class).annotatedWith(Names.named("ActivitiesBus")).to(SimpleEventBus.class).in(Singleton.class);
@@ -406,3 +406,4 @@ public class ClientModule extends AbstractGinModule {
 		}
 	}
 }
+	
