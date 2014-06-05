@@ -1,13 +1,18 @@
 package edu.arizona.biosemantics.etcsite.client.content.matrixGeneration;
 
-import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.activity.shared.MyAbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
+import edu.arizona.biosemantics.etcsite.client.common.IMessageOkView;
+import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
+import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
+import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ITaskServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.TaskTypeEnum;
@@ -28,7 +33,14 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 			IMatrixGenerationInputView.Presenter inputPresenter, 
 			IMatrixGenerationProcessView.Presenter processPresenter,
 			IMatrixGenerationReviewView.Presenter reviewPresenter,
-			IMatrixGenerationOutputView.Presenter outputPresenter) {
+			IMatrixGenerationOutputView.Presenter outputPresenter, 
+			PlaceController placeController, 
+			IAuthenticationServiceAsync authenticationService, 
+			ILoginView.Presenter loginPresenter, 
+			IRegisterView.Presenter registerPresenter, 
+			IResetPasswordView.Presenter resetPasswordPresenter, 
+			IMessageOkView.Presenter messagePresenter) {
+		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter, messagePresenter);
 		this.taskService = taskService;
 		this.inputPresenter = inputPresenter;
 		this.processPresenter = processPresenter;

@@ -4,22 +4,17 @@ import java.io.Serializable;
 
 public class AuthenticationResult implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3162151093040677272L;
 	private boolean result;
 	private String sessionID;
-	private String username;
+	private String userId;
 	
-	public AuthenticationResult() { 
-		
-	}
+	public AuthenticationResult() {}
 	
-	public AuthenticationResult(boolean result, String sessionID, String username) {
+	public AuthenticationResult(boolean result, String sessionID, String userId) {
 		this.result = result;
 		this.sessionID = sessionID;
-		this.username = username;
+		this.userId = userId;
 	}
 	
 	public String getSessionID() {
@@ -34,11 +29,11 @@ public class AuthenticationResult implements Serializable {
 	public void setResult(boolean result) {
 		this.result = result;
 	}
-	public String getUsername() {
-		return username;
+	public String getUserId() {
+		return userId;
 	}
-	public void setUsername(String username) {
-		this.username = username;
+	public void setUserId(String user) {
+		this.userId = user;
 	}
 	
 }

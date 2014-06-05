@@ -7,7 +7,7 @@
 		    /*background-image: url('images/Home.gif'); */
 		    position: absolute;
 		    top: 5px;
-		    left: 5px;
+		    left: 15px;
 		    background-size: contain;
 		    width: 20px;
 		    height: 20px;
@@ -19,18 +19,17 @@
 		    left: 35px;
 		}
 		.greetingText {
-		    width: 200px;
+		    width: 300px;
 		    position: absolute;
 		    top: 8px;
-		    right: 600px;
+		    right: 340px;
 		}
 		.taskManager {
 		    /*background-image: url('images/TaskManager.gif'); */
 		    position: absolute;
 		    top: 5px;
-		    right: 450px;
+		    left: 150px;
 		    background-size: contain;
-		    width: 150px;
 		    height: 20px;
 		}
 		.taskManagerText {
@@ -43,9 +42,8 @@
 		    /*background-image: url('images/FileManager.gif'); */
 		    position: absolute;
 		    top: 5px;
-		    right: 300px;
+		    left: 300px;
 		    background-size: contain;
-		    width: 150px;
 		    height: 20px;
 		}
 		.fileManagerText {
@@ -58,9 +56,8 @@
 		    /*background-image: url('images/Settings.gif'); */
 		    position: absolute;
 		    top: 5px;
-		    right: 280px;
+		    left: 450px;
 		    background-size: contain;
-		    width: 20px;
 		    height: 20px;
 		}
 		.settingsText {
@@ -94,6 +91,13 @@
 		    width: 120px;
 		    height: 20px;
 		}
+		.myLogoutText {
+			width: 130px;
+		    position: absolute;
+		    top: 8px;
+		    right: 170px;
+		}
+		
 	</ui:style>
 	<g:HTMLPanel>
 		<div class="{style.home} {style.clickable}">
@@ -111,11 +115,11 @@
 		<div class="{style.settings} {style.clickable}">
 			<my:ImageLabel ui:field="settings" imagePath="images/Settings.gif" imageWidth="20px" imageHeight="20px" text="Settings"></my:ImageLabel>
 		</div>
-		<div class="{style.logoutButtonDiv}">
-			<g:Button addStyleNames="{style.logoutButton}" ui:field="logoutButton">Logout</g:Button>
-		</div>
 		<div class="{style.helpIcon} {style.clickable}">
 			<my:ImageLabel ui:field="help" imagePath="images/Help.gif" imageWidth="20px" imageHeight="20px" text="Video Tutorial"></my:ImageLabel>
+		</div>
+		<div class="{style.myLogoutText} {style.clickable}">
+			<g:Label text="Sign out" ui:field="logoutLabel"></g:Label>
 		</div>
 	</g:HTMLPanel>
 </ui:UiBinder> 

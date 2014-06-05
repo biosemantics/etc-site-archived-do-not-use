@@ -2,12 +2,18 @@ package edu.arizona.biosemantics.etcsite.client.content.semanticMarkup;
 
 import com.google.gwt.activity.shared.MyAbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
+import edu.arizona.biosemantics.etcsite.client.common.IMessageOkView;
+import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
+import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupInputView.Presenter;
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
+import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ITaskServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.TaskTypeEnum;
@@ -39,8 +45,14 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 			ISemanticMarkupHierarchyView.Presenter hierarchyPresenter,
 			ISemanticMarkupOrdersView.Presenter ordersPresenter,
 			ISemanticMarkupParseView.Presenter parsePresenter,
-			ISemanticMarkupOutputView.Presenter outputPresenter) {
-		super();
+			ISemanticMarkupOutputView.Presenter outputPresenter, 
+			PlaceController placeController, 
+			IAuthenticationServiceAsync authenticationService, 
+			ILoginView.Presenter loginPresenter, 
+			IRegisterView.Presenter registerPresenter, 
+			IResetPasswordView.Presenter resetPasswordPresenter, 
+			IMessageOkView.Presenter messagePresenter) {
+		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter, messagePresenter);
 		this.taskService = taskService;
 		this.inputPresenter = inputPresenter;
 		this.preprocessPresenter = preprocessPresenter;

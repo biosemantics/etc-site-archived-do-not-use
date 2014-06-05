@@ -12,17 +12,36 @@ public interface ILoginView extends IsWidget {
 
 		void show(ILoginListener listener);
 		
+		void setEmailField(String str);
+		
+		void setMessage(String str);
+
+		void onRegisterRequest();
+
+		void onResetPasswordRequest();
+
+		String getEmailField();
 	}
 	
 	public interface ILoginListener {
 		void onLogin();
 		void onLoginFailure();
+		void onRegisterRequest();
+		void onCancel();
+		void onResetPasswordRequest();
 	}
 	
 	void setPresenter(Presenter presenter);
-
+	
+	void clearPasswordTextBox();
+	
+	void giveLoginFocus();
+	
 	String getUsername();
 
 	String getPassword();
 	
+	void setEmail(String str);
+	
+	void setMessage(String str);
 }

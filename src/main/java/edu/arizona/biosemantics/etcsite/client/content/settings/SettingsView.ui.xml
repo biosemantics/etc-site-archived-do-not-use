@@ -11,75 +11,83 @@
 			width: 20px;
 			padding-right: 5px;
 		}
+		.panel {
+			position: absolute;
+			left: 100px;
+			width: 350px;
+		}
+		.errorLabel {
+			color:red;
+		}
 	</ui:style>
-	<lay:CenteredContentPanel>
-		<g:HTMLPanel>
-		    <div class='content900pxCentered'>
-				<g:VerticalPanel>
-				    <g:cell>
-				    	<g:Label styleName="siteHeading">Settings</g:Label>
-				    </g:cell>
-				    <g:cell>
-					    <g:Grid>
-					        <g:row>
-					            <g:customCell>
-					              <g:HorizontalPanel>
-					                  <g:Label styleName="{style.label}">BioPortal user ID</g:Label>
-					                  <g:Image url="images/Info.gif" title="BioPortal user ID is used to submit learned terminology to the BioPortal ontology service"
-					                      styleName="{style.infoImage}"></g:Image>
-					              </g:HorizontalPanel>
-							    </g:customCell>
-							    <g:customCell>
-							      <g:TextBox ui:field="bioportalUserId"></g:TextBox>
-							    </g:customCell>
-					        </g:row>
-					        <g:row>
-					            <g:customCell>
-					              <g:HorizontalPanel>
-					                   <g:Label styleName="{style.label}">BioPortal API key</g:Label>
-					                  <g:Image url="images/Info.gif" title="BioPortal API key is used to submit learned terminology to the BioPortal ontology service"
-					                      styleName="{style.infoImage}"></g:Image>
-					              </g:HorizontalPanel>
-							    </g:customCell>
-							    <g:customCell>
-							      <g:TextBox ui:field="bioportalApiKey"></g:TextBox>
-							    </g:customCell>
-					        </g:row>
-					        <g:row>
-					            <g:customCell>
-							      <g:Label>Old password</g:Label>
-							    </g:customCell>
-							    <g:customCell>
-							      <g:PasswordTextBox ui:field="oldPassword"></g:PasswordTextBox>
-							    </g:customCell>
-					        </g:row>
-					        <g:row>
-					            <g:customCell>
-							      <g:Label>New password</g:Label>
-							    </g:customCell>
-							    <g:customCell>
-							      <g:PasswordTextBox ui:field="newPassword"></g:PasswordTextBox>
-							    </g:customCell>
-					        </g:row>
-					        <g:row>
-					            <g:customCell>
-							      <g:Label>Confirm new password</g:Label>
-							    </g:customCell>
-							    <g:customCell>
-							      <g:PasswordTextBox ui:field="confirmNewPassword"></g:PasswordTextBox>
-							    </g:customCell>
-					        </g:row>
-					        <g:row>
-					            <g:cell></g:cell>
-							    <g:customCell>
-							      <g:Button ui:field="submit">Submit</g:Button>
-							    </g:customCell>
-					        </g:row>
-					        
-					    </g:Grid>
-				    </g:cell>
-				</g:VerticalPanel>
-			</div>	
-		</g:HTMLPanel>
-	</lay:CenteredContentPanel>	
+		<g:HTMLPanel styleName="{style.panel}">
+	
+		<div align="left" style="padding:7px"> 
+			<g:Label>&nbsp;&nbsp;&nbsp;&nbsp;My Account</g:Label>
+		</div>
+	<hr width="300px" noshade="noshade"></hr>
+	
+	<table style="padding:15px; width:100%">
+		<tr>
+			<td align="right"><g:Label>First Name:&nbsp;</g:Label></td>
+			<td><g:TextBox ui:field="firstNameBox" ></g:TextBox></td>
+		</tr>
+		<tr>
+			<td align="right"><g:Label>Last Name: </g:Label></td>
+			<td><g:TextBox ui:field="lastNameBox" ></g:TextBox></td>
+		</tr>
+		
+		<tr><td><g:Label>&nbsp;</g:Label></td></tr>
+	
+		<tr>
+			<td align="right"><g:Label>ID: </g:Label></td>
+			<td><g:Label ui:field="idLabel" ></g:Label></td>
+		</tr>
+		<tr>
+			<td align="right"><g:Label>Email Address: </g:Label></td>
+			<td><g:TextBox ui:field="emailBox" ></g:TextBox></td>
+		</tr>
+		<tr>
+			<td align="right"><g:Label>Affiliation: </g:Label></td>
+			<td><g:TextBox ui:field="affiliationBox" ></g:TextBox></td>
+		</tr>
+		<tr>
+			<td align="right"><g:Label>BioPortal User ID: </g:Label></td>
+			<td><g:TextBox ui:field="bioportalUserIdBox" ></g:TextBox></td>
+		</tr>
+		<tr>
+			<td align="right"><g:Label>BioPortal API Key: </g:Label></td>
+			<td><g:TextBox ui:field="bioportalAPIKeyBox" ></g:TextBox></td>
+		</tr>
+		
+		<tr><td><g:Label>&nbsp;</g:Label></td></tr>
+		
+		<tr>
+			<td align="right"><g:Label>**Current Password: </g:Label></td>
+			<td><g:PasswordTextBox ui:field="oldPasswordBox" ></g:PasswordTextBox></td>
+		</tr>
+		
+		<tr>
+			<td align="right"><g:Label>New Password: </g:Label></td>
+			<td><g:PasswordTextBox ui:field="newPasswordBox" ></g:PasswordTextBox></td>
+		</tr>
+		<tr>
+			<td align="right"><g:Label>Confirm New Password: </g:Label></td>
+			<td><g:PasswordTextBox ui:field="confirmNewPasswordBox" ></g:PasswordTextBox></td>
+		</tr>
+	</table>
+	
+	<div align="center" style="padding:7px"> 
+		<g:Label ui:field="errorLabel" styleName="{style.errorLabel}"></g:Label>
+	</div>
+	
+	<hr width="300px" noshade="noshade"></hr>
+	 
+	<div style="margin:10px">
+		
+		<div align="right" style="padding:5px">
+			<g:Button ui:field="submitButton">Submit Changes</g:Button>
+		</div>
+	</div>
+	</g:HTMLPanel>
 </ui:UiBinder> 

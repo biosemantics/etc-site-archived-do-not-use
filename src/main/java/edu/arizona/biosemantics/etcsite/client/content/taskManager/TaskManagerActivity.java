@@ -6,14 +6,25 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 
+import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
+import edu.arizona.biosemantics.etcsite.client.common.IMessageOkView;
+import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
+import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
+import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
+
 public class TaskManagerActivity extends MyAbstractActivity { 
 
 	private ITaskManagerView.Presenter taskManagerPresenter;
-	private PlaceController placeController;
 
 	@Inject
-	public TaskManagerActivity(ITaskManagerView.Presenter taskManagerPresenter, PlaceController placeController) {
-		this.placeController = placeController;
+	public TaskManagerActivity(ITaskManagerView.Presenter taskManagerPresenter, 
+			PlaceController placeController, 
+			IAuthenticationServiceAsync authenticationService, 
+			ILoginView.Presenter loginPresenter, 
+			IRegisterView.Presenter registerPresenter,
+			IResetPasswordView.Presenter resetPasswordPresenter, 
+			IMessageOkView.Presenter messagePresenter) {
+		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter, messagePresenter);
 		this.taskManagerPresenter = taskManagerPresenter;
 	}
 	

@@ -1,0 +1,67 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+	.errorLabel {
+		color:red;
+	}
+	.thinPadding {
+		padding:5px;
+	}
+	</ui:style>
+	<g:HTMLPanel>
+	
+		<div align="center" style="padding:7px"> 
+			<g:Label>Please enter your information below:</g:Label>
+		</div>
+	<hr width="90%" noshade="noshade"></hr>
+	
+	<table style="padding:10px; width:100%">
+		<tr>
+			<td align="right"><g:Label>First Name:&nbsp;</g:Label></td>
+			<td><g:TextBox ui:field="firstNameBox" ></g:TextBox></td>
+		</tr>
+		<tr>
+			<td align="right"><g:Label>Last Name: </g:Label></td>
+			<td><g:TextBox ui:field="lastNameBox" ></g:TextBox></td>
+		</tr>
+		
+		<tr><td><g:Label>&nbsp;</g:Label></td></tr>
+	
+		<tr>
+			<td align="right"><g:Label>Email Address: </g:Label></td>
+			<td><g:TextBox ui:field="emailBox" ></g:TextBox></td>
+		</tr>
+		<tr>
+			<td align="right"><g:Label>Password: </g:Label></td>
+			<td><g:PasswordTextBox ui:field="passwordBox" ></g:PasswordTextBox></td>
+		</tr>
+		<tr>
+			<td align="right"><g:Label>Confirm Password: </g:Label></td>
+			<td><g:PasswordTextBox ui:field="confirmPasswordBox" ></g:PasswordTextBox></td>
+		</tr>
+	</table>
+	
+	<div align="center" style="padding:7px"> 
+		<g:Label ui:field="errorLabel" styleName="{style.errorLabel}"></g:Label>
+	</div>
+	
+	<hr width="90%" noshade="noshade"></hr>
+	
+	<div align="center">
+		<g:CaptchaPanel ui:field="captchaPanel"></g:CaptchaPanel>
+	</div>
+	
+	<hr width="90%" noshade="noshade"></hr>
+	 
+	<div style="margin:10px">
+		
+		<div align="center" style="padding:5px">
+		<g:Button ui:field="cancelButton">Cancel</g:Button>
+			<g:Button ui:field="createButton">Create Account</g:Button>
+		</div>
+	</div>
+	</g:HTMLPanel>
+
+
+</ui:UiBinder> 

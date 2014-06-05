@@ -6,6 +6,8 @@ public class SettingsPresenter implements SettingsView.Presenter {
 	
 	private SettingsView view;
 
+	//Note: This class appears to be unused. See SettingsActivity.java for settings functionality.
+	
 	@Inject
 	public SettingsPresenter(SettingsView view) {
 		this.view = view;
@@ -13,13 +15,6 @@ public class SettingsPresenter implements SettingsView.Presenter {
 	}
 
 	@Override
-	public void onSubmit() {
-		//service do change; return if worked or not
-		view.getOldPassword();
-		view.getNewPassword();
-		view.getConfirmedNewPassword();
-		view.getBioportalUserId();
-		view.getBioportalAPIKey();
-	}
+	public void onSubmit() {}
 
 }

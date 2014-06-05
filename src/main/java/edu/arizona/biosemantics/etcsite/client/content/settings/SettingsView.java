@@ -8,38 +8,74 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+
+import edu.arizona.biosemantics.etcsite.shared.db.User;
 
 public class SettingsView extends Composite implements ISettingsView {
 
 	private static SettingsViewUiBinder uiBinder = GWT.create(SettingsViewUiBinder.class);
 
 	@UiTemplate("SettingsView.ui.xml")
-	interface SettingsViewUiBinder extends UiBinder<Widget, SettingsView> {
-	}
+	interface SettingsViewUiBinder extends UiBinder<Widget, SettingsView> {}
 
 	@UiField
-	Button submit;
+	Button submitButton;
+	
 	@UiField
-	TextBox bioportalUserId;
+	TextBox firstNameBox;
+	
 	@UiField
-	TextBox bioportalApiKey;
+	TextBox lastNameBox;
+	
 	@UiField
-	PasswordTextBox oldPassword;
+	TextBox emailBox;
+	
 	@UiField
-	PasswordTextBox newPassword;
+	TextBox affiliationBox;
+	
 	@UiField
-	PasswordTextBox confirmNewPassword;
+	TextBox bioportalUserIdBox;
+	
+	@UiField
+	TextBox bioportalAPIKeyBox;
+	
+	@UiField
+	PasswordTextBox oldPasswordBox;
+	
+	@UiField
+	PasswordTextBox newPasswordBox;
+	
+	@UiField
+	PasswordTextBox confirmNewPasswordBox;
+	
+	@UiField
+	Label idLabel;
+	
+	@UiField
+	Label errorLabel;
+	
 	private Presenter presenter;
+	private final int FIELD_WIDTH = 180;
 	
 	public SettingsView() {
 		initWidget(uiBinder.createAndBindUi(this));
+		firstNameBox.setPixelSize(FIELD_WIDTH, 14);
+		lastNameBox.setPixelSize(FIELD_WIDTH, 14);
+		emailBox.setPixelSize(FIELD_WIDTH, 14);
+		affiliationBox.setPixelSize(FIELD_WIDTH, 14);
+		bioportalUserIdBox.setPixelSize(FIELD_WIDTH, 14);
+		bioportalAPIKeyBox.setPixelSize(FIELD_WIDTH, 14);
+		oldPasswordBox.setPixelSize(FIELD_WIDTH, 14);
+		newPasswordBox.setPixelSize(FIELD_WIDTH, 14);
+		confirmNewPasswordBox.setPixelSize(FIELD_WIDTH, 14);
 	}
 
 
-	@UiHandler("submit")
+	@UiHandler("submitButton")
 	void onClick(ClickEvent e) {
 		presenter.onSubmit();
 	}
@@ -48,35 +84,81 @@ public class SettingsView extends Composite implements ISettingsView {
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
 	}
-
-
+	
 	@Override
-	public String getConfirmedNewPassword() {
-		return this.confirmNewPassword.getText();
+	public void setData(User user){
+		firstNameBox.setText(user.getFirstName());
+		lastNameBox.setText(user.getLastName());
+		idLabel.setText(user.getNonUniqueId());
+		emailBox.setText(user.getEmail());
+		affiliationBox.setText(user.getAffiliation());
+		bioportalUserIdBox.setText(user.getBioportalUserId());
+		bioportalAPIKeyBox.setText(user.getBioportalAPIKey());
+		oldPasswordBox.setText("");
+		newPasswordBox.setText("");
+		confirmNewPasswordBox.setText("");
+	}
+	
+	@Override
+	public void setErrorMessage(String str){
+		errorLabel.setText(str);
+	}
+	
+	@Override
+	public void clearPasswords() {
+		oldPasswordBox.setText("");
+		newPasswordBox.setText("");
+		confirmNewPasswordBox.setText("");
 	}
 
-
+	
 	@Override
-	public String getOldPassword() {
-		return this.oldPassword.getText();
+	public String getFirstName() {
+		return firstNameBox.getText();
 	}
 
-
 	@Override
-	public String getNewPassword() {
-		return this.newPassword.getText();
+	public String getLastName() {
+		return lastNameBox.getText();
 	}
 
+	@Override
+	public String getNonUniqueId(){
+		return idLabel.getText(); 
+	}
+	
+	@Override
+	public String getEmail() {
+		return emailBox.getText();
+	}
+
+	@Override
+	public String getAffiliation() {
+		return affiliationBox.getText();
+	}
 
 	@Override
 	public String getBioportalUserId() {
-		return this.bioportalUserId.getText();
+		return bioportalUserIdBox.getText();
 	}
-
 
 	@Override
 	public String getBioportalAPIKey() {
-		return this.bioportalApiKey.getText();
+		return bioportalAPIKeyBox.getText();
 	}
 
+	@Override
+	public String getOldPassword() {
+		return oldPasswordBox.getText();
+	}
+
+	@Override
+	public String getNewPassword() {
+		return newPasswordBox.getText();
+	}
+
+	@Override
+	public String getConfirmNewPassword() {
+		return confirmNewPasswordBox.getText();
+	}	
 }

@@ -1,0 +1,19 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+	</ui:style>
+	<g:HTMLPanel>
+	<div style="margin:10px">
+		<div align="center" style="padding:10px">
+			<g:Label ui:field="label"></g:Label>
+		</div>
+		<br></br>
+		<div align="center" style="padding:5px">
+			<g:Button ui:field="okButton">OK</g:Button>
+		</div>
+	</div>
+	</g:HTMLPanel>
+
+
+</ui:UiBinder> 

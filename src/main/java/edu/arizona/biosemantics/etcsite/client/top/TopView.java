@@ -5,7 +5,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -20,9 +19,6 @@ public class TopView extends Composite implements ITopView {
 	}
 
 	private Presenter presenter;
-
-	@UiField
-	Button logoutButton;
 	
 	@UiField
 	ImageLabel home;
@@ -41,6 +37,9 @@ public class TopView extends Composite implements ITopView {
 	
 	@UiField
 	Label greetingLabel;
+	
+	@UiField
+	Label logoutLabel;
 	
 	public TopView() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -76,7 +75,7 @@ public class TopView extends Composite implements ITopView {
 		presenter.onHome();
 	}
 	
-	@UiHandler("logoutButton")
+	@UiHandler("logoutLabel")
 	public void onLogout(ClickEvent event) {
 		presenter.onLogout();
 	}

@@ -35,6 +35,9 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 	/** Compress Command **/
 	public static String compressCommand;
 
+	/** Captcha **/
+	public static String captcha_tempFileBase;
+	
 	static {
 		try {
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -63,6 +66,8 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			xPathObjectModel = properties.getProperty("xPathObjectModel");
 			
 			compressCommand = properties.getProperty("compressCommand");
+			
+			captcha_tempFileBase = properties.getProperty("captcha_tempFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

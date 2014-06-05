@@ -5,13 +5,13 @@ import java.io.Serializable;
 public class AuthenticationToken implements Serializable {
 
 	private static final long serialVersionUID = 5502478871541626972L;
-	protected String username;
+	protected String userId;
 	protected String sessionID;
 
 	public AuthenticationToken() { }
 	
-	public AuthenticationToken(String username, String sessionID) { 
-		this.username = username;
+	public AuthenticationToken(String userId, String sessionID) { 
+		this.userId = userId;
 		this.sessionID = sessionID;
 	}
 
@@ -23,12 +23,15 @@ public class AuthenticationToken implements Serializable {
 		return sessionID;
 	}
 	
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
+	public String getUserId(){
+		return userId;
 	}
 	
+	public void setUserId(String id){
+		userId = id;
+	}
+	
+	public String getUsername(){ // to maintain compatibility, even though username is actually uniqueid. _ags 
+		return getUserId();
+	}
 }

@@ -52,23 +52,39 @@
 			height: 13px;
 			width: 130px;
 		}
-		.loginText {
-		    width: 100px;
-		    position: absolute;
-		    top: 8px;
-		    right: 510px;
-		}
 		.clickable {
 			cursor: pointer;
 		}
+		.loginText {
+		    position: absolute;
+		    top: 8px;
+		    right: 350px;
+		}
+		.orText {
+		    position: absolute;
+		    top: 8px;
+		    right: 310px;
+		}
+		.registerText {
+		    position: absolute;
+		    top: 8px;
+		    right: 180px;
+		}
+		
 	</ui:style>
 	<g:HTMLPanel>
 		<div class="{style.helpIcon} {style.clickable}">
 			<my:ImageLabel imagePath="images/Help.gif" imageWidth="20px" imageHeight="20px" text="Video Tutorial" ui:field="help"></my:ImageLabel>
 		</div>
-		<div class="{style.loginButtonDiv}"><g:Button addStyleNames="{style.loginButton}" ui:field="loginButton">Login</g:Button></div>
-		<div class="{style.userField}"><g:TextBox addStyleNames="{style.userTextBox}"  ui:field="userTextBox"></g:TextBox></div>
-		<div class="{style.passwordField}"><g:PasswordTextBox addStyleNames="{style.passwordTextBox}" ui:field="passwordTextBox"></g:PasswordTextBox></div>
-		<div class="{style.loginText}">User Login:</div>
+		<div class="{style.loginText} {style.clickable}">
+			<g:Label text="Sign in" ui:field="loginLabel"></g:Label>
+		</div>
+		<div class="{style.orText}">
+			or
+		</div>
+		<div class="{style.registerText} {style.clickable}">
+			<g:Label text="Create an account" ui:field="registerLabel"></g:Label>
+		</div>
+		
 	</g:HTMLPanel>
 </ui:UiBinder> 
