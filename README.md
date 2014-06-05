@@ -13,9 +13,13 @@ In Eclipse you can therefore use:
 and 
 
 1. configure your Eclipse project to be a Maven Project and to use Google Web Toolkit (2.6)
-2. run mvn package to set up /src/main/webapp/ files for GWT dev mode. Run again for changes in the directory
-3. Import setupDB.sql dump to a database dedicated for the project
-6. Create config.properties from at /src/main/resources according to .template and your environment
+2. run `mvn package` to set up `/src/main/webapp/` files for GWT dev mode. Run again for changes in the directory
+3. Import `setupDB.sql` dump to a database dedicated for the project
+6. Create `config.properties` at `/src/main/resources` according to `config.properties.template` and your environment
+
+Please [configure your git](http://git-scm.com/book/en/Customizing-Git-Git-Configuration) for this repository as:
+* `core.autocrlf` true if you are on Windows 
+* or `core.autocrlf input` if you are on a Unix-type OS
 
 ### Run Dev Mode
 
