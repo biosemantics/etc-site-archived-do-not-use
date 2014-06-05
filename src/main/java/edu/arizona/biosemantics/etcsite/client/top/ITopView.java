@@ -11,6 +11,8 @@ public interface ITopView extends IsWidget {
 		void onSettings();
 		void onHelp();
 		void onLogout();
+		void onAbout();
+		void onNews();
 	}
 
 	void setPresenter(Presenter presenter);

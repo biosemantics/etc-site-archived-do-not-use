@@ -23,3 +23,4 @@ public interface IReviewView extends IsWidget, RequiresResize {
 	void setPresenter(Presenter presenter);
 	Widget asWidget();
 }
+

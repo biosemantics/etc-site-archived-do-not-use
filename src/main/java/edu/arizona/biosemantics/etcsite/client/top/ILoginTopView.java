@@ -10,12 +10,10 @@ public interface ILoginTopView extends IsWidget {
 
 		void onLogin();
 		
+		void onRegister();
+		
 	}
 
 	void setPresenter(Presenter presenter);
-
-	String getUser();
-
-	String getPassword();
 	
 }

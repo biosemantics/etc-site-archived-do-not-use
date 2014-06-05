@@ -249,6 +249,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				String input = matrixGenerationConfiguration.getInput();
 				RPCResult<String> createDirResult = fileService.createDirectory(new AdminAuthenticationToken(), Configuration.matrixGeneration_tempFileBase, 
 						String.valueOf(task.getId()), false);
+				
 				if(!createDirResult.isSucceeded()) 
 					return new RPCResult<Task>(false, createDirResult.getMessage());
 				fileService.createDirectory(new AdminAuthenticationToken(), Configuration.matrixGeneration_tempFileBase, String.valueOf(task.getId()), false);
@@ -516,6 +517,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			//find a suitable destination filePath
 			RPCResult<String> createDirectoryResult = fileService.createDirectory(authenticationToken, outputDirectoryParentResult.getData(), 
 					outputDirectoryNameResult.getData(), true);
+			
 			if(!createDirectoryResult.isSucceeded()) 
 				return new RPCResult<Task>(false, createDirectoryResult.getMessage());
 			

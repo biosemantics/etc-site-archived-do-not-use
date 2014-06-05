@@ -1,30 +1,38 @@
 package edu.arizona.biosemantics.etcsite.client.top;
 
-import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.activity.shared.MyAbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
+import edu.arizona.biosemantics.etcsite.client.common.IMessageOkView;
+import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
+import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
 import edu.arizona.biosemantics.etcsite.client.content.help.HelpPlace;
 import edu.arizona.biosemantics.etcsite.client.top.ILoginTopView.Presenter;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 
-public class LoggedOutActivity extends AbstractActivity implements Presenter {
+public class LoggedOutActivity extends MyAbstractActivity implements Presenter {
 
-	private PlaceController placeController;
+	
 	private ILoginTopView loginTopView;
-	private IAuthenticationServiceAsync authenticationService;
 
 	@Inject
-	public LoggedOutActivity(ILoginTopView loginTopView, PlaceController placeController, 
-			IAuthenticationServiceAsync authenticationService) {
+	public LoggedOutActivity(ILoginTopView loginTopView, 
+			PlaceController placeController, 
+			IAuthenticationServiceAsync authenticationService, 
+			ILoginView.Presenter loginPresenter, 
+			IRegisterView.Presenter registerPresenter, 
+			IResetPasswordView.Presenter resetPasswordPresenter, 
+			IMessageOkView.Presenter messagePresenter) {
+		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter, messagePresenter);
 		this.loginTopView = loginTopView;
-		this.placeController = placeController;
-		this.authenticationService = authenticationService;
+		
 	}
 	
 	@Override
@@ -37,6 +45,7 @@ public class LoggedOutActivity extends AbstractActivity implements Presenter {
 					if(result.getResult()) {
 						placeController.goTo(new LoggedInPlace());
 					} else {
+						Authentication.getInstance().destroy(); //if this session is not valid, clear the authentication cookies.
 						setLoginView(panel);
 					}
 				}
@@ -58,17 +67,44 @@ public class LoggedOutActivity extends AbstractActivity implements Presenter {
 
 	@Override
 	public void onLogin() {
-		String username = loginTopView.getUser();
-		String password = loginTopView.getPassword();
-		authenticationService.login(username, password, new RPCCallback<AuthenticationResult>() {
+		if(Authentication.getInstance().isSet()) {
+			placeController.goTo(new LoggedInPlace());
+		} else {
+			showLoginWindow();
+		}
+	}
+	
+	@Override
+	public void onRegister() {
+		if(Authentication.getInstance().isSet()) {
+			placeController.goTo(new LoggedInPlace());
+		} else {
+			showRegisterWindow();
+		}
+	}
+
+	@Override
+	public void update() {}
+	
+	/*private void doGotoPlace(final HasTaskPlace gotoPlace, IHasTasksServiceAsync tasksService) {
+		tasksService.getLatestResumable(Authentication.getInstance().getToken(),
+				new RPCCallback<Task>() {
 			@Override
-			public void onResult(AuthenticationResult result) {
-				if(result.getResult()) {
-					Authentication.getInstance().setUsername(result.getUsername());
-					Authentication.getInstance().setSessionID(result.getSessionID());
-					placeController.goTo(new LoggedInPlace());
-				}
+			public void onResult(final Task task) {
+				if(task != null) 
+					messageConfirmPresenter.show( _ags
+						"Resumable Task", "You have a resumable task of this type", "Start new", "Resume", new IConfirmListener() {
+							public void onConfirm() {
+								gotoPlace.setTask(task);
+								placeController.goTo(gotoPlace);
+							}
+							public void onCancel() {
+								placeController.goTo(gotoPlace);
+							}
+						});
+				else 
+					placeController.goTo(gotoPlace);
 			}
 		});
-	}
+	}*/
 }

@@ -23,3 +23,4 @@ public class ReviewView extends SimpleLayoutPanel implements IReviewView {
 		this.presenter = presenter;
 	}	
 }
+
