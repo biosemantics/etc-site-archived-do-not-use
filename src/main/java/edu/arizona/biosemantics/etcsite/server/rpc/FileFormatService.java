@@ -28,6 +28,12 @@ public class FileFormatService extends RemoteServiceServlet implements IFileForm
 		}
 		return new RPCResult<Boolean>(false, fileContentResult.getMessage());
 	}
+	@Override
+	public RPCResult<Boolean> isValidTaxonDescriptionContent(AuthenticationToken authenticationToken, String fileContent) {
+			return new RPCResult<Boolean>(true, taxonDescriptionValidator.validate(fileContent));
+		
+	}
+	
 	
 	@Override
 	public RPCResult<Boolean> isValidMarkedupTaxonDescription(AuthenticationToken authenticationToken, String filePath) {		

@@ -59,7 +59,7 @@ public class MenuActivity extends AbstractActivity implements Presenter {
 			public void onResult(final Task task) {
 				if(task != null)
 					messageConfirmPresenter.show(
-						"Resumable Task", "You have a resumable task of this type", "Start new", "Resume", new IConfirmListener() {
+						"Resumable Task", "You have a resumable task of this type",  "Start new", "Resume", new IConfirmListener() {
 							public void onConfirm() {
 								placeController.goTo(resumeTaskPlaceMapper.getPlace(task));
 							}
@@ -81,7 +81,7 @@ public class MenuActivity extends AbstractActivity implements Presenter {
 			public void onResult(final Task task) {
 				if(task != null) 
 					messageConfirmPresenter.show(
-						"Resumable Task", "You have a resumable task of this type", "Start new", "Resume", new IConfirmListener() {
+						"Resumable Task", "You have a resumable task of this type", "Start new", "Resume",  new IConfirmListener() {
 							public void onConfirm() {
 								placeController.goTo(resumeTaskPlaceMapper.getPlace(task));
 							}

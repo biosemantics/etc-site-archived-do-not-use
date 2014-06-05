@@ -10,7 +10,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.Writer;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.IOUtils;
 
@@ -20,6 +29,7 @@ import edu.arizona.biosemantics.etcsite.shared.file.FileFormatter;
 import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFilePermissionService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 
@@ -27,7 +37,14 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 
 	private static final long serialVersionUID = 5956919724639140570L;
 	private IFilePermissionService filePermissionService = new FilePermissionService();
+	//private IFileFormatService fileFormatService = new FileFormatService();
 	
+	/**
+	 * if set successfully, message =""
+	 * else message = error
+	 * 
+	 * setFileContent assumes the content is valid to set for the file. format validation should be done before calling to setFileContent.
+	 */
 	@Override
 	public RPCResult<Void> setFileContent(AuthenticationToken authenticationToken, String filePath, String content) {
 		RPCResult<Boolean> permissionResult = filePermissionService.hasWritePermission(authenticationToken, filePath);
@@ -36,6 +53,14 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 		if(!permissionResult.getData()) 
 			return new RPCResult<Void>(false, "No permission");
 		
+		/*if(filetype==FileTypeEnum.TAXON_DESCRIPTION){
+			//validation
+			RPCResult<Boolean> validationResult = fileFormatService.isValidTaxonDescriptionContent(authenticationToken, content);	
+			if(!validationResult.getData().booleanValue()) return new RPCResult<Void>(false, "File content is not valid. Check it against the input schema");			
+		}else if(filetype==FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION){
+			RPCResult<Boolean> validationResult = fileFormatService.isValidMarkedupTaxonDescriptionContent(authenticationToken, content);	
+			if(!validationResult.getData().booleanValue()) return new RPCResult<Void>(false, "File content is not valid. Check it against the output schema");			
+		}*/
 		File file = new File(filePath);
 		if(file.exists() && file.isFile()) {
 			try {
@@ -43,7 +68,7 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 				writer.append(content);
 				writer.flush();
 				writer.close();
-				return new RPCResult<Void>(true);
+				return new RPCResult<Void>(true, "");
 			} catch (Exception e) {
 				e.printStackTrace();
 				return new RPCResult<Void>(false, "Internal Server Error");
@@ -72,13 +97,32 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 		        stringBuilder.append("\n");
 		    }
 			reader.close();
-		    return new RPCResult<String>(true, "", stringBuilder.toString());
+		    return new RPCResult<String>(true, "", prettyFormat(stringBuilder.toString()));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new RPCResult<String>(false, "Internal Server Error", "");
 		}
 	}
+	
 
+	private String prettyFormat(String input) {
+	    try {
+	        Source xmlInput = new StreamSource(new StringReader(input));
+	        StringWriter stringWriter = new StringWriter();
+	        StreamResult xmlOutput = new StreamResult(stringWriter);
+	        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+	        //transformerFactory.setAttribute("indent-number", indent);
+	        
+	        Transformer transformer = transformerFactory.newTransformer(); 
+	        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+	        transformer.transform(xmlInput, xmlOutput);
+	        return xmlOutput.getWriter().toString();
+	    } catch (Exception e) {
+	        e.printStackTrace(); // simple exception handling, please review it
+	        return input;
+	    }
+	}
 	@Override
 	public RPCResult<String> getFileContent(AuthenticationToken authenticationToken, String filePath, FileTypeEnum fileType) {		
 		RPCResult<String> fileContentResult = getFileContent(authenticationToken, filePath);

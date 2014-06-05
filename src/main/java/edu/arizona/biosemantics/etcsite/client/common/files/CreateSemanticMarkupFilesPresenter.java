@@ -12,13 +12,17 @@ import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView;
 import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView.IConfirmListener;
 import edu.arizona.biosemantics.etcsite.client.common.IMessageView;
 import edu.arizona.biosemantics.etcsite.client.common.ServerSetup;
+//import edu.arizona.biosemantics.etcsite.server.rpc.FileFormatService;
 import edu.arizona.biosemantics.etcsite.shared.file.FilePathShortener;
+import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.file.MyXmlWriter;
 import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.BracketChecker;
 import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.TaxonIdentificationEntry;
 import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModelFile;
 import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModelFileCreator;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ParallelRPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ParentRPCCallback;
@@ -30,6 +34,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	private ICreateSemanticMarkupFilesView view;
 	private IFileServiceAsync fileService;
 	private IFileAccessServiceAsync fileAccessService;
+	private IFileFormatServiceAsync fileFormatService;
 	private IMessageView.Presenter messagePresenter;
 	private IMessageConfirmView.Presenter messageConfirmPresenter;
 	private FilePathShortener filePathShortener = new FilePathShortener();
@@ -41,11 +46,12 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	
 	@Inject
 	public CreateSemanticMarkupFilesPresenter(ICreateSemanticMarkupFilesView view, IFileServiceAsync fileService, 
-			IFileAccessServiceAsync fileAccessService, IMessageView.Presenter messagePresenter, IMessageConfirmView.Presenter messageConfirmPresenter) {
+			IFileAccessServiceAsync fileAccessService, IFileFormatServiceAsync fileFormatService,  IMessageView.Presenter messagePresenter, IMessageConfirmView.Presenter messageConfirmPresenter) {
 		this.view = view;
 		view.setPresenter(this);
 		this.fileService = fileService;
 		this.fileAccessService = fileAccessService;
+		this.fileFormatService = fileFormatService;
 		this.messagePresenter = messagePresenter;
 		this.messageConfirmPresenter = messageConfirmPresenter;
 	}
@@ -62,21 +68,23 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	
 	private XmlModelFile createModelFile() {
 		StringBuilder textBuilder = new StringBuilder();
-		textBuilder.append("author: " + view.getAuthor() + "\n");
-		textBuilder.append("year: " + view.getYear() + "\n");
-		textBuilder.append("title: " + view.getTitleText() + "\n");
-		textBuilder.append("doi: " + view.getDOI() + "\n");
-		textBuilder.append("full citation: " + view.getFullCitation() + "\n");
+		textBuilder.append("author: " + view.getAuthor().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
+		textBuilder.append("year: " + view.getYear().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
+		textBuilder.append("title: " + view.getTitleText().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "").trim() + "\n");
+		textBuilder.append("doi: " + view.getDOI().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
+		textBuilder.append("full citation: " + view.getFullCitation().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
 		List<TaxonIdentificationEntry> taxonIdentificationEntries = view.getTaxonIdentificationEntries();
 		for(TaxonIdentificationEntry taxonIdentificationEntry : taxonIdentificationEntries) {
-			textBuilder.append(taxonIdentificationEntry.getRank() + ": " + taxonIdentificationEntry.getValue() + "\n");
+			textBuilder.append(taxonIdentificationEntry.getRank().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + " name: " + taxonIdentificationEntry.getValue().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
 		}
-		textBuilder.append("strain: " + view.getStrain() + "\n");
-		textBuilder.append("strain source: " + view.getStrainsSource() + "\n");
-		textBuilder.append("morphology: " + view.getMorphologicalDescription() + "\n");
-		textBuilder.append("habitat: " + view.getHabitatDescription() + "\n");
-		textBuilder.append("distribution: " + view.getDistributionDescription() + "\n");
-		textBuilder.append("phenology: " + view.getPhenologyDescription() + "\n");		
+		textBuilder.append("strain number: " + view.getStrainNumber().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
+		textBuilder.append("equivalent strain numbers: " + view.getEqStrainNumbers().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
+		textBuilder.append("accession number 16s rrna: " + view.getStrainAccession().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
+		
+		textBuilder.append("morphology: #" + view.getMorphologicalDescription().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "#\n");
+		textBuilder.append("habitat: #" + view.getHabitatDescription().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "#\n");
+		textBuilder.append("distribution: #" + view.getDistributionDescription().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "#\n");
+		textBuilder.append("phenology: #" + view.getPhenologyDescription().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "#\n");		
 		
 		XmlModelFile result = xmlModelFileCreator.createXmlModelFile(textBuilder.toString(), Authentication.getInstance().getUsername());
 		return result;
@@ -88,15 +96,19 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 			ParallelRPCCallback parallelRPCCallback = new ParallelRPCCallback<String>() {
 				@Override
 				public void onResult(final String data) {
-					// TODO validate
-					final String content = modelFile.getXML();
-					fileAccessService.setFileContent(Authentication.getInstance().getToken(), data, content, new RPCCallback<Void>() {
-						@Override
-						public void onResult(Void result) {
-							callSuperOnResult(data);
-						}
-					});
+					if(data.isEmpty()){
+						setFailure();
+					}else{
+						final String content = modelFile.getXML();
+						fileAccessService.setFileContent(Authentication.getInstance().getToken(), data, content, new RPCCallback<Void>() {
+							@Override
+							public void onResult(Void result) {
+								callSuperOnResult(data);
+							}
+						});
+					}
 				}
+
 				private void callSuperOnResult(String result) {
 					super.onResult(result);
 				}
@@ -107,20 +119,44 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 			@Override
 			protected void handleSuccess() {
 				StringBuilder messageBuilder = new StringBuilder();
+				int count = 0;
 				for(int i=0; i<modelFiles.size(); i++) {
-					messageBuilder.append("File " +
+					if(!this.getCallbackFailureState(i)){ 
+						messageBuilder.append("File " +
 							filePathShortener.shortenOwnedPath(
 									destinationFilePath + ServerSetup.getInstance().getSetup().getSeperator() + getCallbackData(i)) + " " +
 									"successfully created in " + filePathShortener.shortenOwnedPath(destinationFilePath) + "\n");
+					count++;
+					}
 				}
-				messagePresenter.showMessage("File created", messageBuilder.toString().replace("\n", "<br>"));
-				filesCreated += modelFiles.size();
+				if(count>0) {
+					messagePresenter.showMessage(count+" file(s) successfully created", messageBuilder.toString().replace("\n", "<br>"));
+					//filesCreated += modelFiles.size();
+					filesCreated += count;
+				}
+			}
+			@Override
+			protected void handleFailure() {
+				StringBuilder messageBuilder = new StringBuilder();
+				messageBuilder.append("Some of the files are not validated against the <a href='https://raw.githubusercontent.com/biosemantics/schemas/master/consolidation_01272014/semanticMarkupInput.xsd'>schema</a>.\n");
+				messageBuilder.append("These files were not created. Correct the input and try again:\n");
+				int count = 0;
+				for(int i=0; i<modelFiles.size(); i++) {
+					if(this.getCallbackFailureState(i)){ 
+					messageBuilder.append(modelFiles.get(i).getFileName().replaceFirst("\\.\\w+$", "").replaceAll("_", ",") +"\n");
+					count++;
+					}
+				}
+				if(count>0){
+					messagePresenter.showMessage(count+" file(s) not created", messageBuilder.toString().replace("\n", "<br>"));
+				}
 			}
 		};
 		
 		for(int i=0; i<modelFiles.size(); i++) {
 			XmlModelFile modelFile = modelFiles.get(i);
-			fileService.createFile(Authentication.getInstance().getToken(), destinationFilePath, modelFile.getFileName(), 
+			//create empty file if content is valid
+			fileService.createFile(Authentication.getInstance().getToken(), destinationFilePath, modelFile.getFileName(), modelFile.getXML(),
 					true, parallelRPCCallbacks.get(i));
 		}
 	}

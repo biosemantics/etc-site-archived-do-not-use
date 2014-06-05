@@ -2,12 +2,17 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
+		.leftMargin {
+  		 	margin-left: 20px;
+		}
 	</ui:style>
-	<g:VerticalPanel horizontalAlignment="ALIGN_RIGHT">
+	<g:VerticalPanel horizontalAlignment="ALIGN_CENTER">
 	    <g:HTML ui:field="messageHTML" />
 	    <g:HorizontalPanel>
-	        <g:Button ui:field="cancelButton">Cancel</g:Button>
 	        <g:Button ui:field="confirmButton">Confirm</g:Button>
+	         <g:FlowPanel styleName="{style.leftMargin}">
+	        <g:Button ui:field="cancelButton">Cancel</g:Button>
+	         </g:FlowPanel>      
 	    </g:HorizontalPanel>
 	</g:VerticalPanel>
 </ui:UiBinder> 

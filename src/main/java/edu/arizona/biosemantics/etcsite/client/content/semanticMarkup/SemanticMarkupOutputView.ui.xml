@@ -2,22 +2,39 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.semanticMarkup"
+	xmlns:my2="urn:import:edu.arizona.biosemantics.etcsite.client.common"
 	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout">
 	<ui:style>
 		.important {
 			font-weight: bold;
 		}
+		.padding{
+			padding-top: 10px;
+			padding-bottom:10px;
+		}
+		.subMenuEntry {
+			margin-left: 0px;
+			padding-top: 10px;
+			padding-bottom:10px;
+		}
 	</ui:style>
 	<lay:CenteredContentPanel>
-		<g:VerticalPanel>
-			<my:SubMenu ui:field="subMenu" step="OUTPUT"/>
-			<g:FlowPanel>
-			    <g:InlineLabel>Semantic Markup has completed. You can find the output files in&nbsp;</g:InlineLabel>
-			    <g:InlineLabel ui:field="outputLabel"></g:InlineLabel>
+		<g:VerticalPanel styleName="{style.padding}">
+			<g:HorizontalPanel>
+			    <my2:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.SemanticMarkupShort.gif" imageWidth="65px" imageHeight="20px" text="" />
+			    <my:SubMenu ui:field="subMenu" step="OUTPUT"/>
+			</g:HorizontalPanel>
+			
+			<g:VerticalPanel>
+			    <g:InlineLabel>Text Capture is complete.</g:InlineLabel>
+			    <g:FlowPanel styleName="{style.padding}">
+			    <g:InlineLabel>The output files are saved as&nbsp;</g:InlineLabel>
+			    <g:InlineLabel ui:field="outputLabel" styleName="{style.important}"></g:InlineLabel>
 			    <g:InlineLabel>&nbsp;in the&nbsp;</g:InlineLabel>
 			    <g:Anchor ui:field="fileManagerAnchor">File Manager</g:Anchor>
 			    <g:InlineLabel>.</g:InlineLabel>	    
-			</g:FlowPanel>
+			    </g:FlowPanel>
+			</g:VerticalPanel>
 		</g:VerticalPanel>	
 	</lay:CenteredContentPanel>
 </ui:UiBinder> 

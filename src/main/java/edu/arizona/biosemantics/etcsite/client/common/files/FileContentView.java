@@ -24,8 +24,14 @@ public class FileContentView extends Composite implements IFileContentView {
 	@UiField(provided=true)
 	ListBox formatListBox;
 	
+	//@UiField
+	//Button closeButton;
+	
 	@UiField
-	Button closeButton;
+	Button editButton;
+	
+	@UiField
+	Button saveButton;
 	
 	@UiField
 	TextArea textArea;
@@ -37,15 +43,24 @@ public class FileContentView extends Composite implements IFileContentView {
 		for(FileTypeEnum fileType : FileTypeEnum.values())
 			if(fileType.isViewable())
 				formatListBox.addItem(fileType.displayName());
-		
+
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 	
-	@UiHandler("closeButton")
+	/*@UiHandler("closeButton")
 	public void onClose(ClickEvent event) {
 		presenter.onClose();
+	}*/
+	
+	@UiHandler("editButton")
+	public void onEdit(ClickEvent event) {
+		presenter.onEdit();
 	}
 	
+	@UiHandler("saveButton")
+	public void onSave(ClickEvent event){
+		presenter.onSave();
+	}
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
@@ -62,8 +77,16 @@ public class FileContentView extends Composite implements IFileContentView {
 	}
 
 	@Override
+	public void setEditable(boolean enabled){
+		this.textArea.setEnabled(enabled);
+	}
+	@Override
 	public void setText(String text) {
 		this.textArea.setText(text);
 	}
-
+	
+	@Override
+	public String getText() {
+		return this.textArea.getText();
+	}
 }

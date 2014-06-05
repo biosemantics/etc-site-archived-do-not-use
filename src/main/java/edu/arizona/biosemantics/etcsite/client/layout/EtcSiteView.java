@@ -1,5 +1,9 @@
 package edu.arizona.biosemantics.etcsite.client.layout;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.MouseEvent;
@@ -11,18 +15,16 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.MouseListener;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-
-import edu.arizona.biosemantics.etcsite.client.menu.IMenuView;
-import edu.arizona.biosemantics.etcsite.client.menu.MenuView;
+import com.sencha.gxt.widget.core.client.Composite;
 
 public class EtcSiteView extends Composite implements IEtcSiteView {
 
@@ -38,7 +40,7 @@ public class EtcSiteView extends Composite implements IEtcSiteView {
 	SimplePanel menuPanel;
 	
 	@UiField
-	FocusPanel contentPanel;
+	SimpleLayoutPanel contentPanel;
 
 	@UiField
 	DockLayoutPanel dockLayoutPanel;
@@ -46,15 +48,15 @@ public class EtcSiteView extends Composite implements IEtcSiteView {
 	@UiField
 	FocusPanel headerPanel;
 	
-	@UiField
-	ScrollPanel contentScrollPanel;
+	//@UiField
+	//ScrollPanel contentScrollPanel;
 	
 	private Presenter presenter;
 	
 	public EtcSiteView() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
-	
+
 	@Override
 	public void setTop(IsWidget content) {
 		topPanel.setWidget(content);
@@ -76,7 +78,7 @@ public class EtcSiteView extends Composite implements IEtcSiteView {
 	}
 
 	@Override
-	public SimplePanel getContentContainer() {
+	public SimpleLayoutPanel getContentContainer() {
 		return this.contentPanel;
 	}
 
@@ -111,6 +113,11 @@ public class EtcSiteView extends Composite implements IEtcSiteView {
 	/**
 	 * Necessary, in case mouse leaves menu via browser menu and comes back to content without crossing the menu again 
 	 * e.g. dual-screen can move mouse around
+	 * 
+	 * Update: Had to change ContentPanel to be a SimpleLayoutPanel (for ProvidesResize, RequiresResize)
+	 * If mouse action handling is required at a later stage again a CustomPanel extends SimpleLayoutPanel needs to be created with the functionality
+	 * from the FocusPanel source needed for mouse action handling
+	 * 
 	 * @param event
 	 */
 	/*@UiHandler("contentPanel") 

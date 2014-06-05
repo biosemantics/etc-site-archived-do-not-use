@@ -1,5 +1,6 @@
 package edu.arizona.biosemantics.etcsite.client.common;
 
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 import com.google.inject.Inject;
 
@@ -24,7 +25,7 @@ public class MessageConfirmPresenter implements IMessageConfirmView.Presenter {
 	public void show(String title, String message, String cancelText, String confirmText,
 			IConfirmListener listener) {
 		this.currentListener = listener;
-		dialogBox.setTitle(title);
+		dialogBox.setText(title);
 		view.setHtmlMessage(message);
 		view.setConfirmText(confirmText);
 		view.setCancelText(cancelText);
@@ -34,7 +35,7 @@ public class MessageConfirmPresenter implements IMessageConfirmView.Presenter {
 	@Override
 	public void show(String title, String message, IConfirmListener listener) {
 		this.currentListener = listener;
-		dialogBox.setTitle(title);
+		dialogBox.setText(title);
 		view.setHtmlMessage(message);
 		dialogBox.center();
 	}

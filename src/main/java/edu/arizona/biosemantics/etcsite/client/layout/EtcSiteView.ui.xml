@@ -1,104 +1,124 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" 
+	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.common"
+	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container">
+	<!-- xmlns:ma="urn:import:edu.arizona.biosemantics.matrixreview.client" -->
 	<ui:style>
 		.headerPanel {
-			/*display: none; only for while loading*/
-			/*background-color:green; */
+		/*display: none; only for while loading*/
+		/*background-color:green; */
 		}
 		.top {
-			/*background-image: url(images/Header.gif); */
-   			background-size: 100% 100%;
-    		/* width: 100%; */
-    		height: 30px;
+		/*background-image: url(images/Header.gif); */
+		background-size: 100% 100%;
+		/* width: 100%; */
+		height: 30px;
 		}
 		.etcLogo {
-    		background-image: url('images/ETCLogo.gif');
-    		background-size: 100% 100%;
-    		height: 73px;
-			width: 500px;
-			position: absolute;
-    		top: 50px;
-    		left: 50%;
-    		margin-left: -250px;
+		background-image: url('images/ETCLogo.gif');
+		background-size: 100% 100%;
+		height: 73px;
+		width: 500px;
+		position: absolute;
+		top: 50px;
+		left: 50%;
+		margin-left: -250px;
 		}
 		.menu {
 
 		}
 
 		.scrollPanel {
-		
+
 		}
-				
+
 		.contentPanel {
-			margin-top:20px;
+		margin-top:20px;
 		}
 
 		.footerPanel {
-			background-image:url('images/Footer.gif'); 
-			background-size: 100% 100%; 
-			width: 100%; 
-			height:80px;
+		background-image:url('images/Footer.gif');
+		background-size: 100% 100%;
+		width: 100%;
+		height:80px;
 		}
 		.footerText {
-			position:absolute;
-			left:50%;
-			margin-left: -450px;
-			top:10px;
+		position:absolute;
+		left:50%;
+		margin-left: -450px;
+		top:10px;
 		}
 		.collaboratorsText {
-			position:absolute; 
-			top: 25px; 
-			left:50%; 
-			margin-left: -120px;
+		position:absolute;
+		top: 25px;
+		left:50%;
+		margin-left: -120px;
 		}
 		.footerLogo1 {
-			background-image:url('images/CharaparserLogo.gif'); 
-			background-size: 100% 100%; 
-			width: 254px; 
-			height: 54px; 
-			position:absolute; 
-			top:5px; 
-			left:50%; 
-			margin-left: -30px;
+		background-image:url('images/CharaparserLogo.gif');
+		background-size: 100% 100%;
+		width: 254px;
+		height: 54px;
+		position:absolute;
+		top:5px;
+		left:50%;
+		margin-left: -30px;
 		}
 		.footerLogo2 {
-			background-image:url('images/CharaparserLogo.gif'); 
-			background-size: 100% 100%; 
-			width: 254px; 
-			height: 54px; 
-			position:absolute;
-			top:5px; 
-			left:50%; 
-			margin-left: 210px;
+		background-image:url('images/CharaparserLogo.gif');
+		background-size: 100% 100%;
+		width: 254px;
+		height: 54px;
+		position:absolute;
+		top:5px;
+		left:50%;
+		margin-left: 210px;
 		}
 	</ui:style>
-	
-	 <g:DockLayoutPanel unit='PX' ui:field='dockLayoutPanel'>
-		   <g:north size='163'>
-		     	<!-- FocusPanel for mouse events to animate menu, HTMLPanel doesn't support those -->   
-                <g:FocusPanel styleName="{style.headerPanel}" ui:field="headerPanel">
-                	<!-- HTMLPanel for multiple child widgets html-like layed out -->
-	                <g:HTMLPanel>
-						<g:SimplePanel styleName="{style.top}" ui:field="topPanel"></g:SimplePanel>
-						<g:SimplePanel styleName="{style.menu}" ui:field="menuPanel"></g:SimplePanel>
-	                </g:HTMLPanel>
-                </g:FocusPanel>
-		   </g:north>
-		   <g:center>
-		     	<!--  content widget will be added to contentPanel -->
-		     	<g:ScrollPanel styleName="{style.scrollPanel}" ui:field="contentScrollPanel">
-		     		<g:FocusPanel styleName="{style.contentPanel}" ui:field="contentPanel"></g:FocusPanel>
-                </g:ScrollPanel>
-		   </g:center>
-		   <g:south size='0'>
-		     	<!--  the footer in a simple panel -->
-		        <g:HTMLPanel styleName="{style.footerPanel}">
-                   	<div class="{style.footerText}">School of Information Resources and Library Science<br/>1515 East First Street<br/>Tucson, AZ 85719</div>
-                    <div class="{style.collaboratorsText}">Collaborators:</div>
-                    <div class="{style.footerLogo1}"></div>
-                    <div class="{style.footerLogo2}"></div>
-                </g:HTMLPanel>
-		   </g:south>
-	 </g:DockLayoutPanel>
+
+	<g:DockLayoutPanel unit='PX' ui:field='dockLayoutPanel'>
+		<g:north size='163'>
+			<!-- FocusPanel for mouse events to animate menu, HTMLPanel doesn't support 
+				those -->
+			<g:FocusPanel styleName="{style.headerPanel}" ui:field="headerPanel">
+				<!-- HTMLPanel for multiple child widgets html-like layed out -->
+				<g:HTMLPanel>
+					<g:SimplePanel styleName="{style.top}" ui:field="topPanel"></g:SimplePanel>
+					<g:SimplePanel styleName="{style.menu}" ui:field="menuPanel"></g:SimplePanel>
+				</g:HTMLPanel>
+			</g:FocusPanel>
+		</g:north>
+		<g:center>
+			<!-- content widget will be added to contentPanel -->
+			<!-- Since the integration of MatrixReviewView (GXT-based), ScrollPanel can't be inserted at this location anymore because it 
+			break the sizing of the grid. 
+			Appears to be somewhat related to: 
+			- http://www.sencha.com/forum/showthread.php?264676-Sizing-issues-using-GXT-widgets-in-existing-GWT-code-base 
+			- http://stackoverflow.com/questions/15283402/gxt-grid-in-contentpanel-messes-up-borderlayout
+			
+			Because of this, each content widget is itself responsible to wrap itself in a scrollpanel if necessary
+			-->
+			<!-- <g:ScrollPanel styleName="{style.scrollPanel}" ui:field="contentScrollPanel"> -->
+			<g:SimpleLayoutPanel styleName="{style.contentPanel}" ui:field="contentPanel">
+				<!-- <ma:MatrixReviewView ui:field="matrix"></ma:MatrixReviewView> -->
+			</g:SimpleLayoutPanel>
+			<!-- </g:ScrollPanel> -->
+		</g:center>
+		<g:south size='0'>
+			<!-- the footer in a simple panel -->
+			<g:HTMLPanel styleName="{style.footerPanel}">
+				<div class="{style.footerText}">
+					School of Information Resources and Library Science
+					<br />
+					1515 East First Street
+					<br />
+					Tucson, AZ 85719
+				</div>
+				<div class="{style.collaboratorsText}">Collaborators:</div>
+				<div class="{style.footerLogo1}"></div>
+				<div class="{style.footerLogo2}"></div>
+			</g:HTMLPanel>
+		</g:south>
+	</g:DockLayoutPanel>
 </ui:UiBinder> 

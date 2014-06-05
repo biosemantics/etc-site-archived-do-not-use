@@ -7,6 +7,8 @@ import com.google.gwt.activity.shared.MyActivityMapper;
 import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 
+import edu.arizona.biosemantics.etcsite.client.content.about.AboutActivity;
+import edu.arizona.biosemantics.etcsite.client.content.about.AboutPlace;
 import edu.arizona.biosemantics.etcsite.client.content.annotationReview.AnnotationReviewActivity;
 import edu.arizona.biosemantics.etcsite.client.content.annotationReview.AnnotationReviewPlace;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerActivity;
@@ -17,6 +19,8 @@ import edu.arizona.biosemantics.etcsite.client.content.home.HomeActivity;
 import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationActivity;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationPlace;
+import edu.arizona.biosemantics.etcsite.client.content.news.NewsActivity;
+import edu.arizona.biosemantics.etcsite.client.content.news.NewsPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupActivity;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupPlace;
 import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsActivity;
@@ -29,6 +33,8 @@ public class ContentActivityMapper implements MyActivityMapper {
 
 	private HelpActivity helpActivity;
 	private HomeActivity homeActivity;
+	private NewsActivity newsActivity;
+	private AboutActivity aboutActivity;
 	private SettingsActivity settingsActivity;
 	private TaskManagerActivity taskManagerActivity;
 	private FileManagerActivity fileManagerActivity;
@@ -39,12 +45,14 @@ public class ContentActivityMapper implements MyActivityMapper {
 	private MyActivity currentActivity;
 
 	@Inject
-	public ContentActivityMapper(HelpActivity helpActivity, HomeActivity homeActivity, SettingsActivity settingsActivity, TaskManagerActivity taskManagerActivity,
+	public ContentActivityMapper(HelpActivity helpActivity, HomeActivity homeActivity, AboutActivity aboutActivity, NewsActivity newsActivity, SettingsActivity settingsActivity, TaskManagerActivity taskManagerActivity,
 			FileManagerActivity fileManagerActivity, SemanticMarkupActivity semanticMarkupActivity, MatrixGenerationActivity matrixGenerationActivity, 
 			AnnotationReviewActivity annotationReviewActivity) {
 		super();
 		this.helpActivity = helpActivity;
 		this.homeActivity = homeActivity;
+		this.aboutActivity = aboutActivity;
+		this.newsActivity = newsActivity;
 		this.settingsActivity = settingsActivity;
 		this.taskManagerActivity = taskManagerActivity;
 		this.fileManagerActivity = fileManagerActivity;
@@ -64,6 +72,10 @@ public class ContentActivityMapper implements MyActivityMapper {
 			currentActivity = settingsActivity;
 		if(place instanceof HelpPlace)
 			currentActivity = helpActivity;
+		if(place instanceof AboutPlace)
+			currentActivity = aboutActivity;
+		if(place instanceof NewsPlace)
+			currentActivity = newsActivity;
 		if(place instanceof LoggedOutPlace)
 			currentActivity = homeActivity;
 		if(place instanceof TaskManagerPlace)

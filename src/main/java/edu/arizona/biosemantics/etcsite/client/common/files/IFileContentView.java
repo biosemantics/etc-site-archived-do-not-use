@@ -7,10 +7,11 @@ public interface IFileContentView extends IsWidget {
 	public interface Presenter {
 
 		void onClose();
-
+		void onSave();
 		void onFormatChange(String format);
 
 		void show(String filePath);
+		void onEdit();
 		
 	}
 
@@ -19,6 +20,10 @@ public interface IFileContentView extends IsWidget {
 	void setText(String result);
 
 	void setPresenter(Presenter presenter);
+
+	void setEditable(boolean enabled);
+
+	String getText();
 	
 	
 	

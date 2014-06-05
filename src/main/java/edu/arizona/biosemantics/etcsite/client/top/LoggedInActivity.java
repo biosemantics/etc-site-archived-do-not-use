@@ -12,9 +12,11 @@ import com.google.web.bindery.event.shared.EventBus;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.IMessageOkView;
+import edu.arizona.biosemantics.etcsite.client.content.about.AboutPlace;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerPlace;
 import edu.arizona.biosemantics.etcsite.client.content.help.HelpPlace;
 import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
+import edu.arizona.biosemantics.etcsite.client.content.news.NewsPlace;
 import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.ResumableTasksEvent;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
@@ -106,6 +108,16 @@ public class LoggedInActivity implements Activity, Presenter, Authentication.Cha
 	@Override
 	public void onHome() {
 		placeController.goTo(new HomePlace());
+	}
+	
+	@Override
+	public void onAbout() {
+		placeController.goTo(new AboutPlace());
+	}
+	
+	@Override
+	public void onNews() {
+		placeController.goTo(new NewsPlace());
 	}
 
 	@Override

@@ -13,6 +13,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
+import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
@@ -43,11 +45,14 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	@UiField
 	TextBox title;
 	
-	//@UiField
-	//TextBox strain;
+	@UiField
+	TextBox strain;
 	
-	//@UiField
-	//TextBox strainSource;
+	@UiField
+	TextBox equivalStrain;
+	
+	@UiField
+	TextBox strainAccession;
 	
 	@UiField
 	TextArea morphologicalDescription;
@@ -67,8 +72,11 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	@UiField
 	Grid ranksGrid;
 	
+	//@UiField
+	//ListBox ranksList;
+	
 	@UiField
-	ListBox ranksList;
+	SuggestBox ranksList;
 	
 	@UiField
 	Button addRankButton;
@@ -85,12 +93,65 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	private ICreateSemanticMarkupFilesView.Presenter presenter;
 
 	public CreateSemanticMarkupFilesView() {
+		ranksList = initRanksListBox();
 		initWidget(uiBinder.createAndBindUi(this));
 		tabPanel.selectTab(0);
-		initRanksListBox(ranksList);
+		//initRanksListBox(ranksList);
+		//ranksList = initRanksListBox();
 	}
 
-	private ListBox initRanksListBox(ListBox ranksList) {
+	private SuggestBox initRanksListBox() {
+		//reference http://en.wikipedia.org/wiki/Taxonomic_rank
+		MultiWordSuggestOracle ranks = new MultiWordSuggestOracle();
+		ranks.add("domain");
+		ranks.add("subdomain");
+		ranks.add("superkingdom");
+		ranks.add("kingdom");
+		ranks.add("subkingdom");
+		ranks.add("superphylum");
+		ranks.add("phylum");
+		ranks.add("subphylum");
+		ranks.add("superdivision");
+		ranks.add("division");
+		ranks.add("subdivision");
+		ranks.add("superclass");
+		ranks.add("class");
+		ranks.add("subclass");
+		ranks.add("superorder");
+		ranks.add("order");
+		ranks.add("suborder");
+		ranks.add("superfamily");
+		ranks.add("family");
+		ranks.add("subfamily");
+		ranks.add("supertribe");
+		ranks.add("tribe");
+		ranks.add("subtribe");
+		ranks.add("supergenus");
+		ranks.add("genus");
+		ranks.add("subgenus");
+		ranks.add("supersection");
+		ranks.add("section");
+		ranks.add("subsection");
+		ranks.add("superseries");
+		ranks.add("series");
+		ranks.add("subseries");
+		ranks.add("superseries");
+		ranks.add("species group");
+		ranks.add("species subgroup");
+		ranks.add("species complex");
+		ranks.add("superspecies");
+		ranks.add("species");
+		ranks.add("subspecies");
+		ranks.add("supervariety");
+		ranks.add("variety");
+		ranks.add("subvariety");
+		ranks.add("superforma");
+		ranks.add("forma");
+		ranks.add("subforma");
+		ranks.add("unranked");
+		return new SuggestBox(ranks);
+		/*ranksList.addItem("class");
+		ranksList.addItem("subclass");
 		ranksList.addItem("order");
 		ranksList.addItem("suborder");
 		ranksList.addItem("superfamily");
@@ -106,24 +167,27 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		ranksList.addItem("species");
 		ranksList.addItem("subspecies");
 		ranksList.addItem("variety");
+		ranksList.addItem("subvarietas");
 		ranksList.addItem("forma");
-		ranksList.addItem("unranked");
-		return ranksList;
+		ranksList.addItem("subforma");
+		ranksList.addItem("unranked");*/
+		//return ranksList;
 	}
 
 	@UiHandler("addRankButton")
 	public void onAddRank(ClickEvent event) {
 		int newrow = ranksGrid.insertRow(ranksGrid.getRowCount() - 1);
-		ListBox ranksBox = new ListBox();
-		initRanksListBox(ranksBox);
-		if(newrow > 0)  {
+		//ListBox ranksBox = new ListBox();
+		//initRanksListBox(ranksBox);
+		SuggestBox ranksBox = initRanksListBox();
+		/*if(newrow > 0)  {
 			Widget widget = ranksGrid.getWidget(newrow -1, 0);
 			if(widget instanceof ListBox) {
 				ListBox previousRanksBox = (ListBox)widget;
 				if(previousRanksBox.getSelectedIndex() < ranksBox.getItemCount() - 1)
 					ranksBox.setItemSelected(previousRanksBox.getSelectedIndex() + 1, true);
 			}
-		}
+		}*/
 		ranksGrid.setWidget(newrow, 0, ranksBox);
 		ranksGrid.setWidget(newrow, 1, new TextBox());
 	}
@@ -145,24 +209,26 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		return title.getText().trim();
 	}
 	
-	public String getStrain() {
-		return "";
-		//return strain.getText().trim();
+	public String getStrainNumber() {
+		return strain.getText().trim();
 	}
 	
-	public String getStrainsSource() {
-		return "";
-		//return strainSource.getText().trim();
+	public String getEqStrainNumbers() {
+		return equivalStrain.getText().trim();
 	}
 
+	public String getStrainAccession() {
+		return strainAccession.getText().trim();
+	}
 	public List<TaxonIdentificationEntry> getTaxonIdentificationEntries() {
 		List<TaxonIdentificationEntry> result = new LinkedList<TaxonIdentificationEntry>();
 		for(int i = 1; i < ranksGrid.getRowCount() - 1; i++){ //row 0 is the header row, also there is a button at the end of table
 			Widget rankWidget = ranksGrid.getWidget(i, 0);
 			Widget valueWidget = ranksGrid.getWidget(i, 1);
-			if(rankWidget instanceof ListBox && valueWidget instanceof TextBox) { 
-				ListBox rankBox = (ListBox)rankWidget;
-				String rank = rankBox.getItemText(rankBox.getSelectedIndex());
+			if(rankWidget instanceof SuggestBox && valueWidget instanceof TextBox) { 
+				SuggestBox rankBox = (SuggestBox)rankWidget;
+				//String rank = rankBox.getItemText(rankBox.getSelectedIndex());
+				String rank = rankBox.getText();
 				
 				TextBox valueBox = (TextBox)valueWidget;
 				String value = valueBox.getText().trim();

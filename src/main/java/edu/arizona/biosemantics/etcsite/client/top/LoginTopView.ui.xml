@@ -74,7 +74,7 @@
 	</ui:style>
 	<g:HTMLPanel>
 		<div class="{style.helpIcon} {style.clickable}">
-			<my:ImageLabel imagePath="images/Help.gif" imageWidth="20px" imageHeight="20px" text="Video Tutorial" ui:field="help"></my:ImageLabel>
+			<my:ImageLabel imagePath="images/Help.gif" imageWidth="20px" imageHeight="20px" text="How to start" ui:field="help"></my:ImageLabel>
 		</div>
 		<div class="{style.loginText} {style.clickable}">
 			<g:Label text="Sign in" ui:field="loginLabel"></g:Label>

@@ -80,7 +80,7 @@ public class MyUploaderConstants implements IUploader.UploaderConstants  {
 	@Override
 	@DefaultStringValue("Choose a file to upload ...")
 	public String uploaderBrowse() {
-		return "Add files";
+		return "Upload Files";
 	}
 
 	@Override

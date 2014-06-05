@@ -24,7 +24,7 @@ public interface IFileServiceAsync {
 
 	public void getDirectoriesFiles(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<List<String>>> callback);
 
-	public void createFile(AuthenticationToken authenticationToken, String directory, String idealFileName, boolean force, AsyncCallback<RPCResult<String>> callback);
+	public void createFile(AuthenticationToken authenticationToken, String directory, String idealFileName, String content, boolean force, AsyncCallback<RPCResult<String>> callback);
 
 	public void getDepth(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<Integer>> asyncCallback);
 
