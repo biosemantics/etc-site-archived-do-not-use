@@ -1,9 +1,7 @@
 package edu.arizona.biosemantics.etcsite.client.content.home;
 
-import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.activity.shared.MyAbstractActivity;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
@@ -12,8 +10,9 @@ import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.HasTaskPlace;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView;
-import edu.arizona.biosemantics.etcsite.client.common.ILoginView.ILoginListener;
-import edu.arizona.biosemantics.etcsite.client.common.ILoginView.Presenter;
+import edu.arizona.biosemantics.etcsite.client.common.IMessageOkView;
+import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
+import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
 import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView.IConfirmListener;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.pipeline.PipelinePlace;
@@ -25,6 +24,7 @@ import edu.arizona.biosemantics.etcsite.client.content.visualization.Visualizati
 import edu.arizona.biosemantics.etcsite.client.menu.IStartMenuView;
 import edu.arizona.biosemantics.etcsite.client.top.LoggedInPlace;
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
+import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IPipelineServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ITaxonomyComparisonServiceAsync;
@@ -36,9 +36,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarku
 
 public class HomeActivity extends MyAbstractActivity implements IStartMenuView.Presenter, IHomeContentView.Presenter {
 
-    private PlaceController placeController;
 	private IHomeContentView homeContentView;
-	private Presenter loginPresenter;
 	private ISemanticMarkupServiceAsync semanticMarkupService;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
 	private IMessageConfirmView.Presenter messageConfirmPresenter;
@@ -49,7 +47,7 @@ public class HomeActivity extends MyAbstractActivity implements IStartMenuView.P
 	private IPipelineServiceAsync pipelineService;
 
 	@Inject
-	public HomeActivity(IHomeContentView homeContentView, PlaceController placeController, ILoginView.Presenter loginPresenter, 
+	public HomeActivity(IHomeContentView homeContentView, 
 			ISemanticMarkupServiceAsync semanticMarkupService,
 			IMatrixGenerationServiceAsync matrixGenerationService,
 			ITaxonomyComparisonServiceAsync taxonomyComparisonService,
@@ -57,10 +55,15 @@ public class HomeActivity extends MyAbstractActivity implements IStartMenuView.P
 			IVisualizationServiceAsync visualizationService,
 			IPipelineServiceAsync pipelineService,
 			IMessageConfirmView.Presenter messageConfirmPresenter, 
-			ResumeTaskPlaceMapper resumeTaskPlaceMapper) {
+			ResumeTaskPlaceMapper resumeTaskPlaceMapper, 
+			PlaceController placeController,
+			IAuthenticationServiceAsync authenticationService, 
+			ILoginView.Presenter loginPresenter, 
+			IRegisterView.Presenter registerPresenter, 
+			IResetPasswordView.Presenter resetPasswordPresenter, 
+			IMessageOkView.Presenter messagePresenter) {
+		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter, messagePresenter);
 		this.homeContentView = homeContentView;
-    	this.placeController = placeController;
-    	this.loginPresenter = loginPresenter;
 		this.semanticMarkupService = semanticMarkupService;
 		this.matrixGenerationService = matrixGenerationService;
 		this.taxonomyComparisonService = taxonomyComparisonService;
@@ -79,50 +82,49 @@ public class HomeActivity extends MyAbstractActivity implements IStartMenuView.P
 
 	@Override
 	public void onMatrixGeneration() {		
-		checkLogin(new MatrixGenerationInputPlace(), matrixGenerationService);
+		tryGotoPlace(new MatrixGenerationInputPlace(), matrixGenerationService);
 	}
 
 	@Override
 	public void onSemanticMarkup() {
-		checkLogin(new SemanticMarkupInputPlace(), semanticMarkupService);
+		tryGotoPlace(new SemanticMarkupInputPlace(), semanticMarkupService);
 	}
 
 	@Override
 	public void onTaxonomyComparison() {
-		checkLogin(new TaxonomyComparisonPlace(), taxonomyComparisonService);
+		tryGotoPlace(new TaxonomyComparisonPlace(), taxonomyComparisonService);
 	}
 
 	@Override
 	public void onVisualization() {
-		checkLogin(new VisualizationPlace(), visualizationService);
+		tryGotoPlace(new VisualizationPlace(), visualizationService);
 	}
 
 	@Override
 	public void onPipeline() {
-		checkLogin(new PipelinePlace(), pipelineService);
+		tryGotoPlace(new PipelinePlace(), pipelineService);
 	}
 
 	@Override
 	public void onTreeGeneration() {
-		checkLogin(new TreeGenerationPlace(), treeGenerationService);
+		tryGotoPlace(new TreeGenerationPlace(), treeGenerationService);
 	}
 	
-	private void checkLogin(final HasTaskPlace gotoPlace, final IHasTasksServiceAsync tasksService) {
-		if(Authentication.getInstance().isSet()) {
-			placeController.goTo(new LoggedInPlace());
-			this.doGotoPlace(gotoPlace, tasksService);
-		} else {
-			loginPresenter.show(new ILoginListener() {
-				@Override
-				public void onLogin() {
-					placeController.goTo(new LoggedInPlace());
-					HomeActivity.this.doGotoPlace(gotoPlace, tasksService);
-				}
-				@Override
-				public void onLoginFailure() {
-				}
-			});
-		}
+	private void tryGotoPlace(final HasTaskPlace gotoPlace, final IHasTasksServiceAsync tasksService) {
+		requireLogin(new LoggedInListener() {
+			@Override
+			public void onLoggedIn() {
+				//when the user is logged in, go to the task place. 
+				placeController.goTo(new LoggedInPlace());
+				HomeActivity.this.doGotoPlace(gotoPlace, tasksService);
+			}
+
+			@Override
+			public void onCancel() {
+				//if the user cancels login, do nothing. 
+			}
+
+		});
 	}
 	
 	private void doGotoPlace(final HasTaskPlace gotoPlace, IHasTasksServiceAsync tasksService) {
@@ -130,7 +132,7 @@ public class HomeActivity extends MyAbstractActivity implements IStartMenuView.P
 				new RPCCallback<Task>() {
 			@Override
 			public void onResult(final Task task) {
-				if(task != null) 
+				if(task != null) {
 					messageConfirmPresenter.show(
 						"Resumable Task", "You have a resumable task of this type", "Start new", "Resume", new IConfirmListener() {
 							public void onConfirm() {
@@ -141,8 +143,10 @@ public class HomeActivity extends MyAbstractActivity implements IStartMenuView.P
 								placeController.goTo(gotoPlace);
 							}
 						});
-				else 
+				}
+				else {
 					placeController.goTo(gotoPlace);
+				}
 			}
 		});
 	}

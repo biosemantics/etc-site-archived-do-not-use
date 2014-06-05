@@ -2,6 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.semanticMarkup"
+	xmlns:my2="urn:import:edu.arizona.biosemantics.etcsite.client.common"
 	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout">
 	<ui:style>
 		.otoFrame {
@@ -9,13 +10,19 @@
 			width:	900px;
 			height: 500px;
 		}
+		.subMenuEntry {
+			margin-left: 0px;
+			padding-top: 10px;
+			padding-bottom:10px;
+		}
 	</ui:style>
 	<lay:CenteredContentPanel>
 		<g:VerticalPanel>
-		    <my:SubMenu ui:field="subMenu" step="REVIEW_TERMS"/>
-			<g:Label>Please review the terms we learned. 
-			You can select terms in the left column and drag them into the categories on the 
-			right hand side.
+		    <g:HorizontalPanel>
+			    <my2:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.SemanticMarkupShort.gif" imageWidth="65px" imageHeight="20px" text="" />
+			    <my:SubMenu ui:field="subMenu" step="REVIEW_TERMS"/>
+			</g:HorizontalPanel>
+			<g:Label>Please review the terms learned. Select terms in the left column and drag them into appropriate categories.
 			</g:Label>
 			<g:Frame ui:field="frame" styleName="{style.otoFrame}">
 			</g:Frame>

@@ -34,9 +34,11 @@ public interface ICreateSemanticMarkupFilesView extends IsWidget {
 
 	List<TaxonIdentificationEntry> getTaxonIdentificationEntries();
 
-	String getStrain();
+	String getStrainNumber(); 
+	
+	String getEqStrainNumbers(); 
 
-	String getStrainsSource();
+	String getStrainAccession(); 
 
 	String getMorphologicalDescription();
 

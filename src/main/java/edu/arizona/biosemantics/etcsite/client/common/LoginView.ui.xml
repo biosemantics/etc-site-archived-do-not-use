@@ -2,20 +2,54 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
+		.clickable {
+			cursor: pointer;
+		}
 	</ui:style>
-	<g:VerticalPanel>
-	 	<g:Label>You have to login to use this functionality</g:Label>
-	    <g:HorizontalPanel>
-	        <g:Label>Username:</g:Label>
-	        <g:TextBox ui:field="usernameTextBox"></g:TextBox>
-	    </g:HorizontalPanel>
-	    <g:HorizontalPanel>
-	        <g:Label>Password:</g:Label>
-	        <g:TextBox ui:field="passwordTextBox"></g:TextBox>
-	    </g:HorizontalPanel>
-	    <g:HorizontalPanel>
-	        <g:Button ui:field="cancelButton">Cancel</g:Button>
-			<g:Button ui:field="loginButton">Login</g:Button>
-	    </g:HorizontalPanel>
-	</g:VerticalPanel>
+	<g:HTMLPanel>
+		<div align="center" style="padding:7px"> 
+			<g:Label ui:field="headerLabel"></g:Label>
+		</div>
+		
+		<hr width="90%" noshade="noshade"></hr>
+		
+		<table style="padding:15px; margin:15px, width:100%; 100%">
+			<tr>
+				<td><g:Label>Email: </g:Label></td>
+				<td><g:TextBox ui:field="usernameTextBox" ></g:TextBox></td>
+			</tr>
+
+			<tr>
+				<td><g:Label>Password: </g:Label></td>
+				<td><g:PasswordTextBox ui:field="passwordTextBox"></g:PasswordTextBox></td>
+				
+			</tr>
+		</table>
+		<table align="center" style="padding:10px; width:100%; height:100%">
+				<tr style = "position:absolute; right:45px; top:134px">
+					<td><div>
+						<g:Button ui:field="loginButton">Sign in</g:Button>
+					</div></td>
+				</tr>
+		</table>
+		
+		<br></br>
+		<hr width="90%" noshade="noshade"></hr>
+		
+		<!-- <div align="center" class="{style.clickable}"><g:Label ui:field="resetPasswordLabel">Forgot your password? Click here.</g:Label></div> -->
+		
+		<table align="center" style="padding:5px; width:100%; 100%">
+			<tr align="center">
+				<td><g:Label>Don't have an account?</g:Label></td>
+				<td><div class="{style.clickable}"><g:Label text="Click here to sign up." ui:field="registerLabel"></g:Label></div></td></tr>
+			<tr><g:Label></g:Label></tr>
+		</table>
+		<!-- <table align="center" style="padding:5px; width:100%; 100%">
+				<tr align="center" ><td><g:Label>or </g:Label></td></tr>
+				<tr><g:Label></g:Label></tr>
+				<tr align="center" ><td><g:Label>Sign in with google.</g:Label></td></tr>
+		</table> -->
+	</g:HTMLPanel>
+
+
 </ui:UiBinder> 

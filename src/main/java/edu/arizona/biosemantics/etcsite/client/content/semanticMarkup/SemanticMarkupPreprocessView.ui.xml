@@ -12,14 +12,24 @@
 		.bracketCounts {
 			padding-left: 10px;	
 		}
+		.subMenuEntry {
+			margin-left: 0px;
+			padding-top: 10px;
+			padding-bottom:10px;
+		}
+		.padding{
+			padding-top: 10px;
+			padding-bottom:10px;
+		}
 	</ui:style>
 	<lay:CenteredContentPanel>
 		<g:VerticalPanel>
-			<my:SubMenu ui:field="subMenu" step="PREPROCESS_TEXT"/>
-			<g:VerticalPanel>
-			
-				<g:Label>We found unmatched brackets in the descriptions you provided. 
-				Please take the time to review the descriptions for which this is the case.
+		     <g:HorizontalPanel>
+			    <co:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.SemanticMarkupShort.gif" imageWidth="65px" imageHeight="20px" text="" />
+			    <my:SubMenu ui:field="subMenu" step="PREPROCESS_TEXT"/>
+			</g:HorizontalPanel>
+			<g:VerticalPanel styleName="{style.padding}">
+				<g:Label>There are unmatched brackets ("(", ")", "[", "]" or "{","}") in the input descriptions. Please correct those.
 				</g:Label>
 				
 				<g:HorizontalPanel>

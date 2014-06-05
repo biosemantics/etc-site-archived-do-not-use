@@ -35,6 +35,7 @@ public class TextInputPresenter implements ITextInputView.Presenter {
 	public void show(String title, String text, String defaultTextBoxText, ITextInputListener listener) {
 		this.currentListener = listener;
 		dialogBox.setTitle(title);
+		dialogBox.setText(title);
 		view.setText(text);
 		view.setTextBox(defaultTextBoxText);
 		dialogBox.center();	

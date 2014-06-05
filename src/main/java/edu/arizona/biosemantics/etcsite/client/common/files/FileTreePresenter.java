@@ -82,9 +82,22 @@ public class FileTreePresenter implements IFileTreeView.Presenter {
 	@Override
 	public void onSelect(FileImageLabelTreeItem selectedItem) {
 		this.selectedItem = selectedItem;
+		setInputFileMultiple();
 		this.notifySelectionListeners();
+		
 	}
 
+	public static native void setInputFileMultiple() /*-{
+	var inputs, index;
+    inputs = $doc.getElementsByTagName("input");	
+    //alert("get "+inputs.length+" inputs");
+	for (index = 0; index < inputs.length; ++index) {
+		if(inputs[index].getAttribute("type") == "file" && inputs[index].getAttribute("class") == "gwt-FileUpload") {
+			inputs[index].setAttribute("multiple", "multiple");
+			//alert("set multiple in setInputFileMultiple");
+		}
+	}
+}-*/;
 	private void notifySelectionListeners() {
 		for(IFileTreeSelectionListener listener : selectionListeners) 
 			listener.onSelect(selectedItem);

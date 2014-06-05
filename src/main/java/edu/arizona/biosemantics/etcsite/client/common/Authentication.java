@@ -1,6 +1,8 @@
 package edu.arizona.biosemantics.etcsite.client.common;
 
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.google.gwt.user.client.Cookies;
 
@@ -9,6 +11,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
 public class Authentication {
 
 	private static Authentication instance;
+	private List<ChangeObserver> changeObservers;
 	
 	public static Authentication getInstance() {
 		if(instance == null)
@@ -16,12 +19,20 @@ public class Authentication {
 		return instance;
 	}
 	
-	private Authentication() { 	}
+	private Authentication() {
+		changeObservers = new LinkedList<ChangeObserver>();
+	}
+	
 	
 	public void setSessionID(String sessionID) {
 	    final long DURATION = 1000 * 60 * 60 * 24 * 14; //duration remembering login. 2 weeks in this example.
 	    Date expires = new Date(System.currentTimeMillis() + DURATION);
 	    Cookies.setCookie(CookieVariable.sessionID, sessionID, expires, null, "/", false);
+	    
+	    //notify observers.
+	    for (ChangeObserver observer: changeObservers){
+	    	observer.loginChanged();
+	    }
 	}
 	
 	public String getSessionID() {
@@ -32,31 +43,48 @@ public class Authentication {
 		return sessionID;
 	}
 	
-	public String getUsername() {
-		String username = Cookies.getCookie(CookieVariable.username); 
+	public String getUserId() {
+		String userId = Cookies.getCookie(CookieVariable.userId); 
 		//the Cookie class does not actually return null but "null" String for cookies that do not exist; but in implementation?
-		if(username != null && username.equals("null"))
-			username = null;
-		return username;
+		if(userId != null && userId.equals("null"))
+			userId = null;
+		return userId;
 	}
 
-	public void setUsername(String username) {
+	public void setUserId(String arg) {
 		final long DURATION = 1000 * 60 * 60 * 24 * 14; //duration remembering login. 2 weeks in this example.
 	    Date expires = new Date(System.currentTimeMillis() + DURATION);
-	    Cookies.setCookie(CookieVariable.username, username, expires, null, "/", false);
+	    Cookies.setCookie(CookieVariable.userId, arg, expires, null, "/", false);
+	    
+	    //notify observers.
+	    for (ChangeObserver observer: changeObservers){
+	    	observer.loginChanged();
+	    }
 	}
+	
 	
 	public void destroy() {
 		Cookies.removeCookie(CookieVariable.sessionID, "/");
-		Cookies.removeCookie(CookieVariable.username, "/");
+		Cookies.removeCookie(CookieVariable.userId, "/");
 	}
 
 	public AuthenticationToken getToken() {
-		return new AuthenticationToken(this.getUsername(), this.getSessionID());
+		return new AuthenticationToken(this.getUserId(), this.getSessionID());
 	}
 	
 	public boolean isSet() {
-		return this.getUsername() != null && this.getSessionID() != null;
+		return this.getUserId() != null && this.getSessionID() != null;
 	}
 	
+	public String getUsername(){ // to maintain compatibility, even though unique Id is used instead of username. 
+		return getUserId();
+	}
+	
+	public void addChangeObserver(ChangeObserver observer){
+		changeObservers.add(observer);
+	}
+	
+	public interface ChangeObserver{
+		public void loginChanged();
+	}
 }

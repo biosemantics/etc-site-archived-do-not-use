@@ -145,7 +145,7 @@ public class TaskDAO {
 		int taskTypeId = result.getInt(3);
 		int taskStageId = result.getInt(4);
 		int configurationId = result.getInt(5);
-		int userId = result.getInt(6);
+		String userId = result.getString(6); //changed from int to String. _ags
 		boolean resumable = result.getBoolean(7);
 		boolean complete = result.getBoolean(8);
 		Date completed = result.getTimestamp(9);
@@ -210,7 +210,7 @@ public class TaskDAO {
 		int taskTypeId = task.getTaskType().getId();
 		int taskStageId = task.getTaskStage().getId();
 		int configurationId = task.getConfiguration().getConfiguration().getId();
-		int userId = task.getUser().getId();
+		int userId = task.getUser().getId(); 
 		boolean resumable = task.isResumable();
 		boolean complete = task.isComplete();
 		Date completed = task.getCompleted();

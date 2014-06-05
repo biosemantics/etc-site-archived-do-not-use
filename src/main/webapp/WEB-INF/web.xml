@@ -63,6 +63,11 @@
 		<servlet-name>treeGenerationServlet</servlet-name>
 		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.TreeGenerationService</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>Kaptcha</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.MyKaptchaServlet</servlet-class>
+		<!-- <servlet-class>com.google.code.kaptcha.servlet.KaptchaServlet</servlet-class> -->
+	</servlet>
 
 	<!-- http://www.gwtproject.org/doc/latest/DevGuideServerCommunication.html#DevGuideImplementingServices
 	       -> Common pitfalls: for url-pattern help -->
@@ -117,6 +122,10 @@
 	<servlet-mapping>
 		<servlet-name>taxonomyComparisonServlet</servlet-name>
 		<url-pattern>/etcsite/taxonomyComparison</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Kaptcha</servlet-name>
+		<url-pattern>/etcsite/captcha/*</url-pattern>
 	</servlet-mapping>
 
 

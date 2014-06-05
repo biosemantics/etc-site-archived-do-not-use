@@ -56,7 +56,7 @@ public class MyActivityManager extends ActivityManager implements PlaceChangeEve
 		}
 	}
 
-	private static final MyActivity NULL_ACTIVITY = new MyAbstractActivity() {
+	private static final MyActivity NULL_ACTIVITY = new MyAbstractActivity(null, null, null, null, null, null) {
 		@Override
 		public void update() {
 		}

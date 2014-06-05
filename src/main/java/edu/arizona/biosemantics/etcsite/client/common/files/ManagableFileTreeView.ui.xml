@@ -7,25 +7,52 @@
 		.uploader {
 
 		}
+		.leftMargin {
+  		 	margin-left: 5px;
+		}
+		/*.paddedHorizontalPanel .gwt-Button {
+    		margin-left: 20px;
+		}*/
+		.padding{
+			padding-top: 10px;
+			padding-bottom: 10px;
+		}
 	</ui:style>
-	<g:VerticalPanel>
-	    <g:Label>Your files:</g:Label>
+	<g:VerticalPanel styleName="{style.padding}">
 	    <my:IFileTreeView ui:field="fileTreeView"></my:IFileTreeView>
-	    <g:HorizontalPanel>
-		    <g:Button ui:field="createButton">Create Folder</g:Button>
-		    <g:Button ui:field="renameButton">Rename</g:Button>
-		    <g:Button ui:field="deleteButton">Delete</g:Button>
-		    <g:Button ui:field="downloadButton">Download</g:Button>
-	        <up:SingleUploader 
+	    <g:HorizontalPanel styleName="{style.padding}">
+		     <g:Button ui:field="createButton" title="Select a parent folder before adding a folder">Add Folder</g:Button>
+		     <g:FlowPanel styleName="{style.leftMargin}">
+	        <!-- set avoidRepeatFiles to false before we can implement error messages for attempting upload the same files into different folders. Setting 
+	        this attribute only have session-wise effect, repeated files can still upload in a new session.-->
+		     <up:SingleUploader 
 	           	ui:field="uploader"
 	           	styleName="{style.uploader}"
 	           	type="BUTTON"
 	           	autoSubmit="true"
-	           	avoidRepeatFiles="true" 
+	           	avoidRepeatFiles="false"
 	           	validExtensions="xml"
 	           	/> 
-		     <g:Button ui:field="addButton">Upload files</g:Button>
-		     <g:Button ui:field="createSemanticMarkupInputButton" title="As input for Semantic Markup">Create Files</g:Button>
+		     <g:Button ui:field="addButton" title="Select a parent folder before uploading one or more files">Upload Files</g:Button>
+		     </g:FlowPanel>
+		     <g:FlowPanel styleName="{style.leftMargin}">
+		      <g:Button ui:field="renameButton" title="rename a file or a folder">Rename</g:Button>
+		      </g:FlowPanel>
+		      <g:FlowPanel styleName="{style.leftMargin}">
+		     <g:Button ui:field="deleteButton" title="delete a file or a folder">Delete</g:Button>
+		     </g:FlowPanel>
+		     <g:FlowPanel styleName="{style.leftMargin}">
+		    <g:Button ui:field="downloadButton" title="download a file or a folder">Download</g:Button>
+		    </g:FlowPanel>
+		</g:HorizontalPanel>
+		<g:HTMLPanel styleName="{style.padding}">
+			<hr style="width:100%;" />
+    	</g:HTMLPanel>
+    	<g:HorizontalPanel>
+			<g:InlineLabel>Want to create valid input files for the Text Capture tool?</g:InlineLabel>
+			<g:HorizontalPanel styleName="{style.leftMargin}">
+			<g:Button ui:field="createSemanticMarkupInputButton" title="select a parent folder before creating files for the Text Capture tool">Create Files</g:Button>
+			</g:HorizontalPanel>
 	    </g:HorizontalPanel>
 	    <g:SimplePanel addStyleNames="GWTUpld" ui:field="statusWidgetContainer"></g:SimplePanel>
 	</g:VerticalPanel>

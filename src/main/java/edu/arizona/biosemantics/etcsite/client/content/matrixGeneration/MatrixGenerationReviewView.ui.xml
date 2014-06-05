@@ -2,6 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.matrixGeneration"
+	xmlns:my2="urn:import:edu.arizona.biosemantics.etcsite.client.common"
 	xmlns:re="urn:import:edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review"
 	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout"
 	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container">
@@ -29,7 +30,13 @@
 			margin-top: 4px;
    			margin-left: 20px;
 		}
+		.subMenuEntry {
+			margin-left: 0px;
+			padding-top: 10px;
+			padding-bottom:10px;
+		}
 	</ui:style>
+
 	<!--  <lay:CenteredContentPanel> -->
 	<!-- <g:SimplePanel styleName="{style.centered}"> -->
 		
