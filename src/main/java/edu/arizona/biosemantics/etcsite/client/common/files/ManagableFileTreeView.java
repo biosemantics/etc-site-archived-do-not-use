@@ -4,7 +4,10 @@ import gwtupload.client.IUploader;
 import gwtupload.client.SingleUploader;
 //import gwtupload.client.MultiUploader;
 
+
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -57,7 +60,10 @@ public class ManagableFileTreeView extends Composite implements IManagableFileTr
 	public ManagableFileTreeView(IFileTreeView.Presenter fileTreePresenter) {
 		this.fileTreeView = fileTreePresenter.getView();
 		initWidget(uiBinder.createAndBindUi(this));
-		((UIObject)uploader.getFileInput()).getElement().setPropertyString("multiple", "multiple");
+		/*UIObject fileInput = (UIObject)uploader.getFileInput();
+		Element fileInputElement = fileInput.getElement();
+		fileInputElement.setPropertyString("multiple", "multiple");
+		String m = fileInputElement.getPropertyString("multiple");*/
 		statusWidgetContainer.setWidget(uploader.getStatusWidget().getWidget());
 	}
 	

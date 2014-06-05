@@ -23,22 +23,16 @@
 	    <g:HorizontalPanel styleName="{style.padding}">
 		     <g:Button ui:field="createButton" title="Select a parent folder before adding a folder">Add Folder</g:Button>
 		     <g:FlowPanel styleName="{style.leftMargin}">
-	         <up:SingleUploader 
+	        <!-- set avoidRepeatFiles to false before we can implement error messages for attempting upload the same files into different folders. Setting 
+	        this attribute only have session-wise effect, repeated files can still upload in a new session.-->
+		     <up:SingleUploader 
 	           	ui:field="uploader"
 	           	styleName="{style.uploader}"
 	           	type="BUTTON"
 	           	autoSubmit="true"
-	           	avoidRepeatFiles="true" 
+	           	avoidRepeatFiles="false"
 	           	validExtensions="xml"
 	           	/> 
-	         <!-- <up:MultiUploader 
-	           	ui:field="uploader"
-	           	styleName="{style.uploader}"
-	           	type="BUTTON"
-	           	autoSubmit="true"
-	           	avoidRepeatFiles="true" 
-	           	validExtensions="xml"
-	           	/> -->
 		     <g:Button ui:field="addButton" title="Select a parent folder before uploading one or more files">Upload Files</g:Button>
 		     </g:FlowPanel>
 		     <g:FlowPanel styleName="{style.leftMargin}">

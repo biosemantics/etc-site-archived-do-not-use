@@ -27,6 +27,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 import gwtupload.client.BaseUploadStatus;
 import gwtupload.client.IFileInput;
+import gwtupload.client.IFileInput.BrowserFileInput;
 import gwtupload.client.IFileInput.ButtonFileInput;
 import gwtupload.client.IUploadStatus;
 import gwtupload.client.IUploadStatus.Status;
@@ -85,7 +86,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	    view.getUploader().setStatusWidget(statusWidget);
 	    view.setStatusWidget(statusWidget.getWidget());
 		view.getUploader().setFileInput(new MyFileInput(view.getAddButton()));
-		
+	
 		initActions();
 	}
 	
@@ -93,7 +94,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	public void refresh(FileFilter fileFilter) {
 		this.fileFilter = fileFilter;
 		fileTreePresenter.refresh(fileFilter);
-		setInputFileMultiple();
+		//setInputFileMultiple();
 	}
 	
 	@Override
@@ -135,7 +136,6 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 											new RPCCallback<String>() {
 												@Override
 												public void onResult(String result) {
-													//handled by onSuccess
 													fileTreePresenter.refresh(fileFilter);
 												}
 	
@@ -237,6 +237,11 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		}
 	}
 	
+	/**
+	 * multiple file uploading is enabled by using the SingleUploader and the native method setInputFileMultiple() called in FileTreePresenter.java
+	 * @author updates
+	 *
+	 */
 	public class OnFinishUploadHandler implements OnFinishUploaderHandler {
 		@Override
 		public void onFinish(IUploader uploader) {	
@@ -251,16 +256,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 				uploader.getStatusWidget().setFileName("Done uploading.");
 				fileTreePresenter.refresh(fileFilter);
 			}
-			
-			//only needed when MultiUploader is used instead of SingleUploader. There somewhat of a new instance of MultiUploader
-			//is created for each additional upload.
-			//try to avoid MultiUploader, it will create a new HTML element for each uploader making it complex to style
-			//also MultiUploader is not needed, in comparison to SingleUploader it only allows to append additional uploads once
-			//a previous upload is still running. It doesn't mean multiple files, this can also be done with SingleUploader
-			//IFileInput ctrl = view.getUploader().getFileInput();
-			//((UIObject) ctrl).getElement().setPropertyString("multiple", "multiple");
-		    //DOM.setElementProperty(((UIObject) ctrl).getElement(), "multiple", "multiple");
-			
+						
 			uploader.setServletPath(defaultServletPath);
 			enableManagement();
 		}
@@ -277,9 +273,6 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 				String newFilePath = getParent(selection);
 				uploader.setServletPath(uploader.getServletPath() + "&target=" + newFilePath);
 			}				
-
-			//only needed when MultiUploader is used instead of SingleUploader
-			//view.setStatusWidget(view.getUploader().getStatusWidget().getWidget());
 			
 			/*
 			 * Creation of directories directly inside of the upload target should not be possible (possible name clash)
@@ -367,12 +360,16 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		 * 
 		 * To set the multiple attribute on the input file element this javascript implementation was created, and to be able to go with b)
 	 */
-	public static native void setInputFileMultiple() /*-{
+	//moved to FileTreePresenter, when a folder is selected for uploading, set multiple attributes.
+	/*public static native void setInputFileMultiple() /*-{
 		var inputs, index;
-		inputs = $doc.getElementsByTagName('input');	
+		alert("$doc body:"+$doc.textContent);
+	    inputs = $doc.getElementsByTagName("input");	
+	    alert("get "+inputs.length+" inputs");
 		for (index = 0; index < inputs.length; ++index) {
 			if(inputs[index].getAttribute("type") == "file" && inputs[index].getAttribute("class") == "gwt-FileUpload") {
 				inputs[index].setAttribute("multiple", "multiple");
+				alert("set multiple in setInputFileMultiple");
 			}
 		}
 	}-*/;
@@ -389,11 +386,11 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	 * @author rodenhausen
 	 */
 	public class MyFileInput extends ButtonFileInput {
-
 		public MyFileInput(Button addButton) {
 			super(addButton);
 		}
 
+		
 		@Override
 		public void setVisible(boolean b) {
 			//ignore visibility based on active upload
