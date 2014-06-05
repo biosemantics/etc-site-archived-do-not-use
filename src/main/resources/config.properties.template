@@ -28,6 +28,8 @@ xPathObjectModel=http://saxon.sf.net/jaxp/xpath/om
 #compressCommand=tar [source.parent]/[source.filename] [destination]
 compressCommand=tar -zcvf [destination] --directory=[source.parent] [source.filename]
 
+captcha_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/captcha
+
 ######otolite######## 
 #Database configuration
 otolite_databaseName=

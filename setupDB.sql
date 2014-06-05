@@ -142,7 +142,7 @@ CREATE TABLE IF NOT EXISTS `shareinvitees` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY `share` (`share`,`inviteeuser`),
   KEY `shares_shareinvitees_CON` (`share`),
-  KEY `users_shareinvitees_CON` (`inviteeuser`)
+  KEY `useraccounts_shareinvitees_CON` (`inviteeuser`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -180,7 +180,7 @@ CREATE TABLE IF NOT EXISTS `tasks` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `taskstages_tasks_CON` (`taskstage`),
-  KEY `users_tasks_CON` (`user`),
+  KEY `useraccounts_tasks_CON` (`user`),
   KEY `configurations_tasks_CON` (`configuration`),
   KEY `tasktypes_tasks_CON` (`tasktype`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
@@ -286,35 +286,6 @@ CREATE TABLE IF NOT EXISTS `treegenerationconfigurations` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
---
-
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) DEFAULT NULL,
-  `password` varchar(50) DEFAULT NULL,
-  `bioportaluserid` varchar(100) DEFAULT NULL,
-  `bioportalapikey` varchar(100) DEFAULT NULL,
-  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`id`, `name`, `password`, `bioportaluserid`, `bioportalapikey`, `created`) VALUES
-(1, 'thomas', '', 'bpuid', 'bpak', '2013-10-22 01:13:18'),
-(2, 'hong', '', 'b', 'c', '2013-10-31 04:06:14'),
-(3, 'elvis', '', 'bpuid', 'bppw', '2013-11-09 00:59:11'), 
-(4, 'james', '', 'b', 'c', '2013-10-31 04:06:14'),
-(5, 'bertram', '', 'b', 'c', '2013-10-31 04:06:14'),
-(6, 'bob', '', 'b', 'c', '2013-10-31 04:06:14'),
-(7, 'shizhuo', '', 'b', 'c', '2013-10-31 04:06:14');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `visualizationconfigurations`
 --
 
@@ -337,6 +308,28 @@ CREATE TABLE IF NOT EXISTS `tasksoutputfiles` (
   UNIQUE KEY `id` (`id`),
   KEY `tasks_tasksoutputfiles_CON` (`task`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `useraccounts`
+--
+
+CREATE TABLE IF NOT EXISTS `useraccounts` (
+  `uniqueid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `nonuniqueid` varchar(50) DEFAULT NULL,
+  `openidprovider` varchar(20) NOT NULL DEFAULT 'none',
+  `password` varchar(100) DEFAULT NULL,
+  `firstname` varchar(20) NOT NULL,
+  `lastname` varchar(20) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `affiliation` varchar(50) NOT NULL,
+  `bioportaluserid` varchar(50) NOT NULL,
+  `bioportalapikey` varchar(50) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`uniqueid`),
+  UNIQUE KEY `uniqueid` (`uniqueid`),
+  KEY `uniqueid_2` (`uniqueid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1068 ;
+
 
 --
 -- Constraints for dumped tables
@@ -381,7 +374,7 @@ ALTER TABLE `semanticmarkupconfigurations`
 --
 ALTER TABLE `shareinvitees`
   ADD CONSTRAINT `shares_shareinvitees_CON` FOREIGN KEY (`share`) REFERENCES `shares` (`id`),
-  ADD CONSTRAINT `users_shareinvitees_CON` FOREIGN KEY (`inviteeuser`) REFERENCES `users` (`id`);
+  ADD CONSTRAINT `useraccounts_shareinvitees_CON` FOREIGN KEY (`inviteeuser`) REFERENCES `useraccounts` (`uniqueid`);
 
 --
 -- Constraints for table `shares`
@@ -396,7 +389,7 @@ ALTER TABLE `tasks`
   ADD CONSTRAINT `configurations_tasks_CON` FOREIGN KEY (`configuration`) REFERENCES `configurations` (`id`),
   ADD CONSTRAINT `taskstages_tasks_CON` FOREIGN KEY (`taskstage`) REFERENCES `taskstages` (`id`),
   ADD CONSTRAINT `tasktypes_tasks_CON` FOREIGN KEY (`tasktype`) REFERENCES `tasktypes` (`id`),
-  ADD CONSTRAINT `users_tasks_CON` FOREIGN KEY (`user`) REFERENCES `users` (`id`);
+  ADD CONSTRAINT `useraccounts_tasks_CON` FOREIGN KEY (`user`) REFERENCES `useraccounts` (`uniqueid`);
 
 --
 -- Constraints for table `tasksfiles`
