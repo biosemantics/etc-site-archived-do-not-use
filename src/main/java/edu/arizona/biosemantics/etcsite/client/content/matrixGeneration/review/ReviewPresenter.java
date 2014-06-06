@@ -40,17 +40,14 @@ public class ReviewPresenter implements IReviewView.Presenter {
 		
 	}
 	
-	public void onSave() {
-		if(task != null)
-			matrixGenerationService.save(Authentication.getInstance().getToken(), taxonMatrix, task, new RPCCallback<Void>() {
-				@Override
-				public void onResult(Void result) { }
-			}); 
-	}
-
 	@Override
 	public IReviewView getView() {
 		return view;
+	}
+
+	@Override
+	public TaxonMatrix getTaxonMatrix() {
+		return taxonMatrix;
 	}
 
 }

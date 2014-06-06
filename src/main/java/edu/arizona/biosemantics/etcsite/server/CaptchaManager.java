@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.server.captcha;
+package edu.arizona.biosemantics.etcsite.server;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.imageio.ImageIO;
 
@@ -17,7 +18,6 @@ import org.apache.commons.io.FileUtils;
 import com.google.code.kaptcha.Producer;
 import com.google.code.kaptcha.util.Config;
 
-import edu.arizona.biosemantics.etcsite.server.Configuration;
 
 public class CaptchaManager {
 	private static final int MINUTES_BEFORE_EXPIRE = 5;
@@ -26,13 +26,13 @@ public class CaptchaManager {
 	private static CaptchaManager instance;
 	
 	private Producer captchaProducer;
-	private HashMap<Integer, Captcha> captchas;	
+	private ConcurrentHashMap<Integer, Captcha> captchas;	
 	private static int NEXT_ID = 100;
 	
 	public CaptchaManager(){
 		Config config = new Config(new Properties());
 		captchaProducer = config.getProducerImpl();
-		captchas = new HashMap<Integer, Captcha>();
+		captchas = new ConcurrentHashMap<Integer, Captcha>();
 		
 		//clear all current files in captcha directory. 
 		try {
@@ -82,24 +82,19 @@ public class CaptchaManager {
 			return -1;
 		}
 		
-		synchronized(captchas){
-			captchas.put(id, new Captcha(outputFile.getAbsolutePath(), solution));
-		}
-		
+		captchas.put(id, new Captcha(outputFile.getAbsolutePath(), solution));
 		return id;
 	}
 	
 	public void deleteExpiredCaptchas(){
 		ArrayList<Integer> expired = new ArrayList<Integer>();
 		
-		synchronized(captchas) {
-			long now = new Date().getTime();
-			for (Integer id : captchas.keySet()){
-				Captcha captcha = captchas.get(id);
-				if (now - captcha.getTimestamp().getTime() > MINUTES_BEFORE_EXPIRE * 60 * 1000 ){
-					//System.out.println("Captcha " + id + " is expired. deleting.");
-					expired.add(id);
-				}
+		long now = new Date().getTime();
+		for (Integer id : captchas.keySet()){
+			Captcha captcha = captchas.get(id);
+			if (now - captcha.getTimestamp().getTime() > MINUTES_BEFORE_EXPIRE * 60 * 1000 ){
+				//System.out.println("Captcha " + id + " is expired. deleting.");
+				expired.add(id);
 			}
 		}
 		
@@ -109,35 +104,29 @@ public class CaptchaManager {
 	}
 	
 	public String getURLFor(int id){
-		synchronized(captchas) {
-			Captcha captcha = captchas.get(id);
-			if (captcha == null)
-				return null;
-			return captcha.getURL();
-		}
+		Captcha captcha = captchas.get(id);
+		if (captcha == null)
+			return null;
+		return captcha.getURL();
 	}
 	
 	public boolean isValidSolution(int id, String solution){
-		synchronized(captchas) {
-			Captcha captcha = captchas.get(id);
-			if (captcha == null)
-				return false;
-			
-			boolean success = captcha.getSolution().equals(solution);
-			removeAndDelete(id); //it's a one-try deal; delete this entry whether they got it right or wrong. 
-			return success; 
-		}
+		Captcha captcha = captchas.get(id);
+		if (captcha == null)
+			return false;
+		
+		boolean success = captcha.getSolution().equals(solution);
+		removeAndDelete(id); //it's a one-try deal; delete this entry whether they got it right or wrong. 
+		return success; 
 	}
 	
 	private void removeAndDelete(int id){
-		synchronized(captchas) {
-			Captcha captcha = captchas.get(id);
-			if (captcha == null)
-				return;
-			File file = new File(captcha.getURL());
-			file.delete();
-			captchas.remove(id);
-		}
+		Captcha captcha = captchas.get(id);
+		if (captcha == null)
+			return;
+		File file = new File(captcha.getURL());
+		file.delete();
+		captchas.remove(id);
 	}
 	
 	private class Captcha{

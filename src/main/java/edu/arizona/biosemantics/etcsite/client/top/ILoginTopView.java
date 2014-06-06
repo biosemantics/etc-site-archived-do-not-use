@@ -21,5 +21,4 @@ public interface ILoginTopView extends IsWidget {
 	}
 
 	void setPresenter(Presenter presenter);
-	
 }

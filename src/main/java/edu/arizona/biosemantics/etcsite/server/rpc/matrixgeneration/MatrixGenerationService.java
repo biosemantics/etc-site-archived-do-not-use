@@ -6,17 +6,20 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.Executors;
 
 import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.CSVWriter;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
@@ -401,7 +404,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	private TaxonMatrix readFile(String filePath) throws Exception {
 		//return createSampleMatrix();
 
-		CSVReader reader = new CSVReader(new FileReader(filePath), '\t');
+		CSVReader reader = new CSVReader(new FileReader(filePath), '\t', CSVWriter.NO_QUOTE_CHARACTER);
 		
 		List<Character> characters = new LinkedList<Character>();
 		String[] head = reader.readNext();
@@ -486,7 +489,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
     		rankData.add(RankData.getInstanceFor(level, value, authority, rankDate));
     	}
     			
-		TaxonName result = new TaxonName(rankData, author, date);
+		TaxonName result = new TaxonName(rankData, author.split("=")[1], date.split("=")[1]);
 		return result;
 	}
 
@@ -631,25 +634,54 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		}
 	}
 
+	//TODO: Add RankData authority and date
 	private void saveFile(TaxonMatrix matrix, String outputFile) throws IOException {
+		CSVWriter writer = new CSVWriter(new FileWriter(outputFile), '\t', CSVWriter.NO_QUOTE_CHARACTER);
 		
-		/*File file = new File(outputFile);
-		BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+		String[] line = new String[matrix.getCharacterCount() + 1];
+		line[0] = "Name";
 		
-		bw.write("Name\t");
-		for(String characterName : matrix.getCharacterNames()) {
-			bw.write(characterName + "\t");
+		for(int i=1; i<=matrix.getCharacterCount(); i++) {
+			line[i] = matrix.getCharacter(i - 1).toString();
 		}
-		bw.write("\n");
+		writer.writeNext(line);
 		
-		for(Taxon taxon : matrix.getTaxons()) {
-			bw.write(taxon.getName() + "\t");
-			for(String characterName : matrix.getCharacterNames()) {
-				bw.write(taxon.getCharacterState(characterName) + "\t");
+		for(int i=0; i<matrix.getTaxaCount(); i++) {
+			Taxon taxon = matrix.getTaxon(i);
+			line = new String[matrix.getCharacterCount() + 1];
+			line[0] = getTaxonName(taxon);
+			
+			for(int j=1; j<matrix.getCharacterCount(); j++) {
+				Character character = matrix.getCharacter(j - 1);
+				line[j] = taxon.get(character).toString();
 			}
-			bw.write("\n");
+			writer.writeNext(line);
 		}
-		bw.close();*/
+		writer.flush();
+		writer.close();
+	}
+
+	private String getTaxonName(Taxon taxon) {
+		String name = "";
+		ArrayList<Taxon> taxonPath = new ArrayList<Taxon>();
+		Taxon current = taxon;
+		taxonPath.add(taxon);
+		while(current.hasParent()) {
+			current = current.getParent();
+			taxonPath.add(current);
+		}
+		
+		ListIterator<Taxon> it = taxonPath.listIterator(taxonPath.size());
+		while(it.hasPrevious()) {
+			current = it.previous();
+			name += current.getLevel() + "=" + current.getName() + ";";
+		}
+		name = name.substring(0, name.length() - 1);
+		name += ":";
+		name += "author=" + taxon.getAuthor() + ",";
+		name += "date=" + taxon.getYear();
+	
+		return name;
 	}
 
 	@Override

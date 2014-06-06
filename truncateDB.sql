@@ -2,7 +2,7 @@
 -- Normally don't want to truncate
 -- filetypes
 -- glossaries
--- users
+-- useraccounts
 -- tasktypes
 -- taskstages
 --
