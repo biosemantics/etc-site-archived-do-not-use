@@ -68,10 +68,10 @@ public class LoginView extends Composite implements ILoginView {
 		presenter.onRegisterRequest();
 	}
 	
-	/*@UiHandler("resetPasswordLabel")
+	@UiHandler("resetPasswordLabel")
 	public void onResetPasswordClick(ClickEvent event){
 		presenter.onResetPasswordRequest();
-	}*/
+	}
 	
 	/**
 	 * If there is no entry in the email field box, gives focus to the email box. 

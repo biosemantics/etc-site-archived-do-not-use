@@ -200,7 +200,12 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	
 	
 	@Override
-	public RPCResult<PasswordResetResult> requestPasswordResetCode(String nonUniqueId) {
+	public RPCResult<PasswordResetResult> requestPasswordResetCode(int captchaId, String captchaSolution, String nonUniqueId) {
+		//check to see if the captcha is correct.
+		if (!CaptchaManager.getInstance().isValidSolution(captchaId, captchaSolution)){
+			return new RPCResult<PasswordResetResult>(true, new PasswordResetResult(false, RegistrationResult.CAPTCHA_INCORRECT_MESSAGE));
+		}
+		
 		try {
 			User user = UserDAO.getInstance().getLocalUserWithEmail(nonUniqueId);
 			if (user == null)
@@ -225,9 +230,9 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 			PasswordResetRequestDAO.getInstance().addRequest(uniqueId, authenticationCode);
 			
 			//send the user an email. 
-			/*String expireTime = RESET_PASSWORD_HOURS_BEFORE_EXPIRE + (RESET_PASSWORD_HOURS_BEFORE_EXPIRE == 1 ? " hour" : " hours");
-			String bodyText = EmailManager.PASSWORD_RESET_BODY.replace("<nonuniqueid>", nonuniqueId)
-			EmailManager.getInstance().sendEmail( );*/
+			String expireTime = RESET_PASSWORD_HOURS_BEFORE_EXPIRE + (RESET_PASSWORD_HOURS_BEFORE_EXPIRE == 1 ? " hour" : " hours");
+			String bodyText = EmailManager.PASSWORD_RESET_BODY.replace("<nonuniqueid>", nonUniqueId).replace("<code>", authenticationCode).replace("<expire>", expireTime);
+			EmailManager.getInstance().sendEmail(email, EmailManager.PASSWORD_RESET_SUBJECT, bodyText);
 			
 			return new RPCResult<PasswordResetResult>(true, new PasswordResetResult(true, PasswordResetResult.EMAIL_SENT_MESSAGE.replace("<email>", email)));
 				
@@ -257,7 +262,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 			if (request == null)
 				return new RPCResult<PasswordResetResult>(true, new PasswordResetResult(false, PasswordResetResult.INCORRECT_OR_EXPIRED_MESSAGE));
 				
-			//check to see if the session has not expired and if the code is correct.
+			//check to see if the code has not expired and if the code is correct.
 			if ((new Date()).getTime() - request.getRequestTime().getTime() > RESET_PASSWORD_HOURS_BEFORE_EXPIRE * 60 * 60 * 1000
 					|| !code.equals(request.getAuthenticationCode()))
 				return new RPCResult<PasswordResetResult>(true, new PasswordResetResult(false, PasswordResetResult.INCORRECT_OR_EXPIRED_MESSAGE));
@@ -273,6 +278,9 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 					user.getAffiliation(), 
 					user.getBioportalUserId(), 
 					user.getBioportalAPIKey());
+			
+			//remove the key so that it cannot be used again. 
+			PasswordResetRequestDAO.getInstance().removeRequests(uniqueId);
 			
 			return new RPCResult<PasswordResetResult>(true, new PasswordResetResult(true, PasswordResetResult.PASSWORD_RESET_MESSAGE));
 		} catch(Exception e){

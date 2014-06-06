@@ -212,8 +212,6 @@ public abstract class MyAbstractActivity implements MyActivity {
 			public void onSuccess(String message) {
 				loginPresenter.setEmailField(resetPasswordPresenter.getEmail());
 				showLoginWindow(message, listener);
-				messagePresenter.setMessage(message);
-				messagePresenter.show();
 			}
 			
 			@Override

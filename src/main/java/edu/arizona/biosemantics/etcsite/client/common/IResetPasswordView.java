@@ -33,7 +33,9 @@ public interface IResetPasswordView extends IsWidget {
 
 	void clearFields();
 	
-	void setErrorLabel(String str);
+	void setErrorLabel1(String str);
+	
+	void setErrorLabel2(String str);
 	
 	String getEmail();
 	

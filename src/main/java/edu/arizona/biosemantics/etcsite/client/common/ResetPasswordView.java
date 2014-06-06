@@ -31,7 +31,10 @@ public class ResetPasswordView extends Composite implements IResetPasswordView {
 	PasswordTextBox confirmNewPasswordBox;
 	
 	@UiField
-	Label errorLabel;
+	Label errorLabel1;
+	
+	@UiField
+	Label errorLabel2;
 	
 	@UiField
 	CaptchaPanel captchaPanel;
@@ -87,8 +90,15 @@ public class ResetPasswordView extends Composite implements IResetPasswordView {
 	}
 
 	@Override
-	public void setErrorLabel(String str){
-		errorLabel.setText(str);
+	public void setErrorLabel1(String str){
+		errorLabel1.setText(str);
+		errorLabel2.setText("");
+	}
+	
+	@Override
+	public void setErrorLabel2(String str){
+		errorLabel2.setText(str);
+		errorLabel1.setText("");
 	}
 	
 	@Override
@@ -96,7 +106,8 @@ public class ResetPasswordView extends Composite implements IResetPasswordView {
 		authenticationCodeBox.setText("");
 		newPasswordBox.setText("");
 		confirmNewPasswordBox.setText("");
-		errorLabel.setText("");
+		errorLabel1.setText("");
+		errorLabel2.setText("");
 	}
 	
 	@Override

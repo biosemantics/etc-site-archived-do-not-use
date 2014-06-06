@@ -39,23 +39,30 @@ public class ResetPasswordPresenter implements IResetPasswordView.Presenter {
 	@Override
 	public void show(IResetPasswordListener listener) {
 		this.currentListener = listener;
+		captchaPresenter.requestNewCaptcha();
 		dialogBox.center();
-		
 	}
 
 	@Override
 	public void onRequestCode() {
 		String nonUniqueId = resetPasswordView.getEmail();
+		int captchaId = resetPasswordView.getCaptchaPanel().getId();
+		String captchaSolution = resetPasswordView.getCaptchaPanel().getSolution();
 		
 		//error checking. 
-		resetPasswordView.setErrorLabel("");
+		resetPasswordView.setErrorLabel1("");
 		if (nonUniqueId.length() == 0){
-			resetPasswordView.setErrorLabel("Enter a valid email address.");
+			resetPasswordView.setErrorLabel1("Enter your email id.");
+			return;
+		}
+		if (captchaSolution.length() == 0){
+			resetPasswordView.setErrorLabel1("Enter the security code.");
 			return;
 		}
 		
+		captchaPresenter.requestNewCaptcha();
 		
-		authenticationService.requestPasswordResetCode(nonUniqueId, new RPCCallback<PasswordResetResult>(){
+		authenticationService.requestPasswordResetCode(captchaId, captchaSolution, nonUniqueId, new RPCCallback<PasswordResetResult>(){
 			@Override
 			public void onResult(PasswordResetResult result) {
 				if (result.getResult()){ //code generation was successful. 
@@ -78,17 +85,17 @@ public class ResetPasswordPresenter implements IResetPasswordView.Presenter {
 		String confirmNewPassword = resetPasswordView.getConfirmNewPassword();
 		
 		//error checking. 
-		resetPasswordView.setErrorLabel("");
+		resetPasswordView.setErrorLabel2("");
 		if (nonUniqueId.length() == 0 || code.length() == 0 || newPassword.length() == 0){
-			resetPasswordView.setErrorLabel("All fields are required.");
+			resetPasswordView.setErrorLabel2("All fields are required.");
 			return;
 		}
 		if (!newPassword.equals(confirmNewPassword)){
-			resetPasswordView.setErrorLabel("Passwords do not match.");
+			resetPasswordView.setErrorLabel2("Passwords do not match.");
 			return;
 		}
 		if (newPassword.length() < 6){
-			resetPasswordView.setErrorLabel("New password must be at least 6 characters.");
+			resetPasswordView.setErrorLabel2("New password must be at least 6 characters.");
 			return;
 		}
 		
