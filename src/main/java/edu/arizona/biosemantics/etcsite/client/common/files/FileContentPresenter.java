@@ -120,6 +120,7 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 		@Override
 		public void onResult(String result) {
 			view.setText(result);
+			view.setEditable(false);
 			if(center)
 				dialogBox.center();
 		}

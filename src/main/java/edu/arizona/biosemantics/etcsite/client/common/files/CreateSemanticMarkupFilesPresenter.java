@@ -75,7 +75,11 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 		textBuilder.append("full citation: " + view.getFullCitation().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
 		List<TaxonIdentificationEntry> taxonIdentificationEntries = view.getTaxonIdentificationEntries();
 		for(TaxonIdentificationEntry taxonIdentificationEntry : taxonIdentificationEntries) {
-			textBuilder.append(taxonIdentificationEntry.getRank().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + " name: " + taxonIdentificationEntry.getValue().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
+			String rank = taxonIdentificationEntry.getRank().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "");
+			String name = taxonIdentificationEntry.getValue().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "");
+			if(!rank.isEmpty() && !name.isEmpty()){
+				textBuilder.append(rank + " name: " + name + "\n");
+			}
 		}
 		textBuilder.append("strain number: " + view.getStrainNumber().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
 		textBuilder.append("equivalent strain numbers: " + view.getEqStrainNumbers().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
