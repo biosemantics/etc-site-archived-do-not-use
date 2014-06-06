@@ -65,7 +65,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>Kaptcha</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.MyKaptchaServlet</servlet-class>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.MyKaptchaServlet</servlet-class>
 		<!-- <servlet-class>com.google.code.kaptcha.servlet.KaptchaServlet</servlet-class> -->
 	</servlet>
 

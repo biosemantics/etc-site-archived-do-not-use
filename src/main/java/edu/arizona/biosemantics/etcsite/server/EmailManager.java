@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.server.email;
+package edu.arizona.biosemantics.etcsite.server;
 
 import java.util.Properties;
 import javax.mail.Message;

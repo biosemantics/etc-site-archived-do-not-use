@@ -14,9 +14,9 @@ import javax.xml.bind.DatatypeConverter;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+import edu.arizona.biosemantics.etcsite.server.CaptchaManager;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
-import edu.arizona.biosemantics.etcsite.server.captcha.CaptchaManager;
-import edu.arizona.biosemantics.etcsite.server.email.EmailManager;
+import edu.arizona.biosemantics.etcsite.server.EmailManager;
 import edu.arizona.biosemantics.etcsite.shared.db.PasswordResetRequest;
 import edu.arizona.biosemantics.etcsite.shared.db.PasswordResetRequestDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.User;
