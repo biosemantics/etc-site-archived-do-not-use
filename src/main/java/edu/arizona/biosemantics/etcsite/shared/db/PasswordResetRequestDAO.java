@@ -42,8 +42,17 @@ public class PasswordResetRequestDAO {
 	}
 	
 	public static PasswordResetRequestDAO getInstance() {
-		if (instance == null)
+		if (instance == null){
 			instance = new PasswordResetRequestDAO();
+			
+			//delete all 'old' password reset requests. Should only happen once per server restart. 
+			try {
+				Query deleteAll = new Query("DELETE FROM `passwordresetrequests` WHERE 1");
+				deleteAll.executeAndClose();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		return instance;
 	}
 }

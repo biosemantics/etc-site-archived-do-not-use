@@ -73,7 +73,7 @@
 		    width: 240px;
 		    position: absolute;
 		    top: 40px;
-		    left: 785px;
+		    left: 794px;
 		}
 		.matrixGenerationButton {
 		    top: 122px;

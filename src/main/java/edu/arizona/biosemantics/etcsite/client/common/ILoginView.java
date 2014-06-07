@@ -45,3 +45,4 @@ public interface ILoginView extends IsWidget {
 	
 	void setMessage(String str);
 }
+

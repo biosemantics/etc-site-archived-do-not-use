@@ -28,7 +28,8 @@ public interface IAuthenticationService extends RemoteService {
 			String newPassword, String affiliation, String bioportalUserId,
 			String bioportalAPIKey);
 
-	RPCResult<PasswordResetResult> requestPasswordResetCode(String username);
+	RPCResult<PasswordResetResult> requestPasswordResetCode(int captchaId,
+			String captchaSolution, String nonUniqueId);
 
 	RPCResult<PasswordResetResult> requestPasswordReset(String nonUniqueId,
 			String code, String newPassword);

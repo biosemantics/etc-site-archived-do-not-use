@@ -12,7 +12,7 @@
 	<g:HTMLPanel>
 	
 		<div align="center" style="padding:7px"> 
-			<g:Label>Please enter your information below:</g:Label>
+			<g:Label>Create an Account</g:Label>
 		</div>
 	<hr width="90%" noshade="noshade"></hr>
 	

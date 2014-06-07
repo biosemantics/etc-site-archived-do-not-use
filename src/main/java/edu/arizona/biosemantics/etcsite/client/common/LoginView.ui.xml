@@ -36,7 +36,7 @@
 		<br></br>
 		<hr width="90%" noshade="noshade"></hr>
 		
-		<!-- <div align="center" class="{style.clickable}"><g:Label ui:field="resetPasswordLabel">Forgot your password? Click here.</g:Label></div> -->
+		<div align="center" class="{style.clickable}"><g:Label ui:field="resetPasswordLabel">Forgot your password? Click here.</g:Label></div>
 		
 		<table align="center" style="padding:5px; width:100%; 100%">
 			<tr align="center">

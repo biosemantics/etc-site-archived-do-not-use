@@ -32,13 +32,20 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 	
 	@Override
 	public void onNext() {
-		matrixGenerationService.completeReview(Authentication.getInstance().getToken(), 
-				task, new RPCCallback<Task>() {
-			@Override
-			public void onResult(Task result) {	
-				placeController.goTo(new MatrixGenerationOutputPlace(result));
-			}
-		});
+		if(task != null) {
+			matrixGenerationService.save(Authentication.getInstance().getToken(), reviewPresenter.getTaxonMatrix(), task, new RPCCallback<Void>() {
+				@Override
+				public void onResult(Void result) { 
+					matrixGenerationService.completeReview(Authentication.getInstance().getToken(), 
+							task, new RPCCallback<Task>() {
+						@Override
+						public void onResult(Task result) {	
+							placeController.goTo(new MatrixGenerationOutputPlace(result));
+						}
+					});
+				}
+			}); 
+		}
 	}
 
 	@Override

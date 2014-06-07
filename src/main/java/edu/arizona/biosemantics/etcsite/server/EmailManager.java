@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.server.email;
+package edu.arizona.biosemantics.etcsite.server;
 
 import java.util.Properties;
 import javax.mail.Message;
@@ -6,6 +6,7 @@ import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -13,7 +14,7 @@ import javax.mail.internet.MimeMessage;
 public class EmailManager {
 	
 	public static final String PASSWORD_RESET_SUBJECT = "Password Reset Code";
-	public static final String PASSWORD_RESET_BODY = "A password reset authentication code has been generated for your account (<nonuniqueid>). You can use this code to reset your password. \n\nCode: <code>\n\nThis code will expire in <expire>.\n\n\n(You are receiving this email because you recently requested an authentication code to reset your account password. If you did not request an authentication code, ignore this email.)";
+	public static final String PASSWORD_RESET_BODY = "A password reset authentication code has been generated for your account (<nonuniqueid>). With this code you may reset your password. \n\n\tAuthentication code: <code>\n\nThis code will expire in <expire>.\n\n\n(This email is being sent because you recently requested an authentication to reset your account password. If you did not request an authentication code, ignore this email.)";
 	
 	private final String username = "etcsite.norespond@gmail.com";
 	private final String password = "biosemantics";
@@ -41,23 +42,15 @@ public class EmailManager {
 		return instance;
 	}
 	
-	public void sendEmail(final String to, final String subjectLine, final String bodyText) throws MessagingException {
-		final Message message = new MimeMessage(session);
+	public void sendEmail(String to, String subjectLine, String bodyText) throws AddressException, MessagingException {
+		Message message = new MimeMessage(session);
 		message.setFrom(new InternetAddress(username));
 		message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
 		message.setSubject(subjectLine);
 		message.setText(bodyText);
 
-		Thread sendThread = new Thread(){
-			public void run(){
-				try {
-					Transport.send(message);
-					//System.out.println("Sent message to " + to + ". Subject line: " + subjectLine + ", Body: " + bodyText);
-				} catch (MessagingException e) {
-					e.printStackTrace();
-				}
-			}
-		};
-		sendThread.start();
+		Transport.send(message);
+		
+		System.out.println("Sent message to " + to + ". Subject line: " + subjectLine + ", Body: " + bodyText);
 	}
 }

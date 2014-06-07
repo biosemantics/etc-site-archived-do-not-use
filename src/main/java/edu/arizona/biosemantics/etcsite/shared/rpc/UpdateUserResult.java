@@ -46,4 +46,5 @@ public class UpdateUserResult implements Serializable {
 	public void setNewSessionId(String newSessionId) {
 		this.newSessionId = newSessionId;
 	}
+
 }

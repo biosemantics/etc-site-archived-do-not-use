@@ -5,8 +5,7 @@ import java.io.Serializable;
 public class PasswordResetResult implements Serializable {
 
 	private static final long serialVersionUID = -3302088846798576341L;
-
-	public static final String EMAIL_SENT_MESSAGE = "An authentication code has been sent to your primary email address (<email>). ";
+	public static final String EMAIL_SENT_MESSAGE = "An authentication code will be sent to your primary email address (<email>). ";
 	public static final String ANTI_SPAM_MESSAGE = "You must wait until a minute has passed before requesting another authentication code.";
 	public static final String NO_SUCH_USER_MESSAGE = "There is no account associated with this email address. Please re-enter.";
 	public static final String GENERIC_ERROR_MESSAGE = "An error occurred while processing your request. Please try again later.";

@@ -6,8 +6,15 @@ public interface ILoginTopView extends IsWidget {
 
 	public interface Presenter {
 
+		void onHome();
+		
+		void onAbout();
+		
 		void onHelp();
 
+		void onNews();
+		
+		
 		void onLogin();
 		
 		void onRegister();
@@ -15,5 +22,4 @@ public interface ILoginTopView extends IsWidget {
 	}
 
 	void setPresenter(Presenter presenter);
-	
 }

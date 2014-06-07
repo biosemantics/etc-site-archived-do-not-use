@@ -110,4 +110,6 @@ public class RegisterPresenter implements IRegisterView.Presenter {
 	public void clearAllBoxes(){
 		view.clearAllBoxes();
 	}
+
 }
+

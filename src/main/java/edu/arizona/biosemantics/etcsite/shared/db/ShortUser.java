@@ -53,4 +53,6 @@ public class ShortUser implements Serializable {
 		return false;
 	}
 
+
 }
+

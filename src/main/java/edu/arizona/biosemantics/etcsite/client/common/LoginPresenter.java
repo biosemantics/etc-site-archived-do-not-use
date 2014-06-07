@@ -95,6 +95,5 @@ public class LoginPresenter implements ILoginView.Presenter {
 	public String getEmailField() {
 		return loginView.getUsername();
 	}
-	
-
 }
+

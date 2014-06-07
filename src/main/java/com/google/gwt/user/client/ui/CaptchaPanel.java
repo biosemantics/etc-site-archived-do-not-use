@@ -72,5 +72,6 @@ public class CaptchaPanel extends VerticalPanel{
 	public void updateCaptcha(int id) {
 		captchaId = id;
 		captchaImage.setUrl(captchaImageBase + "/" + captchaId);
+		clearText();
 	}
 }

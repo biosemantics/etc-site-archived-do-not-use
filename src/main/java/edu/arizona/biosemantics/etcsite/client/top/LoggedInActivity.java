@@ -73,7 +73,7 @@ public class LoggedInActivity implements Activity, Presenter, Authentication.Cha
 			@Override
 			public void onResult(User user) {
 				String name = user.getFirstName() + " " + user.getLastName();
-				topView.setGreeting("Currently signed in as " + name + ".");
+				topView.setGreeting("Signed in as " + name + ".");
 			}
 		});
 	}

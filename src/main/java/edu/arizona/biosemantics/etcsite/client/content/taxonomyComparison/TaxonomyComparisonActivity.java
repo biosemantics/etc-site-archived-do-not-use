@@ -35,3 +35,4 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 	}
 
 }
+

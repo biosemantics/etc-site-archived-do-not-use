@@ -54,13 +54,13 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.3-SNAPSHOT</version>
+		  <version>0.0.5-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.3-SNAPSHOT</version>
+		  <version>0.0.5-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
@@ -180,7 +180,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>semantic-markup</artifactId>
-			<version>0.1.6-SNAPSHOT</version>
+			<version>0.1.7-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>app</artifactId>
@@ -228,6 +228,17 @@
 			<artifactId>opencsv</artifactId>
 			<version>2.3</version>
 		</dependency>
+		<dependency>
+            <groupId>com.google.code</groupId>
+            <artifactId>kaptcha</artifactId>
+            <version>2.3.2</version>
+        </dependency>
+        <dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.7</version>
+		</dependency>
+        
 	</dependencies>
 
 	<build>
@@ -325,13 +336,14 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	
 	<distributionManagement>
-		<repository>
+		<snapshotRepository>
 			<id>playground</id>
 			<name>playground@SBS</name>
 			<url>http://128.196.105.149:8081/nexus/content/repositories/snapshots/</url>
-		</repository>
+			<uniqueVersion>false</uniqueVersion>
+		</snapshotRepository>
 	</distributionManagement>
 
 </project>

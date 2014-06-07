@@ -28,7 +28,8 @@ public interface IAuthenticationServiceAsync {
 			String bioportalUserId, String bioportalAPIKey,
 			AsyncCallback<RPCResult<UpdateUserResult>> callback);
 
-	void requestPasswordResetCode(String username,
+	void requestPasswordResetCode(int captchaId, String captchaSolution,
+			String nonUniqueId,
 			AsyncCallback<RPCResult<PasswordResetResult>> callback);
 
 	void requestPasswordReset(String nonUniqueId, String code,

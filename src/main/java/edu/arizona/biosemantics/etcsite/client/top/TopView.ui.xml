@@ -2,122 +2,97 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.common">
+	
 	<ui:style>
-		.home{
-		    position: absolute;
-		    top: 5px;
-		    left: 15px;
-		    background-size: contain;
-		    width: 20px;
-		    height: 20px;
-		}
-
-		.about{
-		    position: absolute;
-		    top: 5px;
-		    left: 90px;
-		    background-size: contain;
-		    width: 20px;
-		    height: 20px;
-		}
-
-		.news{
-		    position: absolute;
-		    top: 5px;
-		    left: 185px;
-		    background-size: contain;
-		    width: 20px;
-		    height: 20px;
-		}
-
-		.greetingText {
-		    width: 300px;
-		    position: absolute;
-		    top: 8px;
-		    right: 340px;
-		}
-		.taskManager {
-		    position: absolute;
-		    top: 5px;
-		    left: 150px;
-		    background-size: contain;
-		    height: 20px;
-		}
-
-		.fileManager {
-		    position: absolute;
-		    top: 5px;
-		    left: 300px;
-		    background-size: contain;
-		    height: 20px;
-		}
-
-		.settings {
-		    position: absolute;
-		    top: 5px;
-		    left: 450px;
-		    background-size: contain;
-		    height: 20px;
-		}
-
-		.logoutButtonDiv {	
-		    position: absolute;
-		    top: 2px;
-		    right: 140px;
-		}
-		.logoutButton {
-			height: 25px;
-			padding-top: 2px;
-		}
 		.clickable {
-			cursor: pointer;
+			cursor:pointer;
 		}
-		.helpIcon {
-		    position: absolute; 
-		    background-size: contain; 
-		    top: 5px;
-		    right: 10px;
-		    width: 120px;
-		    height: 20px;
+		.textLabelPadding {
+			padding:7px;
 		}
-		.myLogoutText {
-			width: 130px;
-		    position: absolute;
-		    top: 8px;
-		    right: 170px;
+		.imageLabelPadding {
+			padding:7px;
 		}
 		
 	</ui:style>
 	<g:HTMLPanel>
-		<div class="{style.home} {style.clickable}">
-			 <my:ImageLabel ui:field="home" imagePath="images/Home.gif" imageWidth="20px" imageHeight="20px" text="Home"></my:ImageLabel>  
-			<!--<my:ImageLabel ui:field="home" imagePath="images/ETCLogoHome.gif" imageWidth="60px" imageHeight="30px" text=""></my:ImageLabel>-->
-		</div>
-		<div class="{style.about} {style.clickable}">
-			 <my:ImageLabel ui:field="about" imagePath="images/Home.gif" imageWidth="20px" imageHeight="20px" text="About"></my:ImageLabel>  
-			<!--<my:ImageLabel ui:field="home" imagePath="images/ETCLogoHome.gif" imageWidth="60px" imageHeight="30px" text=""></my:ImageLabel>-->
-		</div>
-		<div class="{style.news} {style.clickable}">
-			 <my:ImageLabel ui:field="news" imagePath="images/Home.gif" imageWidth="20px" imageHeight="20px" text="News"></my:ImageLabel>  
-			<!--<my:ImageLabel ui:field="home" imagePath="images/ETCLogoHome.gif" imageWidth="60px" imageHeight="30px" text=""></my:ImageLabel>-->
-		</div>
-		<div class="{style.greetingText}">
-			<g:Label ui:field="greetingLabel"></g:Label>
-		</div>
-		<div class="{style.taskManager} {style.clickable}">
-			<my:ImageLabel ui:field="taskManager" imagePath="images/TaskManager.gif" imageWidth="20px" imageHeight="20px" text="Task Manager"></my:ImageLabel>
-		</div>
-		<div class="{style.fileManager} {style.clickable}">
-			<my:ImageLabel ui:field="fileManager" imagePath="images/FileManager.gif" imageWidth="20px" imageHeight="20px" text="File Manager"></my:ImageLabel>
-		</div>
-		<div class="{style.settings} {style.clickable}">
-			<my:ImageLabel ui:field="settings" imagePath="images/Settings.gif" imageWidth="20px" imageHeight="20px" text="Your Account"></my:ImageLabel>
-		</div>
-		<div class="{style.helpIcon} {style.clickable}">
-			<my:ImageLabel ui:field="help" imagePath="images/Help.gif" imageWidth="20px" imageHeight="20px" text="How to start"></my:ImageLabel>
-		</div>
-		<div class="{style.myLogoutText} {style.clickable}">
-			<g:Label text="Sign out" ui:field="logoutLabel"></g:Label>
-		</div>
+	
+		<table align="left">
+			<tr>
+				<!-- space -->
+				<td>
+					<g:Label text="&nbsp;&nbsp;"></g:Label>
+				</td>
+				
+				<!-- Home -->
+				<td class="{style.clickable} {style.imageLabelPadding}">
+					<my:ImageLabel ui:field="home" imagePath="images/Home.gif" imageWidth="20px" imageHeight="20px" text="Home"></my:ImageLabel>
+				</td>
+			
+				<!-- Task Manager -->
+				<td class="{style.clickable} {style.imageLabelPadding}">
+					<my:ImageLabel ui:field="taskManager" imagePath="images/TaskManager.gif" imageWidth="20px" imageHeight="20px" text="Task Manager"></my:ImageLabel>
+				</td>
+			
+				<!-- File Manager -->
+				<td class="{style.clickable} {style.imageLabelPadding}">
+					<my:ImageLabel ui:field="fileManager" imagePath="images/FileManager.gif" imageWidth="20px" imageHeight="20px" text="File Manager"></my:ImageLabel>
+				</td>
+			
+				<!-- My Account -->
+				<td class="{style.clickable} {style.imageLabelPadding}">
+					<my:ImageLabel ui:field="settings" imagePath="images/Settings.gif" imageWidth="20px" imageHeight="20px" text="My Account"></my:ImageLabel>
+				</td>
+				
+				<!-- News -->
+				<td class="{style.clickable} {style.imageLabelPadding}">
+					<my:ImageLabel ui:field="news" imagePath="images/News.gif" imageWidth="20px" imageHeight="20px" text="News"></my:ImageLabel>  
+				</td>
+				
+				<!-- About ETC -->
+				<td class="{style.clickable} {style.imageLabelPadding}">
+					<my:ImageLabel ui:field="about" imagePath="images/About.gif" imageWidth="20px" imageHeight="20px" text="About ETC"></my:ImageLabel>  
+				</td>
+
+
+				
+				<table align="right">
+					<tr>
+						<!-- Signed in as ________. -->
+						<td class="{style.textLabelPadding}">
+							<g:Label ui:field="greetingLabel" height="23px"></g:Label>
+						</td>
+						
+						<!-- space -->
+						<td>
+							<g:Label text="&nbsp;&nbsp;"></g:Label>
+						</td>
+						
+						<!-- Sign out -->
+						<td class="{style.clickable} {style.textLabelPadding}">
+							<g:Label text="Sign out" ui:field="logoutLabel" height="23px"></g:Label>
+						</td>
+						
+						<!-- space -->
+						<td>
+							<g:Label text="&nbsp;&nbsp;&nbsp;&nbsp;"></g:Label>
+						</td>
+						
+						<!-- Getting Started -->
+						<td class="{style.clickable} {style.imageLabelPadding}">
+							<my:ImageLabel imagePath="images/Help.gif" imageWidth="20px" imageHeight="20px" text="Getting Started" ui:field="help"></my:ImageLabel>
+						</td>
+						
+						<!-- space -->
+						<td>
+							<g:Label text="&nbsp;&nbsp;"></g:Label>
+						</td>
+					</tr>
+				</table>
+				
+			</tr>
+		</table>
+		
 	</g:HTMLPanel>
 </ui:UiBinder> 
+	

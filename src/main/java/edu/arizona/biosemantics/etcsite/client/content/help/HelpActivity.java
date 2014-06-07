@@ -42,3 +42,4 @@ public class HelpActivity extends MyAbstractActivity implements Presenter {
 	}
 
 }
+
