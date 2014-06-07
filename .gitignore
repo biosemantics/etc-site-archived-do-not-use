@@ -11,3 +11,5 @@
 .project
 .settings/*
 /bin
+
+config.properties
