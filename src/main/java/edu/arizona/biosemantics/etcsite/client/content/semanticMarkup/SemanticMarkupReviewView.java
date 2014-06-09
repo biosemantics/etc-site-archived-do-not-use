@@ -29,6 +29,7 @@ public class SemanticMarkupReviewView extends Composite implements ISemanticMark
 
 	public SemanticMarkupReviewView() {
 		initWidget(uiBinder.createAndBindUi(this));
+		frame.getElement().setAttribute("scrolling", "no");
 	}
 
 	@Override
