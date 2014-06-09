@@ -6,6 +6,8 @@ public interface IStartMenuView extends IsWidget {
 
 	public interface Presenter {
 
+		void onAbout();
+
 	}
 
 	void setPresenter(Presenter presenter);

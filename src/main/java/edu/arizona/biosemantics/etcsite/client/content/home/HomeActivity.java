@@ -34,7 +34,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
 
-public class HomeActivity extends MyAbstractActivity implements IStartMenuView.Presenter, IHomeContentView.Presenter {
+public class HomeActivity extends MyAbstractActivity implements IHomeContentView.Presenter {
 
 	private IHomeContentView homeContentView;
 	private ISemanticMarkupServiceAsync semanticMarkupService;
