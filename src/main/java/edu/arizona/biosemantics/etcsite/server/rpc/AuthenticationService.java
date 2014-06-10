@@ -100,8 +100,10 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 				int id = UserDAO.getInstance().getLocalUserWithEmail(email).getUniqueId();
 				
 				//add a file directory for this user. 
-				String filename = Configuration.fileBase + File.separator + id;
-				new File(filename).mkdir();
+				String userFile = Configuration.fileBase + File.separator + id;
+				new File(userFile).mkdir();
+				String compressedFile = Configuration.compressedFileBase + File.separator + id;
+				new File(compressedFile).mkdir();
 				
 				return new RPCResult<RegistrationResult>(true, new RegistrationResult(true, RegistrationResult.SUCCESS_MESSAGE));
 			}
