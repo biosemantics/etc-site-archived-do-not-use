@@ -41,7 +41,6 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	private static int RESET_PASSWORD_MINIMUM_WAIT_TIME_SECONDS = 60;
 	private static int RESET_PASSWORD_HOURS_BEFORE_EXPIRE = 1;
 	
-	
 	private SecretKey key;
 	private Cipher encryptCipher;
 	private Cipher decryptCipher;
@@ -169,7 +168,16 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 			return new RPCResult<User>(false, "Error in getUser, passed id " + userId + ".", null);
 		}
 	}
-
+	
+	private String generateSessionId(String uniqueId, String encryptedPassword){
+		try {
+			String sessionId = uniqueId + ":" + encryptedPassword;
+			return DatatypeConverter.printBase64Binary(sessionId.getBytes());
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 	@Override
 	public RPCResult<AuthenticationResult> isValidSession(AuthenticationToken authenticationToken) {
@@ -177,11 +185,8 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 			return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(true, "admin", "admin"));
 		String sessionID = authenticationToken.getSessionID();
 		if(sessionID != null){
-			//decrypt the string. 
 			try {
-				byte[] stringBytes = DatatypeConverter.parseBase64Binary(sessionID);
-				byte[] decoded = decryptCipher.doFinal(stringBytes);
-				String completeString = new String(decoded, "UTF8");
+				String completeString = new String(DatatypeConverter.parseBase64Binary(sessionID));
 				int division = completeString.indexOf(':');
 				String id = completeString.substring(0, division);
 				String password = completeString.substring(division + 1, completeString.length());
@@ -299,20 +304,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	}
 
 	
-	private String generateSessionId(String uniqueId, String encryptedPassword){
-		String completeString = uniqueId + ":" + encryptedPassword;
-		
-		//encrypt the string. 
-		try {
-			byte[] stringBytes = completeString.getBytes("UTF8");
-			byte[] encoded = encryptCipher.doFinal(stringBytes);
-			String encodedString = DatatypeConverter.printBase64Binary(encoded);
-			return new String(encodedString);
-		} catch (Exception e){
-			e.printStackTrace();
-		}
-		return null;
-	}
+
 	
 	
 	private String generatePasswordResetCode(){	
