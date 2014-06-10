@@ -61,14 +61,16 @@
 		 
 		<g:DockLayoutPanel unit='PX' ui:field='dockLayoutPanel'>
 		    	<g:north size='50'>
-		    	    <g:HorizontalPanel styleName="{style.centered}">
-		    	        <g:cell>
-		    	            <my:SubMenu ui:field="subMenu" step="REVIEW"/>
-		    	        </g:cell>
-		    	      	<g:cell>
-		    	            <g:Button addStyleNames="{style.nextButton}" ui:field="nextButton">Next</g:Button>
-		    	        </g:cell>
-		    	    </g:HorizontalPanel>
+		    	    <g:SimplePanel> <!-- necessary because element.style information is set which leads ff not to center the menu -->
+			    	    <g:HorizontalPanel styleName="{style.centered}">
+			    	        <g:cell>
+			    	            <my:SubMenu ui:field="subMenu" step="REVIEW"/>
+			    	        </g:cell>
+			    	      	<g:cell>
+			    	            <g:Button addStyleNames="{style.nextButton}" ui:field="nextButton">Next</g:Button>
+			    	        </g:cell>
+			    	    </g:HorizontalPanel>
+		    	    </g:SimplePanel>
 		    	</g:north>
 			   <g:center>
 			       <re:IReviewView ui:field="view"/>
