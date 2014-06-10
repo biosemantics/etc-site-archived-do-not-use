@@ -192,6 +192,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 				else
 					System.err.println("An invalid session was found with sessionID: " + sessionID);
 			} catch (Exception e){
+				e.printStackTrace();
 				System.err.println("An error occurred while validating a sessionID. (Perhaps the server was restarted?)");
 			}
 		}

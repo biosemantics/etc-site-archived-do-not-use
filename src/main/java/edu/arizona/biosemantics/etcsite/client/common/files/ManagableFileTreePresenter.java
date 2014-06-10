@@ -65,8 +65,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		this.textInputPresenter = textInputPresenter;
 		this.createSemanticMarkupFilesDialogPresenter = createSemanticMarkupFilesDialogPresenter;
 		
-		this.defaultServletPath = view.getUploader().getServletPath() + "?username=" + Authentication.getInstance().getUsername()
-				+ "&sessionID=" + Authentication.getInstance().getSessionID();
+		defaultServletPath = view.getUploader().getServletPath();
 		view.getUploader().setServletPath(defaultServletPath);
 		view.getUploader().addOnFinishUploadHandler(new OnFinishUploadHandler());
 		view.getUploader().addOnStartUploadHandler(new OnStartUploadHandler());
@@ -225,7 +224,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 					@Override
 					public void onResult(String result) {
 						//target=" + result.getData() + "&directory=yes
-						Window.Location.replace(URL.encode("/etcsite/download/?target=" + result + "&username=" + Authentication.getInstance().getUsername() + "&" + 
+						Window.Location.replace(URL.encodeQueryString("/etcsite/download/?target=" + result + "&username=" + Authentication.getInstance().getUsername() + "&" + 
 								"sessionID=" + Authentication.getInstance().getSessionID()));
 						
 						/*Window.open("/etcsite/download/?target=" + result.getData() + "&username=" + Authentication.getInstance().getUsername() + "&" + 
@@ -271,16 +270,20 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 
 	public class OnStartUploadHandler implements OnStartUploaderHandler {
 		@Override
-		public void onStart(final IUploader uploader) {
+		public void onStart(final IUploader uploader) {			
+			String servletPath = view.getUploader().getServletPath() + "?username=" + URL.encodeQueryString(Authentication.getInstance().getUsername())
+					+ "&sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionID());
+			uploader.setServletPath(servletPath);
+			
 			List<String> fileNames = new LinkedList<String>();
 			fileNames.add("Uploading, please wait...");
 			uploader.getStatusWidget().setFileNames(fileNames);
 			final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
 			if(selection.getFileInfo().getFileType().equals(FileTypeEnum.DIRECTORY)) {
-				uploader.setServletPath(uploader.getServletPath() + "&target=" + selection.getFileInfo().getFilePath());
+				uploader.setServletPath(uploader.getServletPath() + "&target=" + URL.encodeQueryString(selection.getFileInfo().getFilePath()));
 			} else {
 				String newFilePath = getParent(selection);
-				uploader.setServletPath(uploader.getServletPath() + "&target=" + newFilePath);
+				uploader.setServletPath(uploader.getServletPath() + "&target=" + URL.encodeQueryString(newFilePath));
 			}				
 			
 			/*
