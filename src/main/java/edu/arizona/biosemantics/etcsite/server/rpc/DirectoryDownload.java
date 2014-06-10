@@ -92,7 +92,7 @@ public class DirectoryDownload {
 		
 		if(zipSource != null) {
 			try {
-				zipFilepath = zipSource + ".tar.gz";
+				zipFilepath = zipSource + ".zip";
 				zipper.zip(zipSource, zipFilepath);
 				return true;
 			} catch (Exception e) {
