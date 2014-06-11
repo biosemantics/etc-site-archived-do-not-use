@@ -18,6 +18,7 @@ import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.Configuration;
 import edu.arizona.biosemantics.etcsite.client.common.IMessageView;
 import edu.arizona.biosemantics.etcsite.client.common.ITextInputView;
+import edu.arizona.biosemantics.etcsite.client.common.LoadingPopup;
 import edu.arizona.biosemantics.etcsite.client.common.ITextInputView.ITextInputListener;
 import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.client.common.MessageView;
@@ -49,6 +50,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	private String defaultServletPath;
 	private ITextInputView.Presenter textInputPresenter;
 	private ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter;
+	private LoadingPopup loadingPopup = new LoadingPopup();
 	
 	@Inject
 	public ManagableFileTreePresenter(IManagableFileTreeView view, 
@@ -220,10 +222,12 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		if(selection != null) { 
 			final String selectionPath = selection.getFileInfo().getFilePath();
 			if(selectionPath != null) {
+				loadingPopup.start();
 				fileService.getDownloadPath(Authentication.getInstance().getToken(), selectionPath, new RPCCallback<String>() {
 					@Override
 					public void onResult(String result) {
 						//target=" + result.getData() + "&directory=yes
+						loadingPopup.stop();
 						Window.Location.replace("/etcsite/download/?target=" + URL.encodeQueryString(result) + 
 								"&username=" + URL.encodeQueryString(Authentication.getInstance().getUsername()) + "&" + 
 								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionID()));

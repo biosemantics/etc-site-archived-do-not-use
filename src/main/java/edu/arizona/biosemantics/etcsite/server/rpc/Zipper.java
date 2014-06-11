@@ -8,21 +8,46 @@ import edu.arizona.biosemantics.etcsite.server.Configuration;
 
 public class Zipper {
 
-	public void zip(String source, String destination) throws Exception {
+	public String zip(String source, String destination) throws Exception {
+		String effectiveDestination = destination;
+		
+		for(int i=0; i<100; i++) {
+			File destinationFile = new File(effectiveDestination);
+			if(!destinationFile.exists())
+				break;
+			
+			boolean deleteResult = false;
+			try {
+				deleteResult = destinationFile.delete();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			
+			if(!deleteResult) {
+				int lastDot = destination.lastIndexOf(".");
+				if(lastDot != -1)
+					effectiveDestination = destination.substring(0, lastDot) + "(" + i + ")" + destination.substring(lastDot, destination.length());
+				else
+					effectiveDestination = destination + "(" + i + ")";
+			}
+		}
+		
+		
 		File sourceFile = new File(source);
-		if(sourceFile.exists()) {			
+		if(sourceFile.exists()) {
 			String command = Configuration.compressCommand; 
-			command = command.replace("[destination]", destination);
+			command = command.replace("[destination]", effectiveDestination);
 			command = command.replace("[source.parent]", sourceFile.getParent());
 			command = command.replace("[source.filename]", sourceFile.getName());
 			Process process = runCommand(command);
 			process.waitFor();
 		}
+		return effectiveDestination;
 	}
 	
 	private Process runCommand(String command) throws Exception {
 		Process p = Runtime.getRuntime().exec(command);
-		/*BufferedReader stdInput = new BufferedReader(new InputStreamReader(p
+		BufferedReader stdInput = new BufferedReader(new InputStreamReader(p
 				.getInputStream()));
 		
 		BufferedReader errInput = new BufferedReader(new InputStreamReader(p
@@ -39,7 +64,7 @@ public class Zipper {
 		String e = "";
 		while ((e = errInput.readLine()) != null) {
 			System.out.println(s);
-		}*/
+		}
 		return p;
 	}
 

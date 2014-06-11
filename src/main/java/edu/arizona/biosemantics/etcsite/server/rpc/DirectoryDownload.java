@@ -93,7 +93,7 @@ public class DirectoryDownload {
 		if(zipSource != null) {
 			try {
 				zipFilepath = zipSource + ".zip";
-				zipper.zip(zipSource, zipFilepath);
+				zipFilepath = zipper.zip(zipSource, zipFilepath);
 				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
