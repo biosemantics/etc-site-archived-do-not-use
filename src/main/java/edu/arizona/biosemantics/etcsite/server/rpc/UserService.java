@@ -19,7 +19,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 			if(includeSelf)
 				usernames = UserDAO.getInstance().getUsers();
 			else
-				usernames = UserDAO.getInstance().getUsersWithout(authenticationToken.getUsername());
+				usernames = UserDAO.getInstance().getUsersWithout(authenticationToken.getUserId());
 			return new RPCResult<List<ShortUser>>(true, usernames);
 		} catch (Exception e) {
 			e.printStackTrace();

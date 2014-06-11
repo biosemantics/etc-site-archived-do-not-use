@@ -38,30 +38,30 @@ public class DirectoryDownload {
 		try {
 			if((filePath.startsWith("Share.") || filePath.equals("Root") || filePath.equals("Owned") || filePath.equals("Shared"))) {
 				if(filePath.equals("Root")) { 
-					zipSource = Configuration.compressedFileBase + File.separator + authenticationToken.getUsername() + File.separator + "Root";
+					zipSource = Configuration.compressedFileBase + File.separator + authenticationToken.getUserId() + File.separator + "Root";
 					gatherRoot(zipSource);
 				}
 				if(filePath.equals("Shared")) {
-					zipSource = Configuration.compressedFileBase + File.separator + authenticationToken.getUsername() + File.separator + "Shared";
+					zipSource = Configuration.compressedFileBase + File.separator + authenticationToken.getUserId() + File.separator + "Shared";
 					gatherShared(zipSource);
 				}
 				if(filePath.equals("Owned")) {
-					zipSource = Configuration.compressedFileBase + File.separator + authenticationToken.getUsername() + File.separator + "Owned";
+					zipSource = Configuration.compressedFileBase + File.separator + authenticationToken.getUserId() + File.separator + "Owned";
 					gatherOwned(zipSource);
 				}
 				if(filePath.startsWith("Share.Input")) {
 					Task task = this.getTaskFromFilePath(filePath);
-					zipSource = Configuration.compressedFileBase + File.separator + authenticationToken.getUsername() + File.separator + task.getName() + "Input";
+					zipSource = Configuration.compressedFileBase + File.separator + authenticationToken.getUserId() + File.separator + task.getName() + "Input";
 					gatherShareInput(this.getTaskFromFilePath(filePath), zipSource);
 				}
 				if(filePath.startsWith("Share.Output")) {
 					Task task = this.getTaskFromFilePath(filePath);
-					zipSource = Configuration.compressedFileBase + File.separator + authenticationToken.getUsername() + File.separator + task.getName() + "Output";
+					zipSource = Configuration.compressedFileBase + File.separator + authenticationToken.getUserId() + File.separator + task.getName() + "Output";
 					gatherShareOutput(task, zipSource);
 				}
 				if(filePath.matches("Share\\.\\d*")) {
 					Task task = this.getTaskFromFilePath(filePath);
-					zipSource = Configuration.compressedFileBase + File.separator + authenticationToken.getUsername() + File.separator + task.getName();
+					zipSource = Configuration.compressedFileBase + File.separator + authenticationToken.getUserId() + File.separator + task.getName();
 					gatherShare(task, zipSource);
 				}
 			} else {
@@ -74,7 +74,7 @@ public class DirectoryDownload {
 					File file = new File(filePath);
 					if(file.exists()) {
 						zipSource = gatherFiles(file, 
-								Configuration.compressedFileBase + File.separator + authenticationToken.getUsername() + File.separator + file.getName());					
+								Configuration.compressedFileBase + File.separator + authenticationToken.getUserId() + File.separator + file.getName());					
 					} else {
 						this.error = "File was not found";
 						return false;
@@ -131,7 +131,7 @@ public class DirectoryDownload {
 	
 	private void gatherOwned(String destination) {
 		cleanup(destination);		
-		String source = Configuration.fileBase + File.separator + authenticationToken.getUsername();
+		String source = Configuration.fileBase + File.separator + authenticationToken.getUserId();
 		fileService.copyFiles(authenticationToken, source, destination);
 	}
 	

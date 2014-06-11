@@ -182,7 +182,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	@Override
 	public RPCResult<Task> start(AuthenticationToken authenticationToken, String taskName, String input) {	
 		try {
-			RPCResult<Boolean> sharedResult = filePermissionService.isSharedFilePath(authenticationToken.getUsername(), input);
+			RPCResult<Boolean> sharedResult = filePermissionService.isSharedFilePath(authenticationToken.getUserId(), input);
 			if(!sharedResult.isSucceeded())
 				return new RPCResult<Task>(false, "Couldn't verify permission on input directory");
 			RPCResult<String> fileNameResult = fileService.getFileName(authenticationToken, input);
@@ -190,7 +190,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				return new RPCResult<Task>(false, "Couldn't find file name for import");
 			if(sharedResult.getData()) {
 				RPCResult<String> destinationResult = 
-						fileService.createDirectory(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUsername(), 
+						fileService.createDirectory(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUserId(), 
 								fileNameResult.getData(), true);
 				RPCResult<Void> destination = fileService.copyFiles(authenticationToken, input, destinationResult.getData());
 				if(!destinationResult.isSucceeded() || !destination.isSucceeded())
@@ -206,7 +206,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			edu.arizona.biosemantics.etcsite.shared.rpc.TaskTypeEnum taskType = edu.arizona.biosemantics.etcsite.shared.rpc.TaskTypeEnum.MATRIX_GENERATION;
 			TaskType dbTaskType = TaskTypeDAO.getInstance().getTaskType(taskType);
 			TaskStage taskStage = TaskStageDAO.getInstance().getMatrixGenerationTaskStage(TaskStageEnum.INPUT.toString());
-			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUsername());
+			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUserId());
 			Task task = new Task();
 			task.setName(taskName);
 			task.setResumable(true);
@@ -547,7 +547,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	@Override
 	public RPCResult<Task> getLatestResumable(AuthenticationToken authenticationToken) {
 		try {
-			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUsername());
+			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUserId());
 			List<Task> tasks = TaskDAO.getInstance().getOwnedTasks(user.getId());
 			for(Task task : tasks) {
 				if(task.isResumable() && 

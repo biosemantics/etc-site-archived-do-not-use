@@ -29,14 +29,15 @@ public interface IAuthenticationServiceAsync {
 			AsyncCallback<RPCResult<UpdateUserResult>> callback);
 
 	void requestPasswordResetCode(int captchaId, String captchaSolution,
-			String nonUniqueId,
+			String openIdProviderId,
 			AsyncCallback<RPCResult<PasswordResetResult>> callback);
 
-	void requestPasswordReset(String nonUniqueId, String code,
+	void requestPasswordReset(String openIdProviderId, String code,
 			String newPassword,
 			AsyncCallback<RPCResult<PasswordResetResult>> callback);
 
 	public void requestCaptcha(AsyncCallback<RPCResult<RequestCaptchaResult>> callback);
 
+	public void getOperator(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<String>> callback);
 	
 }

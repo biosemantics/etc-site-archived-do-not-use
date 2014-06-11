@@ -29,11 +29,13 @@ public interface IAuthenticationService extends RemoteService {
 			String bioportalAPIKey);
 
 	RPCResult<PasswordResetResult> requestPasswordResetCode(int captchaId,
-			String captchaSolution, String nonUniqueId);
+			String captchaSolution, String openIdProviderId);
 
-	RPCResult<PasswordResetResult> requestPasswordReset(String nonUniqueId,
+	RPCResult<PasswordResetResult> requestPasswordReset(String openIdProviderId,
 			String code, String newPassword);
 
 	RPCResult<RequestCaptchaResult> requestCaptcha();
+	
+	RPCResult<String> getOperator(AuthenticationToken authenticationToken);
 
 }

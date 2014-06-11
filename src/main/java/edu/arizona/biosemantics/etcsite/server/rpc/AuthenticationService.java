@@ -14,6 +14,7 @@ import javax.xml.bind.DatatypeConverter;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.server.CaptchaManager;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.EmailManager;
@@ -72,14 +73,14 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 		try {
 			User user = UserDAO.getInstance().getLocalUserWithEmail(email);
 			if(user != null && BCrypt.checkpw(password, user.getPassword())) {
-				String sessionId = generateSessionId(user.getUniqueId()+"", user.getPassword());
-				return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(true, sessionId, user.getUniqueId()+""));
+				String sessionId = generateSessionId(user.getId(), user.getPassword());
+				return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(true, sessionId, user.getId()));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new RPCResult<AuthenticationResult>(false, "Internal Server Error");
 		}			
-		return new RPCResult<AuthenticationResult>(true, "Authentication failed", new AuthenticationResult(false, null, null));
+		return new RPCResult<AuthenticationResult>(true, "Authentication failed", new AuthenticationResult(false, null, -1));
 	}
 	
 	
@@ -97,7 +98,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 			
 			if (UserDAO.getInstance().addUser(email, encryptedPassword, firstName, lastName)){ //registration was successful.
 				//get the user that was just added.
-				int id = UserDAO.getInstance().getLocalUserWithEmail(email).getUniqueId();
+				int id = UserDAO.getInstance().getLocalUserWithEmail(email).getId();
 				
 				//add a file directory for this user. 
 				String userFile = Configuration.fileBase + File.separator + id;
@@ -119,7 +120,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	@Override
 	public RPCResult<UpdateUserResult> updateUser(AuthenticationToken authenticationToken, String oldPassword, String firstName, String lastName, String email, String newPassword, String affiliation, String bioportalUserId, String bioportalAPIKey) {
 		
-		String uniqueId = authenticationToken.getUserId();
+		int userId = authenticationToken.getUserId();
 		
 		//check to see if this is a valid session.
 		if (!isValidSession(authenticationToken).getData().getResult()){
@@ -129,7 +130,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 		
 		try{ 
 			//check to see if the provided password matches the logged-in user's password. 
-			User user = UserDAO.getInstance().getUser(uniqueId);
+			User user = UserDAO.getInstance().getUser(userId);
 			if(user == null || !BCrypt.checkpw(oldPassword, user.getPassword())) {
 				return new RPCResult<UpdateUserResult>(true, new UpdateUserResult(false, UpdateUserResult.INCORRECT_PASSWORD_MESSAGE, null));
 			}
@@ -138,9 +139,9 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 			String encryptedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
 			
 			//update the user with the new values. 
-			if (UserDAO.getInstance().updateUser(uniqueId, firstName, lastName, email, encryptedPassword, affiliation, bioportalUserId, bioportalAPIKey)){
-				user = UserDAO.getInstance().getUser(uniqueId);
-				String newSessionId = generateSessionId(uniqueId, user.getPassword());
+			if (UserDAO.getInstance().updateUser(userId, firstName, lastName, email, encryptedPassword, affiliation, bioportalUserId, bioportalAPIKey)){
+				user = UserDAO.getInstance().getUser(userId);
+				String newSessionId = generateSessionId(userId, user.getPassword());
 				return new RPCResult<UpdateUserResult>(true, new UpdateUserResult(true, UpdateUserResult.SUCCESS_MESSAGE, newSessionId));
 			}
 			else //there is no user with that id. 
@@ -156,8 +157,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	
 	@Override
 	public RPCResult<User> getUser(AuthenticationToken authenticationToken) {
-		
-		String userId = authenticationToken.getUserId();
+		int userId = authenticationToken.getUserId();
 		try {
 			User user = UserDAO.getInstance().getUser(userId);
 			
@@ -171,9 +171,9 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 		}
 	}
 	
-	private String generateSessionId(String uniqueId, String encryptedPassword){
+	private String generateSessionId(int userId, String encryptedPassword){
 		try {
-			String sessionId = uniqueId + ":" + encryptedPassword;
+			String sessionId = userId + ":" + encryptedPassword;
 			return DatatypeConverter.printBase64Binary(sessionId.getBytes());
 		} catch (Exception e){
 			e.printStackTrace();
@@ -184,16 +184,16 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	@Override
 	public RPCResult<AuthenticationResult> isValidSession(AuthenticationToken authenticationToken) {
 		if(authenticationToken instanceof AdminAuthenticationToken)
-			return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(true, "admin", "admin"));
+			return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(true, "admin", -99));
 		String sessionID = authenticationToken.getSessionID();
 		if(sessionID != null){
 			try {
 				String completeString = new String(DatatypeConverter.parseBase64Binary(sessionID));
 				int division = completeString.indexOf(':');
-				String id = completeString.substring(0, division);
+				int userId = Integer.parseInt(completeString.substring(0, division));
 				String password = completeString.substring(division + 1, completeString.length());
 				
-				User user = UserDAO.getInstance().getUser(id);
+				User user = UserDAO.getInstance().getUser(userId);
 				if (user != null && user.getPassword().equals(password))
 					return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(true, sessionID, authenticationToken.getUserId()));
 				else
@@ -203,43 +203,43 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 				System.err.println("An error occurred while validating a sessionID. (Perhaps the server was restarted?)");
 			}
 		}
-		return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(false, null, null));
+		return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(false, null, -1));
 	}
 	
 	
 	@Override
-	public RPCResult<PasswordResetResult> requestPasswordResetCode(int captchaId, String captchaSolution, String nonUniqueId) {
+	public RPCResult<PasswordResetResult> requestPasswordResetCode(int captchaId, String captchaSolution, String openIdProviderId) {
 		//check to see if the captcha is correct.
 		if (!CaptchaManager.getInstance().isValidSolution(captchaId, captchaSolution)){
 			return new RPCResult<PasswordResetResult>(true, new PasswordResetResult(false, RegistrationResult.CAPTCHA_INCORRECT_MESSAGE));
 		}
 		
 		try {
-			User user = UserDAO.getInstance().getLocalUserWithEmail(nonUniqueId);
+			User user = UserDAO.getInstance().getLocalUserWithEmail(openIdProviderId);
 			if (user == null)
 				return new RPCResult<PasswordResetResult>(true, new PasswordResetResult(false, PasswordResetResult.NO_SUCH_USER_MESSAGE));
-			int uniqueId = user.getUniqueId();
+			int userId = user.getId();
 			String email = user.getEmail();
 			
-			PasswordResetRequest oldRequest = PasswordResetRequestDAO.getInstance().getRequest(uniqueId);
+			PasswordResetRequest oldRequest = PasswordResetRequestDAO.getInstance().getRequest(userId);
 			if (oldRequest != null){
 				//see if it has been a long enough time since the last request to process this. 
 				if ((new Date()).getTime() - oldRequest.getRequestTime().getTime() < RESET_PASSWORD_MINIMUM_WAIT_TIME_SECONDS * 1000)
 					return new RPCResult<PasswordResetResult>(true, new PasswordResetResult(false, PasswordResetResult.ANTI_SPAM_MESSAGE));
 				
 				//delete the old request.
-				PasswordResetRequestDAO.getInstance().removeRequests(uniqueId);
+				PasswordResetRequestDAO.getInstance().removeRequests(userId);
 			}
 			
 			//generate a code.
 			String authenticationCode = generatePasswordResetCode();
 			
 			//add the new request to the database. 
-			PasswordResetRequestDAO.getInstance().addRequest(uniqueId, authenticationCode);
+			PasswordResetRequestDAO.getInstance().addRequest(userId, authenticationCode);
 			
 			//send the user an email. 
 			String expireTime = RESET_PASSWORD_HOURS_BEFORE_EXPIRE + (RESET_PASSWORD_HOURS_BEFORE_EXPIRE == 1 ? " hour" : " hours");
-			String bodyText = EmailManager.PASSWORD_RESET_BODY.replace("<nonuniqueid>", nonUniqueId).replace("<code>", authenticationCode).replace("<expire>", expireTime);
+			String bodyText = EmailManager.PASSWORD_RESET_BODY.replace("<openidproviderid>", openIdProviderId).replace("<code>", authenticationCode).replace("<expire>", expireTime);
 			EmailManager.getInstance().sendEmail(email, EmailManager.PASSWORD_RESET_SUBJECT, bodyText);
 			
 			return new RPCResult<PasswordResetResult>(true, new PasswordResetResult(true, PasswordResetResult.EMAIL_SENT_MESSAGE.replace("<email>", email)));
@@ -252,7 +252,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	
 	
 	@Override
-	public RPCResult<PasswordResetResult> requestPasswordReset(String nonUniqueId, String code, String newPassword){
+	public RPCResult<PasswordResetResult> requestPasswordReset(String openIdProviderId, String code, String newPassword){
 		//check to see if user exists.
 		//check to see if the code is correct and if we are still within the allotted time. 
 		//"This code is invalid or has expired. Try entering the code again or sending a new one."
@@ -260,13 +260,13 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 		//show confirm message.
 		
 		try{
-			User user = UserDAO.getInstance().getLocalUserWithEmail(nonUniqueId);
+			User user = UserDAO.getInstance().getLocalUserWithEmail(openIdProviderId);
 			if (user == null)
 				return new RPCResult<PasswordResetResult>(true, new PasswordResetResult(false, PasswordResetResult.NO_SUCH_USER_MESSAGE));
-			int uniqueId = user.getUniqueId();
+			int userId = user.getId();
 			
 			//if this user has not requested a password change, send back an error. 
-			PasswordResetRequest request = PasswordResetRequestDAO.getInstance().getRequest(uniqueId);
+			PasswordResetRequest request = PasswordResetRequestDAO.getInstance().getRequest(userId);
 			if (request == null)
 				return new RPCResult<PasswordResetResult>(true, new PasswordResetResult(false, PasswordResetResult.INCORRECT_OR_EXPIRED_MESSAGE));
 				
@@ -278,7 +278,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 			String encryptedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
 			
 			UserDAO.getInstance().updateUser(
-					user.getUniqueId()+"", 
+					user.getId(), 
 					user.getFirstName(), 
 					user.getLastName(), 
 					user.getEmail(), 
@@ -288,7 +288,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 					user.getBioportalAPIKey());
 			
 			//remove the key so that it cannot be used again. 
-			PasswordResetRequestDAO.getInstance().removeRequests(uniqueId);
+			PasswordResetRequestDAO.getInstance().removeRequests(userId);
 			
 			return new RPCResult<PasswordResetResult>(true, new PasswordResetResult(true, PasswordResetResult.PASSWORD_RESET_MESSAGE));
 		} catch(Exception e){
@@ -319,5 +319,18 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 		}
 		
 		return code;
+	}
+
+	@Override
+	public RPCResult<String> getOperator(AuthenticationToken authenticationToken) {
+		RPCResult<User> userResult = this.getUser(authenticationToken);
+		if(!userResult.isSucceeded()) 
+			return new RPCResult<String>(false, userResult.getMessage(), "");
+		
+		User user = userResult.getData();
+		String operator = user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ") ";
+		if(!user.getAffiliation().isEmpty()) 
+			operator += "at " + user.getAffiliation();
+		return new RPCResult<String>(true, operator, "");
 	}
 }

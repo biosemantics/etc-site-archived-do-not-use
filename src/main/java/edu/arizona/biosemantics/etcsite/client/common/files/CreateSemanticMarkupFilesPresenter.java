@@ -90,7 +90,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 		textBuilder.append("distribution: #" + view.getDistributionDescription().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "#\n");
 		textBuilder.append("phenology: #" + view.getPhenologyDescription().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "#\n");		
 		
-		XmlModelFile result = xmlModelFileCreator.createXmlModelFile(textBuilder.toString(), Authentication.getInstance().getUsername());
+		XmlModelFile result = xmlModelFileCreator.createXmlModelFile(textBuilder.toString(), getOperator(Authentication.getInstance()));
 		return result;
 	}
 
@@ -188,7 +188,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 
 	@Override
 	public void onBatch(String text) {
-		List<XmlModelFile> xmlModelFiles = xmlModelFileCreator.createXmlModelFiles(text, Authentication.getInstance().getUsername());
+		List<XmlModelFile> xmlModelFiles = xmlModelFileCreator.createXmlModelFiles(text, getOperator(Authentication.getInstance()));
 		
 		StringBuilder overallError = new StringBuilder();
 		
@@ -204,5 +204,12 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 			error += "Did not create any files";
 			messagePresenter.showMessage("Input Error", error.replaceAll("\n", "</br>"));
 		}
+	}
+	
+	private String getOperator(Authentication authentication) {
+		String operator = authentication.getFirstName() + " " + Authentication.getInstance().getLastName() + " (" + authentication.getEmail() + ") ";
+		if(!authentication.getAffiliation().isEmpty()) 
+			operator += "at " + authentication.getAffiliation();
+		return operator;
 	}
 }

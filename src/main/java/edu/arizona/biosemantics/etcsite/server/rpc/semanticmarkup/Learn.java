@@ -18,19 +18,19 @@ public class Learn implements ILearn {
 	private String tablePrefix;
 	private AuthenticationToken authenticationToken;
 	private String source;
-	private String user;
+	private String operator;
 	private String bioportalUserId;
 	private String bioportalAPIKey;
 	private IFileService fileService = new FileService();
 
 	public Learn(AuthenticationToken authenticationToken, String config, String input, String tablePrefix,
-			String source, String user, String bioportalUserId, String bioportalAPIKey) {
+			String source, String operator, String bioportalUserId, String bioportalAPIKey) {
 		this.authenticationToken = authenticationToken;
 		this.config = config;
 		this.input = input;
 		this.tablePrefix = tablePrefix;
 		this.source = source;
-		this.user = user;
+		this.operator = operator;
 		this.bioportalUserId = bioportalUserId;
 		this.bioportalAPIKey = bioportalAPIKey;
 	}
@@ -49,7 +49,7 @@ public class Learn implements ILearn {
 		String debugFile = workspace + File.separator + tablePrefix + File.separator + "debug.log";
 		String errorFile = workspace + File.separator + tablePrefix + File.separator + "error.log";
 		fileService.createDirectory(new AdminAuthenticationToken(), workspace, tablePrefix, false);
-		String[] args = new String[] { "-a", workspace, "-f", source, "-g", user, "-j", bioportalUserId, "-k", bioportalAPIKey, "-b", debugFile, "-e", errorFile, "-c", config, "-w", wordnet, "-l", perl,
+		String[] args = new String[] { "-a", workspace, "-f", source, "-g", operator, "-j", bioportalUserId, "-k", bioportalAPIKey, "-b", debugFile, "-e", errorFile, "-c", config, "-w", wordnet, "-l", perl,
 				"-n", databaseHost, "-p", databasePort, "-d", databaseName, "-u", databaseUser, 
 				"-s", databasePassword, "-i", input, "-z" , tablePrefix, "-y", "-o", otoLiteURL};
 		ETCLearnMain.main(args);

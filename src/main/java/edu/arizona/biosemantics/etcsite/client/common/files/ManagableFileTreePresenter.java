@@ -229,8 +229,8 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 						//target=" + result.getData() + "&directory=yes
 						loadingPopup.stop();
 						Window.Location.replace("/etcsite/download/?target=" + URL.encodeQueryString(result) + 
-								"&username=" + URL.encodeQueryString(Authentication.getInstance().getUsername()) + "&" + 
-								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionID()));
+								"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
+								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()));
 						
 						/*Window.open("/etcsite/download/?target=" + result.getData() + "&username=" + Authentication.getInstance().getUsername() + "&" + 
 								"sessionID=" + Authentication.getInstance().getSessionID()
@@ -276,8 +276,8 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	public class OnStartUploadHandler implements OnStartUploaderHandler {
 		@Override
 		public void onStart(final IUploader uploader) {			
-			String servletPath = view.getUploader().getServletPath() + "?username=" + URL.encodeQueryString(Authentication.getInstance().getUsername())
-					+ "&sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionID());
+			String servletPath = view.getUploader().getServletPath() + "?userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId()))
+					+ "&sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId());
 			uploader.setServletPath(servletPath);
 			
 			List<String> fileNames = new LinkedList<String>();

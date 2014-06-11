@@ -7,18 +7,18 @@ public class PasswordResetRequest implements Serializable{
 
 	private static final long serialVersionUID = -1058828266337932771L;
 	
-	private int uniqueId;
+	private int id;
 	private String authenticationCode; 
 	private Date requestTime;
 	
 	public PasswordResetRequest(int id, String authenticationCode, Date requestTime){
-		this.uniqueId = id;
+		this.id = id;
 		this.authenticationCode = authenticationCode;
 		this.requestTime = requestTime;		
 	}
 
-	public int getUniqueId() {
-		return uniqueId;
+	public int getId() {
+		return id;
 	}
 
 	public String getAuthenticationCode() {

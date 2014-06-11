@@ -27,7 +27,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ITaskServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 
-public class LoggedInActivity implements Activity, Presenter, Authentication.ChangeObserver {
+public class LoggedInActivity implements Activity, Presenter {
 
 	private PlaceController placeController;
 	private ITopView topView;
@@ -55,8 +55,6 @@ public class LoggedInActivity implements Activity, Presenter, Authentication.Cha
 	        }
 		};
 		this.authenticationService = authenticationService;
-		
-		Authentication.getInstance().addChangeObserver(this);
 	}
 	
 	@Override
@@ -65,19 +63,10 @@ public class LoggedInActivity implements Activity, Presenter, Authentication.Cha
 		panel.setWidget(topView.asWidget());
 		this.resumableTasksTimer.scheduleRepeating(resumableTasksTime);
 		
-		refreshGreeting();
+		String name = Authentication.getInstance().getFirstName() + Authentication.getInstance().getLastName();
+		topView.setGreeting("Welcome " + name + ".");
 	}
-	
-	public void refreshGreeting(){	
-		authenticationService.getUser(Authentication.getInstance().getToken(), new RPCCallback<User>() {
-			@Override
-			public void onResult(User user) {
-				String name = user.getFirstName() + " " + user.getLastName();
-				topView.setGreeting("Signed in as " + name + ".");
-			}
-		});
-	}
-	
+		
 	@Override
 	public String mayStop() {
 		return null;
@@ -136,10 +125,5 @@ public class LoggedInActivity implements Activity, Presenter, Authentication.Cha
 		placeController.goTo(new LoggedOutPlace());
 		logoutPresenter.setMessage("You are now signed out.");
 		logoutPresenter.show();
-	}
-
-	@Override
-	public void loginChanged() {
-		this.refreshGreeting();
 	}
 }

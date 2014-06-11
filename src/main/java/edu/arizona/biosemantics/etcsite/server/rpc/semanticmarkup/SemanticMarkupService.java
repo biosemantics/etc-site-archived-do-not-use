@@ -31,6 +31,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.rpc.AdminAuthenticationToken;
+import edu.arizona.biosemantics.etcsite.server.rpc.AuthenticationService;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileAccessService;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileFormatService;
 import edu.arizona.biosemantics.etcsite.server.rpc.FilePermissionService;
@@ -58,6 +59,7 @@ import edu.arizona.biosemantics.etcsite.shared.db.otolite.TermsInOrderCategoryDA
 import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.file.search.SearchResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFilePermissionService;
@@ -77,6 +79,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	private IFileService fileService = new FileService();
 	private IFileFormatService fileFormatService = new FileFormatService();
 	private IFilePermissionService filePermissionService = new FilePermissionService();
+	private IAuthenticationService authenticationService = new AuthenticationService();
 	private BracketValidator bracketValidator = new BracketValidator();
 	private int maximumThreads = 10;
 	private ListeningExecutorService executorService;
@@ -91,7 +94,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	@Override
 	public RPCResult<Task> start(AuthenticationToken authenticationToken, String taskName, String filePath, String glossaryName) {
 		try {
-			RPCResult<Boolean> sharedResult = filePermissionService.isSharedFilePath(authenticationToken.getUsername(), filePath);
+			RPCResult<Boolean> sharedResult = filePermissionService.isSharedFilePath(authenticationToken.getUserId(), filePath);
 			if(!sharedResult.isSucceeded())
 				return new RPCResult<Task>(false, "Couldn't verify permission on input directory");
 			RPCResult<String> fileNameResult = fileService.getFileName(authenticationToken, filePath);
@@ -99,7 +102,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				return new RPCResult<Task>(false, "Couldn't find file name for import");
 			if(sharedResult.getData()) {
 				RPCResult<String> destinationResult = 
-						fileService.createDirectory(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUsername(), 
+						fileService.createDirectory(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUserId(), 
 								fileNameResult.getData(), true);
 				RPCResult<Void> destination = fileService.copyFiles(authenticationToken, filePath, destinationResult.getData());
 			
@@ -124,7 +127,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			edu.arizona.biosemantics.etcsite.shared.rpc.TaskTypeEnum taskType = edu.arizona.biosemantics.etcsite.shared.rpc.TaskTypeEnum.SEMANTIC_MARKUP;
 			TaskType dbTaskType = TaskTypeDAO.getInstance().getTaskType(taskType);
 			TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.INPUT.toString());
-			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUsername());
+			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUserId());
 			Task task = new Task();
 			task.setName(taskName);
 			task.setResumable(true);
@@ -226,10 +229,12 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				String input = semanticMarkupConfiguration.getInput();
 				String tablePrefix = String.valueOf(task.getId());
 				String source = input; //maybe something else later
-				String user = authenticationToken.getUsername();
-				String bioportalUserId = UserDAO.getInstance().getUser(authenticationToken.getUsername()).getBioportalUserId();
-				String bioportalAPIKey = UserDAO.getInstance().getUser(authenticationToken.getUsername()).getBioportalAPIKey();
-				ILearn learn = new Learn(authenticationToken, glossary, input, tablePrefix, source, user, bioportalUserId, bioportalAPIKey);
+				RPCResult<String> operatorResult = authenticationService.getOperator(authenticationToken);
+				if(!operatorResult.isSucceeded())
+					return new RPCResult<LearnInvocation>(false, operatorResult.getMessage());
+				String bioportalUserId = UserDAO.getInstance().getUser(authenticationToken.getUserId()).getBioportalUserId();
+				String bioportalAPIKey = UserDAO.getInstance().getUser(authenticationToken.getUserId()).getBioportalAPIKey();
+				ILearn learn = new Learn(authenticationToken, glossary, input, tablePrefix, source, operatorResult.getData(), bioportalUserId, bioportalAPIKey);
 				final ListenableFuture<LearnResult> futureResult = executorService.submit(learn);
 				activeLearnFutures.put(semanticMarkupConfiguration.getConfiguration().getId(), futureResult);
 				futureResult.addListener(new Runnable() {
@@ -370,10 +375,12 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				String input = semanticMarkupConfiguration.getInput();
 				String tablePrefix = String.valueOf(task.getId());
 				String source = input; //maybe something else later
-				String user = authenticationToken.getUsername();
-				String bioportalUserId = UserDAO.getInstance().getUser(authenticationToken.getUsername()).getBioportalUserId();
-				String bioportalAPIKey = UserDAO.getInstance().getUser(authenticationToken.getUsername()).getBioportalAPIKey();
-				IParse parse = new Parse(authenticationToken, glossary, input, tablePrefix, source, user, bioportalUserId, bioportalAPIKey);
+				RPCResult<String> operator = authenticationService.getOperator(authenticationToken);
+				if(!operator.isSucceeded())
+					return new RPCResult<ParseInvocation>(false, operator.getMessage());
+				String bioportalUserId = UserDAO.getInstance().getUser(authenticationToken.getUserId()).getBioportalUserId();
+				String bioportalAPIKey = UserDAO.getInstance().getUser(authenticationToken.getUserId()).getBioportalAPIKey();
+				IParse parse = new Parse(authenticationToken, glossary, input, tablePrefix, source, operator.getData(), bioportalUserId, bioportalAPIKey);
 				final ListenableFuture<ParseResult> futureResult = executorService.submit(parse);
 				activeParseFutures.put(semanticMarkupConfiguration.getConfiguration().getId(), futureResult);
 				futureResult.addListener(new Runnable() {
@@ -536,7 +543,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	@Override
 	public RPCResult<Task> getLatestResumable(AuthenticationToken authenticationToken) {		
 		try {
-			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUsername());
+			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUserId());
 			List<Task> tasks = TaskDAO.getInstance().getOwnedTasks(user.getId());
 			for(Task task : tasks) {
 				if(task.isResumable() && 

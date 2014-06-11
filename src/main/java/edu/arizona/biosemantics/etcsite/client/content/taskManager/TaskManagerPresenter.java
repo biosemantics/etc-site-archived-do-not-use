@@ -29,7 +29,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGener
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
 
 public class TaskManagerPresenter implements ITaskManagerView.Presenter {
-
+	
 	private IUserSelectView.Presenter userSelectPresenter;
 	private IUsersView.Presenter usersPresenter;
 	private Map<Task, Set<ShortUser>> inviteesForOwnedTasks = new HashMap<Task, Set<ShortUser>>();
@@ -99,7 +99,7 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 	@Override
 	public void onDelete(final TaskData taskData) {
 		final Task task = taskData.getTask();
-		if(task.getUser().getName().equals(Authentication.getInstance().getUsername())) {
+		if(task.getUser().getId() == Authentication.getInstance().getUserId()) {
 			if(!taskData.getInvitees().isEmpty()) {
 				//bring up popup asking
 				messagePresenter.show("Format Requirements", "If you delete this task it will be removed for all invitees of the share. Do you want to continue?", new AbstractConfirmListener() {

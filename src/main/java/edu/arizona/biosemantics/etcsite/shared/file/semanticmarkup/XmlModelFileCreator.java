@@ -37,7 +37,7 @@ public class XmlModelFileCreator {
 		this.allLabels.addAll(Arrays.asList(fields));
 	}
 	
-	public List<XmlModelFile> createXmlModelFiles(String text, String username) {
+	public List<XmlModelFile> createXmlModelFiles(String text, String operator) {
 		List<XmlModelFile> result = new LinkedList<XmlModelFile>();
 		text = text.replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "");	//remove all leading/trailing non-visible characters (ASCII)
 		text = text.replaceAll("\\r\\n", "\n");
@@ -46,7 +46,7 @@ public class XmlModelFileCreator {
 		List<String> treatmentTexts = getTreatmentTexts(text);
 		
 		for(String treatmentText : treatmentTexts) {
-			XmlModelFile modelFile = createXmlModelFile(treatmentText, username);
+			XmlModelFile modelFile = createXmlModelFile(treatmentText, operator);
 			result.add(modelFile);
 		}
 		
@@ -91,7 +91,7 @@ public class XmlModelFileCreator {
 		return result;
 	}
 
-	public XmlModelFile createXmlModelFile(String text, String username) {
+	public XmlModelFile createXmlModelFile(String text, String operator) {
 		XmlModelFile modelFile = new XmlModelFile();
 		nameTypes = new ArrayList<String> ();
 		
@@ -173,7 +173,7 @@ public class XmlModelFileCreator {
 		
 
 		//build xml
-		Document xml = createXML(data, username, modelFile);
+		Document xml = createXML(data, operator, modelFile);
 		modelFile.setFileName(createFileName(data, modelFile));
 		modelFile.setXML(xml.toString());
 		return modelFile;

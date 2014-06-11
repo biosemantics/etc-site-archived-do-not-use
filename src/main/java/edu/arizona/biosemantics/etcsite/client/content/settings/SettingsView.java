@@ -89,7 +89,7 @@ public class SettingsView extends Composite implements ISettingsView {
 	public void setData(User user){
 		firstNameBox.setText(user.getFirstName());
 		lastNameBox.setText(user.getLastName());
-		idLabel.setText(user.getNonUniqueId());
+		idLabel.setText(user.getOpenIdProviderId());
 		emailBox.setText(user.getEmail());
 		affiliationBox.setText(user.getAffiliation());
 		bioportalUserIdBox.setText(user.getBioportalUserId());
@@ -123,7 +123,7 @@ public class SettingsView extends Composite implements ISettingsView {
 	}
 
 	@Override
-	public String getNonUniqueId(){
+	public String getOpenIdProviderId(){
 		return idLabel.getText(); 
 	}
 	

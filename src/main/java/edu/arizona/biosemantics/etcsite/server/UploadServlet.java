@@ -63,13 +63,13 @@ public class UploadServlet extends UploadAction {
 			List<FileItem> sessionFiles) throws UploadActionException {
 		String response = "";
 		
-		String username = request.getParameter("username");
+		int userID = Integer.parseInt(request.getParameter("userID"));
 		String sessionID = request.getParameter("sessionID");
 		String target = request.getParameter("target");
 		
 		IAuthenticationService authenticationService = new AuthenticationService();
 		RPCResult<AuthenticationResult> authenticationResult = 
-				authenticationService.isValidSession(new AuthenticationToken(username, sessionID));
+				authenticationService.isValidSession(new AuthenticationToken(userID, sessionID));
 		
 		int numberNotAdded = 0;
 		if(authenticationResult.isSucceeded() && authenticationResult.getData().getResult()) {

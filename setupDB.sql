@@ -314,8 +314,8 @@ CREATE TABLE IF NOT EXISTS `tasksoutputfiles` (
 --
 
 CREATE TABLE IF NOT EXISTS `useraccounts` (
-  `uniqueid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `nonuniqueid` varchar(50) DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `openidproviderid` varchar(50) DEFAULT NULL,
   `openidprovider` varchar(20) NOT NULL DEFAULT 'none',
   `password` varchar(100) DEFAULT NULL,
   `firstname` varchar(20) NOT NULL,
@@ -325,9 +325,9 @@ CREATE TABLE IF NOT EXISTS `useraccounts` (
   `bioportaluserid` varchar(50) NOT NULL,
   `bioportalapikey` varchar(50) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`uniqueid`),
-  UNIQUE KEY `uniqueid` (`uniqueid`),
-  KEY `uniqueid_2` (`uniqueid`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
+  KEY `id_2` (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1068 ;
 
 
@@ -374,7 +374,7 @@ ALTER TABLE `semanticmarkupconfigurations`
 --
 ALTER TABLE `shareinvitees`
   ADD CONSTRAINT `shares_shareinvitees_CON` FOREIGN KEY (`share`) REFERENCES `shares` (`id`),
-  ADD CONSTRAINT `useraccounts_shareinvitees_CON` FOREIGN KEY (`inviteeuser`) REFERENCES `useraccounts` (`uniqueid`);
+  ADD CONSTRAINT `useraccounts_shareinvitees_CON` FOREIGN KEY (`inviteeuser`) REFERENCES `useraccounts` (`id`);
 
 --
 -- Constraints for table `shares`
@@ -389,7 +389,7 @@ ALTER TABLE `tasks`
   ADD CONSTRAINT `configurations_tasks_CON` FOREIGN KEY (`configuration`) REFERENCES `configurations` (`id`),
   ADD CONSTRAINT `taskstages_tasks_CON` FOREIGN KEY (`taskstage`) REFERENCES `taskstages` (`id`),
   ADD CONSTRAINT `tasktypes_tasks_CON` FOREIGN KEY (`tasktype`) REFERENCES `tasktypes` (`id`),
-  ADD CONSTRAINT `useraccounts_tasks_CON` FOREIGN KEY (`user`) REFERENCES `useraccounts` (`uniqueid`);
+  ADD CONSTRAINT `useraccounts_tasks_CON` FOREIGN KEY (`user`) REFERENCES `useraccounts` (`id`);
 
 --
 -- Constraints for table `tasksfiles`

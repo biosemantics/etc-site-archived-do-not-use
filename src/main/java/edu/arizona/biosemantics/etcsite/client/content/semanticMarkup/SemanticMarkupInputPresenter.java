@@ -98,10 +98,10 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 				FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
 				if (selection != null) {
 					inputFile = selection.getFileInfo().getFilePath();
-					String shortendPath = filePathShortener.shorten(selection.getFileInfo(), Authentication.getInstance().getUsername());
+					String shortendPath = filePathShortener.shorten(selection.getFileInfo(), Authentication.getInstance().getUserId());
 					view.setInput(shortendPath);
 					view.setEnabledNext(true);			
-					if(!selection.getFileInfo().getOwner().equals(Authentication.getInstance().getUsername())) {
+					if(selection.getFileInfo().getOwnerUserId() != Authentication.getInstance().getUserId()) {
 						messagePresenter.showMessage("Shared input", "The selected input is not owned. To start the task the files will be copied to your own space.");
 						fileManagerDialogPresenter.hide();
 					} else {

@@ -4,10 +4,6 @@ import java.io.Serializable;
 
 public class ShortUser implements Serializable {
 	
-	// There used to be 2 unique keys: id and name. Now the integer id is the only unique key. 
-	// But to maintain compatibility, we let shortUser keep both an id and a name field. 
-	// the name field is simply the id field as a string. 
-	
 	private static final long serialVersionUID = 9014388467462637993L;
 	private int id;
 	private String name;

@@ -14,7 +14,7 @@ public interface IFilePermissionService extends RemoteService {
 	
 	public RPCResult<FilePermissionType> getPermissionType(AuthenticationToken authenticationToken, String filePath);
 	
-	public RPCResult<Boolean> isSharedFilePath(String username, String filePath);
+	public RPCResult<Boolean> isSharedFilePath(int userId, String filePath);
 
-	public RPCResult<Boolean> isOwnedFilePath(String username, String filePath);
+	public RPCResult<Boolean> isOwnedFilePath(int userId, String filePath);
 }

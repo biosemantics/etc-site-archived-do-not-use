@@ -135,7 +135,7 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 		Column<TaskData, String> accessColumn = new Column<TaskData, String>(accessCell) {
 		      @Override
 		      public String getValue(TaskData object) {
-		    	  if(object.getTask().getUser().getName().equals(Authentication.getInstance().getUsername())) {
+		    	  if(object.getTask().getUser().getId() == Authentication.getInstance().getUserId()) {
 		    		  if(object.getInvitees() != null && !object.getInvitees().isEmpty()) {
 		    			  String shared = "and shared with ";
 		    			  for(ShortUser shortUser : object.getInvitees()) {
@@ -155,7 +155,7 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 	    sortHandler.setComparator(accessColumn, new Comparator<TaskData>() {
 	      @Override
 	      public int compare(TaskData o1, TaskData o2) {
-	    	boolean sameUser = o1.getTask().getUser().equals(Authentication.getInstance().getUsername());
+	    	boolean sameUser = o1.getTask().getUser().getId() == Authentication.getInstance().getUserId();
 	    	if(sameUser)
 	    		return 0;
 	    	return -1;
@@ -394,7 +394,7 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 		}
 		
 		if(this.getSelectedTaskData() != null) {
-			if(!this.getSelectedTaskData().getTask().getUser().getName().equals(Authentication.getInstance().getUsername())) {
+			if(this.getSelectedTaskData().getTask().getUser().getId() != Authentication.getInstance().getUserId()) {
 				this.shareButton.setEnabled(false);
 			} else {
 				this.shareButton.setEnabled(true);

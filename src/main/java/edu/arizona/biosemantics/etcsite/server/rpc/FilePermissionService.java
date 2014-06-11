@@ -26,11 +26,11 @@ public class FilePermissionService extends RemoteServiceServlet implements IFile
 		if(authenticationToken instanceof AdminAuthenticationToken)
 			return new RPCResult<Boolean>(true, true);
 		
-		RPCResult<Boolean> ownedResult = isOwnedFilePath(authenticationToken.getUsername(), filePath);
+		RPCResult<Boolean> ownedResult = isOwnedFilePath(authenticationToken.getUserId(), filePath);
 		if(ownedResult.isSucceeded() && ownedResult.getData())
 			return new RPCResult<Boolean>(true, true);
 		try {
-			RPCResult<Boolean> sharedResult = isSharedFilePath(authenticationToken.getUsername(), filePath);
+			RPCResult<Boolean> sharedResult = isSharedFilePath(authenticationToken.getUserId(), filePath);
 			if(sharedResult.isSucceeded() && sharedResult.getData()) 
 				return new RPCResult<Boolean>(true, true);
 		} catch(Exception e) {
@@ -45,11 +45,11 @@ public class FilePermissionService extends RemoteServiceServlet implements IFile
 		if(authenticationToken instanceof AdminAuthenticationToken)
 			return new RPCResult<FilePermissionType>(true, FilePermissionType.ADMIN);
 		
-		RPCResult<Boolean> ownedResult = isOwnedFilePath(authenticationToken.getUsername(), filePath);
+		RPCResult<Boolean> ownedResult = isOwnedFilePath(authenticationToken.getUserId(), filePath);
 		if(ownedResult.isSucceeded() && ownedResult.getData())
 			return new RPCResult<FilePermissionType>(true, FilePermissionType.OWNER);
 		try {
-			RPCResult<Boolean> sharedResult = isSharedFilePath(authenticationToken.getUsername(), filePath);
+			RPCResult<Boolean> sharedResult = isSharedFilePath(authenticationToken.getUserId(), filePath);
 			if(sharedResult.isSucceeded() && sharedResult.getData()) 
 				return new RPCResult<FilePermissionType>(true, FilePermissionType.SHARED_WITH);
 		} catch(Exception e) {
@@ -64,18 +64,18 @@ public class FilePermissionService extends RemoteServiceServlet implements IFile
 		if(authenticationToken instanceof AdminAuthenticationToken)
 			return new RPCResult<Boolean>(true, true);
 		
-		RPCResult<Boolean> ownedResult = isOwnedFilePath(authenticationToken.getUsername(), filePath);
+		RPCResult<Boolean> ownedResult = isOwnedFilePath(authenticationToken.getUserId(), filePath);
 		if(ownedResult.isSucceeded() && ownedResult.getData())
 			return new RPCResult<Boolean>(true, true);
 		return new RPCResult<Boolean>(true, true);
 	}
 	
 	@Override
-	public RPCResult<Boolean> isSharedFilePath(String username, String filePath) {
+	public RPCResult<Boolean> isSharedFilePath(int userId, String filePath) {
 		if(filePath.startsWith("Share.") || filePath.equals("Shared"))
 			return new RPCResult<Boolean>(true, true);
 		try {
-			ShortUser user = UserDAO.getInstance().getShortUser(username);
+			ShortUser user = UserDAO.getInstance().getShortUser(userId);
 			List<Share> invitedShares = ShareDAO.getInstance().getSharesOfInvitee(user);
 			for(Share share : invitedShares) {
 				AbstractTaskConfiguration taskConfiguration = share.getTask().getConfiguration();
@@ -106,10 +106,10 @@ public class FilePermissionService extends RemoteServiceServlet implements IFile
 	}
 	
 	@Override
-	public RPCResult<Boolean> isOwnedFilePath(String username, String filePath) {
+	public RPCResult<Boolean> isOwnedFilePath(int userId, String filePath) {
 		if(filePath.equals("Owned") || filePath.equals("Root"))
 			return new RPCResult<Boolean>(true, true);
-		String ownedFilesDirectory = Configuration.fileBase + File.separator + username;
+		String ownedFilesDirectory = Configuration.fileBase + File.separator + userId;
 		return new RPCResult<Boolean>(true, containedInPath(ownedFilesDirectory, filePath));
 	}
 

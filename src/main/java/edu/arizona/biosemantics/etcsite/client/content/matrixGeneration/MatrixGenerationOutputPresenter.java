@@ -48,7 +48,7 @@ public class MatrixGenerationOutputPresenter implements IMatrixGenerationOutputV
 			@Override
 			public void onResult(Task result) {
 				String output = ((MatrixGenerationConfiguration)result.getConfiguration()).getOutput();
-				view.setOutput(filePathShortener.shortenOutput(output, result, Authentication.getInstance().getUsername()));
+				view.setOutput(filePathShortener.shortenOutput(output, result, Authentication.getInstance().getUserId()));
 			}
 		});
 	}

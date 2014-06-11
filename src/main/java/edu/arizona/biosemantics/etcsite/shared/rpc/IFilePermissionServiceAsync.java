@@ -12,8 +12,8 @@ public interface IFilePermissionServiceAsync {
 	
 	public void getPermissionType(AuthenticationToken authenticationToken, String filePath, AsyncCallback<RPCResult<FilePermissionType>> callback);
 	
-	public void isSharedFilePath(String username, String filePath, AsyncCallback<RPCResult<Boolean>> callback);
+	public void isSharedFilePath(int userId, String filePath, AsyncCallback<RPCResult<Boolean>> callback);
 
-	public void isOwnedFilePath(String username, String filePath, AsyncCallback<RPCResult<Boolean>> callback);
+	public void isOwnedFilePath(int userId, String filePath, AsyncCallback<RPCResult<Boolean>> callback);
 	
 }

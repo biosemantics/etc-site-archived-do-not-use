@@ -6,9 +6,9 @@ import java.util.Date;
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 3596572148232966822L;		//old: 3593412522402966872L;
-	private int uniqueId; //the totally unique integer id identifying this User. 
+	private int id; //the totally unique integer id identifying this User. 
 	
-	private String nonUniqueId; //the realm-unique value provided by the openID provider, or the user's email address if a local account. 
+	private String openIdProviderId; //the realm-unique value provided by the openID provider, or the user's email address if a local account. 
 	private String openIdProvider; //e.g. "Google", "Yahoo".  "none" if local account. 
 	private String password; //only used if local account. Otherwise, openID provider handles authentication. 
 	
@@ -22,9 +22,9 @@ public class User implements Serializable {
 	
 	public User() { }
 	
-	public User(int uniqueId, String nonUniqueId, String openIdProvider, String password, String firstName, String lastName, String email, String affiliation, String bioportalUserId, String bioportalAPIKey, Date created) {
-		this.uniqueId = uniqueId;
-		this.nonUniqueId = nonUniqueId;
+	public User(int id, String openIdProviderId, String openIdProvider, String password, String firstName, String lastName, String email, String affiliation, String bioportalUserId, String bioportalAPIKey, Date created) {
+		this.id = id;
+		this.openIdProviderId = openIdProviderId;
 		this.openIdProvider = openIdProvider;
 		this.password = password;
 		
@@ -39,19 +39,19 @@ public class User implements Serializable {
 	
 	@Override
 	public int hashCode() {
-		return uniqueId;
+		return id;
 	}
 	
-	public int getUniqueId(){
-		return uniqueId;
+	public int getId(){
+		return id;
 	}
 	
-	public String getNonUniqueId() {
-		return nonUniqueId;
+	public String getOpenIdProviderId() {
+		return openIdProviderId;
 	}
 
-	public void setNonUniqueId(String uniqueId) {
-		this.nonUniqueId = uniqueId;
+	public void setOpenIdProviderId(String openIdProviderId) {
+		this.openIdProviderId = openIdProviderId;
 	}
 
 	public String getOpenIdProvider() {
@@ -134,15 +134,15 @@ public class User implements Serializable {
 	        return false;
 	    }
 		User user = (User)object;
-		if(user.getUniqueId() == (this.uniqueId))
+		if(user.getId() == (this.id))
 			return true;
 		return false;
 	}
 	
 	public String toString(){
 		return "\nUser:"
-				+ "\n\tUnique ID: " + uniqueId
-				+ "\n\tNon-unique ID: " + nonUniqueId
+				+ "\n\tID: " + id
+				+ "\n\tOpenID Provider ID: " + openIdProviderId
 				+ "\n\tOpenID Provider: " + openIdProvider
 				+ "\n\tPassword: " + password
 				+ "\n\tFirst Name: " + firstName

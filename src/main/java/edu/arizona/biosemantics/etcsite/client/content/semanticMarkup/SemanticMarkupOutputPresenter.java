@@ -47,7 +47,7 @@ public class SemanticMarkupOutputPresenter implements ISemanticMarkupOutputView.
 			@Override
 			public void onResult(Task result) {
 				String output = ((SemanticMarkupConfiguration)result.getConfiguration()).getOutput();
-				view.setOutput(filePathShortener.shortenOutput(output, result, Authentication.getInstance().getUsername()));
+				view.setOutput(filePathShortener.shortenOutput(output, result, Authentication.getInstance().getUserId()));
 			}
 		});
 	}

@@ -8,20 +8,20 @@ public class FileInfo implements Serializable {
 	private String name;
 	private String filePath;
 	private FileTypeEnum fileType;
-	private String owner;
+	private int ownerUserId;
 	private String displayFilePath;
 	private boolean systemFile = true;
 	private boolean allowsNewChildren = true;
 	
 	public FileInfo() { }
 	
-	public FileInfo(String name, String filePath, String displayFilePath, FileTypeEnum fileType, String owner, boolean systemFile, boolean allowsNewChildren) {
+	public FileInfo(String name, String filePath, String displayFilePath, FileTypeEnum fileType, int ownerUserId, boolean systemFile, boolean allowsNewChildren) {
 		super();
 		this.name = name;
 		this.filePath = filePath;
 		this.displayFilePath = displayFilePath;
 		this.fileType = fileType;
-		this.owner = owner;
+		this.ownerUserId = ownerUserId;
 		this.systemFile = systemFile;
 		this.allowsNewChildren = allowsNewChildren;
 	}
@@ -50,8 +50,8 @@ public class FileInfo implements Serializable {
 		return name + " " + filePath + " " + fileType;
 	}
 
-	public String getOwner() {
-		return owner;
+	public int getOwnerUserId() {
+		return ownerUserId;
 	}
 
 	public String getDisplayFilePath() {

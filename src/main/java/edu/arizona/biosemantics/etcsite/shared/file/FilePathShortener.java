@@ -6,14 +6,14 @@ import edu.arizona.biosemantics.etcsite.shared.db.Task;
 
 public class FilePathShortener {
 
-	public String shortenOutput(String fullFilePath, Task task, String viewerUser) {
+	public String shortenOutput(String fullFilePath, Task task, int viewerUserId) {
 		String fileBase = ServerSetup.getInstance().getSetup().getFileBase();
 		String seperator = ServerSetup.getInstance().getSetup().getSeperator();
 		
-		String fileOwnerUser = task.getUser().getName();
+		int fileOwnerUserId = task.getUser().getId();
 		String usersOutputPath = fullFilePath;
-		if(fileOwnerUser.equals(viewerUser)) {
-			usersOutputPath = (fullFilePath.replace(fileBase + seperator + fileOwnerUser, ""));
+		if(fileOwnerUserId == viewerUserId) {
+			usersOutputPath = (fullFilePath.replace(fileBase + seperator + fileOwnerUserId, ""));
 			usersOutputPath = "OWNED" + usersOutputPath;
 		} else {
 			int nameSeperator = fullFilePath.lastIndexOf(seperator);
@@ -30,20 +30,20 @@ public class FilePathShortener {
 		String fileBase = ServerSetup.getInstance().getSetup().getFileBase();
 		String seperator = ServerSetup.getInstance().getSetup().getSeperator();
 
-		String fileOwnerUser = Authentication.getInstance().getUsername();
+		int fileOwnerUserId = Authentication.getInstance().getUserId();
 		String result = filePath;
-		result = result.replace(fileBase + seperator + fileOwnerUser, "");
+		result = result.replace(fileBase + seperator + fileOwnerUserId, "");
 		result = "OWNED" + result;
 		result = result.replace(seperator + seperator, seperator);
 		return result;
 	}
 
-	public String shorten(FileInfo fileInfo, String viewerUser) {
+	public String shorten(FileInfo fileInfo, int viewerUserId) {
 		String seperator = ServerSetup.getInstance().getSetup().getSeperator();
 		
 		String result = fileInfo.getFilePath();
-		String ownerUser = fileInfo.getOwner();
-		if(ownerUser.equals(viewerUser)) {
+		int ownerUserId = fileInfo.getOwnerUserId();
+		if(ownerUserId == viewerUserId) {
 			result = fileInfo.getDisplayFilePath();
 			result = "OWNED" + seperator + result;
 		} else {

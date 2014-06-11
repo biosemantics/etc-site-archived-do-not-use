@@ -15,7 +15,7 @@ public interface ISettingsView extends IsWidget {
 	Widget asWidget();
 	String getFirstName();
 	String getLastName();
-	String getNonUniqueId();
+	String getOpenIdProviderId();
 	String getEmail();
 	String getAffiliation();
 	String getBioportalUserId();

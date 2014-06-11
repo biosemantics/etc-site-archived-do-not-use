@@ -86,7 +86,7 @@ public class TaskDAO {
 		return tasks;
 	}
 
-	private List<Task> getResumableTasks(int userId) throws ClassNotFoundException, SQLException, IOException {
+	public List<Task> getResumableTasks(int userId) throws ClassNotFoundException, SQLException, IOException {
 		List<Task> tasks = new LinkedList<Task>();
 		Query query = new Query("SELECT * FROM (" + allUsersTasksQuery + ")AS allTasks WHERE resumable=true");
 		query.setParameter(1, userId);
@@ -100,7 +100,7 @@ public class TaskDAO {
 		return tasks;
 	}
 	
-	private List<Task> getCompletedTasks(int userId) throws SQLException, ClassNotFoundException, IOException {
+	public List<Task> getCompletedTasks(int userId) throws SQLException, ClassNotFoundException, IOException {
 		List<Task> tasks = new LinkedList<Task>();
 		Query query = new Query("SELECT * FROM (" + allUsersTasksQuery + ")AS allTasks WHERE complete=true");
 		query.setParameter(1, userId);
@@ -114,38 +114,13 @@ public class TaskDAO {
 		return tasks;
 	}
 
-	public List<Task> getSharedWithTasks(String name) throws SQLException, ClassNotFoundException, IOException {
-		ShortUser user = UserDAO.getInstance().getShortUser(name);
-		return this.getSharedWithTasks(user.getId());
-	}
-	
-	public List<Task> getAllTasks(String name) throws ClassNotFoundException, SQLException, IOException {
-		ShortUser user = UserDAO.getInstance().getShortUser(name);
-		return this.getAllTasks(user.getId());
-	}
-	
-	public List<Task> getOwnedTasks(String name) throws SQLException, ClassNotFoundException, IOException {
-		ShortUser user = UserDAO.getInstance().getShortUser(name);
-		return this.getOwnedTasks(user.getId());
-	}
-	
-	public List<Task> getCompletedTasks(String username) throws SQLException, ClassNotFoundException, IOException {
-		ShortUser user = UserDAO.getInstance().getShortUser(username);
-		return this.getCompletedTasks(user.getId());
-	}
-
-	public List<Task> getResumableTasks(String username) throws ClassNotFoundException, SQLException, IOException {
-		ShortUser user = UserDAO.getInstance().getShortUser(username);
-		return this.getResumableTasks(user.getId());
-	}
-
 	private Task createTask(ResultSet result) throws SQLException, ClassNotFoundException, IOException {
 		int id = result.getInt(1);
 		String name = result.getString(2);
 		int taskTypeId = result.getInt(3);
 		int taskStageId = result.getInt(4);
 		int configurationId = result.getInt(5);
-		String userId = result.getString(6); //changed from int to String. _ags
+		int userId = result.getInt(6);
 		boolean resumable = result.getBoolean(7);
 		boolean complete = result.getBoolean(8);
 		Date completed = result.getTimestamp(9);

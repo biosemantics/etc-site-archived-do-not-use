@@ -15,7 +15,7 @@ public class PasswordResetRequestDAO {
 	public PasswordResetRequest getRequest(int id) throws ClassNotFoundException, SQLException, IOException{
 		PasswordResetRequest request = null;
 		
-		Query query = new Query("SELECT * FROM passwordresetrequests WHERE uniqueid = ?");
+		Query query = new Query("SELECT * FROM passwordresetrequests WHERE id = ?");
 		query.setParameter(1, id);
 		ResultSet result = query.execute();
 		while(result.next()){
@@ -29,13 +29,13 @@ public class PasswordResetRequestDAO {
 	}
 	
 	public void removeRequests(int id) throws ClassNotFoundException, SQLException, IOException{
-		Query removeRequest = new Query("DELETE FROM `passwordresetrequests` WHERE `uniqueid`=?");
+		Query removeRequest = new Query("DELETE FROM `passwordresetrequests` WHERE `id`=?");
 		removeRequest.setParameter(1, id);
 		removeRequest.executeAndClose();
 	}
 	
 	public void addRequest(int id, String authenticationCode) throws SQLException, ClassNotFoundException, IOException{
-		Query addRequest = new Query("INSERT INTO `passwordresetrequests`(`uniqueid`, `authenticationcode`, `requesttime`) VALUES (?, ?, CURRENT_TIMESTAMP)");
+		Query addRequest = new Query("INSERT INTO `passwordresetrequests`(`id`, `authenticationcode`, `requesttime`) VALUES (?, ?, CURRENT_TIMESTAMP)");
 		addRequest.setParameter(1, id);
 		addRequest.setParameter(2, authenticationCode);
 		addRequest.executeAndClose();

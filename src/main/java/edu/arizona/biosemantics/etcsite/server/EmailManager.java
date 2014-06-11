@@ -14,7 +14,7 @@ import javax.mail.internet.MimeMessage;
 public class EmailManager {
 	
 	public static final String PASSWORD_RESET_SUBJECT = "Password Reset Code";
-	public static final String PASSWORD_RESET_BODY = "A password reset authentication code has been generated for your account (<nonuniqueid>). With this code you may reset your password. \n\n\tAuthentication code: <code>\n\nThis code will expire in <expire>.\n\n\n(This email is being sent because you recently requested an authentication to reset your account password. If you did not request an authentication code, ignore this email.)";
+	public static final String PASSWORD_RESET_BODY = "A password reset authentication code has been generated for your account (<openidproviderid>). With this code you may reset your password. \n\n\tAuthentication code: <code>\n\nThis code will expire in <expire>.\n\n\n(This email is being sent because you recently requested an authentication to reset your account password. If you did not request an authentication code, ignore this email.)";
 	
 	private final String username = "etcsite.norespond@gmail.com";
 	private final String password = "biosemantics";

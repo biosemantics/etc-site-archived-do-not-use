@@ -7,11 +7,11 @@ public class AuthenticationResult implements Serializable {
 	private static final long serialVersionUID = -3162151093040677272L;
 	private boolean result;
 	private String sessionID;
-	private String userId;
+	private int userId;
 	
 	public AuthenticationResult() {}
 	
-	public AuthenticationResult(boolean result, String sessionID, String userId) {
+	public AuthenticationResult(boolean result, String sessionID, int userId) {
 		this.result = result;
 		this.sessionID = sessionID;
 		this.userId = userId;
@@ -29,11 +29,11 @@ public class AuthenticationResult implements Serializable {
 	public void setResult(boolean result) {
 		this.result = result;
 	}
-	public String getUserId() {
+	public int getUserId() {
 		return userId;
 	}
-	public void setUserId(String user) {
-		this.userId = user;
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 }
 

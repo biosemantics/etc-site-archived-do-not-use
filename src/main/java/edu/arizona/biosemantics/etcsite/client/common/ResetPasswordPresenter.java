@@ -45,13 +45,13 @@ public class ResetPasswordPresenter implements IResetPasswordView.Presenter {
 
 	@Override
 	public void onRequestCode() {
-		String nonUniqueId = resetPasswordView.getEmail();
+		String openIdProviderId = resetPasswordView.getEmail();
 		int captchaId = resetPasswordView.getCaptchaPanel().getId();
 		String captchaSolution = resetPasswordView.getCaptchaPanel().getSolution();
 		
 		//error checking. 
 		resetPasswordView.setErrorLabel1("");
-		if (nonUniqueId.length() == 0){
+		if (openIdProviderId.length() == 0){
 			resetPasswordView.setErrorLabel1("Enter your email id.");
 			return;
 		}
@@ -62,7 +62,7 @@ public class ResetPasswordPresenter implements IResetPasswordView.Presenter {
 		
 		captchaPresenter.requestNewCaptcha();
 		
-		authenticationService.requestPasswordResetCode(captchaId, captchaSolution, nonUniqueId, new RPCCallback<PasswordResetResult>(){
+		authenticationService.requestPasswordResetCode(captchaId, captchaSolution, openIdProviderId, new RPCCallback<PasswordResetResult>(){
 			@Override
 			public void onResult(PasswordResetResult result) {
 				if (result.getResult()){ //code generation was successful. 
@@ -79,14 +79,14 @@ public class ResetPasswordPresenter implements IResetPasswordView.Presenter {
 	@Override
 	public void onRequestReset() {
 		
-		String nonUniqueId = resetPasswordView.getEmail();
+		String openIdProviderId = resetPasswordView.getEmail();
 		String code = resetPasswordView.getCode();
 		String newPassword = resetPasswordView.getNewPassword();
 		String confirmNewPassword = resetPasswordView.getConfirmNewPassword();
 		
 		//error checking. 
 		resetPasswordView.setErrorLabel2("");
-		if (nonUniqueId.length() == 0 || code.length() == 0 || newPassword.length() == 0){
+		if (openIdProviderId.length() == 0 || code.length() == 0 || newPassword.length() == 0){
 			resetPasswordView.setErrorLabel2("All fields are required.");
 			return;
 		}
@@ -99,7 +99,7 @@ public class ResetPasswordPresenter implements IResetPasswordView.Presenter {
 			return;
 		}
 		
-		authenticationService.requestPasswordReset(nonUniqueId, code, newPassword, new RPCCallback<PasswordResetResult>(){
+		authenticationService.requestPasswordReset(openIdProviderId, code, newPassword, new RPCCallback<PasswordResetResult>(){
 			@Override
 			public void onResult(PasswordResetResult result) {
 				if (result.getResult()){
