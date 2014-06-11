@@ -26,9 +26,9 @@ import edu.arizona.biosemantics.etcsite.client.content.visualization.Visualizati
 
 @WithTokenizers( { 
 	HomePlace.Tokenizer.class, 
-	//AboutPlace.Tokenizer.class,
-	//NewsPlace.Tokenizer.class,
-	//HelpPlace.Tokenizer.class,
+	AboutPlace.Tokenizer.class,
+	NewsPlace.Tokenizer.class,
+	HelpPlace.Tokenizer.class,
 	FileManagerPlace.Tokenizer.class, 
 	TaskManagerPlace.Tokenizer.class,
 	SettingsPlace.Tokenizer.class,
