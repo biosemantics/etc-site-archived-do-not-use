@@ -40,8 +40,12 @@ public class LoginPresenter implements ILoginView.Presenter {
 			public void onResult(AuthenticationResult result) {
 				if(result.getResult()) {
 					Authentication auth = Authentication.getInstance();
-					auth.setUserId(result.getUserId());
+					auth.setUserId(result.getUser().getId());
 					auth.setSessionID(result.getSessionID());
+					auth.setEmail(result.getUser().getEmail());
+					auth.setFirstName(result.getUser().getFirstName());
+					auth.setLastName(result.getUser().getLastName());
+					auth.setAffiliation(result.getUser().getAffiliation());
 					
 					loginPopup.hide();
 					if(currentListener != null)

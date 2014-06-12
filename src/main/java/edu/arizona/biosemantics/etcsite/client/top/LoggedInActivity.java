@@ -63,8 +63,8 @@ public class LoggedInActivity implements Activity, Presenter {
 		panel.setWidget(topView.asWidget());
 		this.resumableTasksTimer.scheduleRepeating(resumableTasksTime);
 		
-		String name = Authentication.getInstance().getFirstName() + Authentication.getInstance().getLastName();
-		topView.setGreeting("Welcome " + name + ".");
+		String name = Authentication.getInstance().getFirstName();
+		topView.setGreeting("Welcome " + name + "!");
 	}
 		
 	@Override

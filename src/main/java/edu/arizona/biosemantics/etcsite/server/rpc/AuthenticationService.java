@@ -74,13 +74,13 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 			User user = UserDAO.getInstance().getLocalUserWithEmail(email);
 			if(user != null && BCrypt.checkpw(password, user.getPassword())) {
 				String sessionId = generateSessionId(user.getId(), user.getPassword());
-				return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(true, sessionId, user.getId()));
+				return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(true, sessionId, user));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new RPCResult<AuthenticationResult>(false, "Internal Server Error");
 		}			
-		return new RPCResult<AuthenticationResult>(true, "Authentication failed", new AuthenticationResult(false, null, -1));
+		return new RPCResult<AuthenticationResult>(true, "Authentication failed", new AuthenticationResult(false, null, null));
 	}
 	
 	
@@ -184,7 +184,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	@Override
 	public RPCResult<AuthenticationResult> isValidSession(AuthenticationToken authenticationToken) {
 		if(authenticationToken instanceof AdminAuthenticationToken)
-			return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(true, "admin", -99));
+			return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(true, "admin", new User()));
 		String sessionID = authenticationToken.getSessionID();
 		if(sessionID != null){
 			try {
@@ -195,7 +195,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 				
 				User user = UserDAO.getInstance().getUser(userId);
 				if (user != null && user.getPassword().equals(password))
-					return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(true, sessionID, authenticationToken.getUserId()));
+					return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(true, sessionID, user));
 				else
 					System.err.println("An invalid session was found with sessionID: " + sessionID);
 			} catch (Exception e){
@@ -203,7 +203,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 				System.err.println("An error occurred while validating a sessionID. (Perhaps the server was restarted?)");
 			}
 		}
-		return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(false, null, -1));
+		return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(false, null, null));
 	}
 	
 	

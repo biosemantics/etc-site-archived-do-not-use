@@ -32,11 +32,11 @@ public class Authentication {
 		return sessionID;
 	}
 	
-	public Integer getUserId() {
+	public int getUserId() {
 		String userId = Cookies.getCookie(CookieVariable.userId); 
 		//the Cookie class does not actually return null but "null" String for cookies that do not exist; but in implementation?
-		if(userId != null && userId.equals("null"))
-			return null;
+		if(userId == null || (userId != null && userId.equals("null")))
+			return -1;
 		return Integer.parseInt(userId);
 	}
 
@@ -53,11 +53,11 @@ public class Authentication {
 	}
 	
 	public String getEmail() {
-		String sessionID = Cookies.getCookie(CookieVariable.email);
+		String email = Cookies.getCookie(CookieVariable.email);
 		//the Cookie class does not actually return null but "null" String for cookies that do not exist; but in implementation?
-		if(sessionID != null && sessionID.equals("null"))
-			sessionID = null;
-		return sessionID;
+		if(email != null && email.equals("null"))
+			email = null;
+		return email;
 	}
 	
 	public void setFirstName(String firstName) {
@@ -67,11 +67,11 @@ public class Authentication {
 	}
 	
 	public String getFirstName() {
-		String sessionID = Cookies.getCookie(CookieVariable.firstName);
+		String firstName = Cookies.getCookie(CookieVariable.firstName);
 		//the Cookie class does not actually return null but "null" String for cookies that do not exist; but in implementation?
-		if(sessionID != null && sessionID.equals("null"))
-			sessionID = null;
-		return sessionID;
+		if(firstName != null && firstName.equals("null"))
+			firstName = null;
+		return firstName;
 	}
 	
 	public void setLastName(String lastName) {
@@ -81,11 +81,11 @@ public class Authentication {
 	}
 
 	public String getLastName() {
-		String sessionID = Cookies.getCookie(CookieVariable.lastName);
+		String lastName = Cookies.getCookie(CookieVariable.lastName);
 		//the Cookie class does not actually return null but "null" String for cookies that do not exist; but in implementation?
-		if(sessionID != null && sessionID.equals("null"))
-			sessionID = null;
-		return sessionID;
+		if(lastName != null && lastName.equals("null"))
+			lastName = null;
+		return lastName;
 	}
 	
 	public void setAffiliation(String affiliation) {
@@ -95,11 +95,11 @@ public class Authentication {
 	}
 	
 	public String getAffiliation() {
-		String sessionID = Cookies.getCookie(CookieVariable.affiliation);
+		String affiliation = Cookies.getCookie(CookieVariable.affiliation);
 		//the Cookie class does not actually return null but "null" String for cookies that do not exist; but in implementation?
-		if(sessionID != null && sessionID.equals("null"))
-			sessionID = null;
-		return sessionID;
+		if(affiliation != null && affiliation.equals("null"))
+			affiliation = null;
+		return affiliation;
 	}
 	
 	
@@ -117,6 +117,6 @@ public class Authentication {
 	}
 	
 	public boolean isSet() {
-		return this.getUserId() != null && this.getSessionId() != null;
+		return this.getUserId() != -1 && this.getSessionId() != null;
 	}
 }

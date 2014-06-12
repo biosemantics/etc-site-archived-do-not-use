@@ -139,14 +139,14 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 		    		  if(object.getInvitees() != null && !object.getInvitees().isEmpty()) {
 		    			  String shared = "and shared with ";
 		    			  for(ShortUser shortUser : object.getInvitees()) {
-		    				  shared += shortUser.getName() + ", ";
+		    				  shared += shortUser.getFullNameEmailAffiliation() + ", ";
 		    			  }
 		    			  return "Owned " + shared.substring(0, shared.length() - 2);
 		    		  } else {
 		    			  return ("Owned");
 		    		  }
 		    	  } else {
-		    		  return "Shared by " + object.getTask().getUser().getName();
+		    		  return "Shared by " + object.getTask().getUser().getFullNameEmailAffiliation();
 		    	  }
 		      }
 	    };

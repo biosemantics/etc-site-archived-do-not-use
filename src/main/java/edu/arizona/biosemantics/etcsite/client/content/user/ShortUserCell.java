@@ -49,7 +49,7 @@ public class ShortUserCell extends AbstractCell<ShortUser> {
 			return;
 		}
 
-		SafeHtml safeValue = SafeHtmlUtils.fromString(value.getName());
+		SafeHtml safeValue = SafeHtmlUtils.fromString(value.getFullNameEmailAffiliation());
 		SafeStyles styles = SafeStylesUtils.forTrustedColor(safeValue.asString());
 		SafeHtml rendered = templates.cell(styles, safeValue);
 		sb.append(rendered);

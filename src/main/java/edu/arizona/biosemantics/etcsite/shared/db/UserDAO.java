@@ -13,8 +13,11 @@ public class UserDAO {
 
 	public ShortUser getShortUser(int userId) throws ClassNotFoundException, SQLException, IOException {
 		User user = this.getUser(userId);
-		ShortUser result = new ShortUser(user.getId(), user.getEmail());
-		return result;
+		return createShortUser(user);
+	}
+
+	private ShortUser createShortUser(User user) {
+		return new ShortUser(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getAffiliation());
 	}
 
 	public User getUser(int id) throws SQLException, ClassNotFoundException, IOException {
@@ -23,24 +26,28 @@ public class UserDAO {
 		query.setParameter(1, id);
 		ResultSet result = query.execute();
 		while (result.next()) {
-			id = result.getInt(1);
-			String openIdProviderId = result.getString(2);
-			String openIdProvider = result.getString(3);
-			String password = result.getString(4);
-			String firstName = result.getString(5);
-			String lastName = result.getString(6);
-			String email = result.getString(7);
-			String affiliation = result.getString(8);
-			String bioportalUserId = result.getString(9);
-			String bioportalAPIKey = result.getString(10);
-			Date created = result.getTimestamp(11);
-
-			user = new User(id, openIdProviderId, openIdProvider, password,
-					firstName, lastName, email, affiliation, bioportalUserId,
-					bioportalAPIKey, created);
+			user = createUser(result);
 		}
 		query.close();
 		return user;
+	}
+
+	private User createUser(ResultSet result) throws SQLException {
+		int id = result.getInt(1);
+		String openIdProviderId = result.getString(2);
+		String openIdProvider = result.getString(3);
+		String password = result.getString(4);
+		String firstName = result.getString(5);
+		String lastName = result.getString(6);
+		String email = result.getString(7);
+		String affiliation = result.getString(8);
+		String bioportalUserId = result.getString(9);
+		String bioportalAPIKey = result.getString(10);
+		Date created = result.getTimestamp(11);
+
+		return new User(id, openIdProviderId, openIdProvider, password,
+				firstName, lastName, email, affiliation, bioportalUserId,
+				bioportalAPIKey, created);
 	}
 
 	public User getLocalUserWithEmail(String email) throws SQLException,
@@ -121,11 +128,10 @@ public class UserDAO {
 	public List<ShortUser> getUsers() throws SQLException,
 			ClassNotFoundException, IOException {
 		List<ShortUser> result = new LinkedList<ShortUser>();
-		Query query = new Query("SELECT id FROM useraccounts");
+		Query query = new Query("SELECT * FROM useraccounts");
 		ResultSet resultSet = query.execute();
 		while (resultSet.next()) {
-			result.add(new ShortUser(resultSet.getInt(1), resultSet
-					.getString(1))); // see note in ShortUser. _ags
+			result.add(createShortUser(createUser(resultSet)));
 		}
 		query.close();
 		return result;
@@ -134,12 +140,11 @@ public class UserDAO {
 	public List<ShortUser> getUsersWithout(int userId)
 			throws SQLException, ClassNotFoundException, IOException {
 		List<ShortUser> result = new LinkedList<ShortUser>();
-		Query query = new Query("SELECT id FROM useraccounts WHERE id != ?");
+		Query query = new Query("SELECT * FROM useraccounts WHERE id != ?");
 		query.setParameter(1, userId);
 		ResultSet resultSet = query.execute();
 		while (resultSet.next()) {
-			result.add(new ShortUser(resultSet.getInt(1), resultSet
-					.getString(1))); // see note in ShortUser. _ags
+			result.add(createShortUser(createUser(resultSet)));
 		}
 		query.close();
 		return result;

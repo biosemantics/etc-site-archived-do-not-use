@@ -29,7 +29,8 @@ public class Client implements EntryPoint {
 				
 				//init layout
 				RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
-				injector.getRootLayoutPanelDecorator().decorate(rootLayoutPanel);
+				RootLayoutPanelDecorator decorator = injector.getRootLayoutPanelDecorator();
+				decorator.decorate(rootLayoutPanel);
 			}
 		});
 	}
