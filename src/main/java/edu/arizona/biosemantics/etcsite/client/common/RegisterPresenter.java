@@ -76,7 +76,7 @@ public class RegisterPresenter implements IRegisterView.Presenter {
 		}
 		
 		view.setErrorMessage("");
-		authenticationService.registerAccount(captchaId, captchaSolution, firstName, lastName, email, password, new RPCCallback<RegistrationResult>() {
+		authenticationService.registerLocalAccount(captchaId, captchaSolution, firstName, lastName, email, password, new RPCCallback<RegistrationResult>() {
 			@Override
 			public void onResult(RegistrationResult result) {
 				captchaPresenter.requestNewCaptcha();

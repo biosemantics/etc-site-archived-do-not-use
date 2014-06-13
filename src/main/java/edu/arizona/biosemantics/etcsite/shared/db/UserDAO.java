@@ -1,11 +1,14 @@
 package edu.arizona.biosemantics.etcsite.shared.db;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+
+import edu.arizona.biosemantics.etcsite.server.Configuration;
 
 public class UserDAO {
 
@@ -50,17 +53,18 @@ public class UserDAO {
 				bioportalAPIKey, created);
 	}
 
-	public User getLocalUserWithEmail(String email) throws SQLException,
+	public User getUser(String email, String openIdProvider) throws SQLException,
 			ClassNotFoundException, IOException {
 		User user = null;
 		Query query = new Query(
-				"SELECT * FROM useraccounts WHERE (openidproviderid) = ?");
+				"SELECT * FROM useraccounts WHERE (openidproviderid) = ? AND openidprovider = ?");
 		query.setParameter(1, email);
+		query.setParameter(2, openIdProvider);
 		ResultSet result = query.execute();
 		while (result.next()) {
 			int id = result.getInt(1);
 			String openIdProviderId = result.getString(2);
-			String openIdProvider = result.getString(3);
+			openIdProvider = result.getString(3);
 			String password = result.getString(4);
 			String firstName = result.getString(5);
 			String lastName = result.getString(6);
@@ -78,18 +82,24 @@ public class UserDAO {
 		return user;
 	}
 	
-	public boolean addUser(String email, String encryptedPassword, String firstName, String lastName) throws ClassNotFoundException, SQLException, IOException{
-		if (getLocalUserWithEmail(email) != null){ //if this user already exists, return false. 
+	public boolean addUser(String openIdProviderId, String encryptedPassword, String firstName, String lastName, String openIdProvider) throws ClassNotFoundException, SQLException, IOException{
+		if (getUser(openIdProviderId, openIdProvider) != null){ //if this user already exists, return false. 
 			return false;
 		} else {
 			Query addUser = new Query(
-					"INSERT INTO `useraccounts`(`id`, `openidproviderid`, `openidprovider`, `password`, `firstname`, `lastname`, `email`, `affiliation`, `bioportaluserid`, `bioportalapikey`, `created`) VALUES (LAST_INSERT_ID(), ?, \"none\", ?, ?, ?, ?, \"\", \"\", \"\", CURRENT_TIMESTAMP)");
-			addUser.setParameter(1, email);
-			addUser.setParameter(2, encryptedPassword);
-			addUser.setParameter(3, firstName);
-			addUser.setParameter(4, lastName);
-			addUser.setParameter(5, email);
+					"INSERT INTO `useraccounts`(`id`, `openIdProviderId`, `openidprovider`, `password`, `firstname`, `lastname`, `email`, `affiliation`, `bioportaluserid`, `bioportalapikey`, `created`) VALUES (LAST_INSERT_ID(), ?, ?, ?, ?, ?, ?, \"\", \"\", \"\", CURRENT_TIMESTAMP)");
+			addUser.setParameter(1, openIdProviderId);
+			addUser.setParameter(2, openIdProvider);
+			addUser.setParameter(3, encryptedPassword);
+			addUser.setParameter(4, firstName);
+			addUser.setParameter(5, lastName);
+			addUser.setParameter(6, openIdProviderId); //email
 			addUser.execute();
+			
+			//add a file directory for this user - name of directory is id. 
+			int id = getUser(openIdProviderId, openIdProvider).getId();	
+			String filename = Configuration.fileBase + File.separator + id;
+			new File(filename).mkdirs();
 			
 			return true;
 		}

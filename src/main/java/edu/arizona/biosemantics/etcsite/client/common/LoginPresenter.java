@@ -1,5 +1,7 @@
 package edu.arizona.biosemantics.etcsite.client.common;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.inject.Inject;
 
@@ -94,10 +96,15 @@ public class LoginPresenter implements ILoginView.Presenter {
 		loginPopup.hide();
 		currentListener.onResetPasswordRequest();
 	}
+	
+	@Override
+	public void onSignInWithGoogle() {
+		loginPopup.hide();
+		Location.replace("https://accounts.google.com/o/oauth2/auth?scope=https://www.googleapis.com/auth/userinfo.profile%20https://www.googleapis.com/auth/userinfo.email&client_id=714779983865-oi992jpoion63ov736trh4ioth3te7dg.apps.googleusercontent.com&redirect_uri=" + GWT.getHostPageBaseURL() + "index.html?gwt.codesvr=127.0.0.1:9997"+ "&response_type=token");
+	}
 
 	@Override
 	public String getEmailField() {
 		return loginView.getUsername();
 	}
 }
-

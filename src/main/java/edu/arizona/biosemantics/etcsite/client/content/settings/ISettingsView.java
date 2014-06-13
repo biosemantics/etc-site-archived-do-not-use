@@ -23,6 +23,7 @@ public interface ISettingsView extends IsWidget {
 	String getOldPassword();
 	String getNewPassword();
 	String getConfirmNewPassword();
+	String getOpenIdProvider();
 	
 	void setData(User user);
 	void setErrorMessage(String str);

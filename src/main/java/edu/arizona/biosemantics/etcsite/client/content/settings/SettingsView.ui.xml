@@ -41,11 +41,11 @@
 				<tr><td><g:Label>&nbsp;</g:Label></td></tr>
 			
 				<tr>
-					<td align="right"><g:Label>ID: </g:Label></td>
+					<td align="right"><g:Label>Email ID: </g:Label></td>
 					<td><g:Label ui:field="idLabel" ></g:Label></td>
 				</tr>
 				<tr>
-					<td align="right"><g:Label>Email Address: </g:Label></td>
+					<td align="right"><g:Label>Alternate Email Address: </g:Label></td>
 					<td><g:TextBox ui:field="emailBox" ></g:TextBox></td>
 				</tr>
 				<tr>

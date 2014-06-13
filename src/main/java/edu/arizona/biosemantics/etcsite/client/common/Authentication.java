@@ -11,6 +11,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
 public class Authentication {
 
 	private static Authentication instance;
+	private String externalAccessToken;
 	
 	public static Authentication getInstance() {
 		if(instance == null)
@@ -102,6 +103,13 @@ public class Authentication {
 		return affiliation;
 	}
 	
+	public String getExternalAccessToken() {
+		return externalAccessToken;
+	}
+
+	public void setExternalAccessToken(String externalAccessToken) {
+		this.externalAccessToken = externalAccessToken;
+	}
 	
 	public void destroy() {
 		Cookies.removeCookie(CookieVariable.sessionID, "/");
@@ -110,6 +118,8 @@ public class Authentication {
 		Cookies.removeCookie(CookieVariable.firstName, "/");
 		Cookies.removeCookie(CookieVariable.lastName, "/");
 		Cookies.removeCookie(CookieVariable.affiliation, "/");
+		
+		externalAccessToken = null;
 	}
 
 	public AuthenticationToken getToken() {

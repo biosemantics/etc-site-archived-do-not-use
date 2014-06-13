@@ -12,31 +12,31 @@ public class PasswordResetRequestDAO {
 	/**
 	 * Returns null if no such user exists. 
 	 */
-	public PasswordResetRequest getRequest(int id) throws ClassNotFoundException, SQLException, IOException{
+	public PasswordResetRequest getRequest(int user) throws ClassNotFoundException, SQLException, IOException{
 		PasswordResetRequest request = null;
 		
-		Query query = new Query("SELECT * FROM passwordresetrequests WHERE id = ?");
-		query.setParameter(1, id);
+		Query query = new Query("SELECT * FROM passwordresetrequests WHERE user = ?");
+		query.setParameter(1, user);
 		ResultSet result = query.execute();
 		while(result.next()){
 			String authenticationCode = result.getString(2);
 			Timestamp timeCreated = result.getTimestamp(3);
-			request = new PasswordResetRequest(id, authenticationCode, timeCreated);
+			request = new PasswordResetRequest(user, authenticationCode, timeCreated);
 		}
 		query.close();
 		
 		return request;
 	}
 	
-	public void removeRequests(int id) throws ClassNotFoundException, SQLException, IOException{
-		Query removeRequest = new Query("DELETE FROM `passwordresetrequests` WHERE `id`=?");
-		removeRequest.setParameter(1, id);
+	public void removeRequests(int user) throws ClassNotFoundException, SQLException, IOException{
+		Query removeRequest = new Query("DELETE FROM `passwordresetrequests` WHERE `user`=?");
+		removeRequest.setParameter(1, user);
 		removeRequest.executeAndClose();
 	}
 	
-	public void addRequest(int id, String authenticationCode) throws SQLException, ClassNotFoundException, IOException{
-		Query addRequest = new Query("INSERT INTO `passwordresetrequests`(`id`, `authenticationcode`, `requesttime`) VALUES (?, ?, CURRENT_TIMESTAMP)");
-		addRequest.setParameter(1, id);
+	public void addRequest(int user, String authenticationCode) throws SQLException, ClassNotFoundException, IOException{
+		Query addRequest = new Query("INSERT INTO `passwordresetrequests`(`user`, `authenticationcode`, `requesttime`) VALUES (?, ?, CURRENT_TIMESTAMP)");
+		addRequest.setParameter(1, user);
 		addRequest.setParameter(2, authenticationCode);
 		addRequest.executeAndClose();
 	}

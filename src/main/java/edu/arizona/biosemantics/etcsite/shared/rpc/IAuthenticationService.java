@@ -14,7 +14,7 @@ public interface IAuthenticationService extends RemoteService {
 	
 	public RPCResult<AuthenticationResult> login(String user, String password);
 
-	RPCResult<RegistrationResult> registerAccount(int captchaId,
+	RPCResult<RegistrationResult> registerLocalAccount(int captchaId,
 			String captchaSolution, String firstName, String lastName,
 			String email, String password);
 	
@@ -35,6 +35,8 @@ public interface IAuthenticationService extends RemoteService {
 			String code, String newPassword);
 
 	RPCResult<RequestCaptchaResult> requestCaptcha();
+
+	RPCResult<AuthenticationResult> loginWithGoogle(String googleAuthCode);
 	
 	RPCResult<String> getOperator(AuthenticationToken authenticationToken);
 

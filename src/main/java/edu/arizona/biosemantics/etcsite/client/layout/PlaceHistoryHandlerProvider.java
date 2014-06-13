@@ -28,7 +28,7 @@ public class PlaceHistoryHandlerProvider implements Provider<PlaceHistoryHandler
 	
 	@Override
 	public PlaceHistoryHandler get() {
-		PlaceHistoryHandler	placeHistoryHandler = new PlaceHistoryHandler(placeHistoryMapper);
+		MyPlaceHistoryHandler	placeHistoryHandler = new MyPlaceHistoryHandler(placeHistoryMapper);
 		placeHistoryHandler.register(placeController, eventBus, defaultPlace);
 		return placeHistoryHandler;
 	}

@@ -5,6 +5,9 @@
 		.clickable {
 			cursor: pointer;
 		}
+		.smallerText {
+			font-size: 10px;
+		}
 	</ui:style>
 	<g:HTMLPanel>
 		<div align="center" style="padding:7px"> 
@@ -12,8 +15,9 @@
 		</div>
 		
 		<hr width="90%" noshade="noshade"></hr>
+		<br></br>
 		
-		<table style="padding:15px; margin:15px, width:100%; 100%">
+		<table align="center" style="padding:0px">
 			<tr>
 				<td><g:Label>Email: </g:Label></td>
 				<td><g:TextBox ui:field="usernameTextBox" ></g:TextBox></td>
@@ -22,34 +26,33 @@
 			<tr>
 				<td><g:Label>Password: </g:Label></td>
 				<td><g:PasswordTextBox ui:field="passwordTextBox"></g:PasswordTextBox></td>
-				
+			</tr>
+			<tr>
+				<td></td>
+				<td><div align="left" style="padding:3px" class="{style.clickable} {style.smallerText}"><g:Label text="&nbsp;&nbsp;(Forgot your password?)" ui:field="resetPasswordLabel"></g:Label></div></td>
 			</tr>
 		</table>
-		<table align="center" style="padding:10px; width:100%; height:100%">
-				<tr style = "position:absolute; right:45px; top:134px">
+		
+		<table align="center" width="60%">
+				<tr align="right">
 					<td><div>
 						<g:Button ui:field="loginButton">Sign in</g:Button>
 					</div></td>
 				</tr>
 		</table>
 		
-		<br></br>
 		<hr width="90%" noshade="noshade"></hr>
 		
-		<div align="center" class="{style.clickable}"><g:Label ui:field="resetPasswordLabel">Forgot your password? Click here.</g:Label></div>
-		
-		<table align="center" style="padding:5px; width:100%; 100%">
+		<table align="center" style="padding:5px">
 			<tr align="center">
 				<td><g:Label>Don't have an account?</g:Label></td>
 				<td><div class="{style.clickable}"><g:Label text="Click here to sign up." ui:field="registerLabel"></g:Label></div></td></tr>
-			<tr><g:Label></g:Label></tr>
 		</table>
-		<!-- <table align="center" style="padding:5px; width:100%; 100%">
+		<table align="center" style="padding:5px">
 				<tr align="center" ><td><g:Label>or </g:Label></td></tr>
-				<tr><g:Label></g:Label></tr>
-				<tr align="center" ><td><g:Label>Sign in with google.</g:Label></td></tr>
-		</table> -->
+				<tr align="center"><td><g:Label>&nbsp;</g:Label></td></tr>
+				<tr align="center"><td class="{style.clickable}"><g:Image url="images/GoogleSignInButton.png" height="38px" ui:field="googleButton"></g:Image></td></tr>
+		</table>
 	</g:HTMLPanel>
-
 
 </ui:UiBinder> 

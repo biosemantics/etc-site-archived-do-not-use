@@ -1,10 +1,15 @@
 package edu.arizona.biosemantics.etcsite.server.rpc;
 
-import java.io.File;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.Random;
+
+import org.json.JSONObject;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -71,7 +76,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	@Override
 	public RPCResult<AuthenticationResult> login(String email, String password) {
 		try {
-			User user = UserDAO.getInstance().getLocalUserWithEmail(email);
+			User user = UserDAO.getInstance().getUser(email, "none");
 			if(user != null && BCrypt.checkpw(password, user.getPassword())) {
 				String sessionId = generateSessionId(user.getId(), user.getPassword());
 				return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(true, sessionId, user));
@@ -83,9 +88,60 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 		return new RPCResult<AuthenticationResult>(true, "Authentication failed", new AuthenticationResult(false, null, null));
 	}
 	
+	@Override
+	public RPCResult<AuthenticationResult> loginWithGoogle(String accessToken) {
+
+		try {
+			URL url = new URL("https://www.googleapis.com/oauth2/v1/userinfo?access_token=" + accessToken);
+			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+			connection.setRequestMethod("GET");
+			//int responseCode = connection.getResponseCode();
+			
+			//System.out.println("Sending GET request to " + url.getPath());
+			//System.out.println("Response code: " + responseCode);
+			
+			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			String line;
+			StringBuffer response = new StringBuffer();
+			
+			while ((line = reader.readLine()) != null){
+				response.append(line);
+			}
+			reader.close();
+			
+			//System.out.println("Got the result: \n" + response.toString());
+			
+			JSONObject elements = new JSONObject(response.toString());
+			String firstName = elements.getString("given_name");
+			String lastName = elements.getString("family_name");
+			String openIdProviderId = elements.getString("email");
+			
+			//System.out.println("First name: " + firstName + ". Last name: " + lastName + ". Email: " + email + ".");
+			
+			//create an account for this user if they do not have one yet.	
+			String dummyPassword = firstName + lastName;
+			String encryptedDummyPassword = BCrypt.hashpw(dummyPassword, BCrypt.gensalt()); //encrypt password
+			UserDAO.getInstance().addUser(openIdProviderId, encryptedDummyPassword, firstName, lastName, "google");
+			
+			
+			User user = UserDAO.getInstance().getUser(openIdProviderId, "google");
+			
+			//update the user's first name and last name in case they changed them in their google account. (Dummy password will have changed too.)
+			UserDAO.getInstance().updateUser(user.getId(), firstName, lastName, 
+					user.getEmail(), encryptedDummyPassword, user.getAffiliation(), user.getBioportalUserId(), user.getBioportalAPIKey());
+			user = UserDAO.getInstance().getUser(openIdProviderId, "google"); //refresh the user after update.
+			
+			String sessionId = generateSessionId(user.getId(), user.getPassword());
+			return new RPCResult<AuthenticationResult>(true, new AuthenticationResult(true, sessionId, user));
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new RPCResult<AuthenticationResult>(true, "Authentication failed", new AuthenticationResult(false, null, null));
+		} 
+	}
 	
 	@Override
-	public RPCResult<RegistrationResult> registerAccount(int captchaId, String captchaSolution, String firstName, String lastName, String email, String password) {
+	public RPCResult<RegistrationResult> registerLocalAccount(int captchaId, String captchaSolution, String firstName, String lastName, String email, String password) {
 		
 		//check to see if the captcha is correct.
 		if (!CaptchaManager.getInstance().isValidSolution(captchaId, captchaSolution)){
@@ -96,18 +152,8 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 		
 		try {
 			
-			if (UserDAO.getInstance().addUser(email, encryptedPassword, firstName, lastName)){ //registration was successful.
-				//get the user that was just added.
-				int id = UserDAO.getInstance().getLocalUserWithEmail(email).getId();
-				
-				//add a file directory for this user. 
-				String userFile = Configuration.fileBase + File.separator + id;
-				new File(userFile).mkdir();
-				String compressedFile = Configuration.compressedFileBase + File.separator + id;
-				new File(compressedFile).mkdir();
-				
+			if (UserDAO.getInstance().addUser(email, encryptedPassword, firstName, lastName, "none")) //registration was successful.
 				return new RPCResult<RegistrationResult>(true, new RegistrationResult(true, RegistrationResult.SUCCESS_MESSAGE));
-			}
 			else 
 				return new RPCResult<RegistrationResult>(true, new RegistrationResult(false, RegistrationResult.EMAIL_ALREADY_REGISTERED_MESSAGE));
 		} catch (Exception e) {
@@ -147,7 +193,6 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 			else //there is no user with that id. 
 				return new RPCResult<UpdateUserResult>(true, new UpdateUserResult(false, UpdateUserResult.GENERIC_ERROR_MESSAGE, null));
 
-		
 		} catch (Exception e){ //something went wrong during user update.
 			e.printStackTrace();
 			return new RPCResult<UpdateUserResult>(true, new UpdateUserResult(false, UpdateUserResult.GENERIC_ERROR_MESSAGE, null));
@@ -215,7 +260,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 		}
 		
 		try {
-			User user = UserDAO.getInstance().getLocalUserWithEmail(openIdProviderId);
+			User user = UserDAO.getInstance().getUser(openIdProviderId, "none");
 			if (user == null)
 				return new RPCResult<PasswordResetResult>(true, new PasswordResetResult(false, PasswordResetResult.NO_SUCH_USER_MESSAGE));
 			int userId = user.getId();
@@ -260,7 +305,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 		//show confirm message.
 		
 		try{
-			User user = UserDAO.getInstance().getLocalUserWithEmail(openIdProviderId);
+			User user = UserDAO.getInstance().getUser(openIdProviderId, "none");
 			if (user == null)
 				return new RPCResult<PasswordResetResult>(true, new PasswordResetResult(false, PasswordResetResult.NO_SUCH_USER_MESSAGE));
 			int userId = user.getId();

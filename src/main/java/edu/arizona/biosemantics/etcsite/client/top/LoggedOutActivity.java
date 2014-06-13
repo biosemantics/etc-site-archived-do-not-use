@@ -51,6 +51,27 @@ public class LoggedOutActivity extends MyAbstractActivity implements Presenter {
 					}
 				}
 			});
+		} else if (authentication.getExternalAccessToken() != null){ //check to see if this is a redirect from Google
+			String accessToken = authentication.getExternalAccessToken();
+			authentication.setExternalAccessToken(null); //don't need this anymore. 
+			authenticationService.loginWithGoogle(accessToken, new RPCCallback<AuthenticationResult>(){
+				@Override
+				public void onResult(AuthenticationResult result) {
+					if(result.getResult()) {
+						Authentication auth = Authentication.getInstance();
+						auth.setUserId(result.getUser().getId());
+						auth.setSessionID(result.getSessionID());
+						auth.setEmail(result.getUser().getEmail());
+						auth.setFirstName(result.getUser().getFirstName());
+						auth.setLastName(result.getUser().getLastName());
+						auth.setAffiliation(result.getUser().getAffiliation());
+						placeController.goTo(new LoggedInPlace());
+					} else {
+						messagePresenter.setMessage("An error occurred. Please try signing in again later.");
+						messagePresenter.show();
+					}
+				}
+			});
 		} else {
 			setLoginView(panel);
 		}

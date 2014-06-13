@@ -48,15 +48,22 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 
 	@Override
 	public void onSubmit() {
+		final String openIdProvider = settingsView.getOpenIdProvider();
+		
 		final String firstName = settingsView.getFirstName();
 		final String lastName = settingsView.getLastName();
 		final String email = settingsView.getEmail();
 		final String affiliation = settingsView.getAffiliation();
 		final String bioportalUserId = settingsView.getBioportalUserId();
 		final String bioportalAPIKey = settingsView.getBioportalAPIKey();
-		final String oldPassword = settingsView.getOldPassword();
+		final String oldPassword;
+		if (openIdProvider.equals("none"))
+			oldPassword = settingsView.getOldPassword();
+		else
+			oldPassword = firstName+lastName; //if this is not a local account, use the dummy password.
 		final String newPassword = settingsView.getNewPassword();
 		final String confirmNewPassword = settingsView.getConfirmNewPassword();
+		
 		
 		//error checking. 
 		settingsView.setErrorMessage("");
@@ -69,20 +76,23 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 		} else if (!RegExp.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$").test(email)){
 			settingsView.setErrorMessage("Email address must be valid.");
 			return;
-		} else if (!newPassword.equals(confirmNewPassword)){
-			settingsView.setErrorMessage("Passwords do not match.");
-			return;
-		} else if (newPassword.length() > 0 && newPassword.length() < 6){
-			settingsView.setErrorMessage("Password must be at least 6 characters.");
-			return;
-		} else if (oldPassword.length() == 0){
-			settingsView.setErrorMessage("You must enter your password in order to submit changes.");
-			return;
+		}
+		if (openIdProvider.equals("none")){ //only require password if this is a local user. 
+			if (!newPassword.equals(confirmNewPassword)){
+				settingsView.setErrorMessage("Passwords do not match.");
+				return;
+			} else if (newPassword.length() > 0 && newPassword.length() < 6){
+				settingsView.setErrorMessage("Password must be at least 6 characters.");
+				return;
+			} else if (oldPassword.length() == 0){
+				settingsView.setErrorMessage("You must enter your password in order to submit changes.");
+				return;
+			}
 		}
 		
 		//if the user has specified a new password, send it. If not, simply send the old password
 		//	- it will be encrypted and stored either way. 
-		final String password = newPassword.length() > 0 ? newPassword : oldPassword;
+		final String password= newPassword.length() > 0 ? newPassword : oldPassword;
 			
 		authenticationService.updateUser(Authentication.getInstance().getToken(), oldPassword, firstName, lastName, email, password, affiliation, bioportalUserId, bioportalAPIKey, new RPCCallback<UpdateUserResult>() {
 			@Override

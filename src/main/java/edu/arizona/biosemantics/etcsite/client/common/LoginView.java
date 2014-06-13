@@ -50,7 +50,6 @@ public class LoginView extends Composite implements ILoginView {
 		
 		usernameTextBox.addKeyPressHandler(keyHandler);
 		passwordTextBox.addKeyPressHandler(keyHandler);
-	
 	}
 
 	@Override
@@ -71,6 +70,11 @@ public class LoginView extends Composite implements ILoginView {
 	@UiHandler("resetPasswordLabel")
 	public void onResetPasswordClick(ClickEvent event){
 		presenter.onResetPasswordRequest();
+	}
+	
+	@UiHandler("googleButton")
+	public void onSignInWithGoogleClick(ClickEvent event){
+		presenter.onSignInWithGoogle();
 	}
 	
 	/**

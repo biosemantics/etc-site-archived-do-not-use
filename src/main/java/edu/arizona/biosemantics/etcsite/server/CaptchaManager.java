@@ -34,9 +34,13 @@ public class CaptchaManager {
 		captchaProducer = config.getProducerImpl();
 		captchas = new ConcurrentHashMap<Integer, Captcha>();
 		
-		//clear all current files in captcha directory. 
+		// create the directory if it doesn't exist. Then,
+		// clear all current files in directory. 
 		try {
-			FileUtils.cleanDirectory(new File(Configuration.captcha_tempFileBase));
+			File dir = new File(Configuration.captcha_tempFileBase);
+			if (!dir.exists())
+				dir.mkdirs();
+			FileUtils.cleanDirectory(dir);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

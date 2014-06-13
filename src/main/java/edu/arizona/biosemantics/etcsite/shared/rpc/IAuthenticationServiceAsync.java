@@ -12,7 +12,7 @@ public interface IAuthenticationServiceAsync {
 	public void login(String user, String password,
 			AsyncCallback<RPCResult<AuthenticationResult>> callback);
 
-	void registerAccount(int captchaId, String captchaSolution,
+	void registerLocalAccount(int captchaId, String captchaSolution,
 			String firstName, String lastName, String email, String password,
 			AsyncCallback<RPCResult<RegistrationResult>> callback);
 	
@@ -38,6 +38,10 @@ public interface IAuthenticationServiceAsync {
 
 	public void requestCaptcha(AsyncCallback<RPCResult<RequestCaptchaResult>> callback);
 
-	public void getOperator(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<String>> callback);
+	void loginWithGoogle(String googleAuthCode,
+			AsyncCallback<RPCResult<AuthenticationResult>> callback);
+			
+		public void getOperator(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<String>> callback);
+
 	
 }

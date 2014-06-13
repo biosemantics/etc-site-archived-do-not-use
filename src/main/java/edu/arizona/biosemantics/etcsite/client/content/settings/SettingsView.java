@@ -61,6 +61,8 @@ public class SettingsView extends Composite implements ISettingsView {
 	private Presenter presenter;
 	private final int FIELD_WIDTH = 180;
 	
+	private User user;
+	
 	public SettingsView() {
 		initWidget(uiBinder.createAndBindUi(this));
 		firstNameBox.setPixelSize(FIELD_WIDTH, 14);
@@ -97,6 +99,27 @@ public class SettingsView extends Composite implements ISettingsView {
 		oldPasswordBox.setText("");
 		newPasswordBox.setText("");
 		confirmNewPasswordBox.setText("");
+		
+		firstNameBox.setEnabled(true);
+		lastNameBox.setEnabled(true);
+		emailBox.setEnabled(true);
+		affiliationBox.setEnabled(true);
+		bioportalUserIdBox.setEnabled(true);
+		bioportalAPIKeyBox.setEnabled(true);
+		oldPasswordBox.setEnabled(true);
+		newPasswordBox.setEnabled(true);
+		confirmNewPasswordBox.setEnabled(true);
+		
+		this.user = user;
+		
+		if (!user.getOpenIdProvider().equals("none")){
+			firstNameBox.setEnabled(false);
+			lastNameBox.setEnabled(false);
+			oldPasswordBox.setText(user.getPassword());
+			oldPasswordBox.setEnabled(false);
+			newPasswordBox.setEnabled(false);
+			confirmNewPasswordBox.setEnabled(false);
+		}
 	}
 	
 	@Override
@@ -160,5 +183,10 @@ public class SettingsView extends Composite implements ISettingsView {
 	@Override
 	public String getConfirmNewPassword() {
 		return confirmNewPasswordBox.getText();
+	}	
+	
+	@Override
+	public String getOpenIdProvider() {
+		return user.getOpenIdProvider();
 	}	
 }
