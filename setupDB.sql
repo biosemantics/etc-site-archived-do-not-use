@@ -427,3 +427,16 @@ ALTER TABLE `treegenerationconfigurations`
 --
 ALTER TABLE `visualizationconfigurations`
   ADD CONSTRAINT `configurations_visualizationconfigurations_CON` FOREIGN KEY (`configuration`) REFERENCES `configurations` (`id`);
+  
+  -- --------------------------------------------------------
+
+--
+-- Table structure for table `passwordresetrequests`
+--
+
+CREATE TABLE IF NOT EXISTS `passwordresetrequests` (
+  `user` bigint(20) NOT NULL,
+  `authenticationcode` varchar(20) NOT NULL,
+  `requesttime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY `user` (`user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
