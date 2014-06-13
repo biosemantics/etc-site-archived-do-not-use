@@ -16,6 +16,8 @@ charaparser_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/char
 
 #Matrix Generation
 matrixGeneration_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/matrixGeneration
+
+#Captcha
 captcha_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/captcha
 
 #File Management
@@ -29,8 +31,6 @@ xPathObjectModel=http://saxon.sf.net/jaxp/xpath/om
 #compressCommand=zip.bat [source.parent] [source.filename] [destination]
 #compressCommand=tar [source.parent]/[source.filename] [destination]
 compressCommand=tar -zcvf [destination] --directory=[source.parent] [source.filename]
-
-captcha_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/captcha
 
 ######otolite######## 
 #Database configuration
@@ -48,5 +48,15 @@ OTO_url=http://biosemantics.arizona.edu/OTO/
 ontology_dir=C:/OntologyOwlFiles/
 dict_dir=C:/wordnet/wn31/dict/
 
-#source files location confirguration
+#source files location configuration
 src_file_dir=C:/git/OTOLiteForETC/srcfiles/
+
+#Sign in with Google
+google_redirect_URI=
+google_client_id=
+
+#Email address (used to send email to users):
+email_smtp_server=
+email_address=
+email_password=
+

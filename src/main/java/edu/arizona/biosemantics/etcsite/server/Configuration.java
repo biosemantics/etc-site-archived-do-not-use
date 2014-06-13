@@ -38,6 +38,15 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 	/** Captcha **/
 	public static String captcha_tempFileBase;
 	
+	/** Email Account **/
+	public static String emailSMTPServer;
+	public static String emailAddress;
+	public static String emailPassword;
+	
+	/** Sign in with Google **/
+	public static String googleRedirectURI;
+	public static String googleClientId;
+	
 	static {
 		try {
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -68,6 +77,14 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			compressCommand = properties.getProperty("compressCommand");
 			
 			captcha_tempFileBase = properties.getProperty("captcha_tempFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
+			
+			emailSMTPServer = properties.getProperty("email_smtp_server");
+			emailAddress = properties.getProperty("email_address");
+			emailPassword = properties.getProperty("email_password");
+			
+			googleRedirectURI = properties.getProperty("google_redirect_URI");
+			googleClientId = properties.getProperty("google_client_id");
+
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
