@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.Properties;
 import java.util.regex.Matcher;
 
+import org.apache.log4j.Logger;
+
 public class Configuration extends edu.arizona.biosemantics.etcsite.client.common.Configuration {
 
 	/** Database **/
@@ -48,6 +50,8 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 	public static String googleClientId;
 	
 	static {
+		Logger.getLogger(DownloadServlet.class).debug("Init Configuration");
+		
 		try {
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
 			Properties properties = new Properties(); 

@@ -228,7 +228,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 					public void onResult(String result) {
 						//target=" + result.getData() + "&directory=yes
 						loadingPopup.stop();
-						Window.Location.replace("/etcsite/download/?target=" + URL.encodeQueryString(result) + 
+						Window.Location.replace("/etcsite/download?target=" + URL.encodeQueryString(result) + 
 								"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
 								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()));
 						
