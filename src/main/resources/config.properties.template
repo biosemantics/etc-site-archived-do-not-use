@@ -28,8 +28,8 @@ compressedFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/compressedFiles
 xPathObjectModel=http://saxon.sf.net/jaxp/xpath/om
 
 #Compress Command (currently saves as .zip only)
-compressCommand=C:/Windows/System32/zip.bat [compressedFileBase][source] [destination]
-compressCommand=/var/lib/etcsite/bin/zip.sh [compressedFileBase] [source] [destination]
+compressCommand=C:/Windows/System32/zip.bat [sourceParent]\\[source] [destination]
+compressCommand=/var/lib/etcsite/bin/zip.sh [sourceParent] [source] [destination]
 
 #Sign in with Google
 google_redirect_URI=

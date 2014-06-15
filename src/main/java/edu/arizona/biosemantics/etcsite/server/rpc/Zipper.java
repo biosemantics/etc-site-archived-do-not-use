@@ -37,10 +37,10 @@ public class Zipper {
 		if(sourceFile.exists()) {
 			String command = Configuration.compressCommand; 
 			command = command.replace("[destination]", effectiveDestination);
-			File compressedFileBaseFile = new File(Configuration.compressedFileBase);
-			String relativeSource = sourceFile.getAbsolutePath().replace(compressedFileBaseFile.getAbsolutePath(), "");
-			command = command.replace("[source]", relativeSource);
-			command = command.replace("[compressedFileBase]", compressedFileBaseFile.getAbsolutePath());
+			String sourceFileName = sourceFile.getName();
+			String sourceParent = sourceFile.getParentFile().getAbsolutePath();
+			command = command.replace("[source]", sourceFileName);
+			command = command.replace("[sourceParent]", sourceParent);
 			Process process = runCommand(command);
 			process.waitFor();
 		}
