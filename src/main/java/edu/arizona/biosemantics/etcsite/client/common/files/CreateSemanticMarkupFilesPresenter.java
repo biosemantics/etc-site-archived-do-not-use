@@ -12,6 +12,7 @@ import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView;
 import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView.IConfirmListener;
 import edu.arizona.biosemantics.etcsite.client.common.IMessageView;
 import edu.arizona.biosemantics.etcsite.client.common.ServerSetup;
+import edu.arizona.biosemantics.etcsite.server.rpc.XmlModelFileCreator;
 //import edu.arizona.biosemantics.etcsite.server.rpc.FileFormatService;
 import edu.arizona.biosemantics.etcsite.shared.file.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
@@ -19,7 +20,6 @@ import edu.arizona.biosemantics.etcsite.shared.file.MyXmlWriter;
 import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.BracketChecker;
 import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.TaxonIdentificationEntry;
 import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModelFile;
-import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModelFileCreator;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatServiceAsync;
@@ -38,7 +38,6 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	private IMessageView.Presenter messagePresenter;
 	private IMessageConfirmView.Presenter messageConfirmPresenter;
 	private FilePathShortener filePathShortener = new FilePathShortener();
-	private XmlModelFileCreator xmlModelFileCreator = new XmlModelFileCreator();
 	private int filesCreated;
 	private String destinationFilePath;
 	private BracketChecker bracketChecker = new BracketChecker();
@@ -57,41 +56,53 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	}
 
 	public void onCreate() {
-		XmlModelFile modelFile = createModelFile();
-		if(!modelFile.hasError()) {
-			List<XmlModelFile> modelFiles = new LinkedList<XmlModelFile>();
-			modelFiles.add(modelFile);
-			createXmlFiles(modelFiles, destinationFilePath);
-		} else 
-			messagePresenter.showMessage("Input Error", modelFile.getError().replaceAll("\n", "</br>"));
+		createModelFile();
 	}
 	
-	private XmlModelFile createModelFile() {
+	private void createModelFile() {
 		StringBuilder textBuilder = new StringBuilder();
-		textBuilder.append("author: " + view.getAuthor().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
-		textBuilder.append("year: " + view.getYear().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
-		textBuilder.append("title: " + view.getTitleText().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "").trim() + "\n");
-		textBuilder.append("doi: " + view.getDOI().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
-		textBuilder.append("full citation: " + view.getFullCitation().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
+		textBuilder.append("author: " + view.getAuthor().trim() + "\n");
+		textBuilder.append("year: " + view.getYear().trim() + "\n");
+		textBuilder.append("title: " + view.getTitleText().trim() + "\n");
+		textBuilder.append("doi: " + view.getDOI().trim() + "\n");
+		textBuilder.append("full citation: " + view.getFullCitation().trim() + "\n");
 		List<TaxonIdentificationEntry> taxonIdentificationEntries = view.getTaxonIdentificationEntries();
 		for(TaxonIdentificationEntry taxonIdentificationEntry : taxonIdentificationEntries) {
-			String rank = taxonIdentificationEntry.getRank().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "");
-			String name = taxonIdentificationEntry.getValue().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "");
+			String rank = taxonIdentificationEntry.getRank().trim();
+			String name = taxonIdentificationEntry.getValue().trim();
 			if(!rank.isEmpty() && !name.isEmpty()){
 				textBuilder.append(rank + " name: " + name + "\n");
 			}
 		}
-		textBuilder.append("strain number: " + view.getStrainNumber().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
-		textBuilder.append("equivalent strain numbers: " + view.getEqStrainNumbers().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
-		textBuilder.append("accession number 16s rrna: " + view.getStrainAccession().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "\n");
+		textBuilder.append("strain number: " + view.getStrainNumber().trim() + "\n");
+		textBuilder.append("equivalent strain numbers: " + view.getEqStrainNumbers().trim() + "\n");
+		textBuilder.append("accession number 16s rrna: " + view.getStrainAccession().trim() + "\n");
 		
-		textBuilder.append("morphology: #" + view.getMorphologicalDescription().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "#\n");
-		textBuilder.append("habitat: #" + view.getHabitatDescription().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "#\n");
-		textBuilder.append("distribution: #" + view.getDistributionDescription().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "#\n");
-		textBuilder.append("phenology: #" + view.getPhenologyDescription().trim().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "") + "#\n");		
+		textBuilder.append("morphology: #" + view.getMorphologicalDescription().trim() + "#\n");
+		textBuilder.append("habitat: #" + view.getHabitatDescription().trim() + "#\n");
+		textBuilder.append("distribution: #" + view.getDistributionDescription().trim() + "#\n");
+		textBuilder.append("phenology: #" + view.getPhenologyDescription().trim() + "#\n");		
 		
-		XmlModelFile result = xmlModelFileCreator.createXmlModelFile(textBuilder.toString(), getOperator(Authentication.getInstance()));
-		return result;
+		fileFormatService.createTaxonDescriptionFile(Authentication.getInstance().getToken(), textBuilder.toString(), 
+				new RPCCallback<List<XmlModelFile>>() {
+			@Override
+			public void onResult(List<XmlModelFile> modelFiles) {
+				StringBuilder overallError = new StringBuilder();
+				
+				for(XmlModelFile xmlModelFile : modelFiles) {
+					if(xmlModelFile.hasError())
+						overallError.append(xmlModelFile.getError() + "\n\n");
+				}
+				
+				String error = overallError.toString();
+				if(error.isEmpty())
+					createXmlFiles(modelFiles, destinationFilePath);
+				else {
+					error += "Did not create any files";
+					messagePresenter.showMessage("Input Error", error.replaceAll("\n", "</br>"));
+				}
+			}
+		});
 	}
 
 	private void createXmlFiles(final List<XmlModelFile> modelFiles, final String destinationFilePath) {
@@ -188,28 +199,25 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 
 	@Override
 	public void onBatch(String text) {
-		List<XmlModelFile> xmlModelFiles = xmlModelFileCreator.createXmlModelFiles(text, getOperator(Authentication.getInstance()));
-		
-		StringBuilder overallError = new StringBuilder();
-		
-		for(XmlModelFile xmlModelFile : xmlModelFiles) {
-			if(xmlModelFile.hasError())
-				overallError.append(xmlModelFile.getError() + "\n\n");
-		}
-		
-		String error = overallError.toString();
-		if(error.isEmpty())
-			createXmlFiles(xmlModelFiles, destinationFilePath);
-		else {
-			error += "Did not create any files";
-			messagePresenter.showMessage("Input Error", error.replaceAll("\n", "</br>"));
-		}
-	}
-	
-	private String getOperator(Authentication authentication) {
-		String operator = authentication.getFirstName() + " " + Authentication.getInstance().getLastName() + " (" + authentication.getEmail() + ") ";
-		if(!authentication.getAffiliation().isEmpty()) 
-			operator += "at " + authentication.getAffiliation();
-		return operator;
+		fileFormatService.createTaxonDescriptionFile(Authentication.getInstance().getToken(), text, 
+				new RPCCallback<List<XmlModelFile>>() {
+			@Override
+			public void onResult(List<XmlModelFile> modelFiles) {
+				StringBuilder overallError = new StringBuilder();
+				
+				for(XmlModelFile xmlModelFile : modelFiles) {
+					if(xmlModelFile.hasError())
+						overallError.append(xmlModelFile.getError() + "\n\n");
+				}
+				
+				String error = overallError.toString();
+				if(error.isEmpty())
+					createXmlFiles(modelFiles, destinationFilePath);
+				else {
+					error += "Did not create any files";
+					messagePresenter.showMessage("Input Error", error.replaceAll("\n", "</br>"));
+				}
+			}
+		});
 	}
 }

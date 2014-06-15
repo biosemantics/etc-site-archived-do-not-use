@@ -1,9 +1,13 @@
 package edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup;
 
-public class TaxonIdentificationEntry {
+import java.io.Serializable;
+
+public class TaxonIdentificationEntry implements Serializable {
 
 	private String rank;
 	private String value;
+	
+	public TaxonIdentificationEntry() { }
 	
 	public TaxonIdentificationEntry(String rank, String value) {
 		super();

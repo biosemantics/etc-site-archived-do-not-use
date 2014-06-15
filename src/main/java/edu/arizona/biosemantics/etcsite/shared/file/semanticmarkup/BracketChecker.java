@@ -5,8 +5,6 @@ import edu.arizona.biosemantics.etcsite.client.common.MessageView;
 
 public class BracketChecker {
 	
-	private MessagePresenter message = new MessagePresenter(new MessageView());
-	
 	/**
 	 * Give toMatch and matcher already as quoted strings. Becuase there seems to be a bug in the Regex/replaceAll GWT implementation
 	 * To many things are matched/replaced. Event if there is none of those characters in the string at all.

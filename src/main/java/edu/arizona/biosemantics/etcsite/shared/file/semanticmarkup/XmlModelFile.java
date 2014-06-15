@@ -1,6 +1,8 @@
 package edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup;
 
-public class XmlModelFile {
+import java.io.Serializable;
+
+public class XmlModelFile implements Serializable {
 
 	private String fileName;
 	private String xml;

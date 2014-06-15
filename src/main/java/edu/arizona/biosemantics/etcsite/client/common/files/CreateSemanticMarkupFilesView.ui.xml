@@ -36,7 +36,7 @@
 						<g:header>Create File</g:header>
 						<g:VerticalPanel>
 							<g:DisclosurePanel>
-								<g:header>Source Document Information</g:header>
+								<g:header>Source Document Information *</g:header>
 								<g:FlowPanel>
 									<g:Label>Author *</g:Label>
 									<g:TextBox ui:field="author"></g:TextBox>

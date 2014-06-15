@@ -376,6 +376,6 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 		String operator = user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ") ";
 		if(!user.getAffiliation().isEmpty()) 
 			operator += "at " + user.getAffiliation();
-		return new RPCResult<String>(true, operator, "");
+		return new RPCResult<String>(true, "", operator);
 	}
 }

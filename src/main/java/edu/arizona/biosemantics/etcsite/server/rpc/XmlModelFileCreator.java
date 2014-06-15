@@ -1,6 +1,6 @@
-package edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup;
+package edu.arizona.biosemantics.etcsite.server.rpc;
 
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -9,17 +9,28 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.gwt.i18n.shared.DateTimeFormat;
+import org.apache.log4j.Logger;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.output.XMLOutputter;
+
+import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.BracketChecker;
+import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.TaxonIdentificationEntry;
+import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModelFile;
+
+/*import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.i18n.shared.DateTimeFormat.PredefinedFormat;
-import com.google.gwt.xml.client.Document;
+/*import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
-import com.google.gwt.xml.client.XMLParser;
+import com.google.gwt.xml.client.XMLParser;*/
 
 public class XmlModelFileCreator {
 
+	private Logger logger = Logger.getLogger(XmlModelFileCreator.class);
 	public static String[] fields =  new String[] {"author", "year", "title", "doi", "full citation",
 			/*"order", "suborder", "superfamily", "family", "subfamily", "tribe", "subtribe", "genus", "subgenus", 
 			"section", "subsection", "series", "species", "subspecies", "variety", "forma", "unranked",*/
@@ -38,11 +49,13 @@ public class XmlModelFileCreator {
 	}
 	
 	public List<XmlModelFile> createXmlModelFiles(String text, String operator) {
+		showMessage("text:", text);
 		List<XmlModelFile> result = new LinkedList<XmlModelFile>();
-		text = text.replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "");	//remove all leading/trailing non-visible characters (ASCII)
+		text = text.trim();
 		text = text.replaceAll("\\r\\n", "\n");
 		text = text.replaceAll("\\r", "\n"); 
 		text = text.replaceAll("\\n{3,}", "\n\n");
+		showMessage("text after normalization: ", text);
 		List<String> treatmentTexts = getTreatmentTexts(text);
 		
 		for(String treatmentText : treatmentTexts) {
@@ -53,6 +66,14 @@ public class XmlModelFileCreator {
 		return result;
 	}
 	
+	private void showMessage(String title, String text) {
+		/*TextView view = new TextView();
+		TextPresenter presenter = new TextPresenter(view);
+		view.setPresenter(presenter);
+		presenter.showMessage(title, text);*/
+		logger.debug(title + ": " + text);
+	}
+
 	private List<String> getTreatmentTexts(String text) {
 		List<String> result = new LinkedList<String>();
 		
@@ -86,12 +107,13 @@ public class XmlModelFileCreator {
 				}
 			}			
 		}
-		String atreatment = treatment.toString().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "");
+		String atreatment = treatment.toString().trim();
 		result.add(atreatment); //replace all non-visible characters proceeding/trailing the treatment.
 		return result;
 	}
 
 	public XmlModelFile createXmlModelFile(String text, String operator) {
+		showMessage("get xml model file for: ", text);
 		XmlModelFile modelFile = new XmlModelFile();
 		nameTypes = new ArrayList<String> ();
 		
@@ -102,6 +124,7 @@ public class XmlModelFileCreator {
 		Iterator<String> lineIterator = Arrays.asList(lines).iterator();
 		while(lineIterator.hasNext()) {
 			String line = lineIterator.next();
+			showMessage("line: ", line);
 		
 			int colonIndex = line.indexOf(":");
 			if(colonIndex == -1) {
@@ -109,8 +132,9 @@ public class XmlModelFileCreator {
 				continue;
 			}
 
-			String key = line.substring(0, colonIndex).toLowerCase().replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "").trim();
-			String value = line.substring(colonIndex + 1, line.length()).replaceAll("(^[^\\p{Graph}]+|[^\\p{Graph}]+$)", "").trim();
+			String key = line.substring(0, colonIndex).toLowerCase().trim();
+			String value = line.substring(colonIndex + 1, line.length()).trim();
+			showMessage("key/value ", key + " = " + value);
 			
 			for(String descriptionType : descriptionTypes) {
 				if(descriptionType.equals(key)) {
@@ -131,8 +155,11 @@ public class XmlModelFileCreator {
 			if(data.containsKey(key)) {
 				modelFile.appendError("No duplicate fields are allowed in one treatment: " + key);
 			}
+			showMessage("Put key", key + " = " + value);
 			data.put(key, value.isEmpty()? null : value);
 		}
+		
+		this.showMessage("data", data.toString());
 		
 		
 		for(String key : data.keySet()) {
@@ -175,54 +202,59 @@ public class XmlModelFileCreator {
 		//build xml
 		Document xml = createXML(data, operator, modelFile);
 		modelFile.setFileName(createFileName(data, modelFile));
-		modelFile.setXML(xml.toString());
+		modelFile.setXML(new XMLOutputter().outputString(xml));
 		return modelFile;
 	}
 	
 	private Document createXML(Map<String, String> data, String username, XmlModelFile modelFile) {
-		Document doc = XMLParser.createDocument();
-		Element treatment = doc.createElement("treatment");
-		doc.appendChild(treatment);
-		Element meta = doc.createElement("meta");
-		treatment.appendChild(meta);
-		Element source = doc.createElement("source");
-		Element author = doc.createElement("author");
-		Element srcDate = doc.createElement("date");
-		Element title = doc.createElement("title");
-		source.appendChild(author);
-		source.appendChild(srcDate);
-		source.appendChild(title);
-		author.appendChild(doc.createTextNode(data.get("author")));
-		srcDate.appendChild(doc.createTextNode(data.get("year")));
-		title.appendChild(doc.createTextNode(data.get("title")));
-		meta.appendChild(source);
-		Element processedBy = doc.createElement("processed_by");
-		Element processor = doc.createElement("processor");
-		processedBy.appendChild(processor);
-		Element date = doc.createElement("date");
-		processor.appendChild(date);
-		String formattedDate = DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_FULL).format(new Date());
-		date.appendChild(doc.createTextNode(formattedDate));
-		Element software = doc.createElement("software");
+		
+		Element treatment = new Element("treatment");
+		/*root.addContent(new Element(article));
+		Elements in which it is possible to set attributes:
+		Attribute att1 = new Attribute("classe", "A1");
+		article.setAttribute(att1);*/
+		
+		Document doc = new Document(treatment);
+		Element meta = new Element("meta");
+		treatment.addContent(meta);
+		Element source = new Element("source");
+		Element author = new Element("author");
+		Element srcDate = new Element("date");
+		Element title = new Element("title");
+		source.addContent(author);
+		source.addContent(srcDate);
+		source.addContent(title);
+		author.setText(data.get("author"));
+		srcDate.setText(data.get("year"));
+		title.setText(data.get("title"));
+		meta.addContent(source);
+		Element processedBy = new Element("processed_by");
+		Element processor = new Element("processor");
+		processedBy.addContent(processor);
+		Element date = new Element("date");
+		processor.addContent(date);
+		String formattedDate = DateFormat.getDateInstance(DateFormat.FULL, Locale.US).format(new Date());
+		date.setText(formattedDate);
+		Element software = new Element("software");
 		software.setAttribute("type", "Text Capture Input Generator");
 		software.setAttribute("version", "1.0");
-		processor.appendChild(software);
-		Element operator = doc.createElement("operator");
-		operator.appendChild(doc.createTextNode(username));
-		processor.appendChild(operator);
-		meta.appendChild(processedBy);
+		processor.addContent(software);
+		Element operator = new Element("operator");
+		operator.setText(username);
+		processor.addContent(operator);
+		meta.addContent(processedBy);
 		
 		if(data.containsKey("doi") && data.get("doi") != null && !data.get("doi").trim().isEmpty()) {
-			Element otherInfoOnMeta = doc.createElement("other_info_on_meta");
-			otherInfoOnMeta.appendChild(doc.createTextNode(data.get("doi")));
+			Element otherInfoOnMeta = new Element("other_info_on_meta");
+			otherInfoOnMeta.setText(data.get("doi"));
 			otherInfoOnMeta.setAttribute("type", "doi");
-			meta.appendChild(otherInfoOnMeta);
+			meta.addContent(otherInfoOnMeta);
 		}
 		if(data.containsKey("full citation") && data.get("full citation") != null && !data.get("full citation").trim().isEmpty()) {
-			Element otherInfoOnMeta = doc.createElement("other_info_on_meta");
-			otherInfoOnMeta.appendChild(doc.createTextNode(data.get("full citation")));
+			Element otherInfoOnMeta = new Element("other_info_on_meta");
+			otherInfoOnMeta.setText(data.get("full citation"));
 			otherInfoOnMeta.setAttribute("type", "citation");
-			meta.appendChild(otherInfoOnMeta);
+			meta.addContent(otherInfoOnMeta);
 		}
 		/*List<String> otherInfoOnMetas = new LinkedList<String>();
 		  if(data.containsKey("doi") && data.get("doi") != null && !data.get("doi").trim().isEmpty()) {
@@ -236,13 +268,13 @@ public class XmlModelFileCreator {
 		
 		if(!otherInfoOnMetas.isEmpty()) {
 			for(String otherInfoOnMetaText : otherInfoOnMetas) {
-				Element otherInfoOnMeta = doc.createElement("other_info_on_meta");
-				otherInfoOnMeta.appendChild(doc.createTextNode(otherInfoOnMetaText));
-				meta.appendChild(otherInfoOnMeta);
+				Element otherInfoOnMeta = new Element("other_info_on_meta");
+				otherInfoOnMeta.setTextotherInfoOnMetaText));
+				meta.addContent(otherInfoOnMeta);
 			}
 		}*/
-		Element taxonIdentification = doc.createElement("taxon_identification");
-		treatment.appendChild(taxonIdentification);
+		Element taxonIdentification = new Element("taxon_identification");
+		treatment.addContent(taxonIdentification);
 		for(String nameType: nameTypes){
 			String rank = nameType.replaceFirst(" name$", "");
 			String nameString = data.get(nameType).trim();
@@ -257,18 +289,18 @@ public class XmlModelFileCreator {
 					ndate = authorityStr.substring(authorityStr.indexOf(",")+1).trim();
 				}
 			}
-			Element element = doc.createElement("taxon_name");
-			taxonIdentification.appendChild(element);
-			element.appendChild(doc.createTextNode(name));
+			Element element = new Element("taxon_name");
+			taxonIdentification.addContent(element);
+			element.setText(name);
 			element.setAttribute("rank", rank);
 			if(authority!=null) element.setAttribute("authority", authority);
 			if(ndate!=null) element.setAttribute("date", ndate);
 		}
 
 		if(data.containsKey("strain number") && data.get("strain number") != null && !data.get("strain number").trim().isEmpty()) {
-			Element element = doc.createElement("strain_number");
-			taxonIdentification.appendChild(element);
-			element.appendChild(doc.createTextNode(data.get("strain number")));
+			Element element = new Element("strain_number");
+			taxonIdentification.addContent(element);
+			element.setText(data.get("strain number"));
 			if(data.get("equivalent strain numbers") != null && !data.get("equivalent strain numbers").trim().isEmpty()) element.setAttribute("equivalent_strain_numbers", data.get("equivalent strain numbers"));
 			if(data.get("accession number 16s rrna") != null && !data.get("accession number 16s rrna").trim().isEmpty()) element.setAttribute("accession_number_16s_rrna", data.get("accession number 16s rrna"));
 		}
@@ -306,10 +338,10 @@ public class XmlModelFileCreator {
 					String[] paragraphs = descriptionText.split("\n");
 					for(String paragraph : paragraphs) {
 						if(!paragraph.isEmpty()) {
-							Element description = doc.createElement("description");
-							treatment.appendChild(description);
+							Element description = new Element("description");
+							treatment.addContent(description);
 							description.setAttribute("type", descriptionType);
-							description.appendChild(doc.createTextNode(paragraph));
+							description.setText(paragraph);
 							
 							String bracketError = bracketChecker.checkBrackets(paragraph, descriptionType);
 							if(!bracketError.isEmpty())
@@ -321,8 +353,8 @@ public class XmlModelFileCreator {
 		}
 		/* for debug purpose: to generate some random invalid xml files.
 		if(Math.random()>0.5){
-		Element element = doc.createElement("bad_element");
-		taxonIdentification.appendChild(element);
+		Element element = new Element("bad_element");
+		taxonIdentification.addContent(element);
 		}*/
 		return doc;
 	}
@@ -330,9 +362,9 @@ public class XmlModelFileCreator {
 	private void addAsElementIfExists(Element parentElement,
 			Map<String, String> data, String dataName, String xmlName, Document document) {
 		if(data.containsKey(dataName) && data.get(dataName) != null && !data.get(dataName).trim().isEmpty()) {
-			Element element = document.createElement(xmlName);
-			parentElement.appendChild(element);
-			element.appendChild(document.createTextNode(data.get(dataName)));
+			Element element = new Element(xmlName);
+			parentElement.addContent(element);
+			element.setText(data.get(dataName));
 		}
 	}
 

@@ -20,8 +20,8 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+import edu.arizona.biosemantics.etcsite.server.rpc.XmlModelFileCreator;
 import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.TaxonIdentificationEntry;
-import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModelFileCreator;
 
 
 public class CreateSemanticMarkupFilesView extends Composite implements ICreateSemanticMarkupFilesView {
