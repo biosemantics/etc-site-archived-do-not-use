@@ -54,7 +54,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.5-SNAPSHOT</version>
+		  <version>0.0.6-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>

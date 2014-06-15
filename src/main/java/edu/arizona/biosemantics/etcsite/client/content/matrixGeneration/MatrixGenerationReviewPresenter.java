@@ -4,6 +4,7 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.client.common.LoadingPopup;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review.IReviewView;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review.IReviewView.Presenter;
 import edu.arizona.biosemantics.etcsite.shared.db.Task;
@@ -17,6 +18,7 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 	private IMatrixGenerationReviewView view;
 	private PlaceController placeController;
 	private IReviewView.Presenter reviewPresenter;
+	private LoadingPopup loadingPopup = new LoadingPopup();
 
 	@Inject
 	public MatrixGenerationReviewPresenter(IMatrixGenerationReviewView view, 
@@ -33,13 +35,15 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 	@Override
 	public void onNext() {
 		if(task != null) {
-			matrixGenerationService.save(Authentication.getInstance().getToken(), reviewPresenter.getTaxonMatrix(), task, new RPCCallback<Void>() {
+			loadingPopup.start();
+			matrixGenerationService.save(Authentication.getInstance().getToken(), reviewPresenter.getTaxonMatrix(), task, new RPCCallback<Void>(loadingPopup) {
 				@Override
 				public void onResult(Void result) { 
 					matrixGenerationService.completeReview(Authentication.getInstance().getToken(), 
-							task, new RPCCallback<Task>() {
+							task, new RPCCallback<Task>(loadingPopup) {
 						@Override
 						public void onResult(Task result) {	
+							loadingPopup.stop();
 							placeController.goTo(new MatrixGenerationOutputPlace(result));
 						}
 					});
