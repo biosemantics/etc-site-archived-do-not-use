@@ -35,7 +35,7 @@ public class DownloadServlet extends HttpServlet {
 		if(authenticationResult.isSucceeded() && authenticationResult.getData().getResult()) { 	
 			int BUFFER = 1024 * 100;
 			response.setContentType("application/octet-stream");
-			response.setHeader("Content-Disposition:", "attachment;filename=" + "\"" + 
+			response.setHeader("Content-Disposition", "attachment;filename=" + "\"" + 
 					target.substring(target.lastIndexOf(File.separator) + 1, target.length()) + "\"");	
 
 			ServletOutputStream outputStream = response.getOutputStream();
