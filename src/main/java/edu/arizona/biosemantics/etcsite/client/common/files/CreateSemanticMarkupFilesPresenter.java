@@ -31,6 +31,60 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 
 public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkupFilesView.Presenter {
 
+	public class FileCreateParallelRPCCallback extends ParallelRPCCallback<Boolean> {
+		
+		private String filePath;
+		private XmlModelFile modelFile;
+		
+		public FileCreateParallelRPCCallback(XmlModelFile modelFile) {
+			this.modelFile = modelFile;
+		}
+		
+		public String getFilePath() {
+			return filePath;
+		}
+		
+		@Override
+		public void onFailure(Throwable caught) {
+			setFailure();
+			super.onFailure(caught);
+		}
+		@Override
+		public void onResult(final Boolean formatResult) {
+			fileService.createFile(Authentication.getInstance().getToken(), destinationFilePath, modelFile.getFileName(), 
+					true, new AsyncCallback<RPCResult<String>>() {
+						@Override
+						public void onFailure(Throwable caught) {
+							callSuperOnFailure(caught);
+						}
+						@Override
+						public void onSuccess(RPCResult<String> data) {
+							final String content = modelFile.getXML();
+							filePath = data.getData();
+							fileAccessService.setFileContent(Authentication.getInstance().getToken(), filePath, content, 
+									new AsyncCallback<RPCResult<Void>>() {
+										@Override
+										public void onFailure(Throwable caught) {
+											callSuperOnFailure(caught);
+										}
+
+										@Override
+										public void onSuccess(RPCResult<Void> result) {
+											callSuperOnResult(formatResult);
+										}
+							});
+						}
+			});
+		}
+		
+		private void callSuperOnFailure(Throwable caught) {
+			super.onFailure(caught);
+		}
+		private void callSuperOnResult(Boolean result) {
+			super.onResult(result);
+		}
+	};
+	
 	private ICreateSemanticMarkupFilesView view;
 	private IFileServiceAsync fileService;
 	private IFileAccessServiceAsync fileAccessService;
@@ -108,27 +162,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	private void createXmlFiles(final List<XmlModelFile> modelFiles, final String destinationFilePath) {
 		List<ParallelRPCCallback> parallelRPCCallbacks = new LinkedList<ParallelRPCCallback>();
 		for(final XmlModelFile modelFile : modelFiles) {
-			ParallelRPCCallback parallelRPCCallback = new ParallelRPCCallback<String>() {
-				@Override
-				public void onResult(final String data) {
-					if(data.isEmpty()){
-						setFailure();
-					}else{
-						final String content = modelFile.getXML();
-						fileAccessService.setFileContent(Authentication.getInstance().getToken(), data, content, new RPCCallback<Void>() {
-							@Override
-							public void onResult(Void result) {
-								callSuperOnResult(data);
-							}
-						});
-					}
-				}
-
-				private void callSuperOnResult(String result) {
-					super.onResult(result);
-				}
-			};
-			parallelRPCCallbacks.add(parallelRPCCallback);
+			parallelRPCCallbacks.add(new FileCreateParallelRPCCallback(modelFile));
 		}
 		ParentRPCCallback parentCallback = new ParentRPCCallback(parallelRPCCallbacks) {
 			@Override
@@ -139,7 +173,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 					if(!this.getCallbackFailureState(i)){ 
 						messageBuilder.append("File " +
 							filePathShortener.shortenOwnedPath(
-									destinationFilePath + ServerSetup.getInstance().getSetup().getSeperator() + getCallbackData(i)) + " " +
+									((FileCreateParallelRPCCallback)this.getChildCallbacks().get(i)).getFilePath()) + " " +
 									"successfully created in " + filePathShortener.shortenOwnedPath(destinationFilePath) + "\n");
 					count++;
 					}
@@ -170,9 +204,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 		
 		for(int i=0; i<modelFiles.size(); i++) {
 			XmlModelFile modelFile = modelFiles.get(i);
-			//create empty file if content is valid
-			fileService.createFile(Authentication.getInstance().getToken(), destinationFilePath, modelFile.getFileName(), modelFile.getXML(),
-					true, parallelRPCCallbacks.get(i));
+			fileFormatService.isValidTaxonDescriptionContent(Authentication.getInstance().getToken(), modelFile.getXML(), parallelRPCCallbacks.get(i));
 		}
 	}
 

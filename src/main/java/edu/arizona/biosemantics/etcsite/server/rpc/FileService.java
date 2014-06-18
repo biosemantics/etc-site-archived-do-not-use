@@ -312,10 +312,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	 * failed to create file: message=error, result = "";
 	 */
 	@Override
-	public RPCResult<String> createFile(AuthenticationToken authenticationToken, String directory, String idealFileName, String content, boolean force) {		
-		RPCResult<Boolean> validationResult = fileFormatService.isValidTaxonDescriptionContent(authenticationToken, content);	
-		if(!validationResult.getData().booleanValue()) return new RPCResult<String>(false, idealFileName+" is not valid. Check it against the schema", "");
-		
+	public RPCResult<String> createFile(AuthenticationToken authenticationToken, String directory, String idealFileName, boolean force) {					
 		RPCResult<Boolean> permissionResult = filePermissionService.hasWritePermission(authenticationToken, directory);
 		if(!permissionResult.isSucceeded())
 			return new RPCResult<String>(false, permissionResult.getMessage() +". The file was not created.", "");
@@ -332,7 +329,6 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 					file = new File(directory + File.separator + namePart + "_" + i++ + "." + 
 							idealFileName.substring(idealFileName.lastIndexOf(".") + 1, idealFileName.length()));
 					createResult = file.createNewFile();
-					
 				}
 				if(createResult)
 					return new RPCResult<String>(true, "", file.getAbsolutePath());

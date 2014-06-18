@@ -1,11 +1,22 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,6 +29,14 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.Executors;
 
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.filter.Filters;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.xpath.XPathExpression;
+import org.jdom2.xpath.XPathFactory;
+
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
 
@@ -28,6 +47,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.rpc.AdminAuthenticationToken;
+import edu.arizona.biosemantics.etcsite.server.rpc.FileAccessService;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileFormatService;
 import edu.arizona.biosemantics.etcsite.server.rpc.FilePermissionService;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileService;
@@ -45,6 +65,7 @@ import edu.arizona.biosemantics.etcsite.shared.db.TaskTypeDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.TasksOutputFilesDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.UserDAO;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFilePermissionService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileService;
@@ -169,6 +190,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	private static final long serialVersionUID = -7871896158610489838L;
 	private IFileService fileService = new FileService();
 	private IFileFormatService fileFormatService = new FileFormatService();
+	private IFileAccessService fileAccessService = new FileAccessService();
 	private IFilePermissionService filePermissionService = new FilePermissionService();
 	private int maximumThreads = 10;
 	private ListeningExecutorService executorService;
@@ -253,7 +275,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				if(!createDirResult.isSucceeded()) 
 					return new RPCResult<Task>(false, createDirResult.getMessage());
 				fileService.createDirectory(new AdminAuthenticationToken(), Configuration.matrixGeneration_tempFileBase, String.valueOf(task.getId()), false);
-				String outputFile = Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "Matrix.mx";
+				final String outputFile = Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "Matrix.mx";
 				
 				MatrixGeneration matrixGeneration = new MatrixGeneration(input, outputFile);
 				final ListenableFuture<Boolean> futureResult = executorService.submit(matrixGeneration);
@@ -261,6 +283,9 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				futureResult.addListener(new Runnable() {
 				     	public void run() {
 				     		try {
+				     			TaxonMatrix matrix = createTaxonMatrix(matrixGenerationConfiguration, outputFile);
+				     			serializeMatrix(matrix, Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "TaxonMatrix.ser");
+				     			
 				     			activeProcessFutures.remove(configuration.getConfiguration().getId());
 				     			if(!futureResult.isCancelled()) {
 				     				Boolean result = futureResult.get();
@@ -283,6 +308,20 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		}
 	}
 	
+	private void serializeMatrix(TaxonMatrix matrix, String file) throws IOException {
+		ObjectOutput output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
+		output.writeObject(matrix);
+		output.flush();
+		output.close();
+	}
+	
+	private TaxonMatrix unserializeMatrix(String file) throws FileNotFoundException, IOException, ClassNotFoundException {
+		ObjectInput input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
+		TaxonMatrix matrix = (TaxonMatrix)input.readObject();
+		input.close();
+		return matrix;
+	}
+	
 	@Override
 	public RPCResult<TaxonMatrix> review(AuthenticationToken authenticationToken, Task task) {
 		try {
@@ -291,8 +330,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				return new RPCResult<TaxonMatrix>(false, "Not a compatible task");
 			final MatrixGenerationConfiguration matrixGenerationConfiguration = (MatrixGenerationConfiguration)configuration;
 			
-			String outputFile = Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "Matrix.mx";
-			TaxonMatrix matrix = readFile(outputFile);
+			TaxonMatrix matrix = unserializeMatrix(Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "TaxonMatrix.ser");
 			return new RPCResult<TaxonMatrix>(true, matrix);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -401,14 +439,14 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		return taxonMatrix;
 	}
 
-	private TaxonMatrix readFile(String filePath) throws Exception {
-		//return createSampleMatrix();
+	private TaxonMatrix createTaxonMatrix(MatrixGenerationConfiguration matrixGenerationConfiguration, String filePath) throws Exception {
+		String inputDirectory = matrixGenerationConfiguration.getInput();
 
 		CSVReader reader = new CSVReader(new FileReader(filePath), '\t', CSVWriter.NO_QUOTE_CHARACTER);
 		
 		List<Character> characters = new LinkedList<Character>();
 		String[] head = reader.readNext();
-		for(int i=1; i<head.length; i++) {
+		for(int i=2; i<head.length; i++) {
 			String character = head[i];
 			characters.add(new Character(character));
 		}
@@ -420,10 +458,13 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	    //init all taxa
 	    for(int i=0; i<allLines.size(); i++) {
 	    	String[] line = allLines.get(i);
-	    	String name = line[0];
+	    	String sourceFile = line[0];
+	    	String name = line[1];
 	    	TaxonName taxonName = createTaxonName(name);
 	    	taxonNames.add(taxonName);
-	    	Taxon taxon = createPlainTaxon(String.valueOf(i), taxonName);
+	    	
+	    	String description = getMorphologyDescription(new File(inputDirectory, sourceFile));
+	    	Taxon taxon = createPlainTaxon(String.valueOf(i), taxonName, description);
 	    	rankTaxaMap.put(taxonName.getRankData().getLast(), taxon);
 	    }
 	    
@@ -443,8 +484,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	    //set values
 	    for(int i=0; i<allLines.size(); i++) {
 	    	String[] line = allLines.get(i);
-		    for(int j=1; j<line.length; j++) {
-	    		taxonMatrix.setValue(rankTaxaMap.get(taxonNames.get(i).getRankData().getLast()), characters.get(j-1), new Value(line[j]));
+		    for(int j=2; j<line.length; j++) {
+	    		taxonMatrix.setValue(rankTaxaMap.get(taxonNames.get(i).getRankData().getLast()), characters.get(j-2), new Value(line[j]));
 	    	}
 	    }
 	    
@@ -453,6 +494,24 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 
 
+
+	private String getMorphologyDescription(File file) throws JDOMException, IOException {
+		StringBuilder result = new StringBuilder();
+		SAXBuilder sax = new SAXBuilder();
+		Document doc = sax.build(file);
+		
+		XPathFactory xpfac = XPathFactory.instance();
+		XPathExpression<Element> xp = xpfac.compile("//treatment/description[@type='morphology']", Filters.element());
+		for(Element element : xp.evaluate(doc)) {
+			List<Element> statements = element.getChildren("statement");
+			for(Element statement : statements) {
+				Element text = statement.getChild("text");
+				result.append(text.getText() + " ");
+			}
+			result.append("\n\n");
+		}
+		return result.toString();
+	}
 
 	private TaxonName createTaxonName(String name) {
 		String[] ranksAuthorParts = name.split(":");
@@ -494,9 +553,9 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 
 	//TODO: Integrate rank authority and date
-	private Taxon createPlainTaxon(String id, TaxonName taxonName) {
+	private Taxon createPlainTaxon(String id, TaxonName taxonName, String description) {
 		RankData lowestRank = taxonName.getRankData().getLast();
-		return new Taxon("server" + id, lowestRank.getRank(), lowestRank.getValue(), taxonName.getAuthor(), taxonName.getDate(), "");
+		return new Taxon("server" + id, lowestRank.getRank(), lowestRank.getValue(), taxonName.getAuthor(), taxonName.getDate(), description);
 	}
 	
 	@Override
@@ -521,12 +580,15 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			if(!createDirectoryResult.isSucceeded()) 
 				return new RPCResult<Task>(false, createDirectoryResult.getMessage());
 			
-			//copy the output files to the directory
-			String matrixGenerationOutputDirectory = Configuration.matrixGeneration_tempFileBase + File.separator + task.getId();		
-			RPCResult<Void> copyResult = fileService.copyFiles(new AdminAuthenticationToken(), matrixGenerationOutputDirectory, createDirectoryResult.getData());
-			if(!copyResult.isSucceeded()) {
-				return new RPCResult<Task>(false, copyResult.getMessage());
-			}
+			String csvContent = getCSVMatrix(unserializeMatrix(Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "TaxonMatrix.ser"));
+			RPCResult<String> createFileResult = 
+					fileService.createFile(new AdminAuthenticationToken(), createDirectoryResult.getData(), "Matrix.mx", true);
+			if(!createFileResult.isSucceeded())
+				return new RPCResult<Task>(false, createFileResult.getMessage());
+			RPCResult<Void> setFileContentResult = fileAccessService.setFileContent(authenticationToken, 
+					createDirectoryResult.getData() + File.separator + "Matrix.mx", csvContent);
+			if(!setFileContentResult.isSucceeded())
+				return new RPCResult<Task>(false, setFileContentResult.getMessage());
 			
 			//update task
 			matrixGenerationConfiguration.setOutput(createDirectoryResult.getData());
@@ -542,6 +604,36 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			e.printStackTrace();
 			return new RPCResult<Task>(false, "Internal Server Error");
 		}
+	}
+
+	private String getCSVMatrix(TaxonMatrix matrix) throws IOException {
+		//TODO: Add RankData authority and date
+		StringWriter stringWriter = new StringWriter();
+		CSVWriter writer = new CSVWriter(stringWriter, '\t', CSVWriter.NO_QUOTE_CHARACTER);
+			
+		String[] line = new String[matrix.getCharacterCount() + 1];
+		line[0] = "Name";
+		
+		for(int i=1; i<=matrix.getCharacterCount(); i++) {
+			line[i] = matrix.getCharacter(i - 1).toString();
+		}
+		writer.writeNext(line);
+		
+		for(int i=0; i<matrix.getTaxaCount(); i++) {
+			Taxon taxon = matrix.getTaxon(i);
+			line = new String[matrix.getCharacterCount() + 1];
+			line[0] = getTaxonName(taxon);
+			
+			for(int j=1; j<matrix.getCharacterCount(); j++) {
+				Character character = matrix.getCharacter(j - 1);
+				line[j] = taxon.get(character).toString();
+			}
+			writer.writeNext(line);
+		}
+		writer.flush();
+		writer.close();
+		String result = stringWriter.toString();
+		return result;
 	}
 
 	@Override
@@ -626,39 +718,13 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			final MatrixGenerationConfiguration matrixGenerationConfiguration = (MatrixGenerationConfiguration)configuration;
 			
 			String outputFile = Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "Matrix.mx";
-			saveFile(matrix, outputFile);
+			serializeMatrix(matrix, Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "TaxonMatrix.ser");
+			//saveFile(matrix, outputFile);
 			return new RPCResult<Void>(true);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new RPCResult<Void>(false, "Internal Server Error");
 		}
-	}
-
-	//TODO: Add RankData authority and date
-	private void saveFile(TaxonMatrix matrix, String outputFile) throws IOException {
-		CSVWriter writer = new CSVWriter(new FileWriter(outputFile), '\t', CSVWriter.NO_QUOTE_CHARACTER);
-		
-		String[] line = new String[matrix.getCharacterCount() + 1];
-		line[0] = "Name";
-		
-		for(int i=1; i<=matrix.getCharacterCount(); i++) {
-			line[i] = matrix.getCharacter(i - 1).toString();
-		}
-		writer.writeNext(line);
-		
-		for(int i=0; i<matrix.getTaxaCount(); i++) {
-			Taxon taxon = matrix.getTaxon(i);
-			line = new String[matrix.getCharacterCount() + 1];
-			line[0] = getTaxonName(taxon);
-			
-			for(int j=1; j<matrix.getCharacterCount(); j++) {
-				Character character = matrix.getCharacter(j - 1);
-				line[j] = taxon.get(character).toString();
-			}
-			writer.writeNext(line);
-		}
-		writer.flush();
-		writer.close();
 	}
 
 	private String getTaxonName(Taxon taxon) {

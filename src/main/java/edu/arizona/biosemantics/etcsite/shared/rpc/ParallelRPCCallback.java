@@ -20,6 +20,12 @@ public class ParallelRPCCallback<T> extends RPCCallback<T> {
         parent.done();
 	}
 	
+	@Override
+	public void onFailure(Throwable caught) {
+		setFailure();
+		super.onFailure(caught);
+	}
+	
 	public void setFailure() {
 		failed = true;
 		parent.done();

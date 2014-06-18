@@ -26,7 +26,7 @@ public interface IFileService extends RemoteService {
 
 	public RPCResult<List<String>> getDirectoriesFiles(AuthenticationToken authenticationToken, String filePath);
 
-	public RPCResult<String> createFile(AuthenticationToken authenticationToken, String directory, String idealFileName, String content, boolean force);
+	public RPCResult<String> createFile(AuthenticationToken authenticationToken, String directory, String idealFileName, boolean force);
 	
 	public RPCResult<Integer> getDepth(AuthenticationToken authenticationToken, String filePath);
 	
