@@ -475,9 +475,17 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	    	if(rankData.size() == 1) 
 	    		taxonMatrix.addRootTaxon(taxon);
 		    if(rankData.size() > 1) {
-		    	RankData parentRankData = rankData.get(rankData.size() - 2);
-		    	Taxon parent = rankTaxaMap.get(parentRankData);
-		    	taxonMatrix.addTaxon(parent, taxon);
+		    	int parentRankIndex = rankData.size() - 2;
+		    	Taxon parentTaxon = null;
+		    	while(parentTaxon == null && parentRankIndex >= 0) {
+			    	RankData parentRankData = rankData.get(parentRankIndex);
+		    		parentTaxon = rankTaxaMap.get(parentRankData);
+		    		parentRankIndex--;
+		    	}
+		    	if(parentTaxon == null)
+		    		taxonMatrix.addRootTaxon(taxon);
+		    	else
+		    		taxonMatrix.addTaxon(parentTaxon, taxon);
 		    }
 	    }
 	    
