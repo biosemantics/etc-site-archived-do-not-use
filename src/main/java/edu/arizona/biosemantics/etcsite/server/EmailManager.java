@@ -14,6 +14,8 @@ public class EmailManager {
 	
 	public static final String PASSWORD_RESET_SUBJECT = "Password Reset Code";
 	public static final String PASSWORD_RESET_BODY = "A password reset authentication code has been generated for your account (<openidproviderid>). You can use this code to reset your password. \n\nCode: <code>\n\nThis code will expire in <expire>.\n\n\n(You are receiving this email because you recently requested an authentication code to reset your account password. If you did not request an authentication code, ignore this email.)";
+	public static final String FINISHED_LEARNING_TERMS_SUBJECT = "<taskname>: 'Learn Terms' Step Complete";
+	public static final String FINISHED_LEARNING_TERMS_BODY = "The Text Capture tool has finished processing input files for your task \"<taskname>\". You may review the generated output and resume the task using the Task Manager.";
 	
 	private static EmailManager instance;
 	

@@ -110,15 +110,6 @@ public class LoggedOutActivity extends MyAbstractActivity implements Presenter {
 			showLoginWindow();
 		}
 	}
-	
-	@Override
-	public void onRegister() {
-		if(Authentication.getInstance().isSet()) {
-			placeController.goTo(new LoggedInPlace());
-		} else {
-			showRegisterWindow();
-		}
-	}
 
 	@Override
 	public void update() {}

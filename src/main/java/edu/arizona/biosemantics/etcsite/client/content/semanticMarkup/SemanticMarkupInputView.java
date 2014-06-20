@@ -69,6 +69,11 @@ public class SemanticMarkupInputView extends Composite implements ISemanticMarku
 		presenter.onFileManager();
 	}
 	
+	@UiHandler("fileManagerAnchor2")
+	public void onFileManager2(ClickEvent event) {
+		presenter.onFileManager();
+	}
+	
 	@Override
 	public void setInput(String input) {
 		this.inputLabel.setText(input);

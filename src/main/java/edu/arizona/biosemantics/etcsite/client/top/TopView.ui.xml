@@ -28,20 +28,10 @@
 				<td class="{style.clickable} {style.imageLabelPadding}">
 					<my:ImageLabel ui:field="home" imagePath="images/Home.gif" imageWidth="20px" imageHeight="20px" text="Home"></my:ImageLabel>
 				</td>
-			
-				<!-- Task Manager -->
+				
+				<!-- About ETC -->
 				<td class="{style.clickable} {style.imageLabelPadding}">
-					<my:ImageLabel ui:field="taskManager" imagePath="images/TaskManager.gif" imageWidth="20px" imageHeight="20px" text="Task Manager"></my:ImageLabel>
-				</td>
-			
-				<!-- File Manager -->
-				<td class="{style.clickable} {style.imageLabelPadding}">
-					<my:ImageLabel ui:field="fileManager" imagePath="images/FileManager.gif" imageWidth="20px" imageHeight="20px" text="File Manager"></my:ImageLabel>
-				</td>
-			
-				<!-- My Account -->
-				<td class="{style.clickable} {style.imageLabelPadding}">
-					<my:ImageLabel ui:field="settings" imagePath="images/Settings.gif" imageWidth="20px" imageHeight="20px" text="My Account"></my:ImageLabel>
+					<my:ImageLabel ui:field="about" imagePath="images/About.gif" imageWidth="20px" imageHeight="20px" text="About ETC"></my:ImageLabel>  
 				</td>
 				
 				<!-- News -->
@@ -49,16 +39,10 @@
 					<my:ImageLabel ui:field="news" imagePath="images/News.gif" imageWidth="20px" imageHeight="20px" text="News"></my:ImageLabel>  
 				</td>
 				
-				<!-- About ETC -->
-				<td class="{style.clickable} {style.imageLabelPadding}">
-					<my:ImageLabel ui:field="about" imagePath="images/About.gif" imageWidth="20px" imageHeight="20px" text="About ETC"></my:ImageLabel>  
-				</td>
-
-
-				
 				<table align="right">
 					<tr>
-						<!-- Signed in as ________. -->
+					
+						<!-- Welcome ________! -->
 						<td class="{style.textLabelPadding}">
 							<g:Label ui:field="greetingLabel" height="23px"></g:Label>
 						</td>
@@ -66,6 +50,26 @@
 						<!-- space -->
 						<td>
 							<g:Label text="&nbsp;&nbsp;"></g:Label>
+						</td>
+
+						<!-- Task Manager -->
+						<td class="{style.clickable} {style.imageLabelPadding}">
+							<my:ImageLabel ui:field="taskManager" imagePath="images/TaskManager.gif" imageWidth="20px" imageHeight="20px" text="Task Manager"></my:ImageLabel>
+						</td>
+					
+						<!-- File Manager -->
+						<td class="{style.clickable} {style.imageLabelPadding}">
+							<my:ImageLabel ui:field="fileManager" imagePath="images/FileManager.gif" imageWidth="20px" imageHeight="20px" text="File Manager"></my:ImageLabel>
+						</td>
+					
+						<!-- My Account -->
+						<td class="{style.clickable} {style.imageLabelPadding}">
+							<my:ImageLabel ui:field="settings" imagePath="images/Settings.gif" imageWidth="20px" imageHeight="20px" text="My Account"></my:ImageLabel>
+						</td>
+						
+						<!-- space -->
+						<td>
+							<g:Label text="&nbsp;&nbsp;&nbsp;&nbsp;"></g:Label>
 						</td>
 						
 						<!-- Sign out -->

@@ -57,8 +57,8 @@
 	<div style="margin:10px">
 		
 		<div align="center" style="padding:5px">
-		<g:Button ui:field="cancelButton">Cancel</g:Button>
 			<g:Button ui:field="createButton">Create Account</g:Button>
+			<g:Button ui:field="cancelButton">Cancel</g:Button>
 		</div>
 	</div>
 	</g:HTMLPanel>

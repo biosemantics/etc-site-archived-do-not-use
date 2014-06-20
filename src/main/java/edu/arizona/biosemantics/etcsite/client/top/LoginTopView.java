@@ -60,11 +60,6 @@ public class LoginTopView extends Composite implements ILoginTopView {
 	void onLoginClick(ClickEvent e) {
 		presenter.onLogin();
 	}
-	
-	@UiHandler("registerLabel")
-	void onRegisterClick(ClickEvent e) {
-		presenter.onRegister();
-	}
 
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;

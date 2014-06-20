@@ -62,12 +62,24 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 
 	@Override
 	public void onNext() {
+		//error checking.
+		if (view.getTaskName().equals("")){
+			messagePresenter.showMessage("Error", "Enter a name for this task.");
+			return;
+		}
+		if (inputFile == null){
+			messagePresenter.showMessage("Error", "Specify an input folder");
+			return;
+		}
+		
+		
+		
 		loadingPopup.start();
 		semanticMarkupService.isValidInput(Authentication.getInstance().getToken(), inputFile, new RPCCallback<Boolean>() {
 			@Override
 			public void onResult(Boolean result) {
 				if(!result) {
-					messagePresenter.showMessage("Input", "Not a valid input directory");
+					messagePresenter.showMessage("Input", "Input directory is invalid.");
 					loadingPopup.stop();
 				} else {
 					semanticMarkupService.start(Authentication.getInstance().getToken(), 

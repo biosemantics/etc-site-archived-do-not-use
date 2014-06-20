@@ -22,6 +22,9 @@
 			font-size: 10px;
 			color: #999999;
 		}
+		.clickable{
+			cursor: pointer;
+		}
 	</ui:style>
 	
 	<lay:CenteredContentPanel>
@@ -33,18 +36,31 @@
 			<g:VerticalPanel styleName="{style.padding}">
 			    <g:VerticalPanel>
 			        <g:InlineLabel>
-			            Please specify a source folder containing the taxon descriptions and its closest taxon group. 
+			            Text capture takes textual morphological descriptions of one or more taxa as input.  
 			            </g:InlineLabel>
 			        <g:FlowPanel>
-			             <g:InlineLabel>
-			            You can upload or create the input taxon descriptions using the&nbsp;
+			            <g:InlineLabel>
+			            	The input files must be in English and conform to this&nbsp;
+			            </g:InlineLabel>
+			            <g:Anchor href="https://raw.githubusercontent.com/biosemantics/schemas/master/consolidation_01272014/semanticMarkupInput.xsd" target="_blank"  styleName="{style.padding}">XML schema</g:Anchor>
+			            <g:InlineLabel>
+			            	. The 'Create Files' function in the&nbsp;
+			            </g:InlineLabel>
+			           	<g:Anchor ui:field="fileManagerAnchor" styleName="{style.clickable}">File Manager</g:Anchor>
+			            <g:InlineLabel>
+			            	&nbsp;can generate schema-conforming input.
 			        	</g:InlineLabel>
-			        	<g:Anchor ui:field="fileManagerAnchor">File Manager</g:Anchor>
-			        	<g:InlineLabel  styleName="{style.padding}">
-			            . See </g:InlineLabel>
-			        	<g:Anchor href="https://raw.githubusercontent.com/biosemantics/schemas/master/consolidation_01272014/semanticMarkupInput.xsd" target="_blank"  styleName="{style.padding}">&nbsp;format requirements &nbsp;</g:Anchor>
+			        </g:FlowPanel>
+			        	
+			        <g:InlineLabel>&nbsp;</g:InlineLabel>
+			        
+			        <g:FlowPanel>	
 			        	<g:InlineLabel>
-			            for input taxon descriptions. 
+			        		If you have not done so, please upload or create input taxon descriptions using the&nbsp;
+			        	</g:InlineLabel>
+			        	<g:Anchor ui:field="fileManagerAnchor2" styleName="{style.clickable}">File Manager</g:Anchor>
+			        	<g:InlineLabel>
+			        		. Then provide the information below to start the process.
 			        	</g:InlineLabel>
 			        </g:FlowPanel>
 			    </g:VerticalPanel>
@@ -77,7 +93,7 @@
 			            Select a folder of taxon descriptions
 			        </g:InlineLabel>
 			         <g:InlineLabel styleName="{style.note}">
-			            confirming to the format requirements.
+			            conforming to the format requirements.
 			        </g:InlineLabel>
 			        </g:VerticalPanel>
 			    	<g:cell verticalAlignment="ALIGN_MIDDLE">

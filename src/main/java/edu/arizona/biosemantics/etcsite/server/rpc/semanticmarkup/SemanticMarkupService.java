@@ -2,7 +2,9 @@ package edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.StringWriter;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -30,6 +32,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
+import edu.arizona.biosemantics.etcsite.server.EmailManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.AdminAuthenticationToken;
 import edu.arizona.biosemantics.etcsite.server.rpc.AuthenticationService;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileAccessService;
@@ -250,6 +253,9 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 									task.setTaskStage(newTaskStage);
 									task.setResumable(true);
 									TaskDAO.getInstance().updateTask(task);
+									
+									// send an email to the users who own the task.
+									sendFinishedLearningTermsEmail(task);
 				     			}
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -263,6 +269,19 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			e.printStackTrace();
 			return new RPCResult<LearnInvocation>(false, "Internal Server Error");
 		}
+	}
+	
+	private void sendFinishedLearningTermsEmail(Task task){
+		try {
+			String email = UserDAO.getInstance().getUser(task.getUser().getId()).getEmail();
+			String subject = EmailManager.FINISHED_LEARNING_TERMS_SUBJECT.replace("<taskname>", task.getName());
+			String body = EmailManager.FINISHED_LEARNING_TERMS_BODY.replace("<taskname>", task.getName());
+			
+			EmailManager.getInstance().sendEmail(email, subject, body);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		} 
 	}
 
 	private String getNumberOfSentences() {

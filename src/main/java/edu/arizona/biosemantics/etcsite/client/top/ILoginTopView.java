@@ -14,10 +14,7 @@ public interface ILoginTopView extends IsWidget {
 
 		void onNews();
 		
-		
 		void onLogin();
-		
-		void onRegister();
 		
 	}
 
