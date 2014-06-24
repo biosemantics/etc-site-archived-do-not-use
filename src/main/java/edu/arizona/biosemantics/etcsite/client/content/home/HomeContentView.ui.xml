@@ -186,8 +186,9 @@
 			position: absolute;
 		}
 	</ui:style>
-	<my:CenteredContentPanel>
 	<g:ScrollPanel>
+	<my:CenteredContentPanel>
+	
 		<g:HTMLPanel styleName="{style.absolutePositioned}">
 		
 			<div class="{style.semanticMarkupImage} {style.actionImage}"></div>
@@ -257,6 +258,7 @@
 			</g:HTML>
 
 		</g:HTMLPanel>
-	</g:ScrollPanel>
+	
 	</my:CenteredContentPanel>
+	</g:ScrollPanel>
 </ui:UiBinder> 
