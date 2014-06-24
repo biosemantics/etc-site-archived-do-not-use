@@ -35,7 +35,7 @@
 			<g:VerticalPanel>
 				<g:HorizontalPanel ui:field="resumablePanel" visible="false">
 					<g:Image styleName="{style.playImage}" ui:field="playImage" url='images/play.png'></g:Image>
-					<g:InlineLabel>A taxon-character matrix is generated.</g:InlineLabel>
+					<g:InlineLabel>A taxon-character matrix has been generated.</g:InlineLabel>
 				</g:HorizontalPanel>
 				<g:VerticalPanel>
 					<g:HorizontalPanel ui:field="nonResumablePanel">

@@ -187,7 +187,9 @@
 		}
 	</ui:style>
 	<my:CenteredContentPanel>
+	<g:ScrollPanel>
 		<g:HTMLPanel styleName="{style.absolutePositioned}">
+		
 			<div class="{style.semanticMarkupImage} {style.actionImage}"></div>
 			<div class="{style.semanticMarkupText} {style.actionText}"></div>
 			<div class="{style.semanticMarkupDescription} {style.actionDescription}">
@@ -253,6 +255,8 @@
 				<div class="{style.pipelineButton}"><img src="images/ButtonGray.gif" width="200px" height="50px"/></div>
 				<div class="{style.pipelineButtonText}">Begin New Pipeline</div>
 			</g:HTML>
+
 		</g:HTMLPanel>
+	</g:ScrollPanel>
 	</my:CenteredContentPanel>
 </ui:UiBinder> 

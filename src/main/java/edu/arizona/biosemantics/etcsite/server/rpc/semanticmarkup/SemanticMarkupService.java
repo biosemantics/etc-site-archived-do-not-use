@@ -254,7 +254,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 									task.setResumable(true);
 									TaskDAO.getInstance().updateTask(task);
 									
-									// send an email to the users who own the task.
+									// send an email to the user who owns the task.
 									sendFinishedLearningTermsEmail(task);
 				     			}
 							} catch (Exception e) {
@@ -276,6 +276,19 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			String email = UserDAO.getInstance().getUser(task.getUser().getId()).getEmail();
 			String subject = EmailManager.FINISHED_LEARNING_TERMS_SUBJECT.replace("<taskname>", task.getName());
 			String body = EmailManager.FINISHED_LEARNING_TERMS_BODY.replace("<taskname>", task.getName());
+			
+			EmailManager.getInstance().sendEmail(email, subject, body);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		} 
+	}
+	
+	private void sendFinishedParsingEmail(Task task){
+		try {
+			String email = UserDAO.getInstance().getUser(task.getUser().getId()).getEmail();
+			String subject = EmailManager.FINISHED_PARSING_SUBJECT.replace("<taskname>", task.getName());
+			String body = EmailManager.FINISHED_PARSING_BODY.replace("<taskname>", task.getName());
 			
 			EmailManager.getInstance().sendEmail(email, subject, body);
 		} catch (Exception e) {
@@ -413,6 +426,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 								TaskStage newTaskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.OUTPUT.toString());
 								task.setTaskStage(newTaskStage);
 								TaskDAO.getInstance().updateTask(task);
+								sendFinishedParsingEmail(task);
 							}
 						} catch (Exception e) {
 							e.printStackTrace();

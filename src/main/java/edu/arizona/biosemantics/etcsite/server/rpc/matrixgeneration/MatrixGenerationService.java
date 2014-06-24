@@ -46,6 +46,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
+import edu.arizona.biosemantics.etcsite.server.EmailManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.AdminAuthenticationToken;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileAccessService;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileFormatService;
@@ -293,6 +294,9 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 									task.setTaskStage(newTaskStage);
 									task.setResumable(true);
 									TaskDAO.getInstance().updateTask(task);
+									
+									// send an email to the user who owns the task.
+									sendFinishedGeneratingMatrixEmail(task);
 				     			}
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -359,6 +363,19 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		}
 		
 
+	}
+	
+	private void sendFinishedGeneratingMatrixEmail(Task task){
+		try {
+			String email = UserDAO.getInstance().getUser(task.getUser().getId()).getEmail();
+			String subject = EmailManager.FINISHED_GENERATING_MATRIX_SUBJECT.replace("<taskname>", task.getName());
+			String body = EmailManager.FINISHED_GENERATING_MATRIX_BODY.replace("<taskname>", task.getName());
+			
+			EmailManager.getInstance().sendEmail(email, subject, body);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		} 
 	}
 	
 	private TaxonMatrix createSampleMatrix() {

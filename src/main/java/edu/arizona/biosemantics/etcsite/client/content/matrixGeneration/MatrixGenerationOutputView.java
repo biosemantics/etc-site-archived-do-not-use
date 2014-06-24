@@ -1,6 +1,7 @@
 package edu.arizona.biosemantics.etcsite.client.content.matrixGeneration;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -28,6 +29,7 @@ public class MatrixGenerationOutputView extends Composite implements IMatrixGene
 	public MatrixGenerationOutputView() {
 		super();
 		initWidget(uiBinder.createAndBindUi(this));
+		fileManagerAnchor.getElement().getStyle().setCursor(Cursor.POINTER);
 	}
 
 	@Override
