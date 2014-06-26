@@ -17,6 +17,7 @@
 			padding-bottom:10px;
 		}
 	</ui:style>
+	<g:ScrollPanel>
 	<lay:CenteredContentPanel>
 		<g:VerticalPanel>
 		    <g:HorizontalPanel>
@@ -25,9 +26,10 @@
 			</g:HorizontalPanel>
 			<g:Label>Please review the terms learned. Select terms in the left column and drag them into appropriate categories.
 			</g:Label>
-			<g:Frame ui:field="frame" styleName="{style.otoFrame}">
-			</g:Frame>
+				<g:Frame ui:field="frame" styleName="{style.otoFrame}">
+				</g:Frame>
 			<g:Button ui:field="nextButton">Next</g:Button>
 		</g:VerticalPanel>
 	</lay:CenteredContentPanel>
+	</g:ScrollPanel>
 </ui:UiBinder>
