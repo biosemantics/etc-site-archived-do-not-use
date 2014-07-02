@@ -3,7 +3,7 @@ package edu.arizona.biosemantics.etcsite.client.content.user;
 import java.util.Set;
 
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TitleCloseDialogBox;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.content.user.IUsersView.Presenter;
@@ -12,7 +12,7 @@ import edu.arizona.biosemantics.etcsite.shared.db.ShortUser;
 public class UserSelectPresenter implements IUserSelectView.Presenter {
 
 	private IUserSelectView view;
-	private TitleCloseDialogBox dialogBox;
+	private PopupPanel dialogBox;
 	private ISelectListener currentListener;
 	private Presenter usersPresenter;
 
@@ -21,9 +21,9 @@ public class UserSelectPresenter implements IUserSelectView.Presenter {
 		this.view = view;
 		view.setPresenter(this);
 		this.usersPresenter = usersPresenter;
-		this.dialogBox = new TitleCloseDialogBox("User Selection");
-		this.dialogBox.setGlassEnabled(true);
-		this.dialogBox.setWidget(view);
+		this.dialogBox = new PopupPanel(true); //true means that the popup will close when the user clicks outside of it. 
+		dialogBox.setGlassEnabled(true);
+		dialogBox.add(view.asWidget());
 	}
 	
 	@Override

@@ -12,12 +12,16 @@
 		}
 	</ui:style>
 	<g:HTMLPanel>
-	    <g:VerticalPanel styleName="{style.verticalPanel}" horizontalAlignment="ALIGN_RIGHT">
-	        <g:HorizontalPanel>
-	            <g:Image url="images/Info.gif" styleName="{style.infoImage}" />
-	            <g:HTML ui:field="messageHTML"></g:HTML>
-			</g:HorizontalPanel>
-			<g:Button ui:field="closeButton">Close</g:Button>
-	    </g:VerticalPanel>
+		<div style="padding:5px" align="right">
+		    <div style="padding:5px">
+		       	<g:HorizontalPanel>
+		       		<g:Image url="images/Info.gif" styleName="{style.infoImage}" />
+		           	<g:HTML ui:field="messageHTML"></g:HTML>
+				</g:HorizontalPanel>
+			</div>
+			<div style="padding:5px">
+				<g:Button ui:field="closeButton">Close</g:Button>
+			</div>
+		</div>
 	</g:HTMLPanel>
 </ui:UiBinder> 

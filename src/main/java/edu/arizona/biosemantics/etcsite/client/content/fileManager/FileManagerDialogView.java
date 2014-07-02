@@ -1,6 +1,6 @@
 package edu.arizona.biosemantics.etcsite.client.content.fileManager;
 
-import com.google.gwt.user.client.ui.TitleCloseDialogBox;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -9,16 +9,16 @@ import edu.arizona.biosemantics.etcsite.client.common.files.IManagableFileTreeVi
 
 public class FileManagerDialogView implements IFileManagerDialogView {
 
-	TitleCloseDialogBox dialogBox;
+	PopupPanel dialogBox;
 	
 	IManagableFileTreeView managableFileTreeView;
 	
 	@Inject
 	public FileManagerDialogView(IManagableFileTreeView.Presenter managableFileTreePresenter) {
 		this.managableFileTreeView = managableFileTreePresenter.getView();
-		this.dialogBox = new TitleCloseDialogBox(false, "File Manager");
-		dialogBox.setWidget(managableFileTreeView);
+		this.dialogBox = new PopupPanel(true); //true means that the popup will close when the user clicks outside of it. 
 		dialogBox.setGlassEnabled(true);
+		dialogBox.add(managableFileTreeView.asWidget());
 	}
 
 	@Override

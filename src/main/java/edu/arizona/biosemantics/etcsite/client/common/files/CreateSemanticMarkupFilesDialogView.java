@@ -1,11 +1,13 @@
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.ICancelConfirmHandler;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TitleCloseDialogBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -17,7 +19,7 @@ public class CreateSemanticMarkupFilesDialogView implements ICreateSemanticMarku
 	
 	interface CreateSemanticMarkupFilesDialogViewUiBinder extends UiBinder<Widget, CreateSemanticMarkupFilesDialogView> { }
 	
-	private TitleCloseDialogBox dialogBox;
+	private PopupPanel dialogBox;
 	private ICreateSemanticMarkupFilesDialogView.Presenter presenter;
 	
 	@UiField(provided=true)
@@ -27,25 +29,20 @@ public class CreateSemanticMarkupFilesDialogView implements ICreateSemanticMarku
 	public CreateSemanticMarkupFilesDialogView(ICreateSemanticMarkupFilesView.Presenter presenter) {
 		this.createSemanticMarkupFilesView = presenter.getView();
 		Widget scrollPanelView = uiBinder.createAndBindUi(this);
-		this.dialogBox = new TitleCloseDialogBox(true, "Create Input XML File for Text Capture Task");
-		dialogBox.setWidget(scrollPanelView);
+		this.dialogBox = new PopupPanel(true); //true means that the popup will close when the user clicks outside of it. 
 		dialogBox.setGlassEnabled(true);
+		dialogBox.add(scrollPanelView);
 	}
 
 	@Override
 	public void show() {
 		dialogBox.center();
-		dialogBox.setCancelConfirmHandler(new ICancelConfirmHandler() {
-			@Override
-			public void cancel() {
-				presenter.onCancel();
-			}
-			@Override
-			public void confirm() {
-			}
-		});
 	}
 	
+	@UiHandler("cancelButton")
+	public void onCancel(ClickEvent event) {
+		presenter.onCancel();
+	}
 	
 	@Override
 	public void hide() {

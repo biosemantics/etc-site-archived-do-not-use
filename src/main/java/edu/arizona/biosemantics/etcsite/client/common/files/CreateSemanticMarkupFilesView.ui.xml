@@ -6,8 +6,8 @@
 			padding: 10px;
 		}
 		.tabPanel {
-			height: 500px;
-			width: 750px;
+			height: 100%;
+			width: 100%;
 		}
 		.descriptionArea {
 			height: 60px;
@@ -51,7 +51,7 @@
 								</g:FlowPanel>
 							</g:DisclosurePanel>
 							<g:DisclosurePanel>
-								<g:header>Taxon Name Information * (Ranks must be in the order of hign to low)</g:header>
+								<g:header>Taxon Name Information * (Ranks must be in the order of high to low)</g:header>
 								<g:Grid ui:field="ranksGrid">
 									<g:row>
 										<g:cell>Rank</g:cell>

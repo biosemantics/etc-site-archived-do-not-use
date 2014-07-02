@@ -4,11 +4,21 @@
 	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.common.files">
 	<ui:style>
 		.scrollPanel {
-			height: 600px;
-			width:800px;
+			height: 500px;
+			width: 820px;
+			border: 1px;
 		}
 	</ui:style>
+	<g:HTMLPanel>
     <g:ScrollPanel styleName="{style.scrollPanel}">
-		<my:ICreateSemanticMarkupFilesView ui:field="createSemanticMarkupFilesView"/>
+		
+			<my:ICreateSemanticMarkupFilesView ui:field="createSemanticMarkupFilesView"/>
+			
+		
 	</g:ScrollPanel>
+		<hr width="100%" noshade="noshade"></hr>
+		<div align="right">
+			<g:Button ui:field="cancelButton">Cancel</g:Button>
+		</div>
+	</g:HTMLPanel>
 </ui:UiBinder> 

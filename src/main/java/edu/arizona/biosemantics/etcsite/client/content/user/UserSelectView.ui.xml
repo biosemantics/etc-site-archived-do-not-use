@@ -5,14 +5,18 @@
 	<ui:style>
 
 	</ui:style>
-	<g:VerticalPanel>
-	    <g:cell>
+	<g:HTMLPanel>
+		<div style="padding:5px">
+			<g:Label>Select Users:</g:Label>
+			<hr width="100%" noshade="noshade"></hr>
+		</div>
+	    <div style="padding:5px">
 	        <my:IUsersView ui:field="usersView"></my:IUsersView>
-	    </g:cell>
-		<g:cell>
+	    </div>
+		<div style="padding:5px">
 		    <g:HorizontalPanel>
 	    		<g:Button ui:field="selectButton">Select</g:Button>
 			</g:HorizontalPanel>
-		</g:cell>
-	</g:VerticalPanel>
+		</div>
+	</g:HTMLPanel>
 </ui:UiBinder> 

@@ -1,7 +1,6 @@
 package edu.arizona.biosemantics.etcsite.client.common;
 
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.TitleCloseDialogBox;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView.IConfirmListener;
@@ -9,12 +8,12 @@ import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView.IConfi
 public class MessageConfirmPresenter implements IMessageConfirmView.Presenter {
 
 	private IMessageConfirmView view;
-	private TitleCloseDialogBox dialogBox;
+	private PopupPanel dialogBox;
 	private IConfirmListener currentListener;
 	
 	@Inject
 	public MessageConfirmPresenter(IMessageConfirmView view) {
-		this.dialogBox = new TitleCloseDialogBox(false, ""); 
+		this.dialogBox = new PopupPanel(true); //true means that the popup will close when the user clicks outside of it. 
 		dialogBox.setGlassEnabled(true);
 		dialogBox.add(view.asWidget());
 		this.view = view;
@@ -25,7 +24,6 @@ public class MessageConfirmPresenter implements IMessageConfirmView.Presenter {
 	public void show(String title, String message, String cancelText, String confirmText,
 			IConfirmListener listener) {
 		this.currentListener = listener;
-		dialogBox.setText(title);
 		view.setHtmlMessage(message);
 		view.setConfirmText(confirmText);
 		view.setCancelText(cancelText);
@@ -35,7 +33,6 @@ public class MessageConfirmPresenter implements IMessageConfirmView.Presenter {
 	@Override
 	public void show(String title, String message, IConfirmListener listener) {
 		this.currentListener = listener;
-		dialogBox.setText(title);
 		view.setHtmlMessage(message);
 		dialogBox.center();
 	}

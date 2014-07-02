@@ -1,6 +1,6 @@
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
-import com.google.gwt.user.client.ui.TitleCloseDialogBox;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -10,7 +10,7 @@ import edu.arizona.biosemantics.etcsite.shared.file.FileFilter;
 public class SelectableFileTreePresenter implements ISelectableFileTreeView.Presenter {
 
 	private ISelectableFileTreeView view;
-	private TitleCloseDialogBox dialogBox;
+	private PopupPanel dialogBox;
 	private ISelectListener currentListener;
 	private IFileTreeView.Presenter fileTreePresenter;
 	private FileFilter fileFilter;
@@ -20,9 +20,8 @@ public class SelectableFileTreePresenter implements ISelectableFileTreeView.Pres
 			IFileTreeView.Presenter fileTreePresenter) {
 		this.view = view;
 		this.view.setPresenter(this);
-		this.dialogBox = new TitleCloseDialogBox(true, "Select File");
+		this.dialogBox = new PopupPanel(true); //true means that the popup will close when the user clicks outside of it. 
 		dialogBox.setGlassEnabled(true);
-		dialogBox.setAnimationEnabled(true);
 		dialogBox.add(view.asWidget());
 		this.fileTreePresenter = fileTreePresenter;
 	}
@@ -30,7 +29,6 @@ public class SelectableFileTreePresenter implements ISelectableFileTreeView.Pres
 	public void show(String title, FileFilter fileFilter, ISelectListener listener) {
 		this.currentListener = listener;
 		dialogBox.setTitle(title);
-		dialogBox.setText(title);
 		dialogBox.center();
 		this.fileFilter = fileFilter;
 		fileTreePresenter.refresh(fileFilter);

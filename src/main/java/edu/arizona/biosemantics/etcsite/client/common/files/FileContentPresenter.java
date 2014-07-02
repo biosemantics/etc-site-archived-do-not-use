@@ -11,7 +11,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import com.google.gwt.user.client.ui.TitleCloseDialogBox;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
@@ -28,7 +28,7 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 	private IFileContentView view;
 	private IFileAccessServiceAsync fileAccessService;
 	private IFileFormatServiceAsync fileFormatService;
-	private TitleCloseDialogBox dialogBox;
+	private PopupPanel dialogBox;
 	private LoadingPopup loadingPopup = new LoadingPopup();
 	private String currentPath;
 	private FileTypeEnum fileType; 
@@ -40,15 +40,15 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 		view.setPresenter(this);
 		this.fileAccessService = fileAccessService;
 		this.fileFormatService = fileFormatService;
-		this.dialogBox = new TitleCloseDialogBox("File Content");
-		this.dialogBox.setGlassEnabled(true);
-		this.dialogBox.setWidget(view);
+		this.dialogBox = new PopupPanel(true); //true means that the popup will close when the user clicks outside of it. 
+		dialogBox.setGlassEnabled(true);
+		dialogBox.add(view.asWidget());
 		this.messagePresenter = messagePresenter;
 	}
 
 	public void show(String path) {
 		this.currentPath = path;
-		this.dialogBox.setText("File Content of "+path);
+		//this.dialogBox.setText("File Content of "+path);
 		this.dialogBox.center();
 		loadingPopup.start();
 		fileType = FileTypeEnum.getEnum(view.getFormat());
