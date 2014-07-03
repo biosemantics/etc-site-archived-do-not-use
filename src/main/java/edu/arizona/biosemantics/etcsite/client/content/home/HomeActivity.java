@@ -74,14 +74,6 @@ public class HomeActivity extends MyAbstractActivity implements IHomeContentView
 		this.messageConfirmPresenter = messageConfirmPresenter;
 		this.resumeTaskPlaceMapper = resumeTaskPlaceMapper;
 		this.pipelineService = pipelineService;
-		
-		//log out when window is closed. 
-		Window.addWindowClosingHandler(new Window.ClosingHandler(){
-			@Override
-			public void onWindowClosing(ClosingEvent event) {
-				Authentication.getInstance().destroy(); 
-			}
-		});
     }
 
 	@Override

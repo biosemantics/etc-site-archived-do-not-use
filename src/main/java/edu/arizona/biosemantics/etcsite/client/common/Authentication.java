@@ -1,9 +1,5 @@
 package edu.arizona.biosemantics.etcsite.client.common;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-
 import com.google.gwt.user.client.Cookies;
 
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
@@ -13,16 +9,14 @@ public class Authentication {
 	private static Authentication instance;
 	private String externalAccessToken;
 	
-	public static Authentication getInstance() {
+	public static Authentication getInstance(){
 		if(instance == null)
-			instance = new Authentication(); 
+			instance = new Authentication();
 		return instance;
 	}
 	
 	public void setSessionID(String sessionID) {
-	    final long DURATION = 1000 * 60 * 60 * 24 * 14; //duration remembering login. 2 weeks in this example.
-	    Date expires = new Date(System.currentTimeMillis() + DURATION);
-	    Cookies.setCookie(CookieVariable.sessionID, sessionID, expires, null, "/", false);
+	    Cookies.setCookie(CookieVariable.sessionID, sessionID);
 	}
 	
 	public String getSessionId() {
@@ -42,15 +36,11 @@ public class Authentication {
 	}
 
 	public void setUserId(int arg) {
-		final long DURATION = 1000 * 60 * 60 * 24 * 14; //duration remembering login. 2 weeks in this example.
-	    Date expires = new Date(System.currentTimeMillis() + DURATION);
-	    Cookies.setCookie(CookieVariable.userId, String.valueOf(arg), expires, null, "/", false);
+	    Cookies.setCookie(CookieVariable.userId, String.valueOf(arg));
 	}
 	
 	public void setEmail(String email) {
-	    final long DURATION = 1000 * 60 * 60 * 24 * 14; //duration remembering login. 2 weeks in this example.
-	    Date expires = new Date(System.currentTimeMillis() + DURATION);
-	    Cookies.setCookie(CookieVariable.email, email, expires, null, "/", false);
+	    Cookies.setCookie(CookieVariable.email, email);
 	}
 	
 	public String getEmail() {
@@ -62,9 +52,7 @@ public class Authentication {
 	}
 	
 	public void setFirstName(String firstName) {
-	    final long DURATION = 1000 * 60 * 60 * 24 * 14; //duration remembering login. 2 weeks in this example.
-	    Date expires = new Date(System.currentTimeMillis() + DURATION);
-	    Cookies.setCookie(CookieVariable.firstName, firstName, expires, null, "/", false);
+	    Cookies.setCookie(CookieVariable.firstName, firstName);
 	}
 	
 	public String getFirstName() {
@@ -76,9 +64,7 @@ public class Authentication {
 	}
 	
 	public void setLastName(String lastName) {
-	    final long DURATION = 1000 * 60 * 60 * 24 * 14; //duration remembering login. 2 weeks in this example.
-	    Date expires = new Date(System.currentTimeMillis() + DURATION);
-	    Cookies.setCookie(CookieVariable.lastName, lastName, expires, null, "/", false);
+	    Cookies.setCookie(CookieVariable.lastName, lastName);
 	}
 
 	public String getLastName() {
@@ -90,9 +76,7 @@ public class Authentication {
 	}
 	
 	public void setAffiliation(String affiliation) {
-	    final long DURATION = 1000 * 60 * 60 * 24 * 14; //duration remembering login. 2 weeks in this example.
-	    Date expires = new Date(System.currentTimeMillis() + DURATION);
-	    Cookies.setCookie(CookieVariable.affiliation, affiliation, expires, null, "/", false);
+	    Cookies.setCookie(CookieVariable.affiliation, affiliation);
 	}
 	
 	public String getAffiliation() {
