@@ -15,7 +15,7 @@
 		    left: 0px;
 		}
 		.etcLogo {
-    		background-image: url('images/ETCLogo2.gif');
+    		background-image: url('images/ETCLogoBeta.png');
     		background-size: 100% 100%;
     		height: 96px;
 			width: 283px;
