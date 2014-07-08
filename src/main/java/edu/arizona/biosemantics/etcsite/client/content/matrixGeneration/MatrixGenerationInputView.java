@@ -77,4 +77,10 @@ public class MatrixGenerationInputView extends Composite implements IMatrixGener
 	public void setEnabledNext(boolean value) {
 		this.nextButton.setEnabled(value);
 	}
+	
+	@Override
+	public void resetFields(){
+		this.taskNameTextBox.setText("");
+		this.inputLabel.setText("");
+	}
 }

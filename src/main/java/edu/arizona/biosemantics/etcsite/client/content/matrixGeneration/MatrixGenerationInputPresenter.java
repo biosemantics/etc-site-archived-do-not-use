@@ -118,6 +118,7 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 
 	@Override
 	public IMatrixGenerationInputView getView() {
+		view.resetFields();
 		return view;
 	}
 

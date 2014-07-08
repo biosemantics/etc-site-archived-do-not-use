@@ -15,5 +15,6 @@ public interface IMatrixGenerationInputView extends IsWidget {
 	String getTaskName();
 	void setFilePath(String shortendPath);
 	void setEnabledNext(boolean b);
+	void resetFields();
 
 }

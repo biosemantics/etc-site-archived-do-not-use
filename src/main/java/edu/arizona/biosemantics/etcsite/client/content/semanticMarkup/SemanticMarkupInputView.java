@@ -93,4 +93,11 @@ public class SemanticMarkupInputView extends Composite implements ISemanticMarku
 	public String getGlossaryName() {
 		return glossaryListBox.getItemText(glossaryListBox.getSelectedIndex());
 	}
+	
+	@Override
+	public void resetFields(){
+		this.taskNameTextBox.setText("");
+		this.inputLabel.setText("");
+		this.glossaryListBox.setSelectedIndex(0);
+	}
 }

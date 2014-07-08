@@ -26,4 +26,6 @@ public interface ISemanticMarkupInputView extends IsWidget {
 
 	String getGlossaryName();
 	
+	void resetFields();
+	
 }
