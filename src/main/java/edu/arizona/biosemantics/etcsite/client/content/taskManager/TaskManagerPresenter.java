@@ -14,6 +14,7 @@ import com.google.web.bindery.event.shared.EventBus;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.MessageConfirmPresenter;
+import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView.IConfirmListener;
 import edu.arizona.biosemantics.etcsite.client.common.MessageConfirmPresenter.AbstractConfirmListener;
 import edu.arizona.biosemantics.etcsite.client.content.user.IUserSelectView;
 import edu.arizona.biosemantics.etcsite.client.content.user.IUsersView;
@@ -99,29 +100,35 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 	@Override
 	public void onDelete(final TaskData taskData) {
 		final Task task = taskData.getTask();
-		if(task.getUser().getId() == Authentication.getInstance().getUserId()) {
-			if(!taskData.getInvitees().isEmpty()) {
-				//bring up popup asking
-				messagePresenter.show("Format Requirements", "If you delete this task it will be removed for all invitees of the share. Do you want to continue?", new AbstractConfirmListener() {
-					@Override
-					public void onConfirm() {
+		
+		messagePresenter.show("Format Requirements", "Are you sure you want to delete task '" + task.getName() + "'?", new AbstractConfirmListener() {
+			@Override
+			public void onConfirm() {
+				if(task.getUser().getId() == Authentication.getInstance().getUserId()) {
+					if(!taskData.getInvitees().isEmpty()) {
+						//bring up popup asking
+						messagePresenter.show("Format Requirements", "If you delete this task it will be removed for all invitees of the share. Do you want to continue?", new AbstractConfirmListener() {
+							@Override
+							public void onConfirm() {
+								cancelTask(taskData);
+								view.resetSelection();
+							}
+						});
+					} else {
 						cancelTask(taskData);
 						view.resetSelection();
 					}
-				});
-			} else {
-				cancelTask(taskData);
-				view.resetSelection();
-			}
-		} else {
-			taskService.removeMeFromShare(Authentication.getInstance().getToken(), task, new RPCCallback<Void>() {
-				@Override
-				public void onResult(Void result) {
-					inviteesForOwnedTasks.remove(task);
-					view.removeTaskData(taskData);
+				} else {
+					taskService.removeMeFromShare(Authentication.getInstance().getToken(), task, new RPCCallback<Void>() {
+						@Override
+						public void onResult(Void result) {
+							inviteesForOwnedTasks.remove(task);
+							view.removeTaskData(taskData);
+						}
+					});
 				}
-			});
-		}
+			}
+		});
 	}
 	
 	private void cancelTask(final TaskData taskData) {

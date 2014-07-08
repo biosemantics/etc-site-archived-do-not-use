@@ -344,14 +344,14 @@ public class ClientModule extends AbstractGinModule {
 		
 		@Inject
 		public FileManagerPresenterProvider(IFileServiceAsync fileService, FileTreeDecorator fileTreeDecorator, FileDragDropHandler
-				fileDragDropHandler, IMessageView.Presenter messagePresenter, ITextInputView.Presenter textInputPresenter, 
+				fileDragDropHandler, IMessageView.Presenter messagePresenter,  IMessageConfirmView.Presenter messageConfirmPresenter, ITextInputView.Presenter textInputPresenter, 
 				ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter,
 				PlaceController placeController) {
 			fileTreeView = new FileTreeView();
 			fileTreePresenter = new DnDFileTreePresenter(fileTreeView, fileService, fileTreeDecorator, fileDragDropHandler);
 			managableFileTreeView = new ManagableFileTreeView(fileTreePresenter);			
 			managableFileTreePresenter = new ManagableFileTreePresenter(managableFileTreeView, fileTreePresenter, fileService, 
-					messagePresenter, textInputPresenter, createSemanticMarkupFilesDialogPresenter);
+					messagePresenter, messageConfirmPresenter, textInputPresenter, createSemanticMarkupFilesDialogPresenter);
 			fileManagerView = new FileManagerView(managableFileTreePresenter);
 			fileManagerPresenter = new FileManagerPresenter(placeController, fileManagerView, managableFileTreePresenter);
 		}
@@ -373,13 +373,13 @@ public class ClientModule extends AbstractGinModule {
 		
 		@Inject
 		public FileManagerDialogPresenterProvider(IFileServiceAsync fileService, FileTreeDecorator fileTreeDecorator, FileDragDropHandler
-				fileDragDropHandler, IMessageView.Presenter messagePresenter, ITextInputView.Presenter textInputPresenter, 
+				fileDragDropHandler, IMessageConfirmView.Presenter messageConfirmPresenter, IMessageView.Presenter messagePresenter, ITextInputView.Presenter textInputPresenter, 
 				ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter) {
 			fileTreeView = new FileTreeView();
 			fileTreePresenter = new DnDFileTreePresenter(fileTreeView, fileService, fileTreeDecorator, fileDragDropHandler);
 			managableFileTreeView = new ManagableFileTreeView(fileTreePresenter);			
 			managableFileTreePresenter = new ManagableFileTreePresenter(managableFileTreeView, fileTreePresenter, fileService, 
-					messagePresenter, textInputPresenter, createSemanticMarkupFilesDialogPresenter);
+					messagePresenter, messageConfirmPresenter, textInputPresenter, createSemanticMarkupFilesDialogPresenter);
 			fileManagerDialogView = new FileManagerDialogView(managableFileTreePresenter);
 			fileManagerDialogPresenter = new FileManagerDialogPresenter(fileManagerDialogView, managableFileTreePresenter);
 		}

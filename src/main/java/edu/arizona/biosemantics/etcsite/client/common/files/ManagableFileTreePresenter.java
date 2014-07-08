@@ -16,10 +16,12 @@ import com.google.inject.name.Named;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.Configuration;
+import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView;
 import edu.arizona.biosemantics.etcsite.client.common.IMessageView;
 import edu.arizona.biosemantics.etcsite.client.common.ITextInputView;
 import edu.arizona.biosemantics.etcsite.client.common.LoadingPopup;
 import edu.arizona.biosemantics.etcsite.client.common.ITextInputView.ITextInputListener;
+import edu.arizona.biosemantics.etcsite.client.common.MessageConfirmPresenter.AbstractConfirmListener;
 import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.client.common.MessageView;
 import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkupFilesDialogPresenter.ICloseHandler;
@@ -47,6 +49,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	private IFileTreeView.Presenter fileTreePresenter;
 	private FileFilter fileFilter;
 	private IMessageView.Presenter messagePresenter;
+	private IMessageConfirmView.Presenter messageConfirmPresenter;
 	private String defaultServletPath;
 	private ITextInputView.Presenter textInputPresenter;
 	private ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter;
@@ -55,7 +58,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	@Inject
 	public ManagableFileTreePresenter(IManagableFileTreeView view, 
 			IFileTreeView.Presenter fileTreePresenter, 
-			IFileServiceAsync fileService, MessageView.Presenter messagePresenter, 
+			IFileServiceAsync fileService, MessageView.Presenter messagePresenter, IMessageConfirmView.Presenter messageConfirmPresenter, 
 			ITextInputView.Presenter textInputPresenter, 
 			ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter) {
 		this.fileService = fileService;
@@ -64,6 +67,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		this.fileTreePresenter = fileTreePresenter;
 		fileTreePresenter.addSelectionListener(this);
 		this.messagePresenter = messagePresenter;
+		this.messageConfirmPresenter = messageConfirmPresenter;
 		this.textInputPresenter = textInputPresenter;
 		this.createSemanticMarkupFilesDialogPresenter = createSemanticMarkupFilesDialogPresenter;
 		
@@ -200,16 +204,21 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 
 	@Override
 	public void onDelete() {
-		FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
+		final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
 		if(selection != null && !selection.getFileInfo().isSystemFile()) {
-			fileService.deleteFile(Authentication.getInstance().getToken(), selection.getFileInfo().getFilePath(), new RPCCallback<Void>(){
+			messageConfirmPresenter.show("Format Requirements", "Are you sure you want to delete '" + selection.getText() + "'?", new AbstractConfirmListener() {
 				@Override
-				public void onResult(Void result) {
-					ManagableFileTreePresenter.this.initActions();
-					fileTreePresenter.clearSelection();
-					fileTreePresenter.refresh(fileFilter);
+				public void onConfirm() {
+					fileService.deleteFile(Authentication.getInstance().getToken(), selection.getFileInfo().getFilePath(), new RPCCallback<Void>(){
+						@Override
+						public void onResult(Void result) {
+							ManagableFileTreePresenter.this.initActions();
+							fileTreePresenter.clearSelection();
+							fileTreePresenter.refresh(fileFilter);
+						}
+						
+					});
 				}
-				
 			});
 		} else {
 			messagePresenter.showMessage("File Manager", "Please select a valid file or directory to delete");
