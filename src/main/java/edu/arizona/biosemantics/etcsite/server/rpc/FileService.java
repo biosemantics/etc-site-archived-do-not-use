@@ -275,6 +275,15 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		if(idealFolderName.trim().isEmpty()) 
 			return new RPCResult<String>(false, "Directory name may not be empty. The directory was not created.", "");
 		
+		//System.err.println("Making directory: " + filePath + ", " + idealFolderName);
+		//try to make the parent directories.
+		try{
+			File dir = new File(filePath);
+			dir.mkdirs();
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		
 		RPCResult<Boolean> permissionResult = filePermissionService.hasWritePermission(authenticationToken, filePath);
 		if(!permissionResult.isSucceeded())
 			return new RPCResult<String>(false, permissionResult.getMessage()+ ". The directory was not created.", "");
