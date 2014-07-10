@@ -25,20 +25,23 @@ public class TermCategoryPairDAO {
 		if(synonymString.length() > 0)
 			synonymString = synonymString.substring(0, synonymString.length() - 1);
 		//only if not contained anyway. Make {term, category, uploadID} unique in DB
-		Query query = new Query("SELECT ID FROM `term_category_pair` WHERE term = ? AND category = ? AND uploadID = ?", "otolite");
-		query.setParameter(1, term);
-		query.setParameter(2, category);
-		query.setParameter(3, uploadId);
-		ResultSet resultSet = query.execute();
-		if(!resultSet.next()) {
-			Query insertQuery = new Query("INSERT INTO `term_category_pair` (`term`, `category`, `synonyms`, `uploadID`) VALUES (?, ?, ?, ?)", "otolite");
-			insertQuery.setParameter(1, term);
-			insertQuery.setParameter(2, category);
-			insertQuery.setParameter(3, synonymString);
-			insertQuery.setParameter(4, uploadId);
-			insertQuery.executeAndClose();
+		try(Query query = new Query("SELECT ID FROM `term_category_pair` WHERE term = ? AND category = ? AND uploadID = ?", "otolite")) {
+			query.setParameter(1, term);
+			query.setParameter(2, category);
+			query.setParameter(3, uploadId);
+			ResultSet resultSet = query.execute();
+			if(!resultSet.next()) {
+				try(Query insertQuery = new Query("INSERT INTO `term_category_pair` (`term`, `category`, `synonyms`, `uploadID`) VALUES (?, ?, ?, ?)", "otolite")) {
+					insertQuery.setParameter(1, term);
+					insertQuery.setParameter(2, category);
+					insertQuery.setParameter(3, synonymString);
+					insertQuery.setParameter(4, uploadId);
+					insertQuery.execute();
+				}
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
-		query.close();	
 	}
 	
 }

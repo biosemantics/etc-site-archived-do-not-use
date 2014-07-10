@@ -26,25 +26,27 @@ public class OrderCategoriesDAO {
 	 */
 	public int addOrderCategory(int uploadId, String categoryName) throws SQLException, ClassNotFoundException, IOException {
 		int id = -1;
-		Query query = new Query("SELECT categoryID FROM order_categories WHERE uploadID = ? AND categoryName = ?", "otolite");
-		query.setParameter(1, uploadId);
-		query.setParameter(2, categoryName);
-		query.execute();
-		ResultSet result = query.getResultSet();
-		if(result.next()) {
-			id = result.getInt(1);
-		} else {
-			Query insertQuery = new Query("INSERT INTO order_categories (`uploadID`, `categoryName`) VALUES (?, ?)", "otolite");
-			insertQuery.setParameter(1, uploadId);
-			insertQuery.setParameter(2, categoryName);
-			insertQuery.execute();
-			ResultSet keySet = insertQuery.getGeneratedKeys();
-			if(keySet.next()) {
-				id = keySet.getInt(1);
+		try(Query query = new Query("SELECT categoryID FROM order_categories WHERE uploadID = ? AND categoryName = ?", "otolite")) {
+			query.setParameter(1, uploadId);
+			query.setParameter(2, categoryName);
+			query.execute();
+			ResultSet result = query.getResultSet();
+			if(result.next()) {
+				id = result.getInt(1);
+			} else {
+				try(Query insertQuery = new Query("INSERT INTO order_categories (`uploadID`, `categoryName`) VALUES (?, ?)", "otolite")) {
+					insertQuery.setParameter(1, uploadId);
+					insertQuery.setParameter(2, categoryName);
+					insertQuery.execute();
+					ResultSet keySet = insertQuery.getGeneratedKeys();
+					if(keySet.next()) {
+						id = keySet.getInt(1);
+					}
+				}
 			}
-			insertQuery.close();
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
-		query.close();
 		return id;
 	}
 	

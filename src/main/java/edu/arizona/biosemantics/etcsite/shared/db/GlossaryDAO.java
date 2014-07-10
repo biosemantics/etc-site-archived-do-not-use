@@ -9,33 +9,37 @@ public class GlossaryDAO {
 
 	private static GlossaryDAO instance;
 	
-	public Glossary getGlossary(int id) throws SQLException, ClassNotFoundException, IOException {
+	public Glossary getGlossary(int id) {
 		Glossary glossary = null;
-		Query query = new Query("SELECT * FROM glossaries WHERE id = ?");
-		query.setParameter(1, id);
-		ResultSet result = query.execute();
-		while(result.next()) {
-			id = result.getInt(1);
-			String name = result.getString(2);
-			Date created = result.getTimestamp(3);
-			glossary = new Glossary(id, name, created);
+		try (Query query = new Query("SELECT * FROM glossaries WHERE id = ?")) {
+			query.setParameter(1, id);
+			ResultSet result = query.execute();
+			while(result.next()) {
+				id = result.getInt(1);
+				String name = result.getString(2);
+				Date created = result.getTimestamp(3);
+				glossary = new Glossary(id, name, created);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
-		query.close();
 		return glossary;
 	}
 	
-	public Glossary getGlossary(String name) throws SQLException, ClassNotFoundException, IOException {		
+	public Glossary getGlossary(String name) {		
 		Glossary glossary = null;
-		Query query = new Query("SELECT * FROM glossaries WHERE name = ?");
-		query.setParameter(1, name);
-		ResultSet result = query.execute();
-		while(result.next()) {
-			int id = result.getInt(1);
-			name = result.getString(2);
-			Date created = result.getTimestamp(3);
-			glossary = new Glossary(id, name, created);
+		try (Query query = new Query("SELECT * FROM glossaries WHERE name = ?")) {
+			query.setParameter(1, name);
+			ResultSet result = query.execute();
+			while(result.next()) {
+				int id = result.getInt(1);
+				name = result.getString(2);
+				Date created = result.getTimestamp(3);
+				glossary = new Glossary(id, name, created);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		query.close();
 		return glossary;
 	}
 		

@@ -21,100 +21,114 @@ public class TaskDAO {
 		return instance;
 	}
 	
-	public Task getTask(int id) throws SQLException, ClassNotFoundException, IOException {
+	public Task getTask(int id) {
 		Task task = null;
-		Query query = new Query("SELECT * FROM tasks WHERE id = ?");
-		query.setParameter(1, id);
-		ResultSet result = query.execute();
-		while(result.next()) {
-			task = createTask(result);
+		try(Query query = new Query("SELECT * FROM tasks WHERE id = ?")) {
+			query.setParameter(1, id);
+			ResultSet result = query.execute();
+			while(result.next()) {
+				task = createTask(result);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
-		query.close();
 		return task;
 	}
 	
-	public Task getTask(Configuration configuration) throws SQLException, ClassNotFoundException, IOException {
+	public Task getTask(Configuration configuration) {
 		Task task = null;
-		Query query = new Query("SELECT * FROM tasks WHERE configuration = ?");
-		query.setParameter(1, configuration.getId());
-		ResultSet result = query.execute();
-		while(result.next()) {
-			task = createTask(result);
+		try (Query query = new Query("SELECT * FROM tasks WHERE configuration = ?")) {
+			query.setParameter(1, configuration.getId());
+			ResultSet result = query.execute();
+			while(result.next()) {
+				task = createTask(result);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
-		query.close();
 		return task;
 	}
 	
 	
-	public List<Task> getOwnedTasks(int userId) throws SQLException, ClassNotFoundException, IOException {
+	public List<Task> getOwnedTasks(int userId) {
 		List<Task> tasks = new LinkedList<Task>();
-		Query query = new Query(ownerQuery);
-		query.setParameter(1, userId);
-		ResultSet result = query.execute();
-		while(result.next()) {			
-			Task task = createTask(result);
-			tasks.add(task);
+		try(Query query = new Query(ownerQuery)) {
+			query.setParameter(1, userId);
+			ResultSet result = query.execute();
+			while(result.next()) {			
+				Task task = createTask(result);
+				tasks.add(task);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
-		query.close();
 		return tasks;
 	}
 	
-	public List<Task> getSharedWithTasks(int userId) throws SQLException, ClassNotFoundException, IOException {
+	public List<Task> getSharedWithTasks(int userId) {
 		List<Task> tasks = new LinkedList<Task>();
-		Query query = new Query(sharedWithQuery);
-		query.setParameter(1, userId);
-		ResultSet result = query.execute();
-		while(result.next()) {			
-			Task task = createTask(result);
-			tasks.add(task);
+		try(Query query = new Query(sharedWithQuery)) {
+			query.setParameter(1, userId);
+			ResultSet result = query.execute();
+			while(result.next()) {			
+				Task task = createTask(result);
+				tasks.add(task);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
-		query.close();
 		return tasks;
 	}
 	
-	public List<Task> getAllTasks(int userId) throws ClassNotFoundException, SQLException, IOException {
+	public List<Task> getAllTasks(int userId) {
 		List<Task> tasks = new LinkedList<Task>();
-		Query query = new Query(this.allUsersTasksQuery);
-		query.setParameter(1, userId);
-		query.setParameter(2, userId);
-		ResultSet result = query.execute();
-		while(result.next()) {			
-			Task task = createTask(result);
-			tasks.add(task);
+		try(Query query = new Query(this.allUsersTasksQuery)) {
+			query.setParameter(1, userId);
+			query.setParameter(2, userId);
+			ResultSet result = query.execute();
+			while(result.next()) {			
+				Task task = createTask(result);
+				tasks.add(task);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
-		query.close();
 		return tasks;
 	}
 
-	public List<Task> getResumableTasks(int userId) throws ClassNotFoundException, SQLException, IOException {
+	public List<Task> getResumableTasks(int userId) {
 		List<Task> tasks = new LinkedList<Task>();
-		Query query = new Query("SELECT * FROM (" + allUsersTasksQuery + ")AS allTasks WHERE resumable=true");
-		query.setParameter(1, userId);
-		query.setParameter(2, userId);
-		ResultSet result = query.execute();
-		while(result.next()) {
-			Task task = createTask(result);
-			tasks.add(task);
+		try(Query query = new Query("SELECT * FROM (" + allUsersTasksQuery + ")AS allTasks WHERE resumable=true")) {
+			query.setParameter(1, userId);
+			query.setParameter(2, userId);
+			ResultSet result = query.execute();
+			while(result.next()) {
+				Task task = createTask(result);
+				tasks.add(task);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
-		query.close();
 		return tasks;
 	}
 	
-	public List<Task> getCompletedTasks(int userId) throws SQLException, ClassNotFoundException, IOException {
+	public List<Task> getCompletedTasks(int userId) {
 		List<Task> tasks = new LinkedList<Task>();
-		Query query = new Query("SELECT * FROM (" + allUsersTasksQuery + ")AS allTasks WHERE complete=true");
-		query.setParameter(1, userId);
-		query.setParameter(2, userId);
-		ResultSet result = query.execute();
-		while(result.next()) {
-			Task task = createTask(result);
-			tasks.add(task);
+		try(Query query = new Query("SELECT * FROM (" + allUsersTasksQuery + ")AS allTasks WHERE complete=true")) {
+			query.setParameter(1, userId);
+			query.setParameter(2, userId);
+			ResultSet result = query.execute();
+			while(result.next()) {
+				Task task = createTask(result);
+				tasks.add(task);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
-		query.close();
 		return tasks;
 	}
 
-	private Task createTask(ResultSet result) throws SQLException, ClassNotFoundException, IOException {
+	private Task createTask(ResultSet result) throws SQLException {
 		int id = result.getInt(1);
 		String name = result.getString(2);
 		int taskTypeId = result.getInt(3);
@@ -159,27 +173,29 @@ public class TaskDAO {
 		return null;
 	}
 
-	public Task addTask(Task task) throws SQLException, ClassNotFoundException, IOException {
+	public Task addTask(Task task) {
 		Task result = null;
-		Query query = new Query("INSERT INTO `tasks` (`name`, `tasktype`, `taskstage`, `configuration`, `user`, `resumable`, `complete`) VALUES " +
-				"(?, ?, ?, ?, ?, ?, ?)");
-		query.setParameter(1, task.getName());
-		query.setParameter(2, task.getTaskType().getId());
-		query.setParameter(3, task.getTaskStage().getId());
-		query.setParameter(4, task.getConfiguration().getConfiguration().getId());
-		query.setParameter(5, task.getUser().getId());
-		query.setParameter(6, task.isResumable());
-		query.setParameter(7, task.isComplete());
-		query.execute();
-		ResultSet generatedKeys = query.getGeneratedKeys();
-        if (generatedKeys.next()) {
-            result = this.getTask(generatedKeys.getInt(1));
-        }
-		query.close();
+		try(Query query = new Query("INSERT INTO `tasks` (`name`, `tasktype`, `taskstage`, `configuration`, `user`, `resumable`, `complete`) VALUES " +
+				"(?, ?, ?, ?, ?, ?, ?)")) {
+			query.setParameter(1, task.getName());
+			query.setParameter(2, task.getTaskType().getId());
+			query.setParameter(3, task.getTaskStage().getId());
+			query.setParameter(4, task.getConfiguration().getConfiguration().getId());
+			query.setParameter(5, task.getUser().getId());
+			query.setParameter(6, task.isResumable());
+			query.setParameter(7, task.isComplete());
+			query.execute();
+			ResultSet generatedKeys = query.getGeneratedKeys();
+	        if (generatedKeys.next()) {
+	            result = this.getTask(generatedKeys.getInt(1));
+	        }
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 		return result;
 	}
 
-	public void updateTask(Task task) throws SQLException, ClassNotFoundException, IOException {
+	public void updateTask(Task task) {
 		int id = task.getId();
 		String name = task.getName();
 		int taskTypeId = task.getTaskType().getId();
@@ -190,23 +206,26 @@ public class TaskDAO {
 		boolean complete = task.isComplete();
 		Date completed = task.getCompleted();
 		String sql = "UPDATE tasks SET name = ?, tasktype = ?, taskstage=?, configuration=?, user=?, resumable=?, complete=?, completed=? WHERE id = ?";
-		Query query = new Query(sql);
-		query.setParameter(1, name);
-		query.setParameter(2, taskTypeId);
-		query.setParameter(3, taskStageId);
-		query.setParameter(4, configurationId);
-		query.setParameter(5, userId);
-		query.setParameter(6, resumable);
-		query.setParameter(7, complete);
-		query.setParameter(8, (completed==null? null : new Timestamp(completed.getTime())));
-		query.setParameter(9, id);
-		
-		//Query query = new Query("UPDATE tasks SET name = '" + name + "',  tasktype=" + taskTypeId + ", taskstage=" + taskStageId + ", configuration=" + configurationId + 
-		//		", user=" + userId + ", resumable=" + resumable + ", complete=" + complete + ", completed=" + (completed==null? completed : completed.getTime()) + " WHERE id = " + id);
-		query.executeAndClose();
+		try(Query query = new Query(sql)) {
+			query.setParameter(1, name);
+			query.setParameter(2, taskTypeId);
+			query.setParameter(3, taskStageId);
+			query.setParameter(4, configurationId);
+			query.setParameter(5, userId);
+			query.setParameter(6, resumable);
+			query.setParameter(7, complete);
+			query.setParameter(8, (completed==null? null : new Timestamp(completed.getTime())));
+			query.setParameter(9, id);
+			
+			//Query query = new Query("UPDATE tasks SET name = '" + name + "',  tasktype=" + taskTypeId + ", taskstage=" + taskStageId + ", configuration=" + configurationId + 
+			//		", user=" + userId + ", resumable=" + resumable + ", complete=" + complete + ", completed=" + (completed==null? completed : completed.getTime()) + " WHERE id = " + id);
+			query.execute();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 
-	public void removeTask(Task task) throws SQLException, ClassNotFoundException, IOException {
+	public void removeTask(Task task) {
 		int id = task.getId();
 		
 		// remove shares
@@ -221,8 +240,11 @@ public class TaskDAO {
 		// remove files in use
 		FilesInUseDAO.getInstance().removeFilesInUse(task);
 		
-		Query query = new Query("DELETE FROM tasks WHERE id = ?");
-		query.setParameter(1, id);
-		query.executeAndClose();
+		try(Query query = new Query("DELETE FROM tasks WHERE id = ?")) {
+			query.setParameter(1, id);
+			query.execute();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
