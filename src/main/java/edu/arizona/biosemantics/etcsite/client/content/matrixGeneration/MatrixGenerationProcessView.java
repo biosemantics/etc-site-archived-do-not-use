@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class MatrixGenerationProcessView extends Composite implements IMatrixGenerationProcessView {
@@ -28,7 +29,7 @@ public class MatrixGenerationProcessView extends Composite implements IMatrixGen
 	HorizontalPanel resumablePanel;
 
 	@UiField
-	HorizontalPanel nonResumablePanel;
+	VerticalPanel nonResumablePanel;
 	
 	@UiField
 	Anchor taskManagerAnchor;

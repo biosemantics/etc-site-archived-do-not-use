@@ -37,8 +37,8 @@
 					<g:Image styleName="{style.playImage}" ui:field="playImage" url='images/play.png'></g:Image>
 					<g:InlineLabel>A taxon-character matrix has been generated.</g:InlineLabel>
 				</g:HorizontalPanel>
-				<g:VerticalPanel>
-					<g:HorizontalPanel ui:field="nonResumablePanel">
+				<g:VerticalPanel ui:field="nonResumablePanel">
+					<g:HorizontalPanel>
 					<g:Image styleName="{style.waitImage}" ui:field="waitImage" url='images/loader3.gif'/>	
 					<g:InlineLabel>A taxon-character matrix is being generated. </g:InlineLabel>
 					</g:HorizontalPanel>
