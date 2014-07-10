@@ -368,8 +368,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	private void sendFinishedGeneratingMatrixEmail(Task task){
 		try {
 			String email = UserDAO.getInstance().getUser(task.getUser().getId()).getEmail();
-			String subject = EmailManager.FINISHED_GENERATING_MATRIX_SUBJECT.replace("<taskname>", task.getName());
-			String body = EmailManager.FINISHED_GENERATING_MATRIX_BODY.replace("<taskname>", task.getName());
+			String subject = Configuration.finishedMatrixgenerationGenerateSubject.replace("<taskname>", task.getName());
+			String body = Configuration.finishedMatrixgenerationGenerateBody.replace("<taskname>", task.getName());
 			
 			EmailManager.getInstance().sendEmail(email, subject, body);
 		} catch (Exception e) {

@@ -274,8 +274,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	private void sendFinishedLearningTermsEmail(Task task){
 		try {
 			String email = UserDAO.getInstance().getUser(task.getUser().getId()).getEmail();
-			String subject = EmailManager.FINISHED_LEARNING_TERMS_SUBJECT.replace("<taskname>", task.getName());
-			String body = EmailManager.FINISHED_LEARNING_TERMS_BODY.replace("<taskname>", task.getName());
+			String subject = Configuration.finishedSemanticMarkupLearnSubject.replace("<taskname>", task.getName());
+			String body = Configuration.finishedSemanticMarkupLearnBody.replace("<taskname>", task.getName());
 			
 			EmailManager.getInstance().sendEmail(email, subject, body);
 		} catch (Exception e) {
@@ -287,8 +287,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	private void sendFinishedParsingEmail(Task task){
 		try {
 			String email = UserDAO.getInstance().getUser(task.getUser().getId()).getEmail();
-			String subject = EmailManager.FINISHED_PARSING_SUBJECT.replace("<taskname>", task.getName());
-			String body = EmailManager.FINISHED_PARSING_BODY.replace("<taskname>", task.getName());
+			String subject = Configuration.finishedSemanticMarkupParseSubject.replace("<taskname>", task.getName());
+			String body = Configuration.finishedSemanticMarkupParseBody.replace("<taskname>", task.getName());
 			
 			EmailManager.getInstance().sendEmail(email, subject, body);
 		} catch (Exception e) {

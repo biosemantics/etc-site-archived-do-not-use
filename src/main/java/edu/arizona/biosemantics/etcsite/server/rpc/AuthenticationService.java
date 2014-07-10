@@ -284,8 +284,8 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 			
 			//send the user an email. 
 			String expireTime = RESET_PASSWORD_HOURS_BEFORE_EXPIRE + (RESET_PASSWORD_HOURS_BEFORE_EXPIRE == 1 ? " hour" : " hours");
-			String bodyText = EmailManager.PASSWORD_RESET_BODY.replace("<openidproviderid>", openIdProviderId).replace("<code>", authenticationCode).replace("<expire>", expireTime);
-			EmailManager.getInstance().sendEmail(email, EmailManager.PASSWORD_RESET_SUBJECT, bodyText);
+			String bodyText = Configuration.passwordResetBody.replace("<openidproviderid>", openIdProviderId).replace("<code>", authenticationCode).replace("<expire>", expireTime);
+			EmailManager.getInstance().sendEmail(email, Configuration.passwordResetSubject, bodyText);
 			
 			return new RPCResult<PasswordResetResult>(true, new PasswordResetResult(true, PasswordResetResult.EMAIL_SENT_MESSAGE.replace("<email>", email)));
 				

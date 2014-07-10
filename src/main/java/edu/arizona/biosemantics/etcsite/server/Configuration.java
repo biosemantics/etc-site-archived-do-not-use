@@ -45,6 +45,16 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 	public static String emailAddress;
 	public static String emailPassword;
 	
+	/** Predefined Email text **/
+	public static String passwordResetSubject;
+	public static String passwordResetBody;
+	public static String finishedSemanticMarkupLearnSubject;
+	public static String finishedSemanticMarkupLearnBody;
+	public static String finishedSemanticMarkupParseSubject;
+	public static String finishedSemanticMarkupParseBody;
+	public static String finishedMatrixgenerationGenerateSubject;
+	public static String finishedMatrixgenerationGenerateBody;
+	
 	/** Sign in with Google **/
 	public static String googleRedirectURI;
 	public static String googleClientId;
@@ -85,6 +95,15 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			emailSMTPServer = properties.getProperty("email_smtp_server");
 			emailAddress = properties.getProperty("email_address");
 			emailPassword = properties.getProperty("email_password");
+			
+			passwordResetSubject = properties.getProperty("password_reset_subject");
+			passwordResetBody = properties.getProperty("password_reset_body");
+			finishedSemanticMarkupLearnSubject = properties.getProperty("finished_semantic_markup_learn_subject");
+			finishedSemanticMarkupLearnBody = properties.getProperty("finished_semantic_markup_learn_body");
+			finishedSemanticMarkupParseSubject = properties.getProperty("finished_semantic_markup_parse_subject");
+			finishedSemanticMarkupParseBody = properties.getProperty("finished_semantic_markup_parse_body");
+			finishedMatrixgenerationGenerateSubject = properties.getProperty("finished_martrix_generation_genreate_subject"); 
+			finishedMatrixgenerationGenerateBody = properties.getProperty("finished_matrix_generation_generate_body");
 			
 			googleRedirectURI = properties.getProperty("google_redirect_URI");
 			googleClientId = properties.getProperty("google_client_id");
