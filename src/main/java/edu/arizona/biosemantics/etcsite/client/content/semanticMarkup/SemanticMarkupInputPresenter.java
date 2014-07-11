@@ -58,6 +58,7 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 	@Override
 	public IsWidget getView() {
 		view.resetFields();
+		inputFile = null;
 		return view;
 	}
 
