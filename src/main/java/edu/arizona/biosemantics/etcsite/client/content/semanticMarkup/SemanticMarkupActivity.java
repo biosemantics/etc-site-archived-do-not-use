@@ -94,35 +94,35 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 									panel.setWidget(inputPresenter.getView());
 									break;
 								case OUTPUT:
-									outputPresenter.setTask(task);
+									outputPresenter.setTask(result);
 									panel.setWidget(outputPresenter.getView());
 									break;
 								case PREPROCESS_TEXT:
-									preprocessPresenter.setTask(task);
+									preprocessPresenter.setTask(result);
 									panel.setWidget(preprocessPresenter.getView());
 									break;
 								case LEARN_TERMS:
-									learnPresenter.setTask(task);
+									learnPresenter.setTask(result);
 									panel.setWidget(learnPresenter.getView());
 									break;
 								case REVIEW_TERMS:
-									reviewPresenter.setTask(task);
+									reviewPresenter.setTask(result);
 									panel.setWidget(reviewPresenter.getView());
 									break;
 								/*case TO_ONTOLOGIES:
-									toOntologyPresenter.setTask(task);
+									toOntologyPresenter.setTask(result);
 									panel.setWidget(toOntologyPresenter.getView());
 									break;
 								case HIERARCHY:
-									hierarchyPresenter.setTask(task);
+									hierarchyPresenter.setTask(result);
 									panel.setWidget(hierarchyPresenter.getView());
 									break;
 								case ORDERS:
-									ordersPresenter.setTask(task);
+									ordersPresenter.setTask(result);
 									panel.setWidget(ordersPresenter.getView());
 									break;*/
 								case PARSE_TEXT:
-									parsePresenter.setTask(task);
+									parsePresenter.setTask(result);
 									panel.setWidget(parsePresenter.getView());
 									break;
 								default:

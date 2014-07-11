@@ -77,15 +77,15 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 									panel.setWidget(inputPresenter.getView());
 									break;
 								case OUTPUT:
-									outputPresenter.setTask(task);
+									outputPresenter.setTask(result);
 									panel.setWidget(outputPresenter.getView());
 									break;
 								case PROCESS:
-									processPresenter.setTask(task);
+									processPresenter.setTask(result);
 									panel.setWidget(processPresenter.getView());
 									break;
 								case REVIEW:
-									reviewPresenter.setTask(task);
+									reviewPresenter.setTask(result);
 									panel.setWidget(reviewPresenter.getView());
 									break;
 								default:
