@@ -808,14 +808,33 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		if(!filesResult.isSucceeded())
 			return new RPCResult<Boolean>(false, filesResult.getMessage());
 		List<String> files = filesResult.getData();
+		
+		//extra validation, since a valid taxon description is automatically also a valid marked up taxon description according to 
+		//the schema. Check for min. 1 statement
+		boolean statementFound = false;
 		for(String file : files) {
 			RPCResult<Boolean> validResult = fileFormatService.isValidMarkedupTaxonDescription(authenticationToken, filePath + File.separator + file);
+
 			if(!validResult.isSucceeded())
 				return new RPCResult<Boolean>(false, validResult.getMessage());
 			if(!validResult.getData())
 				return new RPCResult<Boolean>(true, false);
+			
+			SAXBuilder saxBuilder = new SAXBuilder();
+			Document document;
+			try {
+				document = saxBuilder.build(filePath + File.separator + file);
+				XPathFactory xPathFactory = XPathFactory.instance();
+				XPathExpression<Element> xPathExpression = xPathFactory.compile("/treatment/description[@type=\"morphology\"]/statement", Filters.element());
+				if(!xPathExpression.evaluate(document).isEmpty()) {
+					statementFound = true;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				return new RPCResult<Boolean>(false, "Couldn't read XML file");
+			}
 		}
-		return new RPCResult<Boolean>(true, true);
+		return new RPCResult<Boolean>(true, statementFound);
 	}
 
 }
