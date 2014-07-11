@@ -98,10 +98,66 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 	}
 
 	@Override
+	public void onDelete(final List<TaskData> list){
+		messagePresenter.show("Confirm Delete", "Are you sure you want to delete these " + list.size() + " tasks?", new AbstractConfirmListener() {
+			@Override
+			public void onConfirm() {
+				
+				boolean deleteShared = false; //see if the user is trying to delete any owned, shared tasks. 
+				for (final TaskData data: list) {
+					if(data.getTask().getUser().getId() == Authentication.getInstance().getUserId() && !data.getInvitees().isEmpty()) {
+						deleteShared = true;
+						break;
+					}
+				}
+				if (deleteShared){
+					messagePresenter.show("Delete Shared Task", "Some of these tasks have been shared with other users. If you delete them they will be removed for all users. Do you want to continue?", new AbstractConfirmListener() {
+						@Override
+						public void onConfirm() {
+							for (final TaskData data: list) {
+								final Task task = data.getTask();
+								
+								if(task.getUser().getId() != Authentication.getInstance().getUserId()){ //user is not the owner
+									taskService.removeMeFromShare(Authentication.getInstance().getToken(), task, new RPCCallback<Void>() {
+										@Override
+										public void onResult(Void result) {
+											inviteesForOwnedTasks.remove(task);
+											view.removeTaskData(data);
+										}
+									});
+								} else { //user is the owner, cancel the task
+									cancelTask(data);
+								}
+							}
+						}
+					});
+				} else { //no owned, shared tasks here. 
+					for (final TaskData data: list) {
+						final Task task = data.getTask();
+						
+						if(task.getUser().getId() != Authentication.getInstance().getUserId()){ //user is not the owner
+							taskService.removeMeFromShare(Authentication.getInstance().getToken(), task, new RPCCallback<Void>() {
+								@Override
+								public void onResult(Void result) {
+									inviteesForOwnedTasks.remove(task);
+									view.removeTaskData(data);
+								}
+							});
+						} else { //user is the owner, cancel the task
+							cancelTask(data);
+						}
+					}
+				}
+				view.resetSelection();
+			}
+		});
+	}
+	
+	@Override
 	public void onDelete(final TaskData taskData) {
 		final Task task = taskData.getTask();
 		
-		messagePresenter.show("Format Requirements", "Are you sure you want to delete task '" + task.getName() + "'?", new AbstractConfirmListener() {
+		messagePresenter.show("Confirm Delete", "Are you sure you want to delete task '" + task.getName() + "'?", new AbstractConfirmListener() {
 			@Override
 			public void onConfirm() {
 				if(task.getUser().getId() == Authentication.getInstance().getUserId()) {

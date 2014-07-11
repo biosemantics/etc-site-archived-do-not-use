@@ -10,6 +10,7 @@ public interface ITaskManagerView extends IsWidget {
 	public interface Presenter {
 		void onShare(TaskData taskData);
 		void onDelete(TaskData taskData);
+		void onDelete(List<TaskData> list);
 		void onRewind(TaskData taskData);
 		void onResume(TaskData taskData);
 		IsWidget getView();
@@ -22,7 +23,7 @@ public interface ITaskManagerView extends IsWidget {
 	void setTaskData(List<TaskData> taskData);
 	void removeTaskData(TaskData taskData);
 	void addTaskData(TaskData taskData);
-	TaskData getSelectedTaskData();
+	List<TaskData> getSelectedTaskData();
 	void resetSelection();
 	
 }

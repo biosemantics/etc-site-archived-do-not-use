@@ -28,14 +28,15 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.OrderedMultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SelectionModel;
-import com.google.gwt.view.client.SingleSelectionModel;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.shared.db.ShortUser;
+import edu.arizona.biosemantics.etcsite.shared.db.Task;
 
 public class TaskManagerView extends Composite implements ITaskManagerView, Handler {
 
@@ -66,7 +67,7 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 			return item == null ? null : item.getTask().getId();
 		}
 	};
-	private SingleSelectionModel<TaskData> selectionModel;
+	private OrderedMultiSelectionModel<TaskData> selectionModel;
 
 	public TaskManagerView() {
 		dataProvider = new ListDataProvider<TaskData>();
@@ -89,7 +90,7 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 		taskTable.setAutoFooterRefreshDisabled(true);
 	    ListHandler<TaskData> sortHandler = new ListHandler<TaskData>(dataProvider.getList());
 	    taskTable.addColumnSortHandler(sortHandler);
-	    selectionModel = new SingleSelectionModel<TaskData>(taskKeyProvider);
+	    selectionModel = new OrderedMultiSelectionModel<TaskData>(taskKeyProvider);
 	    taskTable.setSelectionModel(selectionModel);//, DefaultSelectionEventManager.<Task> createCheckboxManager());
 	    initTableColumns(taskTable, selectionModel, sortHandler);
 		selectionModel.addSelectionChangeHandler(this);
@@ -330,7 +331,7 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 			Collections.replaceAll(tasks, foundTask, taskData);
 			selectionModel.setSelected(taskData, select);
 		}
-		if(taskData.equals(this.selectionModel.getSelectedObject())) {
+		if (this.selectionModel.getSelectedSet().contains(taskData)) {
 			this.onSelectionChange(null);
 		}
 	}
@@ -354,29 +355,49 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 	}
 
 	@Override
-	public TaskData getSelectedTaskData() {
-		return selectionModel.getSelectedObject();
+	public List<TaskData> getSelectedTaskData() {
+		return selectionModel.getSelectedList();
 	}
 	
 	@UiHandler("resumeButton")
 	public void onResume(ClickEvent e) {
-		presenter.onResume(this.getSelectedTaskData());
+		List<TaskData> list = this.getSelectedTaskData();
+		if (list.size() == 1){
+			presenter.onResume(list.get(0));
+		} else {
+			//multiple selections. Show an error message or do nothing. 
+		}
 	}
 	
 	
 	@UiHandler("rewindButton")
 	public void onRewind(ClickEvent e) {
-		presenter.onRewind(this.getSelectedTaskData());
+		List<TaskData> list = this.getSelectedTaskData();
+		if (list.size() == 1){
+			presenter.onRewind(list.get(0));
+		} else {
+			//multiple selections. Show an error message or do nothing. 
+		}
 	}
 	
 	@UiHandler("deleteButton")
 	public void onDelete(ClickEvent e) {
-		presenter.onDelete(this.getSelectedTaskData());
+		List<TaskData> list = this.getSelectedTaskData();
+		if (list.size() == 1){
+			presenter.onDelete(list.get(0));
+		} else if (list.size() != 0){
+			presenter.onDelete(list);
+		}
 	}
 	
 	@UiHandler("shareButton")
 	public void onShare(ClickEvent e) {
-		presenter.onShare(this.getSelectedTaskData());
+		List<TaskData> list = this.getSelectedTaskData();
+		if (list.size() == 1){
+			presenter.onShare(list.get(0));
+		} else {
+			//multiple selections. Show an error message or do nothing.
+		}
 	}
 
 	@Override
@@ -394,32 +415,42 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 		}
 		
 		if(this.getSelectedTaskData() != null) {
-			if(this.getSelectedTaskData().getTask().getUser().getId() != Authentication.getInstance().getUserId()) {
-				this.shareButton.setEnabled(false);
-			} else {
-				this.shareButton.setEnabled(true);
-			}
-			if(this.getSelectedTaskData().getTask().isComplete()) {
-				switch(this.getSelectedTaskData().getTask().getTaskType().getTaskTypeEnum()) {
-				case MATRIX_GENERATION:
-					this.rewindButton.setEnabled(true);
-					break;
-				case SEMANTIC_MARKUP:
-					this.rewindButton.setEnabled(true);
-					break;
-				case TAXONOMY_COMPARISON:
-					break;
-				case TREE_GENERATION:
-					break;
-				case VISUALIZATION:
-					break;
-				default:
-					break;
+			List<TaskData> list = this.getSelectedTaskData();
+			if (list.size() == 1){
+				Task task = this.getSelectedTaskData().get(0).getTask();
+				if(task.getUser().getId() != Authentication.getInstance().getUserId()) {
+					this.shareButton.setEnabled(false);
+				} else {
+					this.shareButton.setEnabled(true);
 				}
-				this.resumeButton.setEnabled(false);
+				if(task.isComplete()) {
+					switch(task.getTaskType().getTaskTypeEnum()) {
+					case MATRIX_GENERATION:
+						this.rewindButton.setEnabled(true);
+						break;
+					case SEMANTIC_MARKUP:
+						this.rewindButton.setEnabled(true);
+						break;
+					case TAXONOMY_COMPARISON:
+						break;
+					case TREE_GENERATION:
+						break;
+					case VISUALIZATION:
+						break;
+					default:
+						break;
+					}
+					this.resumeButton.setEnabled(false);
+				} else {
+					this.rewindButton.setEnabled(false);
+					this.resumeButton.setEnabled(task.isResumable());
+				}
 			} else {
+				//multiple selections. Only allow delete. 
+				this.resumeButton.setEnabled(false);
 				this.rewindButton.setEnabled(false);
-				this.resumeButton.setEnabled(this.getSelectedTaskData().getTask().isResumable());
+				this.deleteButton.setEnabled(true);
+				this.shareButton.setEnabled(false);
 			}
 		}
 	}
