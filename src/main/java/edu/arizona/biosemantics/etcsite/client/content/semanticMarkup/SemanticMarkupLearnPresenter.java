@@ -32,8 +32,6 @@ public class SemanticMarkupLearnPresenter implements ISemanticMarkupLearnView.Pr
 		this.semanticMarkupService = semanticMarkupService;
 		this.placeController = placeController;
 		view.setNonResumable();
-		
-		view.setNonResumable();
 		tasksBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEventHandler() {	
 			@Override
 			public void onResumableTaskEvent(ResumableTasksEvent resumableTasksEvent) {
@@ -64,6 +62,7 @@ public class SemanticMarkupLearnPresenter implements ISemanticMarkupLearnView.Pr
 	@Override
 	public void setTask(Task task) {
 		this.task = task;
+		view.setNonResumable();
 		semanticMarkupService.learn(Authentication.getInstance().getToken(), 
 			task, new RPCCallback<LearnInvocation>() {
 			@Override

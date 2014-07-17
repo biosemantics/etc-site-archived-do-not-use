@@ -37,8 +37,9 @@ public class QueryOTO extends AbstractOTOAccessObject {
 	public String getUUID(String term, String category, String glossaryType,
 			String definition) {
 		OTOClient otoClient = createOTOClient();
-		return otoClient.insertAndGetGlossaryDictionaryEntry(glossaryType,
-				term, category, definition).getTermID();
+		//return otoClient.insertAndGetGlossaryDictionaryEntry(glossaryType,
+		//		term, category, definition).getTermID();
+		return null;
 	}
 
 	/**
@@ -52,8 +53,8 @@ public class QueryOTO extends AbstractOTOAccessObject {
 	public void insertTripleToOTO(String term, String category,
 			String glossaryType, String definition) {
 		OTOClient otoClient = createOTOClient();
-		otoClient.insertAndGetGlossaryDictionaryEntry(glossaryType, term,
-				category, definition).getTermID();
+		//otoClient.insertAndGetGlossaryDictionaryEntry(glossaryType, term,
+		//		category, definition).getTermID();
 	}
 
 	/**
@@ -67,11 +68,11 @@ public class QueryOTO extends AbstractOTOAccessObject {
 	public boolean isTripleExistInOTO(String term, String category,
 			String glossaryType) {
 		OTOClient otoClient = createOTOClient();
-		GlossaryDictionaryEntry entry = otoClient.getGlossaryDictionaryEntry(
+		/*GlossaryDictionaryEntry entry = otoClient.getGlossaryDictionaryEntry(
 				glossaryType, term, category);
 		if (entry == null) {
 			return false;
-		}
+		}*/
 
 		return true;
 	}
@@ -90,14 +91,14 @@ public class QueryOTO extends AbstractOTOAccessObject {
 
 		OTOClient otoClient = createOTOClient();
 
-		List<GlossaryDictionaryEntry> entryList = otoClient
+		/*List<GlossaryDictionaryEntry> entryList = otoClient
 				.getGlossaryDictionaryEntries(glossaryType, term);
 		for (GlossaryDictionaryEntry entry : entryList) {
 			TermGlossary glossary = new TermGlossary("OTO ID: "
 					+ entry.getTermID(), entry.getCategory(),
 					entry.getDefinition());
 			glossaries.add(glossary);
-		}
+		}*/
 
 		return glossaries;
 	}

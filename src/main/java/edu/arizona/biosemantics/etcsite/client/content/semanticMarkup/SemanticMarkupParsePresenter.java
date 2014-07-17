@@ -70,6 +70,7 @@ public class SemanticMarkupParsePresenter implements ISemanticMarkupParseView.Pr
 	@Override
 	public void setTask(Task task) {
 		this.task = task;
+		view.setNonResumable();
 		semanticMarkupService.parse(Authentication.getInstance().getToken(), 
 			task, new RPCCallback<ParseInvocation>() {
 			@Override
