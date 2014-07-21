@@ -21,7 +21,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 @Aspect 
 public class Authentication {
 
-	private IAuthenticationService authenticationService = new AuthenticationService();
+	private IAuthenticationService authenticationService = new AuthenticationService();	
 	
 	//@Around("execution(RPCResult edu.arizona.biosemantics.etcsite.server.rpc..*(..)) && args(authenticationToken, ..) && " +
 	//		"!within(edu.arizona.biosemantics.etcsite.server.rpc.AuthenticationService) && !within(edu.arizona.biosemantics.etcsite.server.rpc.Authentication)")
@@ -33,7 +33,6 @@ public class Authentication {
 		if(authenticationToken == null) 
 			return actualResult(proceedingJoinPoint);
 		
-		System.out.println(proceedingJoinPoint.getSignature().toLongString());
 		RPCResult result = new RPCResult(false, "Internal Server Error");
 		RPCResult<AuthenticationResult> authenticationResult = authenticationService.isValidSession(authenticationToken);
 		if(authenticationResult.isSucceeded()) { 
