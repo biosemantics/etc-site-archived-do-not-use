@@ -20,7 +20,6 @@ public class UsersPresenter implements IUsersView.Presenter {
 		this.view = view;
 		view.setPresenter(this);
 		this.userService = userService;
-		this.refresh();
 	}
 	
 	@Override

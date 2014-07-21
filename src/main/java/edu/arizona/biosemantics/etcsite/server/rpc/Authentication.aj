@@ -26,7 +26,8 @@ public class Authentication {
 	//@Around("execution(RPCResult edu.arizona.biosemantics.etcsite.server.rpc..*(..)) && args(authenticationToken, ..) && " +
 	//		"!within(edu.arizona.biosemantics.etcsite.server.rpc.AuthenticationService) && !within(edu.arizona.biosemantics.etcsite.server.rpc.Authentication)")
 	@Around("execution(RPCResult edu.arizona.biosemantics.etcsite.server.rpc..*(..)) && " +
-			"!within(edu.arizona.biosemantics.etcsite.server.rpc.AuthenticationService) && !within(edu.arizona.biosemantics.etcsite.server.rpc.Authentication)")
+			"!within(edu.arizona.biosemantics.etcsite.server.rpc.AuthenticationService) && !within(edu.arizona.biosemantics.etcsite.server.rpc.Authentication)" +
+			"&& !within(edu.arizona.biosemantics.etcsite.server.rpc.SetupService)")
 	public RPCResult verifyAuthentication(ProceedingJoinPoint proceedingJoinPoint) {
 		//matching args(.., authenticationToken, ..) is not possible currently, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=160509
 		AuthenticationToken authenticationToken = getAuthenticationToken(proceedingJoinPoint);
