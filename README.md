@@ -8,11 +8,13 @@ Contribution
 If you want to contribute, the source is built using Maven and Google Web Toolkit.
 In Eclipse you can therefore use:
 * m2e - Maven Integration for Eclipse (e.g. for Juno version: http://download.eclipse.org/releases/juno)
+* AspectJ Development Tools (http://download.eclipse.org/tools/ajdt/42/update)
+* Maven Integration for AJDT (http://dist.springsource.org/release/AJDT/configurator/)
 * Google Plugin for Eclipse (https://developers.google.com/eclipse/)
 
 and 
 
-1. configure your Eclipse project to be a Maven Project and to use Google Web Toolkit (2.6)
+1. configure your Eclipse project to be a Maven project, a AspectJ project and to use Google Web Toolkit (2.6)
 2. run `mvn package` to set up `/src/main/webapp/` files for GWT dev mode. Run again for changes in the directory
 3. Import `setupDB.sql` dump to a database dedicated for the project
 6. Create `config.properties` at `/src/main/resources` according to `config.properties.template` and your environment
