@@ -3,11 +3,13 @@ package edu.arizona.biosemantics.etcsite.client.common;
 import com.google.gwt.user.client.Cookies;
 
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.rpc.Setup;
 
 public class Authentication {
 
 	private static Authentication instance;
 	private String externalAccessToken;
+	private Setup setup = ServerSetup.getInstance().getSetup();
 	
 	public static Authentication getInstance(){
 		if(instance == null)
@@ -16,7 +18,7 @@ public class Authentication {
 	}
 	
 	public void setSessionID(String sessionID) {
-	    Cookies.setCookie(CookieVariable.sessionID, sessionID);
+		Cookies.setCookie(CookieVariable.sessionID, sessionID, null, setup.getDeploymentUrl(), "/", false);
 	}
 	
 	public String getSessionId() {
@@ -35,12 +37,12 @@ public class Authentication {
 		return Integer.parseInt(userId);
 	}
 
-	public void setUserId(int arg) {
-	    Cookies.setCookie(CookieVariable.userId, String.valueOf(arg));
+	public void setUserId(int userId) {
+		Cookies.setCookie(CookieVariable.userId, String.valueOf(userId), null, setup.getDeploymentUrl(), "/", false);
 	}
 	
 	public void setEmail(String email) {
-	    Cookies.setCookie(CookieVariable.email, email);
+		Cookies.setCookie(CookieVariable.email, email, null, setup.getDeploymentUrl(), "/", false);
 	}
 	
 	public String getEmail() {
@@ -52,7 +54,7 @@ public class Authentication {
 	}
 	
 	public void setFirstName(String firstName) {
-	    Cookies.setCookie(CookieVariable.firstName, firstName);
+		Cookies.setCookie(CookieVariable.firstName, firstName, null, setup.getDeploymentUrl(), "/", false);
 	}
 	
 	public String getFirstName() {
@@ -64,7 +66,7 @@ public class Authentication {
 	}
 	
 	public void setLastName(String lastName) {
-	    Cookies.setCookie(CookieVariable.lastName, lastName);
+		Cookies.setCookie(CookieVariable.lastName, lastName, null, setup.getDeploymentUrl(), "/", false);
 	}
 
 	public String getLastName() {
@@ -76,7 +78,7 @@ public class Authentication {
 	}
 	
 	public void setAffiliation(String affiliation) {
-	    Cookies.setCookie(CookieVariable.affiliation, affiliation);
+		Cookies.setCookie(CookieVariable.affiliation, affiliation, null, setup.getDeploymentUrl(), "/", false);
 	}
 	
 	public String getAffiliation() {
@@ -96,12 +98,12 @@ public class Authentication {
 	}
 	
 	public void destroy() {
-		Cookies.removeCookie(CookieVariable.sessionID, "/");
-		Cookies.removeCookie(CookieVariable.userId, "/");
-		Cookies.removeCookie(CookieVariable.email, "/");
-		Cookies.removeCookie(CookieVariable.firstName, "/");
-		Cookies.removeCookie(CookieVariable.lastName, "/");
-		Cookies.removeCookie(CookieVariable.affiliation, "/");
+		Cookies.removeCookie(CookieVariable.sessionID, setup.getDeploymentUrl());
+		Cookies.removeCookie(CookieVariable.userId, setup.getDeploymentUrl());
+		Cookies.removeCookie(CookieVariable.email, setup.getDeploymentUrl());
+		Cookies.removeCookie(CookieVariable.firstName, setup.getDeploymentUrl());
+		Cookies.removeCookie(CookieVariable.lastName, setup.getDeploymentUrl());
+		Cookies.removeCookie(CookieVariable.affiliation, setup.getDeploymentUrl());
 		
 		externalAccessToken = null;
 	}

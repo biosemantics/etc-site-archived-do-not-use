@@ -8,6 +8,8 @@ import org.apache.log4j.Logger;
 
 public class Configuration extends edu.arizona.biosemantics.etcsite.client.common.Configuration {
 
+	public static String deploymentUrl;
+	
 	/** Database **/
 	public static String databaseName;
 	public static String databaseUser;
@@ -66,6 +68,8 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
 			Properties properties = new Properties(); 
 			properties.load(loader.getResourceAsStream("config.properties"));
+			
+			deploymentUrl = properties.getProperty("deploymentUrl");
 			
 			databaseName = properties.getProperty("databaseName");
 			databaseUser = properties.getProperty("databaseUser");
