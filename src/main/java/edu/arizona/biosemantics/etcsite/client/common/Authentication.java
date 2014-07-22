@@ -18,7 +18,7 @@ public class Authentication {
 	}
 	
 	public void setSessionID(String sessionID) {
-		Cookies.setCookie(CookieVariable.sessionID, sessionID, null, setup.getDeploymentUrl(), "/", false);
+		Cookies.setCookie(CookieVariable.sessionID, sessionID, null, null, "/", false);
 	}
 	
 	public String getSessionId() {
@@ -38,11 +38,11 @@ public class Authentication {
 	}
 
 	public void setUserId(int userId) {
-		Cookies.setCookie(CookieVariable.userId, String.valueOf(userId), null, setup.getDeploymentUrl(), "/", false);
+		Cookies.setCookie(CookieVariable.userId, String.valueOf(userId), null, null, "/", false);
 	}
 	
 	public void setEmail(String email) {
-		Cookies.setCookie(CookieVariable.email, email, null, setup.getDeploymentUrl(), "/", false);
+		Cookies.setCookie(CookieVariable.email, email, null, null, "/", false);
 	}
 	
 	public String getEmail() {
@@ -54,7 +54,7 @@ public class Authentication {
 	}
 	
 	public void setFirstName(String firstName) {
-		Cookies.setCookie(CookieVariable.firstName, firstName, null, setup.getDeploymentUrl(), "/", false);
+		Cookies.setCookie(CookieVariable.firstName, firstName, null, null, "/", false);
 	}
 	
 	public String getFirstName() {
@@ -66,7 +66,7 @@ public class Authentication {
 	}
 	
 	public void setLastName(String lastName) {
-		Cookies.setCookie(CookieVariable.lastName, lastName, null, setup.getDeploymentUrl(), "/", false);
+		Cookies.setCookie(CookieVariable.lastName, lastName, null, null, "/", false);
 	}
 
 	public String getLastName() {
@@ -78,7 +78,7 @@ public class Authentication {
 	}
 	
 	public void setAffiliation(String affiliation) {
-		Cookies.setCookie(CookieVariable.affiliation, affiliation, null, setup.getDeploymentUrl(), "/", false);
+		Cookies.setCookie(CookieVariable.affiliation, affiliation, null, null, "/", false);
 	}
 	
 	public String getAffiliation() {
@@ -98,12 +98,12 @@ public class Authentication {
 	}
 	
 	public void destroy() {
-		Cookies.removeCookie(CookieVariable.sessionID, setup.getDeploymentUrl());
-		Cookies.removeCookie(CookieVariable.userId, setup.getDeploymentUrl());
-		Cookies.removeCookie(CookieVariable.email, setup.getDeploymentUrl());
-		Cookies.removeCookie(CookieVariable.firstName, setup.getDeploymentUrl());
-		Cookies.removeCookie(CookieVariable.lastName, setup.getDeploymentUrl());
-		Cookies.removeCookie(CookieVariable.affiliation, setup.getDeploymentUrl());
+		Cookies.removeCookie(CookieVariable.sessionID, "/");
+		Cookies.removeCookie(CookieVariable.userId, "/");
+		Cookies.removeCookie(CookieVariable.email, "/");
+		Cookies.removeCookie(CookieVariable.firstName, "/");
+		Cookies.removeCookie(CookieVariable.lastName, "/");
+		Cookies.removeCookie(CookieVariable.affiliation, "/");
 		
 		externalAccessToken = null;
 	}
