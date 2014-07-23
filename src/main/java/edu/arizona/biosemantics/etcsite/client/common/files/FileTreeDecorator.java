@@ -37,10 +37,10 @@ public class FileTreeDecorator {
 		FileInfo fileInfo = fileTree.getValue();
 		String filePath = fileInfo.getFilePath();
 		
-		FileImageLabelTreeItem root = new FileTreeItem(fileInfo.getName(), fileInfo);		
+		FileImageLabelTreeItem root = new FileTreeItem(fileInfo.getName(true), fileInfo);		
 		if(fileTree.getValue().getFileType().equals(FileTypeEnum.DIRECTORY)) {
 			String contentString = getContentString(fileTree);
-			root = new DirectoryTreeItem(fileInfo.getName() + " " + contentString, fileInfo);
+			root = new DirectoryTreeItem(fileInfo.getName(true) + " " + contentString, fileInfo);
 		} 
 		
 		//if(fileDragDropHandler != null) {
@@ -108,12 +108,12 @@ public class FileTreeDecorator {
 		if(!filter(fileTree.getValue().getFileType(), fileFilter)) {
 			FileInfo fileInfo = fileTree.getValue();
 			String filePath = fileInfo.getFilePath();
-			FileImageLabelTreeItem treeItem = new FileTreeItem(fileInfo.getName(), fileInfo);		
+			FileImageLabelTreeItem treeItem = new FileTreeItem(fileInfo.getName(true), fileInfo);		
 			
 			if(fileTree.getValue().getFileType().equals(FileTypeEnum.DIRECTORY)) {
 				//String name = fileTree.getValue() + " [" + getNumberOfContainers(fileTree.getChildren()) + " folder, " + getNumberOfFiles(fileTree.getChildren()) + " files]";
 				String contentString = getContentString(fileTree);
-				treeItem = new DirectoryTreeItem(fileInfo.getName() + " " + contentString, fileInfo);
+				treeItem = new DirectoryTreeItem(fileInfo.getName(true) + " " + contentString, fileInfo);
 				
 				if(level > Configuration.fileManagerMaxDepth)
 					return;
@@ -128,7 +128,7 @@ public class FileTreeDecorator {
 				fileComposite.addDomHandler(new DoubleClickHandler() {
 					@Override
 					public void onDoubleClick(DoubleClickEvent event) {
-						fileContentPresenter.show(fileComposite.getFileInfo().getFilePath()); 
+						fileContentPresenter.show(fileComposite.getFileInfo()); 
 					}
 				}, DoubleClickEvent.getType());
 			}

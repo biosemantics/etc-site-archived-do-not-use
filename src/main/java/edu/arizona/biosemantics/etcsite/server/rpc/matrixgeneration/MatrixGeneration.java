@@ -14,9 +14,11 @@ public class MatrixGeneration implements Callable<Boolean> {
 	
 	@Override
 	public Boolean call() throws Exception {
-		String[] args = { inputDir, outputFile };
+		//String[] args = { inputDir, outputFile };
 		try {
-			edu.arizona.biosemantics.matrixgeneration.MatrixGeneration.main(args); 
+			edu.arizona.biosemantics.matrixgeneration.Main main = new edu.arizona.biosemantics.matrixgeneration.Main(inputDir, outputFile);
+			main.run();
+			//edu.arizona.biosemantics.matrixgeneration.MatrixGeneration.main(args); 
 		} catch(Exception e) {
 			e.printStackTrace();
 			return false;

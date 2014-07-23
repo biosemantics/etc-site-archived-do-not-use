@@ -178,17 +178,18 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
 		//don't allow rename of root node
 		if(selection != null && !selection.getFileInfo().isSystemFile()) {
-			textInputPresenter.show("Rename", "New name", selection.getFileInfo().getName(), new ITextInputListener() {
+			textInputPresenter.show("Rename", "New name", selection.getFileInfo().getName(false), new ITextInputListener() {
 				@Override
 				public void onConfirm(final String newFileName) {
 					final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
 					if(selection != null && !selection.getFileInfo().isSystemFile()) {
-						fileService.renameFile(Authentication.getInstance().getToken(), selection.getFileInfo().getFilePath(), newFileName, 
+						fileService.renameFile(Authentication.getInstance().getToken(), selection.getFileInfo().getFilePath(), 
+								newFileName + "." + selection.getFileInfo().getExtension(), 
 								new RPCCallback<Void>() {
 							@Override
 							public void onResult(Void result) {
 								fileTreePresenter.refresh(fileFilter);
-								selection.getFileInfo().setName(newFileName);
+								selection.getFileInfo().setName(newFileName, true);
 							}
 						});
 					}

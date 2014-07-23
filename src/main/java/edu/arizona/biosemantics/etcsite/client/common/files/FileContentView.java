@@ -78,7 +78,9 @@ public class FileContentView extends Composite implements IFileContentView {
 
 	@Override
 	public void setEditable(boolean enabled){
+		this.editButton.setEnabled(!enabled);
 		this.textArea.setEnabled(enabled);
+		this.saveButton.setEnabled(enabled);
 	}
 	@Override
 	public void setText(String text) {

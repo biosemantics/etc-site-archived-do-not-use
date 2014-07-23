@@ -25,11 +25,27 @@ public class FileInfo implements Serializable {
 		this.systemFile = systemFile;
 		this.allowsNewChildren = allowsNewChildren;
 	}
-	public String getName() {
-		return name;
+	
+	public String getName(boolean includeExtension) {
+		if(includeExtension)
+			return name;
+		else
+			return name.substring(0, name.lastIndexOf("."));
 	}
+	
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String getExtension() {
+		return name.substring(name.lastIndexOf("."), name.length());
+	}
+	
+	public void setName(String name, boolean maintainExtension) {
+		if(maintainExtension)
+			this.setName(name + "." + getExtension());
+		else
+			this.setName(name);
 	}
 	public FileTypeEnum getFileType() {
 		return fileType;
@@ -60,6 +76,16 @@ public class FileInfo implements Serializable {
 
 	public boolean isSystemFile() {
 		return systemFile;
+	}
+	
+	public boolean isEditable() {
+		boolean result = true;
+		//result &= !isSystemFile();
+		result &= name.endsWith(".xml");
+		//result &= !name.endsWith(".mx");
+		//result &= !name.endsWith(".nxs");
+		//result &= !name.endsWith(".nex");
+		return result;
 	}
 
 	public boolean isAllowsNewChildren() {

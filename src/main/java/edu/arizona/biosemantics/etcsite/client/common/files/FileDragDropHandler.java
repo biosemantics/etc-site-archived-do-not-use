@@ -43,7 +43,7 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 			// Required: set data for the event.
 			FileImageLabel fileImageLabel = (FileImageLabel)source;
 			event.setData("sourcePath", fileImageLabel.getFileInfo().getFilePath());
-			event.setData("sourceName", fileImageLabel.getFileInfo().getName());
+			event.setData("sourceName", fileImageLabel.getFileInfo().getName(true));
 			event.setData("fileType", fileImageLabel.getFileInfo().getFileType().toString());
 		}
 	}

@@ -17,6 +17,7 @@ import com.google.inject.Inject;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.IMessageView;
 import edu.arizona.biosemantics.etcsite.client.common.LoadingPopup;
+import edu.arizona.biosemantics.etcsite.shared.file.FileInfo;
 import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatServiceAsync;
@@ -30,7 +31,7 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 	private IFileFormatServiceAsync fileFormatService;
 	private PopupPanel dialogBox;
 	private LoadingPopup loadingPopup = new LoadingPopup();
-	private String currentPath;
+	private FileInfo currentFileInfo;
 	private FileTypeEnum fileType; 
 	private IMessageView.Presenter messagePresenter;
 
@@ -46,14 +47,14 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 		this.messagePresenter = messagePresenter;
 	}
 
-	public void show(String path) {
-		this.currentPath = path;
+	public void show(FileInfo fileInfo) {
+		this.currentFileInfo = fileInfo;
 		//this.dialogBox.setText("File Content of "+path);
 		this.dialogBox.center();
 		loadingPopup.start();
 		fileType = FileTypeEnum.getEnum(view.getFormat());
 		fileAccessService.getFileContent(Authentication.getInstance().getToken(), 
-				currentPath, fileType, new FileContentCallback(true, loadingPopup));
+				currentFileInfo.getFilePath(), fileType, new FileContentCallback(true, loadingPopup));
 	}
 	
 	@Override
@@ -62,7 +63,7 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 		fileType = FileTypeEnum.getEnum(format);
 		fileAccessService.getFileContent(
 				Authentication.getInstance().getToken(), 
-				currentPath, fileType, new FileContentCallback(false, loadingPopup));
+				currentFileInfo.getFilePath(), fileType, new FileContentCallback(false, loadingPopup));
 	}
 	
 	@Override
@@ -79,7 +80,7 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 					messagePresenter.showMessage("Not saved", "Content is no longer valid against the <a href='https://raw.githubusercontent.com/biosemantics/schemas/master/consolidation_01272014/semanticMarkupInput.xsd' target='_blank'>input schema</a>. "
 							+ "correct the problems and try to save again.");
 				}else{
-					fileAccessService.setFileContent(Authentication.getInstance().getToken(), currentPath, view.getText(), new FileContentSaveCallback());
+					fileAccessService.setFileContent(Authentication.getInstance().getToken(), currentFileInfo.getFilePath(), view.getText(), new FileContentSaveCallback());
 				}		
 			}
 		});
@@ -87,7 +88,11 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 	
 	@Override
 	public void onEdit(){
-		this.view.setEditable(true);
+		if(currentFileInfo.isEditable()) {
+			this.view.setEditable(true);
+		} else {
+			messagePresenter.showMessage("File not editable", "This file type can't be edited at this time.");
+		}
 	}
 	
 	private class FileContentSaveCallback extends RPCCallback<Void>{

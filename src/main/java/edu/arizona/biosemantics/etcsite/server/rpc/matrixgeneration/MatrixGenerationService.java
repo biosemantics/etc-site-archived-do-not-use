@@ -73,7 +73,6 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.IFileService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.TaskStageEnum;
-import edu.arizona.biosemantics.matrixgeneration.taxonomy.TaxonRank;
 import edu.arizona.biosemantics.matrixreview.shared.model.Character;
 import edu.arizona.biosemantics.matrixreview.shared.model.Organ;
 import edu.arizona.biosemantics.matrixreview.shared.model.Taxon;
