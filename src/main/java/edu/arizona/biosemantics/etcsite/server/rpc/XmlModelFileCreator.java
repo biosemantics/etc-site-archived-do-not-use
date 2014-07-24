@@ -18,6 +18,8 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.output.XMLOutputter;
 
+import edu.arizona.biosemantics.etcsite.server.XmlNamespaceManager;
+import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.BracketChecker;
 import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.TaxonIdentificationEntry;
 import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModelFile;
@@ -43,6 +45,7 @@ public class XmlModelFileCreator {
 	//		"section", "subsection", "series", "species", "subspecies", "variety", "forma", "unranked" };
 	protected ArrayList<String> nameTypes = new ArrayList<String> ();
 	protected Set<String> allLabels = new HashSet<String>();
+	private XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager();
 	
 	public XmlModelFileCreator() {
 		this.allLabels.addAll(Arrays.asList(fields));
@@ -356,6 +359,8 @@ public class XmlModelFileCreator {
 		Element element = new Element("bad_element");
 		taxonIdentification.addContent(element);
 		}*/
+		xmlNamespaceManager.setXmlSchema(doc, FileTypeEnum.TAXON_DESCRIPTION);
+		
 		return doc;
 	}
 

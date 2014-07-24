@@ -37,7 +37,6 @@ public class XmlNamespaceManager {
 		
 	public FileTypeEnum getFileType(File file) throws JDOMException, IOException { 
 		String schema = this.getSchema(file);
-		System.out.println(schemaFileTypeMap.containsKey(schema));
 		return schemaFileTypeMap.get(schema);
 	}
 	
@@ -66,7 +65,7 @@ public class XmlNamespaceManager {
 		xmlOutputter.output(doc, new FileOutputStream(file));
 	}
 
-	private void setXmlSchema(Document doc, FileTypeEnum fileTypeEnum) {
+	public void setXmlSchema(Document doc, FileTypeEnum fileTypeEnum) {
 		String schemaUrl = getSchema(fileTypeEnum);
 		Element rootElement = doc.getRootElement();
 		rootElement.setNamespace(bioNamespace);
