@@ -5,7 +5,6 @@ import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkup
 public interface ICreateSemanticMarkupFilesDialogView {
 
 	public interface Presenter {
-		void hide();
 		void show(String destinationFilePath);
 		void onCancel();
 		void setCloseHandler(ICloseHandler closeHandler);
