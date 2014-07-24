@@ -13,6 +13,7 @@ import org.apache.commons.io.FileUtils;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
+import edu.arizona.biosemantics.etcsite.server.XmlNamespaceManager;
 import edu.arizona.biosemantics.etcsite.shared.db.AbstractTaskConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.db.FilesInUseDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.Share;
@@ -37,6 +38,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	private IFilePermissionService filePermissionService = new FilePermissionService();
 	private IFileFormatService fileFormatService = new FileFormatService();
 	private SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MM-dd-yyyy");
+	private	XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager();
 	
 	@Override
 	protected void doUnexpectedFailure(Throwable t) {
@@ -183,6 +185,16 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	private FileTypeEnum getFileType(AuthenticationToken authenticationToken, String filePath) {
 		File file = new File(filePath);
 		if(file.isFile()) {
+			if(file.getName().endsWith(".xml")) {
+				try {
+					return xmlNamespaceManager.getFileType(new File(filePath));
+				} catch(Exception e) {
+					e.printStackTrace();
+					return null;
+				}
+			} else if(file.getName().endsWith(".mx") || file.getName().endsWith(".nxs") || file.getName().endsWith(".nex") || file.getName().endsWith(".sdd")) {
+				return FileTypeEnum.MATRIX;
+			} 
 			/*RPCResult<Boolean> validationResult = fileFormatService.isValidMarkedupTaxonDescription(authenticationToken, filePath);
 			if(validationResult.isSucceeded() && validationResult.getData())
 				return FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION;
@@ -190,7 +202,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			if(validationResult.isSucceeded() && validationResult.getData())
 				return FileTypeEnum.TAXON_DESCRIPTION;
 			*/
-			return FileTypeEnum.PLAIN_TEXT;
+			//return FileTypeEnum.PLAIN_TEXT;
 			/*validationResult = fileFormatService.isValidMatrix(authenticationToken, filePath);
 			if(validationResult.isSucceeded() && validationResult.getData())
 				return FileTypeEnum.MATRIX;*/

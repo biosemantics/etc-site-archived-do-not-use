@@ -1,5 +1,6 @@
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
+import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
 import gwtupload.client.IUploader;
 import gwtupload.client.SingleUploader;
 //import gwtupload.client.MultiUploader;
@@ -14,6 +15,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -56,9 +58,15 @@ public class ManagableFileTreeView extends Composite implements IManagableFileTr
 	@UiField
 	Button createSemanticMarkupInputButton;
 	
+	@UiField(provided=true)
+	ListBox formatListBox;
+	
 	@Inject
 	public ManagableFileTreeView(IFileTreeView.Presenter fileTreePresenter) {
 		this.fileTreeView = fileTreePresenter.getView();
+		formatListBox = new ListBox();
+		formatListBox.addItem(FileTypeEnum.TAXON_DESCRIPTION.displayName());
+		formatListBox.addItem(FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION.displayName());
 		initWidget(uiBinder.createAndBindUi(this));
 		/*UIObject fileInput = (UIObject)uploader.getFileInput();
 		Element fileInputElement = fileInput.getElement();
@@ -124,6 +132,7 @@ public class ManagableFileTreeView extends Composite implements IManagableFileTr
 			this.uploader.getFileInput().getWidget().getElement().setAttribute("aria-hidden", "false");
 			this.addButton.getElement().setAttribute("aria-hidden", "false");
 		}
+		this.formatListBox.setEnabled(value);
 	}
 
 	@Override
@@ -134,5 +143,10 @@ public class ManagableFileTreeView extends Composite implements IManagableFileTr
 	@Override
 	public Button getAddButton() {
 		return this.addButton;
+	}
+
+	@Override
+	public String getFormat() {
+		return formatListBox.getItemText(formatListBox.getSelectedIndex());
 	}
 }

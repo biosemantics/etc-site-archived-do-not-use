@@ -1,6 +1,8 @@
 package edu.arizona.biosemantics.etcsite.server;
 
 import edu.arizona.biosemantics.etcsite.server.rpc.AuthenticationService;
+import edu.arizona.biosemantics.etcsite.shared.file.ContentValidatorProvider;
+import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.file.IContentValidator;
 import edu.arizona.biosemantics.etcsite.shared.file.XMLValidator;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationResult;
@@ -13,6 +15,7 @@ import gwtupload.shared.UConsts;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -25,6 +28,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.Namespace;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 
 /**
  * This is an example of how to use UploadAction class.
@@ -44,14 +54,11 @@ public class UploadServlet extends UploadAction {
 	 * Maintain a list with received files and their content types.
 	 */
 	Hashtable<String, File> receivedFiles = new Hashtable<String, File>();
-	private Set<IContentValidator> contentValidators;
-	//IAuthenticationServiceAsync authenticationService = GWT.create(IAuthenticationService.class);
-
+	private ContentValidatorProvider contentValidatorProvider = new ContentValidatorProvider();
+	private XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager();
+	
 	public UploadServlet() {
-		contentValidators = new HashSet<IContentValidator>();
-		//contentValidators.add(new CSVValidator());
-		contentValidators.add(new XMLValidator(new File(Configuration.taxonDescriptionSchemaFile)));
-		contentValidators.add(new XMLValidator(new File(Configuration.markedUpTaxonDescriptionSchemaFile)));
+
 	}
 	
 	/**
@@ -66,6 +73,8 @@ public class UploadServlet extends UploadAction {
 		int userID = Integer.parseInt(request.getParameter("userID"));
 		String sessionID = request.getParameter("sessionID");
 		String target = request.getParameter("target");
+		String fileType = request.getParameter("fileType");
+		FileTypeEnum fileTypeEnum = FileTypeEnum.getEnum(fileType);
 		
 		IAuthenticationService authenticationService = new AuthenticationService();
 		RPCResult<AuthenticationResult> authenticationResult = 
@@ -96,12 +105,15 @@ public class UploadServlet extends UploadAction {
 						if(!file.exists()) {
 							String fileContent = item.getString("UTF-8");
 							boolean valid = false;
-							for(IContentValidator validator : contentValidators)
-								valid |= validator.validate(fileContent);
+							IContentValidator validator = contentValidatorProvider.getValidator(fileTypeEnum);
+							if(validator != null)
+								valid = validator.validate(fileContent);
 							
 							if(valid) {
 								file.createNewFile();
 								item.write(file);
+								
+								xmlNamespaceManager.setXmlSchema(file, fileTypeEnum);
 			
 								// / Save a list with the received files
 								receivedFiles.put(item.getFieldName(), file);

@@ -43,11 +43,11 @@ public enum FileTypeEnum {
     	return viewable;
     }
     
-    public static FileTypeEnum getEnum(String value) {
-        if(value == null)
+    public static FileTypeEnum getEnum(String displayName) {
+        if(displayName == null)
             throw new IllegalArgumentException();
         for(FileTypeEnum v : values())
-            if(value.equals(v.displayName())) return v;
+            if(displayName.equals(v.displayName())) return v;
         throw new IllegalArgumentException();
     }	
 

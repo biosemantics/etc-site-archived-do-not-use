@@ -36,6 +36,9 @@
 		     <g:Button ui:field="addButton" title="Select a parent folder before uploading one or more files">Upload Files</g:Button>
 		     </g:FlowPanel>
 		     <g:FlowPanel styleName="{style.leftMargin}">
+		       <g:ListBox visibleItemCount="1" ui:field="formatListBox"/>
+		     </g:FlowPanel>
+		     <g:FlowPanel styleName="{style.leftMargin}">
 		      <g:Button ui:field="renameButton" title="rename a file or a folder">Rename</g:Button>
 		      </g:FlowPanel>
 		      <g:FlowPanel styleName="{style.leftMargin}">

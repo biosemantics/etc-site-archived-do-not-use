@@ -43,4 +43,6 @@ public interface IManagableFileTreeView extends IsWidget {
 
 	Button getAddButton();
 
+	String getFormat();
+
 }

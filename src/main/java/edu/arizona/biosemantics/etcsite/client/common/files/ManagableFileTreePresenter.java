@@ -289,7 +289,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	public class OnStartUploadHandler implements OnStartUploaderHandler {
 		@Override
 		public void onStart(final IUploader uploader) {			
-			String servletPath = view.getUploader().getServletPath() + "?userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId()))
+			String servletPath = view.getUploader().getServletPath() + "?fileType=" + view.getFormat() + "&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId()))
 					+ "&sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId());
 			uploader.setServletPath(servletPath);
 			
@@ -302,7 +302,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 			} else {
 				String newFilePath = getParent(selection);
 				uploader.setServletPath(uploader.getServletPath() + "&target=" + URL.encodeQueryString(newFilePath));
-			}				
+			}
 			
 			/*
 			 * Creation of directories directly inside of the upload target should not be possible (possible name clash)

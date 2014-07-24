@@ -10,6 +10,11 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 
 	public static String deploymentUrl;
 	
+	/** Files **/
+	public static String targetNamespace;
+	public static String taxonDescriptionSchemaFileWeb;
+	public static String markedUpTaxonDescriptionSchemaFileWeb;
+	
 	/** Database **/
 	public static String databaseName;
 	public static String databaseUser;
@@ -70,6 +75,10 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			properties.load(loader.getResourceAsStream("config.properties"));
 			
 			deploymentUrl = properties.getProperty("deploymentUrl");
+			
+			targetNamespace = properties.getProperty("targetNamespace");
+			taxonDescriptionSchemaFileWeb = properties.getProperty("taxonDescriptionSchemaFileWeb");
+			markedUpTaxonDescriptionSchemaFileWeb = properties.getProperty("markedUpTaxonDescriptionSchemaFileWeb");
 			
 			databaseName = properties.getProperty("databaseName");
 			databaseUser = properties.getProperty("databaseUser");

@@ -34,6 +34,7 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 	private FileInfo currentFileInfo;
 	private FileTypeEnum fileType; 
 	private IMessageView.Presenter messagePresenter;
+	private String currentXmlSchema;
 
 	@Inject
 	public FileContentPresenter(IFileContentView view, IFileAccessServiceAsync fileAccessService,  IFileFormatServiceAsync fileFormatService, IMessageView.Presenter messagePresenter) {
@@ -73,15 +74,21 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 	
 	@Override
 	public void onSave(){
-		fileFormatService.isValidTaxonDescriptionContent(Authentication.getInstance().getToken(), view.getText(), new RPCCallback<Boolean>(){
+		fileFormatService.isValidXmlContentForSchema(Authentication.getInstance().getToken(), view.getText(), this.currentXmlSchema, new RPCCallback<Boolean>(){
 			@Override
 			public void onResult(Boolean result){
 				if(!result.booleanValue()){
 					messagePresenter.showMessage("Not saved", "Content is no longer valid against the <a href='https://raw.githubusercontent.com/biosemantics/schemas/master/consolidation_01272014/semanticMarkupInput.xsd' target='_blank'>input schema</a>. "
 							+ "correct the problems and try to save again.");
 				}else{
-					fileAccessService.setFileContent(Authentication.getInstance().getToken(), currentFileInfo.getFilePath(), view.getText(), new FileContentSaveCallback());
-				}		
+					//user could have possibly manipulated the schema url
+					fileFormatService.setSchema(Authentication.getInstance().getToken(), view.getText(), currentFileInfo.getFileType(), new RPCCallback<String>() {
+						@Override
+						public void onResult(String result) {
+							fileAccessService.setFileContent(Authentication.getInstance().getToken(), currentFileInfo.getFilePath(), result, new FileContentSaveCallback());
+						}
+					});
+				}
 			}
 		});
 	}
@@ -89,12 +96,18 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 	@Override
 	public void onEdit(){
 		if(currentFileInfo.isEditable()) {
-			this.view.setEditable(true);
+			fileFormatService.getSchema(Authentication.getInstance().getToken(), currentFileInfo.getFilePath(), new RPCCallback<String>() {
+				@Override
+				public void onResult(String result) {
+					currentXmlSchema = result;
+					view.setEditable(true);
+				}
+			});
 		} else {
 			messagePresenter.showMessage("File not editable", "This file type can't be edited at this time.");
 		}
 	}
-	
+
 	private class FileContentSaveCallback extends RPCCallback<Void>{
 		public FileContentSaveCallback(){}
 		

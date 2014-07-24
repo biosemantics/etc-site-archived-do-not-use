@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModelFile;
 
 
@@ -23,5 +24,11 @@ public interface IFileFormatServiceAsync {
 	
 	public void createTaxonDescriptionFile(AuthenticationToken authenticationToken, String text, 
 			AsyncCallback<RPCResult<List<XmlModelFile>>> callback);
+	
+	public void getSchema(AuthenticationToken token, String filePath, AsyncCallback<RPCResult<String>> callback);
+	
+	public void isValidXmlContentForSchema(AuthenticationToken token, String text, String currentXmlSchema, AsyncCallback<RPCResult<Boolean>> callback);
+	
+	public void setSchema(AuthenticationToken token, String content, FileTypeEnum fileTypeEnum, AsyncCallback<RPCResult<String>> callback);
 	
 }

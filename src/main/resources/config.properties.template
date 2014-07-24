@@ -1,5 +1,10 @@
 deploymentUrl=
 
+#Files
+targetNamespace=http://www.github.com/biosemantics
+taxonDescriptionSchemaFileWeb=http://raw.githubusercontent.com/biosemantics/schemas/0.0.1/semanticMarkupInput.xsd
+markedUpTaxonDescriptionSchemaFileWeb=http://raw.githubusercontent.com/biosemantics/schemas/0.0.1/semanticMarkupOutput.xsd
+
 #Database
 databaseName=
 databaseUser=
