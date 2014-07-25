@@ -519,7 +519,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				String fileContent = fileContentResult.getData();
 				Document document = db.parse(new InputSource(new ByteArrayInputStream(fileContent.getBytes("UTF-8"))));
 				XPath xPath = XPathFactory.newInstance().newXPath();
-				Node node = (Node)xPath.evaluate("/treatment/description",
+				Node node = (Node)xPath.evaluate("/bio:treatment/description",
 				        document.getDocumentElement(), XPathConstants.NODE);
 				if(node != null)
 					return new RPCResult<String>(true, "", node.getTextContent());
@@ -539,7 +539,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		Document document = db.parse(new InputSource(new ByteArrayInputStream(content.getBytes("UTF-8"))));
 		
 		XPath xPath = XPathFactory.newInstance().newXPath();
-		Node node = (Node)xPath.evaluate("/treatment/description",
+		Node node = (Node)xPath.evaluate("/bio:treatment/description",
 		        document.getDocumentElement(), XPathConstants.NODE);
 		node.setTextContent(description);
 

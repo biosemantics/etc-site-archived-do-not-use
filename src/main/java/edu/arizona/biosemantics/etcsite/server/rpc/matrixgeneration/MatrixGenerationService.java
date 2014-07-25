@@ -525,7 +525,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		Document doc = sax.build(file);
 		
 		XPathFactory xpfac = XPathFactory.instance();
-		XPathExpression<Element> xp = xpfac.compile("//treatment/description[@type='morphology']", Filters.element());
+		XPathExpression<Element> xp = xpfac.compile("//bio:treatment/description[@type='morphology']", Filters.element());
 		for(Element element : xp.evaluate(doc)) {
 			List<Element> statements = element.getChildren("statement");
 			for(Element statement : statements) {
@@ -824,7 +824,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			try {
 				document = saxBuilder.build(filePath + File.separator + file);
 				XPathFactory xPathFactory = XPathFactory.instance();
-				XPathExpression<Element> xPathExpression = xPathFactory.compile("/treatment/description[@type=\"morphology\"]/statement", Filters.element());
+				XPathExpression<Element> xPathExpression = xPathFactory.compile("/bio:treatment/description[@type=\"morphology\"]/statement", Filters.element());
 				if(!xPathExpression.evaluate(document).isEmpty()) {
 					statementFound = true;
 				}

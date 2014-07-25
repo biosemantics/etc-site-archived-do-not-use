@@ -36,7 +36,7 @@ public class MarkupResultReader {
 			}
 			
 			XPathFactory xpf = XPathFactory.instance();
-			XPathExpression<Element> xpath = xpf.compile("/treatment/description/statement/structure/character",
+			XPathExpression<Element> xpath = xpf.compile("/bio:treatment/description/statement/structure/character",
 			              Filters.element()); /*, null,
 			              Namespace.getNamespace("xpns", "http://www.w3.org/2002/xforms")); */
 			List<Element> elements = xpath.evaluate(document);
@@ -73,7 +73,7 @@ public class MarkupResultReader {
 			}
 			
 			XPathFactory xpf = XPathFactory.instance();
-			XPathExpression<Element> xpath = xpf.compile("/treatment/description/statement/structure/character",
+			XPathExpression<Element> xpath = xpf.compile("/bio:treatment/description/statement/structure/character",
 			              Filters.element()); 
 			List<Element> elements = xpath.evaluate(document);
 			for(Element element : elements) {
@@ -107,7 +107,7 @@ public class MarkupResultReader {
 			}
 			
 			XPathFactory xpf = XPathFactory.instance();
-			XPathExpression<Element> xpath = xpf.compile("/treatment/description/statement/structure",
+			XPathExpression<Element> xpath = xpf.compile("/bio:treatment/description/statement/structure",
 			              Filters.element()); 
 			List<Element> elements = xpath.evaluate(document);
 			for(Element element : elements) {
