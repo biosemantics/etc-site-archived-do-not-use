@@ -16,6 +16,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
 import edu.arizona.biosemantics.etcsite.server.XmlNamespaceManager;
@@ -205,7 +206,7 @@ public class XmlModelFileCreator {
 		//build xml
 		Document xml = createXML(data, operator, modelFile);
 		modelFile.setFileName(createFileName(data, modelFile));
-		modelFile.setXML(new XMLOutputter().outputString(xml));
+		modelFile.setXML(new XMLOutputter(Format.getPrettyFormat()).outputString(xml));
 		return modelFile;
 	}
 	

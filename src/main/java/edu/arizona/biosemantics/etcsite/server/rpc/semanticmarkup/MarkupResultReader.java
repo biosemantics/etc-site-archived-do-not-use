@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
+import org.jdom2.Namespace;
 import org.jdom2.filter.Filters;
 import org.jdom2.input.JDOMParseException;
 import org.jdom2.input.SAXBuilder;
@@ -37,8 +38,7 @@ public class MarkupResultReader {
 			
 			XPathFactory xpf = XPathFactory.instance();
 			XPathExpression<Element> xpath = xpf.compile("/bio:treatment/description/statement/structure/character",
-			              Filters.element()); /*, null,
-			              Namespace.getNamespace("xpns", "http://www.w3.org/2002/xforms")); */
+			              Filters.element(), null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
 			List<Element> elements = xpath.evaluate(document);
 			for(Element element : elements) {
 				String charType = element.getAttributeValue("char_type");
@@ -74,7 +74,7 @@ public class MarkupResultReader {
 			
 			XPathFactory xpf = XPathFactory.instance();
 			XPathExpression<Element> xpath = xpf.compile("/bio:treatment/description/statement/structure/character",
-			              Filters.element()); 
+			              Filters.element(), null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics")); 
 			List<Element> elements = xpath.evaluate(document);
 			for(Element element : elements) {
 				String charType = element.getAttributeValue("char_type");
@@ -108,7 +108,7 @@ public class MarkupResultReader {
 			
 			XPathFactory xpf = XPathFactory.instance();
 			XPathExpression<Element> xpath = xpf.compile("/bio:treatment/description/statement/structure",
-			              Filters.element()); 
+			              Filters.element(), null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics")); 
 			List<Element> elements = xpath.evaluate(document);
 			for(Element element : elements) {
 				String name = element.getAttributeValue("name");

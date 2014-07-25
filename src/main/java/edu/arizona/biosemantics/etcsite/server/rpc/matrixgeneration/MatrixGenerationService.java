@@ -32,6 +32,7 @@ import java.util.concurrent.Executors;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
+import org.jdom2.Namespace;
 import org.jdom2.filter.Filters;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.xpath.XPathExpression;
@@ -525,7 +526,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		Document doc = sax.build(file);
 		
 		XPathFactory xpfac = XPathFactory.instance();
-		XPathExpression<Element> xp = xpfac.compile("//bio:treatment/description[@type='morphology']", Filters.element());
+		XPathExpression<Element> xp = xpfac.compile("//bio:treatment/description[@type='morphology']", Filters.element(), null,
+				Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
 		for(Element element : xp.evaluate(doc)) {
 			List<Element> statements = element.getChildren("statement");
 			for(Element statement : statements) {
@@ -824,7 +826,9 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			try {
 				document = saxBuilder.build(filePath + File.separator + file);
 				XPathFactory xPathFactory = XPathFactory.instance();
-				XPathExpression<Element> xPathExpression = xPathFactory.compile("/bio:treatment/description[@type=\"morphology\"]/statement", Filters.element());
+				XPathExpression<Element> xPathExpression = 
+						xPathFactory.compile("/bio:treatment/description[@type=\"morphology\"]/statement", Filters.element(), 
+								null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics")); 
 				if(!xPathExpression.evaluate(document).isEmpty()) {
 					statementFound = true;
 				}

@@ -3,6 +3,7 @@ package edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.Date;
@@ -12,19 +13,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.Namespace;
+import org.jdom2.filter.Filters;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
+import org.jdom2.xpath.XPathExpression;
+import org.jdom2.xpath.XPathFactory;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
@@ -512,17 +509,18 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	@Override
 	public RPCResult<String> getDescription(AuthenticationToken authenticationToken, String filePath) {	
 		try {
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = dbf.newDocumentBuilder();
 			RPCResult<String> fileContentResult = fileAccessService.getFileContent(authenticationToken, filePath);
 			if(fileContentResult.isSucceeded()) {
+				SAXBuilder sax = new SAXBuilder();
 				String fileContent = fileContentResult.getData();
-				Document document = db.parse(new InputSource(new ByteArrayInputStream(fileContent.getBytes("UTF-8"))));
-				XPath xPath = XPathFactory.newInstance().newXPath();
-				Node node = (Node)xPath.evaluate("/bio:treatment/description",
-				        document.getDocumentElement(), XPathConstants.NODE);
-				if(node != null)
-					return new RPCResult<String>(true, "", node.getTextContent());
+				Document doc = sax.build(new StringReader(fileContent));
+				
+				XPathFactory xpfac = XPathFactory.instance();
+				XPathExpression<Element> xp = xpfac.compile("/bio:treatment/description", Filters.element(), null,
+						Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
+				List<Element> descriptions = xp.evaluate(doc);
+				if(descriptions != null && !descriptions.isEmpty())
+					return new RPCResult<String>(true, "", descriptions.get(0).getText());
 				else 
 					return new RPCResult<String>(false, "No description found in this file", null);
 			}
@@ -534,23 +532,18 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	}
 	
 	private String replaceDescription(String content, String description) throws Exception {
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		DocumentBuilder db = dbf.newDocumentBuilder();
-		Document document = db.parse(new InputSource(new ByteArrayInputStream(content.getBytes("UTF-8"))));
+		SAXBuilder sax = new SAXBuilder();
+		Document doc = sax.build(new StringReader(content));
 		
-		XPath xPath = XPathFactory.newInstance().newXPath();
-		Node node = (Node)xPath.evaluate("/bio:treatment/description",
-		        document.getDocumentElement(), XPathConstants.NODE);
-		node.setTextContent(description);
-
-		DOMSource domSource = new DOMSource(document);
-		StringWriter writer = new StringWriter();
-		StreamResult result = new StreamResult(writer);
-		TransformerFactory tf = TransformerFactory.newInstance();
-		Transformer transformer = tf.newTransformer();
-		transformer.transform(domSource, result);
-		//return xmlFileFormatter.format(writer.toString());
-		return writer.toString();
+		XPathFactory xpfac = XPathFactory.instance();
+		XPathExpression<Element> xp = xpfac.compile("/bio:treatment/description", Filters.element(), null,
+				Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
+		List<Element> descriptions = xp.evaluate(doc);
+		if(descriptions != null && !descriptions.isEmpty())
+			descriptions.get(0).setText(description);
+		
+		XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
+		return outputter.outputString(doc);
 	}
 
 	@Override
