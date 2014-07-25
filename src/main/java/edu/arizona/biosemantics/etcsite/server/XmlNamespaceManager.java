@@ -84,5 +84,15 @@ public class XmlNamespaceManager {
 		stringWriter.close();
 		return result;
 	}
-
+	
+	public void removeXmlSchema(File file) throws JDOMException, IOException {
+		Document doc = sax.build(file);
+		Element rootElement = doc.getRootElement();
+		rootElement.setNamespace(null);
+		rootElement.removeNamespaceDeclaration(bioNamespace);
+		rootElement.removeNamespaceDeclaration(xsiNamespace);
+		rootElement.removeAttribute("schemaLocation", xsiNamespace);
+		xmlOutputter.output(doc, new FileOutputStream(file));
+	}
+	
 }

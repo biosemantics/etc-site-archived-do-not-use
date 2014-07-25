@@ -4,6 +4,7 @@ import java.io.File;
 
 import edu.arizona.biosemantics.semanticmarkup.ETCLearnMain;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
+import edu.arizona.biosemantics.etcsite.server.XmlNamespaceManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.AdminAuthenticationToken;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileService;
 import edu.arizona.biosemantics.etcsite.shared.db.DatasetPrefix;
@@ -48,10 +49,20 @@ public class Learn implements ILearn {
 		String otoLiteURL = Configuration.otoLiteURL;
 		String debugFile = workspace + File.separator + tablePrefix + File.separator + "debug.log";
 		String errorFile = workspace + File.separator + tablePrefix + File.separator + "error.log";
+		
 		fileService.createDirectory(new AdminAuthenticationToken(), workspace, tablePrefix, false);
+		
+		//only temporary until charaparser can deal with the namespaces and they don't need to be pre- and post treated with XmlNamespaceManager
+		fileService.createDirectory(new AdminAuthenticationToken(), workspace + File.separator + tablePrefix, "in", false);
+		String newInput = workspace + File.separator + tablePrefix + File.separator + "in";
+		fileService.copyFiles(new AdminAuthenticationToken(), input,  newInput);
+		XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager();
+		for(File child : new File(newInput).listFiles()) {
+			xmlNamespaceManager.removeXmlSchema(child);
+		}
 		String[] args = new String[] { "-a", workspace, "-f", source, "-g", operator, "-j", bioportalUserId, "-k", bioportalAPIKey, "-b", debugFile, "-e", errorFile, "-c", config, "-w", wordnet, "-l", perl,
 				"-n", databaseHost, "-p", databasePort, "-d", databaseName, "-u", databaseUser, 
-				"-s", databasePassword, "-i", input, "-z" , tablePrefix, "-y", "-o", otoLiteURL};
+				"-s", databasePassword, "-i", newInput, "-z" , tablePrefix, "-y", "-o", otoLiteURL};
 		ETCLearnMain.main(args);
 		DatasetPrefix datasetPrefix = DatasetPrefixDAO.getInstance().getDatasetPrefix(tablePrefix);
 		LearnResult result = new LearnResult(datasetPrefix.getOtoUploadId(), datasetPrefix.getOtoSecret());
