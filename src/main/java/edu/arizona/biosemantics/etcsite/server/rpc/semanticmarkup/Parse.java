@@ -5,6 +5,8 @@ import java.util.HashSet;
 
 import edu.arizona.biosemantics.semanticmarkup.ETCMarkupMain;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
+import edu.arizona.biosemantics.etcsite.server.XmlNamespaceManager;
+import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
 
 public class Parse implements IParse {
@@ -59,6 +61,17 @@ public class Parse implements IParse {
 		//for(File outFile : outputFile.listFiles()) {
 		//	result.getOutputFiles().add(outFile);
 		//}
+		
+		/**
+		 * This will only stay until charaparser outputs data with namespace already set
+		 */
+		XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager();
+		String charaParserOutputDirectory = Configuration.charaparser_tempFileBase + File.separator + tablePrefix + File.separator + "out";
+		for(File child : new File(charaParserOutputDirectory).listFiles()) {
+			if(child.isFile() && !child.getName().equals("config.txt")) {
+				xmlNamespaceManager.setXmlSchema(child, FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION);
+			}
+		}
 		return result;
 	}
 
