@@ -8,6 +8,7 @@ public interface ICreateSemanticMarkupFilesDialogView {
 		void show(String destinationFilePath);
 		void onCancel();
 		void setCloseHandler(ICloseHandler closeHandler);
+		void onClose();
 	}
 
 	void show();

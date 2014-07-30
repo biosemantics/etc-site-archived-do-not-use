@@ -459,7 +459,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	private TaxonMatrix createTaxonMatrix(MatrixGenerationConfiguration matrixGenerationConfiguration, String filePath) throws Exception {
 		String inputDirectory = matrixGenerationConfiguration.getInput();
 
-		CSVReader reader = new CSVReader(new FileReader(filePath), '\t', CSVWriter.NO_QUOTE_CHARACTER);
+		CSVReader reader = new CSVReader(new FileReader(filePath), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.DEFAULT_QUOTE_CHARACTER);
 		
 		List<Character> characters = new LinkedList<Character>();
 		String[] head = reader.readNext();
@@ -475,8 +475,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	    //init all taxa
 	    for(int i=0; i<allLines.size(); i++) {
 	    	String[] line = allLines.get(i);
-	    	String sourceFile = line[0];
-	    	String name = line[1];
+	    	String sourceFile = line[1];
+	    	String name = line[0];
 	    	TaxonName taxonName = createTaxonName(name);
 	    	taxonNames.add(taxonName);
 	    	

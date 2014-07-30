@@ -21,9 +21,9 @@ public enum FileTypeEnum {
     	return displayName; 
     }*/
 	
-	TAXON_DESCRIPTION("Taxon Description", true),
-	MARKED_UP_TAXON_DESCRIPTION("Marked Up Taxon Description", true),
-	MATRIX("Matrix", true), 
+	TAXON_DESCRIPTION("Text Capture Input", true),
+	MARKED_UP_TAXON_DESCRIPTION("Text Capture Output/Matrix Generation Input", true),
+	MATRIX("Matrix Generation Output", true), 
 	PLAIN_TEXT("Plain Text", true),
 	DIRECTORY("Directory", false);
 	

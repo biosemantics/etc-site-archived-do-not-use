@@ -170,7 +170,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>semantic-markup</artifactId>
-			<version>0.1.18-SNAPSHOT</version>
+			<version>0.1.19-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>app</artifactId>
@@ -181,7 +181,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.matrixgeneration</groupId>
 			<artifactId>matrix-generation</artifactId>
-			<version>0.1.1-SNAPSHOT</version>
+			<version>0.1.7-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.oto</groupId>

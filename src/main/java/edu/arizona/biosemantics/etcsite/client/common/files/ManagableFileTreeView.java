@@ -134,6 +134,11 @@ public class ManagableFileTreeView extends Composite implements IManagableFileTr
 		}
 		this.formatListBox.setEnabled(value);
 	}
+	
+	@Override
+	public void setEnabledCreateSemanticMarkupFiles(boolean value) {
+		this.createSemanticMarkupInputButton.setEnabled(value);
+	}
 
 	@Override
 	public void setStatusWidget(Widget widget) {

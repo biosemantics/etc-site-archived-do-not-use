@@ -29,13 +29,17 @@ public class CreateSemanticMarkupFilesDialogPresenter implements ICreateSemantic
 
 	@Override
 	public void onCancel() {
-		closeHandler.onClose(createSemanticMarkupFilesPresenter.getFilesCreated());
 		view.hide();
 	}
 	
 	@Override
 	public void setCloseHandler(ICloseHandler closeHandler) {
 		this.closeHandler = closeHandler;
+	}
+
+	@Override
+	public void onClose() {
+		closeHandler.onClose(createSemanticMarkupFilesPresenter.getFilesCreated());
 	}
 
 }

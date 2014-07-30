@@ -345,6 +345,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		view.setEnabledRename(false);
 		view.setEnabledDelete(false);
 		view.setEnabledUpload(false);
+		view.setEnabledCreateSemanticMarkupFiles(false);
 	}
 
 	private void enableManagement() {
@@ -352,6 +353,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		view.setEnabledRename(true);
 		view.setEnabledDelete(true);
 		view.setEnabledUpload(true);
+		view.setEnabledCreateSemanticMarkupFiles(true);
 	}
 	
 	private void setSystemFile(boolean systemFile) {
@@ -369,6 +371,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 			display.getAddButton().getElement().setAttribute("aria-hidden", "true");
 		}*/
 		view.setEnabledUpload(allowsNewChildren);
+		view.setEnabledCreateSemanticMarkupFiles(allowsNewChildren);
 	}
 	
 	

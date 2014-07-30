@@ -25,5 +25,11 @@ public class MatrixGeneration implements Callable<Boolean> {
 		}
 		return true;
 	}
+	
+	public static void main(String[] args) throws Exception {
+		MatrixGeneration mg = new MatrixGeneration("C:/test/users/1070/input_2", "C:/test/temp/matrixGeneration/124/Matrix.mx");
+		mg.call();
+		
+	}
 
 }

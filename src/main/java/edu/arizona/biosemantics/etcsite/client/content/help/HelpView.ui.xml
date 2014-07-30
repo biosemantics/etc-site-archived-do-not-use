@@ -7,10 +7,23 @@
 	</ui:style>
 	<lay:CenteredContentPanel>
 		<g:HTMLPanel>
-			<g:HorizontalPanel>
-			    <g:Image url="images/video.png" ui:field="image"></g:Image>
-			    <g:Label>Watch the video tutorial</g:Label>
-			</g:HorizontalPanel>
+		    <g:VerticalPanel>
+			    <g:Label>Watch the video tutorial: </g:Label>
+			    
+			    <g:HTMLPanel>
+			    <object ui:field="objectElement">
+		            <param ui:field="movieParamElement" name="movie"/>
+		            <param ui:field="qualityParamElement" name="quality"/>
+		            <param ui:field="bgColorParamElement" name="bgcolor"/>
+		            <param ui:field="flashVarsParamElement" name="flashVars"/>
+		            <param ui:field="allowFullScreenParamElement" name="allowFullScreen"/>
+		            <param ui:field="scaleParamElement" name="scale"/>
+		            <param ui:field="allowScriptAccessParamElement" name="allowScriptAccess"/>
+		            <param ui:field="baseParamElement" name="base"/>
+		        </object>
+		        </g:HTMLPanel>
+		        
+			</g:VerticalPanel>
 		</g:HTMLPanel>
 	</lay:CenteredContentPanel>
 </ui:UiBinder> 

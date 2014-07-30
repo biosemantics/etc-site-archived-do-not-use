@@ -37,6 +37,7 @@ public class CreateSemanticMarkupFilesDialogView implements ICreateSemanticMarku
 			@Override
 			public void onClose(CloseEvent<PopupPanel> event) {
 				CreateSemanticMarkupFilesDialogView.this.presenter.onCancel();
+				CreateSemanticMarkupFilesDialogView.this.presenter.onClose();
 			}
 		});
 		dialogBox.setGlassEnabled(true);

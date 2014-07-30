@@ -38,11 +38,14 @@ public interface IManagableFileTreeView extends IsWidget {
 	void setEnabledDelete(boolean value);
 
 	void setEnabledUpload(boolean value);
+	
+	void setEnabledCreateSemanticMarkupFiles(boolean b);
 
 	void setStatusWidget(Widget widget);
 
 	Button getAddButton();
 
 	String getFormat();
+
 
 }
