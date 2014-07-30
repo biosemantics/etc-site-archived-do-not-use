@@ -12,10 +12,12 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+import edu.arizona.biosemantics.semanticmarkup.know.Glossary;
+
 public class SemanticMarkupInputView extends Composite implements ISemanticMarkupInputView {
 
 	private enum Glossary {
-		Plant, Hymenoptera, Algae, Porifera, Fossil, Cnidaria, Gastropods
+		Algae, Cnidaria, Fossil, Gastropods, HymenopteraPlant, Plant, Porifera
 	}
 	
 	private static SemanticmarkupInputViewUiBinder uiBinder = GWT
@@ -98,6 +100,14 @@ public class SemanticMarkupInputView extends Composite implements ISemanticMarku
 	public void resetFields(){
 		this.taskNameTextBox.setText("");
 		this.inputLabel.setText("");
-		this.glossaryListBox.setSelectedIndex(0);
+		this.glossaryListBox.setSelectedIndex(getInitialGlossaryIndex());
+	}
+
+	private int getInitialGlossaryIndex() {
+		for(int i=0; i<Glossary.values().length; i++) {
+			if(Glossary.values()[i].equals(Glossary.Plant))
+				return i;
+		}
+		return 0;
 	}
 }
