@@ -17,7 +17,7 @@ import edu.arizona.biosemantics.semanticmarkup.know.Glossary;
 public class SemanticMarkupInputView extends Composite implements ISemanticMarkupInputView {
 
 	private enum Glossary {
-		Algae, Cnidaria, Fossil, Gastropods, HymenopteraPlant, Plant, Porifera
+		Algae, Cnidaria, Fossil, Gastropods, Hymenoptera, Plant, Porifera
 	}
 	
 	private static SemanticmarkupInputViewUiBinder uiBinder = GWT
