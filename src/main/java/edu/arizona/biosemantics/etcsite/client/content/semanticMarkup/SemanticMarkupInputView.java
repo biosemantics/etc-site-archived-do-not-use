@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class SemanticMarkupInputView extends Composite implements ISemanticMarkupInputView {
 
 	private enum Glossary {
-		Plant, Hymenoptera, Algae, Porifera, Fossil
+		Plant, Hymenoptera, Algae, Porifera, Fossil, Cnidaria, Gastropods
 	}
 	
 	private static SemanticmarkupInputViewUiBinder uiBinder = GWT
