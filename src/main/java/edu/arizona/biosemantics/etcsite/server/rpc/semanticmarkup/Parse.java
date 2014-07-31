@@ -48,11 +48,11 @@ public class Parse implements IParse {
 		String errorFile = workspace + File.separator + tablePrefix + File.separator + "error.log";
 		
 		//only temporary until charaparser can deal with the namespaces and they don't need to be pre- and post treated with XmlNamespaceManager
-		String newInput = workspace + File.separator + tablePrefix + File.separator + "in";
+		//String newInput = workspace + File.separator + tablePrefix + File.separator + "in";
 		
 		String[] args = new String[] { "-a", workspace, "-f", source, "-g", operator, "-j", bioportalUserId, "-k", bioportalAPIKey, "-b", debugFile, "-e", errorFile, "-c", config, "-w", wordnet, "-l", perl,
 				"-n", databaseHost, "-p", databasePort, "-d", databaseName, "-u", databaseUser, 
-				"-s", databasePassword, "-i", newInput, "-z" , tablePrefix, "-y", "-o", otoLiteURL};
+				"-s", databasePassword, "-i", input, "-z" , tablePrefix, "-y", "-o", otoLiteURL};
 		
 		//System.out.println();
 		//for(String arg : args) {
@@ -69,13 +69,13 @@ public class Parse implements IParse {
 		/**
 		 * This will only stay until charaparser outputs data with namespace already set
 		 */
-		XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager();
+		/*XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager();
 		String charaParserOutputDirectory = Configuration.charaparser_tempFileBase + File.separator + tablePrefix + File.separator + "out";
 		for(File child : new File(charaParserOutputDirectory).listFiles()) {
 			if(child.isFile() && !child.getName().equals("config.txt")) {
 				xmlNamespaceManager.setXmlSchema(child, FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION);
 			}
-		}
+		}*/
 		return result;
 	}
 
