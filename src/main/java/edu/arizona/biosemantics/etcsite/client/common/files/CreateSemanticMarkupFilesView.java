@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -281,20 +283,24 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	
 	@UiHandler("batchButton")
 	public void onBatch(ClickEvent event) {
+		this.showProgress();
 		this.presenter.onBatch(this.batchArea.getText());
 	}
 	
 	@Override
-	public synchronized void incrementProgress(double value) {
-		progressBox.updateProgress(value, "please wait...");
-		progressBox.show();
+	public synchronized void incrementProgress(final double value) {
+		progressBox.updateProgress(value, "Please wait");
 	}
 	
 	@Override
 	public void hideProgress() {
 		progressBox.hide();
+		progressBox = new ProgressMessageBox("Creating...");
 	}
-	
-	
+
+	@Override
+	public void showProgress() {
+		progressBox.show();
+	}
 
 }

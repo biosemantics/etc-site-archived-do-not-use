@@ -57,5 +57,7 @@ public interface ICreateSemanticMarkupFilesView extends IsWidget {
 	void incrementProgress(double value);
 
 	void hideProgress();
+
+	void showProgress();
 	
 }

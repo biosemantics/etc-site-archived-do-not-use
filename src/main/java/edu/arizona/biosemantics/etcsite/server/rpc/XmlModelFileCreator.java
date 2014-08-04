@@ -31,7 +31,7 @@ import com.google.gwt.i18n.shared.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.XMLParser;*/
 
-public class XmlModelFileCreator {
+public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared.rpc.XmlModelFileCreator {
 
 	private Logger logger = Logger.getLogger(XmlModelFileCreator.class);
 	public static String[] fields =  new String[] {"author", "year", "title", "doi", "full citation",
@@ -41,10 +41,9 @@ public class XmlModelFileCreator {
 			"morphology", "phenology",  "habitat", "distribution" };
 	
 	protected BracketChecker bracketChecker = new BracketChecker();
-	protected String[] descriptionTypes = { "morphology", "habitat", "distribution", "phenology" };
 	//protected String[] nameTypes = { "order", "suborder", "superfamily", "family", "subfamily", "tribe", "subtribe", "genus", "subgenus", 
 	//		"section", "subsection", "series", "species", "subspecies", "variety", "forma", "unranked" };
-	protected ArrayList<String> nameTypes = new ArrayList<String> ();
+	protected ArrayList<String> nameTypes = new ArrayList<String>();
 	protected Set<String> allLabels = new HashSet<String>();
 	private XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager();
 	
@@ -52,13 +51,10 @@ public class XmlModelFileCreator {
 		this.allLabels.addAll(Arrays.asList(fields));
 	}
 	
-	public List<XmlModelFile> createXmlModelFiles(String text, String operator) {
+	public synchronized List<XmlModelFile> createXmlModelFiles(String text, String operator) {
 		showMessage("text:", text);
 		List<XmlModelFile> result = new LinkedList<XmlModelFile>();
-		text = text.trim();
-		text = text.replaceAll("\\r\\n", "\n");
-		text = text.replaceAll("\\r", "\n"); 
-		text = text.replaceAll("\\n{3,}", "\n\n");
+		text = normalizeText(text);
 		showMessage("text after normalization: ", text);
 		List<String> treatmentTexts = getTreatmentTexts(text);
 		
@@ -69,7 +65,7 @@ public class XmlModelFileCreator {
 		
 		return result;
 	}
-	
+
 	private void showMessage(String title, String text) {
 		/*TextView view = new TextView();
 		TextPresenter presenter = new TextPresenter(view);
@@ -78,48 +74,12 @@ public class XmlModelFileCreator {
 		logger.debug(title + ": " + text);
 	}
 
-	private List<String> getTreatmentTexts(String text) {
-		List<String> result = new LinkedList<String>();
-		
-		boolean insideContinuousValue = false;
-		
-		StringBuilder treatment = new StringBuilder();
-		for(String line : text.split("\n")) {
-			line = line.trim();
-			if(line.length()==0 && !insideContinuousValue) {
-				result.add(treatment.toString());
-				treatment = new StringBuilder();
-			}
-			else {
-				treatment.append(line + "\n");
-				int colonIndex = line.indexOf(":");
-				if(colonIndex == -1 || insideContinuousValue) {
-					if(line.endsWith("#"))
-						insideContinuousValue = false;
-					continue;
-				} else {
-					String key = line.substring(0, colonIndex).toLowerCase().trim();
-					for(String descriptionType : descriptionTypes) {
-						if(descriptionType.equals(key)) {
-							String value = line.substring(colonIndex + 1, line.length()).trim();
-							if(value.startsWith("#")) 
-								insideContinuousValue = true;
-							if(value.endsWith("#"))
-								insideContinuousValue = false;
-						}
-					}
-				}
-			}			
-		}
-		String atreatment = treatment.toString().trim();
-		result.add(atreatment); //replace all non-visible characters proceeding/trailing the treatment.
-		return result;
-	}
+	
 
 	public XmlModelFile createXmlModelFile(String text, String operator) {
 		showMessage("get xml model file for: ", text);
 		XmlModelFile modelFile = new XmlModelFile();
-		nameTypes = new ArrayList<String> ();
+		nameTypes = new ArrayList<String>();
 		
 		//prepare data map
 		Map<String, String> data = new HashMap<String, String>();

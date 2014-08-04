@@ -29,7 +29,6 @@ public class FileFormatService extends RemoteServiceServlet implements IFileForm
 	private CSVValidator csvValidator = new CSVValidator();
 	private XMLValidator taxonDescriptionValidator = new XMLValidator(new File(Configuration.taxonDescriptionSchemaFile));
 	private XMLValidator markedUpTaxonDescriptionValidator = new XMLValidator(new File(Configuration.markedUpTaxonDescriptionSchemaFile));
-	private XmlModelFileCreator xmlModelFileCreator = new XmlModelFileCreator();
 	private XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager();
 	
 	@Override
@@ -96,6 +95,7 @@ public class FileFormatService extends RemoteServiceServlet implements IFileForm
 		if(!operatorResult.isSucceeded())
 			return new RPCResult<List<XmlModelFile>>(false, operatorResult.getMessage());
 		logger.debug("text: " + text);
+		XmlModelFileCreator xmlModelFileCreator = new XmlModelFileCreator();
 		List<XmlModelFile> result = xmlModelFileCreator.createXmlModelFiles(text, operatorResult.getData());
 		return new RPCResult<List<XmlModelFile>>(true, result);
 	}

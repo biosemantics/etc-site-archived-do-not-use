@@ -1,9 +1,13 @@
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
+import java.io.BufferedReader;
+import java.io.StringReader;
 import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -12,7 +16,7 @@ import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView;
 import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView.IConfirmListener;
 import edu.arizona.biosemantics.etcsite.client.common.IMessageView;
 import edu.arizona.biosemantics.etcsite.client.common.ServerSetup;
-import edu.arizona.biosemantics.etcsite.server.rpc.XmlModelFileCreator;
+import edu.arizona.biosemantics.etcsite.shared.rpc.XmlModelFileCreator;
 //import edu.arizona.biosemantics.etcsite.server.rpc.FileFormatService;
 import edu.arizona.biosemantics.etcsite.shared.file.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
@@ -31,11 +35,37 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 
 public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkupFilesView.Presenter {
 
+	public class TaxonDescriptionCreateParallelRPCCallback extends ParallelRPCCallback<List<XmlModelFile>> {
+		private String text;
+		private String error;
+		private List<XmlModelFile> xmlModelFiles;
+		public TaxonDescriptionCreateParallelRPCCallback(String text) {
+			this.text = text;
+		}
+		
+		@Override
+		public void onFailure(Throwable caught) {
+			setFailure();
+			super.onFailure(caught);
+		}
+		@Override
+		public void onResult(final List<XmlModelFile> xmlModelFiles) {
+			this.xmlModelFiles = xmlModelFiles;
+			StringBuilder overallError = new StringBuilder();
+			for(XmlModelFile xmlModelFile : xmlModelFiles) {
+				if(xmlModelFile.hasError())
+					overallError.append(xmlModelFile.getError() + "\n\n");
+			}
+			error = overallError.toString();
+			super.onResult(xmlModelFiles);
+			view.incrementProgress(parent.getDoneCount() / ((double)parent.getCount() * 2));
+		}
+	}
+	
 	public class FileCreateParallelRPCCallback extends ParallelRPCCallback<Boolean> {
 		
 		private String filePath;
 		private XmlModelFile modelFile;
-		private int count;
 		
 		public FileCreateParallelRPCCallback(XmlModelFile modelFile) {
 			this.modelFile = modelFile;
@@ -84,9 +114,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 		}
 		private void callSuperOnResult(Boolean result) {
 			super.onResult(result);
-			view.incrementProgress(parent.getDoneCount() / (double)parent.getCount());
-			if(parent.getCount() == parent.getDoneCount())
-				view.hideProgress();
+			view.incrementProgress((parent.getCount() + parent.getDoneCount()) / ((double)parent.getCount() * 2));
 		}
 	};
 	
@@ -100,6 +128,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	private int filesCreated;
 	private String destinationFilePath;
 	private BracketChecker bracketChecker = new BracketChecker();
+	private XmlModelFileCreator xmlModelFileCreator = new XmlModelFileCreator();
 	
 	
 	@Inject
@@ -172,6 +201,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 		ParentRPCCallback parentCallback = new ParentRPCCallback(parallelRPCCallbacks) {
 			@Override
 			protected void handleSuccess() {
+				view.hideProgress();
 				StringBuilder messageBuilder = new StringBuilder();
 				int count = 0;
 				for(int i=0; i<modelFiles.size(); i++) {
@@ -191,6 +221,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 			}
 			@Override
 			protected void handleFailure() {
+				view.hideProgress();
 				StringBuilder messageBuilder = new StringBuilder();
 				messageBuilder.append("Some of the files are not validated against the <a href='https://raw.githubusercontent.com/biosemantics/schemas/master/consolidation_01272014/semanticMarkupInput.xsd'>schema</a>.\n");
 				messageBuilder.append("These files were not created. Correct the input and try again:\n");
@@ -208,8 +239,14 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 		};
 		
 		for(int i=0; i<modelFiles.size(); i++) {
-			XmlModelFile modelFile = modelFiles.get(i);
-			fileFormatService.isValidTaxonDescriptionContent(Authentication.getInstance().getToken(), modelFile.getXML(), parallelRPCCallbacks.get(i));
+			final XmlModelFile modelFile = modelFiles.get(i);
+			final ParallelRPCCallback callback = parallelRPCCallbacks.get(i);
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+				@Override
+				public void execute() {
+					fileFormatService.isValidTaxonDescriptionContent(Authentication.getInstance().getToken(), modelFile.getXML(), callback);
+				}
+			});
 		}
 	}
 
@@ -235,26 +272,64 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	}
 
 	@Override
-	public void onBatch(String text) {
-		fileFormatService.createTaxonDescriptionFile(Authentication.getInstance().getToken(), text, 
-				new RPCCallback<List<XmlModelFile>>() {
+	public void onBatch(final String text) {
+		view.showProgress();
+		
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
-			public void onResult(List<XmlModelFile> modelFiles) {
-				StringBuilder overallError = new StringBuilder();
+			public void execute() {
+				String normalizedText = xmlModelFileCreator.normalizeText(text);
+				List<String> treatments = xmlModelFileCreator.getTreatmentTexts(normalizedText);
 				
-				for(XmlModelFile xmlModelFile : modelFiles) {
-					if(xmlModelFile.hasError())
-						overallError.append(xmlModelFile.getError() + "\n\n");
+				final List<ParallelRPCCallback> parallelRPCCallbacks = new LinkedList<ParallelRPCCallback>();
+				for(final String treatmentText : treatments) {
+					parallelRPCCallbacks.add(new TaxonDescriptionCreateParallelRPCCallback(treatmentText));
 				}
+				ParentRPCCallback parentCallback = new ParentRPCCallback(parallelRPCCallbacks) {
+					@Override
+					protected void handleFailure() { 
+						System.out.println("failure");
+					}
+					@Override
+					protected void handleSuccess() {
+						StringBuilder overallError = new StringBuilder();
+						
+						final List<XmlModelFile> xmlModelFiles = new LinkedList<XmlModelFile>();
+						for(ParallelRPCCallback child : this.getChildCallbacks()) {
+							TaxonDescriptionCreateParallelRPCCallback taxonDescriptionCreateParallelRPCCallback = (TaxonDescriptionCreateParallelRPCCallback)child;
+							
+							if(taxonDescriptionCreateParallelRPCCallback.error.isEmpty())
+								xmlModelFiles.addAll(taxonDescriptionCreateParallelRPCCallback.xmlModelFiles);
+							else
+								overallError.append(taxonDescriptionCreateParallelRPCCallback.error + "\n");
+						}
+						
+						String error = overallError.toString();
+						if(error.isEmpty())
+							Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+								@Override
+								public void execute() {
+									createXmlFiles(xmlModelFiles, destinationFilePath);
+								}
+							});
+						else {
+							error += "Did not create any files";
+							messagePresenter.showMessage("Input Error", error.replaceAll("\n", "</br>"));
+						}	
+					}
+				};
 				
-				String error = overallError.toString();
-				if(error.isEmpty())
-					createXmlFiles(modelFiles, destinationFilePath);
-				else {
-					error += "Did not create any files";
-					messagePresenter.showMessage("Input Error", error.replaceAll("\n", "</br>"));
+				for(int i=0; i<treatments.size(); i++) {
+					final String treatment = treatments.get(i);
+					final ParallelRPCCallback callback = parallelRPCCallbacks.get(i);
+					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+						@Override
+						public void execute() {
+							fileFormatService.createTaxonDescriptionFile(Authentication.getInstance().getToken(), treatment, callback);
+						}
+					});
 				}
 			}
-		});
+		});		
 	}
 }
