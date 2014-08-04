@@ -3,7 +3,7 @@ package edu.arizona.biosemantics.etcsite.shared.rpc;
 public class ParallelRPCCallback<T> extends RPCCallback<T> {
 
     private T data;
-    private ParentRPCCallback parent;
+    protected ParentRPCCallback parent;
 	private boolean failed;
 
     public T getData() {

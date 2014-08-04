@@ -19,6 +19,7 @@ import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.ProgressBar;
 
 import edu.arizona.biosemantics.etcsite.server.rpc.XmlModelFileCreator;
 import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.TaxonIdentificationEntry;
@@ -89,6 +90,8 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	
 	@UiField
 	TabPanel tabPanel;
+	
+	ProgressBar progressBar = new ProgressBar();
 	
 	private ICreateSemanticMarkupFilesView.Presenter presenter;
 
@@ -277,5 +280,16 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	@UiHandler("batchButton")
 	public void onBatch(ClickEvent event) {
 		this.presenter.onBatch(this.batchArea.getText());
+	}
+	
+	@Override
+	public void incrementProgress() {
+		progressBar.show();
+		progressBar.updateProgress(progressBar.getIncrement() + 1, "Creating...");
+	}
+
+	@Override
+	public void initProgress(int size) {
+		progressBar.setIncrement(size);
 	}
 }

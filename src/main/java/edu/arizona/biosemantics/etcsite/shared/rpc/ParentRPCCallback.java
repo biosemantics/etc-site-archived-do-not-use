@@ -20,6 +20,14 @@ public abstract class ParentRPCCallback {
             callback.setParent(this);
         }
     }
+    
+    public int getDoneCount() {
+    	return doneCount;
+    }
+    
+	public double getCount() {
+		return childCallbacks.size();
+	}
 
     protected synchronized void done() {
         doneCount++;
@@ -58,4 +66,6 @@ public abstract class ParentRPCCallback {
     protected List<ParallelRPCCallback> getChildCallbacks(){
     	return this.childCallbacks;
     }
+
+
 }
