@@ -80,10 +80,13 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 		
 		private void callSuperOnFailure(Throwable caught) {
 			super.onFailure(caught);
+			
 		}
 		private void callSuperOnResult(Boolean result) {
-			view.incrementProgress();
 			super.onResult(result);
+			view.incrementProgress(parent.getDoneCount() / (double)parent.getCount());
+			if(parent.getCount() == parent.getDoneCount())
+				view.hideProgress();
 		}
 	};
 	
@@ -163,7 +166,6 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 
 	private void createXmlFiles(final List<XmlModelFile> modelFiles, final String destinationFilePath) {
 		List<ParallelRPCCallback> parallelRPCCallbacks = new LinkedList<ParallelRPCCallback>();
-		view.initProgress(modelFiles.size());
 		for(final XmlModelFile modelFile : modelFiles) {
 			parallelRPCCallbacks.add(new FileCreateParallelRPCCallback(modelFile));
 		}

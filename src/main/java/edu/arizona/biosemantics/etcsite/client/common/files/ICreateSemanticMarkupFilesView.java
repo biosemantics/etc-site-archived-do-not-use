@@ -54,8 +54,8 @@ public interface ICreateSemanticMarkupFilesView extends IsWidget {
 
 	String getFullCitation();
 
-	void initProgress(int size);
+	void incrementProgress(double value);
 
-	void incrementProgress();
+	void hideProgress();
 	
 }

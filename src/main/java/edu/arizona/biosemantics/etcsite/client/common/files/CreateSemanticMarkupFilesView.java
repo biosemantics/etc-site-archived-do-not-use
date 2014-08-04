@@ -20,6 +20,8 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.ProgressBar;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
+import com.sencha.gxt.widget.core.client.box.ProgressMessageBox;
 
 import edu.arizona.biosemantics.etcsite.server.rpc.XmlModelFileCreator;
 import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.TaxonIdentificationEntry;
@@ -91,7 +93,7 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	@UiField
 	TabPanel tabPanel;
 	
-	ProgressBar progressBar = new ProgressBar();
+	ProgressMessageBox progressBox = new ProgressMessageBox("Creating...");
 	
 	private ICreateSemanticMarkupFilesView.Presenter presenter;
 
@@ -283,13 +285,16 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	}
 	
 	@Override
-	public void incrementProgress() {
-		progressBar.show();
-		progressBar.updateProgress(progressBar.getIncrement() + 1, "Creating...");
+	public synchronized void incrementProgress(double value) {
+		progressBox.updateProgress(value, "please wait...");
+		progressBox.show();
 	}
-
+	
 	@Override
-	public void initProgress(int size) {
-		progressBar.setIncrement(size);
+	public void hideProgress() {
+		progressBox.hide();
 	}
+	
+	
+
 }
