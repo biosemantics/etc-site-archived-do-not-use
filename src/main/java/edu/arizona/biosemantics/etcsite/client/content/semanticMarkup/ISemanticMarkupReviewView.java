@@ -18,6 +18,8 @@ public interface ISemanticMarkupReviewView extends IsWidget {
 	
 	void setPresenter(Presenter presenter);
 
-	void setFrameUrl(String string);
+	//void setFrameUrl(String string);
+	
+	void setReview(int collectionId, String secret);
 	
 }

@@ -27,6 +27,8 @@ public class FileInfo implements Serializable {
 	}
 	
 	public String getName(boolean includeExtension) {
+		if(isAllowsNewChildren())
+			return name;
 		if(includeExtension)
 			return name;
 		else

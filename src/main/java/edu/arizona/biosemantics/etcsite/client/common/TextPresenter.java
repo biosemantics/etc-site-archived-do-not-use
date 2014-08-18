@@ -1,34 +1,38 @@
 package edu.arizona.biosemantics.etcsite.client.common;
 
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.inject.Inject;
-
-import edu.arizona.biosemantics.etcsite.client.common.IMessageView.Presenter;
+import com.sencha.gxt.widget.core.client.Dialog;
 
 public class TextPresenter {
 
-	private PopupPanel dialogBox;
-	//private DialogBox dialogBox;
+	private Dialog dialog;
 	private TextView view;
 	
 	@Inject
 	public TextPresenter(TextView view) { 
-		this.dialogBox = new PopupPanel(true); //true means that the popup will close when the user clicks outside of it. 
-		dialogBox.setGlassEnabled(true);
-		dialogBox.add(view.asWidget());
+		dialog = new Dialog();
+		dialog.setBodyBorder(false);
+		dialog.setHeadingText("Register");
+		dialog.setPixelSize(-1, -1);
+		dialog.setMinWidth(0);
+		dialog.setMinHeight(0);
+	    dialog.setResizable(true);
+	    dialog.setShadow(true);
+		dialog.setHideOnButtonClick(true);
+		dialog.setPredefinedButtons();
+		dialog.add(view.asWidget());
 		this.view = view;
 		view.setPresenter(this);
 	}
 	
 	public void showMessage(String title, String message) {
-		//dialogBox.setText(title);
+		dialog.setTitle(title);
 		view.setHtml(message);
-		dialogBox.center();
+		dialog.center();
 	}
 
 	public void onClose() {
-		dialogBox.hide();
+		dialog.hide();
 	}
 	
 }

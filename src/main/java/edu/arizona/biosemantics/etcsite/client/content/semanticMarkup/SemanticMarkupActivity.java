@@ -8,7 +8,6 @@ import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
-import edu.arizona.biosemantics.etcsite.client.common.IMessageOkView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupInputView.Presenter;
@@ -50,9 +49,8 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 			IAuthenticationServiceAsync authenticationService, 
 			ILoginView.Presenter loginPresenter, 
 			IRegisterView.Presenter registerPresenter, 
-			IResetPasswordView.Presenter resetPasswordPresenter, 
-			IMessageOkView.Presenter messagePresenter) {
-		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter, messagePresenter);
+			IResetPasswordView.Presenter resetPasswordPresenter) {
+		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter);
 		this.taskService = taskService;
 		this.inputPresenter = inputPresenter;
 		this.preprocessPresenter = preprocessPresenter;

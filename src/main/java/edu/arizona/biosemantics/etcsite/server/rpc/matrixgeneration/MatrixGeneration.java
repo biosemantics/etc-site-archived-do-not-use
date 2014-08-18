@@ -27,7 +27,8 @@ public class MatrixGeneration implements Callable<Boolean> {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		MatrixGeneration mg = new MatrixGeneration("C:/test/users/1070/input_2", "C:/test/temp/matrixGeneration/124/Matrix.mx");
+		//MatrixGeneration mg = new MatrixGeneration("C:/test/users/1070/input_2", "C:/test/temp/matrixGeneration/124/Matrix.mx");
+		MatrixGeneration mg = new MatrixGeneration("C:/test/Test_mmm", "C:/test/Test_mmm.mx");
 		mg.call();
 		
 	}

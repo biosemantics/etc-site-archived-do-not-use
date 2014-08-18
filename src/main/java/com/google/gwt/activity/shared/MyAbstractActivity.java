@@ -4,12 +4,12 @@ import com.google.gwt.place.shared.PlaceController;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
-import edu.arizona.biosemantics.etcsite.client.common.IMessageOkView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView.ILoginListener;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView.IRegisterListener;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView.IResetPasswordListener;
+import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.client.top.LoggedInPlace;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
@@ -22,11 +22,11 @@ public abstract class MyAbstractActivity implements MyActivity {
 	private ILoginView.Presenter loginPresenter;
 	private IRegisterView.Presenter registerPresenter;
 	private IResetPasswordView.Presenter resetPasswordPresenter;
-	protected IMessageOkView.Presenter messagePresenter;
+	protected MessagePresenter messagePresenter = new MessagePresenter();
 	
 	public MyAbstractActivity(PlaceController placeController, IAuthenticationServiceAsync authenticationService, 
 			ILoginView.Presenter loginPresenter, IRegisterView.Presenter registerPresenter, 
-			IResetPasswordView.Presenter resetPasswordPresenter, IMessageOkView.Presenter messagePresenter) {
+			IResetPasswordView.Presenter resetPasswordPresenter) {
 		this.placeController = placeController;
 		this.authenticationService = authenticationService;
 		this.loginPresenter = loginPresenter;
@@ -190,8 +190,7 @@ public abstract class MyAbstractActivity implements MyActivity {
 			}
 			@Override
 			public void onRegisterFailure(String message) {
-				messagePresenter.setMessage(message);
-				messagePresenter.show();
+				messagePresenter.showOkBox("Registration failure", message);
 			}
 			@Override
 			public void onCancel() {}
@@ -203,8 +202,7 @@ public abstract class MyAbstractActivity implements MyActivity {
 		resetPasswordPresenter.show(new IResetPasswordListener(){
 			@Override
 			public void onCodeSent(String message) {
-				messagePresenter.setMessage(message);
-				messagePresenter.show();
+				messagePresenter.showOkBox("Code sent", message);
 				loginPresenter.setEmailField(resetPasswordPresenter.getEmail());
 			}
 			
@@ -216,8 +214,7 @@ public abstract class MyAbstractActivity implements MyActivity {
 			
 			@Override
 			public void onFailure(String message) {
-				messagePresenter.setMessage(message);
-				messagePresenter.show();
+				messagePresenter.showOkBox("Failure", message);
 			}
 			
 			@Override

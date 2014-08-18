@@ -26,14 +26,13 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 	private BracketColorizer bracketColorizer;
 	private BracketValidator bracketValidator;
 	private PlaceController placeController;
-	private MessagePresenter messagePresenter;
+	private MessagePresenter messagePresenter = new MessagePresenter();
 	
 	@Inject
 	public SemanticMarkupPreprocessPresenter(ISemanticMarkupPreprocessView view, 
 			PlaceController placeController,
 			ISemanticMarkupServiceAsync semanticMarkupService, 
-			BracketColorizer bracketColorizer, BracketValidator bracketValidator, 
-			MessagePresenter messagePresenter) {
+			BracketColorizer bracketColorizer, BracketValidator bracketValidator) {
 		super();
 		this.view = view;
 		view.setPresenter(this);
@@ -41,7 +40,6 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 		this.semanticMarkupService = semanticMarkupService;
 		this.bracketColorizer = bracketColorizer;
 		this.bracketValidator = bracketValidator;
-		this.messagePresenter = messagePresenter;
 	}
 
 	@Override
@@ -84,7 +82,7 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 				bracketValidator.validate(view.getHTML())))
 			storeAndLeave();
 		else {
-			messagePresenter.showMessage("Unmatched Brackets", "You have not corrected all the unmatched brackets.");
+			messagePresenter.showOkBox("Unmatched Brackets", "You have not corrected all the unmatched brackets.");
 		}
 	}
 

@@ -1,7 +1,10 @@
 package edu.arizona.biosemantics.etcsite.client.common;
 
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.inject.Inject;
+import com.sencha.gxt.widget.core.client.Dialog;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
+import com.sencha.gxt.widget.core.client.event.HideEvent;
+import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView.IResetPasswordListener;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
@@ -12,7 +15,7 @@ public class ResetPasswordPresenter implements IResetPasswordView.Presenter {
 
 	private IAuthenticationServiceAsync authenticationService;
 	private IResetPasswordView resetPasswordView;
-	private PopupPanel dialogBox;
+	private Dialog dialog;
 	private IResetPasswordListener currentListener;
 	private CaptchaPresenter captchaPresenter;
 
@@ -21,17 +24,27 @@ public class ResetPasswordPresenter implements IResetPasswordView.Presenter {
 		this.resetPasswordView = view;
 		resetPasswordView.setPresenter(this);
 		this.authenticationService = authenticationService;
-		dialogBox = new PopupPanel(true){
+		
+		dialog = new Dialog();
+		dialog.setBodyBorder(false);
+		dialog.setHeadingText("Register");
+		dialog.setPixelSize(-1, -1);
+		dialog.setMinWidth(0);
+		dialog.setMinHeight(0);
+	    dialog.setResizable(true);
+	    dialog.setShadow(true);
+		dialog.setHideOnButtonClick(true);
+		dialog.setPredefinedButtons(PredefinedButton.CANCEL);
+		dialog.add(resetPasswordView.asWidget());
+		
+		dialog.addHideHandler(new HideHandler() {
 			@Override
-			public void hide(boolean autoClosed){
-				if (autoClosed)
-					if (currentListener != null)
-						onCancel();
-				super.hide(autoClosed);
+			public void onHide(HideEvent event) {
+				resetPasswordView.clearFields();
+				if(currentListener != null)
+					currentListener.onCancel();
 			}
-		}; //true means that the popup will close when the user clicks outside of it.
-		dialogBox.setGlassEnabled(true);
-		dialogBox.add(resetPasswordView.asWidget());
+		});
 		
 		captchaPresenter = new CaptchaPresenter(view.getCaptchaPanel(), authenticationService);
 	}
@@ -40,7 +53,7 @@ public class ResetPasswordPresenter implements IResetPasswordView.Presenter {
 	public void show(IResetPasswordListener listener) {
 		this.currentListener = listener;
 		captchaPresenter.requestNewCaptcha();
-		dialogBox.center();
+		dialog.show();
 	}
 
 	@Override
@@ -104,7 +117,7 @@ public class ResetPasswordPresenter implements IResetPasswordView.Presenter {
 			public void onResult(PasswordResetResult result) {
 				if (result.getResult()){
 					resetPasswordView.clearFields();
-					dialogBox.hide();
+					dialog.hide();
 					
 					if (currentListener != null)
 						currentListener.onSuccess(result.getMessage());
@@ -114,11 +127,6 @@ public class ResetPasswordPresenter implements IResetPasswordView.Presenter {
 				}
 			}
 		});
-	}
-
-	private void onCancel(){
-		resetPasswordView.clearFields();
-		currentListener.onCancel();
 	}
 	
 	@Override

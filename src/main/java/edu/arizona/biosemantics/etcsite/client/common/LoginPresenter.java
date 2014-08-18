@@ -1,9 +1,8 @@
 package edu.arizona.biosemantics.etcsite.client.common;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window.Location;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.inject.Inject;
+import com.sencha.gxt.widget.core.client.Dialog;
 
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView.ILoginListener;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationResult;
@@ -14,24 +13,27 @@ public class LoginPresenter implements ILoginView.Presenter {
 
 	private IAuthenticationServiceAsync authenticationService;
 	private ILoginView loginView;
-	private PopupPanel loginPopup;
 	private ILoginListener currentListener;
+	private Dialog dialog;
 
 	@Inject
 	public LoginPresenter(ILoginView loginView, IAuthenticationServiceAsync authenticationService) {
 		this.loginView = loginView;
 		loginView.setPresenter(this);
 		this.authenticationService = authenticationService;
-		loginPopup = new PopupPanel(true){
-			@Override
-			public void hide(boolean autoClosed){
-				if (autoClosed)
-					onCancel();
-				super.hide(autoClosed);
-			}
-		}; //true means that the popup will close when the user clicks outside of it.
-		loginPopup.setGlassEnabled(true);
-		loginPopup.add(loginView.asWidget());
+		
+		dialog = new Dialog();
+		dialog.setBodyBorder(false);
+		dialog.setHeadingText("Login");
+		dialog.setPixelSize(-1, -1);
+		dialog.setMinWidth(0);
+		dialog.setMinHeight(0);
+	    dialog.setResizable(true);
+	    dialog.setShadow(true);
+		dialog.setHideOnButtonClick(true);
+		dialog.setPredefinedButtons();
+
+		dialog.add(loginView.asWidget());
 	}
 
 	@Override
@@ -49,7 +51,7 @@ public class LoginPresenter implements ILoginView.Presenter {
 					auth.setLastName(result.getUser().getLastName());
 					auth.setAffiliation(result.getUser().getAffiliation());
 					
-					loginPopup.hide();
+					dialog.hide();
 					if(currentListener != null)
 						currentListener.onLogin();
 				} else {
@@ -72,7 +74,7 @@ public class LoginPresenter implements ILoginView.Presenter {
 		loginView.clearPasswordTextBox();
 		loginView.giveLoginFocus();
 		this.currentListener = listener;
-		loginPopup.center();
+		dialog.show();
 	}
 	
 	@Override
@@ -87,19 +89,19 @@ public class LoginPresenter implements ILoginView.Presenter {
 
 	@Override
 	public void onRegisterRequest() {
-		loginPopup.hide();
+		dialog.hide();
 		currentListener.onRegisterRequest();
 	}
 
 	@Override
 	public void onResetPasswordRequest() {
-		loginPopup.hide();
+		dialog.hide();
 		currentListener.onResetPasswordRequest();
 	}
 	
 	@Override
 	public void onSignInWithGoogle() {
-		loginPopup.hide();
+		dialog.hide();
 		String url = "https://accounts.google.com/o/oauth2/auth?scope=https://www.googleapis.com/auth/userinfo.profile%20https://www.googleapis.com/auth/userinfo.email&client_id=" + ServerSetup.getInstance().getSetup().getGoogleClientId() + "&redirect_uri=" + ServerSetup.getInstance().getSetup().getGoogleRedirectURI() + "&response_type=token";
 		Location.replace(url);
 	}

@@ -1,8 +1,8 @@
 package edu.arizona.biosemantics.etcsite.client.common;
 
 import com.google.gwt.regexp.shared.RegExp;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.inject.Inject;
+import com.sencha.gxt.widget.core.client.Dialog;
 
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView.IRegisterListener;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
@@ -13,7 +13,7 @@ public class RegisterPresenter implements IRegisterView.Presenter {
 
 	private IAuthenticationServiceAsync authenticationService;
 	private IRegisterView view;
-	private PopupPanel dialogBox;
+	private Dialog dialog;
 	private IRegisterListener currentListener;
 	private CaptchaPresenter captchaPresenter;
 
@@ -24,24 +24,26 @@ public class RegisterPresenter implements IRegisterView.Presenter {
 		
 		view.setPresenter(this);
 		
-		dialogBox = new PopupPanel(true){
-			@Override
-			public void hide(boolean autoClosed){
-				if (autoClosed)
-					if (currentListener != null)
-						currentListener.onCancel();
-				super.hide(autoClosed);
-			}
-		}; //true means that the popup will close when the user clicks outside of it.
-		dialogBox.setGlassEnabled(true);
-		dialogBox.add(view.asWidget());
+		dialog = new Dialog();
+		dialog.setBodyBorder(false);
+		dialog.setHeadingText("Register");
+		dialog.setPixelSize(-1, -1);
+		dialog.setMinWidth(0);
+		dialog.setMinHeight(0);
+	    dialog.setResizable(true);
+	    dialog.setShadow(true);
+		dialog.setHideOnButtonClick(true);
+		dialog.setPredefinedButtons();
+		dialog.add(view.asWidget());
 		
 		captchaPresenter = new CaptchaPresenter(view.getCaptchaPanel(), authenticationService);
 	}
 
 	@Override
 	public void onCancel() {
-		dialogBox.hide();
+		dialog.hide();
+		if (currentListener != null)
+			currentListener.onCancel();
 	}
 	
 	@Override
@@ -81,7 +83,7 @@ public class RegisterPresenter implements IRegisterView.Presenter {
 			public void onResult(RegistrationResult result) {
 				captchaPresenter.requestNewCaptcha();
 				if (result.getResult() == true){
-					dialogBox.hide();
+					dialog.hide();
 					currentListener.onRegister(result.getMessage());
 				} else {
 					view.getCaptchaPanel().clearText();
@@ -98,7 +100,7 @@ public class RegisterPresenter implements IRegisterView.Presenter {
 		view.clearPasswordBoxes();
 		view.setErrorMessage("");
 		captchaPresenter.requestNewCaptcha();
-		dialogBox.center();
+		dialog.show();
 	}
 	
 	@Override

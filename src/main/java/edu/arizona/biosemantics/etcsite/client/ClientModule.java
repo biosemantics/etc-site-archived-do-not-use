@@ -19,26 +19,14 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
-import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView;
-import edu.arizona.biosemantics.etcsite.client.common.IMessageOkView;
-import edu.arizona.biosemantics.etcsite.client.common.IMessageView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
-import edu.arizona.biosemantics.etcsite.client.common.ITextInputView;
 import edu.arizona.biosemantics.etcsite.client.common.LoginPresenter;
 import edu.arizona.biosemantics.etcsite.client.common.LoginView;
-import edu.arizona.biosemantics.etcsite.client.common.MessageConfirmPresenter;
-import edu.arizona.biosemantics.etcsite.client.common.MessageConfirmView;
-import edu.arizona.biosemantics.etcsite.client.common.MessageOkPresenter;
-import edu.arizona.biosemantics.etcsite.client.common.MessageOkView;
-import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
-import edu.arizona.biosemantics.etcsite.client.common.MessageView;
 import edu.arizona.biosemantics.etcsite.client.common.RegisterPresenter;
 import edu.arizona.biosemantics.etcsite.client.common.RegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.ResetPasswordPresenter;
 import edu.arizona.biosemantics.etcsite.client.common.ResetPasswordView;
-import edu.arizona.biosemantics.etcsite.client.common.TextInputPresenter;
-import edu.arizona.biosemantics.etcsite.client.common.TextInputView;
 import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkupFilesDialogPresenter;
 import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkupFilesDialogView;
 import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkupFilesPresenter;
@@ -221,18 +209,10 @@ public class ClientModule extends AbstractGinModule {
 		bind(IFileContentView.class).to(FileContentView.class);
 		bind(IFileContentView.Presenter.class).to(FileContentPresenter.class);		
 		
-		bind(ITextInputView.class).to(TextInputView.class);
-		bind(ITextInputView.Presenter.class).to(TextInputPresenter.class);
-		bind(IMessageView.class).to(MessageView.class);
-		bind(IMessageView.Presenter.class).to(MessagePresenter.class);
-		bind(IMessageConfirmView.class).to(MessageConfirmView.class);
-		bind(IMessageConfirmView.Presenter.class).to(MessageConfirmPresenter.class);
 		bind(ILoginView.class).to(LoginView.class);
 		bind(ILoginView.Presenter.class).to(LoginPresenter.class);
 		bind(IResetPasswordView.class).to(ResetPasswordView.class);
 		bind(IResetPasswordView.Presenter.class).to(ResetPasswordPresenter.class);
-		bind(IMessageOkView.class).to(MessageOkView.class);
-		bind(IMessageOkView.Presenter.class).to(MessageOkPresenter.class);
 		bind(IRegisterView.class).to(RegisterView.class);
 		bind(IRegisterView.Presenter.class).to(RegisterPresenter.class);
 		bind(ICreateSemanticMarkupFilesDialogView.Presenter.class).to(CreateSemanticMarkupFilesDialogPresenter.class).in(Singleton.class);
@@ -344,14 +324,13 @@ public class ClientModule extends AbstractGinModule {
 		
 		@Inject
 		public FileManagerPresenterProvider(IFileServiceAsync fileService, FileTreeDecorator fileTreeDecorator, FileDragDropHandler
-				fileDragDropHandler, IMessageView.Presenter messagePresenter,  IMessageConfirmView.Presenter messageConfirmPresenter, ITextInputView.Presenter textInputPresenter, 
-				ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter,
+				fileDragDropHandler, ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter,
 				PlaceController placeController) {
 			fileTreeView = new FileTreeView();
 			fileTreePresenter = new DnDFileTreePresenter(fileTreeView, fileService, fileTreeDecorator, fileDragDropHandler);
 			managableFileTreeView = new ManagableFileTreeView(fileTreePresenter);			
 			managableFileTreePresenter = new ManagableFileTreePresenter(managableFileTreeView, fileTreePresenter, fileService, 
-					messagePresenter, messageConfirmPresenter, textInputPresenter, createSemanticMarkupFilesDialogPresenter);
+						createSemanticMarkupFilesDialogPresenter);
 			fileManagerView = new FileManagerView(managableFileTreePresenter);
 			fileManagerPresenter = new FileManagerPresenter(placeController, fileManagerView, managableFileTreePresenter);
 		}
@@ -373,13 +352,12 @@ public class ClientModule extends AbstractGinModule {
 		
 		@Inject
 		public FileManagerDialogPresenterProvider(IFileServiceAsync fileService, FileTreeDecorator fileTreeDecorator, FileDragDropHandler
-				fileDragDropHandler, IMessageConfirmView.Presenter messageConfirmPresenter, IMessageView.Presenter messagePresenter, ITextInputView.Presenter textInputPresenter, 
-				ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter) {
+				fileDragDropHandler, ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter) {
 			fileTreeView = new FileTreeView();
 			fileTreePresenter = new DnDFileTreePresenter(fileTreeView, fileService, fileTreeDecorator, fileDragDropHandler);
 			managableFileTreeView = new ManagableFileTreeView(fileTreePresenter);			
 			managableFileTreePresenter = new ManagableFileTreePresenter(managableFileTreeView, fileTreePresenter, fileService, 
-					messagePresenter, messageConfirmPresenter, textInputPresenter, createSemanticMarkupFilesDialogPresenter);
+					createSemanticMarkupFilesDialogPresenter);
 			fileManagerDialogView = new FileManagerDialogView(managableFileTreePresenter);
 			fileManagerDialogPresenter = new FileManagerDialogPresenter(fileManagerDialogView, managableFileTreePresenter);
 		}
@@ -400,7 +378,7 @@ public class ClientModule extends AbstractGinModule {
 		
 		@Inject
 		public SelectableFileTreePresenterProvider(IFileServiceAsync fileService, FileTreeDecorator fileTreeDecorator, FileDragDropHandler
-				fileDragDropHandler, IMessageView.Presenter messagePresenter, ITextInputView.Presenter textInputPresenter) {
+				fileDragDropHandler) {
 			fileTreeView = new FileTreeView();
 			fileTreePresenter = new FileTreePresenter(fileTreeView, fileService, fileTreeDecorator);
 			selectableFileTreeView = new SelectableFileTreeView(fileTreePresenter);

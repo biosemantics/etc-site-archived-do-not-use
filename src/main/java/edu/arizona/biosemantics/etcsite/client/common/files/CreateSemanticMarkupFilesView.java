@@ -95,7 +95,7 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	@UiField
 	TabPanel tabPanel;
 	
-	ProgressMessageBox progressBox = new ProgressMessageBox("Creating...");
+	ProgressMessageBox progressBox;
 	
 	private ICreateSemanticMarkupFilesView.Presenter presenter;
 
@@ -103,6 +103,9 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		ranksList = initRanksListBox();
 		initWidget(uiBinder.createAndBindUi(this));
 		tabPanel.selectTab(0);
+		
+		progressBox = new ProgressMessageBox("Creating...");
+		progressBox.setPredefinedButtons();
 		//initRanksListBox(ranksList);
 		//ranksList = initRanksListBox();
 	}
@@ -296,6 +299,7 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	public void hideProgress() {
 		progressBox.hide();
 		progressBox = new ProgressMessageBox("Creating...");
+		progressBox.setPredefinedButtons();
 	}
 
 	@Override

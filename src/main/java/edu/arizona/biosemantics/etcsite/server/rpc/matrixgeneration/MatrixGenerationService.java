@@ -455,7 +455,72 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		
 		return taxonMatrix;
 	}
+	
+	public static void main(String[] args) throws Exception {
+		MatrixGenerationService service = new MatrixGenerationService();
+		service.createTaxonMatrix("C:/test/Test_mmm", "C:/test/Test_mmm.mx");
+	}
 
+	private TaxonMatrix createTaxonMatrix(String inputDirectory, String filePath) throws Exception {
+		CSVReader reader = new CSVReader(new FileReader(filePath), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.DEFAULT_QUOTE_CHARACTER);
+		
+		List<Character> characters = new LinkedList<Character>();
+		String[] head = reader.readNext();
+		for(int i=2; i<head.length; i++) {
+			String character = head[i];
+			characters.add(new Character(character));
+		}
+		TaxonMatrix taxonMatrix = new TaxonMatrix(characters);
+		
+	    List<TaxonName> taxonNames = new LinkedList<TaxonName>();
+	    Map<RankData, Taxon> rankTaxaMap = new HashMap<RankData, Taxon>();
+	    List<String[]> allLines = reader.readAll();
+	    //init all taxa
+	    for(int i=0; i<allLines.size(); i++) {
+	    	String[] line = allLines.get(i);
+	    	String sourceFile = line[1];
+	    	String name = line[0];
+	    	TaxonName taxonName = createTaxonName(name);
+	    	taxonNames.add(taxonName);
+	    	
+	    	String description = getMorphologyDescription(new File(inputDirectory, sourceFile));
+	    	Taxon taxon = createPlainTaxon(String.valueOf(i), taxonName, description);
+	    	rankTaxaMap.put(taxonName.getRankData().getLast(), taxon);
+	    }
+	    
+	    //assign parents or root
+	    for(TaxonName taxonName : taxonNames) {
+	    	LinkedList<RankData> rankData = taxonName.getRankData();
+	    	Taxon taxon = rankTaxaMap.get(rankData.getLast());
+	    	if(rankData.size() == 1) 
+	    		taxonMatrix.addRootTaxon(taxon);
+		    if(rankData.size() > 1) {
+		    	int parentRankIndex = rankData.size() - 2;
+		    	Taxon parentTaxon = null;
+		    	while(parentTaxon == null && parentRankIndex >= 0) {
+			    	RankData parentRankData = rankData.get(parentRankIndex);
+		    		parentTaxon = rankTaxaMap.get(parentRankData);
+		    		parentRankIndex--;
+		    	}
+		    	if(parentTaxon == null)
+		    		taxonMatrix.addRootTaxon(taxon);
+		    	else
+		    		taxonMatrix.addTaxon(parentTaxon, taxon);
+		    }
+	    }
+	    
+	    //set values
+	    for(int i=0; i<allLines.size(); i++) {
+	    	String[] line = allLines.get(i);
+		    for(int j=2; j<line.length; j++) {
+	    		taxonMatrix.setValue(rankTaxaMap.get(taxonNames.get(i).getRankData().getLast()), characters.get(j-2), new Value(line[j]));
+	    	}
+	    }
+	    
+	    reader.close();
+	    return taxonMatrix; 
+	}
+	
 	private TaxonMatrix createTaxonMatrix(MatrixGenerationConfiguration matrixGenerationConfiguration, String filePath) throws Exception {
 		String inputDirectory = matrixGenerationConfiguration.getInput();
 

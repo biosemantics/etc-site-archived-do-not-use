@@ -1,68 +1,72 @@
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.ICancelConfirmHandler;
-import com.google.gwt.user.client.ui.PopupListener;
-import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+import com.sencha.gxt.widget.core.client.Dialog;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
+import com.sencha.gxt.widget.core.client.event.HideEvent;
 
-import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkupFilesView.CreateSemanticMarkupFilesViewUiBinder;
+public class CreateSemanticMarkupFilesDialogView implements
+		ICreateSemanticMarkupFilesDialogView {
 
-public class CreateSemanticMarkupFilesDialogView implements ICreateSemanticMarkupFilesDialogView {
+	private static CreateSemanticMarkupFilesDialogViewUiBinder uiBinder = GWT
+			.create(CreateSemanticMarkupFilesDialogViewUiBinder.class);
 
-	private static CreateSemanticMarkupFilesDialogViewUiBinder uiBinder = GWT.create(CreateSemanticMarkupFilesDialogViewUiBinder.class);
-	
-	interface CreateSemanticMarkupFilesDialogViewUiBinder extends UiBinder<Widget, CreateSemanticMarkupFilesDialogView> { }
-	
-	private PopupPanel dialogBox;
+	interface CreateSemanticMarkupFilesDialogViewUiBinder extends
+			UiBinder<Widget, CreateSemanticMarkupFilesDialogView> {
+	}
+
 	private ICreateSemanticMarkupFilesDialogView.Presenter presenter;
-	
-	@UiField(provided=true)
+
+	@UiField(provided = true)
 	ICreateSemanticMarkupFilesView createSemanticMarkupFilesView;
-	
+
+	private Dialog dialog;
+
 	@Inject
-	public CreateSemanticMarkupFilesDialogView(final ICreateSemanticMarkupFilesView.Presenter presenter) {
+	public CreateSemanticMarkupFilesDialogView(
+			final ICreateSemanticMarkupFilesView.Presenter presenter) {
 		this.createSemanticMarkupFilesView = presenter.getView();
 		Widget scrollPanelView = uiBinder.createAndBindUi(this);
-		this.dialogBox = new PopupPanel(true); //true means that the popup will close when the user clicks outside of it. 
-		this.dialogBox.addCloseHandler(new CloseHandler<PopupPanel>() {
+
+		dialog = new Dialog();
+		dialog.setBodyBorder(false);
+		dialog.setHeadingText("Create Files");
+		dialog.setPixelSize(-1, -1);
+		dialog.setMinWidth(0);
+		dialog.setMinHeight(0);
+	    dialog.setResizable(false);
+	    dialog.setShadow(true);
+		dialog.setHideOnButtonClick(true);
+		dialog.getButton(PredefinedButton.OK).setText("Close");
+
+		dialog.add(scrollPanelView);
+		dialog.addHideHandler(new HideEvent.HideHandler() {
 			@Override
-			public void onClose(CloseEvent<PopupPanel> event) {
+			public void onHide(HideEvent event) {
 				CreateSemanticMarkupFilesDialogView.this.presenter.onCancel();
 				CreateSemanticMarkupFilesDialogView.this.presenter.onClose();
 			}
 		});
-		dialogBox.setGlassEnabled(true);
-		dialogBox.add(scrollPanelView);
 	}
 
 	@Override
 	public void show() {
-		dialogBox.center();
+		dialog.show();
 	}
-	
-	@UiHandler("cancelButton")
-	public void onCancel(ClickEvent event) {
-		presenter.onCancel();
-	}
-	
+
 	@Override
 	public void hide() {
-		dialogBox.hide();
+		dialog.hide();
 	}
 
 	@Override
-	public void setPresenter(ICreateSemanticMarkupFilesDialogView.Presenter presenter) {
+	public void setPresenter(
+			ICreateSemanticMarkupFilesDialogView.Presenter presenter) {
 		this.presenter = presenter;
 	}
-
 
 }

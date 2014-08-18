@@ -13,9 +13,7 @@ import com.google.inject.name.Named;
 import com.google.web.bindery.event.shared.EventBus;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.MessageConfirmPresenter;
-import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView.IConfirmListener;
-import edu.arizona.biosemantics.etcsite.client.common.MessageConfirmPresenter.AbstractConfirmListener;
+import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.client.content.user.IUserSelectView;
 import edu.arizona.biosemantics.etcsite.client.content.user.IUsersView;
 import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectPresenter;
@@ -34,7 +32,7 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 	private IUserSelectView.Presenter userSelectPresenter;
 	private IUsersView.Presenter usersPresenter;
 	private Map<Task, Set<ShortUser>> inviteesForOwnedTasks = new HashMap<Task, Set<ShortUser>>();
-	private MessageConfirmPresenter messagePresenter;
+	private MessagePresenter messagePresenter = new MessagePresenter();
 	private ITaskServiceAsync taskService;
 	private ITaskManagerView view;
 	private ISemanticMarkupServiceAsync semanticMarkupService;
@@ -45,7 +43,7 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 	
 	@Inject 
 	public TaskManagerPresenter(final ITaskManagerView view, PlaceController placeController, @Named("Tasks")EventBus eventBus,
-			MessageConfirmPresenter messagePresenter, final ITaskServiceAsync taskService, 
+			final ITaskServiceAsync taskService, 
 			ISemanticMarkupServiceAsync semanticMarkupService,
 			IMatrixGenerationServiceAsync matrixGenerationService, ResumeTaskPlaceMapper resumeTaskPlaceMapper, 
 			IUserSelectView.Presenter userSelectPresenter, IUsersView.Presenter usersPresenter) {
@@ -55,7 +53,6 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 		this.eventBus = eventBus;
 		this.userSelectPresenter = userSelectPresenter;
 		this.usersPresenter = usersPresenter;
-		this.messagePresenter = messagePresenter;
 		this.taskService = taskService;
 		this.semanticMarkupService = semanticMarkupService;
 		this.matrixGenerationService = matrixGenerationService;
@@ -99,7 +96,7 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 
 	@Override
 	public void onDelete(final List<TaskData> list){
-		messagePresenter.show("Confirm Delete", "Are you sure you want to delete these " + list.size() + " tasks?", new AbstractConfirmListener() {
+		messagePresenter.showOkCandelBox("Confirm Delete", "Are you sure you want to delete these " + list.size() + " tasks?", new MessagePresenter.AbstractConfirmListener() {
 			@Override
 			public void onConfirm() {
 				
@@ -111,7 +108,7 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 					}
 				}
 				if (deleteShared){
-					messagePresenter.show("Delete Shared Task", "Some of these tasks have been shared with other users. If you delete them they will be removed for all users. Do you want to continue?", new AbstractConfirmListener() {
+					messagePresenter.showOkCandelBox("Delete Shared Task", "Some of these tasks have been shared with other users. If you delete them they will be removed for all users. Do you want to continue?", new MessagePresenter.AbstractConfirmListener() {
 						@Override
 						public void onConfirm() {
 							for (final TaskData data: list) {
@@ -157,13 +154,13 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 	public void onDelete(final TaskData taskData) {
 		final Task task = taskData.getTask();
 		
-		messagePresenter.show("Confirm Delete", "Are you sure you want to delete task '" + task.getName() + "'?", new AbstractConfirmListener() {
+		messagePresenter.showOkCandelBox("Confirm Delete", "Are you sure you want to delete task '" + task.getName() + "'?", new MessagePresenter.AbstractConfirmListener() {
 			@Override
 			public void onConfirm() {
 				if(task.getUser().getId() == Authentication.getInstance().getUserId()) {
 					if(!taskData.getInvitees().isEmpty()) {
 						//bring up popup asking
-						messagePresenter.show("Format Requirements", "If you delete this task it will be removed for all invitees of the share. Do you want to continue?", new AbstractConfirmListener() {
+						messagePresenter.showOkCandelBox("Format Requirements", "If you delete this task it will be removed for all invitees of the share. Do you want to continue?", new MessagePresenter.AbstractConfirmListener() {
 							@Override
 							public void onConfirm() {
 								cancelTask(taskData);

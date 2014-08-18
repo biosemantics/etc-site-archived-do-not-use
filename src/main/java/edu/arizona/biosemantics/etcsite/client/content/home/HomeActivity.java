@@ -11,11 +11,10 @@ import com.google.inject.Inject;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.HasTaskPlace;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
-import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView;
-import edu.arizona.biosemantics.etcsite.client.common.IMessageOkView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
-import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView.IConfirmListener;
+import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter.IConfirmListener;
+import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.pipeline.PipelinePlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPlace;
@@ -41,12 +40,12 @@ public class HomeActivity extends MyAbstractActivity implements IHomeContentView
 	private IHomeContentView homeContentView;
 	private ISemanticMarkupServiceAsync semanticMarkupService;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
-	private IMessageConfirmView.Presenter messageConfirmPresenter;
 	private ResumeTaskPlaceMapper resumeTaskPlaceMapper;
 	private ITaxonomyComparisonServiceAsync taxonomyComparisonService;
 	private ITreeGenerationServiceAsync treeGenerationService;
 	private IVisualizationServiceAsync visualizationService;
 	private IPipelineServiceAsync pipelineService;
+	private MessagePresenter messagePresenter = new MessagePresenter();
 
 	@Inject
 	public HomeActivity(IHomeContentView homeContentView, 
@@ -56,22 +55,19 @@ public class HomeActivity extends MyAbstractActivity implements IHomeContentView
 			ITreeGenerationServiceAsync treeGenerationService,
 			IVisualizationServiceAsync visualizationService,
 			IPipelineServiceAsync pipelineService,
-			IMessageConfirmView.Presenter messageConfirmPresenter, 
 			ResumeTaskPlaceMapper resumeTaskPlaceMapper, 
 			PlaceController placeController,
 			IAuthenticationServiceAsync authenticationService, 
 			ILoginView.Presenter loginPresenter, 
 			IRegisterView.Presenter registerPresenter, 
-			IResetPasswordView.Presenter resetPasswordPresenter, 
-			IMessageOkView.Presenter messagePresenter) {
-		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter, messagePresenter);
+			IResetPasswordView.Presenter resetPasswordPresenter) {
+		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter);
 		this.homeContentView = homeContentView;
 		this.semanticMarkupService = semanticMarkupService;
 		this.matrixGenerationService = matrixGenerationService;
 		this.taxonomyComparisonService = taxonomyComparisonService;
 		this.treeGenerationService = treeGenerationService;
 		this.visualizationService = visualizationService;
-		this.messageConfirmPresenter = messageConfirmPresenter;
 		this.resumeTaskPlaceMapper = resumeTaskPlaceMapper;
 		this.pipelineService = pipelineService;
     }
@@ -135,8 +131,8 @@ public class HomeActivity extends MyAbstractActivity implements IHomeContentView
 			@Override
 			public void onResult(final Task task) {
 				if(task != null) {
-					messageConfirmPresenter.show(
-						"Resumable Task", "You have a resumable task of this type", "Start new", "Resume", new IConfirmListener() {
+					messagePresenter.showOkCandelBox(
+							"Resumable Task", "You have a resumable task of this type", "Start new", "Resume", new IConfirmListener() {
 							public void onConfirm() {
 								gotoPlace.setTask(task);
 								placeController.goTo(gotoPlace);

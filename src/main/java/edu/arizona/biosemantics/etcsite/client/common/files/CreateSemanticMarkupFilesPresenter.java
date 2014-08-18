@@ -12,9 +12,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView;
-import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView.IConfirmListener;
-import edu.arizona.biosemantics.etcsite.client.common.IMessageView;
+import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.client.common.ServerSetup;
 import edu.arizona.biosemantics.etcsite.shared.rpc.XmlModelFileCreator;
 //import edu.arizona.biosemantics.etcsite.server.rpc.FileFormatService;
@@ -122,25 +120,21 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	private IFileServiceAsync fileService;
 	private IFileAccessServiceAsync fileAccessService;
 	private IFileFormatServiceAsync fileFormatService;
-	private IMessageView.Presenter messagePresenter;
-	private IMessageConfirmView.Presenter messageConfirmPresenter;
 	private FilePathShortener filePathShortener = new FilePathShortener();
 	private int filesCreated;
 	private String destinationFilePath;
 	private BracketChecker bracketChecker = new BracketChecker();
 	private XmlModelFileCreator xmlModelFileCreator = new XmlModelFileCreator();
-	
+	private MessagePresenter messagePresenter = new MessagePresenter();
 	
 	@Inject
 	public CreateSemanticMarkupFilesPresenter(ICreateSemanticMarkupFilesView view, IFileServiceAsync fileService, 
-			IFileAccessServiceAsync fileAccessService, IFileFormatServiceAsync fileFormatService,  IMessageView.Presenter messagePresenter, IMessageConfirmView.Presenter messageConfirmPresenter) {
+			IFileAccessServiceAsync fileAccessService, IFileFormatServiceAsync fileFormatService) {
 		this.view = view;
 		view.setPresenter(this);
 		this.fileService = fileService;
 		this.fileAccessService = fileAccessService;
 		this.fileFormatService = fileFormatService;
-		this.messagePresenter = messagePresenter;
-		this.messageConfirmPresenter = messageConfirmPresenter;
 	}
 
 	public void onCreate() {
@@ -187,7 +181,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 					createXmlFiles(modelFiles, destinationFilePath);
 				else {
 					error += "Did not create any files";
-					messagePresenter.showMessage("Input Error", error.replaceAll("\n", "</br>"));
+					messagePresenter.showOkBox("Input Error", error.replaceAll("\n", "</br>"));
 				}
 			}
 		});
@@ -214,7 +208,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 					}
 				}
 				if(count>0) {
-					messagePresenter.showMessage(count+" file(s) successfully created", messageBuilder.toString().replace("\n", "<br>"));
+					messagePresenter.showOkBox(count+" file(s) successfully created", messageBuilder.toString().replace("\n", "<br>"));
 					//filesCreated += modelFiles.size();
 					filesCreated += count;
 				}
@@ -233,7 +227,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 					}
 				}
 				if(count>0){
-					messagePresenter.showMessage(count+" file(s) not created", messageBuilder.toString().replace("\n", "<br>"));
+					messagePresenter.showOkBox(count+" file(s) not created", messageBuilder.toString().replace("\n", "<br>"));
 				}
 			}
 		};
@@ -314,7 +308,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 							});
 						else {
 							error += "Did not create any files";
-							messagePresenter.showMessage("Input Error", error.replaceAll("\n", "</br>"));
+							messagePresenter.showOkBox("Input Error", error.replaceAll("\n", "</br>"));
 						}	
 					}
 				};

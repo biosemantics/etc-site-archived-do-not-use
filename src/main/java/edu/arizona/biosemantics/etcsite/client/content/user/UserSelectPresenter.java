@@ -2,9 +2,8 @@ package edu.arizona.biosemantics.etcsite.client.content.user;
 
 import java.util.Set;
 
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.inject.Inject;
+import com.sencha.gxt.widget.core.client.Dialog;
 
 import edu.arizona.biosemantics.etcsite.client.content.user.IUsersView.Presenter;
 import edu.arizona.biosemantics.etcsite.shared.db.ShortUser;
@@ -12,7 +11,7 @@ import edu.arizona.biosemantics.etcsite.shared.db.ShortUser;
 public class UserSelectPresenter implements IUserSelectView.Presenter {
 
 	private IUserSelectView view;
-	private PopupPanel dialogBox;
+	private Dialog dialog;
 	private ISelectListener currentListener;
 	private Presenter usersPresenter;
 
@@ -21,22 +20,30 @@ public class UserSelectPresenter implements IUserSelectView.Presenter {
 		this.view = view;
 		view.setPresenter(this);
 		this.usersPresenter = usersPresenter;
-		this.dialogBox = new PopupPanel(true); //true means that the popup will close when the user clicks outside of it. 
-		dialogBox.setGlassEnabled(true);
-		dialogBox.add(view.asWidget());
+		
+		dialog = new Dialog();
+		dialog.setBodyBorder(false);
+		dialog.setHeadingText("Register");
+		dialog.setPixelSize(-1, -1);
+		dialog.setMinWidth(0);
+		dialog.setMinHeight(0);
+	    dialog.setResizable(true);
+	    dialog.setShadow(true);
+		dialog.setHideOnButtonClick(true);
+		dialog.add(view.asWidget());
 	}
 	
 	@Override
 	public void show(ISelectListener listener) {
 		usersPresenter.refresh();
 		this.currentListener = listener;
-		dialogBox.center();	
+		dialog.show();	
 	}
 
 	@Override
 	public void onSelect(Set<ShortUser> users) {
 		currentListener.onSelect(users);
-		dialogBox.hide();
+		dialog.hide();
 	}
 	
 	public interface ISelectListener {

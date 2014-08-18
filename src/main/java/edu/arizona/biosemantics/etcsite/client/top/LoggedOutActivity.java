@@ -8,7 +8,6 @@ import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
-import edu.arizona.biosemantics.etcsite.client.common.IMessageOkView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
 import edu.arizona.biosemantics.etcsite.client.content.about.AboutPlace;
@@ -30,9 +29,8 @@ public class LoggedOutActivity extends MyAbstractActivity implements Presenter {
 			IAuthenticationServiceAsync authenticationService, 
 			ILoginView.Presenter loginPresenter, 
 			IRegisterView.Presenter registerPresenter, 
-			IResetPasswordView.Presenter resetPasswordPresenter, 
-			IMessageOkView.Presenter messagePresenter) {
-		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter, messagePresenter);
+			IResetPasswordView.Presenter resetPasswordPresenter) {
+		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter);
 		this.loginTopView = loginTopView;
 	}
 	
@@ -67,8 +65,7 @@ public class LoggedOutActivity extends MyAbstractActivity implements Presenter {
 						auth.setAffiliation(result.getUser().getAffiliation());
 						placeController.goTo(new LoggedInPlace());
 					} else {
-						messagePresenter.setMessage("An error occurred. Please try signing in again later.");
-						messagePresenter.show();
+						messagePresenter.showOkBox("Sign-out", "An error occurred. Please try signing in again later.");
 					}
 				}
 			});

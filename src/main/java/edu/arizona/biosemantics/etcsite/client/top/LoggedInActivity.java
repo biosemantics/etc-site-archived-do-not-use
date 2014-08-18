@@ -11,7 +11,7 @@ import com.google.inject.name.Named;
 import com.google.web.bindery.event.shared.EventBus;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.IMessageOkView;
+import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.client.content.about.AboutPlace;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerPlace;
 import edu.arizona.biosemantics.etcsite.client.content.help.HelpPlace;
@@ -33,15 +33,14 @@ public class LoggedInActivity implements Activity, Presenter {
 	private ITopView topView;
 	private Timer resumableTasksTimer;
 	private int resumableTasksTime;
-	private IMessageOkView.Presenter logoutPresenter;
 	private IAuthenticationServiceAsync authenticationService;
+	private MessagePresenter messagePresenter = new MessagePresenter();
 
 	@Inject
 	public LoggedInActivity(ITopView topView, PlaceController placeController, 
 			final ITaskServiceAsync taskService, @Named("Tasks") final EventBus tasksBus, @Named("CheckResumables")int resumableTasksTime, 
-			IMessageOkView.Presenter logoutPresenter, IAuthenticationServiceAsync authenticationService) {
+			IAuthenticationServiceAsync authenticationService) {
 		this.topView = topView;
-		this.logoutPresenter = logoutPresenter;
 		this.placeController = placeController;
 		this.resumableTasksTime = resumableTasksTime;
 		this.resumableTasksTimer = new Timer() {
@@ -123,7 +122,6 @@ public class LoggedInActivity implements Activity, Presenter {
 	public void onLogout() {
 		Authentication.getInstance().destroy();
 		placeController.goTo(new LoggedOutPlace());
-		logoutPresenter.setMessage("You are now signed out.");
-		logoutPresenter.show();
+		messagePresenter.showOkBox("Sign-out", "You are now signed out.");
 	}
 }

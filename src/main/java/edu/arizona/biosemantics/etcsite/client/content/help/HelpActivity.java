@@ -7,7 +7,6 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
-import edu.arizona.biosemantics.etcsite.client.common.IMessageOkView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
 import edu.arizona.biosemantics.etcsite.client.content.help.IHelpView.Presenter;
@@ -23,9 +22,8 @@ public class HelpActivity extends MyAbstractActivity implements Presenter {
 			IAuthenticationServiceAsync authenticationService, 
 			ILoginView.Presenter loginPresenter, 
 			IRegisterView.Presenter registerPresenter,
-			IResetPasswordView.Presenter resetPasswordPresenter,
-			IMessageOkView.Presenter messagePresenter) {
-		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter, messagePresenter);
+			IResetPasswordView.Presenter resetPasswordPresenter) {
+		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter);
 		this.helpView = helpView;
 	}
 	

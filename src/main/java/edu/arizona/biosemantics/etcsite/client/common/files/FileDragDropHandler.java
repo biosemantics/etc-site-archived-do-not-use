@@ -29,13 +29,8 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 
 	private final IFileServiceAsync fileService = GWT.create(IFileService.class);
 	private Set<IFileMoveListener> listeners = new HashSet<IFileMoveListener>();
-	private MessagePresenter messagePresenter;
-	
-	@Inject
-	public FileDragDropHandler(MessagePresenter messagePresenter) {
-		this.messagePresenter = messagePresenter;
-	}
-	
+	private MessagePresenter messagePresenter = new MessagePresenter();
+		
 	@Override
 	public void onDragStart(DragStartEvent event) {	
 		Object source = event.getSource();
@@ -84,7 +79,7 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 										if(sourceDepth.isSucceeded()) {
 											int overallDepth = targetLevel + (sourceDepth.getData() + 1);
 											if(overallDepth > Configuration.fileManagerMaxDepth) {
-												messagePresenter.showMessage("File Manager", "Only a directory depth of " + Configuration.fileManagerMaxDepth + " is allowed.");
+												messagePresenter.showOkBox("File Manager", "Only a directory depth of " + Configuration.fileManagerMaxDepth + " is allowed.");
 												return;
 											} else {
 												moveFile(sourcePath, targetPathFinal);
@@ -97,7 +92,7 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 						}
 				});
 			} else {
-				messagePresenter.showMessage("File Manager", "Directory cannot be moved into its descendants.");
+				messagePresenter.showOkBox("File Manager", "Directory cannot be moved into its descendants.");
 			}
 		}
 	}

@@ -1,8 +1,8 @@
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
+import com.sencha.gxt.widget.core.client.Dialog;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 
 import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView.Presenter;
 import edu.arizona.biosemantics.etcsite.shared.file.FileFilter;
@@ -10,45 +10,56 @@ import edu.arizona.biosemantics.etcsite.shared.file.FileFilter;
 public class SelectableFileTreePresenter implements ISelectableFileTreeView.Presenter {
 
 	private ISelectableFileTreeView view;
-	private PopupPanel dialogBox;
 	private ISelectListener currentListener;
 	private IFileTreeView.Presenter fileTreePresenter;
 	private FileFilter fileFilter;
+	private Dialog dialog;
 	
 	@Inject
 	public SelectableFileTreePresenter(ISelectableFileTreeView view, 
 			IFileTreeView.Presenter fileTreePresenter) {
 		this.view = view;
 		this.view.setPresenter(this);
-		this.dialogBox = new PopupPanel(true); //true means that the popup will close when the user clicks outside of it. 
-		dialogBox.setGlassEnabled(true);
-		dialogBox.add(view.asWidget());
+		
+		dialog = new Dialog();
+		dialog.setBodyBorder(false);
+		dialog.setHeadingText("Create Files");
+		dialog.setPixelSize(-1, -1);
+		dialog.setMinWidth(0);
+		dialog.setMinHeight(0);
+	    dialog.setResizable(true);
+	    dialog.setShadow(true);
+		dialog.setHideOnButtonClick(true);
+		dialog.setPredefinedButtons();
+
+		dialog.add(view);
+		
 		this.fileTreePresenter = fileTreePresenter;
 	}
 	
 	public void show(String title, FileFilter fileFilter, ISelectListener listener) {
 		this.currentListener = listener;
-		dialogBox.setTitle(title);
-		dialogBox.center();
+		dialog.setTitle(title);
+		dialog.show();
 		this.fileFilter = fileFilter;
 		fileTreePresenter.refresh(fileFilter);
 	}
 	
 	@Override
 	public void hide() {
-		dialogBox.hide();
+		dialog.hide();
 	}
 	
 	@Override
 	public void onSelect() {
 		if(currentListener != null)
 			currentListener.onSelect();
-		dialogBox.hide();
+		dialog.hide();
 	}
 
 	@Override
 	public void onClose() {
-		dialogBox.hide();
+		dialog.hide();
 	}
 	
 	@Override

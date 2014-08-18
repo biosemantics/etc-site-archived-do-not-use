@@ -5,11 +5,12 @@
 	xmlns:my2="urn:import:edu.arizona.biosemantics.etcsite.client.common"
 	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout">
 	<ui:style>
-		.otoFrame {
-			border: 0;
-			width:	900px;
-			height: 520px;
-			overflow: hidden;
+		.centered {
+			margin: auto;
+		}
+		.nextButton {
+			margin-top: 4px;
+   			margin-left: 20px;
 		}
 		.subMenuEntry {
 			margin-left: 0px;
@@ -17,7 +18,28 @@
 			padding-bottom:10px;
 		}
 	</ui:style>
-	<g:ScrollPanel>
+	
+	<g:DockLayoutPanel unit='PX' ui:field='dockLayoutPanel'>
+    	<g:north size='50'>
+    	    <g:SimplePanel> <!-- necessary because element.style information is set which leads ff not to center the menu -->
+	    	    <g:HorizontalPanel styleName="{style.centered}">
+	    	        <g:cell>
+	    	            <my:SubMenu ui:field="subMenu" step="REVIEW_TERMS"/>
+	    	        </g:cell>
+	    	      	<g:cell>
+	    	            <g:Button addStyleNames="{style.nextButton}" ui:field="nextButton">Next</g:Button>
+	    	        </g:cell>
+	    	    </g:HorizontalPanel>
+    	    </g:SimplePanel>
+    	</g:north>
+		   <g:center>
+		       <g:SimpleLayoutPanel ui:field="otoPanel"/>
+		   </g:center>
+	 </g:DockLayoutPanel>
+	
+	
+	
+	<!-- <g:ScrollPanel>
 	<lay:CenteredContentPanel>
 		<g:VerticalPanel>
 		    <g:HorizontalPanel>
@@ -26,10 +48,11 @@
 			</g:HorizontalPanel>
 			<g:Label>Please review the terms learned. Select terms in the left column and drag them into appropriate categories.
 			</g:Label>
-				<g:Frame ui:field="frame" styleName="{style.otoFrame}">
-				</g:Frame>
+				--><!-- <g:Frame ui:field="frame" styleName="{style.otoFrame}">
+				</g:Frame> -->
+		<!-- 		<g:SimpleLayoutPanel ui:field="otoPanel" styleName="{style.otoPanel}"/>
 			<g:Button ui:field="nextButton">Next</g:Button>
 		</g:VerticalPanel>
 	</lay:CenteredContentPanel>
-	</g:ScrollPanel>
+	</g:ScrollPanel> -->
 </ui:UiBinder>

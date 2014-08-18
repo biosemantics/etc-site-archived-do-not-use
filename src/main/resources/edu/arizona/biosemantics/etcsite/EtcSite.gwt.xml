@@ -36,9 +36,15 @@
   <!-- Include GWTUpload library -->
   <inherits name="gwtupload.GWTUpload"/>
   
+  <!-- OTO 2 module -->
+  <inherits name='edu.arizona.biosemantics.oto2.oto.Oto'/>
+  
   <!-- Include GWT incubator: -->
   <inherits name='com.google.gwt.widgetideas.WidgetIdeas' />   
   <inherits name='com.google.gwt.libideas.LibIdeas' />
+  
+  <!-- Has to appear after Matrix_review, since Matrix_review uses Blue and would overwrite -->
+  <inherits name='com.sencha.gxt.theme.gray.Gray' />
   
   <!-- Load dinamically predefined styles in the library when the application starts -->
   <stylesheet src="Upload.css"/>

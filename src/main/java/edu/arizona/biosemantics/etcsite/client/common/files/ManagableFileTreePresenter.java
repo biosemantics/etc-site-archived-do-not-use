@@ -13,17 +13,18 @@ import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
+import com.sencha.gxt.widget.core.client.box.PromptMessageBox;
+import com.sencha.gxt.widget.core.client.event.HideEvent;
+import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
+import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter.AbstractConfirmListener;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.Configuration;
-import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView;
-import edu.arizona.biosemantics.etcsite.client.common.IMessageView;
-import edu.arizona.biosemantics.etcsite.client.common.ITextInputView;
 import edu.arizona.biosemantics.etcsite.client.common.LoadingPopup;
-import edu.arizona.biosemantics.etcsite.client.common.ITextInputView.ITextInputListener;
-import edu.arizona.biosemantics.etcsite.client.common.MessageConfirmPresenter.AbstractConfirmListener;
 import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
-import edu.arizona.biosemantics.etcsite.client.common.MessageView;
 import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkupFilesDialogPresenter.ICloseHandler;
 import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView.IFileTreeSelectionListener;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
@@ -48,27 +49,21 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	private IManagableFileTreeView view;
 	private IFileTreeView.Presenter fileTreePresenter;
 	private FileFilter fileFilter;
-	private IMessageView.Presenter messagePresenter;
-	private IMessageConfirmView.Presenter messageConfirmPresenter;
+	private MessagePresenter messagePresenter = new MessagePresenter();
 	private String defaultServletPath;
-	private ITextInputView.Presenter textInputPresenter;
 	private ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter;
 	private LoadingPopup loadingPopup = new LoadingPopup();
 	
 	@Inject
 	public ManagableFileTreePresenter(IManagableFileTreeView view, 
 			IFileTreeView.Presenter fileTreePresenter, 
-			IFileServiceAsync fileService, MessageView.Presenter messagePresenter, IMessageConfirmView.Presenter messageConfirmPresenter, 
-			ITextInputView.Presenter textInputPresenter, 
+			IFileServiceAsync fileService,  
 			ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter) {
 		this.fileService = fileService;
 		this.view = view;
 		this.view.setPresenter(this);
 		this.fileTreePresenter = fileTreePresenter;
 		fileTreePresenter.addSelectionListener(this);
-		this.messagePresenter = messagePresenter;
-		this.messageConfirmPresenter = messageConfirmPresenter;
-		this.textInputPresenter = textInputPresenter;
 		this.createSemanticMarkupFilesDialogPresenter = createSemanticMarkupFilesDialogPresenter;
 		
 		defaultServletPath = view.getUploader().getServletPath();
@@ -120,7 +115,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 			createSemanticMarkupFilesDialogPresenter.show(fileTreePresenter.getSelectedItem().getFileInfo().getFilePath());
 		}
 		else
-			messagePresenter.showMessage("No destination selected", "Please select a valid parent directory");
+			messagePresenter.showOkBox("No destination selected", "Please select a valid parent directory");
 	}
 	
 	@Override
@@ -129,9 +124,10 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		if(selection != null && selection.getFileInfo().isAllowsNewChildren()) {
 			int level = getLevel(selection);
 			if(level < Configuration.fileManagerMaxDepth) {
-				textInputPresenter.show("Create folder", "Folder name:", "", new ITextInputListener() {
+				 final PromptMessageBox box = new PromptMessageBox("Create folder", "Folder name:");
+				 box.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
 					@Override
-					public void onConfirm(final String directoryName) {
+					public void onSelect(SelectEvent event) {
 						final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
 						final String selectionPath = selection.getFileInfo().getFilePath();
 						fileService.isDirectory(Authentication.getInstance().getToken(), selectionPath, new RPCCallback<Boolean>() {
@@ -141,7 +137,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 								if(!result)
 									newDirectoryParent = getParent(selection);
 								if(newDirectoryParent != null) {
-									fileService.createDirectory(Authentication.getInstance().getToken(), newDirectoryParent, directoryName, false,
+									fileService.createDirectory(Authentication.getInstance().getToken(), newDirectoryParent, box.getValue(), false,
 											new RPCCallback<String>() {
 												@Override
 												public void onResult(String result) {
@@ -153,14 +149,13 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 							}
 						});
 					}
-					@Override
-					public void onCancel() { }
-				});
+				 });
+		         box.show();
 			} else {
-				messagePresenter.showMessage("File Manager", "Only a directory depth of " + Configuration.fileManagerMaxDepth + " is allowed.");
+				messagePresenter.showOkBox("File Manager", "Only a directory depth of " + Configuration.fileManagerMaxDepth + " is allowed.");
 			}
 		} else {
-			messagePresenter.showMessage("File Manager", "Please select a valid parent directory.");
+			messagePresenter.showOkBox("File Manager", "Please select a valid parent directory.");
 		}
 	}
 	
@@ -178,27 +173,28 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
 		//don't allow rename of root node
 		if(selection != null && !selection.getFileInfo().isSystemFile()) {
-			textInputPresenter.show("Rename", "New name", selection.getFileInfo().getName(false), new ITextInputListener() {
+			final PromptMessageBox box = new PromptMessageBox("Rename", "New name:");
+			 box.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
 				@Override
-				public void onConfirm(final String newFileName) {
+				public void onSelect(SelectEvent event) {
 					final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
 					if(selection != null && !selection.getFileInfo().isSystemFile()) {
 						fileService.renameFile(Authentication.getInstance().getToken(), selection.getFileInfo().getFilePath(), 
-								newFileName + "." + selection.getFileInfo().getExtension(), 
+								box.getValue() + "." + selection.getFileInfo().getExtension(), 
 								new RPCCallback<Void>() {
 							@Override
 							public void onResult(Void result) {
 								fileTreePresenter.refresh(fileFilter);
-								selection.getFileInfo().setName(newFileName, true);
+								selection.getFileInfo().setName(box.getValue(), true);
 							}
 						});
 					}
 				}
-				@Override
-				public void onCancel() {}
-			});
+			 });
+			 box.setValue(selection.getFileInfo().getName(false));
+			 box.show();
 		} else {
-			messagePresenter.showMessage("File Manager", "Please select a valid file or directory to rename");
+			messagePresenter.showOkBox("File Manager", "Please select a valid file or directory to rename");
 		}
 	}
 	
@@ -207,7 +203,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	public void onDelete() {
 		final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
 		if(selection != null && !selection.getFileInfo().isSystemFile()) {
-			messageConfirmPresenter.show("Format Requirements", "Are you sure you want to delete '" + selection.getText() + "'?", new AbstractConfirmListener() {
+			messagePresenter.showOkCandelBox("Format Requirements", "Are you sure you want to delete '" + selection.getText() + "'?", new AbstractConfirmListener() {
 				@Override
 				public void onConfirm() {
 					fileService.deleteFile(Authentication.getInstance().getToken(), selection.getFileInfo().getFilePath(), new RPCCallback<Void>(){
@@ -222,7 +218,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 				}
 			});
 		} else {
-			messagePresenter.showMessage("File Manager", "Please select a valid file or directory to delete");
+			messagePresenter.showOkBox("File Manager", "Please select a valid file or directory to delete");
 		}
 	}
 
@@ -251,10 +247,10 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 					}
 				});
 			} else {
-				messagePresenter.showMessage("File Manager", "Not downloadable");
+				messagePresenter.showOkBox("File Manager", "Not downloadable");
 			}
 		} else {
-			messagePresenter.showMessage("File Manager", "Please select a file to download");
+			messagePresenter.showOkBox("File Manager", "Please select a file to download");
 		}
 	}
 	
@@ -270,7 +266,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 			String serverResponse = uploader.getServerInfo().message;
 			if(serverResponse != null && !serverResponse.isEmpty()) {
 				serverResponse = serverResponse.replaceAll("\n", "<br>");
-				messagePresenter.showMessage("File Manager", serverResponse);
+				messagePresenter.showOkBox("File Manager", serverResponse);
 			}
 			
 			if (uploader.getStatus() == Status.SUCCESS) {

@@ -7,8 +7,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView;
-import edu.arizona.biosemantics.etcsite.client.common.IMessageConfirmView.IConfirmListener;
+import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.ResumeTaskPlaceMapper;
@@ -27,20 +26,18 @@ public class MenuActivity extends AbstractActivity implements Presenter {
 	private PlaceController placeController;
 	private ISemanticMarkupServiceAsync semanticMarkupService;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
-	private IMessageConfirmView.Presenter messageConfirmPresenter;
 	private ResumeTaskPlaceMapper resumeTaskPlaceMapper;
+	private MessagePresenter messagePresenter = new MessagePresenter();
 
 	@Inject
 	public MenuActivity(IMenuView menuView, PlaceController placeController, 
 			ISemanticMarkupServiceAsync semanticMarkupService,
 			IMatrixGenerationServiceAsync matrixGenerationService, 
-			IMessageConfirmView.Presenter messageConfirmPresenter, 
 			ResumeTaskPlaceMapper resumeTaskPlaceMapper) {
 		this.menuView = menuView;
 		this.placeController = placeController;
 		this.semanticMarkupService = semanticMarkupService;
 		this.matrixGenerationService = matrixGenerationService;
-		this.messageConfirmPresenter = messageConfirmPresenter;
 		this.resumeTaskPlaceMapper = resumeTaskPlaceMapper;
 	}
 	
@@ -58,8 +55,8 @@ public class MenuActivity extends AbstractActivity implements Presenter {
 			@Override
 			public void onResult(final Task task) {
 				if(task != null)
-					messageConfirmPresenter.show(
-						"Resumable Task", "You have a resumable task of this type",  "Start new", "Resume", new IConfirmListener() {
+					messagePresenter.showOkCandelBox(
+						"Resumable Task", "You have a resumable task of this type",  "Start new", "Resume", new MessagePresenter.IConfirmListener() {
 							public void onConfirm() {
 								placeController.goTo(resumeTaskPlaceMapper.getPlace(task));
 							}
@@ -80,8 +77,8 @@ public class MenuActivity extends AbstractActivity implements Presenter {
 			@Override
 			public void onResult(final Task task) {
 				if(task != null) 
-					messageConfirmPresenter.show(
-						"Resumable Task", "You have a resumable task of this type", "Start new", "Resume",  new IConfirmListener() {
+					messagePresenter.showOkCandelBox(
+						"Resumable Task", "You have a resumable task of this type", "Start new", "Resume",  new MessagePresenter.IConfirmListener() {
 							public void onConfirm() {
 								placeController.goTo(resumeTaskPlaceMapper.getPlace(task));
 							}

@@ -10,15 +10,8 @@
 		}
 	</ui:style>
 	<g:HTMLPanel>
-    <g:ScrollPanel styleName="{style.scrollPanel}">
-		
+   		<g:ScrollPanel styleName="{style.scrollPanel}">
 			<my:ICreateSemanticMarkupFilesView ui:field="createSemanticMarkupFilesView"/>
-			
-		
-	</g:ScrollPanel>
-		<hr width="100%" noshade="noshade"></hr>
-		<div align="right">
-			<g:Button ui:field="cancelButton">Cancel</g:Button>
-		</div>
+		</g:ScrollPanel>
 	</g:HTMLPanel>
 </ui:UiBinder> 

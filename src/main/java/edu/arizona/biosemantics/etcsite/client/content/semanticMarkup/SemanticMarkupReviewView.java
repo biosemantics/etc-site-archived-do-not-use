@@ -8,28 +8,34 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 
-public class SemanticMarkupReviewView extends Composite implements ISemanticMarkupReviewView {
+import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationReviewView;
+import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.IMatrixGenerationReviewView.Presenter;
+import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review.IReviewView;
+import edu.arizona.biosemantics.oto2.oto.client.Oto;
 
-	private static SemanticMarkupReviewViewUiBinder uiBinder = GWT
-			.create(SemanticMarkupReviewViewUiBinder.class);
 
-	interface SemanticMarkupReviewViewUiBinder extends
-			UiBinder<Widget, SemanticMarkupReviewView> {
+public class SemanticMarkupReviewView extends Composite implements ISemanticMarkupReviewView { //, RequiresResize {
+
+	private static SemanticMarkupReviewViewUiBinder uiBinder = GWT.create(SemanticMarkupReviewViewUiBinder.class);
+
+	interface SemanticMarkupReviewViewUiBinder extends UiBinder<Widget, SemanticMarkupReviewView> {
 	}
 
 	private Presenter presenter;
-	
-	@UiField
-	Button nextButton;
-	
-	@UiField
-	Frame frame;
 
+	@UiField
+	SimpleLayoutPanel otoPanel;
+	
+	@Inject
 	public SemanticMarkupReviewView() {
+		super();
 		initWidget(uiBinder.createAndBindUi(this));
-		frame.getElement().setAttribute("scrolling", "no");
 	}
 
 	@Override
@@ -39,12 +45,18 @@ public class SemanticMarkupReviewView extends Composite implements ISemanticMark
 
 	@UiHandler("nextButton")
 	public void onNext(ClickEvent event) {
-		this.presenter.onNext();
+		presenter.onNext();
 	}
 
+	/*@Override
+	public void onResize() {
+		((RequiresResize)view).onResize();
+	}*/
+	
 	@Override
-	public void setFrameUrl(String url) {
-		this.frame.setUrl(url);
+	public void setReview(int collectionId, String secret) {
+		Oto oto = new Oto(collectionId, secret);
+		otoPanel.add(oto.getView().asWidget());
 	}
 
 }

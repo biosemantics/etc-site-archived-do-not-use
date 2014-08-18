@@ -7,7 +7,6 @@ import com.google.inject.name.Named;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.Configuration;
-import edu.arizona.biosemantics.etcsite.client.common.IMessageView;
 import edu.arizona.biosemantics.etcsite.client.common.LoadingPopup;
 import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileImageLabelTreeItem;
@@ -29,17 +28,16 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 	private ISemanticMarkupServiceAsync semanticMarkupService;
 	private edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView.Presenter selectableFileTreePresenter;
 	private edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView.Presenter fileTreePresenter;
-	private edu.arizona.biosemantics.etcsite.client.common.IMessageView.Presenter messagePresenter;
 	private FilePathShortener filePathShortener;
 	private String inputFile;
 	private IFileManagerDialogView.Presenter fileManagerDialogPresenter;
 	private LoadingPopup loadingPopup = new LoadingPopup();
+	private MessagePresenter messagePresenter = new MessagePresenter();
 
 	@Inject
 	public SemanticMarkupInputPresenter(ISemanticMarkupInputView view, PlaceController 
 			placeController, ISemanticMarkupServiceAsync semanticMarkupService, 
 			ISelectableFileTreeView.Presenter selectableFileTreePresenter,
-			IMessageView.Presenter messagePresenter, 
 			FilePathShortener filePathShortener,
 			IFileManagerDialogView.Presenter fileManagerDialogPresenter
 			) {
@@ -50,7 +48,6 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 		
 		this.selectableFileTreePresenter = selectableFileTreePresenter;
 		this.fileTreePresenter = selectableFileTreePresenter.getFileTreePresenter();
-		this.messagePresenter = messagePresenter;
 		this.filePathShortener = filePathShortener;
 		this.fileManagerDialogPresenter = fileManagerDialogPresenter;
 	}
@@ -66,11 +63,11 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 	public void onNext() {
 		//error checking.
 		if (view.getTaskName().equals("")){
-			messagePresenter.showMessage("Error", "Enter a name for this task.");
+			messagePresenter.showOkBox("Error", "Enter a name for this task.");
 			return;
 		}
 		if (inputFile == null){
-			messagePresenter.showMessage("Error", "Specify an input folder");
+			messagePresenter.showOkBox("Error", "Specify an input folder");
 			return;
 		}
 		
@@ -81,7 +78,7 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 			@Override
 			public void onResult(Boolean result) {
 				if(!result) {
-					messagePresenter.showMessage("Input", "Input directory is invalid.");
+					messagePresenter.showOkBox("Input", "Input directory is invalid.");
 					loadingPopup.stop();
 				} else {
 					semanticMarkupService.start(Authentication.getInstance().getToken(), 
@@ -116,7 +113,7 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 					view.setInput(shortendPath);
 					view.setEnabledNext(true);			
 					if(selection.getFileInfo().getOwnerUserId() != Authentication.getInstance().getUserId()) {
-						messagePresenter.showMessage("Shared input", "The selected input is not owned. To start the task the files will be copied to your own space.");
+						messagePresenter.showOkBox("Shared input", "The selected input is not owned. To start the task the files will be copied to your own space.");
 						fileManagerDialogPresenter.hide();
 					} else {
 						fileManagerDialogPresenter.hide();

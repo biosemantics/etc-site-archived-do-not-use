@@ -68,6 +68,15 @@
 		<servlet-class>edu.arizona.biosemantics.etcsite.server.MyKaptchaServlet</servlet-class>
 		<!-- <servlet-class>com.google.code.kaptcha.servlet.KaptchaServlet</servlet-class> -->
 	</servlet>
+	<servlet>
+		<servlet-name>otoCollectionServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>otoCollectionServlet</servlet-name>
+		<url-pattern>/etcsite/collection</url-pattern>
+	</servlet-mapping>
 
 	<!-- http://www.gwtproject.org/doc/latest/DevGuideServerCommunication.html#DevGuideImplementingServices
 	       -> Common pitfalls: for url-pattern help -->
@@ -126,6 +135,34 @@
 	<servlet-mapping>
 		<servlet-name>Kaptcha</servlet-name>
 		<url-pattern>/etcsite/captcha/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>collectionServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>collectionServlet</servlet-name>
+		<url-pattern>/etcsite/collection</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>Jersey Web Application</servlet-name>
+		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+		<init-param>
+			<param-name>jersey.config.server.provider.packages</param-name>
+			<param-value>com.javahash.jersey;edu.arizona.biosemantics.oto2.oto.server.rest;org.codehaus.jackson.jaxrs</param-value>
+		</init-param>
+		<init-param>
+			<param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Jersey Web Application</servlet-name>
+		<url-pattern>/rest/*</url-pattern>
 	</servlet-mapping>
 
 

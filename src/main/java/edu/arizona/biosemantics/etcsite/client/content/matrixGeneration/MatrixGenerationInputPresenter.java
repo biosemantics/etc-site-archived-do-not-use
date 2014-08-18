@@ -5,8 +5,8 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.IMessageView;
 import edu.arizona.biosemantics.etcsite.client.common.LoadingPopup;
+import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileImageLabelTreeItem;
 import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView;
@@ -26,18 +26,17 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 	private IMatrixGenerationServiceAsync matrixGenerationService;
 	private ISelectableFileTreeView.Presenter selectableFileTreePresenter;
 	private IFileTreeView.Presenter fileTreePresenter;
-	private IMessageView.Presenter messagePresenter;
 	private FilePathShortener filePathShortener;
 	private String inputFile;
 	private IFileManagerDialogView.Presenter fileManagerDialogPresenter;
 	private LoadingPopup loadingPopup = new LoadingPopup();
+	private MessagePresenter messagePresenter = new MessagePresenter();
 	
 	@Inject
 	public MatrixGenerationInputPresenter(IMatrixGenerationInputView view, 
 			IMatrixGenerationServiceAsync matrixGenerationService,
 			PlaceController placeController, 
 			ISelectableFileTreeView.Presenter selectableFileTreePresenter,
-			IMessageView.Presenter messagePresenter, 
 			FilePathShortener filePathShortener,
 			IFileManagerDialogView.Presenter fileManagerDialogPresenter
 			) {
@@ -47,7 +46,6 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 		this.placeController = placeController;
 		this.selectableFileTreePresenter = selectableFileTreePresenter;
 		this.fileTreePresenter = selectableFileTreePresenter.getFileTreePresenter();
-		this.messagePresenter = messagePresenter;
 		this.filePathShortener = filePathShortener;
 		this.fileManagerDialogPresenter = fileManagerDialogPresenter;
 	}
@@ -64,7 +62,7 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 					view.setFilePath(shortendPath);
 					view.setEnabledNext(true);			
 					if(selection.getFileInfo().getOwnerUserId() != Authentication.getInstance().getUserId()) {
-						messagePresenter.showMessage("Shared input", "The selected input is not owned. To start the task the files will be copied to your own space.");
+						messagePresenter.showOkBox("Shared input", "The selected input is not owned. To start the task the files will be copied to your own space.");
 						fileManagerDialogPresenter.hide();
 					} else {
 						fileManagerDialogPresenter.hide();
@@ -84,11 +82,11 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 		
 		//error checking.
 		if (inputFile == null || inputFile.equals("")){
-			messagePresenter.showMessage("", "Please enter a valid directory.");
+			messagePresenter.showOkBox("", "Please enter a valid directory.");
 			return;
 		}
 		if (view.getTaskName() == null || view.getTaskName().equals("")){
-			messagePresenter.showMessage("", "Please enter a name for this task.");
+			messagePresenter.showOkBox("", "Please enter a name for this task.");
 			return;
 		}
 		
@@ -99,7 +97,7 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 			@Override
 			public void onResult(Boolean result) {
 				if(!result) {
-					messagePresenter.showMessage("Input", "Not a valid input directory.");
+					messagePresenter.showOkBox("Input", "Not a valid input directory.");
 					loadingPopup.stop();
 				} else {
 					matrixGenerationService.start(Authentication.getInstance().getToken(), 
