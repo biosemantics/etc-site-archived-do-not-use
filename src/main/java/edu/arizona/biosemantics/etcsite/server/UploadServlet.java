@@ -1,10 +1,10 @@
 package edu.arizona.biosemantics.etcsite.server;
 
 import edu.arizona.biosemantics.etcsite.server.rpc.AuthenticationService;
-import edu.arizona.biosemantics.etcsite.shared.file.ContentValidatorProvider;
-import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
-import edu.arizona.biosemantics.etcsite.shared.file.IContentValidator;
-import edu.arizona.biosemantics.etcsite.shared.file.XMLValidator;
+import edu.arizona.biosemantics.etcsite.shared.model.file.ContentValidatorProvider;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.shared.model.file.IContentValidator;
+import edu.arizona.biosemantics.etcsite.shared.model.file.XMLValidator;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationService;

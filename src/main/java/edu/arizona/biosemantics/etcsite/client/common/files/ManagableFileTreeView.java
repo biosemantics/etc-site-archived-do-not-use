@@ -1,6 +1,6 @@
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
-import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import gwtupload.client.IUploader;
 import gwtupload.client.SingleUploader;
 //import gwtupload.client.MultiUploader;

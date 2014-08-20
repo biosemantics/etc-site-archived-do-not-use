@@ -6,7 +6,7 @@ import com.google.inject.Inject;
 import com.sencha.gxt.widget.core.client.Dialog;
 
 import edu.arizona.biosemantics.etcsite.client.content.user.IUsersView.Presenter;
-import edu.arizona.biosemantics.etcsite.shared.db.ShortUser;
+import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 
 public class UserSelectPresenter implements IUserSelectView.Presenter {
 

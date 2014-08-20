@@ -12,7 +12,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 
 public class FileContentView extends Composite implements IFileContentView {
 

@@ -2,7 +2,7 @@ package edu.arizona.biosemantics.etcsite.shared.rpc;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import edu.arizona.biosemantics.etcsite.shared.file.FilePermissionType;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FilePermissionType;
 
 public interface IFilePermissionServiceAsync {
 

@@ -4,7 +4,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView.Presenter;
 import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePresenter.ISelectListener;
-import edu.arizona.biosemantics.etcsite.shared.file.FileFilter;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
 
 public interface ISelectableFileTreeView extends IsWidget {
 

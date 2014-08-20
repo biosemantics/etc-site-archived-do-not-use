@@ -20,10 +20,10 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
 import edu.arizona.biosemantics.etcsite.server.XmlNamespaceManager;
-import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
-import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.BracketChecker;
-import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.TaxonIdentificationEntry;
-import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModelFile;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.shared.model.file.semanticmarkup.BracketChecker;
+import edu.arizona.biosemantics.etcsite.shared.model.file.semanticmarkup.TaxonIdentificationEntry;
+import edu.arizona.biosemantics.etcsite.shared.model.file.semanticmarkup.XmlModelFile;
 
 /*import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.i18n.shared.DateTimeFormat.PredefinedFormat;

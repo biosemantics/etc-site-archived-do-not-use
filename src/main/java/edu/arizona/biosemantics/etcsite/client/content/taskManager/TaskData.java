@@ -2,8 +2,8 @@ package edu.arizona.biosemantics.etcsite.client.content.taskManager;
 
 import java.util.Set;
 
-import edu.arizona.biosemantics.etcsite.shared.db.ShortUser;
-import edu.arizona.biosemantics.etcsite.shared.db.Task;
+import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
+import edu.arizona.biosemantics.etcsite.shared.model.Task;
 
 public class TaskData {
 

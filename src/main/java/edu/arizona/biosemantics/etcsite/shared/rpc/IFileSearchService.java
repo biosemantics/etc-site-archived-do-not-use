@@ -5,8 +5,8 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-import edu.arizona.biosemantics.etcsite.shared.file.search.Search;
-import edu.arizona.biosemantics.etcsite.shared.file.search.SearchResult;
+import edu.arizona.biosemantics.etcsite.shared.model.file.search.Search;
+import edu.arizona.biosemantics.etcsite.shared.model.file.search.SearchResult;
 
 @RemoteServiceRelativePath("fileSearch")
 public interface IFileSearchService extends RemoteService {

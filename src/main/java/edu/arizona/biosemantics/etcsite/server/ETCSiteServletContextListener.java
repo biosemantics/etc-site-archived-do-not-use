@@ -3,7 +3,7 @@ package edu.arizona.biosemantics.etcsite.server;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import edu.arizona.biosemantics.etcsite.shared.db.ConnectionPool;
+import edu.arizona.biosemantics.etcsite.server.db.ConnectionPool;
 
 public class ETCSiteServletContextListener implements ServletContextListener {
 

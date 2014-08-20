@@ -6,8 +6,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
-import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModelFile;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.shared.model.file.semanticmarkup.XmlModelFile;
 
 
 @RemoteServiceRelativePath("fileFormat")

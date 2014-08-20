@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import edu.arizona.biosemantics.etcsite.client.common.files.IManagableFileTreeView;
-import edu.arizona.biosemantics.etcsite.shared.file.FileFilter;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
 
 public class FileManagerDialogPresenter implements IFileManagerDialogView.Presenter {
 

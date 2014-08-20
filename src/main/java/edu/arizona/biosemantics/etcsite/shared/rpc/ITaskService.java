@@ -7,9 +7,9 @@ import java.util.Set;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-import edu.arizona.biosemantics.etcsite.shared.db.Share;
-import edu.arizona.biosemantics.etcsite.shared.db.ShortUser;
-import edu.arizona.biosemantics.etcsite.shared.db.Task;
+import edu.arizona.biosemantics.etcsite.shared.model.Share;
+import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
+import edu.arizona.biosemantics.etcsite.shared.model.Task;
 
 @RemoteServiceRelativePath("task")
 public interface ITaskService extends RemoteService {

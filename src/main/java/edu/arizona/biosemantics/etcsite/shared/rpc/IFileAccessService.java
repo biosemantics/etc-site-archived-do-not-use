@@ -3,7 +3,7 @@ package edu.arizona.biosemantics.etcsite.shared.rpc;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 
 @RemoteServiceRelativePath("fileAccess")
 public interface IFileAccessService extends RemoteService {

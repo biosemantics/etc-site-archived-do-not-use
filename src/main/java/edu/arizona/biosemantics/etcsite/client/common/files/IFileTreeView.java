@@ -3,7 +3,7 @@ package edu.arizona.biosemantics.etcsite.client.common.files;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.arizona.biosemantics.etcsite.shared.file.FileFilter;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
 
 public interface IFileTreeView extends IsWidget {
 	

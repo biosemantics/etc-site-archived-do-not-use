@@ -18,7 +18,7 @@ import com.google.gwt.user.client.ui.StackLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.arizona.biosemantics.etcsite.shared.file.search.SearchResult;
+import edu.arizona.biosemantics.etcsite.shared.model.file.search.SearchResult;
 
 public class ResultView extends Composite implements IResultView {
 

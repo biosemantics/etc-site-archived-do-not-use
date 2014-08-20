@@ -18,7 +18,7 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
 
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskData;
-import edu.arizona.biosemantics.etcsite.shared.db.ShortUser;
+import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 
 public class UsersView extends Composite implements IUsersView {
 

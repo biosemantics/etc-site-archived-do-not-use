@@ -13,7 +13,7 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.arizona.biosemantics.etcsite.shared.db.User;
+import edu.arizona.biosemantics.etcsite.shared.model.User;
 
 public class SettingsView extends Composite implements ISettingsView {
 

@@ -7,7 +7,7 @@ import com.google.inject.name.Named;
 
 import edu.arizona.biosemantics.etcsite.client.common.files.IManagableFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.content.annotationReview.AnnotationReviewPlace;
-import edu.arizona.biosemantics.etcsite.shared.file.FileFilter;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
 
 public class FileManagerPresenter implements IFileManagerView.Presenter {
 

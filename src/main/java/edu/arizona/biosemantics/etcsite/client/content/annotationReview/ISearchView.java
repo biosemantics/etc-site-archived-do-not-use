@@ -3,7 +3,7 @@ package edu.arizona.biosemantics.etcsite.client.content.annotationReview;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.arizona.biosemantics.etcsite.shared.file.search.Search;
+import edu.arizona.biosemantics.etcsite.shared.model.file.search.Search;
 
 public interface ISearchView extends IsWidget {
 

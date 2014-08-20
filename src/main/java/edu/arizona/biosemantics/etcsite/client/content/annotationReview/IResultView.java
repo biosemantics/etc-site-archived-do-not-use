@@ -5,7 +5,7 @@ import java.util.List;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.arizona.biosemantics.etcsite.shared.file.search.SearchResult;
+import edu.arizona.biosemantics.etcsite.shared.model.file.search.SearchResult;
 
 public interface IResultView extends IsWidget {
 	

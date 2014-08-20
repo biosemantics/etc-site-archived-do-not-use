@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-import edu.arizona.biosemantics.etcsite.shared.db.ShortUser;
-import edu.arizona.biosemantics.etcsite.shared.db.UserDAO;
+import edu.arizona.biosemantics.etcsite.server.db.UserDAO;
+import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IUserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;

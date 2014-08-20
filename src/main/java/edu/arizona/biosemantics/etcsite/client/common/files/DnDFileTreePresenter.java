@@ -6,8 +6,8 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import edu.arizona.biosemantics.etcsite.client.common.files.FileDragDropHandler.IFileMoveListener;
-import edu.arizona.biosemantics.etcsite.shared.file.FileFilter;
-import edu.arizona.biosemantics.etcsite.shared.file.FileInfo;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.Tree;
 

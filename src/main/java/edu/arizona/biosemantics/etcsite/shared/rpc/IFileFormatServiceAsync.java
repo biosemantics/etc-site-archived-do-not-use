@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
-import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.XmlModelFile;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.shared.model.file.semanticmarkup.XmlModelFile;
 
 
 public interface IFileFormatServiceAsync {

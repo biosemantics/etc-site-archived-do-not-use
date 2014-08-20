@@ -13,9 +13,9 @@ import com.google.gwt.user.client.ui.TreeItem;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Configuration;
-import edu.arizona.biosemantics.etcsite.shared.file.FileFilter;
-import edu.arizona.biosemantics.etcsite.shared.file.FileInfo;
-import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.Tree;
 

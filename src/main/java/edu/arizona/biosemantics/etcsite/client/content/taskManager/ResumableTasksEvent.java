@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-import edu.arizona.biosemantics.etcsite.shared.db.Task;
+import edu.arizona.biosemantics.etcsite.shared.model.Task;
 
 public class ResumableTasksEvent extends GwtEvent<ResumableTasksEventHandler> {
 

@@ -2,7 +2,7 @@ package edu.arizona.biosemantics.etcsite.client.common.files;
 
 import com.google.gwt.user.client.ui.TreeItem;
 
-import edu.arizona.biosemantics.etcsite.shared.file.FileInfo;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
 
 public class FileImageLabelTreeItem extends TreeItem {
 

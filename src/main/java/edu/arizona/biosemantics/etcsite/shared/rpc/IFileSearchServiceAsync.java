@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import edu.arizona.biosemantics.etcsite.shared.file.search.Search;
-import edu.arizona.biosemantics.etcsite.shared.file.search.SearchResult;
+import edu.arizona.biosemantics.etcsite.shared.model.file.search.Search;
+import edu.arizona.biosemantics.etcsite.shared.model.file.search.SearchResult;
 
 public interface IFileSearchServiceAsync {
 

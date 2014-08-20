@@ -2,7 +2,7 @@ package edu.arizona.biosemantics.etcsite.shared.rpc;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import edu.arizona.biosemantics.etcsite.shared.db.Task;
+import edu.arizona.biosemantics.etcsite.shared.model.Task;
 
 public interface ITreeGenerationServiceAsync extends IHasTasksServiceAsync {
 

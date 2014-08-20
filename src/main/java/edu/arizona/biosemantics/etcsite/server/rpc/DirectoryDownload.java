@@ -6,9 +6,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
-import edu.arizona.biosemantics.etcsite.shared.db.Task;
-import edu.arizona.biosemantics.etcsite.shared.db.TaskDAO;
-import edu.arizona.biosemantics.etcsite.shared.db.TasksOutputFilesDAO;
+import edu.arizona.biosemantics.etcsite.server.db.TaskDAO;
+import edu.arizona.biosemantics.etcsite.server.db.TasksOutputFilesDAO;
+import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFilePermissionService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileService;

@@ -2,7 +2,7 @@ package edu.arizona.biosemantics.etcsite.client.common.files;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-import edu.arizona.biosemantics.etcsite.shared.file.FileInfo;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
 
 public interface IFileContentView extends IsWidget {
 

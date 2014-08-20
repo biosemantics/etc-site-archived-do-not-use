@@ -8,11 +8,11 @@ import edu.arizona.biosemantics.semanticmarkup.ETCLearnMain;
 import edu.arizona.biosemantics.semanticmarkup.ETCMarkupMain;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.XmlNamespaceManager;
+import edu.arizona.biosemantics.etcsite.server.db.DatasetPrefixDAO;
 import edu.arizona.biosemantics.etcsite.server.rpc.AdminAuthenticationToken;
 import edu.arizona.biosemantics.etcsite.server.rpc.ExtraJvmCallable;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileService;
-import edu.arizona.biosemantics.etcsite.shared.db.DatasetPrefix;
-import edu.arizona.biosemantics.etcsite.shared.db.DatasetPrefixDAO;
+import edu.arizona.biosemantics.etcsite.shared.model.DatasetPrefix;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileService;
 

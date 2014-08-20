@@ -2,7 +2,7 @@ package edu.arizona.biosemantics.etcsite.server.rpc;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-import edu.arizona.biosemantics.etcsite.shared.db.Task;
+import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IPipelineService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IVisualizationService;

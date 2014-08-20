@@ -11,9 +11,9 @@ import edu.arizona.biosemantics.etcsite.client.common.files.FileImageLabelTreeIt
 import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePresenter.ISelectListener;
-import edu.arizona.biosemantics.etcsite.shared.file.FileFilter;
-import edu.arizona.biosemantics.etcsite.shared.file.search.Search;
-import edu.arizona.biosemantics.etcsite.shared.file.search.SearchResult;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
+import edu.arizona.biosemantics.etcsite.shared.model.file.search.Search;
+import edu.arizona.biosemantics.etcsite.shared.model.file.search.SearchResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileSearchServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;

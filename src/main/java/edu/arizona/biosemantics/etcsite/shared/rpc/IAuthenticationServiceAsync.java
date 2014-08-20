@@ -2,7 +2,7 @@ package edu.arizona.biosemantics.etcsite.shared.rpc;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import edu.arizona.biosemantics.etcsite.shared.db.User;
+import edu.arizona.biosemantics.etcsite.shared.model.User;
 
 /**
  * The async counterpart of <code>GreetingService</code>.

@@ -9,7 +9,7 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 
-import edu.arizona.biosemantics.etcsite.shared.db.ShortUser;
+import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 
 public class ShortUserCell extends AbstractCell<ShortUser> {
 	

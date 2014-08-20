@@ -149,7 +149,7 @@ import edu.arizona.biosemantics.etcsite.client.top.ITopView;
 import edu.arizona.biosemantics.etcsite.client.top.LoggedOutPlace;
 import edu.arizona.biosemantics.etcsite.client.top.LoginTopView;
 import edu.arizona.biosemantics.etcsite.client.top.TopView;
-import edu.arizona.biosemantics.etcsite.shared.file.FilePathShortener;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatServiceAsync;

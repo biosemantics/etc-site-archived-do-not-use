@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-import edu.arizona.biosemantics.etcsite.shared.file.semanticmarkup.TaxonIdentificationEntry;
+import edu.arizona.biosemantics.etcsite.shared.model.file.semanticmarkup.TaxonIdentificationEntry;
 
 public interface ICreateSemanticMarkupFilesView extends IsWidget {
 

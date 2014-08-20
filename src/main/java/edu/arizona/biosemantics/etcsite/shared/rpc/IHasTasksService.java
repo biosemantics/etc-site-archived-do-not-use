@@ -1,6 +1,6 @@
 package edu.arizona.biosemantics.etcsite.shared.rpc;
 
-import edu.arizona.biosemantics.etcsite.shared.db.Task;
+import edu.arizona.biosemantics.etcsite.shared.model.Task;
 
 public interface IHasTasksService {
 

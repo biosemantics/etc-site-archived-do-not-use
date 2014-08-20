@@ -8,14 +8,14 @@ import java.util.Set;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+import edu.arizona.biosemantics.etcsite.server.db.ShareDAO;
+import edu.arizona.biosemantics.etcsite.server.db.TaskDAO;
+import edu.arizona.biosemantics.etcsite.server.db.UserDAO;
 import edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration.MatrixGenerationService;
 import edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup.SemanticMarkupService;
-import edu.arizona.biosemantics.etcsite.shared.db.Share;
-import edu.arizona.biosemantics.etcsite.shared.db.ShareDAO;
-import edu.arizona.biosemantics.etcsite.shared.db.ShortUser;
-import edu.arizona.biosemantics.etcsite.shared.db.Task;
-import edu.arizona.biosemantics.etcsite.shared.db.TaskDAO;
-import edu.arizona.biosemantics.etcsite.shared.db.UserDAO;
+import edu.arizona.biosemantics.etcsite.shared.model.Share;
+import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
+import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ITaskService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;

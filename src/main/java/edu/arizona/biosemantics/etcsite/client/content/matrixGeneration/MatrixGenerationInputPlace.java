@@ -3,7 +3,7 @@ package edu.arizona.biosemantics.etcsite.client.content.matrixGeneration;
 import com.google.gwt.place.shared.PlaceTokenizer;
 
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPlace;
-import edu.arizona.biosemantics.etcsite.shared.db.Task;
+import edu.arizona.biosemantics.etcsite.shared.model.Task;
 
 public class MatrixGenerationInputPlace extends MatrixGenerationPlace {
 

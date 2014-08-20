@@ -2,7 +2,7 @@ package edu.arizona.biosemantics.etcsite.shared.rpc;
 
 import java.io.Serializable;
 
-import edu.arizona.biosemantics.etcsite.shared.db.User;
+import edu.arizona.biosemantics.etcsite.shared.model.User;
 
 public class AuthenticationResult implements Serializable {
 

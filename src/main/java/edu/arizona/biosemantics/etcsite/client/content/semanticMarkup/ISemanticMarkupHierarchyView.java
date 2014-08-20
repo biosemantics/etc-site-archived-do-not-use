@@ -3,7 +3,7 @@ package edu.arizona.biosemantics.etcsite.client.content.semanticMarkup;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 
-import edu.arizona.biosemantics.etcsite.shared.db.Task;
+import edu.arizona.biosemantics.etcsite.shared.model.Task;
 
 public interface ISemanticMarkupHierarchyView extends IsWidget {
 

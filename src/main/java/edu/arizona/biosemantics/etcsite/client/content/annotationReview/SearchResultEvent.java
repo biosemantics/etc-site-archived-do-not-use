@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-import edu.arizona.biosemantics.etcsite.shared.file.search.SearchResult;
+import edu.arizona.biosemantics.etcsite.shared.model.file.search.SearchResult;
 
 public class SearchResultEvent extends GwtEvent<SearchResultEventHandler> {
 

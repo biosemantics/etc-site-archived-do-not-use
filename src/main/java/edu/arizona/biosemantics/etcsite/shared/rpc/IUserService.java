@@ -5,7 +5,7 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-import edu.arizona.biosemantics.etcsite.shared.db.ShortUser;
+import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 
 @RemoteServiceRelativePath("user")
 public interface IUserService extends RemoteService {
