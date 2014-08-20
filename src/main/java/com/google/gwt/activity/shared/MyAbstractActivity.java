@@ -11,7 +11,7 @@ import edu.arizona.biosemantics.etcsite.client.common.IRegisterView.IRegisterLis
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView.IResetPasswordListener;
 import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.client.top.LoggedInPlace;
-import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationResult;
+import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 

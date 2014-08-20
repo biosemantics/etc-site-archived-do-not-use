@@ -5,9 +5,9 @@ import java.io.File;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
+import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
+import edu.arizona.biosemantics.etcsite.shared.model.Setup;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ISetupService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
-import edu.arizona.biosemantics.etcsite.shared.rpc.Setup;
 
 public class SetupService extends RemoteServiceServlet implements ISetupService {
 	

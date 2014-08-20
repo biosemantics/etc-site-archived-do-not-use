@@ -11,11 +11,11 @@ import com.google.inject.name.Named;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.LoadingPopup;
 import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView.IFileTreeSelectionListener;
+import edu.arizona.biosemantics.etcsite.shared.model.Tree;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
-import edu.arizona.biosemantics.etcsite.shared.rpc.Tree;
 
 public class FileTreePresenter implements IFileTreeView.Presenter {
 	

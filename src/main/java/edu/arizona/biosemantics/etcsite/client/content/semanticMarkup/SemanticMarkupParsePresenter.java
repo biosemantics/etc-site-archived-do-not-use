@@ -10,10 +10,10 @@ import edu.arizona.biosemantics.etcsite.client.content.taskManager.ResumableTask
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.ResumableTasksEventHandler;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.ParseInvocation;
+import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ParseInvocation;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.TaskStageEnum;
 
 public class SemanticMarkupParsePresenter implements ISemanticMarkupParseView.Presenter {
 

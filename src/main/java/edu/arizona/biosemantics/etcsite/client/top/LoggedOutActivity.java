@@ -15,7 +15,7 @@ import edu.arizona.biosemantics.etcsite.client.content.help.HelpPlace;
 import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
 import edu.arizona.biosemantics.etcsite.client.content.news.NewsPlace;
 import edu.arizona.biosemantics.etcsite.client.top.ILoginTopView.Presenter;
-import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationResult;
+import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 

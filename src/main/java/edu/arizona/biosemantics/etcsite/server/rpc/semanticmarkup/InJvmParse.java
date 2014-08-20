@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.HashSet;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
-import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
 import edu.arizona.biosemantics.semanticmarkup.ETCMarkupMain;
 
 public class InJvmParse implements Parse {

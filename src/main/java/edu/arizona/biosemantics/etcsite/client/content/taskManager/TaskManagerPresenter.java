@@ -199,7 +199,7 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 		switch(taskData.getTask().getTaskType().getTaskTypeEnum()) {
 		case SEMANTIC_MARKUP:
 			semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), taskData.getTask(), 
-					edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.TaskStageEnum.REVIEW_TERMS ,new RPCCallback<Task>() {
+					edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum.REVIEW_TERMS ,new RPCCallback<Task>() {
 				@Override
 				public void onResult(Task result) {
 					placeController.goTo(new edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupReviewPlace(result));
@@ -208,7 +208,7 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 			break;
 		case MATRIX_GENERATION:
 			matrixGenerationService.goToTaskStage(Authentication.getInstance().getToken(), taskData.getTask(), 
-					edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.TaskStageEnum.REVIEW, new RPCCallback<Task>() {
+					edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum.REVIEW, new RPCCallback<Task>() {
 				@Override
 				public void onResult(Task result) {
 					placeController.goTo(new edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationReviewPlace(result));

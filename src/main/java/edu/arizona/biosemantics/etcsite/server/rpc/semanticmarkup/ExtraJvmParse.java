@@ -8,7 +8,7 @@ import java.util.List;
 import edu.arizona.biosemantics.semanticmarkup.ETCMarkupMain;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.rpc.ExtraJvmCallable;
-import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
 
 public class ExtraJvmParse extends ExtraJvmCallable<ParseResult> implements Parse {
 

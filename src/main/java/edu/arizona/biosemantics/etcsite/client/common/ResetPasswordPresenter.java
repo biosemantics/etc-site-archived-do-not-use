@@ -7,8 +7,8 @@ import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView.IResetPasswordListener;
+import edu.arizona.biosemantics.etcsite.shared.model.PasswordResetResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.PasswordResetResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 
 public class ResetPasswordPresenter implements IResetPasswordView.Presenter {

@@ -2,9 +2,9 @@ package edu.arizona.biosemantics.etcsite.client.common;
 
 import com.google.gwt.user.client.ui.CaptchaPanel;
 
+import edu.arizona.biosemantics.etcsite.shared.model.RequestCaptchaResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RequestCaptchaResult;
 
 public class CaptchaPresenter {
 	private CaptchaPanel captchaPanel;

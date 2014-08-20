@@ -3,6 +3,13 @@ package edu.arizona.biosemantics.etcsite.shared.rpc;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationResult;
+import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.model.PasswordResetResult;
+import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
+import edu.arizona.biosemantics.etcsite.shared.model.RegistrationResult;
+import edu.arizona.biosemantics.etcsite.shared.model.RequestCaptchaResult;
+import edu.arizona.biosemantics.etcsite.shared.model.UpdateUserResult;
 import edu.arizona.biosemantics.etcsite.shared.model.User;
 
 

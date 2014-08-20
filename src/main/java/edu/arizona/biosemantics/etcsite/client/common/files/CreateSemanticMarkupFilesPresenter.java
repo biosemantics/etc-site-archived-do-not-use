@@ -14,13 +14,13 @@ import com.google.inject.Inject;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.client.common.ServerSetup;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FilePathShortener;
+import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
-import edu.arizona.biosemantics.etcsite.shared.model.file.MyXmlWriter;
-import edu.arizona.biosemantics.etcsite.shared.model.file.semanticmarkup.BracketChecker;
-import edu.arizona.biosemantics.etcsite.shared.model.file.semanticmarkup.TaxonIdentificationEntry;
-import edu.arizona.biosemantics.etcsite.shared.model.file.semanticmarkup.XmlModelFile;
-import edu.arizona.biosemantics.etcsite.shared.rpc.XmlModelFileCreator;
+import edu.arizona.biosemantics.etcsite.shared.model.file.TaxonIdentificationEntry;
+import edu.arizona.biosemantics.etcsite.shared.model.file.XmlModelFile;
+import edu.arizona.biosemantics.etcsite.shared.model.process.file.FilePathShortener;
+import edu.arizona.biosemantics.etcsite.shared.model.process.file.XmlModelFileCreator;
+import edu.arizona.biosemantics.etcsite.shared.model.process.semanticmarkup.BracketChecker;
 //import edu.arizona.biosemantics.etcsite.server.rpc.FileFormatService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatService;
@@ -29,7 +29,6 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.IFileServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ParallelRPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ParentRPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 
 public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkupFilesView.Presenter {
 

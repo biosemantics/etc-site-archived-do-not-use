@@ -1,14 +1,14 @@
 package edu.arizona.biosemantics.etcsite.server;
 
+import edu.arizona.biosemantics.etcsite.server.process.file.ContentValidatorProvider;
+import edu.arizona.biosemantics.etcsite.server.process.file.IContentValidator;
+import edu.arizona.biosemantics.etcsite.server.process.file.XmlNamespaceManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.AuthenticationService;
-import edu.arizona.biosemantics.etcsite.shared.model.file.ContentValidatorProvider;
+import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationResult;
+import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
-import edu.arizona.biosemantics.etcsite.shared.model.file.IContentValidator;
-import edu.arizona.biosemantics.etcsite.shared.model.file.XMLValidator;
-import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationResult;
-import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 import gwtupload.server.UploadAction;
 import gwtupload.server.exceptions.UploadActionException;
 import gwtupload.shared.UConsts;

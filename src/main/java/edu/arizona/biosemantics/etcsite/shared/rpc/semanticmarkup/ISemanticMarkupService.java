@@ -6,10 +6,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.LearnInvocation;
+import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.ParseInvocation;
+import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.PreprocessedDescription;
+import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 
 @RemoteServiceRelativePath("semanticMarkup")
 public interface ISemanticMarkupService extends RemoteService, IHasTasksService {

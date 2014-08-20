@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import com.sencha.gxt.widget.core.client.Dialog;
 
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView.ILoginListener;
-import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationResult;
+import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 

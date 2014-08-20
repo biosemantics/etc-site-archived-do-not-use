@@ -13,11 +13,11 @@ import com.google.gwt.user.client.ui.TreeItem;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Configuration;
+import edu.arizona.biosemantics.etcsite.shared.model.Tree;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.Tree;
 
 public class FileTreeDecorator {
 	
@@ -30,7 +30,7 @@ public class FileTreeDecorator {
 		this.fileContentPresenter = fileContentPresenter;
 	}
 	
-	public Map<String, FileImageLabelTreeItem> decorate(IFileTreeView view, edu.arizona.biosemantics.etcsite.shared.rpc.Tree<FileInfo> fileTree, FileFilter fileFilter, 
+	public Map<String, FileImageLabelTreeItem> decorate(IFileTreeView view, edu.arizona.biosemantics.etcsite.shared.model.Tree<FileInfo> fileTree, FileFilter fileFilter, 
 			FileDragDropHandler fileDragDropHandler, String selectionPath, 
 			Map<String, Boolean> retainedStates) {
 		Map<String, FileImageLabelTreeItem> result = new HashMap<String, FileImageLabelTreeItem>();
@@ -56,7 +56,7 @@ public class FileTreeDecorator {
 			view.setSelectedItem(root);
 		
 		if(fileTree.getValue().getFileType().equals(FileTypeEnum.DIRECTORY)) {
-			for(edu.arizona.biosemantics.etcsite.shared.rpc.Tree<FileInfo> child : fileTree.getChildren()) {
+			for(edu.arizona.biosemantics.etcsite.shared.model.Tree<FileInfo> child : fileTree.getChildren()) {
 				decorate(view, root, child, fileFilter, fileDragDropHandler, 1, selectionPath, retainedStates, result);
 			}
 		}
@@ -102,7 +102,7 @@ public class FileTreeDecorator {
 		return "[" + numberOfChildDirectories + " directories, " + numberOfChildFiles + " files]";
 	}
 
-	private void decorate(IFileTreeView view, TreeItem root, edu.arizona.biosemantics.etcsite.shared.rpc.Tree<FileInfo> fileTree, FileFilter fileFilter, 
+	private void decorate(IFileTreeView view, TreeItem root, edu.arizona.biosemantics.etcsite.shared.model.Tree<FileInfo> fileTree, FileFilter fileFilter, 
 			FileDragDropHandler fileDragAndDropHandler, 
 			int level, String selectionPath, Map<String, Boolean> retainedStates, Map<String, FileImageLabelTreeItem> filePathTreeItemMap) {
 		if(!filter(fileTree.getValue().getFileType(), fileFilter)) {
@@ -142,7 +142,7 @@ public class FileTreeDecorator {
 			
 			if(fileTree.getValue().getFileType().equals(FileTypeEnum.DIRECTORY)) {
 				level++;
-				for(edu.arizona.biosemantics.etcsite.shared.rpc.Tree<FileInfo> child : fileTree.getChildren()) {
+				for(edu.arizona.biosemantics.etcsite.shared.model.Tree<FileInfo> child : fileTree.getChildren()) {
 					decorate(view, treeItem, child, fileFilter, fileDragAndDropHandler, level, selectionPath, retainedStates, filePathTreeItemMap);
 				}
 			}

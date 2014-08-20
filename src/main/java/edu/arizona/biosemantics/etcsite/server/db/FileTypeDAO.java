@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import edu.arizona.biosemantics.etcsite.server.db.Query.QueryException;
-import edu.arizona.biosemantics.etcsite.shared.model.FileType;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileType;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 
 public class FileTypeDAO {

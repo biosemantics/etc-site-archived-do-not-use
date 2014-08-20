@@ -5,9 +5,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
-import edu.arizona.biosemantics.etcsite.shared.model.FileType;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
-import edu.arizona.biosemantics.etcsite.shared.rpc.TaskTypeEnum;
+import edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileType;
 
 public class TaskTypeDAO {
 
@@ -34,7 +34,7 @@ public class TaskTypeDAO {
 				FileType inputFileType = FileTypeDAO.getInstance().getFileType(inputTypeId);
 				FileType outputFileType = FileTypeDAO.getInstance().getFileType(outputTypeId);
 				Date created = result.getTimestamp(7);
-				taskType = new TaskType(id, edu.arizona.biosemantics.etcsite.shared.rpc.TaskTypeEnum.valueOf(name), inputFileType, inputDirectory, outputFileType, outputDirectory, created);
+				taskType = new TaskType(id, edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.valueOf(name), inputFileType, inputDirectory, outputFileType, outputDirectory, created);
 			}	
 		}catch(Exception e) {
 			e.printStackTrace();

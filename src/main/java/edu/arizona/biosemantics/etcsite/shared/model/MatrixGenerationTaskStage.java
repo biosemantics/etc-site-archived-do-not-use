@@ -2,7 +2,7 @@ package edu.arizona.biosemantics.etcsite.shared.model;
 
 import java.util.Date;
 
-import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum;
 
 public class MatrixGenerationTaskStage extends TaskStage {
 

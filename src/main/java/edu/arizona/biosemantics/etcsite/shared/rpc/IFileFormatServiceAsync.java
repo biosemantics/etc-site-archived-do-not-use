@@ -4,8 +4,10 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
-import edu.arizona.biosemantics.etcsite.shared.model.file.semanticmarkup.XmlModelFile;
+import edu.arizona.biosemantics.etcsite.shared.model.file.XmlModelFile;
 
 
 public interface IFileFormatServiceAsync {

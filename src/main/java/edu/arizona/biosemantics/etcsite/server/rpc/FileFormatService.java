@@ -9,16 +9,17 @@ import org.apache.log4j.Logger;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
-import edu.arizona.biosemantics.etcsite.server.XmlNamespaceManager;
-import edu.arizona.biosemantics.etcsite.shared.model.file.CSVValidator;
+import edu.arizona.biosemantics.etcsite.server.process.file.CSVValidator;
+import edu.arizona.biosemantics.etcsite.server.process.file.XMLValidator;
+import edu.arizona.biosemantics.etcsite.server.process.file.XmlModelFileCreator;
+import edu.arizona.biosemantics.etcsite.server.process.file.XmlNamespaceManager;
+import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
-import edu.arizona.biosemantics.etcsite.shared.model.file.XMLValidator;
-import edu.arizona.biosemantics.etcsite.shared.model.file.semanticmarkup.XmlModelFile;
-import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.model.file.XmlModelFile;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 
 public class FileFormatService extends RemoteServiceServlet implements IFileFormatService {
 

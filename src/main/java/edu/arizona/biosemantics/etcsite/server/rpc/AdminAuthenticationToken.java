@@ -1,6 +1,6 @@
 package edu.arizona.biosemantics.etcsite.server.rpc;
 
-import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
 
 public class AdminAuthenticationToken extends AuthenticationToken {
 

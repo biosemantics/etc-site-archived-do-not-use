@@ -4,10 +4,10 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 
-import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationResult;
-import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationResult;
+import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 
 /**
  * Make sure there are no conflicts due to AspectJ being included in charaparser's learn/markup.jars and 

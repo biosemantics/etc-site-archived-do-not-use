@@ -3,7 +3,8 @@ package edu.arizona.biosemantics.etcsite.shared.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import edu.arizona.biosemantics.etcsite.shared.rpc.TaskTypeEnum;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileType;
+
 
 public class TaskType implements Serializable {
 

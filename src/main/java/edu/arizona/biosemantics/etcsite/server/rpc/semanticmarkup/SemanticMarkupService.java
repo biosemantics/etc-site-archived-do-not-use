@@ -41,30 +41,30 @@ import edu.arizona.biosemantics.etcsite.server.rpc.FileFormatService;
 import edu.arizona.biosemantics.etcsite.server.rpc.FilePermissionService;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileService;
 import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
+import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.model.Glossary;
+import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
+import edu.arizona.biosemantics.etcsite.shared.model.process.semanticmarkup.BracketValidator;
+import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.LearnInvocation;
+import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.ParseInvocation;
+import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.PreprocessedDescription;
+import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum;
 /*import edu.arizona.biosemantics.etcsite.shared.db.otolite.OrderCategoriesDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.otolite.StructuresDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.otolite.SynonymsDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.otolite.TermCategoryPairDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.otolite.TermsInOrderCategoryDAO;*/
-import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFilePermissionService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.BracketValidator;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.LearnInvocation;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ParseInvocation;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.PreprocessedDescription;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.TaskStageEnum;
 
 public class SemanticMarkupService extends RemoteServiceServlet implements ISemanticMarkupService  {
 
@@ -119,7 +119,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			semanticMarkupConfiguration.setOutput(semanticMarkupConfiguration.getInput() + "_" + taskName);
 			semanticMarkupConfiguration = SemanticMarkupConfigurationDAO.getInstance().addSemanticMarkupConfiguration(semanticMarkupConfiguration);
 			
-			edu.arizona.biosemantics.etcsite.shared.rpc.TaskTypeEnum taskType = edu.arizona.biosemantics.etcsite.shared.rpc.TaskTypeEnum.SEMANTIC_MARKUP;
+			edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum taskType = edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP;
 			TaskType dbTaskType = TaskTypeDAO.getInstance().getTaskType(taskType);
 			TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.INPUT.toString());
 			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUserId());
@@ -182,7 +182,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	@Override
 	public RPCResult<List<PreprocessedDescription>> preprocess(AuthenticationToken authenticationToken, Task task) {	
 		try {
-			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.biosemantics.etcsite.shared.rpc.TaskTypeEnum.SEMANTIC_MARKUP);
+			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP);
 			TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.PREPROCESS_TEXT.toString());
 			task.setTaskStage(taskStage);
 			TaskDAO.getInstance().updateTask(task);
@@ -214,7 +214,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			if(activeLearnFutures.containsKey(semanticMarkupConfiguration.getConfiguration().getId())) {
 				return new RPCResult<LearnInvocation>(true, new LearnInvocation(numberOfSentences, numberOfWords));
 			} else {
-				final TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.biosemantics.etcsite.shared.rpc.TaskTypeEnum.SEMANTIC_MARKUP);
+				final TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP);
 				TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.LEARN_TERMS.toString());
 				task.setTaskStage(taskStage);
 				task.setResumable(false);
@@ -304,7 +304,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	@Override
 	public RPCResult<Task> review(AuthenticationToken authenticationToken, Task task) {
 		try {
-			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.biosemantics.etcsite.shared.rpc.TaskTypeEnum.SEMANTIC_MARKUP);
+			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP);
 			TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.REVIEW_TERMS.toString());
 			task.setTaskStage(taskStage);
 			TaskDAO.getInstance().updateTask(task);
@@ -391,7 +391,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			if(activeParseFutures.containsKey(semanticMarkupConfiguration.getConfiguration().getId())) {
 				return new RPCResult<ParseInvocation>(true, new ParseInvocation());
 			} else {
-				final TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.biosemantics.etcsite.shared.rpc.TaskTypeEnum.SEMANTIC_MARKUP);
+				final TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP);
 				TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.PARSE_TEXT.toString());
 				task.setTaskStage(taskStage);
 				task.setResumable(false);
@@ -491,7 +491,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	@Override
 	public RPCResult<Task> goToTaskStage(AuthenticationToken authenticationToken, Task task, TaskStageEnum taskStageEnum) {		
 		try {
-			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.biosemantics.etcsite.shared.rpc.TaskTypeEnum.SEMANTIC_MARKUP);
+			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP);
 			TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(taskStageEnum.toString());
 			task.setTaskStage(taskStage);
 			task.setResumable(true);
@@ -572,7 +572,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			List<Task> tasks = TaskDAO.getInstance().getOwnedTasks(user.getId());
 			for(Task task : tasks) {
 				if(task.isResumable() && 
-					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.rpc.TaskTypeEnum.SEMANTIC_MARKUP)) {
+					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP)) {
 						//SemanticMarkupConfiguration configuration = SemanticMarkupConfigurationDAO.getInstance().getSemanticMarkupConfiguration(task.getConfiguration().getConfiguration().getId());
 						return new RPCResult<Task>(true, task);
 				}

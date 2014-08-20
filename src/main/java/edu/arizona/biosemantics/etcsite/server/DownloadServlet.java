@@ -13,10 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import edu.arizona.biosemantics.etcsite.server.rpc.AuthenticationService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationResult;
-import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationResult;
+import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 
 public class DownloadServlet extends HttpServlet {
 

@@ -4,6 +4,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.arizona.biosemantics.etcsite.client.common.LoadingPopup;
 import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
+import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 
 public abstract class RPCCallback<T> implements AsyncCallback<RPCResult<T>> {
 

@@ -1,5 +1,7 @@
 package edu.arizona.biosemantics.etcsite.shared.rpc;
 
+import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 
 public interface IHasTasksService {

@@ -24,7 +24,7 @@ public class ResumeTaskPlaceMapper {
 	public Place getPlace(Task task) {
 		switch(task.getTaskType().getTaskTypeEnum()) {
 		case SEMANTIC_MARKUP:
-			switch(edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.TaskStageEnum.valueOf(task.getTaskStage().getTaskStage())) {
+			switch(edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum.valueOf(task.getTaskStage().getTaskStage())) {
 				case INPUT:
 					return new SemanticMarkupInputPlace();
 				case PREPROCESS_TEXT:
@@ -46,7 +46,7 @@ public class ResumeTaskPlaceMapper {
 			}
 			return new SemanticMarkupInputPlace();
 		case MATRIX_GENERATION:
-			switch(edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.TaskStageEnum.valueOf(task.getTaskStage().getTaskStage())) {
+			switch(edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum.valueOf(task.getTaskStage().getTaskStage())) {
 				case INPUT:
 					return new MatrixGenerationInputPlace();
 				case PROCESS:

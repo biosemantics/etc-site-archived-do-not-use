@@ -25,8 +25,8 @@ import com.sencha.gxt.widget.core.client.ProgressBar;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.box.ProgressMessageBox;
 
-import edu.arizona.biosemantics.etcsite.server.rpc.XmlModelFileCreator;
-import edu.arizona.biosemantics.etcsite.shared.model.file.semanticmarkup.TaxonIdentificationEntry;
+import edu.arizona.biosemantics.etcsite.server.process.file.XmlModelFileCreator;
+import edu.arizona.biosemantics.etcsite.shared.model.file.TaxonIdentificationEntry;
 
 
 public class CreateSemanticMarkupFilesView extends Composite implements ICreateSemanticMarkupFilesView {

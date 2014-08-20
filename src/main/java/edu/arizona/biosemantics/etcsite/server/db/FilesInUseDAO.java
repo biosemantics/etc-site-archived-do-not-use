@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Set;
 
 import edu.arizona.biosemantics.etcsite.server.db.Query.QueryException;
-import edu.arizona.biosemantics.etcsite.shared.model.FileInUse;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileInUse;
 
 public class FilesInUseDAO {
 

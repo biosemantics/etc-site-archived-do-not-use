@@ -1,6 +1,6 @@
 package edu.arizona.biosemantics.etcsite.client.common;
 
-import edu.arizona.biosemantics.etcsite.shared.rpc.Setup;
+import edu.arizona.biosemantics.etcsite.shared.model.Setup;
 
 public class ServerSetup {
 

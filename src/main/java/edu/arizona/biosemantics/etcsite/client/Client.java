@@ -6,9 +6,9 @@ import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 import edu.arizona.biosemantics.etcsite.client.common.ServerSetup;
+import edu.arizona.biosemantics.etcsite.shared.model.Setup;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ISetupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
-import edu.arizona.biosemantics.etcsite.shared.rpc.Setup;
 
 public class Client implements EntryPoint {
 

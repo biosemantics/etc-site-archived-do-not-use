@@ -20,22 +20,22 @@ import javax.xml.bind.DatatypeConverter;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.server.BCrypt;
 import edu.arizona.biosemantics.etcsite.server.CaptchaManager;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.EmailManager;
 import edu.arizona.biosemantics.etcsite.server.db.PasswordResetRequestDAO;
 import edu.arizona.biosemantics.etcsite.server.db.UserDAO;
+import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationResult;
+import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.model.PasswordResetRequest;
+import edu.arizona.biosemantics.etcsite.shared.model.PasswordResetResult;
+import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
+import edu.arizona.biosemantics.etcsite.shared.model.RegistrationResult;
+import edu.arizona.biosemantics.etcsite.shared.model.RequestCaptchaResult;
+import edu.arizona.biosemantics.etcsite.shared.model.UpdateUserResult;
 import edu.arizona.biosemantics.etcsite.shared.model.User;
-import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationResult;
-import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
-import edu.arizona.biosemantics.etcsite.shared.rpc.BCrypt;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.PasswordResetResult;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RegistrationResult;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RequestCaptchaResult;
-import edu.arizona.biosemantics.etcsite.shared.rpc.UpdateUserResult;
 
 /**
  * The server side implementation of the RPC service.

@@ -25,7 +25,9 @@ import org.w3c.dom.NodeList;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
-import edu.arizona.biosemantics.etcsite.shared.model.file.XMLFileFormatter;
+import edu.arizona.biosemantics.etcsite.server.process.file.XMLFileFormatter;
+import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.model.file.search.ElementAttributeValuesSearch;
 import edu.arizona.biosemantics.etcsite.shared.model.file.search.ElementValuesSearch;
 import edu.arizona.biosemantics.etcsite.shared.model.file.search.ElementsSearch;
@@ -33,11 +35,9 @@ import edu.arizona.biosemantics.etcsite.shared.model.file.search.NumericalsSearc
 import edu.arizona.biosemantics.etcsite.shared.model.file.search.Search;
 import edu.arizona.biosemantics.etcsite.shared.model.file.search.SearchResult;
 import edu.arizona.biosemantics.etcsite.shared.model.file.search.XPathSearch;
-import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileSearchService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCResult;
 
 public class FileSearchService extends RemoteServiceServlet implements IFileSearchService {
 
