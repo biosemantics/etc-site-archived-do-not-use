@@ -102,13 +102,11 @@ import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticM
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupPreprocessView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupReviewView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupToOntologiesView;
-import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupHierarchyPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupHierarchyView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupLearnPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupLearnView;
-import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupOrdersPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupOrdersView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupOutputPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupOutputView;
@@ -118,7 +116,6 @@ import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMa
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupPreprocessView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupReviewPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupReviewView;
-import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupToOntologiesPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupToOntologiesView;
 import edu.arizona.biosemantics.etcsite.client.content.settings.ISettingsView;
 import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsView;
@@ -280,7 +277,7 @@ public class ClientModule extends AbstractGinModule {
 		
 		bind(EventBus.class).annotatedWith(Names.named("Tasks")).to(SimpleEventBus.class).in(Singleton.class);
 		bind(EventBus.class).annotatedWith(Names.named("AnnotationReview")).to(SimpleEventBus.class).in(Singleton.class);
-		bind(HandlerManager.class).annotatedWith(Names.named("OTOLite")).toProvider(HandlerManagerProvider.class).in(Singleton.class);
+		//bind(HandlerManager.class).annotatedWith(Names.named("OTOLite")).toProvider(HandlerManagerProvider.class).in(Singleton.class);
 		
 		//services
 		bind(IAuthenticationServiceAsync.class).in(Singleton.class);

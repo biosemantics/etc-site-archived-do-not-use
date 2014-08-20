@@ -223,7 +223,7 @@
 	
 	
 	
-	<!-- oto lite -->
+	<!-- oto lite
 	<servlet>
 		<servlet-name>GeneralServiceIml</servlet-name>
 		<servlet-class>edu.arizona.biosemantics.otolite.server.rpc.GeneralServiceIml</servlet-class>
@@ -273,6 +273,6 @@
 	<servlet-mapping>
 		<servlet-name>OrderServiceImpl</servlet-name>
 		<url-pattern>/etcsite/orders</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping> -->
 
 </web-app>

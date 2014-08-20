@@ -27,9 +27,6 @@
   <inherits name="com.google.gwt.place.Place"/>
   <inherits name='com.sencha.gxt.ui.GXT' />
   
-  <!-- Oto lite module -->
-  <inherits name='edu.arizona.biosemantics.otolite.OTOLite_part2'/>
-  
   <!-- Matrix Review Module -->
   <inherits name='edu.arizona.biosemantics.matrixreview.Matrix_review'/>
   
@@ -49,11 +46,11 @@
   <!-- Load dinamically predefined styles in the library when the application starts -->
   <stylesheet src="Upload.css"/>
   
-  <!-- Otolite css -->
+  <!-- Otolite css
   <stylesheet src="oto_lite_css/general.css"/>
   <stylesheet src="oto_lite_css/hierarchy.css"/>
   <stylesheet src="oto_lite_css/order.css"/>
-  <stylesheet src="oto_lite_css/to_ontologies.css"/>
+  <stylesheet src="oto_lite_css/to_ontologies.css"/> -->
   
   <!-- Specify the app entry point class.                         -->
   <entry-point class='edu.arizona.biosemantics.etcsite.client.Client'/>

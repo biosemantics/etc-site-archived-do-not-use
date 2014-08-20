@@ -51,11 +51,11 @@ import edu.arizona.biosemantics.etcsite.shared.db.TaskType;
 import edu.arizona.biosemantics.etcsite.shared.db.TaskTypeDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.TasksOutputFilesDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.UserDAO;
-import edu.arizona.biosemantics.etcsite.shared.db.otolite.OrderCategoriesDAO;
+/*import edu.arizona.biosemantics.etcsite.shared.db.otolite.OrderCategoriesDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.otolite.StructuresDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.otolite.SynonymsDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.otolite.TermCategoryPairDAO;
-import edu.arizona.biosemantics.etcsite.shared.db.otolite.TermsInOrderCategoryDAO;
+import edu.arizona.biosemantics.etcsite.shared.db.otolite.TermsInOrderCategoryDAO;*/
 import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.file.search.SearchResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
@@ -319,7 +319,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		}
 	}
 	
-	@Override
+	/*@Override
 	public RPCResult<Void> prepareOptionalOtoLiteSteps(AuthenticationToken authenticationToken, Task task) {
 		try { 
 			task = TaskDAO.getInstance().getTask(task.getId());
@@ -381,7 +381,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			return new RPCResult<Void>(false, "Internal Server Error");
 		}
 		return new RPCResult<Void>(true);
-	}
+	}*/
 	
 	@Override
 	public RPCResult<ParseInvocation> parse(final AuthenticationToken authenticationToken, final Task task) {		

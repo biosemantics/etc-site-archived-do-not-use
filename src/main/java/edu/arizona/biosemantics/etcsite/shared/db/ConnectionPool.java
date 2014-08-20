@@ -16,7 +16,7 @@ public class ConnectionPool {
 
 	private static ConnectionPool instance;
 	private BoneCP connectionPool;
-	private BoneCP connectionPoolOtoLite;
+	//private BoneCP connectionPoolOtoLite;
 	private Driver mySqlDriver;
 	
 	public static ConnectionPool getInstance() throws ClassNotFoundException, SQLException, IOException { 
@@ -51,7 +51,7 @@ public class ConnectionPool {
 		
 		connectionPool = new BoneCP(config);
 		
-		String otoLiteDatabaseName = properties.getProperty("otolite_databaseName");
+		/*String otoLiteDatabaseName = properties.getProperty("otolite_databaseName");
 		String otoLiteDatabaseUser = properties.getProperty("otolite_databaseUser");
 		String otoLiteDatabasePassword = properties.getProperty("otolite_databasePassword");
 		String otoLiteJdbcUrl = "jdbc:mysql://localhost:3306/" + otoLiteDatabaseName + "?connecttimeout=0&sockettimeout=0&autoreconnect=true";
@@ -64,9 +64,9 @@ public class ConnectionPool {
 		config.setMaxConnectionsPerPartition(20);
 		config.setPartitionCount(2);
 		config.setPoolName("otoLitePool");
-		config.setDisableJMX(true);
+		config.setDisableJMX(true);*/
 		
-		connectionPoolOtoLite = new BoneCP(config);
+		//connectionPoolOtoLite = new BoneCP(config);
 	}
 	
 	public Connection getConnection() throws SQLException {
@@ -74,8 +74,8 @@ public class ConnectionPool {
 	}
 	
 	public Connection getConnection(String connection) throws SQLException {
-		if(connection.equals("otolite"))
-			return connectionPoolOtoLite.getConnection();
+		/*if(connection.equals("otolite"))
+			return connectionPoolOtoLite.getConnection();*/
 		return connectionPool.getConnection();
 	}
 	

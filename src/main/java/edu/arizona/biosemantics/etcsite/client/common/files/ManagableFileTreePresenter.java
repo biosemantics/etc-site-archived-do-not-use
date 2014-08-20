@@ -191,7 +191,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 					}
 				}
 			 });
-			 box.setValue(selection.getFileInfo().getName(false));
+			 box.getTextField().setValue(selection.getFileInfo().getName(false));
 			 box.show();
 		} else {
 			messagePresenter.showOkBox("File Manager", "Please select a valid file or directory to rename");

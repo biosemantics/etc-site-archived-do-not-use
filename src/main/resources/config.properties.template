@@ -59,20 +59,20 @@ finished_matrix_generation_generate_body=Matrix Generation has finished the gene
 
 ######otolite######## 
 #Database configuration
-otolite_databaseName=
-otolite_databaseUser=
-otolite_databasePassword=
+#otolite_databaseName=
+#otolite_databaseUser=
+#otolite_databasePassword=
 
 #bioportal configuration
-bioportalUrl=http://rest.bioontology.org/bioportal/
+#bioportalUrl=http://rest.bioontology.org/bioportal/
 
 #OTO configuration
-OTO_url=http://biosemantics.arizona.edu/OTO/
+#OTO_url=http://biosemantics.arizona.edu/OTO/
 
 #ontology lookup configuration
-ontology_dir=C:/OntologyOwlFiles/
-dict_dir=C:/wordnet/wn31/dict/
+#ontology_dir=C:/OntologyOwlFiles/
+#dict_dir=C:/wordnet/wn31/dict/
 
 #source files location configuration
-src_file_dir=C:/git/OTOLiteForETC/srcfiles/
+#src_file_dir=C:/git/OTOLiteForETC/srcfiles/
 
