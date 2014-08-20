@@ -20,9 +20,11 @@ markedUpTaxonDescriptionSchemaFile=/home/sirls/hongcui/etc-site/src/main/resourc
 otoLiteURL=http://biosemantics.arizona.edu:8080/OTOLite/
 otoLiteReviewURL=http://biosemantics.arizona.edu:8080/OTOLite/?origin=etcsite&embed=true
 charaparser_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/charaparser
+maxActiveSemanticMarkup=4
 
 #Matrix Generation
 matrixGeneration_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/matrixGeneration
+maxActiveMatrixGeneration=4
 
 #Captcha
 captcha_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/captcha
@@ -56,23 +58,3 @@ finished_semantic_markup_parse_subject=[ETC] (<taskname>) Text Capture: Parse St
 finished_semantic_markup_parse_body=Text Capture has finished the parse step for your task \"<taskname>\". You may resume this task using the Task Manager.
 finished_martrix_generation_genreate_subject=[ETC] (<taskname>) Matrix Generation: Generate Step Complete 
 finished_matrix_generation_generate_body=Matrix Generation has finished the generation step for your task \"<taskname>\". You may resume the task using the Task Manager.
-
-######otolite######## 
-#Database configuration
-#otolite_databaseName=
-#otolite_databaseUser=
-#otolite_databasePassword=
-
-#bioportal configuration
-#bioportalUrl=http://rest.bioontology.org/bioportal/
-
-#OTO configuration
-#OTO_url=http://biosemantics.arizona.edu/OTO/
-
-#ontology lookup configuration
-#ontology_dir=C:/OntologyOwlFiles/
-#dict_dir=C:/wordnet/wn31/dict/
-
-#source files location configuration
-#src_file_dir=C:/git/OTOLiteForETC/srcfiles/
-

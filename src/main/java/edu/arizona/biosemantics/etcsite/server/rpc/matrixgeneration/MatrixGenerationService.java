@@ -196,10 +196,10 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	private int maximumThreads = 10;
 	private ListeningExecutorService executorService;
 	private Map<Integer, ListenableFuture<Boolean>> activeProcessFutures = new HashMap<Integer, ListenableFuture<Boolean>>();
-
+	private Map<Integer, MatrixGeneration> activeMatrixGenerations = new HashMap<Integer, MatrixGeneration>();
 	
 	public MatrixGenerationService() {
-		executorService = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
+		executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(Configuration.maxActiveMatrixGeneration));
 	}
 	
 	@Override
@@ -278,7 +278,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				fileService.createDirectory(new AdminAuthenticationToken(), Configuration.matrixGeneration_tempFileBase, String.valueOf(task.getId()), false);
 				final String outputFile = Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "Matrix.mx";
 				
-				MatrixGeneration matrixGeneration = new MatrixGeneration(input, outputFile);
+				MatrixGeneration matrixGeneration = new ExtraJvmMatrixGeneration(input, outputFile);
+				activeMatrixGenerations.put(configuration.getConfiguration().getId(), matrixGeneration);
 				final ListenableFuture<Boolean> futureResult = executorService.submit(matrixGeneration);
 				this.activeProcessFutures.put(configuration.getConfiguration().getId(), futureResult);
 				futureResult.addListener(new Runnable() {
@@ -287,6 +288,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				     			TaxonMatrix matrix = createTaxonMatrix(matrixGenerationConfiguration, outputFile);
 				     			serializeMatrix(matrix, Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "TaxonMatrix.ser");
 				     			
+				     			activeMatrixGenerations.remove(configuration.getConfiguration().getId());
 				     			activeProcessFutures.remove(configuration.getConfiguration().getId());
 				     			if(!futureResult.isCancelled()) {
 				     				Boolean result = futureResult.get();
@@ -779,6 +781,9 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 							ListenableFuture<Boolean> processFuture = this.activeProcessFutures.get(matrixGenerationConfiguration.getConfiguration().getId());
 							processFuture.cancel(true);
 						}
+						if(activeMatrixGenerations.containsKey(matrixGenerationConfiguration.getConfiguration().getId())) {
+							activeMatrixGenerations.get(matrixGenerationConfiguration.getConfiguration().getId()).destroy();
+						}
 						break;
 					case OUTPUT:
 						break;
@@ -797,6 +802,9 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	@Override
 	public void destroy() {
 		this.executorService.shutdownNow();
+		for(MatrixGeneration matrixGeneration : activeMatrixGenerations.values()) {
+			matrixGeneration.destroy();
+		}
 		super.destroy();
 	}
 

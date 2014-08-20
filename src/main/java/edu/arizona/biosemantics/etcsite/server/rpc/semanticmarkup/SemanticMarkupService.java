@@ -1,11 +1,7 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.StringReader;
-import java.io.StringWriter;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -56,8 +52,6 @@ import edu.arizona.biosemantics.etcsite.shared.db.otolite.StructuresDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.otolite.SynonymsDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.otolite.TermCategoryPairDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.otolite.TermsInOrderCategoryDAO;*/
-import edu.arizona.biosemantics.etcsite.shared.file.FileTypeEnum;
-import edu.arizona.biosemantics.etcsite.shared.file.search.SearchResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessService;
@@ -85,10 +79,11 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	private ListeningExecutorService executorService;
 	private Map<Integer, ListenableFuture<LearnResult>> activeLearnFutures = new HashMap<Integer, ListenableFuture<LearnResult>>();
 	private Map<Integer, ListenableFuture<ParseResult>> activeParseFutures = new HashMap<Integer, ListenableFuture<ParseResult>>();
+	private Map<Integer, Learn> activeLearns = new HashMap<Integer, Learn>();
+	private Map<Integer, Parse> activeParses = new HashMap<Integer, Parse>();
 
-	
 	public SemanticMarkupService() {
-		executorService = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
+		executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(Configuration.maxActiveSemanticMarkup));
 	}
 	
 	@Override
@@ -234,12 +229,14 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 					return new RPCResult<LearnInvocation>(false, operatorResult.getMessage());
 				String bioportalUserId = UserDAO.getInstance().getUser(authenticationToken.getUserId()).getBioportalUserId();
 				String bioportalAPIKey = UserDAO.getInstance().getUser(authenticationToken.getUserId()).getBioportalAPIKey();
-				ILearn learn = new Learn(authenticationToken, glossary, input, tablePrefix, source, operatorResult.getData(), bioportalUserId, bioportalAPIKey);
+				Learn learn = new ExtraJvmLearn(authenticationToken, glossary, input, tablePrefix, source, operatorResult.getData(), bioportalUserId, bioportalAPIKey);
+				activeLearns.put(semanticMarkupConfiguration.getConfiguration().getId(), learn);
 				final ListenableFuture<LearnResult> futureResult = executorService.submit(learn);
 				activeLearnFutures.put(semanticMarkupConfiguration.getConfiguration().getId(), futureResult);
 				futureResult.addListener(new Runnable() {
 				     	public void run() {
 				     		try {
+				     			activeLearns.remove(semanticMarkupConfiguration.getConfiguration().getId());
 				     			activeLearnFutures.remove(semanticMarkupConfiguration.getConfiguration().getId());
 				     			if(!futureResult.isCancelled()) {
 				     				LearnResult result = futureResult.get();
@@ -409,13 +406,15 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 					return new RPCResult<ParseInvocation>(false, operator.getMessage());
 				String bioportalUserId = UserDAO.getInstance().getUser(authenticationToken.getUserId()).getBioportalUserId();
 				String bioportalAPIKey = UserDAO.getInstance().getUser(authenticationToken.getUserId()).getBioportalAPIKey();
-				IParse parse = new Parse(authenticationToken, glossary, input, tablePrefix, source, operator.getData(), bioportalUserId, bioportalAPIKey);
+				Parse parse = new ExtraJvmParse(authenticationToken, glossary, input, tablePrefix, source, operator.getData(), bioportalUserId, bioportalAPIKey);
+				activeParses.put(semanticMarkupConfiguration.getConfiguration().getId(), parse);
 				final ListenableFuture<ParseResult> futureResult = executorService.submit(parse);
 				activeParseFutures.put(semanticMarkupConfiguration.getConfiguration().getId(), futureResult);
 				futureResult.addListener(new Runnable() {
 					@Override
 					public void run() {
 						try {
+							activeParses.remove(semanticMarkupConfiguration.getConfiguration().getId());
 							activeParseFutures.remove(semanticMarkupConfiguration.getConfiguration().getId());
 							if(!futureResult.isCancelled()) {
 								task.setResumable(true);
@@ -618,6 +617,9 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 							ListenableFuture<LearnResult> learnFuture = activeLearnFutures.get(semanticMarkupConfiguration.getConfiguration().getId());
 							learnFuture.cancel(true);
 						}
+						if(activeLearns.containsKey(semanticMarkupConfiguration.getConfiguration().getId())) {
+							activeLearns.get(semanticMarkupConfiguration.getConfiguration().getId()).destroy();
+						}
 						break;
 					case OUTPUT:
 						break;
@@ -625,6 +627,9 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 						if(activeParseFutures.containsKey(semanticMarkupConfiguration.getConfiguration().getId())) {
 							ListenableFuture<ParseResult> parseFuture = activeParseFutures.get(semanticMarkupConfiguration.getConfiguration().getId());
 							parseFuture.cancel(true);
+						}
+						if(activeParses.containsKey(semanticMarkupConfiguration.getConfiguration().getId())) {
+							activeParses.get(semanticMarkupConfiguration.getConfiguration().getId()).destroy();
 						}
 						break;
 					case PREPROCESS_TEXT:
@@ -652,6 +657,12 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	@Override
 	public void destroy() {
 		this.executorService.shutdownNow();
+		for(Learn learn : activeLearns.values()) {
+			learn.destroy();
+		}
+		for(Parse parse : activeParses.values()) {
+			parse.destroy();
+		}
 		super.destroy();
 	}
 

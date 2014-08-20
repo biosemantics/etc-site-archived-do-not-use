@@ -92,9 +92,9 @@ public class UserDAO {
 			return false;
 		} else {
 			try(Query addUser = new Query(
-					"INSERT INTO `useraccounts`(`id`, `openIdProviderId`, `openidprovider`, `password`, `firstname`, `lastname`, " +
-					"`email`, `affiliation`, `bioportaluserid`, `bioportalapikey`, `created`) VALUES" +
-					" (LAST_INSERT_ID(), ?, ?, ?, ?, ?, ?, \"\", \"\", \"\", CURRENT_TIMESTAMP)");) {
+					"INSERT INTO `useraccounts`(`openIdProviderId`, `openidprovider`, `password`, `firstname`, `lastname`, " +
+					"`email`, `affiliation`, `bioportaluserid`, `bioportalapikey`) VALUES" +
+					" (?, ?, ?, ?, ?, ?, \"\", \"\", \"\")");) {
 				addUser.setParameter(1, openIdProviderId);
 				addUser.setParameter(2, openIdProvider);
 				addUser.setParameter(3, encryptedPassword);

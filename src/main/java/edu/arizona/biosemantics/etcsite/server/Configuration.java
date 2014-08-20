@@ -30,9 +30,11 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 	public static String markedUpTaxonDescriptionSchemaFile;
 	public static String otoLiteURL;
 	public static String otoLiteReviewURL;
+	public static int maxActiveSemanticMarkup;
 	
 	/** Matrix Generation **/
 	public static String matrixGeneration_tempFileBase;
+	public static int maxActiveMatrixGeneration;
 	
 	/** File Management **/
 	public static String fileBase;
@@ -66,9 +68,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 	public static String googleRedirectURI;
 	public static String googleClientId;
 	
-	static {
-		Logger.getLogger(DownloadServlet.class).debug("Init Configuration");
-		
+	static {		
 		try {
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
 			Properties properties = new Properties(); 
@@ -93,8 +93,10 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			markedUpTaxonDescriptionSchemaFile = properties.getProperty("markedUpTaxonDescriptionSchemaFile").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			otoLiteURL = properties.getProperty("otoLiteURL");
 			otoLiteReviewURL = properties.getProperty("otoLiteReviewURL");
+			maxActiveSemanticMarkup = Integer.parseInt(properties.getProperty("maxActiveSemanticMarkup"));
 			
 			matrixGeneration_tempFileBase = properties.getProperty("matrixGeneration_tempFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
+			maxActiveMatrixGeneration = Integer.parseInt(properties.getProperty("maxActiveMatrixGeneration"));
 			
 			fileBase = properties.getProperty("fileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			compressedFileBase = properties.getProperty("compressedFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));

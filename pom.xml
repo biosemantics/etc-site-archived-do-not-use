@@ -77,20 +77,20 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.9-SNAPSHOT</version>
+		  <version>0.0.11-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.9-SNAPSHOT</version>
+		  <version>0.0.11-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
-			<groupId>com.sencha.gxt</groupId>
-			<artifactId>gxt</artifactId>
-			<version>3.1.1</version>
-		</dependency> 
+		  <groupId>edu.arizona.biosemantics</groupId>
+		  <artifactId>gxt</artifactId>
+		  <version>0.0.3-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>com.googlecode.gwtupload</groupId>
 			<artifactId>gwtupload</artifactId>
@@ -181,13 +181,13 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.5-SNAPSHOT</version>
+		  <version>0.0.9-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.5-SNAPSHOT</version>
+		  <version>0.0.9-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
@@ -240,7 +240,16 @@
 			<artifactId>mail</artifactId>
 			<version>1.4.7</version>
 		</dependency>
-        
+        <dependency>
+			<groupId>org.apache.ant</groupId>
+			<artifactId>ant</artifactId>
+			<version>1.9.4</version>
+		</dependency>
+		<dependency>
+		  <groupId>edu.arizona.biosemantics.gxt</groupId>
+		  <artifactId>theme</artifactId>
+		  <version>0.0.2-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>

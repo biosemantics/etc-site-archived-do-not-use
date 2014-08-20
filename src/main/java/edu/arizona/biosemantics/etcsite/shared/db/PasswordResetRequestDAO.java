@@ -42,8 +42,7 @@ public class PasswordResetRequestDAO {
 	}
 	
 	public void addRequest(int user, String authenticationCode) {
-		try(Query addRequest = new Query("INSERT INTO `passwordresetrequests`(`user`, `authenticationcode`," +
-				" `requesttime`) VALUES (?, ?, CURRENT_TIMESTAMP)")) {
+		try(Query addRequest = new Query("INSERT INTO `passwordresetrequests`(`user`, `authenticationcode`) VALUES (?, ?)")) {
 			addRequest.setParameter(1, user);
 			addRequest.setParameter(2, authenticationCode);
 			addRequest.execute();
