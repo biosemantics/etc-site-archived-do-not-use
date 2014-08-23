@@ -6,8 +6,7 @@ import java.util.List;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
-import edu.arizona.biosemantics.etcsite.server.db.ShareDAO;
-import edu.arizona.biosemantics.etcsite.server.db.UserDAO;
+import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
@@ -21,6 +20,8 @@ public class FilePermissionService extends RemoteServiceServlet implements IFile
 
 	private static final long serialVersionUID = 7670782397695216737L;
 
+	private DAOManager daoManager = new DAOManager();
+	
 	@Override
 	public RPCResult<Boolean> hasReadPermission(AuthenticationToken authenticationToken, String filePath) {
 		if(authenticationToken instanceof AdminAuthenticationToken)
@@ -75,8 +76,8 @@ public class FilePermissionService extends RemoteServiceServlet implements IFile
 		if(filePath.startsWith("Share.") || filePath.equals("Shared"))
 			return new RPCResult<Boolean>(true, true);
 		try {
-			ShortUser user = UserDAO.getInstance().getShortUser(userId);
-			List<Share> invitedShares = ShareDAO.getInstance().getSharesOfInvitee(user);
+			ShortUser user = daoManager.getUserDAO().getShortUser(userId);
+			List<Share> invitedShares = daoManager.getShareDAO().getSharesOfInvitee(user);
 			for(Share share : invitedShares) {
 				AbstractTaskConfiguration taskConfiguration = share.getTask().getConfiguration();
 				for(String input : taskConfiguration.getInputs())

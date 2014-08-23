@@ -19,4 +19,6 @@ public interface ITopView extends IsWidget {
 
 	void setGreeting(String text);
 
+	void setResumableTasks(boolean value);
+
 }

@@ -11,14 +11,8 @@ import edu.arizona.biosemantics.etcsite.shared.model.file.FileType;
 
 public class TaskTypeDAO {
 
-	private static TaskTypeDAO instance;
+	private FileTypeDAO fileTypeDAO;
 	
-	public static TaskTypeDAO getInstance() {
-		if(instance == null)
-			instance = new TaskTypeDAO();
-		return instance;
-	}
-
 	public TaskType getTaskType(int id) {
 		TaskType taskType = null;
 		try(Query query = new Query("SELECT * FROM tasktypes WHERE id = ?")) {
@@ -31,8 +25,8 @@ public class TaskTypeDAO {
 				boolean inputDirectory = result.getString(4).equals("directory");
 				int outputTypeId = result.getInt(5);
 				boolean outputDirectory = result.getString(6).equals("directory");
-				FileType inputFileType = FileTypeDAO.getInstance().getFileType(inputTypeId);
-				FileType outputFileType = FileTypeDAO.getInstance().getFileType(outputTypeId);
+				FileType inputFileType = fileTypeDAO.getFileType(inputTypeId);
+				FileType outputFileType = fileTypeDAO.getFileType(outputTypeId);
 				Date created = result.getTimestamp(7);
 				taskType = new TaskType(id, edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.valueOf(name), inputFileType, inputDirectory, outputFileType, outputDirectory, created);
 			}	
@@ -54,8 +48,8 @@ public class TaskTypeDAO {
 				boolean inputDirectory = result.getString(4).equals("directory");
 				int outputTypeId = result.getInt(5);
 				boolean outputDirectory = result.getString(6).equals("directory");
-				FileType inputFileType = FileTypeDAO.getInstance().getFileType(inputTypeId);
-				FileType outputFileType = FileTypeDAO.getInstance().getFileType(outputTypeId);
+				FileType inputFileType = fileTypeDAO.getFileType(inputTypeId);
+				FileType outputFileType = fileTypeDAO.getFileType(outputTypeId);
 				Date created = result.getTimestamp(7);
 				taskType = new TaskType(id, taskTypeEnum, inputFileType, inputDirectory, outputFileType, outputDirectory, created);
 			}
@@ -64,4 +58,10 @@ public class TaskTypeDAO {
 		}
 		return taskType;
 	}
+
+	public void setFileTypeDAO(FileTypeDAO fileTypeDAO) {
+		this.fileTypeDAO = fileTypeDAO;
+	}
+	
+	
 }

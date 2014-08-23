@@ -60,14 +60,15 @@ public class XMLFileFormatter implements IFileFormatter {
 		/*try {
 			System.out.println("content " + content);
 			Document doc = DocumentHelper.parseText(content);  
-			StringWriter sw = new StringWriter();  
-			OutputFormat format = OutputFormat.createPrettyPrint();  
-			//XMLWriter xw = new XMLWriter(sw, format);  
-			XMLWriter xw = new HighlightXMLWriter(sw, format, nodeList);  
-			xw.write(doc);  
-			String result = sw.toString();
-			System.out.println("result " + result);
-			return result;
+			try(StringWriter sw = new StringWriter()) {
+				OutputFormat format = OutputFormat.createPrettyPrint();  
+				//XMLWriter xw = new XMLWriter(sw, format);  
+				XMLWriter xw = new HighlightXMLWriter(sw, format, nodeList);  
+				xw.write(doc);  
+				String result = sw.toString();
+				System.out.println("result " + result);
+				return result;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}*/

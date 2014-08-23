@@ -5,10 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.arizona.biosemantics.semanticmarkup.ETCLearnMain;
-import edu.arizona.biosemantics.semanticmarkup.ETCMarkupMain;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
-import edu.arizona.biosemantics.etcsite.server.db.DatasetPrefixDAO;
-import edu.arizona.biosemantics.etcsite.server.process.file.XmlNamespaceManager;
+import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.AdminAuthenticationToken;
 import edu.arizona.biosemantics.etcsite.server.rpc.ExtraJvmCallable;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileService;
@@ -18,6 +16,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.IFileService;
 
 public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Learn {
 
+	private DAOManager daoManager = new DAOManager();
 	private String config;
 	private String input;
 	private String tablePrefix;
@@ -109,7 +108,7 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 
 	@Override
 	public LearnResult createReturn() {
-		DatasetPrefix datasetPrefix = DatasetPrefixDAO.getInstance().getDatasetPrefix(tablePrefix);
+		DatasetPrefix datasetPrefix = daoManager.getDatasetPrefixDAO().getDatasetPrefix(tablePrefix);
 		LearnResult result = new LearnResult(datasetPrefix.getOtoUploadId(), datasetPrefix.getOtoSecret());
 		return result;
 	}

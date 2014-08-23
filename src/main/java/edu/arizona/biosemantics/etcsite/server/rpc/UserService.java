@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.db.UserDAO;
 import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
@@ -12,14 +13,16 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.IUserService;
 
 public class UserService extends RemoteServiceServlet implements IUserService {
 	
+	private DAOManager daoManager = new DAOManager();
+	
 	@Override
 	public RPCResult<List<ShortUser>> getUsers(AuthenticationToken authenticationToken, boolean includeSelf) {
 		try {
 			List<ShortUser> usernames;
 			if(includeSelf)
-				usernames = UserDAO.getInstance().getUsers();
+				usernames = daoManager.getUserDAO().getUsers();
 			else
-				usernames = UserDAO.getInstance().getUsersWithout(authenticationToken.getUserId());
+				usernames = daoManager.getUserDAO().getUsersWithout(authenticationToken.getUserId());
 			return new RPCResult<List<ShortUser>>(true, usernames);
 		} catch (Exception e) {
 			e.printStackTrace();

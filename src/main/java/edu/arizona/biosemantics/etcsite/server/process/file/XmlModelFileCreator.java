@@ -33,7 +33,7 @@ import com.google.gwt.xml.client.XMLParser;*/
 public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared.model.process.file.XmlModelFileCreator {
 
 	private Logger logger = Logger.getLogger(XmlModelFileCreator.class);
-	public static String[] fields =  new String[] {"author", "year", "title", "doi", "full citation",
+	public String[] fields =  new String[] {"author", "year", "title", "doi", "full citation",
 			/*"order", "suborder", "superfamily", "family", "subfamily", "tribe", "subtribe", "genus", "subgenus", 
 			"section", "subsection", "series", "species", "subspecies", "variety", "forma", "unranked",*/
 			"strain number", "equivalent strain numbers", "accession number 16s rrna",

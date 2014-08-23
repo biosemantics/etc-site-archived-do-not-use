@@ -10,13 +10,11 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 
-public class EmailManager {
-	
-	private static EmailManager instance;
+public class Emailer {
 	
 	private Session session;
 	
-	public EmailManager(){
+	public Emailer(){
 		Properties props = new Properties();
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.starttls.enable", "true");
@@ -30,24 +28,16 @@ public class EmailManager {
 		});
 	}
 	
-	public static EmailManager getInstance(){
-		if (instance == null)
-			instance = new EmailManager();
-		return instance;
-	}
-	
 	public void sendEmail(final String to, final String subjectLine, final String bodyText) throws MessagingException {
 		final Message message = new MimeMessage(session);
 		message.setFrom(new InternetAddress(Configuration.emailAddress));
 		message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
 		message.setSubject(subjectLine);
 		message.setText(bodyText);
-
 		Thread sendThread = new Thread(){
 			public void run(){
 				try {
 					Transport.send(message);
-					//System.out.println("Sent message to " + to + ". Subject line: " + subjectLine + ", Body: " + bodyText);
 				} catch (MessagingException e) {
 					e.printStackTrace();
 				}

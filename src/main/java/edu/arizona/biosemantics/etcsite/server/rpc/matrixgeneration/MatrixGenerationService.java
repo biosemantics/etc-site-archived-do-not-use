@@ -2,31 +2,25 @@ package edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.Executors;
 
 import org.jdom2.Document;
@@ -47,14 +41,9 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
-import edu.arizona.biosemantics.etcsite.server.EmailManager;
-import edu.arizona.biosemantics.etcsite.server.db.ConfigurationDAO;
-import edu.arizona.biosemantics.etcsite.server.db.MatrixGenerationConfigurationDAO;
-import edu.arizona.biosemantics.etcsite.server.db.TaskDAO;
-import edu.arizona.biosemantics.etcsite.server.db.TaskStageDAO;
+import edu.arizona.biosemantics.etcsite.server.Emailer;
+import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.db.TaskTypeDAO;
-import edu.arizona.biosemantics.etcsite.server.db.TasksOutputFilesDAO;
-import edu.arizona.biosemantics.etcsite.server.db.UserDAO;
 import edu.arizona.biosemantics.etcsite.server.rpc.AdminAuthenticationToken;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileAccessService;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileFormatService;
@@ -90,16 +79,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		private String authority;
 		private String date;
 		
-		private static HashMap<RankData, RankData> instances = new HashMap<RankData, RankData>();
-		
-		public static RankData getInstanceFor(Level rank, String value, String authority, String date) {
-			RankData rankData = new RankData(rank, value, authority, date);
-			if(!instances.containsKey(rankData))
-				instances.put(rankData, rankData);
-			return instances.get(rankData);
-		}
-		
-		private RankData(Level rank, String value, String authority, String date) {
+		public RankData(Level rank, String value, String authority, String date) {
 			super();
 			this.rank = rank;
 			this.value = value;
@@ -193,10 +173,11 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	private IFileFormatService fileFormatService = new FileFormatService();
 	private IFileAccessService fileAccessService = new FileAccessService();
 	private IFilePermissionService filePermissionService = new FilePermissionService();
-	private int maximumThreads = 10;
 	private ListeningExecutorService executorService;
 	private Map<Integer, ListenableFuture<Boolean>> activeProcessFutures = new HashMap<Integer, ListenableFuture<Boolean>>();
 	private Map<Integer, MatrixGeneration> activeMatrixGenerations = new HashMap<Integer, MatrixGeneration>();
+	private DAOManager daoManager = new DAOManager();
+	private Emailer emailer = new Emailer();
 	
 	public MatrixGenerationService() {
 		executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(Configuration.maxActiveMatrixGeneration));
@@ -224,12 +205,12 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			MatrixGenerationConfiguration matrixGenerationConfiguration = new MatrixGenerationConfiguration();
 			matrixGenerationConfiguration.setInput(input);	
 			matrixGenerationConfiguration.setOutput(matrixGenerationConfiguration.getInput() + "_" + taskName);
-			matrixGenerationConfiguration = MatrixGenerationConfigurationDAO.getInstance().addMatrixGenerationConfiguration(matrixGenerationConfiguration);
+			matrixGenerationConfiguration = daoManager.getMatrixGenerationConfigurationDAO().addMatrixGenerationConfiguration(matrixGenerationConfiguration);
 			
 			edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum taskType = edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION;
-			TaskType dbTaskType = TaskTypeDAO.getInstance().getTaskType(taskType);
-			TaskStage taskStage = TaskStageDAO.getInstance().getMatrixGenerationTaskStage(TaskStageEnum.INPUT.toString());
-			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUserId());
+			TaskType dbTaskType = daoManager.getTaskTypeDAO().getTaskType(taskType);
+			TaskStage taskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.INPUT.toString());
+			ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
 			Task task = new Task();
 			task.setName(taskName);
 			task.setResumable(true);
@@ -237,11 +218,11 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			task.setTaskStage(taskStage);
 			task.setTaskConfiguration(matrixGenerationConfiguration);
 			task.setTaskType(dbTaskType);
-						
-			task = TaskDAO.getInstance().addTask(task);
-			taskStage = TaskStageDAO.getInstance().getMatrixGenerationTaskStage(TaskStageEnum.PROCESS.toString());
+			
+			task = daoManager.getTaskDAO().addTask(task);
+			taskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.PROCESS.toString());
 			task.setTaskStage(taskStage);
-			TaskDAO.getInstance().updateTask(task);
+			daoManager.getTaskDAO().updateTask(task);
 
 			fileService.setInUse(authenticationToken, true, input, task);
 			return new RPCResult<Task>(true, task);
@@ -263,11 +244,11 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			if(activeProcessFutures.containsKey(configuration.getConfiguration().getId())) {
 				return new RPCResult<Task>(true, task);
 			} else {
-				final TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION);
-				TaskStage taskStage = TaskStageDAO.getInstance().getMatrixGenerationTaskStage(TaskStageEnum.PROCESS.toString());
+				final TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION);
+				TaskStage taskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.PROCESS.toString());
 				task.setTaskStage(taskStage);
 				task.setResumable(false);
-				TaskDAO.getInstance().updateTask(task);
+				daoManager.getTaskDAO().updateTask(task);
 				
 				String input = matrixGenerationConfiguration.getInput();
 				RPCResult<String> createDirResult = fileService.createDirectory(new AdminAuthenticationToken(), Configuration.matrixGeneration_tempFileBase, 
@@ -292,10 +273,10 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				     			activeProcessFutures.remove(configuration.getConfiguration().getId());
 				     			if(!futureResult.isCancelled()) {
 				     				Boolean result = futureResult.get();
-									TaskStage newTaskStage = TaskStageDAO.getInstance().getMatrixGenerationTaskStage(TaskStageEnum.REVIEW.toString());
+									TaskStage newTaskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.REVIEW.toString());
 									task.setTaskStage(newTaskStage);
 									task.setResumable(true);
-									TaskDAO.getInstance().updateTask(task);
+									daoManager.getTaskDAO().updateTask(task);
 									
 									// send an email to the user who owns the task.
 									sendFinishedGeneratingMatrixEmail(task);
@@ -315,17 +296,16 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 	
 	private void serializeMatrix(TaxonMatrix matrix, String file) throws IOException {
-		ObjectOutput output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
-		output.writeObject(matrix);
-		output.flush();
-		output.close();
+		try(ObjectOutput output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
+			output.writeObject(matrix);
+		}
 	}
 	
 	private TaxonMatrix unserializeMatrix(String file) throws FileNotFoundException, IOException, ClassNotFoundException {
-		ObjectInput input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
-		TaxonMatrix matrix = (TaxonMatrix)input.readObject();
-		input.close();
-		return matrix;
+		try(ObjectInput input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
+			TaxonMatrix matrix = (TaxonMatrix)input.readObject();
+			return matrix;
+		}
 	}
 	
 	@Override
@@ -352,11 +332,11 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				return new RPCResult<Task>(false, "Not a compatible task");
 			
 			final MatrixGenerationConfiguration matrixGenerationConfiguration = (MatrixGenerationConfiguration)configuration;
-			final TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION);
-			TaskStage taskStage = TaskStageDAO.getInstance().getMatrixGenerationTaskStage(TaskStageEnum.OUTPUT.toString());
+			final TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION);
+			TaskStage taskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.OUTPUT.toString());
 			task.setTaskStage(taskStage);
 			task.setResumable(true);
-			TaskDAO.getInstance().updateTask(task);
+			daoManager.getTaskDAO().updateTask(task);
 			
 			return new RPCResult<Task>(true, task);
 		} catch (Exception e) {
@@ -369,11 +349,11 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	
 	private void sendFinishedGeneratingMatrixEmail(Task task){
 		try {
-			String email = UserDAO.getInstance().getUser(task.getUser().getId()).getEmail();
+			String email = daoManager.getUserDAO().getUser(task.getUser().getId()).getEmail();
 			String subject = Configuration.finishedMatrixgenerationGenerateSubject.replace("<taskname>", task.getName());
 			String body = Configuration.finishedMatrixgenerationGenerateBody.replace("<taskname>", task.getName());
 			
-			EmailManager.getInstance().sendEmail(email, subject, body);
+			emailer.sendEmail(email, subject, body);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
@@ -464,125 +444,126 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 
 	private TaxonMatrix createTaxonMatrix(String inputDirectory, String filePath) throws Exception {
-		CSVReader reader = new CSVReader(new FileReader(filePath), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.DEFAULT_QUOTE_CHARACTER);
 		
-		List<Character> characters = new LinkedList<Character>();
-		String[] head = reader.readNext();
-		for(int i=2; i<head.length; i++) {
-			String character = head[i];
-			characters.add(new Character(character));
-		}
-		TaxonMatrix taxonMatrix = new TaxonMatrix(characters);
+		try(CSVReader reader = new CSVReader(new FileReader(filePath), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.DEFAULT_QUOTE_CHARACTER)) {
 		
-	    List<TaxonName> taxonNames = new LinkedList<TaxonName>();
-	    Map<RankData, Taxon> rankTaxaMap = new HashMap<RankData, Taxon>();
-	    List<String[]> allLines = reader.readAll();
-	    //init all taxa
-	    for(int i=0; i<allLines.size(); i++) {
-	    	String[] line = allLines.get(i);
-	    	String sourceFile = line[1];
-	    	String name = line[0];
-	    	TaxonName taxonName = createTaxonName(name);
-	    	taxonNames.add(taxonName);
-	    	
-	    	String description = getMorphologyDescription(new File(inputDirectory, sourceFile));
-	    	Taxon taxon = createPlainTaxon(String.valueOf(i), taxonName, description);
-	    	rankTaxaMap.put(taxonName.getRankData().getLast(), taxon);
-	    }
-	    
-	    //assign parents or root
-	    for(TaxonName taxonName : taxonNames) {
-	    	LinkedList<RankData> rankData = taxonName.getRankData();
-	    	Taxon taxon = rankTaxaMap.get(rankData.getLast());
-	    	if(rankData.size() == 1) 
-	    		taxonMatrix.addRootTaxon(taxon);
-		    if(rankData.size() > 1) {
-		    	int parentRankIndex = rankData.size() - 2;
-		    	Taxon parentTaxon = null;
-		    	while(parentTaxon == null && parentRankIndex >= 0) {
-			    	RankData parentRankData = rankData.get(parentRankIndex);
-		    		parentTaxon = rankTaxaMap.get(parentRankData);
-		    		parentRankIndex--;
-		    	}
-		    	if(parentTaxon == null)
-		    		taxonMatrix.addRootTaxon(taxon);
-		    	else
-		    		taxonMatrix.addTaxon(parentTaxon, taxon);
+			List<Character> characters = new LinkedList<Character>();
+			String[] head = reader.readNext();
+			for(int i=2; i<head.length; i++) {
+				String character = head[i];
+				characters.add(new Character(character));
+			}
+			TaxonMatrix taxonMatrix = new TaxonMatrix(characters);
+			
+		    List<TaxonName> taxonNames = new LinkedList<TaxonName>();
+		    Map<RankData, Taxon> rankTaxaMap = new HashMap<RankData, Taxon>();
+		    Map<RankData, RankData> rankDataInstances = new HashMap<RankData, RankData>();
+		    List<String[]> allLines = reader.readAll();
+		    //init all taxa
+		    for(int i=0; i<allLines.size(); i++) {
+		    	String[] line = allLines.get(i);
+		    	String sourceFile = line[1];
+		    	String name = line[0];
+		    	TaxonName taxonName = createTaxonName(name, rankDataInstances);
+		    	taxonNames.add(taxonName);
+		    	
+		    	String description = getMorphologyDescription(new File(inputDirectory, sourceFile));
+		    	Taxon taxon = createPlainTaxon(String.valueOf(i), taxonName, description);
+		    	rankTaxaMap.put(taxonName.getRankData().getLast(), taxon);
 		    }
-	    }
-	    
-	    //set values
-	    for(int i=0; i<allLines.size(); i++) {
-	    	String[] line = allLines.get(i);
-		    for(int j=2; j<line.length; j++) {
-	    		taxonMatrix.setValue(rankTaxaMap.get(taxonNames.get(i).getRankData().getLast()), characters.get(j-2), new Value(line[j]));
-	    	}
-	    }
-	    
-	    reader.close();
-	    return taxonMatrix; 
+		    
+		    //assign parents or root
+		    for(TaxonName taxonName : taxonNames) {
+		    	LinkedList<RankData> rankData = taxonName.getRankData();
+		    	Taxon taxon = rankTaxaMap.get(rankData.getLast());
+		    	if(rankData.size() == 1) 
+		    		taxonMatrix.addRootTaxon(taxon);
+			    if(rankData.size() > 1) {
+			    	int parentRankIndex = rankData.size() - 2;
+			    	Taxon parentTaxon = null;
+			    	while(parentTaxon == null && parentRankIndex >= 0) {
+				    	RankData parentRankData = rankData.get(parentRankIndex);
+			    		parentTaxon = rankTaxaMap.get(parentRankData);
+			    		parentRankIndex--;
+			    	}
+			    	if(parentTaxon == null)
+			    		taxonMatrix.addRootTaxon(taxon);
+			    	else
+			    		taxonMatrix.addTaxon(parentTaxon, taxon);
+			    }
+		    }
+		    
+		    //set values
+		    for(int i=0; i<allLines.size(); i++) {
+		    	String[] line = allLines.get(i);
+			    for(int j=2; j<line.length; j++) {
+		    		taxonMatrix.setValue(rankTaxaMap.get(taxonNames.get(i).getRankData().getLast()), characters.get(j-2), new Value(line[j]));
+		    	}
+		    }
+		    return taxonMatrix; 
+		}
 	}
 	
 	private TaxonMatrix createTaxonMatrix(MatrixGenerationConfiguration matrixGenerationConfiguration, String filePath) throws Exception {
 		String inputDirectory = matrixGenerationConfiguration.getInput();
 
-		CSVReader reader = new CSVReader(new FileReader(filePath), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.DEFAULT_QUOTE_CHARACTER);
+		try(CSVReader reader = new CSVReader(new FileReader(filePath), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.DEFAULT_QUOTE_CHARACTER)) {
 		
-		List<Character> characters = new LinkedList<Character>();
-		String[] head = reader.readNext();
-		for(int i=2; i<head.length; i++) {
-			String character = head[i];
-			characters.add(new Character(character));
-		}
-		TaxonMatrix taxonMatrix = new TaxonMatrix(characters);
-		
-	    List<TaxonName> taxonNames = new LinkedList<TaxonName>();
-	    Map<RankData, Taxon> rankTaxaMap = new HashMap<RankData, Taxon>();
-	    List<String[]> allLines = reader.readAll();
-	    //init all taxa
-	    for(int i=0; i<allLines.size(); i++) {
-	    	String[] line = allLines.get(i);
-	    	String sourceFile = line[1];
-	    	String name = line[0];
-	    	TaxonName taxonName = createTaxonName(name);
-	    	taxonNames.add(taxonName);
-	    	
-	    	String description = getMorphologyDescription(new File(inputDirectory, sourceFile));
-	    	Taxon taxon = createPlainTaxon(String.valueOf(i), taxonName, description);
-	    	rankTaxaMap.put(taxonName.getRankData().getLast(), taxon);
-	    }
-	    
-	    //assign parents or root
-	    for(TaxonName taxonName : taxonNames) {
-	    	LinkedList<RankData> rankData = taxonName.getRankData();
-	    	Taxon taxon = rankTaxaMap.get(rankData.getLast());
-	    	if(rankData.size() == 1) 
-	    		taxonMatrix.addRootTaxon(taxon);
-		    if(rankData.size() > 1) {
-		    	int parentRankIndex = rankData.size() - 2;
-		    	Taxon parentTaxon = null;
-		    	while(parentTaxon == null && parentRankIndex >= 0) {
-			    	RankData parentRankData = rankData.get(parentRankIndex);
-		    		parentTaxon = rankTaxaMap.get(parentRankData);
-		    		parentRankIndex--;
-		    	}
-		    	if(parentTaxon == null)
-		    		taxonMatrix.addRootTaxon(taxon);
-		    	else
-		    		taxonMatrix.addTaxon(parentTaxon, taxon);
+			List<Character> characters = new LinkedList<Character>();
+			String[] head = reader.readNext();
+			for(int i=2; i<head.length; i++) {
+				String character = head[i];
+				characters.add(new Character(character));
+			}
+			TaxonMatrix taxonMatrix = new TaxonMatrix(characters);
+			
+		    List<TaxonName> taxonNames = new LinkedList<TaxonName>();
+		    Map<RankData, Taxon> rankTaxaMap = new HashMap<RankData, Taxon>();
+		    Map<RankData, RankData> rankDataInstances = new HashMap<RankData, RankData>();
+		    List<String[]> allLines = reader.readAll();
+		    //init all taxa
+		    for(int i=0; i<allLines.size(); i++) {
+		    	String[] line = allLines.get(i);
+		    	String sourceFile = line[1];
+		    	String name = line[0];
+		    	TaxonName taxonName = createTaxonName(name, rankDataInstances);
+		    	taxonNames.add(taxonName);
+		    	
+		    	String description = getMorphologyDescription(new File(inputDirectory, sourceFile));
+		    	Taxon taxon = createPlainTaxon(String.valueOf(i), taxonName, description);
+		    	rankTaxaMap.put(taxonName.getRankData().getLast(), taxon);
 		    }
-	    }
-	    
-	    //set values
-	    for(int i=0; i<allLines.size(); i++) {
-	    	String[] line = allLines.get(i);
-		    for(int j=2; j<line.length; j++) {
-	    		taxonMatrix.setValue(rankTaxaMap.get(taxonNames.get(i).getRankData().getLast()), characters.get(j-2), new Value(line[j]));
-	    	}
-	    }
-	    
-	    reader.close();
-	    return taxonMatrix; 
+		    
+		    //assign parents or root
+		    for(TaxonName taxonName : taxonNames) {
+		    	LinkedList<RankData> rankData = taxonName.getRankData();
+		    	Taxon taxon = rankTaxaMap.get(rankData.getLast());
+		    	if(rankData.size() == 1) 
+		    		taxonMatrix.addRootTaxon(taxon);
+			    if(rankData.size() > 1) {
+			    	int parentRankIndex = rankData.size() - 2;
+			    	Taxon parentTaxon = null;
+			    	while(parentTaxon == null && parentRankIndex >= 0) {
+				    	RankData parentRankData = rankData.get(parentRankIndex);
+			    		parentTaxon = rankTaxaMap.get(parentRankData);
+			    		parentRankIndex--;
+			    	}
+			    	if(parentTaxon == null)
+			    		taxonMatrix.addRootTaxon(taxon);
+			    	else
+			    		taxonMatrix.addTaxon(parentTaxon, taxon);
+			    }
+		    }
+		    
+		    //set values
+		    for(int i=0; i<allLines.size(); i++) {
+		    	String[] line = allLines.get(i);
+			    for(int j=2; j<line.length; j++) {
+		    		taxonMatrix.setValue(rankTaxaMap.get(taxonNames.get(i).getRankData().getLast()), characters.get(j-2), new Value(line[j]));
+		    	}
+		    }
+		    return taxonMatrix; 
+		}
 	}
 
 
@@ -606,7 +587,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		return result.toString();
 	}
 
-	private TaxonName createTaxonName(String name) {
+	private TaxonName createTaxonName(String name, Map<RankData, RankData> rankDataInstances) {
 		String[] ranksAuthorParts = name.split(":");
     	String[] authorParts = ranksAuthorParts[1].split(",");
     	String author = authorParts[0];
@@ -638,7 +619,11 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
         		}
         	}
     		
-    		rankData.add(RankData.getInstanceFor(level, value, authority, rankDate));
+    		RankData rankDataInstance = new RankData(level, value, authority, date);
+			if(!rankDataInstances.containsKey(rankDataInstance))
+				rankDataInstances.put(rankDataInstance, rankDataInstance);
+			rankDataInstance = rankDataInstances.get(rankDataInstance);
+    		rankData.add(rankDataInstance);
     	}
     			
 		TaxonName result = new TaxonName(rankData, author.split("=")[1], date.split("=")[1]);
@@ -688,9 +673,9 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			task.setResumable(false);
 			task.setComplete(true);
 			task.setCompleted(new Date());
-			TaskDAO.getInstance().updateTask(task);
+			daoManager.getTaskDAO().updateTask(task);
 			
-			TasksOutputFilesDAO.getInstance().addOutput(task, createDirectoryResult.getData());
+			daoManager.getTasksOutputFilesDAO().addOutput(task, createDirectoryResult.getData());
 			
 			return new RPCResult<Task>(true, task);
 		} catch (Exception e) {
@@ -701,43 +686,44 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 
 	private String getCSVMatrix(TaxonMatrix matrix) throws IOException {
 		//TODO: Add RankData authority and date
-		StringWriter stringWriter = new StringWriter();
-		CSVWriter writer = new CSVWriter(stringWriter, '\t', CSVWriter.NO_QUOTE_CHARACTER);
+		try(StringWriter stringWriter = new StringWriter()) {
+			try(CSVWriter writer = new CSVWriter(stringWriter, '\t', CSVWriter.NO_QUOTE_CHARACTER)) {
 			
-		String[] line = new String[matrix.getCharacterCount() + 1];
-		line[0] = "Name";
-		
-		for(int i=1; i<=matrix.getCharacterCount(); i++) {
-			line[i] = matrix.getCharacter(i - 1).toString();
-		}
-		writer.writeNext(line);
-		
-		for(int i=0; i<matrix.getTaxaCount(); i++) {
-			Taxon taxon = matrix.getTaxon(i);
-			line = new String[matrix.getCharacterCount() + 1];
-			line[0] = getTaxonName(taxon);
-			
-			for(int j=1; j<matrix.getCharacterCount(); j++) {
-				Character character = matrix.getCharacter(j - 1);
-				line[j] = taxon.get(character).toString();
+				String[] line = new String[matrix.getCharacterCount() + 1];
+				line[0] = "Name";
+				
+				for(int i=1; i<=matrix.getCharacterCount(); i++) {
+					line[i] = matrix.getCharacter(i - 1).toString();
+				}
+				writer.writeNext(line);
+				
+				for(int i=0; i<matrix.getTaxaCount(); i++) {
+					Taxon taxon = matrix.getTaxon(i);
+					line = new String[matrix.getCharacterCount() + 1];
+					line[0] = getTaxonName(taxon);
+					
+					for(int j=1; j<matrix.getCharacterCount(); j++) {
+						Character character = matrix.getCharacter(j - 1);
+						line[j] = taxon.get(character).toString();
+					}
+					writer.writeNext(line);
+				}
+				writer.flush();
+				String result = stringWriter.toString();
+				return result;
 			}
-			writer.writeNext(line);
 		}
-		writer.flush();
-		writer.close();
-		String result = stringWriter.toString();
-		return result;
 	}
 
 	@Override
 	public RPCResult<Task> getLatestResumable(AuthenticationToken authenticationToken) {
 		try {
-			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUserId());
-			List<Task> tasks = TaskDAO.getInstance().getOwnedTasks(user.getId());
+			ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
+			List<Task> tasks = daoManager.getTaskDAO().getOwnedTasks(user.getId());
 			for(Task task : tasks) {
 				if(task.isResumable() && 
 						task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION)) {
-							//SemanticMarkupConfiguration configuration = SemanticMarkupConfigurationDAO.getInstance().getSemanticMarkupConfiguration(task.getConfiguration().getConfiguration().getId());
+							//SemanticMarkupConfiguration configuration = SemanticMarkupdaoManager.getConfigurationDAO().getInstance().getSemanticMarkupConfiguration(task.getConfiguration().getConfiguration().getId());
 							return new RPCResult<Task>(true, task);
 				}
 			}
@@ -760,16 +746,16 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			if(matrixGenerationConfiguration != null) {
 				if(matrixGenerationConfiguration.getInput() != null)
 					fileService.setInUse(authenticationToken, false, matrixGenerationConfiguration.getInput(), task);
-				MatrixGenerationConfigurationDAO.getInstance().remove(matrixGenerationConfiguration);
+				daoManager.getMatrixGenerationConfigurationDAO().remove(matrixGenerationConfiguration);
 			}
 			
 			//remove task
 			if(task != null) {
-				TaskDAO.getInstance().removeTask(task);
+				daoManager.getTaskDAO().removeTask(task);
 				if(task.getConfiguration() != null)
 					
 					//remove configuration
-					ConfigurationDAO.getInstance().remove(task.getConfiguration().getConfiguration());
+					daoManager.getConfigurationDAO().remove(task.getConfiguration().getConfiguration());
 			
 				//cancel possible futures
 				if(task.getTaskStage() != null) {
@@ -852,13 +838,13 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	@Override
 	public RPCResult<Task> goToTaskStage(AuthenticationToken authenticationToken, Task task, TaskStageEnum taskStageEnum) {
 		try {
-			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION);
-			TaskStage taskStage = TaskStageDAO.getInstance().getMatrixGenerationTaskStage(taskStageEnum.toString());
+			TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION);
+			TaskStage taskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(taskStageEnum.toString());
 			task.setTaskStage(taskStage);
 			task.setResumable(true);
 			task.setComplete(false);
 			task.setCompleted(null);
-			TaskDAO.getInstance().updateTask(task);
+			daoManager.getTaskDAO().updateTask(task);
 			return new RPCResult<Task>(true, task);
 		} catch(Exception e) {
 			e.printStackTrace();

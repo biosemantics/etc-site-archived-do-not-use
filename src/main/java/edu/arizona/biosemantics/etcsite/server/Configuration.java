@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.Properties;
 import java.util.regex.Matcher;
 
-import org.apache.log4j.Logger;
-
 public class Configuration extends edu.arizona.biosemantics.etcsite.client.common.Configuration {
 
 	public static String deploymentUrl;

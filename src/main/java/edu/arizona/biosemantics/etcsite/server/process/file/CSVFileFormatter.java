@@ -3,10 +3,9 @@ package edu.arizona.biosemantics.etcsite.server.process.file;
 
 public class CSVFileFormatter implements IFileFormatter {
 
-	CSVValidator validator = new CSVValidator();
-	String valueSeperator = ";";
-	String dataRowSeperator = "\n";
-	
+	private CSVValidator validator = new CSVValidator();
+	private String valueSeperator = ";";
+	private String dataRowSeperator = "\n";
 	
 	@Override
 	public String format(String input) {

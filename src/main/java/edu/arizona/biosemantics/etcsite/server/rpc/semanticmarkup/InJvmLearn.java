@@ -3,7 +3,7 @@ package edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup;
 import java.io.File;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
-import edu.arizona.biosemantics.etcsite.server.db.DatasetPrefixDAO;
+import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.AdminAuthenticationToken;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileService;
 import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
@@ -12,7 +12,8 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.IFileService;
 import edu.arizona.biosemantics.semanticmarkup.ETCLearnMain;
 
 public class InJvmLearn implements Learn {
-
+	
+	private DAOManager daoManager = new DAOManager();
 	private String config;
 	private String input;
 	private String tablePrefix;
@@ -64,7 +65,7 @@ public class InJvmLearn implements Learn {
 				"-n", databaseHost, "-p", databasePort, "-d", databaseName, "-u", databaseUser, 
 				"-s", databasePassword, "-i", input, "-z" , tablePrefix, "-y", "-o", otoLiteURL};
 		ETCLearnMain.main(args);
-		DatasetPrefix datasetPrefix = DatasetPrefixDAO.getInstance().getDatasetPrefix(tablePrefix);
+		DatasetPrefix datasetPrefix = daoManager.getDatasetPrefixDAO().getDatasetPrefix(tablePrefix);
 		LearnResult result = new LearnResult(datasetPrefix.getOtoUploadId(), datasetPrefix.getOtoSecret());
 		return result;
 	}

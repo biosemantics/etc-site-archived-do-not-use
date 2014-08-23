@@ -22,7 +22,6 @@ import edu.arizona.biosemantics.etcsite.client.content.taskManager.ResumableTask
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
 import edu.arizona.biosemantics.etcsite.client.top.ITopView.Presenter;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.model.User;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ITaskServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
@@ -37,7 +36,7 @@ public class LoggedInActivity implements Activity, Presenter {
 	private MessagePresenter messagePresenter = new MessagePresenter();
 
 	@Inject
-	public LoggedInActivity(ITopView topView, PlaceController placeController, 
+	public LoggedInActivity(final ITopView topView, PlaceController placeController, 
 			final ITaskServiceAsync taskService, @Named("Tasks") final EventBus tasksBus, @Named("CheckResumables")int resumableTasksTime, 
 			IAuthenticationServiceAsync authenticationService) {
 		this.topView = topView;
@@ -48,6 +47,7 @@ public class LoggedInActivity implements Activity, Presenter {
 	        	taskService.getResumableTasks(Authentication.getInstance().getToken(), new RPCCallback<Map<Integer, Task>>() {
 					@Override
 					public void onResult(Map<Integer, Task> result) {
+						topView.setResumableTasks(!result.isEmpty());
 						tasksBus.fireEvent(new ResumableTasksEvent(result));
 					}
 	    		});

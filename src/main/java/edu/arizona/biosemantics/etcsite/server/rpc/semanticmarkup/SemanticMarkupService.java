@@ -25,15 +25,8 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
-import edu.arizona.biosemantics.etcsite.server.EmailManager;
-import edu.arizona.biosemantics.etcsite.server.db.ConfigurationDAO;
-import edu.arizona.biosemantics.etcsite.server.db.GlossaryDAO;
-import edu.arizona.biosemantics.etcsite.server.db.SemanticMarkupConfigurationDAO;
-import edu.arizona.biosemantics.etcsite.server.db.TaskDAO;
-import edu.arizona.biosemantics.etcsite.server.db.TaskStageDAO;
-import edu.arizona.biosemantics.etcsite.server.db.TaskTypeDAO;
-import edu.arizona.biosemantics.etcsite.server.db.TasksOutputFilesDAO;
-import edu.arizona.biosemantics.etcsite.server.db.UserDAO;
+import edu.arizona.biosemantics.etcsite.server.Emailer;
+import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.AdminAuthenticationToken;
 import edu.arizona.biosemantics.etcsite.server.rpc.AuthenticationService;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileAccessService;
@@ -75,13 +68,14 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	private IFilePermissionService filePermissionService = new FilePermissionService();
 	private IAuthenticationService authenticationService = new AuthenticationService();
 	private BracketValidator bracketValidator = new BracketValidator();
-	private int maximumThreads = 10;
 	private ListeningExecutorService executorService;
 	private Map<Integer, ListenableFuture<LearnResult>> activeLearnFutures = new HashMap<Integer, ListenableFuture<LearnResult>>();
 	private Map<Integer, ListenableFuture<ParseResult>> activeParseFutures = new HashMap<Integer, ListenableFuture<ParseResult>>();
 	private Map<Integer, Learn> activeLearns = new HashMap<Integer, Learn>();
 	private Map<Integer, Parse> activeParses = new HashMap<Integer, Parse>();
-
+	private DAOManager daoManager = new DAOManager();
+	private Emailer emailer = new Emailer();
+	
 	public SemanticMarkupService() {
 		executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(Configuration.maxActiveSemanticMarkup));
 	}
@@ -111,18 +105,18 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				return new RPCResult<Task>(false, directoriesFilesResult.getMessage());
 			}
 			int numberOfInputFiles = directoriesFilesResult.getData().size();
-			Glossary glossary = GlossaryDAO.getInstance().getGlossary(glossaryName);
+			Glossary glossary = daoManager.getGlossaryDAO().getGlossary(glossaryName);
 			SemanticMarkupConfiguration semanticMarkupConfiguration = new SemanticMarkupConfiguration();
 			semanticMarkupConfiguration.setInput(filePath);	
 			semanticMarkupConfiguration.setGlossary(glossary);
 			semanticMarkupConfiguration.setNumberOfInputFiles(numberOfInputFiles);
 			semanticMarkupConfiguration.setOutput(semanticMarkupConfiguration.getInput() + "_" + taskName);
-			semanticMarkupConfiguration = SemanticMarkupConfigurationDAO.getInstance().addSemanticMarkupConfiguration(semanticMarkupConfiguration);
+			semanticMarkupConfiguration = daoManager.getSemanticMarkupConfigurationDAO().addSemanticMarkupConfiguration(semanticMarkupConfiguration);
 			
 			edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum taskType = edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP;
-			TaskType dbTaskType = TaskTypeDAO.getInstance().getTaskType(taskType);
-			TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.INPUT.toString());
-			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUserId());
+			TaskType dbTaskType = daoManager.getTaskTypeDAO().getTaskType(taskType);
+			TaskStage taskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.INPUT.toString());
+			ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
 			Task task = new Task();
 			task.setName(taskName);
 			task.setResumable(true);
@@ -131,15 +125,15 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			task.setTaskConfiguration(semanticMarkupConfiguration);
 			task.setTaskType(dbTaskType);
 
-			task = TaskDAO.getInstance().addTask(task);
-			taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.PREPROCESS_TEXT.toString());
+			task = daoManager.getTaskDAO().addTask(task);
+			taskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.PREPROCESS_TEXT.toString());
 			List<PreprocessedDescription> result = this.getPreprocessedDescriptions(authenticationToken, task);
 			if(result == null)
 				return new RPCResult<Task>(false, "Not a compatible task");
 			if(result.isEmpty())
-				taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.LEARN_TERMS.toString());
+				taskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.LEARN_TERMS.toString());
 			task.setTaskStage(taskStage);
-			TaskDAO.getInstance().updateTask(task);
+			daoManager.getTaskDAO().updateTask(task);
 
 			fileService.setInUse(authenticationToken, true, filePath, task);
 			return new RPCResult<Task>(true, task);
@@ -182,10 +176,10 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	@Override
 	public RPCResult<List<PreprocessedDescription>> preprocess(AuthenticationToken authenticationToken, Task task) {	
 		try {
-			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP);
-			TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.PREPROCESS_TEXT.toString());
+			TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP);
+			TaskStage taskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.PREPROCESS_TEXT.toString());
 			task.setTaskStage(taskStage);
-			TaskDAO.getInstance().updateTask(task);
+			daoManager.getTaskDAO().updateTask(task);
 			//do preprocessing here, return result immediately or always only return an invocation
 			//and make user come back when ready?
 			
@@ -214,11 +208,11 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			if(activeLearnFutures.containsKey(semanticMarkupConfiguration.getConfiguration().getId())) {
 				return new RPCResult<LearnInvocation>(true, new LearnInvocation(numberOfSentences, numberOfWords));
 			} else {
-				final TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP);
-				TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.LEARN_TERMS.toString());
+				final TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP);
+				TaskStage taskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.LEARN_TERMS.toString());
 				task.setTaskStage(taskStage);
 				task.setResumable(false);
-				TaskDAO.getInstance().updateTask(task);
+				daoManager.getTaskDAO().updateTask(task);
 				
 				String glossary = semanticMarkupConfiguration.getGlossary().getName();
 				String input = semanticMarkupConfiguration.getInput();
@@ -227,9 +221,10 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				RPCResult<String> operatorResult = authenticationService.getOperator(authenticationToken);
 				if(!operatorResult.isSucceeded())
 					return new RPCResult<LearnInvocation>(false, operatorResult.getMessage());
-				String bioportalUserId = UserDAO.getInstance().getUser(authenticationToken.getUserId()).getBioportalUserId();
-				String bioportalAPIKey = UserDAO.getInstance().getUser(authenticationToken.getUserId()).getBioportalAPIKey();
+				String bioportalUserId = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalUserId();
+				String bioportalAPIKey = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalAPIKey();
 				Learn learn = new ExtraJvmLearn(authenticationToken, glossary, input, tablePrefix, source, operatorResult.getData(), bioportalUserId, bioportalAPIKey);
+				//Learn learn = new InJvmLearn(authenticationToken, glossary, input, tablePrefix, source, operatorResult.getData(), bioportalUserId, bioportalAPIKey);
 				activeLearns.put(semanticMarkupConfiguration.getConfiguration().getId(), learn);
 				final ListenableFuture<LearnResult> futureResult = executorService.submit(learn);
 				activeLearnFutures.put(semanticMarkupConfiguration.getConfiguration().getId(), futureResult);
@@ -242,11 +237,11 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				     				LearnResult result = futureResult.get();
 					     			semanticMarkupConfiguration.setOtoUploadId(result.getOtoUploadId());
 					     			semanticMarkupConfiguration.setOtoSecret(result.getOtoSecret());
-									SemanticMarkupConfigurationDAO.getInstance().updateSemanticMarkupConfiguration(semanticMarkupConfiguration);
-									TaskStage newTaskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.REVIEW_TERMS.toString());
+									daoManager.getSemanticMarkupConfigurationDAO().updateSemanticMarkupConfiguration(semanticMarkupConfiguration);
+									TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.REVIEW_TERMS.toString());
 									task.setTaskStage(newTaskStage);
 									task.setResumable(true);
-									TaskDAO.getInstance().updateTask(task);
+									daoManager.getTaskDAO().updateTask(task);
 									
 									// send an email to the user who owns the task.
 									sendFinishedLearningTermsEmail(task);
@@ -267,11 +262,11 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	
 	private void sendFinishedLearningTermsEmail(Task task){
 		try {
-			String email = UserDAO.getInstance().getUser(task.getUser().getId()).getEmail();
+			String email = daoManager.getUserDAO().getUser(task.getUser().getId()).getEmail();
 			String subject = Configuration.finishedSemanticMarkupLearnSubject.replace("<taskname>", task.getName());
 			String body = Configuration.finishedSemanticMarkupLearnBody.replace("<taskname>", task.getName());
 			
-			EmailManager.getInstance().sendEmail(email, subject, body);
+			emailer.sendEmail(email, subject, body);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
@@ -280,11 +275,11 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	
 	private void sendFinishedParsingEmail(Task task){
 		try {
-			String email = UserDAO.getInstance().getUser(task.getUser().getId()).getEmail();
+			String email = daoManager.getUserDAO().getUser(task.getUser().getId()).getEmail();
 			String subject = Configuration.finishedSemanticMarkupParseSubject.replace("<taskname>", task.getName());
 			String body = Configuration.finishedSemanticMarkupParseBody.replace("<taskname>", task.getName());
 			
-			EmailManager.getInstance().sendEmail(email, subject, body);
+			emailer.sendEmail(email, subject, body);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
@@ -304,11 +299,11 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	@Override
 	public RPCResult<Task> review(AuthenticationToken authenticationToken, Task task) {
 		try {
-			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP);
-			TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.REVIEW_TERMS.toString());
+			TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP);
+			TaskStage taskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.REVIEW_TERMS.toString());
 			task.setTaskStage(taskStage);
-			TaskDAO.getInstance().updateTask(task);
-			task = TaskDAO.getInstance().getTask(task.getId());
+			daoManager.getTaskDAO().updateTask(task);
+			task = daoManager.getTaskDAO().getTask(task.getId());
 			return new RPCResult<Task>(true, task);
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -319,7 +314,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	/*@Override
 	public RPCResult<Void> prepareOptionalOtoLiteSteps(AuthenticationToken authenticationToken, Task task) {
 		try { 
-			task = TaskDAO.getInstance().getTask(task.getId());
+			task = daoManager.getTaskDAO().getTask(task.getId());
 			final AbstractTaskConfiguration configuration = task.getConfiguration();
 			if(!(configuration instanceof SemanticMarkupConfiguration))
 				return new RPCResult<Void>(false, "Not a compatible task");
@@ -391,11 +386,11 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			if(activeParseFutures.containsKey(semanticMarkupConfiguration.getConfiguration().getId())) {
 				return new RPCResult<ParseInvocation>(true, new ParseInvocation());
 			} else {
-				final TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP);
-				TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.PARSE_TEXT.toString());
+				final TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP);
+				TaskStage taskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.PARSE_TEXT.toString());
 				task.setTaskStage(taskStage);
 				task.setResumable(false);
-				TaskDAO.getInstance().updateTask(task);
+				daoManager.getTaskDAO().updateTask(task);
 				
 				String glossary = semanticMarkupConfiguration.getGlossary().getName();
 				String input = semanticMarkupConfiguration.getInput();
@@ -404,8 +399,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				RPCResult<String> operator = authenticationService.getOperator(authenticationToken);
 				if(!operator.isSucceeded())
 					return new RPCResult<ParseInvocation>(false, operator.getMessage());
-				String bioportalUserId = UserDAO.getInstance().getUser(authenticationToken.getUserId()).getBioportalUserId();
-				String bioportalAPIKey = UserDAO.getInstance().getUser(authenticationToken.getUserId()).getBioportalAPIKey();
+				String bioportalUserId = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalUserId();
+				String bioportalAPIKey = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalAPIKey();
 				Parse parse = new ExtraJvmParse(authenticationToken, glossary, input, tablePrefix, source, operator.getData(), bioportalUserId, bioportalAPIKey);
 				activeParses.put(semanticMarkupConfiguration.getConfiguration().getId(), parse);
 				final ListenableFuture<ParseResult> futureResult = executorService.submit(parse);
@@ -418,10 +413,10 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 							activeParseFutures.remove(semanticMarkupConfiguration.getConfiguration().getId());
 							if(!futureResult.isCancelled()) {
 								task.setResumable(true);
-								//TaskStage newTaskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.TO_ONTOLOGIES.toString());
-								TaskStage newTaskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(TaskStageEnum.OUTPUT.toString());
+								//TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.TO_ONTOLOGIES.toString());
+								TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.OUTPUT.toString());
 								task.setTaskStage(newTaskStage);
-								TaskDAO.getInstance().updateTask(task);
+								daoManager.getTaskDAO().updateTask(task);
 								sendFinishedParsingEmail(task);
 							}
 						} catch (Exception e) {
@@ -473,13 +468,13 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			
 			//update task
 			semanticMarkupConfiguration.setOutput(createDirectoryResult.getData());
-			SemanticMarkupConfigurationDAO.getInstance().updateSemanticMarkupConfiguration(semanticMarkupConfiguration);
+			daoManager.getSemanticMarkupConfigurationDAO().updateSemanticMarkupConfiguration(semanticMarkupConfiguration);
 			task.setResumable(false);
 			task.setComplete(true);
 			task.setCompleted(new Date());
-			TaskDAO.getInstance().updateTask(task);
+			daoManager.getTaskDAO().updateTask(task);
 			
-			TasksOutputFilesDAO.getInstance().addOutput(task, createDirectoryResult.getData());
+			daoManager.getTasksOutputFilesDAO().addOutput(task, createDirectoryResult.getData());
 			
 			return new RPCResult<Task>(true, task);
 		} catch (Exception e) {
@@ -491,13 +486,13 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	@Override
 	public RPCResult<Task> goToTaskStage(AuthenticationToken authenticationToken, Task task, TaskStageEnum taskStageEnum) {		
 		try {
-			TaskType taskType = TaskTypeDAO.getInstance().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP);
-			TaskStage taskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(taskStageEnum.toString());
+			TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP);
+			TaskStage taskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(taskStageEnum.toString());
 			task.setTaskStage(taskStage);
 			task.setResumable(true);
 			task.setComplete(false);
 			task.setCompleted(null);
-			TaskDAO.getInstance().updateTask(task);
+			daoManager.getTaskDAO().updateTask(task);
 			return new RPCResult<Task>(true, task);
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -512,16 +507,18 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			if(fileContentResult.isSucceeded()) {
 				SAXBuilder sax = new SAXBuilder();
 				String fileContent = fileContentResult.getData();
-				Document doc = sax.build(new StringReader(fileContent));
-				
-				XPathFactory xpfac = XPathFactory.instance();
-				XPathExpression<Element> xp = xpfac.compile("/bio:treatment/description", Filters.element(), null,
-						Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
-				List<Element> descriptions = xp.evaluate(doc);
-				if(descriptions != null && !descriptions.isEmpty())
-					return new RPCResult<String>(true, "", descriptions.get(0).getText());
-				else 
-					return new RPCResult<String>(false, "No description found in this file", null);
+				try(StringReader reader = new StringReader(fileContent)) {
+					Document doc = sax.build(reader);
+					
+					XPathFactory xpfac = XPathFactory.instance();
+					XPathExpression<Element> xp = xpfac.compile("/bio:treatment/description", Filters.element(), null,
+							Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
+					List<Element> descriptions = xp.evaluate(doc);
+					if(descriptions != null && !descriptions.isEmpty())
+						return new RPCResult<String>(true, "", descriptions.get(0).getText());
+					else 
+						return new RPCResult<String>(false, "No description found in this file", null);
+				}
 			}
 			return new RPCResult<String>(false, fileContentResult.getMessage(), "");
 		} catch(Exception e) {
@@ -532,17 +529,19 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	
 	private String replaceDescription(String content, String description) throws Exception {
 		SAXBuilder sax = new SAXBuilder();
-		Document doc = sax.build(new StringReader(content));
-		
-		XPathFactory xpfac = XPathFactory.instance();
-		XPathExpression<Element> xp = xpfac.compile("/bio:treatment/description", Filters.element(), null,
-				Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
-		List<Element> descriptions = xp.evaluate(doc);
-		if(descriptions != null && !descriptions.isEmpty())
-			descriptions.get(0).setText(description);
-		
-		XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
-		return outputter.outputString(doc);
+		try(StringReader reader = new StringReader(content)) {
+			Document doc = sax.build(reader);
+			
+			XPathFactory xpfac = XPathFactory.instance();
+			XPathExpression<Element> xp = xpfac.compile("/bio:treatment/description", Filters.element(), null,
+					Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
+			List<Element> descriptions = xp.evaluate(doc);
+			if(descriptions != null && !descriptions.isEmpty())
+				descriptions.get(0).setText(description);
+			
+			XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
+			return outputter.outputString(doc);
+		}
 	}
 
 	@Override
@@ -568,12 +567,12 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	@Override
 	public RPCResult<Task> getLatestResumable(AuthenticationToken authenticationToken) {		
 		try {
-			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUserId());
-			List<Task> tasks = TaskDAO.getInstance().getOwnedTasks(user.getId());
+			ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
+			List<Task> tasks = daoManager.getTaskDAO().getOwnedTasks(user.getId());
 			for(Task task : tasks) {
 				if(task.isResumable() && 
 					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP)) {
-						//SemanticMarkupConfiguration configuration = SemanticMarkupConfigurationDAO.getInstance().getSemanticMarkupConfiguration(task.getConfiguration().getConfiguration().getId());
+						//SemanticMarkupConfiguration configuration = daoManager.getSemanticMarkupConfigurationDAO().getSemanticMarkupConfiguration(task.getConfiguration().getConfiguration().getId());
 						return new RPCResult<Task>(true, task);
 				}
 			}
@@ -596,16 +595,16 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			if(semanticMarkupConfiguration != null) {
 				if(semanticMarkupConfiguration.getInput() != null)
 					fileService.setInUse(authenticationToken, false, semanticMarkupConfiguration.getInput(), task);
-				SemanticMarkupConfigurationDAO.getInstance().remove(semanticMarkupConfiguration);
+				daoManager.getSemanticMarkupConfigurationDAO().remove(semanticMarkupConfiguration);
 			}
 			
 			//remove task
 			if(task != null) {
-				TaskDAO.getInstance().removeTask(task);
+				daoManager.getTaskDAO().removeTask(task);
 				if(task.getConfiguration() != null)
 					
 					//remove configuration
-					ConfigurationDAO.getInstance().remove(task.getConfiguration().getConfiguration());
+					daoManager.getConfigurationDAO().remove(task.getConfiguration().getConfiguration());
 			
 				//cancel possible futures
 				if(task.getTaskStage() != null) {

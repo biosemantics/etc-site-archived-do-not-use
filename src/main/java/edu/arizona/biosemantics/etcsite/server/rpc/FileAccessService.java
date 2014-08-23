@@ -13,6 +13,9 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
@@ -63,11 +66,9 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 		}*/
 		File file = new File(filePath);
 		if(file.exists() && file.isFile()) {
-			try {
-				Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
+			try(Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"))) {
 				writer.append(content);
 				writer.flush();
-				writer.close();
 				return new RPCResult<Void>(true, "");
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -89,15 +90,8 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 		if(!file.exists() || !file.isFile())
 			return new RPCResult<String>(false, "File doesn't exist", "");
 		try {
-			StringBuilder  stringBuilder = new StringBuilder();
-			String line = null;
-			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
-			while((line = reader.readLine()) != null ) {
-		        stringBuilder.append(line);
-		        stringBuilder.append("\n");
-		    }
-			reader.close();
-		    return new RPCResult<String>(true, "", prettyFormat(stringBuilder.toString()));
+			byte[] encoded = Files.readAllBytes(Paths.get(filePath));
+			return new RPCResult<String>(true, "", prettyFormat(new String(encoded, StandardCharsets.UTF_8)));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new RPCResult<String>(false, "Internal Server Error", "");
@@ -107,17 +101,20 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 
 	private String prettyFormat(String input) {
 	    try {
-	        Source xmlInput = new StreamSource(new StringReader(input));
-	        StringWriter stringWriter = new StringWriter();
-	        StreamResult xmlOutput = new StreamResult(stringWriter);
-	        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-	        //transformerFactory.setAttribute("indent-number", indent);
-	        
-	        Transformer transformer = transformerFactory.newTransformer(); 
-	        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-	        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-	        transformer.transform(xmlInput, xmlOutput);
-	        return xmlOutput.getWriter().toString();
+	    	try (StringReader reader = new StringReader(input)) {
+		        Source xmlInput = new StreamSource(reader);
+		        try(StringWriter stringWriter = new StringWriter()) {
+			        StreamResult xmlOutput = new StreamResult(stringWriter);
+			        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			        //transformerFactory.setAttribute("indent-number", indent);
+			        
+			        Transformer transformer = transformerFactory.newTransformer(); 
+			        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+			        transformer.transform(xmlInput, xmlOutput);
+			        return xmlOutput.getWriter().toString();
+		        }
+	    	}
 	    } catch (Exception e) {
 	        e.printStackTrace(); // simple exception handling, please review it
 	        return input;
@@ -139,24 +136,23 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 		if(fileContentResult.isSucceeded()) {
 			MyXmlXhtmlRenderer renderer = new MyXmlXhtmlRenderer();
 			//Renderer renderer = XhtmlRendererFactory.getRenderer(XhtmlRendererFactory.XML); 
-			OutputStream out = new ByteArrayOutputStream();
-			try {
+			try(OutputStream out = new ByteArrayOutputStream()) {
 				renderer.highlight(null, IOUtils.toInputStream(fileContentResult.getData()), out, "UTF-8", false);
+				String outString = out.toString();
+				return new RPCResult<String>(true, "", outString);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			String outString = out.toString();
-			return new RPCResult<String>(true, "", outString);
 		}
 		return fileContentResult;
 
 		/*try {
 			TransformerFactory tf = TransformerFactory.newInstance();
-			InputStream xslt = new FileInputStream("xmlverbatim.xsl"); // or FileInputStream
+			try(InputStream xslt = new FileInputStream("xmlverbatim.xsl"); // or FileInputStream
 			Transformer t = tf.newTransformer(new StreamSource(xslt));
 			System.out.println(t);
 			t.setParameter("indent-elements", "yes");
-			ByteArrayOutputStream s = new ByteArrayOutputStream();
+			try(ByteArrayOutputStream s = new ByteArrayOutputStream();
 			t.transform(new StreamSource(new ByteArrayInputStream(content.getBytes())), new StreamResult(s));
 			byte[] out = s.toByteArray();
 			String result = new String(out);

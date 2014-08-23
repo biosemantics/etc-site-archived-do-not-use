@@ -11,14 +11,12 @@ import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationConfigurati
 
 public class MatrixGenerationConfigurationDAO {
 
-	private static MatrixGenerationConfigurationDAO instance;
-
-	public static MatrixGenerationConfigurationDAO getInstance() {
-		if(instance == null)
-			instance = new MatrixGenerationConfigurationDAO();
-		return instance;
+	private ConfigurationDAO configurationDAO;
+		
+	public void setConfigurationDAO(ConfigurationDAO configurationDAO) {
+		this.configurationDAO = configurationDAO;
 	}
-	
+
 	public MatrixGenerationConfiguration getMatrixGenerationConfiguration(int configurationId) {
 		MatrixGenerationConfiguration matrixGenerationConfiguration = null;
 		try(Query query = new Query("SELECT * FROM matrixgenerationconfigurations WHERE configuration = ?")) {
@@ -37,7 +35,7 @@ public class MatrixGenerationConfigurationDAO {
 		int configurationId = result.getInt(1);
 		String input = result.getString(2);
 		String output = result.getString(3);
-		Configuration configuration = ConfigurationDAO.getInstance().getConfiguration(configurationId);
+		Configuration configuration = configurationDAO.getConfiguration(configurationId);
 		return  new MatrixGenerationConfiguration(configuration, input, output);
 	}
 
@@ -47,7 +45,7 @@ public class MatrixGenerationConfigurationDAO {
 			query.execute();
 			ResultSet generatedKeys = query.getGeneratedKeys();
 			while(generatedKeys.next()) {
-				Configuration configuration = ConfigurationDAO.getInstance().getConfiguration(generatedKeys.getInt(1));
+				Configuration configuration = configurationDAO.getConfiguration(generatedKeys.getInt(1));
 				try (Query matrixGenerationQuery = new Query("INSERT INTO `matrixgenerationconfigurations` " +
 						"(`configuration`, `input`, `output`) VALUES (?, ?, ?)")) {
 					matrixGenerationQuery.setParameter(1, configuration.getId());

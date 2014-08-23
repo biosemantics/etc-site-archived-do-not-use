@@ -8,9 +8,7 @@ import java.util.Set;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-import edu.arizona.biosemantics.etcsite.server.db.ShareDAO;
-import edu.arizona.biosemantics.etcsite.server.db.TaskDAO;
-import edu.arizona.biosemantics.etcsite.server.db.UserDAO;
+import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration.MatrixGenerationService;
 import edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup.SemanticMarkupService;
 import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
@@ -28,10 +26,12 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	private IMatrixGenerationService matrixGenerationService = new MatrixGenerationService();
 	private ISemanticMarkupService semanticMarkupService = new SemanticMarkupService();
 	
+	private DAOManager daoManager = new DAOManager();
+	
 	@Override
 	public RPCResult<List<Task>> getAllTasks(AuthenticationToken authenticationToken) {		
 		try {
-			List<Task> result = TaskDAO.getInstance().getAllTasks(authenticationToken.getUserId());
+			List<Task> result = daoManager.getTaskDAO().getAllTasks(authenticationToken.getUserId());
 			return new RPCResult<List<Task>>(true, result);
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -42,7 +42,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	@Override
 	public RPCResult<Task> getTask(AuthenticationToken authenticationToken, Task task) {		
 		try {
-			Task result = TaskDAO.getInstance().getTask(task.getId());
+			Task result = daoManager.getTaskDAO().getTask(task.getId());
 			return new RPCResult<Task>(true, result);
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -53,7 +53,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	@Override
 	public RPCResult<List<Task>> getOwnedTasks(AuthenticationToken authenticationToken) {		
 		try {
-			List<Task> result = TaskDAO.getInstance().getOwnedTasks(authenticationToken.getUserId());
+			List<Task> result = daoManager.getTaskDAO().getOwnedTasks(authenticationToken.getUserId());
 			return new RPCResult<List<Task>>(true, result);
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -64,7 +64,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	@Override
 	public RPCResult<List<Task>> getSharedWithTasks(AuthenticationToken authenticationToken) {		
 		try {
-			List<Task> result = TaskDAO.getInstance().getSharedWithTasks(authenticationToken.getUserId());
+			List<Task> result = daoManager.getTaskDAO().getSharedWithTasks(authenticationToken.getUserId());
 			return new RPCResult<List<Task>>(true, result);
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -75,7 +75,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	@Override
 	public RPCResult<List<Task>> getCompletedTasks(AuthenticationToken authenticationToken) {		
 		try {
-			List<Task> result = TaskDAO.getInstance().getCompletedTasks(authenticationToken.getUserId());
+			List<Task> result = daoManager.getTaskDAO().getCompletedTasks(authenticationToken.getUserId());
 			return new RPCResult<List<Task>>(true, result);
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -88,7 +88,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	public RPCResult<Map<Integer, Task>> getResumableTasks(AuthenticationToken authenticationToken) {		
 		try {
 			Map<Integer, Task> result = new LinkedHashMap<Integer, Task>();
-			for(Task task : TaskDAO.getInstance().getResumableTasks(authenticationToken.getUserId()))
+			for(Task task : daoManager.getTaskDAO().getResumableTasks(authenticationToken.getUserId()))
 				result.put(task.getId(), task);
 			return new RPCResult<Map<Integer, Task>>(true, result);
 		} catch(Exception e) {
@@ -100,7 +100,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	@Override
 	public RPCResult<Boolean> isResumable(AuthenticationToken authenticationToken, Task task) {	
 		try {
-			Boolean result = TaskDAO.getInstance().getTask(task.getId()).isResumable();
+			Boolean result = daoManager.getTaskDAO().getTask(task.getId()).isResumable();
 			return new RPCResult<Boolean>(true, result);
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -111,7 +111,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	@Override
 	public RPCResult<Boolean> isComplete(AuthenticationToken authenticationToken, Task task) {	
 		try {
-			Boolean result =  TaskDAO.getInstance().getTask(task.getId()).isComplete();
+			Boolean result =  daoManager.getTaskDAO().getTask(task.getId()).isComplete();
 			return new RPCResult<Boolean>(true, result);
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -122,7 +122,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	@Override
 	public RPCResult<Boolean> hasResumable(AuthenticationToken authenticationToken) {		
 		try {
-			Boolean result = !TaskDAO.getInstance().getResumableTasks(authenticationToken.getUserId()).isEmpty();
+			Boolean result = !daoManager.getTaskDAO().getResumableTasks(authenticationToken.getUserId()).isEmpty();
 			return new RPCResult<Boolean>(true, result);
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -153,7 +153,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 					break;
 				}
 
-				TaskDAO.getInstance().removeTask(task);
+				daoManager.getTaskDAO().removeTask(task);
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -168,7 +168,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 		Task result = null;
 		if(authenticationService.isValidSession(authenticationToken).getData().getResult()) {
 			try {
-				result = TaskDAO.getInstance().getLatestResumableTask(authenticationToken.getUsername(), taskType);
+				result = daoManager.getTaskDAO().getLatestResumableTask(authenticationToken.getUsername(), taskType);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -205,7 +205,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	@Override
 	public RPCResult<Share> addShare(AuthenticationToken authenticationToken, Share share) {
 		try {
-			Share shareResult = ShareDAO.getInstance().addShare(share);
+			Share shareResult = daoManager.getShareDAO().addShare(share);
 			return new RPCResult<Share>(true, shareResult);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -216,8 +216,8 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	@Override
 	public RPCResult<List<Share>> getOwnedShares(AuthenticationToken authenticationToken) {
 		try {
-			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUserId());
-			List<Share> sharesResult = ShareDAO.getInstance().getSharesOfOwner(user);
+			ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
+			List<Share> sharesResult = daoManager.getShareDAO().getSharesOfOwner(user);
 			return new RPCResult<List<Share>>(true, sharesResult);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -228,8 +228,8 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	@Override
 	public RPCResult<List<Share>> getInvitedShares(AuthenticationToken authenticationToken) {
 		try {
-			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUserId());
-			List<Share> sharesResult = ShareDAO.getInstance().getSharesOfInvitee(user);
+			ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
+			List<Share> sharesResult = daoManager.getShareDAO().getSharesOfInvitee(user);
 			return new RPCResult<List<Share>>(true, sharesResult);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -240,7 +240,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	@Override
 	public RPCResult<Set<ShortUser>> getInvitees(AuthenticationToken authenticationToken, Task task) {
 		try {
-			Set<ShortUser> invitees = ShareDAO.getInstance().getInvitees(task);
+			Set<ShortUser> invitees = daoManager.getShareDAO().getInvitees(task);
 			return new RPCResult<Set<ShortUser>>(true, invitees);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -251,7 +251,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	@Override
 	public RPCResult<Share> addOrUpdateShare(AuthenticationToken authenticationToken, Share share) {
 		try {
-			Share shareResult = ShareDAO.getInstance().addOrUpdateShare(share);
+			Share shareResult = daoManager.getShareDAO().addOrUpdateShare(share);
 			return new RPCResult<Share>(true, shareResult);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -262,7 +262,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	@Override
 	public RPCResult<Share> updateShare(AuthenticationToken authenticationToken, Share share) {
 		try {
-			Share shareResult = ShareDAO.getInstance().updateShare(share);
+			Share shareResult = daoManager.getShareDAO().updateShare(share);
 			return new RPCResult<Share>(true, shareResult);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -274,8 +274,8 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	@Override
 	public RPCResult<Void> removeMeFromShare(AuthenticationToken authenticationToken, Task task) {
 		try {
-			ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUserId());
-			List<Share> shares = ShareDAO.getInstance().getSharesOfInviteeForTask(user, task);
+			ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
+			List<Share> shares = daoManager.getShareDAO().getSharesOfInviteeForTask(user, task);
 			for(Share share : shares) {
 				share.getInvitees().remove(user);
 				this.updateShare(authenticationToken, share);

@@ -2,7 +2,6 @@ package edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup;
 
 public class LearnResult {
 
-
 	private int otoUploadId;
 	private String otoSecret;
 

@@ -13,10 +13,7 @@ import org.apache.commons.io.FileUtils;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
-import edu.arizona.biosemantics.etcsite.server.db.FilesInUseDAO;
-import edu.arizona.biosemantics.etcsite.server.db.ShareDAO;
-import edu.arizona.biosemantics.etcsite.server.db.TasksOutputFilesDAO;
-import edu.arizona.biosemantics.etcsite.server.db.UserDAO;
+import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.process.file.XmlNamespaceManager;
 import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
@@ -39,6 +36,8 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	private IFileFormatService fileFormatService = new FileFormatService();
 	private SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MM-dd-yyyy");
 	private	XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager();
+	
+	private DAOManager daoManager = new DAOManager();
 	
 	@Override
 	protected void doUnexpectedFailure(Throwable t) {
@@ -76,8 +75,8 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	}
 	
 	private void decorateSharedTree(AuthenticationToken authenticationToken, Tree<FileInfo> sharedFiles, FileFilter fileFilter) throws Exception {
-		ShortUser user = UserDAO.getInstance().getShortUser(authenticationToken.getUserId());
-		List<Share> shares = ShareDAO.getInstance().getSharesOfInvitee(user);
+		ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
+		List<Share> shares = daoManager.getShareDAO().getSharesOfInvitee(user);
 		
 		for(Share share : shares) {
 			int shareOwnerUserId = share.getTask().getUser().getId();
@@ -86,7 +85,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			sharedFiles.addChild(shareTree);
 			AbstractTaskConfiguration taskConfiguration = share.getTask().getConfiguration();
 			
-			List<String> outputs = TasksOutputFilesDAO.getInstance().getOutputs(share.getTask());
+			List<String> outputs = daoManager.getTasksOutputFilesDAO().getOutputs(share.getTask());
 			Tree<FileInfo> outputTree = new Tree<FileInfo>(new FileInfo("Output", "Share.Output" + share.getTask().getId(), 
 					"Output", FileTypeEnum.DIRECTORY, shareOwnerUserId, false, false));
 			shareTree.addChild(outputTree);
@@ -452,7 +451,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			return new RPCResult<Void>(false, permissionResult.getMessage());
 		if(permissionResult.getData()) {
 			try {
-				FilesInUseDAO.getInstance().setInUse(value, filePath, task);
+				daoManager.getFilesInUseDAO().setInUse(value, filePath, task);
 				return new RPCResult<Void>(true);
 			} catch(Exception e) {
 				e.printStackTrace();
@@ -470,7 +469,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		//	return new RPCResult<Boolean>(false, permissionResult.getMessage());
 		//if(permissionResult.getData()) {
 			try {
-				return new RPCResult<Boolean>(true, FilesInUseDAO.getInstance().isInUse(filePath));
+				return new RPCResult<Boolean>(true, daoManager.getFilesInUseDAO().isInUse(filePath));
 			} catch(Exception e) {
 				e.printStackTrace();
 				return new RPCResult<Boolean>(false, "Internal Server Error");
@@ -486,7 +485,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			return new RPCResult<List<Task>>(false, permissionResult.getMessage());
 		if(permissionResult.getData()) {
 			try {
-				return new RPCResult<List<Task>>(true, FilesInUseDAO.getInstance().getUsingTasks(filePath));
+				return new RPCResult<List<Task>>(true, daoManager.getFilesInUseDAO().getUsingTasks(filePath));
 			} catch(Exception e) {
 				e.printStackTrace();
 				return new RPCResult<List<Task>>(false, "Internal Server Error");

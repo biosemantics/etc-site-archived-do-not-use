@@ -7,8 +7,7 @@ import java.util.List;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Zipper;
-import edu.arizona.biosemantics.etcsite.server.db.TaskDAO;
-import edu.arizona.biosemantics.etcsite.server.db.TasksOutputFilesDAO;
+import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
@@ -25,6 +24,7 @@ public class DirectoryDownload {
 	private IFileService fileService = new FileService();
 	private String error = "";
 	private String zipFilepath = "";
+	private DAOManager daoManager = new DAOManager();
 	
 	public DirectoryDownload(AuthenticationToken authenticationToken, String filePath) {
 		super();
@@ -170,7 +170,7 @@ public class DirectoryDownload {
 	
 	private void gatherShareOutput(Task task, String destination) throws ClassNotFoundException, SQLException, IOException {
 		cleanup(destination);
-		List<String> outputs = TasksOutputFilesDAO.getInstance().getOutputs(task);
+		List<String> outputs = daoManager.getTasksOutputFilesDAO().getOutputs(task);
 		for(String output : outputs) {
 			File outputFile = new File(output);
 			if(outputFile.exists()) {
@@ -190,7 +190,7 @@ public class DirectoryDownload {
 	//add some general task permission check service
 	private Task getTaskFromFilePath(String filePath) throws ClassNotFoundException, SQLException, IOException {
 		int taskId = Integer.parseInt(filePath.substring(filePath.lastIndexOf(".")));
-		TaskDAO.getInstance().getTask(taskId);
+		daoManager.getTaskDAO().getTask(taskId);
 		Task task = new Task();
 		task.setId(taskId);
 		RPCResult<Task> taskResult = taskService.getTask(authenticationToken, task);

@@ -41,7 +41,7 @@ public interface IAuthenticationService extends RemoteService {
 	RPCResult<PasswordResetResult> requestPasswordReset(String openIdProviderId,
 			String code, String newPassword);
 
-	RPCResult<RequestCaptchaResult> requestCaptcha();
+	RPCResult<RequestCaptchaResult> createCaptcha();
 
 	RPCResult<AuthenticationResult> loginWithGoogle(String googleAuthCode);
 	

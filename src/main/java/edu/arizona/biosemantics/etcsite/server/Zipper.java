@@ -46,25 +46,27 @@ public class Zipper {
 		return effectiveDestination;
 	}
 	
+	//don't want to get into using ProcessBuilder because command would have to be parsed for its parts to be fed to ProcessBuilder
 	private Process runCommand(String command) throws Exception {
 		Process p = Runtime.getRuntime().exec(command);
-		BufferedReader stdInput = new BufferedReader(new InputStreamReader(p
-				.getInputStream()));
-		
-		BufferedReader errInput = new BufferedReader(new InputStreamReader(p
-				.getErrorStream()));
-		
-		// read the output from the command
-		String s = "";
-		int i = 0;
-		while ((s = stdInput.readLine()) != null) {
-			System.out.println(s);
+		try(BufferedReader stdInput = new BufferedReader(new InputStreamReader(p
+				.getInputStream()))) {
+			
+			// read the output from the command
+			String s = "";
+			int i = 0;
+			while ((s = stdInput.readLine()) != null) {
+				System.out.println(s);
+			}
 		}
 		
-		// read the errors from the command
-		String e = "";
-		while ((e = errInput.readLine()) != null) {
-			System.out.println(s);
+		try(BufferedReader errInput = new BufferedReader(new InputStreamReader(p.getErrorStream()))) {
+
+			// read the errors from the command
+			String e = "";
+			while ((e = errInput.readLine()) != null) {
+				System.out.println(e);
+			}
 		}
 		return p;
 	}

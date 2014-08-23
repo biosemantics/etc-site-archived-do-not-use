@@ -9,8 +9,6 @@ import edu.arizona.biosemantics.etcsite.server.db.Query.QueryException;
 import edu.arizona.biosemantics.etcsite.shared.model.Configuration;
 
 public class ConfigurationDAO {
-
-	private static ConfigurationDAO instance;
 	
 	public Configuration getConfiguration(int id) {
 		Configuration configuration = null;
@@ -26,12 +24,6 @@ public class ConfigurationDAO {
 			e.printStackTrace();
 		}
 		return configuration;
-	}
-		
-	public static ConfigurationDAO getInstance() {
-		if(instance == null)
-			instance = new ConfigurationDAO();
-		return instance;
 	}
 
 	public void remove(edu.arizona.biosemantics.etcsite.shared.model.Configuration configuration) {

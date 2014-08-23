@@ -14,15 +14,18 @@ import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 
 public class ShareDAO {
-
-	private static ShareDAO instance;
 	
-	public static ShareDAO getInstance() {
-		if(instance == null)
-			instance = new ShareDAO();
-		return instance;
+	private UserDAO userDAO;
+	private TaskDAO taskDAO;
+		
+	public void setUserDAO(UserDAO userDAO) {
+		this.userDAO = userDAO;
 	}
-	
+
+	public void setTaskDAO(TaskDAO taskDAO) {
+		this.taskDAO = taskDAO;
+	}
+
 	public Share getShare(int id) {
 		Share share = null;
 		try (Query query = new Query("SELECT * FROM shares WHERE id = ?")) {
@@ -33,7 +36,7 @@ public class ShareDAO {
 				id = result.getInt(1);
 				int taskId = result.getInt(2);
 				Date created = result.getTimestamp(3);
-				Task task = TaskDAO.getInstance().getTask(taskId);
+				Task task = taskDAO.getTask(taskId);
 				
 				Set<ShortUser> invitees = new HashSet<ShortUser>();
 				try(Query inviteesQuery = new Query("SELECT inviteeuser FROM shareinvitees WHERE share = ?")) {
@@ -41,7 +44,7 @@ public class ShareDAO {
 					ResultSet resultInvitees = inviteesQuery.execute();
 					while(resultInvitees.next()) {
 						int userId = resultInvitees.getInt(1);
-						invitees.add(UserDAO.getInstance().getShortUser(userId));
+						invitees.add(userDAO.getShortUser(userId));
 					}
 				}
 				share = new Share(id, task, invitees, created);

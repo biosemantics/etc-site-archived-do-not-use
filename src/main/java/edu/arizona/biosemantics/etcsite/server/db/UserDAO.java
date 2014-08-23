@@ -16,8 +16,6 @@ import edu.arizona.biosemantics.etcsite.shared.model.User;
 
 public class UserDAO {
 
-	private static UserDAO instance;
-
 	public ShortUser getShortUser(int userId) {
 		User user = this.getUser(userId);
 		return createShortUser(user);
@@ -142,12 +140,6 @@ public class UserDAO {
 			
 			return true;
 		}
-	}
-
-	public static UserDAO getInstance() {
-		if (instance == null)
-			instance = new UserDAO();
-		return instance;
 	}
 
 	public List<ShortUser> getUsers() {

@@ -8,6 +8,7 @@ import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.LoadingPopup;
 import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileImageLabelTreeItem;
+import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePresenter.ISelectListener;
@@ -15,7 +16,6 @@ import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerD
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupInputView;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
-import edu.arizona.biosemantics.etcsite.shared.model.process.file.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
 

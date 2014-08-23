@@ -12,15 +12,13 @@ import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum;
 
 public class TaskStageDAO {
-
-	private static TaskStageDAO instance;
-
-	public static TaskStageDAO getInstance() {
-		if(instance == null)
-			instance = new TaskStageDAO();
-		return instance;
-	}
 	
+	private TaskTypeDAO taskTypeDAO;
+		
+	public void setTaskTypeDAO(TaskTypeDAO taskTypeDAO) {
+		this.taskTypeDAO = taskTypeDAO;
+	}
+
 	public TaskStage getTaskStage(int id) {
 		TaskStage taskStage = null;
 		try(Query query = new Query("SELECT * FROM taskstages WHERE id = ?")) {
@@ -31,7 +29,7 @@ public class TaskStageDAO {
 				String taskStageString = result.getString(2);
 				int tasktypeId = result.getInt(3);
 				Date created = result.getTimestamp(4);
-				TaskType taskType = TaskTypeDAO.getInstance().getTaskType(tasktypeId);
+				TaskType taskType = taskTypeDAO.getTaskType(tasktypeId);
 				taskStage = createTaskStage(id, taskStageString, taskType, created);
 			}
 		}catch(Exception e) {
@@ -51,7 +49,7 @@ public class TaskStageDAO {
 				taskStageString = result.getString(2);
 				int tasktypeId = result.getInt(3);
 				Date created = result.getTimestamp(4);
-				taskType = TaskTypeDAO.getInstance().getTaskType(tasktypeId);
+				taskType = taskTypeDAO.getTaskType(tasktypeId);
 				taskStage = createTaskStage(id, taskStageString, taskType, created);
 			}
 		}catch(Exception e) {
@@ -68,7 +66,7 @@ public class TaskStageDAO {
 	}
 	
 	public MatrixGenerationTaskStage getMatrixGenerationTaskStage(String name) {
-		TaskType taskType = TaskTypeDAO.getInstance().getTaskType(TaskTypeEnum.MATRIX_GENERATION);
+		TaskType taskType = taskTypeDAO.getTaskType(TaskTypeEnum.MATRIX_GENERATION);
 		TaskStage taskStage = this.getTaskStage(taskType, name);
 		if(taskStage instanceof MatrixGenerationTaskStage)
 			return (MatrixGenerationTaskStage)taskStage;
@@ -83,7 +81,7 @@ public class TaskStageDAO {
 	}
 	
 	public SemanticMarkupTaskStage getSemanticMarkupTaskStage(String name) {
-		TaskType taskType = TaskTypeDAO.getInstance().getTaskType(TaskTypeEnum.SEMANTIC_MARKUP);
+		TaskType taskType = taskTypeDAO.getTaskType(TaskTypeEnum.SEMANTIC_MARKUP);
 		TaskStage taskStage = this.getTaskStage(taskType, name);
 		if(taskStage instanceof SemanticMarkupTaskStage)
 			return (SemanticMarkupTaskStage)taskStage;

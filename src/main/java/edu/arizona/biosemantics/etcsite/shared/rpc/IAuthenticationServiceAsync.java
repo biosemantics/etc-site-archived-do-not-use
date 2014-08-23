@@ -43,12 +43,11 @@ public interface IAuthenticationServiceAsync {
 			String newPassword,
 			AsyncCallback<RPCResult<PasswordResetResult>> callback);
 
-	public void requestCaptcha(AsyncCallback<RPCResult<RequestCaptchaResult>> callback);
+	public void createCaptcha(AsyncCallback<RPCResult<RequestCaptchaResult>> callback);
 
 	void loginWithGoogle(String googleAuthCode,
 			AsyncCallback<RPCResult<AuthenticationResult>> callback);
 			
-		public void getOperator(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<String>> callback);
-
+	public void getOperator(AuthenticationToken authenticationToken, AsyncCallback<RPCResult<String>> callback);
 	
 }

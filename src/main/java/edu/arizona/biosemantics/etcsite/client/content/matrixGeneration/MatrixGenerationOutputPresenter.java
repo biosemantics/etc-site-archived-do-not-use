@@ -4,10 +4,10 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerPlace;
 import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.model.process.file.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
 

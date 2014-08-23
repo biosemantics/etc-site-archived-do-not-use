@@ -8,8 +8,6 @@ import java.util.Date;
 import edu.arizona.biosemantics.etcsite.shared.model.Glossary;
 
 public class GlossaryDAO {
-
-	private static GlossaryDAO instance;
 	
 	public Glossary getGlossary(int id) {
 		Glossary glossary = null;
@@ -45,9 +43,4 @@ public class GlossaryDAO {
 		return glossary;
 	}
 		
-	public static GlossaryDAO getInstance() {
-		if(instance == null)
-			instance = new GlossaryDAO();
-		return instance;
-	}
 }

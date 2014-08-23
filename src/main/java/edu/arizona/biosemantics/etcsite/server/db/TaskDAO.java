@@ -21,17 +21,57 @@ import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
 
 public class TaskDAO {
 
-	private static TaskDAO instance;
+	private TasksOutputFilesDAO tasksOutputFilesDAO;
+	private FilesInUseDAO filesInUseDAO;
+	private ShareDAO shareDAO;
+	private TaskTypeDAO taskTypeDAO;
+	private ConfigurationDAO configurationDAO;
+	private MatrixGenerationConfigurationDAO matrixGenerationConfigurationDAO;
+	private SemanticMarkupConfigurationDAO semanticMarkupConfigurationDAO;
+	private UserDAO userDAO;
+	private TaskStageDAO taskStageDAO;
 	private String ownerQuery = "SELECT * FROM tasks WHERE user=?";
 	private String sharedWithQuery = "SELECT t.* FROM tasks AS t, shares, shareinvitees WHERE t.id = shares.task AND shares.id = shareinvitees.share AND shareinvitees.inviteeuser=?";
 	private String allUsersTasksQuery = "(" + ownerQuery + ") UNION (" + this.sharedWithQuery + ")";
-	
-	public static TaskDAO getInstance() {
-		if(instance == null)
-			instance = new TaskDAO();
-		return instance;
+		
+	public void setTasksOutputFilesDAO(TasksOutputFilesDAO tasksOutputFilesDAO) {
+		this.tasksOutputFilesDAO = tasksOutputFilesDAO;
 	}
-	
+
+	public void setFilesInUseDAO(FilesInUseDAO filesInUseDAO) {
+		this.filesInUseDAO = filesInUseDAO;
+	}
+
+	public void setShareDAO(ShareDAO shareDAO) {
+		this.shareDAO = shareDAO;
+	}
+
+	public void setTaskTypeDAO(TaskTypeDAO taskTypeDAO) {
+		this.taskTypeDAO = taskTypeDAO;
+	}
+
+	public void setConfigurationDAO(ConfigurationDAO configurationDAO) {
+		this.configurationDAO = configurationDAO;
+	}
+
+	public void setMatrixGenerationConfigurationDAO(
+			MatrixGenerationConfigurationDAO matrixGenerationConfigurationDAO) {
+		this.matrixGenerationConfigurationDAO = matrixGenerationConfigurationDAO;
+	}
+
+	public void setSemanticMarkupConfigurationDAO(
+			SemanticMarkupConfigurationDAO semanticMarkupConfigurationDAO) {
+		this.semanticMarkupConfigurationDAO = semanticMarkupConfigurationDAO;
+	}
+
+	public void setUserDAO(UserDAO userDAO) {
+		this.userDAO = userDAO;
+	}
+
+	public void setTaskStageDAO(TaskStageDAO taskStageDAO) {
+		this.taskStageDAO = taskStageDAO;
+	}
+
 	public Task getTask(int id) {
 		Task task = null;
 		try(Query query = new Query("SELECT * FROM tasks WHERE id = ?")) {
@@ -150,10 +190,10 @@ public class TaskDAO {
 		boolean complete = result.getBoolean(8);
 		Date completed = result.getTimestamp(9);
 		Date created = result.getTimestamp(10);
-		ShortUser user = UserDAO.getInstance().getShortUser(userId);
-		TaskStage taskStage = TaskStageDAO.getInstance().getTaskStage(taskStageId);
-		Configuration configuration = ConfigurationDAO.getInstance().getConfiguration(configurationId);
-		TaskType taskType = TaskTypeDAO.getInstance().getTaskType(taskTypeId);
+		ShortUser user = userDAO.getShortUser(userId);
+		TaskStage taskStage = taskStageDAO.getTaskStage(taskStageId);
+		Configuration configuration = configurationDAO.getConfiguration(configurationId);
+		TaskType taskType = taskTypeDAO.getTaskType(taskTypeId);
 		
 		/*Query queryNumberInput = new Query("SELECT numberofinputfiles FROM matrixgenerationconfigurations WHERE configuration = " + configurationId);
 		ResultSet resultNumberInput = queryNumberInput.execute();
@@ -165,12 +205,12 @@ public class TaskDAO {
 		*/
 		switch(taskType.getTaskTypeEnum()) {
 		case MATRIX_GENERATION:
-			MatrixGenerationTaskStage matrixGenerationTaskStage = TaskStageDAO.getInstance().getMatrixGenerationTaskStage(taskStageId);
-			MatrixGenerationConfiguration matrixGenerationConfiguration = MatrixGenerationConfigurationDAO.getInstance().getMatrixGenerationConfiguration(configurationId);
+			MatrixGenerationTaskStage matrixGenerationTaskStage = taskStageDAO.getMatrixGenerationTaskStage(taskStageId);
+			MatrixGenerationConfiguration matrixGenerationConfiguration = matrixGenerationConfigurationDAO.getMatrixGenerationConfiguration(configurationId);
 			return new Task(id, name, taskType, matrixGenerationTaskStage, matrixGenerationConfiguration, user, resumable, complete, completed, created);
 		case SEMANTIC_MARKUP:
-			SemanticMarkupTaskStage semanticMarkupTaskStage = TaskStageDAO.getInstance().getSemanticMarkupTaskStage(taskStageId);
-			SemanticMarkupConfiguration semanticMarkupConfiguration = SemanticMarkupConfigurationDAO.getInstance().getSemanticMarkupConfiguration(configurationId);
+			SemanticMarkupTaskStage semanticMarkupTaskStage = taskStageDAO.getSemanticMarkupTaskStage(taskStageId);
+			SemanticMarkupConfiguration semanticMarkupConfiguration = semanticMarkupConfigurationDAO.getSemanticMarkupConfiguration(configurationId);
 			return new Task(id, name, taskType, semanticMarkupTaskStage, semanticMarkupConfiguration, user, resumable, complete, completed, created);
 		case TAXONOMY_COMPARISON:
 			break;
@@ -240,16 +280,16 @@ public class TaskDAO {
 		int id = task.getId();
 		
 		// remove shares
-		List<Share> shares = ShareDAO.getInstance().getShares(task);
+		List<Share> shares = shareDAO.getShares(task);
 		for(Share share : shares) {
-			ShareDAO.getInstance().removeShare(share);
+			shareDAO.removeShare(share);
 		}
 		
 		// remove task output files
-		TasksOutputFilesDAO.getInstance().removeOutputs(task);
+		tasksOutputFilesDAO.removeOutputs(task);
 		
 		// remove files in use
-		FilesInUseDAO.getInstance().removeFilesInUse(task);
+		filesInUseDAO.removeFilesInUse(task);
 		
 		try(Query query = new Query("DELETE FROM tasks WHERE id = ?")) {
 			query.setParameter(1, id);

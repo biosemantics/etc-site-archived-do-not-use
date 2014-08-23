@@ -55,15 +55,22 @@ public class XmlNamespaceManager {
 		return fileTypeSchemaMap.get(fileTypeEnum);
 	}
 	
-	public String getSchema(String fileContent) throws JDOMException, IOException {
-		Document doc = sax.build(new StringReader(fileContent));
-		return getSchema(doc);
+	public String getSchema(String fileContent) {
+		try (StringReader reader = new StringReader(fileContent)) {
+			Document doc = sax.build(reader);
+			return getSchema(doc);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public void setXmlSchema(File file, FileTypeEnum fileTypeEnum) throws JDOMException, IOException {
 		Document doc = sax.build(file);
 		setXmlSchema(doc, fileTypeEnum);
-		xmlOutputter.output(doc, new FileOutputStream(file));
+		try(FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+			xmlOutputter.output(doc, fileOutputStream);
+		}
 	}
 
 	public void setXmlSchema(Document doc, FileTypeEnum fileTypeEnum) {
@@ -76,14 +83,17 @@ public class XmlNamespaceManager {
 	}
 
 	public String setXmlSchema(String content, FileTypeEnum fileTypeEnum) throws JDOMException, IOException {
-		Document doc = sax.build(new StringReader(content));
-		setXmlSchema(doc, fileTypeEnum);
-		StringWriter stringWriter = new StringWriter();
-		xmlOutputter.output(doc, stringWriter);
-		stringWriter.flush();
-		String result = stringWriter.toString();
-		stringWriter.close();
-		return result;
+		try(StringReader reader = new StringReader(content)) {
+			Document doc = sax.build(reader);
+			setXmlSchema(doc, fileTypeEnum);
+			
+			try(StringWriter stringWriter = new StringWriter()) {
+				xmlOutputter.output(doc, stringWriter);
+				stringWriter.flush();
+				String result = stringWriter.toString();
+				return result;
+			}
+		}
 	}
 	
 	public void removeXmlSchema(File file) throws JDOMException, IOException {
@@ -93,7 +103,9 @@ public class XmlNamespaceManager {
 		rootElement.removeNamespaceDeclaration(bioNamespace);
 		rootElement.removeNamespaceDeclaration(xsiNamespace);
 		rootElement.removeAttribute("schemaLocation", xsiNamespace);
-		xmlOutputter.output(doc, new FileOutputStream(file));
+		try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+			xmlOutputter.output(doc, fileOutputStream);
+		}
 	}
 	
 }

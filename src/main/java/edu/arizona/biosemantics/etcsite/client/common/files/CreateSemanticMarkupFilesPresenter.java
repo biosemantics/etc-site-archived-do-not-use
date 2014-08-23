@@ -18,7 +18,6 @@ import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.file.TaxonIdentificationEntry;
 import edu.arizona.biosemantics.etcsite.shared.model.file.XmlModelFile;
-import edu.arizona.biosemantics.etcsite.shared.model.process.file.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.shared.model.process.file.XmlModelFileCreator;
 import edu.arizona.biosemantics.etcsite.shared.model.process.semanticmarkup.BracketChecker;
 //import edu.arizona.biosemantics.etcsite.server.rpc.FileFormatService;

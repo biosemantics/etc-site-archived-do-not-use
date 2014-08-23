@@ -99,5 +99,13 @@ public class TopView extends Composite implements ITopView {
 	public void setGreeting(String text) {
 		this.greetingLabel.setText(text);
 	}
+	
+	@Override
+	public void setResumableTasks(boolean value) {
+		if(value)
+			taskManager.setImage("images/TaskManager_notification.gif");
+		else
+			taskManager.setImage("images/TaskManager.gif");
+	}
 
 }

@@ -11,14 +11,6 @@ import edu.arizona.biosemantics.etcsite.shared.model.DatasetPrefix;
 
 public class DatasetPrefixDAO {
 
-	private static DatasetPrefixDAO instance;
-
-	public static DatasetPrefixDAO getInstance() {
-		if(instance == null)
-			instance = new DatasetPrefixDAO();
-		return instance;
-	}
-
 	public DatasetPrefix getDatasetPrefix(String prefix) {
 		DatasetPrefix datasetPrefix = null;
 		try(Query query = new Query("SELECT * FROM datasetprefixes WHERE prefix = ?")) {

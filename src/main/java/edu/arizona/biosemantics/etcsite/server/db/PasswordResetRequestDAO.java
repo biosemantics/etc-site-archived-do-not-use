@@ -11,8 +11,6 @@ import edu.arizona.biosemantics.etcsite.shared.model.PasswordResetRequest;
 
 public class PasswordResetRequestDAO {
 
-	private static PasswordResetRequestDAO instance;
-
 	/**
 	 * Returns null if no such user exists. 
 	 */
@@ -53,17 +51,11 @@ public class PasswordResetRequestDAO {
 		}
 	}
 	
-	public static PasswordResetRequestDAO getInstance() {
-		if (instance == null){
-			instance = new PasswordResetRequestDAO();
-			
-			//delete all 'old' password reset requests. Should only happen once per server restart. 
-			try(Query deleteAll = new Query("DELETE FROM `passwordresetrequests` WHERE 1")) {
-				deleteAll.execute();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+	public void cleanup() {
+		try(Query deleteAll = new Query("DELETE FROM `passwordresetrequests` WHERE 1")) {
+			deleteAll.execute();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		return instance;
 	}
 }

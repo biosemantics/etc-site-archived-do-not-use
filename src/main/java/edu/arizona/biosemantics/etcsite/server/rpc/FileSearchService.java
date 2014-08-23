@@ -128,15 +128,16 @@ public class FileSearchService extends RemoteServiceServlet implements IFileSear
 	}
 	
 	private NodeList searchNodeList(AuthenticationToken authenticationToken, String content, Search search) throws Exception {
-		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-
-		DocumentBuilder builder = builderFactory.newDocumentBuilder();
-		Document document = builder.parse(new ByteArrayInputStream(content.getBytes("UTF-8")));
-	    XPath xPath =  XPathFactory.newInstance(Configuration.xPathObjectModel).newXPath();
-
-	    XPathExpression xpathExpression = xPath.compile(search.getXPath());
-	    NodeList nodeList = (NodeList) xpathExpression.evaluate(document, XPathConstants.NODESET);
-	    return nodeList;
+		try(ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(content.getBytes("UTF-8"))) {
+			DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = builderFactory.newDocumentBuilder();
+			Document document = builder.parse(byteArrayInputStream);
+		    XPath xPath =  XPathFactory.newInstance(Configuration.xPathObjectModel).newXPath();
+	
+		    XPathExpression xpathExpression = xPath.compile(search.getXPath());
+		    NodeList nodeList = (NodeList) xpathExpression.evaluate(document, XPathConstants.NODESET);
+		    return nodeList;
+		}
 	}
 	
 	@Override

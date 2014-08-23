@@ -17,7 +17,7 @@ public class CaptchaPresenter {
 	}
 
 	public void requestNewCaptcha() {
-		authenticationService.requestCaptcha(new RPCCallback<RequestCaptchaResult>(){
+		authenticationService.createCaptcha(new RPCCallback<RequestCaptchaResult>(){
 			public void onResult(RequestCaptchaResult result){
 				captchaPanel.updateCaptcha(result.getId());
 			}

@@ -1,4 +1,5 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -14,10 +15,6 @@ import org.jdom2.input.JDOMParseException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
-import org.xml.sax.SAXParseException;
-
-
-
 
 public class MarkupResultReader {
 	

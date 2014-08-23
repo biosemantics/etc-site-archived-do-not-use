@@ -16,14 +16,12 @@ import edu.arizona.biosemantics.etcsite.shared.model.file.FileInUse;
 
 public class FilesInUseDAO {
 
-	private static FilesInUseDAO instance;
-
-	public static FilesInUseDAO getInstance() {
-		if(instance == null)
-			instance = new FilesInUseDAO();
-		return instance;
+	private TaskDAO taskDAO;
+	
+	public void setTaskDAO(TaskDAO taskDAO) {
+		this.taskDAO = taskDAO;
 	}
-
+	
 	public void setInUse(boolean value, String input, Task task) {
 		try (Query query = new Query("SELECT id FROM filesinuse WHERE file = ?")) {
 			query.setParameter(1, input);
@@ -108,7 +106,7 @@ public class FilesInUseDAO {
 			ResultSet tasksResult = tasksFilesQuery.execute();
 			while(tasksResult.next()) {
 				int taskId = tasksResult.getInt(1);
-				result.add(TaskDAO.getInstance().getTask(taskId));
+				result.add(taskDAO.getTask(taskId));
 			}
 		} catch(Exception e) {
 			e.printStackTrace();

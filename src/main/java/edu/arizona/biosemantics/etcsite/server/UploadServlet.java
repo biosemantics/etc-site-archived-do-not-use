@@ -15,14 +15,9 @@ import gwtupload.shared.UConsts;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,11 +37,9 @@ public class UploadServlet extends UploadAction {
 
 	private static final long serialVersionUID = 1L;
 
-	Hashtable<String, String> receivedContentTypes = new Hashtable<String, String>();
-	/**
-	 * Maintain a list with received files and their content types.
-	 */
-	Hashtable<String, File> receivedFiles = new Hashtable<String, File>();
+	private Hashtable<String, String> receivedContentTypes = new Hashtable<String, String>();
+	private	Hashtable<String, File> receivedFiles = new Hashtable<String, File>();
+	
 	private ContentValidatorProvider contentValidatorProvider = new ContentValidatorProvider();
 	private XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager();
 	
@@ -59,8 +52,10 @@ public class UploadServlet extends UploadAction {
 	 * delete this items from session.
 	 */
 	@Override
-	public String executeAction(HttpServletRequest request,
-			List<FileItem> sessionFiles) throws UploadActionException {
+	public String executeAction(HttpServletRequest request, List<FileItem> sessionFiles) throws UploadActionException {
+		receivedContentTypes.clear();
+		receivedFiles.clear();
+		
 		String response = "";
 		
 		int userID = Integer.parseInt(request.getParameter("userID"));

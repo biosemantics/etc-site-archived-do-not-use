@@ -67,4 +67,7 @@ TRUNCATE TABLE `tasksoutputfiles`;
 TRUNCATE TABLE  `shares`;
 TRUNCATE TABLE  `tasks`;
 
+TRUNCATE TABLE `passwordresetrequests`;
+TRUNCATE TABLE `captchas`;
+
 SET foreign_key_checks = 1;

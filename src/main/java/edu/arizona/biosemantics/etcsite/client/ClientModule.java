@@ -35,6 +35,7 @@ import edu.arizona.biosemantics.etcsite.client.common.files.DnDFileTreePresenter
 import edu.arizona.biosemantics.etcsite.client.common.files.FileContentPresenter;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileContentView;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileDragDropHandler;
+import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileTreeDecorator;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileTreePresenter;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileTreeView;
@@ -149,7 +150,6 @@ import edu.arizona.biosemantics.etcsite.client.top.ITopView;
 import edu.arizona.biosemantics.etcsite.client.top.LoggedOutPlace;
 import edu.arizona.biosemantics.etcsite.client.top.LoginTopView;
 import edu.arizona.biosemantics.etcsite.client.top.TopView;
-import edu.arizona.biosemantics.etcsite.shared.model.process.file.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatServiceAsync;
@@ -392,7 +392,7 @@ public class ClientModule extends AbstractGinModule {
 	public static class CheckResumablesProvider implements Provider<Integer> {
 		@Override
 		public Integer get() {
-			return 30000;
+			return 3000;
 		}
 	}
 }

@@ -11,12 +11,15 @@ import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupConfiguration
 
 public class SemanticMarkupConfigurationDAO {
 
-	private static SemanticMarkupConfigurationDAO instance;
+	private GlossaryDAO glossaryDAO;
+	private ConfigurationDAO configurationDAO;
+	
+	public void setGlossaryDAO(GlossaryDAO glossaryDAO) {
+		this.glossaryDAO = glossaryDAO;
+	}
 
-	public static SemanticMarkupConfigurationDAO getInstance() {
-		if(instance == null)
-			instance = new SemanticMarkupConfigurationDAO();
-		return instance;
+	public void setConfigurationDAO(ConfigurationDAO configurationDAO) {
+		this.configurationDAO = configurationDAO;
 	}
 	
 	public SemanticMarkupConfiguration getSemanticMarkupConfiguration(int configurationId) {
@@ -41,8 +44,8 @@ public class SemanticMarkupConfigurationDAO {
 		int otoUploadId = result.getInt(5);
 		String otoSecret = result.getString(6);
 		String output = result.getString(7);
-		Configuration configuration = ConfigurationDAO.getInstance().getConfiguration(configurationId);
-		Glossary glossary = GlossaryDAO.getInstance().getGlossary(glossaryId);
+		Configuration configuration = configurationDAO.getConfiguration(configurationId);
+		Glossary glossary = glossaryDAO.getGlossary(glossaryId);
 		return  new SemanticMarkupConfiguration(configuration, input, numberOfInputFiles, glossary, otoUploadId, otoSecret, output);
 	}
 
@@ -52,7 +55,7 @@ public class SemanticMarkupConfigurationDAO {
 			query.execute();
 			ResultSet generatedKeys = query.getGeneratedKeys();
 			while(generatedKeys.next()) {
-				Configuration configuration = ConfigurationDAO.getInstance().getConfiguration(generatedKeys.getInt(1));
+				Configuration configuration = configurationDAO.getConfiguration(generatedKeys.getInt(1));
 				try(Query semanticMarkupQuery = new Query("INSERT INTO `semanticmarkupconfigurations` " +
 						"(`configuration`, `input`, `numberofinputfiles`, `glossary`, `oto_uploadid`, `oto_secret`, `output`)" +
 						" VALUES (?, ?, ?, ?, ?, ?, ?)")) {

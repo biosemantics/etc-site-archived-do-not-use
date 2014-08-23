@@ -337,11 +337,20 @@ CREATE TABLE IF NOT EXISTS `useraccounts` (
 --
 
 CREATE TABLE IF NOT EXISTS `passwordresetrequests` (
-  `user` bigint(20) NOT NULL,
+  `user` bigint(20) unsigned DEFAULT NULL,
   `authenticationcode` varchar(20) NOT NULL,
   `requesttime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY `user` (`user`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE IF NOT EXISTS `captchas` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `solution` varchar(20) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;
 
 --
 -- Constraints for dumped tables

@@ -10,8 +10,6 @@ import edu.arizona.biosemantics.etcsite.shared.model.file.FileType;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 
 public class FileTypeDAO {
-
-	private static FileTypeDAO instance;
 	
 	public FileType getFileType(int id) {
 		FileType inputType = null;
@@ -45,12 +43,6 @@ public class FileTypeDAO {
 			e.printStackTrace();
 		}
 		return inputType;
-	}
-		
-	public static FileTypeDAO getInstance() {
-		if(instance == null)
-			instance = new FileTypeDAO();
-		return instance;
 	}
 	
 }
