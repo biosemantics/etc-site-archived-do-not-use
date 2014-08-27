@@ -42,8 +42,7 @@
   
   <!-- Has to appear after Matrix_review, since Matrix_review uses Blue and would overwrite -->
   <!-- <inherits name='com.sencha.gxt.theme.gray.Gray' /> -->
-  <inherits name="edu.arizona.biosemantics.gxt.theme.green.Theme" />
-      
+  <!-- <inherits name="edu.arizona.biosemantics.gxt.theme.green.Theme" /> -->
   
   <!-- Load dinamically predefined styles in the library when the application starts -->
   <stylesheet src="Upload.css"/>

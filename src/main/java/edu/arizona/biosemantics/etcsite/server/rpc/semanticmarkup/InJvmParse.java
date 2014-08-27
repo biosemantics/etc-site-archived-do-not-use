@@ -3,6 +3,8 @@ package edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup;
 import java.io.File;
 import java.util.HashSet;
 
+import com.google.gwt.core.client.GWT;
+
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
 import edu.arizona.biosemantics.semanticmarkup.ETCMarkupMain;
@@ -41,7 +43,7 @@ public class InJvmParse implements Parse {
 		String workspace = Configuration.charaparser_tempFileBase;
 		String wordnet = Configuration.charaparser_wordnet;
 		String perl = Configuration.charaparser_perl;
-		String otoLiteURL = Configuration.otoLiteURL;
+		String otoLiteURL = Configuration.deploymentUrl;
 		String debugFile = workspace + File.separator + tablePrefix + File.separator + "debug.log";
 		String errorFile = workspace + File.separator + tablePrefix + File.separator + "error.log";
 		

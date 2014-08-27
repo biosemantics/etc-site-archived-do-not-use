@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 public class Configuration extends edu.arizona.biosemantics.etcsite.client.common.Configuration {
 
 	public static String deploymentUrl;
+	public static String classpath;
 	
 	/** Files **/
 	public static String targetNamespace;
@@ -26,8 +27,6 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 	public static String charaparser_tempFileBase;
 	public static String taxonDescriptionSchemaFile;
 	public static String markedUpTaxonDescriptionSchemaFile;
-	public static String otoLiteURL;
-	public static String otoLiteReviewURL;
 	public static int maxActiveSemanticMarkup;
 	
 	/** Matrix Generation **/
@@ -73,6 +72,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			properties.load(loader.getResourceAsStream("config.properties"));
 			
 			deploymentUrl = properties.getProperty("deploymentUrl");
+			classpath = properties.getProperty("classpath");
 			
 			targetNamespace = properties.getProperty("targetNamespace");
 			taxonDescriptionSchemaFileWeb = properties.getProperty("taxonDescriptionSchemaFileWeb");
@@ -89,8 +89,6 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			charaparser_tempFileBase = properties.getProperty("charaparser_tempFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));				
 			taxonDescriptionSchemaFile = properties.getProperty("taxonDescriptionSchemaFile").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			markedUpTaxonDescriptionSchemaFile = properties.getProperty("markedUpTaxonDescriptionSchemaFile").replaceAll("/", Matcher.quoteReplacement(File.separator));
-			otoLiteURL = properties.getProperty("otoLiteURL");
-			otoLiteReviewURL = properties.getProperty("otoLiteReviewURL");
 			maxActiveSemanticMarkup = Integer.parseInt(properties.getProperty("maxActiveSemanticMarkup"));
 			
 			matrixGeneration_tempFileBase = properties.getProperty("matrixGeneration_tempFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));

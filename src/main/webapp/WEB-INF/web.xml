@@ -72,11 +72,27 @@
 		<servlet-name>otoCollectionServlet</servlet-name>
 		<servlet-class>edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>otoCollectionServlet</servlet-name>
 		<url-pattern>/etcsite/collection</url-pattern>
 	</servlet-mapping>
+	<servlet>
+	<servlet-name>contextServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.oto2.oto.server.rpc.ContextService</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	<servlet-name>contextServlet</servlet-name>
+		<url-pattern>/etcsite/context</url-pattern>
+	</servlet-mapping>
+		<servlet>
+		<servlet-name>ontologyServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.oto2.oto.server.rpc.OntologyService</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ontologyServlet</servlet-name>
+		<url-pattern>/etcsite/ontology</url-pattern>
+	</servlet-mapping>
+	
 
 	<!-- http://www.gwtproject.org/doc/latest/DevGuideServerCommunication.html#DevGuideImplementingServices
 	       -> Common pitfalls: for url-pattern help -->
@@ -213,6 +229,11 @@
 	<listener>
 		<listener-class>
   		edu.arizona.biosemantics.etcsite.server.ETCSiteServletContextListener
+		</listener-class>
+	</listener>
+	<listener>
+		<listener-class>
+			edu.arizona.biosemantics.oto2.oto.server.OTOServletContextListener
 		</listener-class>
 	</listener>
 

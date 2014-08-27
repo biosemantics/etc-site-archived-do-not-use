@@ -5,7 +5,6 @@ import java.io.Serializable;
 public class Setup implements Serializable {
 	
 	private String seperator;
-	private String otoLiteReviewURL;
 	private String fileBase;
 	private String googleRedirectURI;
 	private String googleClientId;
@@ -17,14 +16,6 @@ public class Setup implements Serializable {
 
 	public void setSeperator(String seperator) {
 		this.seperator = seperator;
-	}
-
-	public String getOtoLiteReviewURL() {
-		return otoLiteReviewURL;
-	}
-
-	public void setOtoLiteReviewURL(String otoLiteReviewURL) {
-		this.otoLiteReviewURL = otoLiteReviewURL;
 	}
 
 	public String getFileBase() {

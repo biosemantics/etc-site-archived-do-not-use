@@ -16,7 +16,6 @@ public class SetupService extends RemoteServiceServlet implements ISetupService 
 		String seperator = File.separator;
 		Setup setup = new Setup();
 		setup.setSeperator(seperator);
-		setup.setOtoLiteReviewURL(Configuration.otoLiteReviewURL);
 		setup.setFileBase(Configuration.fileBase);
 		setup.setGoogleClientId(Configuration.googleClientId);
 		setup.setGoogleRedirectURI(Configuration.googleRedirectURI);

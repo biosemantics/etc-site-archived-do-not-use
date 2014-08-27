@@ -7,7 +7,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -22,6 +24,7 @@ import org.jdom2.xpath.XPathFactory;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
@@ -58,6 +61,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFilePermissionService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupService;
+import edu.arizona.biosemantics.oto2.oto.shared.model.Context;
 
 public class SemanticMarkupService extends RemoteServiceServlet implements ISemanticMarkupService  {
 
@@ -194,7 +198,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	}
 	
 	@Override
-	public RPCResult<LearnInvocation> learn(AuthenticationToken authenticationToken, final Task task) {		
+	public RPCResult<LearnInvocation> learn(final AuthenticationToken authenticationToken, final Task task) {		
 		try {
 			String numberOfSentences = getNumberOfSentences();
 			String numberOfWords = getNumberOfWords();
@@ -215,7 +219,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				daoManager.getTaskDAO().updateTask(task);
 				
 				String glossary = semanticMarkupConfiguration.getGlossary().getName();
-				String input = semanticMarkupConfiguration.getInput();
+				final String input = semanticMarkupConfiguration.getInput();
 				String tablePrefix = String.valueOf(task.getId());
 				String source = input; //maybe something else later
 				RPCResult<String> operatorResult = authenticationService.getOperator(authenticationToken);
@@ -235,9 +239,13 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				     			activeLearnFutures.remove(semanticMarkupConfiguration.getConfiguration().getId());
 				     			if(!futureResult.isCancelled()) {
 				     				LearnResult result = futureResult.get();
+				     				
 					     			semanticMarkupConfiguration.setOtoUploadId(result.getOtoUploadId());
 					     			semanticMarkupConfiguration.setOtoSecret(result.getOtoSecret());
-									daoManager.getSemanticMarkupConfigurationDAO().updateSemanticMarkupConfiguration(semanticMarkupConfiguration);
+					     			
+					     			createOTOContexts(authenticationToken, result, input);
+					     			
+					     			daoManager.getSemanticMarkupConfigurationDAO().updateSemanticMarkupConfiguration(semanticMarkupConfiguration);
 									TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.REVIEW_TERMS.toString());
 									task.setTaskStage(newTaskStage);
 									task.setResumable(true);
@@ -260,6 +268,27 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		}
 	}
 	
+	private void createOTOContexts(AuthenticationToken authenticationToken, LearnResult learnResult, String input) {
+		edu.arizona.biosemantics.oto.client.oto2.Client client = new edu.arizona.biosemantics.oto.client.oto2.Client(Configuration.deploymentUrl);
+		client.open();
+		List<Context> contexts = new LinkedList<Context>();
+		
+		RPCResult<List<String>> files = fileService.getDirectoriesFiles(authenticationToken, input);
+		if(files.isSucceeded())
+			for(String file : files.getData()) {
+				RPCResult<String> description = getDescription(authenticationToken, input + File.separator + file);
+				if(description.isSucceeded())
+					contexts.add(new Context(learnResult.getOtoUploadId(), getTaxonName(authenticationToken, input + File.separator + file), description.getData()));
+			}
+		try {
+			List<Context> result = client.putContexts(learnResult.getOtoUploadId(), learnResult.getOtoSecret(), contexts).get();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			client.close();
+		}
+	}
+	
 	private void sendFinishedLearningTermsEmail(Task task){
 		try {
 			String email = daoManager.getUserDAO().getUser(task.getUser().getId()).getEmail();
@@ -269,7 +298,6 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			emailer.sendEmail(email, subject, body);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return;
 		} 
 	}
 	
@@ -282,7 +310,6 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			emailer.sendEmail(email, subject, body);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return;
 		} 
 	}
 
@@ -525,6 +552,34 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			e.printStackTrace();
 			return new RPCResult<String>(false, "Internal Server Error", "");
 		}
+	}
+	
+	private String getTaxonName(AuthenticationToken authenticationToken, String filePath) {
+		RPCResult<String> fileContentResult = fileAccessService.getFileContent(authenticationToken, filePath);
+		if(fileContentResult.isSucceeded()) {
+			SAXBuilder sax = new SAXBuilder();
+			String fileContent = fileContentResult.getData();
+			try(StringReader reader = new StringReader(fileContent)) {
+				try {
+					Document doc = sax.build(reader);
+				
+					XPathFactory xpfac = XPathFactory.instance();
+					XPathExpression<Element> xp = xpfac.compile("/bio:treatment/taxon_identification[@status='ACCEPTED']/taxon_name", Filters.element(), null,
+							Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
+					List<Element> taxonNames = xp.evaluate(doc);
+					StringBuilder taxonNameBuilder = new StringBuilder();
+					for(Element taxonName : taxonNames) {
+						taxonNameBuilder.append(taxonName.getAttributeValue("rank") + "=" + taxonName.getValue() + ",");
+					}
+					String result = taxonNameBuilder.toString();
+					return result.substring(0, result.length() - 1);
+				} catch(Exception e) {
+					e.printStackTrace();
+					return null;
+				}
+			}
+		}
+		return null;
 	}
 	
 	private String replaceDescription(String content, String description) throws Exception {

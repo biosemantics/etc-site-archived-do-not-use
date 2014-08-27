@@ -18,10 +18,12 @@ public class Query implements AutoCloseable {
 		
 		public QueryException(String message, Throwable cause) {
 			super(message, cause);
+			cause.printStackTrace();
 		}
 		
 		public QueryException(Throwable cause) {
 			super(cause);
+			cause.printStackTrace();
 		}
 		
 	}

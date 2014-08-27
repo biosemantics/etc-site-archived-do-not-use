@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.server.rpc;
+package edu.arizona.biosemantics.etcsite.server;
 
 import java.lang.ProcessBuilder.Redirect;
 import java.util.LinkedList;
@@ -37,6 +37,11 @@ public abstract class ExtraJvmCallable<T> implements Callable<T> {
 
 	@Override
 	public T call() throws Exception {
+		String command = "java -cp " + classPath + " " + mainClass.getName();
+		for(String arg : args)
+			command += " " + arg;
+		System.out.println("Run in an extra JVM: " + command);
+		
 		exitStatus = null;
 		if(classPath != null && mainClass != null && args != null) {
 			String javaExecutable = JavaEnvUtils.getJreExecutable("java");

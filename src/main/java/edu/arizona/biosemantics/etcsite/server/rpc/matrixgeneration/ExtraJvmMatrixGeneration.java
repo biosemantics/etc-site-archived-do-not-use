@@ -1,6 +1,7 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration;
 
-import edu.arizona.biosemantics.etcsite.server.rpc.ExtraJvmCallable;
+import edu.arizona.biosemantics.etcsite.server.Configuration;
+import edu.arizona.biosemantics.etcsite.server.ExtraJvmCallable;
 
 public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Boolean> implements MatrixGeneration {
 
@@ -12,8 +13,11 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Boolean> implemen
 		this.outputFile = outputFile;
 		
 		this.setArgs(createArgs());
-		//could be reduced to only libraries relevant to semantic-markup
-		this.setClassPath(System.getProperty("java.class.path"));
+		//could be reduced to only libraries relevant to matrixgeneration
+		if(Configuration.classpath.isEmpty())
+			this.setClassPath(System.getProperty("java.class.path"));
+		else
+			this.setClassPath(Configuration.classpath);
 		this.setMainClass(edu.arizona.biosemantics.matrixgeneration.Main.class);
 	}
 	

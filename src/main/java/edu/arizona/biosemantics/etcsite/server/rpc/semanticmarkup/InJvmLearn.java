@@ -2,6 +2,8 @@ package edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup;
 
 import java.io.File;
 
+import com.google.gwt.core.client.GWT;
+
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.AdminAuthenticationToken;
@@ -46,7 +48,7 @@ public class InJvmLearn implements Learn {
 		String workspace = Configuration.charaparser_tempFileBase;
 		String wordnet = Configuration.charaparser_wordnet;
 		String perl = Configuration.charaparser_perl;
-		String otoLiteURL = Configuration.otoLiteURL;
+		String otoLiteURL = Configuration.deploymentUrl;
 		String debugFile = workspace + File.separator + tablePrefix + File.separator + "debug.log";
 		String errorFile = workspace + File.separator + tablePrefix + File.separator + "error.log";
 		

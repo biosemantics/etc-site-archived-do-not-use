@@ -5,9 +5,11 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
+
 import edu.arizona.biosemantics.semanticmarkup.ETCMarkupMain;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
-import edu.arizona.biosemantics.etcsite.server.rpc.ExtraJvmCallable;
+import edu.arizona.biosemantics.etcsite.server.ExtraJvmCallable;
 import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
 
 public class ExtraJvmParse extends ExtraJvmCallable<ParseResult> implements Parse {
@@ -35,7 +37,10 @@ public class ExtraJvmParse extends ExtraJvmCallable<ParseResult> implements Pars
 		
 		this.setArgs(createArgs());
 		//could be reduced to only libraries relevant to semantic-markup
-		this.setClassPath(System.getProperty("java.class.path"));
+		if(Configuration.classpath.isEmpty())
+			this.setClassPath(System.getProperty("java.class.path"));
+		else
+			this.setClassPath(Configuration.classpath);
 		this.setMainClass(ETCMarkupMain.class);
 	}
 
@@ -48,7 +53,7 @@ public class ExtraJvmParse extends ExtraJvmCallable<ParseResult> implements Pars
 		String workspace = Configuration.charaparser_tempFileBase;
 		String wordnet = Configuration.charaparser_wordnet;
 		String perl = Configuration.charaparser_perl;
-		String otoLiteURL = Configuration.otoLiteURL;
+		String otoLiteURL = Configuration.deploymentUrl;
 		String debugFile = workspace + File.separator + tablePrefix + File.separator + "debug.log";
 		String errorFile = workspace + File.separator + tablePrefix + File.separator + "error.log";
 		

@@ -1,4 +1,5 @@
 deploymentUrl=
+classpath=
 
 #Files
 targetNamespace=http://www.github.com/biosemantics
@@ -17,8 +18,6 @@ charaparser_wordnet=/home/sirls/hongcui/charaparser/wordnet/wn31/dict
 charaparser_perl=/home/sirls/hongcui/charaparser/src/main/perl/edu/arizona/biosemantics/semanticmarkup/markupelement/description/ling/learn/lib/perl
 taxonDescriptionSchemaFile=/home/sirls/hongcui/etc-site/src/main/resources/edu/arizona/biosemantics/etcsite/server/rpc/io/semanticMarkupInput.xsd
 markedUpTaxonDescriptionSchemaFile=/home/sirls/hongcui/etc-site/src/main/resources/edu/arizona/biosemantics/etcsite/server/rpc/io/semanticMarkupOutput.xsd
-otoLiteURL=http://biosemantics.arizona.edu:8080/OTOLite/
-otoLiteReviewURL=http://biosemantics.arizona.edu:8080/OTOLite/?origin=etcsite&embed=true
 charaparser_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/charaparser
 maxActiveSemanticMarkup=4
 
@@ -58,3 +57,7 @@ finished_semantic_markup_parse_subject=[ETC] (<taskname>) Text Capture: Parse St
 finished_semantic_markup_parse_body=Text Capture has finished the parse step for your task \"<taskname>\". You may resume this task using the Task Manager.
 finished_martrix_generation_genreate_subject=[ETC] (<taskname>) Matrix Generation: Generate Step Complete 
 finished_matrix_generation_generate_body=Matrix Generation has finished the generation step for your task \"<taskname>\". You may resume the task using the Task Manager.
+
+#Bioportal
+bioportalUrl=http://data.bioontology.org
+bioportalApiKey=
