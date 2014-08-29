@@ -18,12 +18,15 @@ public class Query implements AutoCloseable {
 		
 		public QueryException(String message, Throwable cause) {
 			super(message, cause);
-			cause.printStackTrace();
+			System.out.println(message);
+			if(cause != null)
+				cause.printStackTrace();
 		}
 		
 		public QueryException(Throwable cause) {
 			super(cause);
-			cause.printStackTrace();
+			if(cause != null)
+				cause.printStackTrace();
 		}
 		
 	}

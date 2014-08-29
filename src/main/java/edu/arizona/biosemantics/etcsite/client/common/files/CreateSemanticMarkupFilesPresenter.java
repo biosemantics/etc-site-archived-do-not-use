@@ -169,6 +169,13 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 			public void onResult(List<XmlModelFile> modelFiles) {
 				StringBuilder overallError = new StringBuilder();
 				
+				//temporarily in place as long as we are not sure about the stability of out of memory issue
+				if(modelFiles.size() > 50) {
+					overallError.append("Currently only uploads < 50 files are allowed");
+					messagePresenter.showOkBox("Too many files", overallError.toString());
+					return;
+				}
+				
 				for(XmlModelFile xmlModelFile : modelFiles) {
 					if(xmlModelFile.hasError())
 						overallError.append(xmlModelFile.getError() + "\n\n");

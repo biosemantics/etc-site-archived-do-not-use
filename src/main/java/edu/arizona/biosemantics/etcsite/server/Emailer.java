@@ -19,7 +19,7 @@ public class Emailer {
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.starttls.enable", "true");
 		props.put("mail.smtp.host", Configuration.emailSMTPServer);
-		props.put("mail.smtp.port", "587");
+		props.put("mail.smtp.port", Configuration.emailSMTPPort);
  
 		session = Session.getInstance(props, new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {

@@ -308,6 +308,12 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 			
 			// for now, just disable all of the others:
 			disableManagement();
+			
+			//temporarily in place as long as we are not sure about the stability of out of memory issue
+			if(uploader.getFileInput().getFilenames().size() > 50) {
+				messagePresenter.showOkBox("Too many files", "Currently only uploads < 50 files are allowed");
+				uploader.cancel();
+			}
 		}
 	}
 	

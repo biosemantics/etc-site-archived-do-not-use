@@ -64,6 +64,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 	/** Sign in with Google **/
 	public static String googleRedirectURI;
 	public static String googleClientId;
+	public static String emailSMTPPort;
 	
 	static {		
 		try {
@@ -104,6 +105,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			captcha_tempFileBase = properties.getProperty("captcha_tempFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			
 			emailSMTPServer = properties.getProperty("email_smtp_server");
+			emailSMTPPort = properties.getProperty("email_smtp_port");
 			emailAddress = properties.getProperty("email_address");
 			emailPassword = properties.getProperty("email_password");
 			

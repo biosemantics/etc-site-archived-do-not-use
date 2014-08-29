@@ -31,6 +31,7 @@ public class MessagePresenter {
 	
 	private void showBoxWithButtonText(String title, String message, String buttonText) {
 		ConfirmMessageBox box = new ConfirmMessageBox(title, message);
+		box.setPredefinedButtons(PredefinedButton.OK);
 		box.getButton(PredefinedButton.OK).setText(buttonText);
 		box.show();		
 	}

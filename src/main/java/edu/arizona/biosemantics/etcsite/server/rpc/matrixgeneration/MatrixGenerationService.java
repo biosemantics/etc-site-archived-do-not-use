@@ -74,17 +74,22 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 
 	private static class RankData {
 		
+		private RankData parent;
 		private Level rank;
 		private String value;
 		private String authority;
 		private String date;
 		
-		public RankData(Level rank, String value, String authority, String date) {
+		public RankData(RankData parent, Level rank, String value, String authority, String date) {
 			super();
+			this.parent = parent;
 			this.rank = rank;
 			this.value = value;
 			this.authority = authority;
 			this.date = date;
+		}
+		public RankData getParent() {
+			return parent;
 		}
 		public Level getRank() {
 			return rank;
@@ -101,7 +106,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		public String toString() {
 			return rank + "=" + value;// + "," + authority + "," + date;
 		}
-
 		@Override
 		public int hashCode() {
 			final int prime = 31;
@@ -109,11 +113,12 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			result = prime * result
 					+ ((authority == null) ? 0 : authority.hashCode());
 			result = prime * result + ((date == null) ? 0 : date.hashCode());
+			result = prime * result
+					+ ((parent == null) ? 0 : parent.hashCode());
 			result = prime * result + ((rank == null) ? 0 : rank.hashCode());
 			result = prime * result + ((value == null) ? 0 : value.hashCode());
 			return result;
 		}
-
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj)
@@ -132,6 +137,11 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				if (other.date != null)
 					return false;
 			} else if (!date.equals(other.date))
+				return false;
+			if (parent == null) {
+				if (other.parent != null)
+					return false;
+			} else if (!parent.equals(other.parent))
 				return false;
 			if (rank != other.rank)
 				return false;
@@ -281,7 +291,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 									// send an email to the user who owns the task.
 									sendFinishedGeneratingMatrixEmail(task);
 				     			}
-							} catch (Exception e) {
+				     		} catch (Exception e) {
 								e.printStackTrace();
 							}
 				     	}
@@ -558,6 +568,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		    //set values
 		    for(int i=0; i<allLines.size(); i++) {
 		    	String[] line = allLines.get(i);
+		    	if(i % 100 == 0)
+		    		System.out.println("set value " + i);
 			    for(int j=2; j<line.length; j++) {
 		    		taxonMatrix.setValue(rankTaxaMap.get(taxonNames.get(i).getRankData().getLast()), characters.get(j-2), new Value(line[j]));
 		    	}
@@ -596,6 +608,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
     	String[] ranks = ranksAuthorParts[0].split(";");
     	LinkedList<RankData> rankData = new LinkedList<RankData>();
     	
+    	RankData parent = null;
     	for(String rank : ranks) {
     		String[] rankParts = rank.split(",");
     		String authority = "";
@@ -619,11 +632,12 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
         		}
         	}
     		
-    		RankData rankDataInstance = new RankData(level, value, authority, date);
+    		RankData rankDataInstance = new RankData(parent, level, value, authority, date);
 			if(!rankDataInstances.containsKey(rankDataInstance))
 				rankDataInstances.put(rankDataInstance, rankDataInstance);
 			rankDataInstance = rankDataInstances.get(rankDataInstance);
     		rankData.add(rankDataInstance);
+    		parent = rankDataInstance;
     	}
     			
 		TaxonName result = new TaxonName(rankData, author.split("=")[1], date.split("=")[1]);
@@ -883,7 +897,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			SAXBuilder saxBuilder = new SAXBuilder();
 			Document document;
 			try {
-				document = saxBuilder.build(filePath + File.separator + file);
+				document = saxBuilder.build(new File(filePath + File.separator + file));
 				XPathFactory xPathFactory = XPathFactory.instance();
 				XPathExpression<Element> xPathExpression = 
 						xPathFactory.compile("/bio:treatment/description[@type=\"morphology\"]/statement", Filters.element(), 

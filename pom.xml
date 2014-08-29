@@ -91,6 +91,12 @@
 		  <version>0.0.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
+		  <groupId>edu.arizona.biosemantics</groupId>
+		  <artifactId>gxt</artifactId>
+		  <version>0.0.3-SNAPSHOT</version>
+		  <classifier>sources</classifier>
+		</dependency> 
+		<dependency>
 			<groupId>com.googlecode.gwtupload</groupId>
 			<artifactId>gwtupload</artifactId>
 			<version>1.0.1</version>
@@ -169,7 +175,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>semantic-markup</artifactId>
-			<version>0.1.41-SNAPSHOT</version>
+			<version>0.1.47-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>app</artifactId>
@@ -180,24 +186,24 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.16-SNAPSHOT</version>
+		  <version>0.0.23-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.16-SNAPSHOT</version>
+		  <version>0.0.23-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.matrixgeneration</groupId>
 			<artifactId>matrix-generation</artifactId>
-			<version>0.1.8-SNAPSHOT</version>
+			<version>0.1.9-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.oto</groupId>
 			<artifactId>oto-client</artifactId>
-			<version>0.0.19-SNAPSHOT</version>
+			<version>0.0.26-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.oto</groupId>
