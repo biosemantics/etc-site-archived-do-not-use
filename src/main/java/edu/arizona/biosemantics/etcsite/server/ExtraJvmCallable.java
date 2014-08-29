@@ -14,13 +14,25 @@ public abstract class ExtraJvmCallable<T> implements Callable<T> {
 	private Process process;
 	private String[] args;
 	protected Integer exitStatus;
+	private String xmx;
+	private String xms;
 	
 	protected ExtraJvmCallable() {  }
 
-	public ExtraJvmCallable(Class mainClass, String classPath, String[] args) {
+	public ExtraJvmCallable(Class mainClass, String classPath, String xmx, String xms, String[] args) {
 		this.mainClass = mainClass;
 		this.classPath = classPath;
 		this.args = args;
+		this.xmx = xmx;
+		this.xms = xms;
+	}
+	
+	public void setXmx(String xmx) {
+		this.xmx = xmx;
+	}
+	
+	public void setXms(String xms) {
+		this.xms = xms;
 	}
 
 	public void setClassPath(String classPath) {
@@ -40,6 +52,10 @@ public abstract class ExtraJvmCallable<T> implements Callable<T> {
 		String command = "java -cp " + classPath + " " + mainClass.getName();
 		for(String arg : args)
 			command += " " + arg;
+		if(xmx != null)
+			command += " -Xmx " + xmx;
+		if(xms != null)
+			command += " -Xms " + xms;
 		System.out.println("Run in an extra JVM: " + command);
 		
 		exitStatus = null;

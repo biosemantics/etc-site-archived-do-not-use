@@ -20,10 +20,14 @@ taxonDescriptionSchemaFile=/home/sirls/hongcui/etc-site/src/main/resources/edu/a
 markedUpTaxonDescriptionSchemaFile=/home/sirls/hongcui/etc-site/src/main/resources/edu/arizona/biosemantics/etcsite/server/rpc/io/semanticMarkupOutput.xsd
 charaparser_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/charaparser
 maxActiveSemanticMarkup=4
+charaparser_xms=
+charaparser_xmx=2048m
 
 #Matrix Generation
 matrixGeneration_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/matrixGeneration
 maxActiveMatrixGeneration=4
+matrixgeneration_xms=
+matrixgeneration_xmx=2048m
 
 #Captcha
 captcha_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/captcha

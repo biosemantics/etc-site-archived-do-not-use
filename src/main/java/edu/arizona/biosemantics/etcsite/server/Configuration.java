@@ -28,10 +28,14 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 	public static String taxonDescriptionSchemaFile;
 	public static String markedUpTaxonDescriptionSchemaFile;
 	public static int maxActiveSemanticMarkup;
+	public static String charaparser_xms;
+	public static String charaparser_xmx;
 	
 	/** Matrix Generation **/
 	public static String matrixGeneration_tempFileBase;
 	public static int maxActiveMatrixGeneration;
+	public static String matrixgeneration_xms;
+	public static String matrixgeneration_xmx;
 	
 	/** File Management **/
 	public static String fileBase;
@@ -91,9 +95,13 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			taxonDescriptionSchemaFile = properties.getProperty("taxonDescriptionSchemaFile").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			markedUpTaxonDescriptionSchemaFile = properties.getProperty("markedUpTaxonDescriptionSchemaFile").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			maxActiveSemanticMarkup = Integer.parseInt(properties.getProperty("maxActiveSemanticMarkup"));
+			charaparser_xms = properties.getProperty("charaparser_xms");
+			charaparser_xmx = properties.getProperty("charaparser_xmx");
 			
 			matrixGeneration_tempFileBase = properties.getProperty("matrixGeneration_tempFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			maxActiveMatrixGeneration = Integer.parseInt(properties.getProperty("maxActiveMatrixGeneration"));
+			matrixgeneration_xms = properties.getProperty("matrixgeneration_xms");
+			matrixgeneration_xmx = properties.getProperty("matrixgeneration_xmx");
 			
 			fileBase = properties.getProperty("fileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			compressedFileBase = properties.getProperty("compressedFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));

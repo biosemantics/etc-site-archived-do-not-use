@@ -14,6 +14,10 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Boolean> implemen
 		
 		this.setArgs(createArgs());
 		//could be reduced to only libraries relevant to matrixgeneration
+		if(!Configuration.matrixgeneration_xms.isEmpty()) 
+			this.setXms(Configuration.matrixgeneration_xms);
+		if(!Configuration.matrixgeneration_xmx.isEmpty()) 
+			this.setXmx(Configuration.matrixgeneration_xmx);
 		if(Configuration.classpath.isEmpty())
 			this.setClassPath(System.getProperty("java.class.path"));
 		else

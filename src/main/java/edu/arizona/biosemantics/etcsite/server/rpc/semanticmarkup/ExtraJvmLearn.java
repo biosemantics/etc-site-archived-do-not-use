@@ -41,6 +41,11 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 		this.bioportalAPIKey = bioportalAPIKey;
 		
 		this.setArgs(createArgs());
+		if(!Configuration.charaparser_xms.isEmpty()) 
+			this.setXms(Configuration.charaparser_xms);
+		if(!Configuration.charaparser_xmx.isEmpty()) 
+			this.setXmx(Configuration.charaparser_xmx);
+		
 		//could be reduced to only libraries relevant to semantic-markup
 		if(Configuration.classpath.isEmpty())
 			this.setClassPath(System.getProperty("java.class.path"));
