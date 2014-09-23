@@ -8,7 +8,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksService;
-import edu.arizona.biosemantics.matrixreview.shared.model.TaxonMatrix;
+import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 
 @RemoteServiceRelativePath("matrixGeneration")
 public interface IMatrixGenerationService extends RemoteService, IHasTasksService {
@@ -17,13 +17,13 @@ public interface IMatrixGenerationService extends RemoteService, IHasTasksServic
 	
 	public RPCResult<Task> process(AuthenticationToken authenticationToken, Task task);
 	
-	public RPCResult<TaxonMatrix> review(AuthenticationToken authenticationToken, Task task);
+	public RPCResult<Model> review(AuthenticationToken authenticationToken, Task task);
 	
 	public RPCResult<Task> completeReview(AuthenticationToken authenticationToken, Task task);
 	
 	public RPCResult<Task> output(AuthenticationToken authenticationToken, Task task);
 	
-	public RPCResult<Void> save(AuthenticationToken authenticationToken, TaxonMatrix matrix, Task task);
+	public RPCResult<Void> save(AuthenticationToken authenticationToken, Model model, Task task);
 	
 	public RPCResult<Task> goToTaskStage(AuthenticationToken authenticationToken, Task task, TaskStageEnum review);
 

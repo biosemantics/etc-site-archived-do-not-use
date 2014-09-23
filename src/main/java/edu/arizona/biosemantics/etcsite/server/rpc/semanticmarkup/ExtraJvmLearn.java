@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 
-import edu.arizona.biosemantics.semanticmarkup.ETCLearnMain;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.ExtraJvmCallable;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
@@ -15,6 +14,7 @@ import edu.arizona.biosemantics.etcsite.server.rpc.FileService;
 import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.model.DatasetPrefix;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileService;
+import edu.arizona.biosemantics.semanticmarkup.ETCLearnMain;
 
 public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Learn {
 

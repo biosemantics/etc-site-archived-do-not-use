@@ -20,7 +20,7 @@ import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review.I
 import edu.arizona.biosemantics.oto2.oto.client.Oto;
 
 
-public class SemanticMarkupReviewView extends Composite implements ISemanticMarkupReviewView { //, RequiresResize {
+public class SemanticMarkupReviewView extends Composite implements ISemanticMarkupReviewView, RequiresResize {
 
 	private static SemanticMarkupReviewViewUiBinder uiBinder = GWT.create(SemanticMarkupReviewViewUiBinder.class);
 
@@ -50,10 +50,10 @@ public class SemanticMarkupReviewView extends Composite implements ISemanticMark
 		presenter.onNext();
 	}
 
-	/*@Override
+	@Override
 	public void onResize() {
-		((RequiresResize)view).onResize();
-	}*/
+		((RequiresResize)oto.getView()).onResize();
+	}
 	
 	@Override
 	public void setReview(int collectionId, String secret) {

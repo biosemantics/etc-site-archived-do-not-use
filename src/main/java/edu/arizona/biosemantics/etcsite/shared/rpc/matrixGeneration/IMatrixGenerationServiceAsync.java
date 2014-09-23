@@ -7,7 +7,8 @@ import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksServiceAsync;
-import edu.arizona.biosemantics.matrixreview.shared.model.TaxonMatrix;
+import edu.arizona.biosemantics.matrixreview.shared.model.Model;
+import edu.arizona.biosemantics.matrixreview.shared.model.core.TaxonMatrix;
 
 public interface IMatrixGenerationServiceAsync extends IHasTasksServiceAsync {
 
@@ -15,13 +16,13 @@ public interface IMatrixGenerationServiceAsync extends IHasTasksServiceAsync {
 	
 	public void process(AuthenticationToken authenticationToken,  Task task, AsyncCallback<RPCResult<Task>> callback);
 	
-	public void review(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<TaxonMatrix>> callback);
+	public void review(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Model>> callback);
 	
 	public void completeReview(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Task>> callback);
 	
 	public void output(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Task>> callback);
 	
-	public void save(AuthenticationToken authenticationToken, TaxonMatrix matrix, Task task, AsyncCallback<RPCResult<Void>> callback);
+	public void save(AuthenticationToken authenticationToken, Model model, Task task, AsyncCallback<RPCResult<Void>> callback);
 
 	public void goToTaskStage(AuthenticationToken authenticationToken, Task task, TaskStageEnum review, AsyncCallback<RPCResult<Task>> callback);
 
