@@ -2,11 +2,13 @@ package edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup;
 
 import java.io.File;
 import java.io.StringReader;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -61,6 +63,8 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFilePermissionService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupService;
+import edu.arizona.biosemantics.matrixgeneration.model.RankData;
+import edu.arizona.biosemantics.matrixgeneration.model.Taxon.Rank;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Context;
 
 public class SemanticMarkupService extends RemoteServiceServlet implements ISemanticMarkupService  {
@@ -567,12 +571,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 					XPathExpression<Element> xp = xpfac.compile("/bio:treatment/taxon_identification[@status='ACCEPTED']/taxon_name", Filters.element(), null,
 							Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
 					List<Element> taxonNames = xp.evaluate(doc);
-					StringBuilder taxonNameBuilder = new StringBuilder();
-					for(Element taxonName : taxonNames) {
-						taxonNameBuilder.append(taxonName.getAttributeValue("rank") + "=" + taxonName.getValue() + ",");
-					}
-					String result = taxonNameBuilder.toString();
-					return result.substring(0, result.length() - 1);
+					return createTaxonName(taxonNames);
 				} catch(Exception e) {
 					e.printStackTrace();
 					return null;
@@ -582,6 +581,42 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		return null;
 	}
 	
+	private String createTaxonName(List<Element> taxonNames) {
+		//StringBuilder taxonNameBuilder = new StringBuilder();
+		
+		//the whole set of classes dealing with taxonomy building from plain text
+		//should be moved in an own small project: functionality is currently shared
+		//between matrix-generation, matrix-review, etc-site (for oto2)
+		LinkedList<RankData> rankDatas = new LinkedList<RankData>();
+		Map<Rank, RankData> rankDataMap = new HashMap<Rank, RankData>();
+		for(Element taxonName : taxonNames) {
+			String author = ""; //not used for oto2
+			String data = ""; //not used for oto2
+			Rank rank = Rank.valueOf(taxonName.getAttributeValue("rank"));
+			String name = taxonName.getValue();
+			RankData rankData = new RankData("", "", rank, name);
+			rankDatas.add(rankData);
+			rankDataMap.put(rank, rankData);
+			//taxonNameBuilder.append(taxonName.getAttributeValue("rank") + "=" + taxonName.getValue() + ",");
+		}
+		Collections.sort(rankDatas);
+		if(rankDatas.contains(Rank.GENUS)) {
+			String fullName = "";
+			boolean found = false;
+			for(int i=0; i<rankDatas.size(); i++) {
+				RankData rankData = rankDatas.get(i);
+				if(rankData.getRank().equals(Rank.GENUS)) {
+					found = true;
+				}
+				if(found)
+					fullName += rankData.getName() + " ";
+			}
+			return fullName.substring(0, fullName.length() - 1);
+		} else {
+			return rankDatas.getLast().getName();
+		}
+	}
+
 	private String replaceDescription(String content, String description) throws Exception {
 		SAXBuilder sax = new SAXBuilder();
 		try(StringReader reader = new StringReader(content)) {
