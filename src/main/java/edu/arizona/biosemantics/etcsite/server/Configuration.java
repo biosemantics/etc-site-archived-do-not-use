@@ -40,6 +40,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 	/** File Management **/
 	public static String fileBase;
 	public static String compressedFileBase;
+	public static String tempFiles;
 
 	/** XPath object model **/
 	public static String xPathObjectModel;
@@ -105,6 +106,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			
 			fileBase = properties.getProperty("fileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			compressedFileBase = properties.getProperty("compressedFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
+			tempFiles = properties.getProperty("tempFiles").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			
 			xPathObjectModel = properties.getProperty("xPathObjectModel");
 			

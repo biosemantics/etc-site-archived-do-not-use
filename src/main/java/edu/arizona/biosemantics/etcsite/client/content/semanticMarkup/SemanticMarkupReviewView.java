@@ -14,10 +14,14 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
+import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationReviewView;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.IMatrixGenerationReviewView.Presenter;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review.IReviewView;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.oto2.oto.client.Oto;
+import edu.arizona.biosemantics.oto2.oto.client.event.SaveEvent;
+import edu.arizona.biosemantics.oto2.oto.client.event.SaveEvent.SaveHandler;
 
 
 public class SemanticMarkupReviewView extends Composite implements ISemanticMarkupReviewView, RequiresResize {
@@ -27,6 +31,7 @@ public class SemanticMarkupReviewView extends Composite implements ISemanticMark
 	interface SemanticMarkupReviewViewUiBinder extends UiBinder<Widget, SemanticMarkupReviewView> {
 	}
 
+	private ISemanticMarkupServiceAsync semanticMarkupService;
 	private Presenter presenter;
 	private Oto oto = new Oto();
 
@@ -34,8 +39,9 @@ public class SemanticMarkupReviewView extends Composite implements ISemanticMark
 	SimpleLayoutPanel otoPanel;
 	
 	@Inject
-	public SemanticMarkupReviewView() {
+	public SemanticMarkupReviewView(ISemanticMarkupServiceAsync semanticMarkupService) {
 		super();
+		this.semanticMarkupService = semanticMarkupService;
 		initWidget(uiBinder.createAndBindUi(this));
 		otoPanel.setWidget(oto.getView().asWidget());
 	}
@@ -58,6 +64,14 @@ public class SemanticMarkupReviewView extends Composite implements ISemanticMark
 	@Override
 	public void setReview(int collectionId, String secret) {
 		oto.loadCollection(collectionId, secret);
+		oto.setUser(Authentication.getInstance().getFirstName() + " " + 
+				Authentication.getInstance().getLastName() + " (" + 
+				Authentication.getInstance().getEmail() + ")");
+	}
+	
+	@Override
+	public Oto getOto() {
+		return oto;
 	}
 
 }

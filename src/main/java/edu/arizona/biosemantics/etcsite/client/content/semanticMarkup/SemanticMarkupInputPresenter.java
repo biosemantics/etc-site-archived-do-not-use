@@ -35,7 +35,8 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 	private MessagePresenter messagePresenter = new MessagePresenter();
 
 	@Inject
-	public SemanticMarkupInputPresenter(ISemanticMarkupInputView view, PlaceController 
+	public SemanticMarkupInputPresenter(ISemanticMarkupInputView view, 
+			PlaceController 
 			placeController, ISemanticMarkupServiceAsync semanticMarkupService, 
 			ISelectableFileTreeView.Presenter selectableFileTreePresenter,
 			FilePathShortener filePathShortener,

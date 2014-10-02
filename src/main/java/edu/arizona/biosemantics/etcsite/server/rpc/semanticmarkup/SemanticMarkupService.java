@@ -1,6 +1,7 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.StringReader;
 import java.util.Collections;
 import java.util.Date;
@@ -13,6 +14,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectWriter;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
@@ -22,6 +25,8 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
+
+import au.com.bytecode.opencsv.CSVWriter;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
@@ -65,7 +70,12 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.IFileService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupService;
 import edu.arizona.biosemantics.matrixgeneration.model.RankData;
 import edu.arizona.biosemantics.matrixgeneration.model.Taxon.Rank;
+import edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService;
+import edu.arizona.biosemantics.oto2.oto.shared.model.Collection;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Context;
+import edu.arizona.biosemantics.oto2.oto.shared.model.Label;
+import edu.arizona.biosemantics.oto2.oto.shared.model.Term;
+import edu.arizona.biosemantics.oto2.oto.shared.rpc.ICollectionService;
 
 public class SemanticMarkupService extends RemoteServiceServlet implements ISemanticMarkupService  {
 
@@ -83,6 +93,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	private Map<Integer, Parse> activeParses = new HashMap<Integer, Parse>();
 	private DAOManager daoManager = new DAOManager();
 	private Emailer emailer = new Emailer();
+	private ICollectionService otoCollectionService = new CollectionService();
 	
 	public SemanticMarkupService() {
 		executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(Configuration.maxActiveSemanticMarkup));
@@ -783,6 +794,51 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				return new RPCResult<Boolean>(true, false);
 		}
 		return new RPCResult<Boolean>(true, true);
+	}
+
+	@Override
+	public RPCResult<String> saveOto(AuthenticationToken authenticationToken, 
+			Task task) {
+		final AbstractTaskConfiguration configuration = task.getConfiguration();
+		if(!(configuration instanceof SemanticMarkupConfiguration))
+			return null;
+		final SemanticMarkupConfiguration semanticMarkupConfiguration = (SemanticMarkupConfiguration)configuration;
+		int uploadId = semanticMarkupConfiguration.getOtoUploadId();
+		String secret = semanticMarkupConfiguration.getOtoSecret();
+		
+		try {
+			Collection collection = otoCollectionService.get(uploadId, secret);			
+			String path = Configuration.tempFiles + 
+					File.separator + "oto2" + File.separator + authenticationToken.getUserId() +
+					File.separator + "term_categorizations_task-" + task.getName() + ".csv";
+			File file = new File(path);
+			file.getParentFile().mkdirs();
+			file.createNewFile();
+			
+			try(CSVWriter csvWriter = new CSVWriter(new FileWriter(file))) {
+				csvWriter.writeNext(new String[] {"term", "category"});
+				for(Label label : collection.getLabels()) {
+					for(Term term : label.getTerms())
+					csvWriter.writeNext(new String[] {term.getTerm(), label.getName() });
+				}
+				csvWriter.writeNext(new String[] { });
+				csvWriter.writeNext(new String[] {"category", "definition"});
+				for(Label label : collection.getLabels()) {
+					csvWriter.writeNext(new String[] {label.getName(), label.getDescription()});
+				}
+			}
+			
+			/*ObjectMapper mapper = new ObjectMapper();
+			ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
+			String jsonCollection = writer.writeValueAsString(collection);
+			try (FileWriter fileWriter = new FileWriter(new File(path))) {
+				fileWriter.write(jsonCollection);
+			}*/
+			return new RPCResult<String>(true, "", path);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new RPCResult<String>(false, "Internal Server Error" ,"");
+		}
 	}
 
 }

@@ -38,6 +38,8 @@ public interface ISemanticMarkupService extends RemoteService, IHasTasksService 
 	
 	public RPCResult<Void> setDescription(AuthenticationToken authenticationToken, String filePath, String description);
 	
+	public RPCResult<String> saveOto(AuthenticationToken authenticationToken, Task task);
+	
 	//public RPCResult<Void> prepareOptionalOtoLiteSteps(AuthenticationToken authenticationToken, Task task);
 
 }
