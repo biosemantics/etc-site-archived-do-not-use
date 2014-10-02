@@ -545,9 +545,13 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 					XPathExpression<Element> xp = xpfac.compile("/bio:treatment/description", Filters.element(), null,
 							Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
 					List<Element> descriptions = xp.evaluate(doc);
-					if(descriptions != null && !descriptions.isEmpty())
-						return new RPCResult<String>(true, "", descriptions.get(0).getText());
-					else 
+					if(descriptions != null && !descriptions.isEmpty()) {
+						StringBuilder fullDescription = new StringBuilder();
+						for(Element description : descriptions)
+							fullDescription.append(description.getText() + "\n\n");
+						String fullDescr = fullDescription.toString();
+						return new RPCResult<String>(true, "", fullDescription.toString().substring(0, fullDescr.length() - 2));
+					} else 
 						return new RPCResult<String>(false, "No description found in this file", null);
 				}
 			}
@@ -592,7 +596,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		for(Element taxonName : taxonNames) {
 			String author = ""; //not used for oto2
 			String data = ""; //not used for oto2
-			Rank rank = Rank.valueOf(taxonName.getAttributeValue("rank"));
+			Rank rank = Rank.valueOf(taxonName.getAttributeValue("rank").toUpperCase());
 			String name = taxonName.getValue();
 			RankData rankData = new RankData("", "", rank, name);
 			rankDatas.add(rankData);
