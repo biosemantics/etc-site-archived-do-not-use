@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
@@ -55,6 +56,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
+import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
@@ -72,6 +74,9 @@ import edu.arizona.biosemantics.matrixreview.shared.model.core.Taxon;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.TaxonMatrix;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.Value;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.Taxon.Rank;
+import edu.arizona.biosemantics.oto2.oto.shared.model.Collection;
+import edu.arizona.biosemantics.oto2.oto.shared.model.Label;
+import edu.arizona.biosemantics.oto2.oto.shared.model.Term;
 
 public class MatrixGenerationService extends RemoteServiceServlet implements IMatrixGenerationService  {
 
@@ -877,6 +882,55 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			}
 		}
 		return new RPCResult<Boolean>(true, statementFound);
+	}
+
+	@Override
+	public RPCResult<String> saveMatrix(AuthenticationToken authenticationToken, 
+			Task task, Model model) {
+		final AbstractTaskConfiguration configuration = task.getConfiguration();
+		if(!(configuration instanceof MatrixGenerationConfiguration))
+			return null;
+		final MatrixGenerationConfiguration matrixGenerationConfiguration = (MatrixGenerationConfiguration)configuration;
+		
+		try {
+			String path = Configuration.tempFiles + 
+					File.separator + "matrix-review" + File.separator + authenticationToken.getUserId() +
+					File.separator + "matrix_task-" + task.getName() + ".csv";
+			File file = new File(path);
+			file.getParentFile().mkdirs();
+			file.createNewFile();
+			
+			String[] characters = new String[model.getTaxonMatrix().getCharacterCount() + 1];
+			List<Character> flatCharacters = model.getTaxonMatrix().getFlatCharacters();
+			int columns = flatCharacters.size() + 1;
+			characters[0] = "Taxa/Characters";
+			for(int i=0; i<flatCharacters.size(); i++) {
+				characters[i+1] = flatCharacters.get(i).toString();
+			}
+			try(CSVWriter csvWriter = new CSVWriter(new FileWriter(file))) {
+				csvWriter.writeNext(characters);
+				for(Taxon taxon : model.getTaxonMatrix().getFlatTaxa()) {
+					String[] line = new String[columns];
+					line[0] = taxon.getFullName();
+					for(int i=0; i<flatCharacters.size(); i++) {
+						Character character = flatCharacters.get(i);
+						line[i+1] = model.getTaxonMatrix().getValue(taxon, character).toString();
+					}
+					csvWriter.writeNext(line);
+				}
+			}
+			
+			/*ObjectMapper mapper = new ObjectMapper();
+			ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
+			String jsonModel = writer.writeValueAsString(model);
+			try (FileWriter fileWriter = new FileWriter(new File(path))) {
+				fileWriter.write(jsonModel);
+			}*/
+			return new RPCResult<String>(true, "", path);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new RPCResult<String>(false, "Internal Server Error" ,"");
+		}
 	}
 
 }

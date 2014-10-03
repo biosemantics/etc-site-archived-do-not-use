@@ -29,5 +29,7 @@ public interface IMatrixGenerationService extends RemoteService, IHasTasksServic
 
 	public RPCResult<Boolean> isValidInput(AuthenticationToken authenticationToken,
 			String filePath);
+	
+	public RPCResult<String> saveMatrix(AuthenticationToken token, Task task, Model model);
 
 }

@@ -34,18 +34,10 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 					task, new RPCCallback<String>() {
 				@Override
 				public void onResult(String result) {
-					//target=" + result.getData() + "&directory=yes
 					loadingPopup.stop();
 					Window.open("download.dld?target=" + URL.encodeQueryString(result) + 
 							"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
 							"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()), "_blank", "");
-					/*Window.Location.replace("/etcsite/download?target=" + URL.encodeQueryString(result) + 
-							"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
-							"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()));*/
-					
-					/*Window.open("/etcsite/download/?target=" + result.getData() + "&username=" + Authentication.getInstance().getUsername() + "&" + 
-							"sessionID=" + Authentication.getInstance().getSessionID()
-							, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes"); */
 				}
 			});
 		}

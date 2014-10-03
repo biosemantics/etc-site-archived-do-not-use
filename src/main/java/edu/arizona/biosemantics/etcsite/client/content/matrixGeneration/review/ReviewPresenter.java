@@ -1,5 +1,7 @@
 package edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review;
 
+import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.Window;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
@@ -9,6 +11,8 @@ import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
 import edu.arizona.biosemantics.matrixreview.client.MatrixReviewView;
+import edu.arizona.biosemantics.matrixreview.client.event.SaveEvent;
+import edu.arizona.biosemantics.matrixreview.client.event.SaveEvent.SaveHandler;
 import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.TaxonMatrix;
 
@@ -23,9 +27,25 @@ public class ReviewPresenter implements IReviewView.Presenter {
 	private LoadingPopup loadingPopup = new LoadingPopup();
 	
 	@Inject
-	public ReviewPresenter(IReviewView view, IMatrixGenerationServiceAsync matrixGenerationService) {
+	public ReviewPresenter(IReviewView view, final IMatrixGenerationServiceAsync matrixGenerationService) {
 		this.matrixGenerationService = matrixGenerationService;
 		this.view = view;
+		matrixReviewView.setSaveHandler(new SaveHandler() {
+			@Override
+			public void onSave(SaveEvent event) {
+				loadingPopup.start();
+				matrixGenerationService.saveMatrix(Authentication.getInstance().getToken(), 
+						task, event.getModel(), new RPCCallback<String>() {
+					@Override
+					public void onResult(String result) {
+						loadingPopup.stop();
+						Window.open("download.dld?target=" + URL.encodeQueryString(result) + 
+								"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
+								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()), "_blank", "");
+					}
+				});
+			}
+		});
 	}
 	
 	@Override
