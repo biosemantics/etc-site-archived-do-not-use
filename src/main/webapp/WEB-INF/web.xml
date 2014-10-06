@@ -69,14 +69,6 @@
 		<!-- <servlet-class>com.google.code.kaptcha.servlet.KaptchaServlet</servlet-class> -->
 	</servlet>
 	<servlet>
-		<servlet-name>otoCollectionServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>otoCollectionServlet</servlet-name>
-		<url-pattern>/etcsite/collection</url-pattern>
-	</servlet-mapping>
-	<servlet>
 	<servlet-name>contextServlet</servlet-name>
 		<servlet-class>edu.arizona.biosemantics.oto2.oto.server.rpc.ContextService</servlet-class>
 	</servlet>
