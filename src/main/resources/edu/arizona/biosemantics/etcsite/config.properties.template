@@ -14,6 +14,7 @@ databaseHost=
 databasePort=
 
 #Charaparser
+charaparser_databaseName=
 charaparser_wordnet=/home/sirls/hongcui/charaparser/wordnet/wn31/dict
 charaparser_perl=/home/sirls/hongcui/charaparser/src/main/perl/edu/arizona/biosemantics/semanticmarkup/markupelement/description/ling/learn/lib/perl
 taxonDescriptionSchemaFile=/home/sirls/hongcui/etc-site/src/main/resources/edu/arizona/biosemantics/etcsite/server/rpc/io/semanticMarkupInput.xsd

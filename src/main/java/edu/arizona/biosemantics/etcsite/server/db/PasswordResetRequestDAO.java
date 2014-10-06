@@ -52,7 +52,7 @@ public class PasswordResetRequestDAO {
 	}
 	
 	public void cleanup() {
-		try(Query deleteAll = new Query("DELETE FROM `passwordresetrequests` WHERE 1")) {
+		try(Query deleteAll = new Query("DELETE FROM `etcsite_passwordresetrequests` WHERE 1")) {
 			deleteAll.execute();
 		} catch (Exception e) {
 			e.printStackTrace();
