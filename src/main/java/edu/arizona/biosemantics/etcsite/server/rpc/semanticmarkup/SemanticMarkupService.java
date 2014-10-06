@@ -67,6 +67,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFilePermissionService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupService;
 import edu.arizona.biosemantics.matrixgeneration.model.RankData;
 import edu.arizona.biosemantics.matrixgeneration.model.Taxon.Rank;
@@ -242,8 +243,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 					return new RPCResult<LearnInvocation>(false, operatorResult.getMessage());
 				String bioportalUserId = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalUserId();
 				String bioportalAPIKey = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalAPIKey();
-				Learn learn = new ExtraJvmLearn(authenticationToken, glossary, input, tablePrefix, source, operatorResult.getData(), bioportalUserId, bioportalAPIKey);
-				//Learn learn = new InJvmLearn(authenticationToken, glossary, input, tablePrefix, source, operatorResult.getData(), bioportalUserId, bioportalAPIKey);
+				//Learn learn = new ExtraJvmLearn(authenticationToken, glossary, input, tablePrefix, source, operatorResult.getData(), bioportalUserId, bioportalAPIKey);
+				Learn learn = new InJvmLearn(authenticationToken, glossary, input, tablePrefix, source, operatorResult.getData(), bioportalUserId, bioportalAPIKey);
 				activeLearns.put(semanticMarkupConfiguration.getConfiguration().getId(), learn);
 				final ListenableFuture<LearnResult> futureResult = executorService.submit(learn);
 				activeLearnFutures.put(semanticMarkupConfiguration.getConfiguration().getId(), futureResult);
@@ -259,7 +260,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 					     			semanticMarkupConfiguration.setOtoSecret(result.getOtoSecret());
 					     			
 					     			createOTOContexts(authenticationToken, result, input);
-					     			
+					     			otoCollectionService.initializeFromHistory(new Collection(result.getOtoUploadId(), result.getOtoSecret()));
 					     			daoManager.getSemanticMarkupConfigurationDAO().updateSemanticMarkupConfiguration(semanticMarkupConfiguration);
 									TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.REVIEW_TERMS.toString());
 									task.setTaskStage(newTaskStage);
@@ -283,6 +284,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		}
 	}
 	
+	//TODO: Could also access the servlet instead of using oto's client
 	private void createOTOContexts(AuthenticationToken authenticationToken, LearnResult learnResult, String input) {
 		edu.arizona.biosemantics.oto.client.oto2.Client client = new edu.arizona.biosemantics.oto.client.oto2.Client(Configuration.deploymentUrl);
 		client.open();
