@@ -19,7 +19,7 @@ public class MatrixGenerationConfigurationDAO {
 
 	public MatrixGenerationConfiguration getMatrixGenerationConfiguration(int configurationId) {
 		MatrixGenerationConfiguration matrixGenerationConfiguration = null;
-		try(Query query = new Query("SELECT * FROM matrixgenerationconfigurations WHERE configuration = ?")) {
+		try(Query query = new Query("SELECT * FROM etcsite_matrixgenerationconfigurations WHERE configuration = ?")) {
 			query.setParameter(1, configurationId);
 			ResultSet result = query.execute();
 			while(result.next()) {
@@ -41,12 +41,12 @@ public class MatrixGenerationConfigurationDAO {
 
 	public MatrixGenerationConfiguration addMatrixGenerationConfiguration(MatrixGenerationConfiguration matrixGenerationConfiguration) {
 		MatrixGenerationConfiguration result = null;
-		try (Query query = new Query("INSERT INTO `configurations` (`id`) VALUES(NULL)")) {
+		try (Query query = new Query("INSERT INTO `etcsite_configurations` (`id`) VALUES(NULL)")) {
 			query.execute();
 			ResultSet generatedKeys = query.getGeneratedKeys();
 			while(generatedKeys.next()) {
 				Configuration configuration = configurationDAO.getConfiguration(generatedKeys.getInt(1));
-				try (Query matrixGenerationQuery = new Query("INSERT INTO `matrixgenerationconfigurations` " +
+				try (Query matrixGenerationQuery = new Query("INSERT INTO `etcsite_matrixgenerationconfigurations` " +
 						"(`configuration`, `input`, `output`) VALUES (?, ?, ?)")) {
 					matrixGenerationQuery.setParameter(1, configuration.getId());
 					matrixGenerationQuery.setParameter(2, matrixGenerationConfiguration.getInput());
@@ -65,7 +65,7 @@ public class MatrixGenerationConfigurationDAO {
 		Configuration configuration = matrixGenerationConfiguration.getConfiguration();
 		String input = matrixGenerationConfiguration.getInput();
 		String output = matrixGenerationConfiguration.getOutput();
-		try (Query query = new Query("UPDATE matrixgenerationconfigurations SET input = ?, output = ? WHERE configuration = ?")) {
+		try (Query query = new Query("UPDATE etcsite_matrixgenerationconfigurations SET input = ?, output = ? WHERE configuration = ?")) {
 			query.setParameter(1, input);
 			query.setParameter(2, output);
 			query.setParameter(3, configuration.getId());
@@ -77,7 +77,7 @@ public class MatrixGenerationConfigurationDAO {
 
 	public void remove(MatrixGenerationConfiguration matrixGenerationConfiguration) {
 		Configuration configuration = matrixGenerationConfiguration.getConfiguration();
-		try(Query query = new Query("DELETE FROM matrixgenerationconfigurations WHERE configuration = ?")) {
+		try(Query query = new Query("DELETE FROM etcsite_matrixgenerationconfigurations WHERE configuration = ?")) {
 			query.setParameter(1, configuration.getId());
 			query.execute();
 		} catch(Exception e) {

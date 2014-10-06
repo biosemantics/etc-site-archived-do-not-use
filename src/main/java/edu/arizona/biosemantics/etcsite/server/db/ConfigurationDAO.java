@@ -12,7 +12,7 @@ public class ConfigurationDAO {
 	
 	public Configuration getConfiguration(int id) {
 		Configuration configuration = null;
-		try(Query query = new Query("SELECT * FROM configurations WHERE id = ?")) {
+		try(Query query = new Query("SELECT * FROM etcsite_configurations WHERE id = ?")) {
 			query.setParameter(1, id);
 			ResultSet result = query.execute();
 			while(result.next()) {
@@ -27,7 +27,7 @@ public class ConfigurationDAO {
 	}
 
 	public void remove(edu.arizona.biosemantics.etcsite.shared.model.Configuration configuration) {
-		try(Query query = new Query("DELETE FROM configurations WHERE id = ?")) {
+		try(Query query = new Query("DELETE FROM etcsite_configurations WHERE id = ?")) {
 			query.setParameter(1, configuration.getId());
 			query.execute();
 		} catch(QueryException e) {

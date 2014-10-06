@@ -15,7 +15,7 @@ public class TaskTypeDAO {
 	
 	public TaskType getTaskType(int id) {
 		TaskType taskType = null;
-		try(Query query = new Query("SELECT * FROM tasktypes WHERE id = ?")) {
+		try(Query query = new Query("SELECT * FROM etcsite_tasktypes WHERE id = ?")) {
 			query.setParameter(1, id);
 			ResultSet result = query.execute();
 			while(result.next()) {
@@ -38,7 +38,7 @@ public class TaskTypeDAO {
 	
 	public TaskType getTaskType(TaskTypeEnum taskTypeEnum) {		
 		TaskType taskType = null;
-		try(Query query = new Query("SELECT * FROM tasktypes WHERE name = ?")) {
+		try(Query query = new Query("SELECT * FROM etcsite_tasktypes WHERE name = ?")) {
 			query.setParameter(1, taskTypeEnum.toString());
 			ResultSet result = query.execute();
 			while(result.next()) {

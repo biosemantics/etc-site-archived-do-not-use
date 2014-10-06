@@ -40,7 +40,7 @@ public class InJvmLearn implements Learn {
 	
 	@Override
 	public LearnResult call() throws Exception {
-		String databaseName = Configuration.databaseName;
+		String databaseName = Configuration.charaparser_databaseName;
 		String databaseUser = Configuration.databaseUser;
 		String databasePassword = Configuration.databasePassword;
 		String databaseHost = Configuration.databaseHost;

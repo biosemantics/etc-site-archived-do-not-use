@@ -13,7 +13,7 @@ public class FileTypeDAO {
 	
 	public FileType getFileType(int id) {
 		FileType inputType = null;
-		try(Query query = new Query("SELECT * FROM filetypes WHERE id = ?")) {
+		try(Query query = new Query("SELECT * FROM etcsite_filetypes WHERE id = ?")) {
 			query.setParameter(1, id);
 			ResultSet result = query.execute();
 			while(result.next()) {
@@ -30,7 +30,7 @@ public class FileTypeDAO {
 	
 	public FileType getFileType(String name) {		
 		FileType inputType = null;
-		try(Query query = new Query("SELECT * FROM filetypes WHERE name = ?")) {
+		try(Query query = new Query("SELECT * FROM etcsite_filetypes WHERE name = ?")) {
 			query.setParameter(1, name);
 			ResultSet result = query.execute();
 			while(result.next()) {

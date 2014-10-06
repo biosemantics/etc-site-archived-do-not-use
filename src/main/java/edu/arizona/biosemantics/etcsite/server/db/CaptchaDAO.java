@@ -29,7 +29,7 @@ public class CaptchaDAO {
 	
 	public Captcha getCaptcha(int id) {
 		Captcha captcha = null;
-		try(Query query = new Query("SELECT * FROM captchas WHERE id = ?")) {
+		try(Query query = new Query("SELECT * FROM etcsite_captchas WHERE id = ?")) {
 			query.setParameter(1, id);
 			ResultSet result = query.execute();
 			while(result.next()) {
@@ -46,7 +46,7 @@ public class CaptchaDAO {
 
 	public void remove(int captchaId) {
 		getCaptchaFile(captchaId).delete();
-		try(Query query = new Query("DELETE FROM captchas WHERE id = ?")) {
+		try(Query query = new Query("DELETE FROM etcsite_captchas WHERE id = ?")) {
 			query.setParameter(1, captchaId);
 			query.execute();
 		} catch(QueryException e) {
@@ -59,7 +59,7 @@ public class CaptchaDAO {
 	}
 	
 	public void cleanup() {
-		try(Query query = new Query("SELECT * FROM captchas")) {
+		try(Query query = new Query("SELECT * FROM etcsite_captchas")) {
 			ResultSet resultSet = query.execute();
 			while(resultSet.next()) {
 				int id = resultSet.getInt(1);
@@ -95,7 +95,7 @@ public class CaptchaDAO {
 		String solution = captchaProducer.createText();
 		BufferedImage img = captchaProducer.createImage(solution);
 		
-		try(Query insertCaptcha = new Query("INSERT INTO captchas (solution) VALUES (?)")) {
+		try(Query insertCaptcha = new Query("INSERT INTO etcsite_captchas (solution) VALUES (?)")) {
 			insertCaptcha.setParameter(1, solution);
 			insertCaptcha.execute();
 			ResultSet generatedKeys = insertCaptcha.getGeneratedKeys();

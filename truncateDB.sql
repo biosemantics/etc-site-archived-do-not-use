@@ -46,28 +46,28 @@ DROP TABLE IF EXISTS `datasetprefixes`;
 SET foreign_key_checks = 0;
 
 -- truncate shares
-TRUNCATE TABLE  `shareinvitees`;
+TRUNCATE TABLE  `etcsite_shareinvitees`;
 
 -- truncate files in use
-TRUNCATE TABLE  `tasksfiles`;
-TRUNCATE TABLE  `filesinuse`;
+TRUNCATE TABLE  `etcsite_tasksfiles`;
+TRUNCATE TABLE  `etcsite_filesinuse`;
 
 -- truncate task configurations
-TRUNCATE TABLE  `semanticmarkupconfigurations`;
-TRUNCATE TABLE  `matrixgenerationconfigurations`;
-TRUNCATE TABLE  `treegenerationconfigurations`;
-TRUNCATE TABLE  `taxonomycomparisonconfigurations`;
-TRUNCATE TABLE  `visualizationconfigurations`;
-TRUNCATE TABLE  `pipelineconfigurations`;
-TRUNCATE TABLE  `pipelinestageconfigurations`;
-TRUNCATE TABLE  `configurations`;
+TRUNCATE TABLE  `etcsite_semanticmarkupconfigurations`;
+TRUNCATE TABLE  `etcsite_matrixgenerationconfigurations`;
+TRUNCATE TABLE  `etcsite_treegenerationconfigurations`;
+TRUNCATE TABLE  `etcsite_taxonomycomparisonconfigurations`;
+TRUNCATE TABLE  `etcsite_visualizationconfigurations`;
+TRUNCATE TABLE  `etcsite_pipelineconfigurations`;
+TRUNCATE TABLE  `etcsite_pipelinestageconfigurations`;
+TRUNCATE TABLE  `etcsite_configurations`;
 
 -- truncate tasks
-TRUNCATE TABLE `tasksoutputfiles`;
-TRUNCATE TABLE  `shares`;
-TRUNCATE TABLE  `tasks`;
+TRUNCATE TABLE `etcsite_tasksoutputfiles`;
+TRUNCATE TABLE  `etcsite_shares`;
+TRUNCATE TABLE  `etcsite_tasks`;
 
-TRUNCATE TABLE `passwordresetrequests`;
-TRUNCATE TABLE `captchas`;
+TRUNCATE TABLE `etcsite_passwordresetrequests`;
+TRUNCATE TABLE `etcsite_captchas`;
 
 SET foreign_key_checks = 1;

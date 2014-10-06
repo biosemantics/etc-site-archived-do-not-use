@@ -17,7 +17,7 @@ public class PasswordResetRequestDAO {
 	public PasswordResetRequest getRequest(int user) {
 		PasswordResetRequest request = null;
 		
-		try(Query query = new Query("SELECT * FROM passwordresetrequests WHERE user = ?")) {
+		try(Query query = new Query("SELECT * FROM etcsite_passwordresetrequests WHERE user = ?")) {
 			query.setParameter(1, user);
 			ResultSet result = query.execute();
 			while(result.next()){
@@ -33,7 +33,7 @@ public class PasswordResetRequestDAO {
 	}
 	
 	public void removeRequests(int user) {
-		try(Query removeRequest = new Query("DELETE FROM `passwordresetrequests` WHERE `user`=?")) {
+		try(Query removeRequest = new Query("DELETE FROM `etcsite_passwordresetrequests` WHERE `user`=?")) {
 			removeRequest.setParameter(1, user);
 			removeRequest.execute();
 		} catch(Exception e) {
@@ -42,7 +42,7 @@ public class PasswordResetRequestDAO {
 	}
 	
 	public void addRequest(int user, String authenticationCode) {
-		try(Query addRequest = new Query("INSERT INTO `passwordresetrequests`(`user`, `authenticationcode`) VALUES (?, ?)")) {
+		try(Query addRequest = new Query("INSERT INTO `etcsite_passwordresetrequests`(`user`, `authenticationcode`) VALUES (?, ?)")) {
 			addRequest.setParameter(1, user);
 			addRequest.setParameter(2, authenticationCode);
 			addRequest.execute();

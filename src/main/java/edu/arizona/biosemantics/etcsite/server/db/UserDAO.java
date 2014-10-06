@@ -27,7 +27,7 @@ public class UserDAO {
 
 	public User getUser(int id) {
 		User user = null;
-		try(Query query = new Query("SELECT * FROM useraccounts WHERE id = ?")) {
+		try(Query query = new Query("SELECT * FROM etcsite_users WHERE id = ?")) {
 			query.setParameter(1, id);
 			ResultSet result = query.execute();
 			while (result.next()) {
@@ -60,7 +60,7 @@ public class UserDAO {
 	public User getUser(String email, String openIdProvider) {
 		User user = null;
 		try(Query query = new Query(
-				"SELECT * FROM useraccounts WHERE (openidproviderid) = ? AND openidprovider = ?")) {
+				"SELECT * FROM etcsite_users WHERE (openidproviderid) = ? AND openidprovider = ?")) {
 			query.setParameter(1, email);
 			query.setParameter(2, openIdProvider);
 			ResultSet result = query.execute();
@@ -92,7 +92,7 @@ public class UserDAO {
 			return false;
 		} else {
 			try(Query addUser = new Query(
-					"INSERT INTO `useraccounts`(`openIdProviderId`, `openidprovider`, `password`, `firstname`, `lastname`, " +
+					"INSERT INTO `etcsite_users`(`openIdProviderId`, `openidprovider`, `password`, `firstname`, `lastname`, " +
 					"`email`, `affiliation`, `bioportaluserid`, `bioportalapikey`) VALUES" +
 					" (?, ?, ?, ?, ?, ?, \"\", \"\", \"\")");) {
 				addUser.setParameter(1, openIdProviderId);
@@ -123,7 +123,7 @@ public class UserDAO {
 			return false;
 		} else {
 			try(Query updateUser = new Query(
-					"UPDATE `useraccounts` SET `firstname`=?, `lastname`=?, `email`=?, `password`=?, `affiliation`=?, " +
+					"UPDATE `etcsite_users` SET `firstname`=?, `lastname`=?, `email`=?, `password`=?, `affiliation`=?, " +
 					"`bioportaluserid`=?, `bioportalapikey`=? WHERE (id) = ?")) {
 				updateUser.setParameter(1, firstName);
 				updateUser.setParameter(2, lastName);
@@ -144,7 +144,7 @@ public class UserDAO {
 
 	public List<ShortUser> getUsers() {
 		List<ShortUser> result = new LinkedList<ShortUser>();
-		try(Query query = new Query("SELECT * FROM useraccounts")) {
+		try(Query query = new Query("SELECT * FROM etcsite_users")) {
 			ResultSet resultSet = query.execute();
 			while (resultSet.next()) {
 				result.add(createShortUser(createUser(resultSet)));
@@ -157,7 +157,7 @@ public class UserDAO {
 
 	public List<ShortUser> getUsersWithout(int userId) {
 		List<ShortUser> result = new LinkedList<ShortUser>();
-		try(Query query = new Query("SELECT * FROM useraccounts WHERE id != ?")) {
+		try(Query query = new Query("SELECT * FROM etcsite_users WHERE id != ?")) {
 			query.setParameter(1, userId);
 			ResultSet resultSet = query.execute();
 			while (resultSet.next()) {

@@ -23,23 +23,23 @@ public class FilesInUseDAO {
 	}
 	
 	public void setInUse(boolean value, String input, Task task) {
-		try (Query query = new Query("SELECT id FROM filesinuse WHERE file = ?")) {
+		try (Query query = new Query("SELECT id FROM etcsite_filesinuse WHERE file = ?")) {
 			query.setParameter(1, input);
 			ResultSet resultFileId = query.execute();
 			if(!value) {
 				if(resultFileId.next()) {
 					int fileInUseId = resultFileId.getInt(1);
-					try(Query deleteTasksFiles = new Query("DELETE FROM tasksfiles WHERE fileinuse = ? AND task = ?")) {
+					try(Query deleteTasksFiles = new Query("DELETE FROM etcsite_tasksfiles WHERE fileinuse = ? AND task = ?")) {
 						deleteTasksFiles.setParameter(1, fileInUseId);
 						deleteTasksFiles.setParameter(2, task.getId());
 						deleteTasksFiles.execute();
 					}
 					
-					try(Query checkIfEmtpyTaskFiles = new Query("SELECT * FROM tasksfiles WHERE fileinuse = ?")) {
+					try(Query checkIfEmtpyTaskFiles = new Query("SELECT * FROM etcsite_tasksfiles WHERE fileinuse = ?")) {
 						checkIfEmtpyTaskFiles.setParameter(1, fileInUseId);
 						ResultSet resultSetCheckEmpty = checkIfEmtpyTaskFiles.execute();
 						if(!resultSetCheckEmpty.next()) {
-							try (Query deleteFileInUse = new Query("DELETE FROM filesinuse WHERE id = ?")) {
+							try (Query deleteFileInUse = new Query("DELETE FROM etcsite_filesinuse WHERE id = ?")) {
 								deleteFileInUse.setParameter(1, fileInUseId);
 								deleteFileInUse.execute();
 							}
@@ -51,7 +51,7 @@ public class FilesInUseDAO {
 				if(resultFileId.next()) {
 					fileInUseId = resultFileId.getInt(1);
 				} else {
-					try(Query insertFileInUse = new Query("INSERT INTO filesinuse (file) VALUES (?)")) {
+					try(Query insertFileInUse = new Query("INSERT INTO etcsite_filesinuse (file) VALUES (?)")) {
 						insertFileInUse.setParameter(1, input);
 						insertFileInUse.execute();
 						ResultSet generatedKeys = insertFileInUse.getGeneratedKeys();
@@ -62,7 +62,7 @@ public class FilesInUseDAO {
 				}
 				
 				if(fileInUseId != -1) {
-					try(Query insertFileInUse = new Query("INSERT INTO tasksfiles (fileinuse, task) VALUES (?, ?)")) {
+					try(Query insertFileInUse = new Query("INSERT INTO etcsite_tasksfiles (fileinuse, task) VALUES (?, ?)")) {
 						insertFileInUse.setParameter(1, fileInUseId);
 						insertFileInUse.setParameter(2, task.getId());
 						insertFileInUse.execute();
@@ -84,7 +84,7 @@ public class FilesInUseDAO {
 		//returns //FNA row for //FNA//1.xml, which is ok but also
 		//returns //FNA for //FNA123 which is not ok
 		
-		try (Query query = new Query("SELECT id FROM filesinuse WHERE INSTR(?, CONCAT(file, ?)) = 1 OR file = ?")) {
+		try (Query query = new Query("SELECT id FROM etcsite_filesinuse WHERE INSTR(?, CONCAT(file, ?)) = 1 OR file = ?")) {
 			query.setParameter(1, input);
 			query.setParameter(2, File.separator);
 			query.setParameter(3, input);
@@ -101,7 +101,7 @@ public class FilesInUseDAO {
 	
 	public List<Task> getUsingTasks(int fileInUseId) {
 		List<Task> result = new LinkedList<Task>();
-		try(Query tasksFilesQuery = new Query("SELECT task FROM tasksfiles WHERE fileinuse = ?")) {
+		try(Query tasksFilesQuery = new Query("SELECT task FROM etcsite_tasksfiles WHERE fileinuse = ?")) {
 			tasksFilesQuery.setParameter(1, fileInUseId);
 			ResultSet tasksResult = tasksFilesQuery.execute();
 			while(tasksResult.next()) {
@@ -116,7 +116,7 @@ public class FilesInUseDAO {
 
 	public List<FileInUse> getFilesInUse(Task task) {
 		List<FileInUse> result = new LinkedList<FileInUse>();
-		try (Query query = new Query("SELECT * FROM tasksfiles WHERE task = ?")) {
+		try (Query query = new Query("SELECT * FROM etcsite_tasksfiles WHERE task = ?")) {
 			query.setParameter(1, task.getId());
 			ResultSet resultSet = query.execute();
 			while(resultSet.next()) {
@@ -132,7 +132,7 @@ public class FilesInUseDAO {
 
 	private FileInUse getFileInUse(int fileInUseId) {
 		FileInUse result = null;
-		try (Query query = new Query("SELECT * FROM filesinuse WHERE id = ?")) {
+		try (Query query = new Query("SELECT * FROM etcsite_filesinuse WHERE id = ?")) {
 			query.setParameter(1, fileInUseId);
 			ResultSet resultSet = query.execute();
 			if(resultSet.next()) {
@@ -150,7 +150,7 @@ public class FilesInUseDAO {
 		
 	public void removeFilesInUse(Task task) {
 		Set<Integer> filesInUseByTask = new HashSet<Integer>();
-		try(Query query = new Query("SELECT fileinuse FROM tasksfiles WHERE task = ?")) {
+		try(Query query = new Query("SELECT fileinuse FROM etcsite_tasksfiles WHERE task = ?")) {
 			query.setParameter(1, task.getId());
 			ResultSet resultSet = query.execute();
 			while(resultSet.next()) {
@@ -161,7 +161,7 @@ public class FilesInUseDAO {
 			e.printStackTrace();
 		}
 		
-		try(Query query = new Query("DELETE FROM tasksfiles WHERE task = ?")) {
+		try(Query query = new Query("DELETE FROM etcsite_tasksfiles WHERE task = ?")) {
 			query.setParameter(1, task.getId());
 			query.execute();
 		} catch(QueryException e) {
@@ -169,11 +169,11 @@ public class FilesInUseDAO {
 		}
 		
 		for(Integer fileInUseId : filesInUseByTask) {
-			try(Query checkIfEmtpyTaskFiles = new Query("SELECT * FROM tasksfiles WHERE fileinuse = ?")) {
+			try(Query checkIfEmtpyTaskFiles = new Query("SELECT * FROM etcsite_tasksfiles WHERE fileinuse = ?")) {
 				checkIfEmtpyTaskFiles.setParameter(1, fileInUseId);
 				ResultSet resultSetCheckEmpty = checkIfEmtpyTaskFiles.execute();
 				if(!resultSetCheckEmpty.next()) {
-					try(Query deleteFileInUse = new Query("DELETE FROM filesinuse WHERE id = ?")) {
+					try(Query deleteFileInUse = new Query("DELETE FROM etcsite_filesinuse WHERE id = ?")) {
 						deleteFileInUse.setParameter(1, fileInUseId);
 						deleteFileInUse.execute();
 					}

@@ -63,10 +63,10 @@ public class SemanticMarkupReviewView extends Composite implements ISemanticMark
 	
 	@Override
 	public void setReview(int collectionId, String secret) {
-		oto.loadCollection(collectionId, secret);
 		oto.setUser(Authentication.getInstance().getFirstName() + " " + 
-				Authentication.getInstance().getLastName() + " (" + 
-				Authentication.getInstance().getEmail() + ")");
+			Authentication.getInstance().getLastName() + " (" + 
+			Authentication.getInstance().getEmail() + ")");
+		oto.loadCollection(collectionId, secret, true);
 	}
 	
 	@Override

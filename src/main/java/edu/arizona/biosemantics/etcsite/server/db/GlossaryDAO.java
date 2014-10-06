@@ -11,7 +11,7 @@ public class GlossaryDAO {
 	
 	public Glossary getGlossary(int id) {
 		Glossary glossary = null;
-		try (Query query = new Query("SELECT * FROM glossaries WHERE id = ?")) {
+		try (Query query = new Query("SELECT * FROM etcsite_glossaries WHERE id = ?")) {
 			query.setParameter(1, id);
 			ResultSet result = query.execute();
 			while(result.next()) {
@@ -28,7 +28,7 @@ public class GlossaryDAO {
 	
 	public Glossary getGlossary(String name) {		
 		Glossary glossary = null;
-		try (Query query = new Query("SELECT * FROM glossaries WHERE name = ?")) {
+		try (Query query = new Query("SELECT * FROM etcsite_glossaries WHERE name = ?")) {
 			query.setParameter(1, name);
 			ResultSet result = query.execute();
 			while(result.next()) {

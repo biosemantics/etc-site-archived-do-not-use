@@ -11,7 +11,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.Task;
 public class TasksOutputFilesDAO {
 
 	public void addOutput(Task task, String file) {
-		try(Query addOutput = new Query("INSERT INTO tasksoutputfiles (file, task) VALUES (?, ?)")) {
+		try(Query addOutput = new Query("INSERT INTO etcsite_tasksoutputfiles (file, task) VALUES (?, ?)")) {
 			addOutput.setParameter(1, file);
 			addOutput.setParameter(2, task.getId());
 			addOutput.execute();
@@ -23,7 +23,7 @@ public class TasksOutputFilesDAO {
 	
 	public List<String> getOutputs(Task task) {
 		List<String> result = new LinkedList<String>();
-		try(Query addOutput = new Query("SELECT file FROM tasksoutputfiles WHERE task = ?")) {
+		try(Query addOutput = new Query("SELECT file FROM etcsite_tasksoutputfiles WHERE task = ?")) {
 			addOutput.setParameter(1, task.getId());
 			ResultSet resultSet = addOutput.execute();
 			while(resultSet.next()) {
@@ -37,7 +37,7 @@ public class TasksOutputFilesDAO {
 	}
 	
 	public void removeOutput(Task task, String file) {
-		try(Query addOutput = new Query("DELETE FROM tasksoutputfiles WHERE file = ? AND task = ?")) {
+		try(Query addOutput = new Query("DELETE FROM etcsite_tasksoutputfiles WHERE file = ? AND task = ?")) {
 			addOutput.setParameter(1, file);
 			addOutput.setParameter(2, task.getId());
 			addOutput.execute();
@@ -47,7 +47,7 @@ public class TasksOutputFilesDAO {
 	}
 	
 	public void removeOutputs(Task task) {
-		try(Query addOutput = new Query("DELETE FROM tasksoutputfiles WHERE task = ?")) {
+		try(Query addOutput = new Query("DELETE FROM etcsite_tasksoutputfiles WHERE task = ?")) {
 			addOutput.setParameter(1, task.getId());
 			addOutput.execute();
 		}catch(Exception e) {

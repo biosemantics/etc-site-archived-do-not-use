@@ -28,7 +28,7 @@ public class ShareDAO {
 
 	public Share getShare(int id) {
 		Share share = null;
-		try (Query query = new Query("SELECT * FROM shares WHERE id = ?")) {
+		try (Query query = new Query("SELECT * FROM etcsite_shares WHERE id = ?")) {
 			query.setParameter(1, id);
 			query.execute();
 			ResultSet result = query.getResultSet();
@@ -39,7 +39,7 @@ public class ShareDAO {
 				Task task = taskDAO.getTask(taskId);
 				
 				Set<ShortUser> invitees = new HashSet<ShortUser>();
-				try(Query inviteesQuery = new Query("SELECT inviteeuser FROM shareinvitees WHERE share = ?")) {
+				try(Query inviteesQuery = new Query("SELECT inviteeuser FROM etcsite_shareinvitees WHERE share = ?")) {
 					inviteesQuery.setParameter(1, id);
 					ResultSet resultInvitees = inviteesQuery.execute();
 					while(resultInvitees.next()) {
@@ -57,7 +57,7 @@ public class ShareDAO {
 
 	public Share addShare(Share share) {
 		Share result = null;
-		try(Query query = new Query("INSERT INTO `shares` (`task`) VALUES(?)")) {
+		try(Query query = new Query("INSERT INTO `etcsite_shares` (`task`) VALUES(?)")) {
 			query.setParameter(1, share.getTask().getId());
 			query.execute();
 			ResultSet generatedKeys = query.getGeneratedKeys();
@@ -65,7 +65,7 @@ public class ShareDAO {
 	            result = this.getShare(generatedKeys.getInt(1));
 	            
 	            for(ShortUser invitee : share.getInvitees()) {
-		            try(Query inviteeQuery = new Query("INSERT INTO `shareinvitees` (`share`, `inviteeuser`) VALUES (?, ?)")) {
+		            try(Query inviteeQuery = new Query("INSERT INTO `etcsite_shareinvitees` (`share`, `inviteeuser`) VALUES (?, ?)")) {
 			            inviteeQuery.setParameter(1, result.getId());
 			            inviteeQuery.setParameter(2, invitee.getId());
 			            inviteeQuery.execute();
@@ -80,7 +80,7 @@ public class ShareDAO {
 
 	public List<Share> getSharesOfOwner(ShortUser owner) {
 		List<Share> result = new LinkedList<Share>();
-		try(Query query = new Query("SELECT id FROM `shares` WHERE shares.id=tasks.id AND tasks.user=?")) {
+		try(Query query = new Query("SELECT id FROM `etcsite_shares` WHERE shares.id=tasks.id AND tasks.user=?")) {
 			query.setParameter(1,  owner.getId());
 			ResultSet resultSet = query.execute();
 			while(resultSet.next()) {
@@ -95,7 +95,7 @@ public class ShareDAO {
 	
 	public List<Share> getSharesOfInvitee(ShortUser invitee) {
 		List<Share> result = new LinkedList<Share>();
-		try(Query query = new Query("SELECT share FROM `shareinvitees` WHERE inviteeuser=?")) {
+		try(Query query = new Query("SELECT share FROM `etcsite_shareinvitees` WHERE inviteeuser=?")) {
 			query.setParameter(1, invitee.getId());
 			ResultSet resultSet = query.execute();
 			while(resultSet.next()) {
@@ -110,7 +110,7 @@ public class ShareDAO {
 
 	public List<Share> getShares(Task task) {
 		List<Share> shares = new LinkedList<Share>();
-		try(Query query = new Query("SELECT id FROM shares WHERE task = ?")) {
+		try(Query query = new Query("SELECT id FROM etcsite_shares WHERE task = ?")) {
 			query.setParameter(1, task.getId());
 			ResultSet resultSet = query.execute();
 			while(resultSet.next()) {
@@ -124,13 +124,13 @@ public class ShareDAO {
 	}
 
 	public void removeShare(Share share) {
-		try (Query query = new Query("DELETE FROM shareinvitees WHERE share = ?")) {
+		try (Query query = new Query("DELETE FROM etcsite_shareinvitees WHERE share = ?")) {
 			query.setParameter(1, share.getId());
 			query.execute();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		try(Query query = new Query("DELETE FROM shares WHERE id = ?")) {
+		try(Query query = new Query("DELETE FROM etcsite_shares WHERE id = ?")) {
 			query.setParameter(1, share.getId());
 			query.execute();
 		} catch(Exception e) {
@@ -159,7 +159,7 @@ public class ShareDAO {
 	}
 
 	public Share updateShare(Share share) {
-		try(Query removeInvitees = new Query("DELETE FROM shareinvitees WHERE share = ?")) {
+		try(Query removeInvitees = new Query("DELETE FROM etcsite_shareinvitees WHERE share = ?")) {
 			removeInvitees.setParameter(1, share.getId());
 			removeInvitees.execute();
 		} catch(Exception e) {
@@ -167,7 +167,7 @@ public class ShareDAO {
 		}
 		
         for(ShortUser invitee : share.getInvitees()) {
-            try(Query inviteeQuery = new Query("INSERT INTO `shareinvitees` (`share`, `inviteeuser`) VALUES (?, ?)")) {
+            try(Query inviteeQuery = new Query("INSERT INTO `etcsite_shareinvitees` (`share`, `inviteeuser`) VALUES (?, ?)")) {
 	            inviteeQuery.setParameter(1, share.getId());
 	            inviteeQuery.setParameter(2, invitee.getId());
 	            inviteeQuery.execute();
@@ -180,8 +180,9 @@ public class ShareDAO {
 
 	public List<Share> getSharesOfInviteeForTask(ShortUser invitee, Task task)  {
 		List<Share> result = new LinkedList<Share>();
-		try(Query query = new Query("SELECT share FROM shareinvitees, shares, tasks WHERE tasks.id = shares.task AND shares.id = shareinvitees.share " +
-				"AND inviteeuser=? AND tasks.id = ?")) {
+		try(Query query = new Query("SELECT share FROM etcsite_shareinvitees, " +
+				"etcsite_shares, etcsite_tasks WHERE etcsite_tasks.id = etcsite_shares.task AND etcsite_shares.id = etcsite_shareinvitees.share " +
+				"AND inviteeuser=? AND etcsite_tasks.id = ?")) {
 			query.setParameter(1, invitee.getId());
 			query.setParameter(2, task.getId());
 			ResultSet resultSet = query.execute();

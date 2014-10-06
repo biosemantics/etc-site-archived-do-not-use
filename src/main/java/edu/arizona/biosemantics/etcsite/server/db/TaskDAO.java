@@ -30,8 +30,9 @@ public class TaskDAO {
 	private SemanticMarkupConfigurationDAO semanticMarkupConfigurationDAO;
 	private UserDAO userDAO;
 	private TaskStageDAO taskStageDAO;
-	private String ownerQuery = "SELECT * FROM tasks WHERE user=?";
-	private String sharedWithQuery = "SELECT t.* FROM tasks AS t, shares, shareinvitees WHERE t.id = shares.task AND shares.id = shareinvitees.share AND shareinvitees.inviteeuser=?";
+	private String ownerQuery = "SELECT * FROM etcsite_tasks WHERE user=?";
+	private String sharedWithQuery = "SELECT t.* FROM etcsite_tasks AS t, etcsite_shares, etcsite_shareinvitees " +
+			"WHERE t.id = etcsite_shares.task AND etcsite_shares.id = etcsite_shareinvitees.share AND etcsite_shareinvitees.inviteeuser=?";
 	private String allUsersTasksQuery = "(" + ownerQuery + ") UNION (" + this.sharedWithQuery + ")";
 		
 	public void setTasksOutputFilesDAO(TasksOutputFilesDAO tasksOutputFilesDAO) {
@@ -74,7 +75,7 @@ public class TaskDAO {
 
 	public Task getTask(int id) {
 		Task task = null;
-		try(Query query = new Query("SELECT * FROM tasks WHERE id = ?")) {
+		try(Query query = new Query("SELECT * FROM etcsite_tasks WHERE id = ?")) {
 			query.setParameter(1, id);
 			ResultSet result = query.execute();
 			while(result.next()) {
@@ -88,7 +89,7 @@ public class TaskDAO {
 	
 	public Task getTask(Configuration configuration) {
 		Task task = null;
-		try (Query query = new Query("SELECT * FROM tasks WHERE configuration = ?")) {
+		try (Query query = new Query("SELECT * FROM etcsite_tasks WHERE configuration = ?")) {
 			query.setParameter(1, configuration.getId());
 			ResultSet result = query.execute();
 			while(result.next()) {
@@ -226,7 +227,7 @@ public class TaskDAO {
 
 	public Task addTask(Task task) {
 		Task result = null;
-		try(Query query = new Query("INSERT INTO `tasks` (`name`, `tasktype`, `taskstage`, `configuration`, `user`, `resumable`, `complete`) VALUES " +
+		try(Query query = new Query("INSERT INTO `etcsite_tasks` (`name`, `tasktype`, `taskstage`, `configuration`, `user`, `resumable`, `complete`) VALUES " +
 				"(?, ?, ?, ?, ?, ?, ?)")) {
 			query.setParameter(1, task.getName());
 			query.setParameter(2, task.getTaskType().getId());
@@ -256,7 +257,7 @@ public class TaskDAO {
 		boolean resumable = task.isResumable();
 		boolean complete = task.isComplete();
 		Date completed = task.getCompleted();
-		String sql = "UPDATE tasks SET name = ?, tasktype = ?, taskstage=?, configuration=?, user=?, resumable=?, complete=?, completed=? WHERE id = ?";
+		String sql = "UPDATE etcsite_tasks SET name = ?, tasktype = ?, taskstage=?, configuration=?, user=?, resumable=?, complete=?, completed=? WHERE id = ?";
 		try(Query query = new Query(sql)) {
 			query.setParameter(1, name);
 			query.setParameter(2, taskTypeId);
@@ -291,7 +292,7 @@ public class TaskDAO {
 		// remove files in use
 		filesInUseDAO.removeFilesInUse(task);
 		
-		try(Query query = new Query("DELETE FROM tasks WHERE id = ?")) {
+		try(Query query = new Query("DELETE FROM etcsite_tasks WHERE id = ?")) {
 			query.setParameter(1, id);
 			query.execute();
 		}catch(Exception e) {

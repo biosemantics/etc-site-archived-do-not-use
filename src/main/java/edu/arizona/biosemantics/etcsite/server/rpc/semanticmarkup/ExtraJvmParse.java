@@ -50,7 +50,7 @@ public class ExtraJvmParse extends ExtraJvmCallable<ParseResult> implements Pars
 	}
 
 	private String[] createArgs() {
-		String databaseName = Configuration.databaseName;
+		String databaseName = Configuration.charaparser_databaseName;
 		String databaseUser = Configuration.databaseUser;
 		String databasePassword = Configuration.databasePassword;
 		String databaseHost = Configuration.databaseHost;

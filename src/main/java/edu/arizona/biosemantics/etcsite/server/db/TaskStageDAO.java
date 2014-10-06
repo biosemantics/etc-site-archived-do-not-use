@@ -21,7 +21,7 @@ public class TaskStageDAO {
 
 	public TaskStage getTaskStage(int id) {
 		TaskStage taskStage = null;
-		try(Query query = new Query("SELECT * FROM taskstages WHERE id = ?")) {
+		try(Query query = new Query("SELECT * FROM etcsite_taskstages WHERE id = ?")) {
 			query.setParameter(1, id);
 			ResultSet result = query.execute();
 			while(result.next()) {
@@ -40,7 +40,7 @@ public class TaskStageDAO {
 
 	public TaskStage getTaskStage(TaskType taskType, String taskStageString) {		
 		TaskStage taskStage = null;
-		try(Query query = new Query("SELECT * FROM taskstages WHERE tasktype = ? AND name = ?")) {
+		try(Query query = new Query("SELECT * FROM etcsite_taskstages WHERE tasktype = ? AND name = ?")) {
 			query.setParameter(1, taskType.getId());
 			query.setParameter(2, taskStageString);
 			ResultSet result = query.execute();

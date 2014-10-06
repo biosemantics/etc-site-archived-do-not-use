@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
+import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.db.Query.QueryException;
 import edu.arizona.biosemantics.etcsite.shared.model.DatasetPrefix;
 
@@ -13,7 +14,7 @@ public class DatasetPrefixDAO {
 
 	public DatasetPrefix getDatasetPrefix(String prefix) {
 		DatasetPrefix datasetPrefix = null;
-		try(Query query = new Query("SELECT * FROM datasetprefixes WHERE prefix = ?")) {
+		try(Query query = new Query("SELECT * FROM " + Configuration.charaparser_databaseName + ".datasetprefixes WHERE prefix = ?")) {
 			query.setParameter(1, prefix);
 			ResultSet result = query.execute();
 			while(result.next()) {

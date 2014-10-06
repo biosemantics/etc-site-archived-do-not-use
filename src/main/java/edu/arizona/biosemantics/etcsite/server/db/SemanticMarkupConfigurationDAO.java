@@ -24,7 +24,7 @@ public class SemanticMarkupConfigurationDAO {
 	
 	public SemanticMarkupConfiguration getSemanticMarkupConfiguration(int configurationId) {
 		SemanticMarkupConfiguration semanticMarkupConfiguration = null;
-		try(Query query = new Query("SELECT * FROM semanticmarkupconfigurations WHERE configuration = ?")) {
+		try(Query query = new Query("SELECT * FROM etcsite_semanticmarkupconfigurations WHERE configuration = ?")) {
 			query.setParameter(1, configurationId);
 			ResultSet result = query.execute();
 			while(result.next()) {
@@ -51,12 +51,12 @@ public class SemanticMarkupConfigurationDAO {
 
 	public SemanticMarkupConfiguration addSemanticMarkupConfiguration(SemanticMarkupConfiguration semanticMarkupConfiguration) {
 		SemanticMarkupConfiguration result = null;
-		try(Query query = new Query("INSERT INTO `configurations` (`id`) VALUES(NULL)")) {
+		try(Query query = new Query("INSERT INTO `etcsite_configurations` (`id`) VALUES(NULL)")) {
 			query.execute();
 			ResultSet generatedKeys = query.getGeneratedKeys();
 			while(generatedKeys.next()) {
 				Configuration configuration = configurationDAO.getConfiguration(generatedKeys.getInt(1));
-				try(Query semanticMarkupQuery = new Query("INSERT INTO `semanticmarkupconfigurations` " +
+				try(Query semanticMarkupQuery = new Query("INSERT INTO `etcsite_semanticmarkupconfigurations` " +
 						"(`configuration`, `input`, `numberofinputfiles`, `glossary`, `oto_uploadid`, `oto_secret`, `output`)" +
 						" VALUES (?, ?, ?, ?, ?, ?, ?)")) {
 					semanticMarkupQuery.setParameter(1, configuration.getId());
@@ -85,7 +85,7 @@ public class SemanticMarkupConfigurationDAO {
 		int otoUploadId = semanticMarkupConfiguration.getOtoUploadId();
 		String otoSecret = semanticMarkupConfiguration.getOtoSecret();
 		int numberOfInputFiles = semanticMarkupConfiguration.getNumberOfInputFiles();
-		try (Query query = new Query("UPDATE semanticmarkupconfigurations SET input = ?, numberofinputfiles = ?, glossary = ?, " +
+		try (Query query = new Query("UPDATE etcsite_semanticmarkupconfigurations SET input = ?, numberofinputfiles = ?, glossary = ?, " +
 				"oto_uploadid = ?, oto_secret = ?, output = ? WHERE configuration = ?")) {
 			query.setParameter(1, input);
 			query.setParameter(2, numberOfInputFiles);
@@ -102,7 +102,7 @@ public class SemanticMarkupConfigurationDAO {
 
 	public void remove(SemanticMarkupConfiguration semanticMarkupConfiguration) {
 		Configuration configuration = semanticMarkupConfiguration.getConfiguration();
-		try (Query query = new Query("DELETE FROM semanticmarkupconfigurations WHERE configuration = ?")) {
+		try (Query query = new Query("DELETE FROM etcsite_semanticmarkupconfigurations WHERE configuration = ?")) {
 			query.setParameter(1, configuration.getId());
 			query.execute();
 		} catch(Exception e) {

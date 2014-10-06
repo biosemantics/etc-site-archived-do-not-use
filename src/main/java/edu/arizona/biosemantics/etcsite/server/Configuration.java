@@ -22,6 +22,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 	public static String databasePort;
 	
 	/** Charaparser **/
+	public static String charaparser_databaseName;
 	public static String charaparser_wordnet;
 	public static String charaparser_perl;
 	public static String charaparser_tempFileBase;
@@ -90,6 +91,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			databaseHost = properties.getProperty("databaseHost");
 			databasePort = properties.getProperty("databasePort");
 			
+			charaparser_databaseName = properties.getProperty("charaparser_databaseName");
 			charaparser_wordnet = properties.getProperty("charaparser_wordnet").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			charaparser_perl = properties.getProperty("charaparser_perl").replaceAll("/", Matcher.quoteReplacement(File.separator));	
 			charaparser_tempFileBase = properties.getProperty("charaparser_tempFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));				

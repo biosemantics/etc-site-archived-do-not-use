@@ -2,7 +2,7 @@
 -- Table structure for table `configurations`
 --
 
-CREATE TABLE IF NOT EXISTS `configurations` (
+CREATE TABLE IF NOT EXISTS `etcsite_configurations` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `configurations` (
 -- Table structure for table `filesinuse`
 --
 
-CREATE TABLE IF NOT EXISTS `filesinuse` (
+CREATE TABLE IF NOT EXISTS `etcsite_filesinuse` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `file` varchar(100) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `filesinuse` (
 -- Table structure for table `filetypes`
 --
 
-CREATE TABLE IF NOT EXISTS `filetypes` (
+CREATE TABLE IF NOT EXISTS `etcsite_filetypes` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `filetypes` (
 -- Dumping data for table `filetypes`
 --
 
-INSERT INTO `filetypes` (`id`, `name`, `created`) VALUES
+INSERT INTO `etcsite_filetypes` (`id`, `name`, `created`) VALUES
 (1, 'TAXON_DESCRIPTION', '2013-10-22 02:02:26'),
 (2, 'MARKED_UP_TAXON_DESCRIPTION', '2013-11-19 23:55:51'),
 (3, 'MATRIX', '2013-11-19 22:25:17'), 
@@ -53,7 +53,7 @@ INSERT INTO `filetypes` (`id`, `name`, `created`) VALUES
 -- Table structure for table `glossaries`
 --
 
-CREATE TABLE IF NOT EXISTS `glossaries` (
+CREATE TABLE IF NOT EXISTS `etcsite_glossaries` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `glossaries` (
 -- Dumping data for table `glossaries`
 --
 
-INSERT INTO `glossaries` (`id`, `name`, `created`) VALUES
+INSERT INTO `etcsite_glossaries` (`id`, `name`, `created`) VALUES
 (1, 'Hymenoptera', '2013-10-22 01:07:24'),
 (2, 'Porifera', '2013-10-22 01:07:24'),
 (3, 'Algea', '2013-10-22 01:07:24'),
@@ -80,7 +80,7 @@ INSERT INTO `glossaries` (`id`, `name`, `created`) VALUES
 -- Table structure for table `matrixgenerationconfigurations`
 --
 
-CREATE TABLE IF NOT EXISTS `matrixgenerationconfigurations` (
+CREATE TABLE IF NOT EXISTS `etcsite_matrixgenerationconfigurations` (
   `configuration` bigint(20) unsigned DEFAULT NULL,
   `input` varchar(200) DEFAULT NULL,
   `output` varchar(200) DEFAULT NULL,
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `matrixgenerationconfigurations` (
 -- Table structure for table `pipelineconfigurations`
 --
 
-CREATE TABLE IF NOT EXISTS `pipelineconfigurations` (
+CREATE TABLE IF NOT EXISTS `etcsite_pipelineconfigurations` (
   `configuration` bigint(20) unsigned DEFAULT NULL,
   KEY `configurations_pipelineconfigurations_CON` (`configuration`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS `pipelineconfigurations` (
 -- Table structure for table `pipelinestageconfigurations`
 --
 
-CREATE TABLE IF NOT EXISTS `pipelinestageconfigurations` (
+CREATE TABLE IF NOT EXISTS `etcsite_pipelinestageconfigurations` (
   `pipeline` bigint(20) unsigned DEFAULT NULL,
   `tasktype` bigint(20) unsigned DEFAULT NULL,
   `configuration` bigint(20) unsigned DEFAULT NULL,
@@ -120,7 +120,7 @@ CREATE TABLE IF NOT EXISTS `pipelinestageconfigurations` (
 -- Table structure for table `semanticmarkupconfigurations`
 --
 
-CREATE TABLE IF NOT EXISTS `semanticmarkupconfigurations` (
+CREATE TABLE IF NOT EXISTS `etcsite_semanticmarkupconfigurations` (
   `configuration` bigint(20) unsigned DEFAULT NULL,
   `input` varchar(200) DEFAULT NULL,
   `numberofinputfiles` int(11) DEFAULT NULL,
@@ -138,13 +138,13 @@ CREATE TABLE IF NOT EXISTS `semanticmarkupconfigurations` (
 -- Table structure for table `shareinvitees`
 --
 
-CREATE TABLE IF NOT EXISTS `shareinvitees` (
+CREATE TABLE IF NOT EXISTS `etcsite_shareinvitees` (
   `share` bigint(20) unsigned DEFAULT NULL,
   `inviteeuser` bigint(20) unsigned DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY `share` (`share`,`inviteeuser`),
   KEY `shares_shareinvitees_CON` (`share`),
-  KEY `useraccounts_shareinvitees_CON` (`inviteeuser`)
+  KEY `users_shareinvitees_CON` (`inviteeuser`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -153,7 +153,7 @@ CREATE TABLE IF NOT EXISTS `shareinvitees` (
 -- Table structure for table `shares`
 --
 
-CREATE TABLE IF NOT EXISTS `shares` (
+CREATE TABLE IF NOT EXISTS `etcsite_shares` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `task` bigint(20) unsigned DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -168,7 +168,7 @@ CREATE TABLE IF NOT EXISTS `shares` (
 -- Table structure for table `tasks`
 --
 
-CREATE TABLE IF NOT EXISTS `tasks` (
+CREATE TABLE IF NOT EXISTS `etcsite_tasks` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL,
   `tasktype` bigint(20) unsigned DEFAULT NULL,
@@ -182,7 +182,7 @@ CREATE TABLE IF NOT EXISTS `tasks` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `taskstages_tasks_CON` (`taskstage`),
-  KEY `useraccounts_tasks_CON` (`user`),
+  KEY `users_tasks_CON` (`user`),
   KEY `configurations_tasks_CON` (`configuration`),
   KEY `tasktypes_tasks_CON` (`tasktype`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
@@ -193,7 +193,7 @@ CREATE TABLE IF NOT EXISTS `tasks` (
 -- Table structure for table `tasksfiles`
 --
 
-CREATE TABLE IF NOT EXISTS `tasksfiles` (
+CREATE TABLE IF NOT EXISTS `etcsite_tasksfiles` (
   `fileinuse` bigint(20) unsigned NOT NULL,
   `task` bigint(20) unsigned NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -207,7 +207,7 @@ CREATE TABLE IF NOT EXISTS `tasksfiles` (
 -- Table structure for table `taskstages`
 --
 
-CREATE TABLE IF NOT EXISTS `taskstages` (
+CREATE TABLE IF NOT EXISTS `etcsite_taskstages` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
   `tasktype` bigint(20) unsigned DEFAULT NULL,
@@ -221,7 +221,7 @@ CREATE TABLE IF NOT EXISTS `taskstages` (
 -- Dumping data for table `taskstages`
 --
 
-INSERT INTO `taskstages` (`id`, `name`, `tasktype`, `created`) VALUES
+INSERT INTO `etcsite_taskstages` (`id`, `name`, `tasktype`, `created`) VALUES
 (12, 'INPUT', 6, '2013-11-19 22:30:35'),
 (13, 'PREPROCESS_TEXT', 6, '2013-11-19 22:30:35'),
 (14, 'LEARN_TERMS', 6, '2013-11-19 22:30:35'),
@@ -242,7 +242,7 @@ INSERT INTO `taskstages` (`id`, `name`, `tasktype`, `created`) VALUES
 -- Table structure for table `tasktypes`
 --
 
-CREATE TABLE IF NOT EXISTS `tasktypes` (
+CREATE TABLE IF NOT EXISTS `etcsite_tasktypes` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
   `inputfiletype` bigint(20) unsigned DEFAULT NULL,
@@ -259,7 +259,7 @@ CREATE TABLE IF NOT EXISTS `tasktypes` (
 -- Dumping data for table `tasktypes`
 --
 
-INSERT INTO `tasktypes` (`id`, `name`, `inputfiletype`, `inputtype`, `outputfiletype`, `outputtype`, `created`) VALUES
+INSERT INTO `etcsite_tasktypes` (`id`, `name`, `inputfiletype`, `inputtype`, `outputfiletype`, `outputtype`, `created`) VALUES
 (6, 'SEMANTIC_MARKUP', 1, 'directory', 2, 'directory', '2013-11-19 22:25:43'),
 (7, 'MATRIX_GENERATION', 2, 'directory', 3, 'file', '2013-11-19 22:26:26');
 
@@ -269,7 +269,7 @@ INSERT INTO `tasktypes` (`id`, `name`, `inputfiletype`, `inputtype`, `outputfile
 -- Table structure for table `taxonomycomparisonconfigurations`
 --
 
-CREATE TABLE IF NOT EXISTS `taxonomycomparisonconfigurations` (
+CREATE TABLE IF NOT EXISTS `etcsite_taxonomycomparisonconfigurations` (
   `configuration` bigint(20) unsigned DEFAULT NULL,
   KEY `configurations_taxonomycomparisonconfigurations_CON` (`configuration`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -280,7 +280,7 @@ CREATE TABLE IF NOT EXISTS `taxonomycomparisonconfigurations` (
 -- Table structure for table `treegenerationconfigurations`
 --
 
-CREATE TABLE IF NOT EXISTS `treegenerationconfigurations` (
+CREATE TABLE IF NOT EXISTS `etcsite_treegenerationconfigurations` (
   `configuration` bigint(20) unsigned DEFAULT NULL,
   KEY `configurations_treegenerationconfigurations_CON` (`configuration`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -291,7 +291,7 @@ CREATE TABLE IF NOT EXISTS `treegenerationconfigurations` (
 -- Table structure for table `visualizationconfigurations`
 --
 
-CREATE TABLE IF NOT EXISTS `visualizationconfigurations` (
+CREATE TABLE IF NOT EXISTS `etcsite_visualizationconfigurations` (
   `configuration` bigint(20) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`configuration`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -301,7 +301,7 @@ CREATE TABLE IF NOT EXISTS `visualizationconfigurations` (
 -- Table structure for table `tasksoutputfiles`
 --
 
-CREATE TABLE IF NOT EXISTS `tasksoutputfiles` (
+CREATE TABLE IF NOT EXISTS `etcsite_tasksoutputfiles` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `file` varchar(100) NOT NULL,
   `task` bigint(20) unsigned DEFAULT NULL,
@@ -312,10 +312,10 @@ CREATE TABLE IF NOT EXISTS `tasksoutputfiles` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Table structure for table `useraccounts`
+-- Table structure for table `users`
 --
 
-CREATE TABLE IF NOT EXISTS `useraccounts` (
+CREATE TABLE IF NOT EXISTS `etcsite_users` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `openidproviderid` varchar(50) DEFAULT NULL,
   `openidprovider` varchar(20) NOT NULL DEFAULT 'none',
@@ -336,7 +336,7 @@ CREATE TABLE IF NOT EXISTS `useraccounts` (
 -- Table structure for table `passwordresetrequests`
 --
 
-CREATE TABLE IF NOT EXISTS `passwordresetrequests` (
+CREATE TABLE IF NOT EXISTS `etcsite_passwordresetrequests` (
   `user` bigint(20) unsigned DEFAULT NULL,
   `authenticationcode` varchar(20) NOT NULL,
   `requesttime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -344,7 +344,7 @@ CREATE TABLE IF NOT EXISTS `passwordresetrequests` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE IF NOT EXISTS `captchas` (
+CREATE TABLE IF NOT EXISTS `etcsite_captchas` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `solution` varchar(20) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -359,92 +359,92 @@ CREATE TABLE IF NOT EXISTS `captchas` (
 --
 -- Constraints for table `matrixgenerationconfigurations`
 --
-ALTER TABLE `tasksoutputfiles`
-  ADD CONSTRAINT `tasks_tasksoutputfiles_CON` FOREIGN KEY (`task`) REFERENCES `tasks` (`id`);
+ALTER TABLE `etcsite_tasksoutputfiles`
+  ADD CONSTRAINT `tasks_tasksoutputfiles_CON` FOREIGN KEY (`task`) REFERENCES `etcsite_tasks` (`id`);
 
 
 --
 -- Constraints for table `matrixgenerationconfigurations`
 --
-ALTER TABLE `matrixgenerationconfigurations`
-  ADD CONSTRAINT `configurations_matrixgenerationconfigurations_CON` FOREIGN KEY (`configuration`) REFERENCES `configurations` (`id`);
+ALTER TABLE `etcsite_matrixgenerationconfigurations`
+  ADD CONSTRAINT `configurations_matrixgenerationconfigurations_CON` FOREIGN KEY (`configuration`) REFERENCES `etcsite_configurations` (`id`);
 
 --
 -- Constraints for table `pipelineconfigurations`
 --
-ALTER TABLE `pipelineconfigurations`
-  ADD CONSTRAINT `configurations_pipelineconfigurations_CON` FOREIGN KEY (`configuration`) REFERENCES `configurations` (`id`);
+ALTER TABLE `etcsite_pipelineconfigurations`
+  ADD CONSTRAINT `configurations_pipelineconfigurations_CON` FOREIGN KEY (`configuration`) REFERENCES `etcsite_configurations` (`id`);
 
 --
 -- Constraints for table `pipelinestageconfigurations`
 --
-ALTER TABLE `pipelinestageconfigurations`
-  ADD CONSTRAINT `configurations_pipelinestageconfigurations_CON` FOREIGN KEY (`configuration`) REFERENCES `configurations` (`id`),
-  ADD CONSTRAINT `configurations_pipelinestageconfigurations_CON2` FOREIGN KEY (`pipeline`) REFERENCES `configurations` (`id`),
-  ADD CONSTRAINT `tasktypes_pipelinestageconfigurations_CON` FOREIGN KEY (`tasktype`) REFERENCES `tasktypes` (`id`);
+ALTER TABLE `etcsite_pipelinestageconfigurations`
+  ADD CONSTRAINT `configurations_pipelinestageconfigurations_CON` FOREIGN KEY (`configuration`) REFERENCES `etcsite_configurations` (`id`),
+  ADD CONSTRAINT `configurations_pipelinestageconfigurations_CON2` FOREIGN KEY (`pipeline`) REFERENCES `etcsite_configurations` (`id`),
+  ADD CONSTRAINT `tasktypes_pipelinestageconfigurations_CON` FOREIGN KEY (`tasktype`) REFERENCES `etcsite_tasktypes` (`id`);
 
 --
 -- Constraints for table `semanticmarkupconfigurations`
 --
-ALTER TABLE `semanticmarkupconfigurations`
-  ADD CONSTRAINT `configurations_semanticmarkupconfigurations_CON` FOREIGN KEY (`configuration`) REFERENCES `configurations` (`id`),
-  ADD CONSTRAINT `glossaries_semanticmarkupconfigurations_CON` FOREIGN KEY (`glossary`) REFERENCES `glossaries` (`id`);
+ALTER TABLE `etcsite_semanticmarkupconfigurations`
+  ADD CONSTRAINT `configurations_semanticmarkupconfigurations_CON` FOREIGN KEY (`configuration`) REFERENCES `etcsite_configurations` (`id`),
+  ADD CONSTRAINT `glossaries_semanticmarkupconfigurations_CON` FOREIGN KEY (`glossary`) REFERENCES `etcsite_glossaries` (`id`);
 
 --
 -- Constraints for table `shareinvitees`
 --
-ALTER TABLE `shareinvitees`
-  ADD CONSTRAINT `shares_shareinvitees_CON` FOREIGN KEY (`share`) REFERENCES `shares` (`id`),
-  ADD CONSTRAINT `useraccounts_shareinvitees_CON` FOREIGN KEY (`inviteeuser`) REFERENCES `useraccounts` (`id`);
+ALTER TABLE `etcsite_shareinvitees`
+  ADD CONSTRAINT `shares_shareinvitees_CON` FOREIGN KEY (`share`) REFERENCES `etcsite_shares` (`id`),
+  ADD CONSTRAINT `users_shareinvitees_CON` FOREIGN KEY (`inviteeuser`) REFERENCES `etcsite_users` (`id`);
 
 --
 -- Constraints for table `shares`
 --
-ALTER TABLE `shares`
-  ADD CONSTRAINT `tasks_shares_CON` FOREIGN KEY (`task`) REFERENCES `tasks` (`id`);
+ALTER TABLE `etcsite_shares`
+  ADD CONSTRAINT `tasks_shares_CON` FOREIGN KEY (`task`) REFERENCES `etcsite_tasks` (`id`);
 
 --
 -- Constraints for table `tasks`
 --
-ALTER TABLE `tasks`
-  ADD CONSTRAINT `configurations_tasks_CON` FOREIGN KEY (`configuration`) REFERENCES `configurations` (`id`),
-  ADD CONSTRAINT `taskstages_tasks_CON` FOREIGN KEY (`taskstage`) REFERENCES `taskstages` (`id`),
-  ADD CONSTRAINT `tasktypes_tasks_CON` FOREIGN KEY (`tasktype`) REFERENCES `tasktypes` (`id`),
-  ADD CONSTRAINT `useraccounts_tasks_CON` FOREIGN KEY (`user`) REFERENCES `useraccounts` (`id`);
+ALTER TABLE `etcsite_tasks`
+  ADD CONSTRAINT `configurations_tasks_CON` FOREIGN KEY (`configuration`) REFERENCES `etcsite_configurations` (`id`),
+  ADD CONSTRAINT `taskstages_tasks_CON` FOREIGN KEY (`taskstage`) REFERENCES `etcsite_taskstages` (`id`),
+  ADD CONSTRAINT `tasktypes_tasks_CON` FOREIGN KEY (`tasktype`) REFERENCES `etcsite_tasktypes` (`id`),
+  ADD CONSTRAINT `users_tasks_CON` FOREIGN KEY (`user`) REFERENCES `etcsite_users` (`id`);
 
 --
 -- Constraints for table `tasksfiles`
 --
-ALTER TABLE `tasksfiles`
-  ADD CONSTRAINT `filesinuse_tasksfiles_CON` FOREIGN KEY (`task`) REFERENCES `tasks` (`id`);
+ALTER TABLE `etcsite_tasksfiles`
+  ADD CONSTRAINT `filesinuse_tasksfiles_CON` FOREIGN KEY (`task`) REFERENCES `etcsite_tasks` (`id`);
 
 --
 -- Constraints for table `taskstages`
 --
-ALTER TABLE `taskstages`
-  ADD CONSTRAINT `tasktypes_taskstages_CON` FOREIGN KEY (`tasktype`) REFERENCES `tasktypes` (`id`);
+ALTER TABLE `etcsite_taskstages`
+  ADD CONSTRAINT `tasktypes_taskstages_CON` FOREIGN KEY (`tasktype`) REFERENCES `etcsite_tasktypes` (`id`);
 
 --
 -- Constraints for table `tasktypes`
 --
-ALTER TABLE `tasktypes`
-  ADD CONSTRAINT `inputfiletypes_tasktypes_CON` FOREIGN KEY (`inputfiletype`) REFERENCES `filetypes` (`id`),
-  ADD CONSTRAINT `outputfiletypes_tasktypes_CON` FOREIGN KEY (`outputfiletype`) REFERENCES `filetypes` (`id`);
+ALTER TABLE `etcsite_tasktypes`
+  ADD CONSTRAINT `inputfiletypes_tasktypes_CON` FOREIGN KEY (`inputfiletype`) REFERENCES `etcsite_filetypes` (`id`),
+  ADD CONSTRAINT `outputfiletypes_tasktypes_CON` FOREIGN KEY (`outputfiletype`) REFERENCES `etcsite_filetypes` (`id`);
 
 --
 -- Constraints for table `taxonomycomparisonconfigurations`
 --
-ALTER TABLE `taxonomycomparisonconfigurations`
-  ADD CONSTRAINT `configurations_taxonomycomparisonconfigurations_CON` FOREIGN KEY (`configuration`) REFERENCES `configurations` (`id`);
+ALTER TABLE `etcsite_taxonomycomparisonconfigurations`
+  ADD CONSTRAINT `configurations_taxonomycomparisonconfigurations_CON` FOREIGN KEY (`configuration`) REFERENCES `etcsite_configurations` (`id`);
 
 --
 -- Constraints for table `treegenerationconfigurations`
 --
-ALTER TABLE `treegenerationconfigurations`
-  ADD CONSTRAINT `configurations_treegenerationconfigurations_CON` FOREIGN KEY (`configuration`) REFERENCES `configurations` (`id`);
+ALTER TABLE `etcsite_treegenerationconfigurations`
+  ADD CONSTRAINT `configurations_treegenerationconfigurations_CON` FOREIGN KEY (`configuration`) REFERENCES `etcsite_configurations` (`id`);
 
 --
 -- Constraints for table `visualizationconfigurations`
 --
-ALTER TABLE `visualizationconfigurations`
-  ADD CONSTRAINT `configurations_visualizationconfigurations_CON` FOREIGN KEY (`configuration`) REFERENCES `configurations` (`id`);
+ALTER TABLE `etcsite_visualizationconfigurations`
+  ADD CONSTRAINT `configurations_visualizationconfigurations_CON` FOREIGN KEY (`configuration`) REFERENCES `etcsite_configurations` (`id`);
