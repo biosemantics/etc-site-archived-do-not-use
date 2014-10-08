@@ -10,7 +10,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
-		<gwtVersion>2.6.0</gwtVersion>
+		<gwtVersion>2.6.1</gwtVersion>
 		<!-- GWT needs at least java 1.5 -->
 		<!-- But we need at least java 1.6 -->
 		<maven.compiler.source>1.7</maven.compiler.source>
@@ -54,6 +54,12 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-dev</artifactId>
+			<version>${gwtVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.7</version>
@@ -76,24 +82,24 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.14-SNAPSHOT</version>
+		  <version>0.0.15-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.14-SNAPSHOT</version>
+		  <version>0.0.15-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics</groupId>
 		  <artifactId>gxt</artifactId>
-		  <version>0.0.9-SNAPSHOT</version>
+		  <version>0.0.10-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics</groupId>
 		  <artifactId>gxt</artifactId>
-		  <version>0.0.9-SNAPSHOT</version>
+		  <version>0.0.10-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency> 
 		<dependency>
@@ -186,13 +192,13 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.41-SNAPSHOT</version>
+		  <version>0.0.45-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.41-SNAPSHOT</version>
+		  <version>0.0.45-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
