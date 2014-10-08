@@ -4,6 +4,9 @@ import java.io.File;
 import java.util.Properties;
 import java.util.regex.Matcher;
 
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectWriter;
+
 public class Configuration extends edu.arizona.biosemantics.etcsite.client.common.Configuration {
 
 	public static String deploymentUrl;
@@ -71,11 +74,12 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 	public static String googleRedirectURI;
 	public static String googleClientId;
 	public static String emailSMTPPort;
+	private static Properties properties;
 	
 	static {		
 		try {
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			Properties properties = new Properties(); 
+			properties = new Properties(); 
 			properties.load(loader.getResourceAsStream("edu/arizona/biosemantics/etcsite/config.properties"));
 			
 			deploymentUrl = properties.getProperty("deploymentUrl");
@@ -135,6 +139,17 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 
 		} catch(Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public static String asString() {
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
+			return writer.writeValueAsString(properties);
+		} catch (Exception e) {
+			// log(LogLevel.ERROR, "Problem writing object as String", e);
+			return null;
 		}
 	}
 }

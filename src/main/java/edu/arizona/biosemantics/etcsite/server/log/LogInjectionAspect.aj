@@ -67,5 +67,9 @@ public aspect LogInjectionAspect {
 	/**
 	 * ILoggable classes are specified below
 	 */
+	declare parents : edu.arizona.biosemantics.etcsite.client.* implements ILoggable;
+	declare parents : edu.arizona.biosemantics.etcsite.client.content.visualization.* implements ILoggable;
+	//.. more to add; some packages will cause error/exception to happen during compile for client code; need to figure out which
 	declare parents : edu.arizona.biosemantics.etcsite.server..* implements ILoggable;
+	declare parents : edu.arizona.biosemantics.etcsite.shared..* implements ILoggable;
 }
