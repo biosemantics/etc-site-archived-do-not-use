@@ -15,8 +15,6 @@ package edu.arizona.biosemantics.etcsite.client.layout;
  * the License.
  */
 
-import java.util.logging.Logger;
-
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -32,14 +30,11 @@ import com.google.web.bindery.event.shared.HandlerRegistration;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 
-import java.util.logging.Logger;
-
 /**
  * Monitors {@link PlaceChangeEvent}s and
  * {@link com.google.gwt.user.client.History} events and keep them in sync.
  */
-public class MyPlaceHistoryHandler extends PlaceHistoryHandler{
-  private static final Logger log = Logger.getLogger(MyPlaceHistoryHandler.class.getName());
+public class MyPlaceHistoryHandler extends PlaceHistoryHandler {
 
   /**
    * Default implementation of {@link Historian}, based on {@link History}.
@@ -175,13 +170,6 @@ public class MyPlaceHistoryHandler extends PlaceHistoryHandler{
     };
   }
 
-  /**
-   * Visible for testing.
-   */
-  Logger log() {
-    return log;
-  }
-
   private void handleHistoryToken(String token) {
 
 	  if (token.startsWith("access_token=")){
@@ -199,7 +187,7 @@ public class MyPlaceHistoryHandler extends PlaceHistoryHandler{
     }
 
     if (newPlace == null) {
-      log().warning("Unrecognized history token: " + token);
+      //log.warning("Unrecognized history token: " + token);
       newPlace = defaultPlace;
     }
 
@@ -216,7 +204,7 @@ public class MyPlaceHistoryHandler extends PlaceHistoryHandler{
       return token;
     }
 
-    log().warning("Place not mapped to a token: " + newPlace);
+   // log.warning("Place not mapped to a token: " + newPlace);
     return "";
   }
 }

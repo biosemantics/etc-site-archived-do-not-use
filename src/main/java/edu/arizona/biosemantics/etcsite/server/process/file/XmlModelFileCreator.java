@@ -13,12 +13,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
+import edu.arizona.biosemantics.etcsite.server.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.file.TaxonIdentificationEntry;
 import edu.arizona.biosemantics.etcsite.shared.model.file.XmlModelFile;
@@ -32,7 +32,6 @@ import com.google.gwt.xml.client.XMLParser;*/
 
 public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared.model.process.file.XmlModelFileCreator {
 
-	private Logger logger = Logger.getLogger(XmlModelFileCreator.class);
 	public String[] fields =  new String[] {"author", "year", "title", "doi", "full citation",
 			/*"order", "suborder", "superfamily", "family", "subfamily", "tribe", "subtribe", "genus", "subgenus", 
 			"section", "subsection", "series", "species", "subspecies", "variety", "forma", "unranked",*/
@@ -70,10 +69,8 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		TextPresenter presenter = new TextPresenter(view);
 		view.setPresenter(presenter);
 		presenter.showMessage(title, text);*/
-		logger.debug(title + ": " + text);
-	}
-
-	
+		//log(LogLevel.DEBUG, title + ": " + text);
+	}	
 
 	public XmlModelFile createXmlModelFile(String text, String operator) {
 		showMessage("get xml model file for: ", text);
