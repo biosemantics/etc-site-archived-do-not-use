@@ -17,6 +17,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.oto2.oto.client.event.SaveEvent;
 import edu.arizona.biosemantics.oto2.oto.client.event.SaveEvent.SaveHandler;
+import edu.arizona.biosemantics.oto2.oto.shared.log.LogLevel;
 
 public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.Presenter {
 

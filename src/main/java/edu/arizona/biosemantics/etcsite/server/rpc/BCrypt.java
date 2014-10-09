@@ -12,7 +12,7 @@
 //ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 //OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-package edu.arizona.biosemantics.etcsite.server;
+package edu.arizona.biosemantics.etcsite.server.rpc;
 
 import java.io.UnsupportedEncodingException;
 

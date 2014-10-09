@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.server.log;
+package edu.arizona.biosemantics.etcsite.shared.log;
 
 /**
  * LogLevel lists all the available logging levels

@@ -6,7 +6,7 @@ import javax.servlet.ServletContextListener;
 import edu.arizona.biosemantics.etcsite.server.db.ConnectionPool;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.db.Query;
-import edu.arizona.biosemantics.etcsite.server.log.LogLevel;
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 
 public class ETCSiteServletContextListener implements ServletContextListener {
 

@@ -4,8 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -13,19 +11,14 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.widget.core.client.ProgressBar;
-import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.box.ProgressMessageBox;
 
-import edu.arizona.biosemantics.etcsite.server.process.file.XmlModelFileCreator;
 import edu.arizona.biosemantics.etcsite.shared.model.file.TaxonIdentificationEntry;
 
 
@@ -95,17 +88,15 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	@UiField
 	TabPanel tabPanel;
 	
-	ProgressMessageBox progressBox;
-	
 	private ICreateSemanticMarkupFilesView.Presenter presenter;
+
+	private ProgressMessageBox progressBox;
 
 	public CreateSemanticMarkupFilesView() {
 		ranksList = initRanksListBox();
 		initWidget(uiBinder.createAndBindUi(this));
 		tabPanel.selectTab(0);
 		
-		progressBox = new ProgressMessageBox("Creating...");
-		progressBox.setPredefinedButtons();
 		//initRanksListBox(ranksList);
 		//ranksList = initRanksListBox();
 	}
@@ -286,25 +277,25 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	
 	@UiHandler("batchButton")
 	public void onBatch(ClickEvent event) {
-		this.showProgress();
 		this.presenter.onBatch(this.batchArea.getText());
 	}
 	
 	@Override
-	public synchronized void incrementProgress(final double value) {
-		progressBox.updateProgress(value, "Please wait");
+	public void updateProgress(final double value) {
+		 progressBox.updateProgress(value, "{0}% Complete");
 	}
 	
 	@Override
 	public void hideProgress() {
 		progressBox.hide();
-		progressBox = new ProgressMessageBox("Creating...");
-		progressBox.setPredefinedButtons();
 	}
 
 	@Override
 	public void showProgress() {
-		progressBox.show();
+		progressBox = new ProgressMessageBox("Creating...", "Creating your files, please wait...");
+        progressBox.setProgressText("Initializing...");
+        progressBox.setPredefinedButtons();
+        progressBox.show();
 	}
 
 }

@@ -19,7 +19,6 @@ import javax.xml.bind.DatatypeConverter;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-import edu.arizona.biosemantics.etcsite.server.BCrypt;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Emailer;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
