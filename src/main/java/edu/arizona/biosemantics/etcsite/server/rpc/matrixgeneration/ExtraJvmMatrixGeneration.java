@@ -1,9 +1,12 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.ExtraJvmCallable;
 
-public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Boolean> implements MatrixGeneration {
+public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements MatrixGeneration {
 
 	private String inputDir;
 	private String outputFile;
@@ -33,8 +36,8 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Boolean> implemen
 	}
 
 	@Override
-	public Boolean createReturn() {
-		return exitStatus == 0;
+	public Void createReturn() { 
+		return null;
 	}
 	
 	public static void main(String[] args) throws Exception {
@@ -43,5 +46,6 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Boolean> implemen
 		mg.call();
 		
 	}
+
 
 }

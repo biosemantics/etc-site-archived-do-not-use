@@ -2,7 +2,9 @@ package edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup;
 
 import java.util.concurrent.Callable;
 
-public interface Parse extends Callable<ParseResult> {
+import edu.arizona.biosemantics.etcsite.server.Task;
+
+public interface Parse extends Callable<ParseResult>, Task {
 
 	public void destroy();
 	

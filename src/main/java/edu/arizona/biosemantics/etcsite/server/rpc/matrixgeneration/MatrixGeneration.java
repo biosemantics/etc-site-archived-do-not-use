@@ -2,7 +2,9 @@ package edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration;
 
 import java.util.concurrent.Callable;
 
-public interface MatrixGeneration extends Callable<Boolean> {
+import edu.arizona.biosemantics.etcsite.server.Task;
+
+public interface MatrixGeneration extends Callable<Void>, Task {
 
 	public void destroy();
 	

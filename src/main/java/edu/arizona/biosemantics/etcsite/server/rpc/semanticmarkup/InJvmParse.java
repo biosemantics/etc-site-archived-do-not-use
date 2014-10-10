@@ -2,11 +2,14 @@ package edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup;
 
 import java.io.File;
 import java.util.HashSet;
-
-import com.google.gwt.core.client.GWT;
+import java.util.Set;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
+import edu.arizona.biosemantics.etcsite.server.Task.FailHandler;
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.model.DatasetPrefix;
+import edu.arizona.biosemantics.semanticmarkup.ETCLearnMain;
 import edu.arizona.biosemantics.semanticmarkup.ETCMarkupMain;
 
 public class InJvmParse implements Parse {
@@ -19,6 +22,7 @@ public class InJvmParse implements Parse {
 	private String operator;
 	private String bioportalUserId;
 	private String bioportalAPIKey;	
+	private boolean executedSuccessfully = false;
 
 	public InJvmParse(AuthenticationToken authenticationToken, String config, String input, String tablePrefix,
 			String source, String operator, String bioportalUserId, String bioportalAPIKey) {
@@ -60,7 +64,18 @@ public class InJvmParse implements Parse {
 		//}
 		//System.out.println();
 		
-		ETCMarkupMain.main(args);
+		try {
+			ETCMarkupMain.main(args);
+			executedSuccessfully = true;
+		} catch(Exception e) {
+			log(LogLevel.ERROR, "Semantic Markup Parse failed with exception.", e);
+			executedSuccessfully = false;
+		}
+		if(!isExecutedSuccessfully()) {
+			handleFail();
+		}
+		
+		
 		//File outputFile = new File("workspace" + File.separator + tablePrefix + File.separator + "out");
 		//for(File outFile : outputFile.listFiles()) {
 		//	result.getOutputFiles().add(outFile);
@@ -79,7 +94,30 @@ public class InJvmParse implements Parse {
 		return result;
 	}
 
+	protected void handleFail() {
+		for(FailHandler failHandler : failHandlers) {
+			failHandler.onFail();
+		}
+	}
+	
 	@Override
 	public void destroy() {}
+
+	private Set<FailHandler> failHandlers = new HashSet<FailHandler>();
+	
+	@Override
+	public void addFailHandler(FailHandler handler) {
+		failHandlers.add(handler);
+	}
+	
+	@Override
+	public void removeFailHandler(FailHandler handler) {
+		failHandlers.remove(handler);
+	}
+
+	@Override
+	public boolean isExecutedSuccessfully() {
+		return executedSuccessfully;
+	}
 
 }

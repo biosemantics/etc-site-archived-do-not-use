@@ -1,13 +1,17 @@
 package edu.arizona.biosemantics.etcsite.server;
 
 import java.lang.ProcessBuilder.Redirect;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import org.apache.tools.ant.util.JavaEnvUtils;
 
-public abstract class ExtraJvmCallable<T> implements Callable<T> {
+import edu.arizona.biosemantics.etcsite.server.Task.FailHandler;
+
+public abstract class ExtraJvmCallable<T> implements Callable<T>, Task {
 	
 	private String classPath;
 	private Class mainClass;
@@ -17,6 +21,8 @@ public abstract class ExtraJvmCallable<T> implements Callable<T> {
 	private String xmx;
 	private String xms;
 	
+	private Set<FailHandler> failHandlers = new HashSet<FailHandler>();
+		
 	protected ExtraJvmCallable() {  }
 
 	public ExtraJvmCallable(Class mainClass, String classPath, String xmx, String xms, String[] args) {
@@ -77,9 +83,20 @@ public abstract class ExtraJvmCallable<T> implements Callable<T> {
 			
 			process = processBuilder.start();
 			exitStatus = process.waitFor();
+			
+			if(!isExecutedSuccessfully()) {
+				handleFail();
+			}
+			
 			return createReturn();
 		} 
 		return null;
+	}
+
+	protected void handleFail() {
+		for(FailHandler failHandler : failHandlers) {
+			failHandler.onFail();
+		}
 	}
 	
 	public abstract T createReturn();
@@ -87,6 +104,21 @@ public abstract class ExtraJvmCallable<T> implements Callable<T> {
 	public void destroy() {
 		if(process != null)
 			process.destroy();
+	}
+	
+	@Override
+	public void addFailHandler(FailHandler handler) {
+		failHandlers.add(handler);
+	}
+	
+	@Override
+	public void removeFailHandler(FailHandler handler) {
+		failHandlers.remove(handler);
+	}
+
+	@Override
+	public boolean isExecutedSuccessfully() {
+		return exitStatus == 0;
 	}
 
 }

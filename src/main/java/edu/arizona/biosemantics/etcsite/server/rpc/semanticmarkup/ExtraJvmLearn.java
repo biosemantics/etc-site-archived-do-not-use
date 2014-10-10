@@ -1,10 +1,10 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-
-import com.google.gwt.core.client.GWT;
+import java.util.Set;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.ExtraJvmCallable;
@@ -121,6 +121,23 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 		DatasetPrefix datasetPrefix = daoManager.getDatasetPrefixDAO().getDatasetPrefix(tablePrefix);
 		LearnResult result = new LearnResult(datasetPrefix.getOtoUploadId(), datasetPrefix.getOtoSecret());
 		return result;
+	}
+
+	private Set<FailHandler> failHandlers = new HashSet<FailHandler>();
+	
+	@Override
+	public void addFailHandler(FailHandler handler) {
+		failHandlers.add(handler);
+	}
+	
+	@Override
+	public void removeFailHandler(FailHandler handler) {
+		failHandlers.remove(handler);
+	}
+
+	@Override
+	public boolean isExecutedSuccessfully() {
+		return false;
 	}
 
 }

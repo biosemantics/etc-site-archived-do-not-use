@@ -9,13 +9,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectWriter;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
@@ -31,7 +27,6 @@ import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
@@ -43,6 +38,7 @@ import edu.arizona.biosemantics.etcsite.server.rpc.FileAccessService;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileFormatService;
 import edu.arizona.biosemantics.etcsite.server.rpc.FilePermissionService;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileService;
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.model.Glossary;
@@ -67,7 +63,6 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFilePermissionService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IFileService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupService;
 import edu.arizona.biosemantics.matrixgeneration.model.RankData;
 import edu.arizona.biosemantics.matrixgeneration.model.Taxon.Rank;
@@ -243,36 +238,49 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 					return new RPCResult<LearnInvocation>(false, operatorResult.getMessage());
 				String bioportalUserId = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalUserId();
 				String bioportalAPIKey = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalAPIKey();
-				Learn learn = new ExtraJvmLearn(authenticationToken, glossary, input, tablePrefix, source, operatorResult.getData(), bioportalUserId, bioportalAPIKey);
+				final Learn learn = new ExtraJvmLearn(authenticationToken, glossary, input, tablePrefix, source, operatorResult.getData(), bioportalUserId, bioportalAPIKey);
 				//Learn learn = new InJvmLearn(authenticationToken, glossary, input, tablePrefix, source, operatorResult.getData(), bioportalUserId, bioportalAPIKey);
 				activeLearns.put(semanticMarkupConfiguration.getConfiguration().getId(), learn);
 				final ListenableFuture<LearnResult> futureResult = executorService.submit(learn);
 				activeLearnFutures.put(semanticMarkupConfiguration.getConfiguration().getId(), futureResult);
 				futureResult.addListener(new Runnable() {
 				     	public void run() {
-				     		try {
+				     		if(learn.isExecutedSuccessfully()) {
 				     			activeLearns.remove(semanticMarkupConfiguration.getConfiguration().getId());
 				     			activeLearnFutures.remove(semanticMarkupConfiguration.getConfiguration().getId());
 				     			if(!futureResult.isCancelled()) {
-				     				LearnResult result = futureResult.get();
-				     				
-					     			semanticMarkupConfiguration.setOtoUploadId(result.getOtoUploadId());
-					     			semanticMarkupConfiguration.setOtoSecret(result.getOtoSecret());
-					     			
-					     			createOTOContexts(authenticationToken, result, input);
-					     			otoCollectionService.initializeFromHistory(new Collection(result.getOtoUploadId(), result.getOtoSecret()));
-					     			daoManager.getSemanticMarkupConfigurationDAO().updateSemanticMarkupConfiguration(semanticMarkupConfiguration);
-									TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.REVIEW_TERMS.toString());
-									task.setTaskStage(newTaskStage);
-									task.setResumable(true);
-									daoManager.getTaskDAO().updateTask(task);
+				     				LearnResult result = null;
+									try {
+										result = futureResult.get();
+									} catch (InterruptedException | ExecutionException e) {
+										log(LogLevel.ERROR, "Couldn't get the produced learn result", e);
+										handleProcessFault();
+									}
 									
-									// send an email to the user who owns the task.
-									sendFinishedLearningTermsEmail(task);
+									if(result != null) {
+				     				
+						     			semanticMarkupConfiguration.setOtoUploadId(result.getOtoUploadId());
+						     			semanticMarkupConfiguration.setOtoSecret(result.getOtoSecret());
+						     			
+						     			createOTOContexts(authenticationToken, result, input);
+						     			try {
+											otoCollectionService.initializeFromHistory(new Collection(result.getOtoUploadId(), result.getOtoSecret()));
+										} catch (Exception e) {
+											log(LogLevel.ERROR, "Couldn't initialize the uploaded oto dataset from history", e);
+										}
+						     			daoManager.getSemanticMarkupConfigurationDAO().updateSemanticMarkupConfiguration(semanticMarkupConfiguration);
+										TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.REVIEW_TERMS.toString());
+										task.setTaskStage(newTaskStage);
+										task.setResumable(true);
+										daoManager.getTaskDAO().updateTask(task);
+										
+										// send an email to the user who owns the task.
+										sendFinishedLearningTermsEmail(task);
+									}
 				     			}
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
+				     		} else {
+				     			handleProcessFault();
+				     		}
 				     	}
 				     }, executorService);
 				
@@ -284,6 +292,11 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		}
 	}
 	
+	protected void handleProcessFault() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	//TODO: Could also access the servlet instead of using oto's client
 	private void createOTOContexts(AuthenticationToken authenticationToken, LearnResult learnResult, String input) {
 		edu.arizona.biosemantics.oto.client.oto2.Client client = new edu.arizona.biosemantics.oto.client.oto2.Client(Configuration.deploymentUrl);
@@ -445,14 +458,14 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 					return new RPCResult<ParseInvocation>(false, operator.getMessage());
 				String bioportalUserId = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalUserId();
 				String bioportalAPIKey = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalAPIKey();
-				Parse parse = new ExtraJvmParse(authenticationToken, glossary, input, tablePrefix, source, operator.getData(), bioportalUserId, bioportalAPIKey);
+				final Parse parse = new ExtraJvmParse(authenticationToken, glossary, input, tablePrefix, source, operator.getData(), bioportalUserId, bioportalAPIKey);
 				activeParses.put(semanticMarkupConfiguration.getConfiguration().getId(), parse);
 				final ListenableFuture<ParseResult> futureResult = executorService.submit(parse);
 				activeParseFutures.put(semanticMarkupConfiguration.getConfiguration().getId(), futureResult);
 				futureResult.addListener(new Runnable() {
 					@Override
 					public void run() {
-						try {
+						if(parse.isExecutedSuccessfully()) {
 							activeParses.remove(semanticMarkupConfiguration.getConfiguration().getId());
 							activeParseFutures.remove(semanticMarkupConfiguration.getConfiguration().getId());
 							if(!futureResult.isCancelled()) {
@@ -463,8 +476,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 								daoManager.getTaskDAO().updateTask(task);
 								sendFinishedParsingEmail(task);
 							}
-						} catch (Exception e) {
-							e.printStackTrace();
+						} else {
+							handleProcessFault();
 						}
 					}
 				}, executorService);

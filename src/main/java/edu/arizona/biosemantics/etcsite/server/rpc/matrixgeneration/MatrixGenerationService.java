@@ -17,13 +17,10 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.Executors;
 
 import org.jdom2.Document;
@@ -46,17 +43,16 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Emailer;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
-import edu.arizona.biosemantics.etcsite.server.db.TaskTypeDAO;
 import edu.arizona.biosemantics.etcsite.server.rpc.AdminAuthenticationToken;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileAccessService;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileFormatService;
 import edu.arizona.biosemantics.etcsite.server.rpc.FilePermissionService;
 import edu.arizona.biosemantics.etcsite.server.rpc.FileService;
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
-import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
@@ -71,12 +67,9 @@ import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.Character;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.Organ;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.Taxon;
+import edu.arizona.biosemantics.matrixreview.shared.model.core.Taxon.Rank;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.TaxonMatrix;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.Value;
-import edu.arizona.biosemantics.matrixreview.shared.model.core.Taxon.Rank;
-import edu.arizona.biosemantics.oto2.oto.shared.model.Collection;
-import edu.arizona.biosemantics.oto2.oto.shared.model.Label;
-import edu.arizona.biosemantics.oto2.oto.shared.model.Term;
 
 public class MatrixGenerationService extends RemoteServiceServlet implements IMatrixGenerationService  {
 
@@ -192,7 +185,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	private IFileAccessService fileAccessService = new FileAccessService();
 	private IFilePermissionService filePermissionService = new FilePermissionService();
 	private ListeningExecutorService executorService;
-	private Map<Integer, ListenableFuture<Boolean>> activeProcessFutures = new HashMap<Integer, ListenableFuture<Boolean>>();
+	private Map<Integer, ListenableFuture<Void>> activeProcessFutures = new HashMap<Integer, ListenableFuture<Void>>();
 	private Map<Integer, MatrixGeneration> activeMatrixGenerations = new HashMap<Integer, MatrixGeneration>();
 	private DAOManager daoManager = new DAOManager();
 	private Emailer emailer = new Emailer();
@@ -277,32 +270,45 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				fileService.createDirectory(new AdminAuthenticationToken(), Configuration.matrixGeneration_tempFileBase, String.valueOf(task.getId()), false);
 				final String outputFile = Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "Matrix.mx";
 				
-				MatrixGeneration matrixGeneration = new ExtraJvmMatrixGeneration(input, outputFile);
+				final MatrixGeneration matrixGeneration = new ExtraJvmMatrixGeneration(input, outputFile);
 				activeMatrixGenerations.put(configuration.getConfiguration().getId(), matrixGeneration);
-				final ListenableFuture<Boolean> futureResult = executorService.submit(matrixGeneration);
+				final ListenableFuture<Void> futureResult = executorService.submit(matrixGeneration);
 				this.activeProcessFutures.put(configuration.getConfiguration().getId(), futureResult);
 				futureResult.addListener(new Runnable() {
 				     	public void run() {
-				     		try {
-				     			TaxonMatrix matrix = createTaxonMatrix(matrixGenerationConfiguration, outputFile);
-				     			Model model = new Model(matrix);
-				     			serializeMatrix(model, Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "TaxonMatrix.ser");
-				     			
-				     			activeMatrixGenerations.remove(configuration.getConfiguration().getId());
-				     			activeProcessFutures.remove(configuration.getConfiguration().getId());
-				     			if(!futureResult.isCancelled()) {
-				     				Boolean result = futureResult.get();
-									TaskStage newTaskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.REVIEW.toString());
-									task.setTaskStage(newTaskStage);
-									task.setResumable(true);
-									daoManager.getTaskDAO().updateTask(task);
+				     		if(matrixGeneration.isExecutedSuccessfully()) {
+					     			TaxonMatrix matrix = null;
+									try {
+										matrix = createTaxonMatrix(matrixGenerationConfiguration, outputFile);
+									} catch (IOException | JDOMException e) {
+										log(LogLevel.ERROR, "Couldn't create taxon matrix from generated output", e);
+										handleProcessFault(); //throw a custom exception to client side
+									}
+									if(matrix != null) {
+						     			Model model = new Model(matrix);
+						     			try {
+											serializeMatrix(model, Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "TaxonMatrix.ser");
+										} catch (IOException e) {
+											log(LogLevel.ERROR, "Couldn't serialize matrix to disk", e);
+											handleProcessFault();
+										}
+									}
 									
-									// send an email to the user who owns the task.
-									sendFinishedGeneratingMatrixEmail(task);
-				     			}
-				     		} catch (Exception e) {
-								e.printStackTrace();
-							}
+					     			activeMatrixGenerations.remove(configuration.getConfiguration().getId());
+					     			activeProcessFutures.remove(configuration.getConfiguration().getId());
+					     			if(!futureResult.isCancelled()) {
+										TaskStage newTaskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.REVIEW.toString());
+										task.setTaskStage(newTaskStage);
+										task.setResumable(true);
+										daoManager.getTaskDAO().updateTask(task);
+										
+										// send an email to the user who owns the task.
+										sendFinishedGeneratingMatrixEmail(task);
+					     			}
+					     		
+				     		} else {
+				     			handleProcessFault();
+				     		}
 				     	}
 				     }, executorService);
 				
@@ -314,6 +320,11 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		}
 	}
 	
+	protected void handleProcessFault() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	private void serializeMatrix(Model model, String file) throws IOException {
 		try(ObjectOutput output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
 			output.writeObject(model);
@@ -462,7 +473,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		service.createTaxonMatrix("C:/test/Test_mmm", "C:/test/Test_mmm.mx");
 	}
 
-	private TaxonMatrix createTaxonMatrix(String inputDirectory, String filePath) throws Exception {
+	private TaxonMatrix createTaxonMatrix(String inputDirectory, String filePath) throws FileNotFoundException, IOException, JDOMException {
 		
 		try(CSVReader reader = new CSVReader(new FileReader(filePath), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.DEFAULT_QUOTE_CHARACTER)) {
 			List<Character> charactesInFile = new LinkedList<Character>();
@@ -547,7 +558,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		}
 	}
 	
-	private TaxonMatrix createTaxonMatrix(MatrixGenerationConfiguration matrixGenerationConfiguration, String filePath) throws Exception {
+	private TaxonMatrix createTaxonMatrix(MatrixGenerationConfiguration matrixGenerationConfiguration, String filePath) throws FileNotFoundException, IOException, JDOMException {
 		String inputDirectory = matrixGenerationConfiguration.getInput();
 		return createTaxonMatrix(inputDirectory, filePath);
 	}
@@ -749,7 +760,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 						break;
 					case PROCESS:
 						if(activeProcessFutures.containsKey(matrixGenerationConfiguration.getConfiguration().getId())) {
-							ListenableFuture<Boolean> processFuture = this.activeProcessFutures.get(matrixGenerationConfiguration.getConfiguration().getId());
+							ListenableFuture<Void> processFuture = this.activeProcessFutures.get(matrixGenerationConfiguration.getConfiguration().getId());
 							processFuture.cancel(true);
 						}
 						if(activeMatrixGenerations.containsKey(matrixGenerationConfiguration.getConfiguration().getId())) {

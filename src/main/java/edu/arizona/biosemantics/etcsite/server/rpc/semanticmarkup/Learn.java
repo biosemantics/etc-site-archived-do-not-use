@@ -2,7 +2,9 @@ package edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup;
 
 import java.util.concurrent.Callable;
 
-public interface Learn extends Callable<LearnResult> {
+import edu.arizona.biosemantics.etcsite.server.Task;
+
+public interface Learn extends Callable<LearnResult>, Task {
 
 	public void destroy();
 	
