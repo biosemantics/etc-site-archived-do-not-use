@@ -116,7 +116,7 @@ public class CaptchaDAO {
 		return -1;
 	}
 
-	public BufferedImage getImage(int id) throws IOException {
+	public BufferedImage getImage(int id) {
 		File imageFile = getCaptchaFile(id);
 		try {
 			BufferedImage image = ImageIO.read(imageFile);

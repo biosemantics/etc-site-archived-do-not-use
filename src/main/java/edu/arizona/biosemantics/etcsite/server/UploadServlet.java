@@ -4,9 +4,9 @@ import edu.arizona.biosemantics.etcsite.server.process.file.ContentValidatorProv
 import edu.arizona.biosemantics.etcsite.server.process.file.IContentValidator;
 import edu.arizona.biosemantics.etcsite.server.process.file.XmlNamespaceManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.AuthenticationService;
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
-import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationService;
 import gwtupload.server.UploadAction;
@@ -15,7 +15,9 @@ import gwtupload.shared.UConsts;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -23,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
+import org.jdom2.JDOMException;
 
 /**
  * This is an example of how to use UploadAction class.
@@ -52,7 +55,7 @@ public class UploadServlet extends UploadAction {
 	 * delete this items from session.
 	 */
 	@Override
-	public String executeAction(HttpServletRequest request, List<FileItem> sessionFiles) throws UploadActionException {
+	public String executeAction(HttpServletRequest request, List<FileItem> sessionFiles) {
 		receivedContentTypes.clear();
 		receivedFiles.clear();
 		
@@ -65,16 +68,16 @@ public class UploadServlet extends UploadAction {
 		FileTypeEnum fileTypeEnum = FileTypeEnum.getEnum(fileType);
 		
 		IAuthenticationService authenticationService = new AuthenticationService();
-		RPCResult<AuthenticationResult> authenticationResult = 
+		AuthenticationResult authenticationResult = 
 				authenticationService.isValidSession(new AuthenticationToken(userID, sessionID));
 		
 		int numberNotAdded = 0;
-		if(authenticationResult.isSucceeded() && authenticationResult.getData().getResult()) {
+		if(authenticationResult.getResult()) {
 			int cont = 0;
 			for (FileItem item : sessionFiles) {
 				if (false == item.isFormField()) {
 					cont++;
-					try {
+					
 						// / Create a new file based on the remote file name in the
 						// client
 						// String saveName =
@@ -91,37 +94,63 @@ public class UploadServlet extends UploadAction {
 						// temp folder
 						File file = new File(target + File.separator + item.getName());
 						if(!file.exists()) {
-							String fileContent = item.getString("UTF-8");
-							boolean valid = false;
-							IContentValidator validator = contentValidatorProvider.getValidator(fileTypeEnum);
-							if(validator != null)
-								valid = validator.validate(fileContent);
-							
-							if(valid) {
-								file.createNewFile();
-								item.write(file);
+							String fileContent;
+							try {
+								fileContent = item.getString("UTF-8");
+								boolean valid = false;
+								IContentValidator validator = contentValidatorProvider.getValidator(fileTypeEnum);
+								if(validator != null)
+									valid = validator.validate(fileContent);
 								
-								xmlNamespaceManager.setXmlSchema(file, fileTypeEnum);
-			
-								// / Save a list with the received files
-								receivedFiles.put(item.getFieldName(), file);
-								receivedContentTypes.put(item.getFieldName(),
-										item.getContentType());
-			
-								// / Send a customized message to the client.
-								//response += "File saved as " + file.getAbsolutePath();
-							} else {
-								numberNotAdded++;
-								//error message would when too long (because many files are not valid) freeze the web page
-								//response += "File " + item.getName() + " was not added. Invalid file format.\n";
+								if(valid) {
+									try {
+										file.createNewFile();
+										item.write(file);
+										
+										try {
+											xmlNamespaceManager.setXmlSchema(file, fileTypeEnum);
+											
+											// / Save a list with the received files
+											receivedFiles.put(item.getFieldName(), file);
+											receivedContentTypes.put(item.getFieldName(),
+													item.getContentType());
+						
+											// / Send a customized message to the client.
+											//response += "File saved as " + file.getAbsolutePath();
+											
+										} catch (Exception e) {
+											String message = "Couldn't set xml schema to file. Will attempt to delete the file";
+											log(message, e);
+											log(LogLevel.ERROR, message, e);
+											file.delete();
+											numberNotAdded++;
+										}
+										
+									} catch(IOException e) {
+										String message = "Couldn't create new file";
+										log(message, e);
+										log(LogLevel.ERROR, message, e);
+										numberNotAdded++;
+									} catch(Exception e) {
+										String message = "Couldn't write item to file";
+										log(message, e);
+										log(LogLevel.ERROR, message, e);
+										numberNotAdded++;
+									}
+								} else {
+									numberNotAdded++;
+									//error message would when too long (because many files are not valid) freeze the web page
+									//response += "File " + item.getName() + " was not added. Invalid file format.\n";
+								}
+							} catch (UnsupportedEncodingException e) {
+								String message = "Couldn't get UTF-8 encoding";
+								log(message, e);
+								log(LogLevel.ERROR, message, e);
 							}
 						} else {
 							numberNotAdded++;
 							//response += "File " + item.getName() + " was not added. File with same name exists in directory.\n";
 						}
-					} catch (Exception e) {
-						throw new UploadActionException(e);
-					}
 				}
 			}
 		}
@@ -143,15 +172,35 @@ public class UploadServlet extends UploadAction {
 	 */
 	@Override
 	public void getUploadedFile(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+			HttpServletResponse response) {
 		String fieldName = request.getParameter(UConsts.PARAM_SHOW);
 		File f = receivedFiles.get(fieldName);
 		if (f != null) {
 			response.setContentType(receivedContentTypes.get(fieldName));
-			FileInputStream is = new FileInputStream(f);
-			copyFromInputStreamToOutputStream(is, response.getOutputStream());
+			FileInputStream is = null;
+			try {
+				is = new FileInputStream(f);
+			} catch (FileNotFoundException e) {
+				String message = "Couldn't find file";
+				log(message, e);
+				log(LogLevel.ERROR, message, e);
+			}
+			if(is != null)
+				try {
+					copyFromInputStreamToOutputStream(is, response.getOutputStream());
+				} catch (IOException e) {
+					String message = "Couldn't copy input to output stream";
+					log(message, e);
+					log(LogLevel.ERROR, message, e);
+				}
 		} else {
-			renderXmlResponse(request, response, XML_ERROR_ITEM_NOT_FOUND);
+			try {
+				renderXmlResponse(request, response, XML_ERROR_ITEM_NOT_FOUND);
+			} catch (IOException e) {
+				String message = "Couldn't render xml response";
+				log(message, e);
+				log(LogLevel.ERROR, message, e);
+			}
 		}
 	}
 
@@ -159,8 +208,7 @@ public class UploadServlet extends UploadAction {
 	 * Remove a file when the user sends a delete request.
 	 */
 	@Override
-	public void removeItem(HttpServletRequest request, String fieldName)
-			throws UploadActionException {
+	public void removeItem(HttpServletRequest request, String fieldName) {
 		File file = receivedFiles.get(fieldName);
 		receivedFiles.remove(fieldName);
 		receivedContentTypes.remove(fieldName);

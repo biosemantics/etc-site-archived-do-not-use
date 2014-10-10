@@ -1,5 +1,6 @@
 package edu.arizona.biosemantics.etcsite.server;
 
+import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -10,6 +11,7 @@ import java.util.concurrent.Callable;
 import org.apache.tools.ant.util.JavaEnvUtils;
 
 import edu.arizona.biosemantics.etcsite.server.Task.FailHandler;
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 
 public abstract class ExtraJvmCallable<T> implements Callable<T>, Task {
 	
@@ -17,7 +19,7 @@ public abstract class ExtraJvmCallable<T> implements Callable<T>, Task {
 	private Class mainClass;
 	private Process process;
 	private String[] args;
-	protected Integer exitStatus;
+	protected int exitStatus = -1;
 	private String xmx;
 	private String xms;
 	
@@ -54,7 +56,7 @@ public abstract class ExtraJvmCallable<T> implements Callable<T>, Task {
 	}
 
 	@Override
-	public T call() throws Exception {
+	public T call() {
 		String command = "java -cp " + classPath + " " + mainClass.getName();
 		for(String arg : args)
 			command += " " + arg;
@@ -64,7 +66,7 @@ public abstract class ExtraJvmCallable<T> implements Callable<T>, Task {
 			command += " -Xms " + xms;
 		System.out.println("Run in an extra JVM: " + command);
 		
-		exitStatus = null;
+		exitStatus = -1;
 		if(classPath != null && mainClass != null && args != null) {
 			String javaExecutable = JavaEnvUtils.getJreExecutable("java");
 			List<String> commandParts = new LinkedList<String>();
@@ -81,9 +83,13 @@ public abstract class ExtraJvmCallable<T> implements Callable<T>, Task {
 			processBuilder.redirectError(Redirect.INHERIT);
 			processBuilder.redirectOutput(Redirect.INHERIT);
 			
-			process = processBuilder.start();
-			exitStatus = process.waitFor();
-			
+			try {
+				process = processBuilder.start();
+				exitStatus = process.waitFor();
+			} catch(IOException | InterruptedException e) {
+				log(LogLevel.ERROR, "Process couldn't execute successfully", e);
+			}
+				
 			if(!isExecutedSuccessfully()) {
 				handleFail();
 			}

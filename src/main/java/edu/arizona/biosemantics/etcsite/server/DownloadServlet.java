@@ -13,9 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import edu.arizona.biosemantics.etcsite.server.rpc.AuthenticationService;
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
-import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationService;
 
 public class DownloadServlet extends HttpServlet {
@@ -24,36 +24,58 @@ public class DownloadServlet extends HttpServlet {
 	private IAuthenticationService authenticationService = new AuthenticationService();
 
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) {
 		int userID = Integer.parseInt(request.getParameter("userID"));
 		String sessionID = request.getParameter("sessionID");
 		String target = request.getParameter("target");
 		String directory = request.getParameter("directory");
 		
-		RPCResult<AuthenticationResult> authenticationResult = 
+		AuthenticationResult authenticationResult = 
 				authenticationService.isValidSession(new AuthenticationToken(userID, sessionID));
-		if(authenticationResult.isSucceeded() && authenticationResult.getData().getResult()) { 	
+		if(authenticationResult.getResult()) { 	
 			int BUFFER = 1024 * 100;
 			response.setContentType("application/octet-stream");
 			response.setHeader("Content-Disposition", "attachment;filename=" + "\"" + 
 					target.substring(target.lastIndexOf(File.separator) + 1, target.length()) + "\"");	
 
-			ServletOutputStream outputStream = response.getOutputStream();
+			ServletOutputStream outputStream = null;
+			try {
+				outputStream = response.getOutputStream();
+			} catch (IOException e) {
+				String message = "Couldn't get output stream";
+				log(message, e);
+				log(LogLevel.ERROR, message, e);
+			}
 			byte[] fileBytes;
 			fileBytes = getFile(userID, target);
 			
 			response.setContentLength(Long.valueOf(fileBytes.length).intValue());
 			response.setBufferSize(BUFFER);
-			outputStream.write(fileBytes);
-			outputStream.flush();
-			//outputStream.close();
+			if(outputStream != null) {
+				try {
+					outputStream.write(fileBytes);
+					outputStream.flush();
+					//outputStream.close();
+				} catch(IOException e) {
+					String message = "Couldn't write download to output stream";
+					log(message, e);
+					log(LogLevel.ERROR, message, e);
+				}
+			}
 		}
 	}
 
-	private byte[] getFile(int userID, String target) throws IOException {		
+	private byte[] getFile(int userID, String target) {		
 		//Path path = Paths.get(Configuration.fileBase + File.separator + username + File.separator + target);
 		Path path = Paths.get(target);
-		byte[] data = Files.readAllBytes(path);
+		byte[] data = null;
+		try {
+			data = Files.readAllBytes(path);
+		} catch (IOException e) {
+			String message = "Couldn't read file content";
+			log(message, e);
+			log(LogLevel.ERROR, message, e);
+		}
 		return data;
 	}
 }

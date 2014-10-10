@@ -2,12 +2,15 @@ package edu.arizona.biosemantics.etcsite.server;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
+
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 
 
 public class Zipper {
 
-	public String zip(String source, String destination) throws Exception {
+	public String zip(String source, String destination) {
 		String effectiveDestination = destination;
 		
 		for(int i=0; i<100; i++) {
@@ -40,14 +43,23 @@ public class Zipper {
 			String sourceParent = sourceFile.getParentFile().getAbsolutePath();
 			command = command.replace("[source]", sourceFileName);
 			command = command.replace("[sourceParent]", sourceParent);
-			Process process = runCommand(command);
-			process.waitFor();
+			Process process;
+			try {
+				process = runCommand(command);
+				process.waitFor();
+			} catch (IOException e) {
+				log(LogLevel.ERROR, "Couldn't run zip command", e);
+				return null;
+			} catch (InterruptedException e) {
+				log(LogLevel.ERROR, "Couldn't wait for zip command", e);
+				return null;
+			}
 		}
 		return effectiveDestination;
 	}
 	
 	//don't want to get into using ProcessBuilder because command would have to be parsed for its parts to be fed to ProcessBuilder
-	private Process runCommand(String command) throws Exception {
+	private Process runCommand(String command) throws IOException {
 		Process p = Runtime.getRuntime().exec(command);
 		try(BufferedReader stdInput = new BufferedReader(new InputStreamReader(p
 				.getInputStream()))) {
@@ -58,6 +70,8 @@ public class Zipper {
 			while ((s = stdInput.readLine()) != null) {
 				System.out.println(s);
 			}
+		} catch (IOException e) {
+			log(LogLevel.ERROR, "Couldn't close reader", e);
 		}
 		
 		try(BufferedReader errInput = new BufferedReader(new InputStreamReader(p.getErrorStream()))) {
@@ -67,6 +81,8 @@ public class Zipper {
 			while ((e = errInput.readLine()) != null) {
 				System.out.println(e);
 			}
+		} catch (IOException e) {
+			log(LogLevel.ERROR, "Couldn't close reader", e);
 		}
 		return p;
 	}

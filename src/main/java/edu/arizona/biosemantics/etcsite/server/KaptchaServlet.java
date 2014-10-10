@@ -14,23 +14,29 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 
 
 @SuppressWarnings("serial")
-public class MyKaptchaServlet extends HttpServlet implements Servlet {
+public class KaptchaServlet extends HttpServlet implements Servlet {
 	
 	private DAOManager daoManager = new DAOManager();
 	
 	@Override
-	public void init(ServletConfig conf) throws ServletException {
-		super.init(conf);
+	public void init(ServletConfig conf) {
+		try {
+			super.init(conf);
+		} catch (ServletException e) {
+			String message = "Couldn't init servlet";
+			log(message, e);
+			log(LogLevel.ERROR, message, e);
+		}
 		ImageIO.setUseCache(false);
 	}
 
 	/** */
 	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) {
 		String url = req.getRequestURL().toString();
 		String idStr = url.substring(url.lastIndexOf("/") + 1);
 		int id = Integer.parseInt(idStr);
@@ -48,7 +54,22 @@ public class MyKaptchaServlet extends HttpServlet implements Servlet {
 		// return a jpeg
 		resp.setContentType("image/jpeg");
 
-		ServletOutputStream out = resp.getOutputStream();
-		ImageIO.write(image, "jpg", out);
+		ServletOutputStream out = null;
+		try {
+			out = resp.getOutputStream();
+		} catch (IOException e) {
+			String message = "Couldn't get output stream image";
+			log(message, e);
+			log(LogLevel.ERROR, message, e);
+		}
+		if(out != null) {
+			try {
+				ImageIO.write(image, "jpg", out);
+			} catch (IOException e) {
+				String message = "Couldn't write image";
+				log(message, e);
+				log(LogLevel.ERROR, message, e);
+			}
+		}
 	}
 }

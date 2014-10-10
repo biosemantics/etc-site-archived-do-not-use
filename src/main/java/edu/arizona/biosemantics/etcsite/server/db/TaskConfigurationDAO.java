@@ -39,7 +39,7 @@ public class TaskConfigurationDAO {
 		this.matrixGenerationConfigurationDAO = matrixGenerationConfigurationDAO;
 	}
 
-	public AbstractTaskConfiguration getTaskConfiguration(Configuration configuration) throws ClassNotFoundException, SQLException, IOException {
+	public AbstractTaskConfiguration getTaskConfiguration(Configuration configuration) {
 		AbstractTaskConfiguration taskConfiguration = 
 				semanticMarkupConfigurationDAO.getSemanticMarkupConfiguration(configuration.getId());
 		if(taskConfiguration == null)

@@ -7,8 +7,12 @@ import java.util.regex.Matcher;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 
+import edu.arizona.biosemantics.etcsite.server.log.Logger;
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
+
 public class Configuration extends edu.arizona.biosemantics.etcsite.client.common.Configuration {
 
+	private final static Logger logger = Logger.getLogger(Configuration.class);
 	public static String deploymentUrl;
 	public static String classpath;
 	
@@ -138,7 +142,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			googleClientId = properties.getProperty("google_client_id");
 
 		} catch(Exception e) {
-			e.printStackTrace();
+			logger.error("Couldn't read configuration", e);
 		}
 	}
 	
@@ -148,7 +152,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
 			return writer.writeValueAsString(properties);
 		} catch (Exception e) {
-			// log(LogLevel.ERROR, "Problem writing object as String", e);
+			logger.error("Couldn't write configuration as string", e);
 			return null;
 		}
 	}
