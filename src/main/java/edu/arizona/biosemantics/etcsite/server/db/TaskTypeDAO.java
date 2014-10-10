@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileType;
@@ -31,7 +32,7 @@ public class TaskTypeDAO {
 				taskType = new TaskType(id, edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.valueOf(name), inputFileType, inputDirectory, outputFileType, outputDirectory, created);
 			}	
 		}catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get task type", e);
 		}
 		return taskType;
 	}
@@ -54,7 +55,7 @@ public class TaskTypeDAO {
 				taskType = new TaskType(id, taskTypeEnum, inputFileType, inputDirectory, outputFileType, outputDirectory, created);
 			}
 		}catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get task type of name", e);
 		}
 		return taskType;
 	}

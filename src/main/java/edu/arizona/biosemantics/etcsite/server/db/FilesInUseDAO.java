@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import edu.arizona.biosemantics.etcsite.server.db.Query.QueryException;
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileInUse;
 
@@ -70,8 +71,8 @@ public class FilesInUseDAO {
 				}
 				
 			}
-		}catch(Exception e) {
-			e.printStackTrace();
+		} catch(Exception e) {
+			log(LogLevel.ERROR, "Couldn't set in use files", e);
 		}
 	}
 
@@ -94,7 +95,7 @@ public class FilesInUseDAO {
 				result = getUsingTasks(fileInUseId);
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get using tasks of files in use", e);
 		}
 		return result;
 	}
@@ -109,7 +110,7 @@ public class FilesInUseDAO {
 				result.add(taskDAO.getTask(taskId));
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get using tasks of files in use", e);
 		}
 		return result;
 	}
@@ -125,7 +126,7 @@ public class FilesInUseDAO {
 				result.add(fileInUse);
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get files in use of task", e);
 		}
 		return result;
 	}
@@ -143,7 +144,7 @@ public class FilesInUseDAO {
 				result = new FileInUse(fileInUseId, filePath, usingTasks, created);
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get files in use of id", e);
 		}
 		return result;
 	}
@@ -158,14 +159,14 @@ public class FilesInUseDAO {
 				filesInUseByTask.add(fileInUseId);
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get files in use of task for remove", e);
 		}
 		
 		try(Query query = new Query("DELETE FROM etcsite_tasksfiles WHERE task = ?")) {
 			query.setParameter(1, task.getId());
 			query.execute();
 		} catch(QueryException e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't remove tasksfiles of task", e);
 		}
 		
 		for(Integer fileInUseId : filesInUseByTask) {
@@ -179,7 +180,7 @@ public class FilesInUseDAO {
 					}
 				}
 			} catch(Exception e) {
-				e.printStackTrace();
+				log(LogLevel.ERROR, "Couldn't remove files in use of task", e);
 			}
 		}
 	}

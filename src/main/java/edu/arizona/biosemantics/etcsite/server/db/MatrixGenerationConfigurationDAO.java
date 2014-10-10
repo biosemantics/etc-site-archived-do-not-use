@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import org.eclipse.persistence.exceptions.QueryException;
 
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.Configuration;
 import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationConfiguration;
 
@@ -26,7 +27,7 @@ public class MatrixGenerationConfigurationDAO {
 				matrixGenerationConfiguration = createMatrixGenerationConfiguration(result);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get matrix generation configuration", e);
 		}
 		return matrixGenerationConfiguration;
 	}
@@ -56,7 +57,7 @@ public class MatrixGenerationConfigurationDAO {
 				result = this.getMatrixGenerationConfiguration(generatedKeys.getInt(1));
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't insert matrix generation configuration", e);
 		}
 		return result;
 	}
@@ -71,7 +72,7 @@ public class MatrixGenerationConfigurationDAO {
 			query.setParameter(3, configuration.getId());
 			query.execute();
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't update matrix generation configuration", e);
 		}
 	}
 
@@ -81,7 +82,7 @@ public class MatrixGenerationConfigurationDAO {
 			query.setParameter(1, configuration.getId());
 			query.execute();
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't remove matrix generation configuration", e);
 		}
 	}
 

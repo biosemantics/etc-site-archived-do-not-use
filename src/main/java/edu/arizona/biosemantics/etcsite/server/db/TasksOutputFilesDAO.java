@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 
 public class TasksOutputFilesDAO {
@@ -17,7 +18,7 @@ public class TasksOutputFilesDAO {
 			addOutput.execute();
 			ResultSet generatedKeys = addOutput.getGeneratedKeys();
 		}catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't insert tasks output files", e);
 		}
 	}
 	
@@ -31,7 +32,7 @@ public class TasksOutputFilesDAO {
 				result.add(file);
 			}
 		}catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get tasks output files", e);
 		}
 		return result;
 	}
@@ -42,7 +43,7 @@ public class TasksOutputFilesDAO {
 			addOutput.setParameter(2, task.getId());
 			addOutput.execute();
 		}catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't remove tasks output file", e);
 		}
 	}
 	
@@ -51,7 +52,7 @@ public class TasksOutputFilesDAO {
 			addOutput.setParameter(1, task.getId());
 			addOutput.execute();
 		}catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't remove tasks output files", e);
 		}
 	}
 	

@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 
 import org.eclipse.persistence.exceptions.QueryException;
 
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.PasswordResetRequest;
 
 public class PasswordResetRequestDAO {
@@ -26,7 +27,7 @@ public class PasswordResetRequestDAO {
 				request = new PasswordResetRequest(user, authenticationCode, timeCreated);
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get password reset request", e);
 		}
 		
 		return request;
@@ -37,7 +38,7 @@ public class PasswordResetRequestDAO {
 			removeRequest.setParameter(1, user);
 			removeRequest.execute();
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't remove password reset request", e);
 		}
 	}
 	
@@ -47,7 +48,7 @@ public class PasswordResetRequestDAO {
 			addRequest.setParameter(2, authenticationCode);
 			addRequest.execute();
 		}catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't insert password reset request", e);
 		}
 	}
 	
@@ -55,7 +56,7 @@ public class PasswordResetRequestDAO {
 		try(Query deleteAll = new Query("DELETE FROM `etcsite_passwordresetrequests` WHERE 1")) {
 			deleteAll.execute();
 		} catch (Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't cleanup password reset requests", e);
 		}
 	}
 }

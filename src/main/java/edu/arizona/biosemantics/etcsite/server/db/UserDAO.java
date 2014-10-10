@@ -11,6 +11,7 @@ import java.util.List;
 import org.eclipse.persistence.exceptions.QueryException;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.User;
 
@@ -34,7 +35,7 @@ public class UserDAO {
 				user = createUser(result);
 			}
 		}catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get user", e);
 		}
 		return user;
 	}
@@ -82,7 +83,7 @@ public class UserDAO {
 						bioportalUserId, bioportalAPIKey, created);
 			}
 		}catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get user of email and openid provider", e);
 		}
 		return user;
 	}
@@ -103,7 +104,7 @@ public class UserDAO {
 				addUser.setParameter(6, openIdProviderId); //email
 				addUser.execute();
 			}catch(Exception e) {
-				e.printStackTrace();
+				log(LogLevel.ERROR, "Couldn't add user", e);
 			}
 			
 			//add a file directory for this user - name of directory is id. 
@@ -135,7 +136,7 @@ public class UserDAO {
 				updateUser.setParameter(8, id);
 				updateUser.execute();
 			}catch(Exception e) {
-				e.printStackTrace();
+				log(LogLevel.ERROR, "Couldn't update user", e);
 			}
 			
 			return true;
@@ -150,7 +151,7 @@ public class UserDAO {
 				result.add(createShortUser(createUser(resultSet)));
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get users", e);
 		}
 		return result;
 	}
@@ -164,7 +165,7 @@ public class UserDAO {
 				result.add(createShortUser(createUser(resultSet)));
 			}
 		}catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get users without given", e);
 		}
 		return result;
 	}

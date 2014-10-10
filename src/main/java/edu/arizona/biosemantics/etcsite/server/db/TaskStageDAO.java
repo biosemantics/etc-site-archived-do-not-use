@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationTaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupTaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
@@ -33,7 +34,7 @@ public class TaskStageDAO {
 				taskStage = createTaskStage(id, taskStageString, taskType, created);
 			}
 		}catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get task stage", e);
 		}
 		return taskStage;
 	}
@@ -53,7 +54,7 @@ public class TaskStageDAO {
 				taskStage = createTaskStage(id, taskStageString, taskType, created);
 			}
 		}catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get task stage of type and name", e);
 		}
 		return taskStage;
 	}

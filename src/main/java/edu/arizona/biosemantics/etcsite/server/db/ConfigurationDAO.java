@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import edu.arizona.biosemantics.etcsite.server.db.Query.QueryException;
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.Configuration;
 
 public class ConfigurationDAO {
@@ -21,7 +22,7 @@ public class ConfigurationDAO {
 				configuration = new Configuration(id, created);
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get configuration", e);
 		}
 		return configuration;
 	}
@@ -31,7 +32,7 @@ public class ConfigurationDAO {
 			query.setParameter(1, configuration.getId());
 			query.execute();
 		} catch(QueryException e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't remove configuration", e);
 		}
 	}
 }

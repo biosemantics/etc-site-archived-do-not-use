@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.Share;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
@@ -50,7 +51,7 @@ public class ShareDAO {
 				share = new Share(id, task, invitees, created);
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get share", e);
 		}
 		return share;
 	}
@@ -73,7 +74,7 @@ public class ShareDAO {
 	            }
 	        }
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't insert share", e);
 		}
 		return result;
 	}
@@ -88,7 +89,7 @@ public class ShareDAO {
 				result.add(share);
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get shares of owner", e);
 		}
 		return result;
 	}
@@ -103,7 +104,7 @@ public class ShareDAO {
 				result.add(share);
 			}
 		}catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get shares of invitee", e);
 		}
 		return result;
 	}
@@ -118,7 +119,7 @@ public class ShareDAO {
 				shares.add(share);
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get shares of task", e);
 		}
 		return shares;
 	}
@@ -128,13 +129,13 @@ public class ShareDAO {
 			query.setParameter(1, share.getId());
 			query.execute();
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't remove share invitees", e);
 		}
 		try(Query query = new Query("DELETE FROM etcsite_shares WHERE id = ?")) {
 			query.setParameter(1, share.getId());
 			query.execute();
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't remove share", e);
 		}
 	}
 
@@ -163,7 +164,7 @@ public class ShareDAO {
 			removeInvitees.setParameter(1, share.getId());
 			removeInvitees.execute();
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't update share", e);
 		}
 		
         for(ShortUser invitee : share.getInvitees()) {
@@ -172,7 +173,7 @@ public class ShareDAO {
 	            inviteeQuery.setParameter(2, invitee.getId());
 	            inviteeQuery.execute();
             } catch(Exception e) {
-            	e.printStackTrace();
+            	log(LogLevel.ERROR, "Couldn't insert share invitees", e);
             }
         }
         return share;
@@ -191,7 +192,7 @@ public class ShareDAO {
 				result.add(share);
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get shares of invitee for task", e);
 		}
 		return result;
 	}

@@ -16,6 +16,7 @@ import com.google.code.kaptcha.util.Config;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.db.Query.QueryException;
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.Captcha;
 
 public class CaptchaDAO {
@@ -23,8 +24,8 @@ public class CaptchaDAO {
 	private Producer captchaProducer;
 	
 	public CaptchaDAO() {
-		Config config = new Config(new Properties());
-		captchaProducer = config.getProducerImpl();
+		Config captchaConfig = new Config(new Properties());
+		captchaProducer = captchaConfig.getProducerImpl();
 	}
 	
 	public Captcha getCaptcha(int id) {
@@ -39,7 +40,7 @@ public class CaptchaDAO {
 				captcha = new Captcha(id, solution, created);
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get captcha", e);
 		}
 		return captcha;
 	}
@@ -50,7 +51,7 @@ public class CaptchaDAO {
 			query.setParameter(1, captchaId);
 			query.execute();
 		} catch(QueryException e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't remove captcha", e);
 		}
 	}
 	
@@ -66,7 +67,7 @@ public class CaptchaDAO {
 				remove(id);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't cleanup captchas in DB", e);
 		}
 		File dir = new File(Configuration.captcha_tempFileBase);
 		if (!dir.exists())
@@ -74,7 +75,7 @@ public class CaptchaDAO {
 		try {
 			FileUtils.cleanDirectory(dir);
 		} catch (IOException e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't cleanup captchas in FS", e);
 		}
 	}
 
@@ -102,19 +103,28 @@ public class CaptchaDAO {
 			if(generatedKeys.next()) {
 				int id = generatedKeys.getInt(1);
 				File outputFile = getCaptchaFile(id);
-				ImageIO.write(img, "jpg", outputFile);
+				try {
+					ImageIO.write(img, "jpg", outputFile);
+				} catch(IOException e) {
+					log(LogLevel.ERROR, "Couldn't write captcha to FS", e);
+				}
 				return id;
 			}
 		}catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't insert captcha", e);
 		}
 		return -1;
 	}
 
 	public BufferedImage getImage(int id) throws IOException {
 		File imageFile = getCaptchaFile(id);
-		BufferedImage image = ImageIO.read(imageFile);
-		return image;
+		try {
+			BufferedImage image = ImageIO.read(imageFile);
+			return image;
+		} catch(IOException e) {
+			log(LogLevel.ERROR, "Couldn't read captcha image from FS", e);
+			return null;
+		}
 	}
 	
 	private File getCaptchaFile(int id) {

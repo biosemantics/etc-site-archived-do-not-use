@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.Configuration;
 import edu.arizona.biosemantics.etcsite.shared.model.Glossary;
 import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupConfiguration;
@@ -31,7 +32,7 @@ public class SemanticMarkupConfigurationDAO {
 				semanticMarkupConfiguration = createSemanticMarkupConfiguration(result);
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get semantic markup configuration", e);
 		}
 		return semanticMarkupConfiguration;
 	}
@@ -46,7 +47,7 @@ public class SemanticMarkupConfigurationDAO {
 		String output = result.getString(7);
 		Configuration configuration = configurationDAO.getConfiguration(configurationId);
 		Glossary glossary = glossaryDAO.getGlossary(glossaryId);
-		return  new SemanticMarkupConfiguration(configuration, input, numberOfInputFiles, glossary, otoUploadId, otoSecret, output);
+		return new SemanticMarkupConfiguration(configuration, input, numberOfInputFiles, glossary, otoUploadId, otoSecret, output);
 	}
 
 	public SemanticMarkupConfiguration addSemanticMarkupConfiguration(SemanticMarkupConfiguration semanticMarkupConfiguration) {
@@ -72,7 +73,7 @@ public class SemanticMarkupConfigurationDAO {
 				result = this.getSemanticMarkupConfiguration(generatedKeys.getInt(1));
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't insert semantic markup configuration", e);
 		}
 		return result;
 	}
@@ -96,7 +97,7 @@ public class SemanticMarkupConfigurationDAO {
 			query.setParameter(7, configuration.getId());
 			query.execute();
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't update semantic markup configuration", e);
 		}
 	}
 
@@ -106,7 +107,7 @@ public class SemanticMarkupConfigurationDAO {
 			query.setParameter(1, configuration.getId());
 			query.execute();
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't remove semantic markup configuration", e);
 		}
 	}
 }

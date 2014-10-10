@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import edu.arizona.biosemantics.etcsite.server.db.Query.QueryException;
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileType;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 
@@ -23,7 +24,7 @@ public class FileTypeDAO {
 				inputType = new FileType(id, FileTypeEnum.valueOf(name), created);
 			}
 		}catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get file type", e);
 		}
 		return inputType;
 	}
@@ -40,7 +41,7 @@ public class FileTypeDAO {
 				inputType = new FileType(id, FileTypeEnum.valueOf(name), created);
 			}
 		}catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get file type of name", e);
 		}
 		return inputType;
 	}

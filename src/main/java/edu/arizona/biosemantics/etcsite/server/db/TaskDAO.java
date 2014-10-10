@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.Configuration;
 import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationTaskStage;
@@ -82,7 +83,7 @@ public class TaskDAO {
 				task = createTask(result);
 			}
 		}catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get task", e);
 		}
 		return task;
 	}
@@ -96,7 +97,7 @@ public class TaskDAO {
 				task = createTask(result);
 			}
 		}catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get task of configuration", e);
 		}
 		return task;
 	}
@@ -112,7 +113,7 @@ public class TaskDAO {
 				tasks.add(task);
 			}
 		}catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get owned tasks of user", e);
 		}
 		return tasks;
 	}
@@ -127,7 +128,7 @@ public class TaskDAO {
 				tasks.add(task);
 			}
 		}catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get tasks shared with user", e);
 		}
 		return tasks;
 	}
@@ -143,7 +144,7 @@ public class TaskDAO {
 				tasks.add(task);
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get all tasks of user", e);
 		}
 		return tasks;
 	}
@@ -159,7 +160,7 @@ public class TaskDAO {
 				tasks.add(task);
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get resumable tasks of user", e);
 		}
 		return tasks;
 	}
@@ -175,7 +176,7 @@ public class TaskDAO {
 				tasks.add(task);
 			}
 		}catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get completed tasks of user", e);
 		}
 		return tasks;
 	}
@@ -242,7 +243,7 @@ public class TaskDAO {
 	            result = this.getTask(generatedKeys.getInt(1));
 	        }
 		}catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't insert task", e);
 		}
 		return result;
 	}
@@ -273,7 +274,7 @@ public class TaskDAO {
 			//		", user=" + userId + ", resumable=" + resumable + ", complete=" + complete + ", completed=" + (completed==null? completed : completed.getTime()) + " WHERE id = " + id);
 			query.execute();
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't update task", e);
 		}
 	}
 
@@ -296,7 +297,7 @@ public class TaskDAO {
 			query.setParameter(1, id);
 			query.execute();
 		}catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't delete task", e);
 		}
 	}
 }

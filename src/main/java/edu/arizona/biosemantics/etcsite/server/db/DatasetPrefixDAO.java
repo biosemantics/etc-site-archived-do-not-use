@@ -7,6 +7,7 @@ import java.util.Date;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.db.Query.QueryException;
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.DatasetPrefix;
 
 
@@ -26,7 +27,7 @@ public class DatasetPrefixDAO {
 				datasetPrefix = new DatasetPrefix(prefix, glossaryVersion, otoUploadId, otoSecret, created);
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't get dataset prefix", e);
 		}
 		return datasetPrefix;
 	}

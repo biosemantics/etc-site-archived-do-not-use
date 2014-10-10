@@ -12,6 +12,8 @@ import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
 import com.mysql.jdbc.AbandonedConnectionCleanupThread;
 
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
+
 public class ConnectionPool {
 	
 	private BoneCP connectionPool;
@@ -77,12 +79,12 @@ public class ConnectionPool {
 		try {
 			DriverManager.deregisterDriver(mySqlDriver);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't deregister mysql driver", e);
 		}
 		try {
 		    AbandonedConnectionCleanupThread.shutdown();
 		} catch (InterruptedException e) {
-		    e.printStackTrace();
+			log(LogLevel.ERROR, "Couldn't shutdown abandoned connection cleanup thread", e);
 		}
 		Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
 		Thread[] threadArray = threadSet.toArray(new Thread[threadSet.size()]);
