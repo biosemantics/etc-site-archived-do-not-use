@@ -1,6 +1,7 @@
 package edu.arizona.biosemantics.etcsite.server.process.file;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
@@ -17,6 +18,7 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 
 public class XmlNamespaceManager {
@@ -36,14 +38,23 @@ public class XmlNamespaceManager {
 		schemaFileTypeMap.put(Configuration.markedUpTaxonDescriptionSchemaFileWeb, FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION);
 	}
 		
-	public FileTypeEnum getFileType(File file) throws JDOMException, IOException { 
+	public FileTypeEnum getFileType(File file) { 
 		String schema = this.getSchema(file);
-		return schemaFileTypeMap.get(schema);
+		if(schema != null)
+			return schemaFileTypeMap.get(schema);
+		return null;
 	}
 	
-	public String getSchema(File file) throws JDOMException, IOException {
-		Document doc = sax.build(file);
-		return getSchema(doc);
+	public String getSchema(File file) {
+		Document doc = null;
+		try {
+			doc = sax.build(file);
+		} catch (JDOMException | IOException e) {
+			log(LogLevel.ERROR, "Couldn't build xml document", e);
+		}
+		if(doc != null)
+			return getSchema(doc);
+		return null;
 	}
 	
 	private String getSchema(Document doc) {
@@ -59,17 +70,30 @@ public class XmlNamespaceManager {
 		try (StringReader reader = new StringReader(fileContent)) {
 			Document doc = sax.build(reader);
 			return getSchema(doc);
-		} catch(Exception e) {
-			e.printStackTrace();
+		} catch (JDOMException | IOException e) {
+			log(LogLevel.ERROR, "Couldn't build xml document", e);
 		}
 		return null;
 	}
 	
-	public void setXmlSchema(File file, FileTypeEnum fileTypeEnum) throws JDOMException, IOException {
-		Document doc = sax.build(file);
-		setXmlSchema(doc, fileTypeEnum);
-		try(FileOutputStream fileOutputStream = new FileOutputStream(file)) {
-			xmlOutputter.output(doc, fileOutputStream);
+	public void setXmlSchema(File file, FileTypeEnum fileTypeEnum) {
+		Document doc = null;
+		try {
+			doc = sax.build(file);
+		} catch (JDOMException | IOException e) {
+			log(LogLevel.ERROR, "Couldn't build xml document", e);
+		}
+		if(doc != null) { 
+			setXmlSchema(doc, fileTypeEnum);
+			try(FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+				try {
+					xmlOutputter.output(doc, fileOutputStream);
+				} catch (IOException e) {
+					log(LogLevel.ERROR, "Couldn't output xml document to file", e);
+				}
+			} catch (IOException e) {
+				log(LogLevel.ERROR, "Couldn't create or close outputstream", e);
+			}
 		}
 	}
 
@@ -82,29 +106,56 @@ public class XmlNamespaceManager {
 		rootElement.setAttribute("schemaLocation", Configuration.targetNamespace + " " + schemaUrl, xsiNamespace);
 	}
 
-	public String setXmlSchema(String content, FileTypeEnum fileTypeEnum) throws JDOMException, IOException {
+	public String setXmlSchema(String content, FileTypeEnum fileTypeEnum) {
 		try(StringReader reader = new StringReader(content)) {
-			Document doc = sax.build(reader);
-			setXmlSchema(doc, fileTypeEnum);
-			
-			try(StringWriter stringWriter = new StringWriter()) {
-				xmlOutputter.output(doc, stringWriter);
-				stringWriter.flush();
-				String result = stringWriter.toString();
-				return result;
+			Document doc = null;
+			try {
+				doc = sax.build(reader);
+			} catch (JDOMException | IOException e) {
+				log(LogLevel.ERROR, "Couldn't build xml document", e);
+			}
+			if(doc != null) {
+				setXmlSchema(doc, fileTypeEnum);
+				
+				try(StringWriter stringWriter = new StringWriter()) {
+					try {
+						xmlOutputter.output(doc, stringWriter);
+					} catch (IOException e) {
+						log(LogLevel.ERROR, "Couldn't output xml document", e);
+					}
+					stringWriter.flush();
+					String result = stringWriter.toString();
+					return result;
+				} catch (IOException e) {
+					log(LogLevel.ERROR, "Couldn't open or close writer", e);
+				}
 			}
 		}
+		return null;
 	}
 	
-	public void removeXmlSchema(File file) throws JDOMException, IOException {
-		Document doc = sax.build(file);
-		Element rootElement = doc.getRootElement();
-		rootElement.setNamespace(null);
-		rootElement.removeNamespaceDeclaration(bioNamespace);
-		rootElement.removeNamespaceDeclaration(xsiNamespace);
-		rootElement.removeAttribute("schemaLocation", xsiNamespace);
-		try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
-			xmlOutputter.output(doc, fileOutputStream);
+	public void removeXmlSchema(File file) {
+		Document doc = null;
+		try {
+			doc = sax.build(file);
+		} catch (JDOMException | IOException e) {
+			log(LogLevel.ERROR, "Couldn't build xml document", e);
+		}
+		if(doc != null) {
+			Element rootElement = doc.getRootElement();
+			rootElement.setNamespace(null);
+			rootElement.removeNamespaceDeclaration(bioNamespace);
+			rootElement.removeNamespaceDeclaration(xsiNamespace);
+			rootElement.removeAttribute("schemaLocation", xsiNamespace);
+			try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+				try {
+					xmlOutputter.output(doc, fileOutputStream);
+				} catch (IOException e) {
+					log(LogLevel.ERROR, "Couldn't output xml document", e);
+				}
+			} catch (IOException e) {
+				log(LogLevel.ERROR, "Couldn't open or close output stream", e);
+			}
 		}
 	}
 	
