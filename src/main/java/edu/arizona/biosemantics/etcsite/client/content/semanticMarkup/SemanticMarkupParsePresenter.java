@@ -5,10 +5,15 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.google.web.bindery.event.shared.EventBus;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
+import edu.arizona.biosemantics.etcsite.client.event.FailedTasksEvent;
 import edu.arizona.biosemantics.etcsite.client.event.ResumableTasksEvent;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum;
@@ -25,7 +30,7 @@ public class SemanticMarkupParsePresenter implements ISemanticMarkupParseView.Pr
 	@Inject
 	public SemanticMarkupParsePresenter(final ISemanticMarkupParseView view, 
 			ISemanticMarkupServiceAsync semanticMarkupService, 
-			PlaceController placeController, 
+			final PlaceController placeController, 
 			@Named("Tasks") final EventBus tasksBus) {
 		super();
 		this.view = view;
@@ -39,6 +44,22 @@ public class SemanticMarkupParsePresenter implements ISemanticMarkupParseView.Pr
 			public void onResumableTaskEvent(ResumableTasksEvent resumableTasksEvent) {
 				if(task != null && resumableTasksEvent.getTasks().containsKey(task.getId())) {
 					view.setResumable();
+				} else {
+					view.setNonResumable();
+				}
+			}
+		});
+		tasksBus.addHandler(FailedTasksEvent.TYPE, new FailedTasksEvent.FailedTasksEventHandler() {
+			@Override
+			public void onFailedTasksEvent(FailedTasksEvent failedTasksEvent) {
+				if(task != null && failedTasksEvent.getTasks().containsKey(task.getId())) {
+					MessageBox alert = Alerter.failedToParse(null);
+					alert.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
+						@Override
+						public void onSelect(SelectEvent event) {
+							placeController.goTo(new TaskManagerPlace());
+						}
+					});
 				} else {
 					view.setNonResumable();
 				}
@@ -88,9 +109,6 @@ public class SemanticMarkupParsePresenter implements ISemanticMarkupParseView.Pr
 
 			@Override
 			public void onFailure(Throwable caught) {
-				if(caught instanceof SemanticMarkupException) {
-					placeController.goTo(new TaskManagerPlace());
-				}
 				Alerter.failedToParse(caught);
 			}
 		});

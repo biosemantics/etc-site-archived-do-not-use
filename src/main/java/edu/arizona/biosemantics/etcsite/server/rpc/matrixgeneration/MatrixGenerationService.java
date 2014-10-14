@@ -217,7 +217,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		try {
 			fileName = fileService.getFileName(authenticationToken, input);
 		} catch (PermissionDeniedException e) {
-			throw new MatrixGenerationException();
+			throw new MatrixGenerationException(null);
 		}
 		if(isShared) {
 			String destination;
@@ -225,12 +225,12 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				destination = fileService.createDirectory(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUserId(), 
 						fileName, true);
 			} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
-				throw new MatrixGenerationException();
+				throw new MatrixGenerationException(null);
 			}
 			try {
 				fileService.copyFiles(authenticationToken, input, destination);
 			} catch (CopyFilesFailedException | PermissionDeniedException e) {
-				throw new MatrixGenerationException();
+				throw new MatrixGenerationException(null);
 			}
 			input = destination;
 		}
@@ -260,7 +260,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		try {
 			fileService.setInUse(authenticationToken, true, input, task);
 		} catch (PermissionDeniedException e) {
-			throw new MatrixGenerationException();
+			throw new MatrixGenerationException(task);
 		}
 		return task;
 	}
@@ -284,13 +284,13 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				String createDirResult = fileService.createDirectory(new AdminAuthenticationToken(), Configuration.matrixGeneration_tempFileBase, 
 						String.valueOf(task.getId()), false);
 			} catch (PermissionDeniedException | CreateDirectoryFailedException e1) {
-				throw new MatrixGenerationException();
+				throw new MatrixGenerationException(task);
 			}
 			
 			try {
 				fileService.createDirectory(new AdminAuthenticationToken(), Configuration.matrixGeneration_tempFileBase, String.valueOf(task.getId()), false);
 			} catch (PermissionDeniedException | CreateDirectoryFailedException e1) {
-				throw new MatrixGenerationException();
+				throw new MatrixGenerationException(task);
 			}
 			final String outputFile = getOutputFile(task);
 			
@@ -299,16 +299,24 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			final ListenableFuture<Void> futureResult = executorService.submit(matrixGeneration);
 			this.activeProcessFutures.put(config.getConfiguration().getId(), futureResult);
 			futureResult.addListener(new Runnable() {
-			     	public void run() {						
-		     			if(!futureResult.isCancelled()) {
-							TaskStage newTaskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.REVIEW.toString());
-							task.setTaskStage(newTaskStage);
-							task.setResumable(true);
+			     	public void run() {	
+			     		MatrixGeneration matrixGeneration = activeProcess.remove(config.getConfiguration().getId());
+			    		ListenableFuture<Void> futureResult = activeProcessFutures.remove(config.getConfiguration().getId());
+			     		if(matrixGeneration.isExecutedSuccessfully()) {
+			     			if(!futureResult.isCancelled()) {
+								TaskStage newTaskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.REVIEW.toString());
+								task.setTaskStage(newTaskStage);
+								task.setResumable(true);
+								daoManager.getTaskDAO().updateTask(task);
+								
+								// send an email to the user who owns the task.
+								sendFinishedGeneratingMatrixEmail(task);
+			     			}
+			     		} else {
+			     			task.setFailed(true);
+							task.setFailedTime(new Date());
 							daoManager.getTaskDAO().updateTask(task);
-							
-							// send an email to the user who owns the task.
-							sendFinishedGeneratingMatrixEmail(task);
-		     			}
+			     		}
 			     	}
 			     }, executorService);
 			
@@ -320,40 +328,24 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	@Override
 	public Model review(AuthenticationToken authenticationToken, Task task) throws MatrixGenerationException {
 		final MatrixGenerationConfiguration config = getMatrixGenerationConfiguration(task);
-		
-		MatrixGeneration matrixGeneration = activeProcess.remove(config.getConfiguration().getId());
-		if(matrixGeneration != null) {
-			if(matrixGeneration.isExecutedSuccessfully()) {
-				ListenableFuture<Void> futureResult = activeProcessFutures.remove(config.getConfiguration().getId());
-				if(futureResult != null && !futureResult.isCancelled()) {
-					try {
-						Void result = futureResult.get();
-					} catch (InterruptedException | ExecutionException e) {
-						log(LogLevel.ERROR, "Couldn't get the produced matrix generation result", e);
-						throw new MatrixGenerationException();
-					}
-				}
-			} else if(!matrixGeneration.isExecutedSuccessfully())
-				throw new MatrixGenerationException();
-		}
-			
+					
 		String outputFile = getOutputFile(task);
 		TaxonMatrix matrix = null;
 		try {
 			matrix = createTaxonMatrix(config, outputFile);
 		} catch (IOException | JDOMException e) {
 			log(LogLevel.ERROR, "Couldn't create taxon matrix from generated output", e);
-			throw new MatrixGenerationException();
+			throw new MatrixGenerationException(task);
 		}
 		if(matrix == null) 
-			throw new MatrixGenerationException();
+			throw new MatrixGenerationException(task);
 		
 		Model model = new Model(matrix);
 		try {
 			serializeMatrix(model, Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "TaxonMatrix.ser");
 		} catch (IOException e) {
 			log(LogLevel.ERROR, "Couldn't serialize matrix to disk", e);
-			throw new MatrixGenerationException();
+			throw new MatrixGenerationException(task);
 		}
 		
 		return model;
@@ -380,13 +372,13 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		try {
 			outputDirectoryParentResult = fileService.getParent(authenticationToken, outputDirectory);
 		} catch (PermissionDeniedException e) {
-			throw new MatrixGenerationException();
+			throw new MatrixGenerationException(task);
 		}
 		String outputDirectoryNameResult;
 		try {
 			outputDirectoryNameResult = fileService.getFileName(authenticationToken, outputDirectory);
 		} catch (PermissionDeniedException e) {
-			throw new MatrixGenerationException();
+			throw new MatrixGenerationException(task);
 		}
 			
 		//find a suitable destination filePath
@@ -395,7 +387,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			createDirectoryResult = fileService.createDirectory(authenticationToken, outputDirectoryParentResult, 
 				outputDirectoryNameResult, true);
 		} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
-			throw new MatrixGenerationException();
+			throw new MatrixGenerationException(task);
 		}
 			
 		String csvContent;
@@ -403,19 +395,19 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			csvContent = getCSVMatrix(unserializeMatrix(Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "TaxonMatrix.ser").getTaxonMatrix());
 		} catch (ClassNotFoundException | IOException e) {
 			log(LogLevel.ERROR, "Couldn't get CSV from matrix", e);
-			throw new MatrixGenerationException();
+			throw new MatrixGenerationException(task);
 		}
 		try {
 			String createFileResult = 
 					fileService.createFile(new AdminAuthenticationToken(), createDirectoryResult, "Matrix.mx", true);
 		} catch (CreateFileFailedException | PermissionDeniedException e) {
-			throw new MatrixGenerationException();
+			throw new MatrixGenerationException(task);
 		}
 		try {
 			fileAccessService.setFileContent(authenticationToken, 
 					createDirectoryResult + File.separator + "Matrix.mx", csvContent);
 		} catch (SetFileContentFailedException | PermissionDeniedException e) {
-			throw new MatrixGenerationException();
+			throw new MatrixGenerationException(task);
 		}
 		
 		//update task
@@ -452,7 +444,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			try {
 				fileService.setInUse(authenticationToken, false, config.getInput(), task);
 			} catch (PermissionDeniedException e) {
-				throw new MatrixGenerationException();
+				throw new MatrixGenerationException(task);
 			}
 		daoManager.getMatrixGenerationConfigurationDAO().remove(config);
 		
@@ -491,7 +483,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		try {
 			serializeMatrix(model, Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "TaxonMatrix.ser");
 		} catch (IOException e) {
-			throw new MatrixGenerationException();
+			throw new MatrixGenerationException(task);
 		}
 		//saveFile(matrix, outputFile);
 	}
@@ -573,7 +565,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			file.createNewFile();
 		} catch (IOException e) {
 			log(LogLevel.ERROR, "Couldn't create output file", e);
-			throw new MatrixGenerationException();
+			throw new MatrixGenerationException(task);
 		}
 		
 		String[] characters = new String[model.getTaxonMatrix().getCharacterCount() + 1];
@@ -596,7 +588,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			}
 		} catch (IOException e) {
 			log(LogLevel.ERROR, "Couldn't open or close writer", e);
-			throw new MatrixGenerationException();
+			throw new MatrixGenerationException(task);
 		}
 		
 		/*ObjectMapper mapper = new ObjectMapper();
@@ -856,7 +848,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	private MatrixGenerationConfiguration getMatrixGenerationConfiguration(Task task) throws MatrixGenerationException {
 		final AbstractTaskConfiguration configuration = task.getConfiguration();
 		if(!(configuration instanceof MatrixGenerationConfiguration))
-			throw new MatrixGenerationException();
+			throw new MatrixGenerationException(task);
 		final MatrixGenerationConfiguration mtrixGenerationConfiguration = (MatrixGenerationConfiguration)configuration;
 		return mtrixGenerationConfiguration;
 	}

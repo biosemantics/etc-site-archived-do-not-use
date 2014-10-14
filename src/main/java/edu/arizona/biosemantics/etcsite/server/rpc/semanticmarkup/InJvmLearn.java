@@ -79,6 +79,7 @@ public class InJvmLearn implements Learn {
 			LearnResult result = new LearnResult(datasetPrefix.getOtoUploadId(), datasetPrefix.getOtoSecret());	
 			executedSuccessfully = true;
 			return result;
+			//throw new SemanticMarkupException(null); //test failing process
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Semantic Markup Learn failed with exception.", e);
 			executedSuccessfully = false;

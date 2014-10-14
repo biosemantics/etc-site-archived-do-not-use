@@ -1,5 +1,6 @@
 package edu.arizona.biosemantics.etcsite.client.top;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.activity.shared.Activity;
@@ -20,6 +21,7 @@ import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
 import edu.arizona.biosemantics.etcsite.client.content.news.NewsPlace;
 import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
+import edu.arizona.biosemantics.etcsite.client.event.FailedTasksEvent;
 import edu.arizona.biosemantics.etcsite.client.event.ResumableTasksEvent;
 import edu.arizona.biosemantics.etcsite.client.top.ITopView.Presenter;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
@@ -43,11 +45,23 @@ public class LoggedInActivity implements Activity, Presenter {
 		this.resumableTasksTime = resumableTasksTime;
 		this.resumableTasksTimer = new Timer() {
 	        public void run() {
-	        	taskService.getResumableTasks(Authentication.getInstance().getToken(), new AsyncCallback<Map<Integer, Task>>() {
+	        	taskService.getResumableOrFailedTasks(Authentication.getInstance().getToken(), new AsyncCallback<Map<Integer, Task>>() {
 					@Override
 					public void onSuccess(Map<Integer, Task> result) {
 						topView.setResumableTasks(!result.isEmpty());
-						tasksBus.fireEvent(new ResumableTasksEvent(result));
+						
+						Map<Integer, Task> resumableTasks = new HashMap<Integer, Task>();
+						Map<Integer, Task> failedTasks = new HashMap<Integer, Task>();
+						for(Integer id : result.keySet()) {
+							Task task = result.get(id);
+							if(task.isResumable())
+								resumableTasks.put(id, task);
+							if(task.isFailed())
+								failedTasks.put(id, task);
+						}
+						
+						tasksBus.fireEvent(new ResumableTasksEvent(resumableTasks));
+						tasksBus.fireEvent(new FailedTasksEvent(failedTasks));
 					}
 					@Override
 					public void onFailure(Throwable caught) {

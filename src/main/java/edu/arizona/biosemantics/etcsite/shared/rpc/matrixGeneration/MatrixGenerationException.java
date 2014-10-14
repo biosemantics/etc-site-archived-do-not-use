@@ -6,7 +6,7 @@ public class MatrixGenerationException extends Exception {
 
 	private Task task;
 	
-	public MatrixGenerationException() { }
+	private MatrixGenerationException() { }
 	
 	public MatrixGenerationException(Task task) {
 		this.task = task;

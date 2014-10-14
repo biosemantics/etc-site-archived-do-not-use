@@ -24,7 +24,7 @@ import edu.arizona.biosemantics.etcsite.client.content.user.IUsersView;
 import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectPresenter.ISelectListener;
 import edu.arizona.biosemantics.etcsite.client.content.user.UsersPresenter;
-import edu.arizona.biosemantics.etcsite.client.event.FailedTaskEvent;
+import edu.arizona.biosemantics.etcsite.client.event.FailedTasksEvent;
 import edu.arizona.biosemantics.etcsite.client.event.ResumableTasksEvent;
 import edu.arizona.biosemantics.etcsite.shared.model.Share;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
@@ -72,11 +72,12 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 				}
 			}
 		});
-		eventBus.addHandler(FailedTaskEvent.TYPE, new FailedTaskEvent.FailedTaskEventHandler() {
+		eventBus.addHandler(FailedTasksEvent.TYPE, new FailedTasksEvent.FailedTasksEventHandler() {
 			@Override
-			public void onResumableTaskEvent(FailedTaskEvent failedTaskEvent) {
-				Task task = failedTaskEvent.getTask();
-				view.updateTaskData(new TaskData(task, inviteesForOwnedTasks.get(task)));
+			public void onFailedTasksEvent(FailedTasksEvent failedTasksEvent) {
+				for(Task task : failedTasksEvent.getTasks().values()) {
+					view.updateTaskData(new TaskData(task, inviteesForOwnedTasks.get(task)));
+				}
 			}
 		});
 	}

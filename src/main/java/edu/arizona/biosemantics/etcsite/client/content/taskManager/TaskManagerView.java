@@ -185,7 +185,7 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 		Column<TaskData, String> statusTextColumn = new Column<TaskData, String>(statusTextCell) {
 			@Override
 			public String getValue(TaskData object) {
-				if(object.getTask().isComplete())
+				if(object.getTask().isComplete() && !object.getTask().isFailed())
 					return "Completed";
 				if(object.getTask().isFailed())
 					return "Failed";

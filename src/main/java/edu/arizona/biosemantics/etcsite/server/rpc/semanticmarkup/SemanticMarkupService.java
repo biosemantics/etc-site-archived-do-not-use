@@ -198,7 +198,6 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	
 	@Override
 	public LearnInvocation learn(final AuthenticationToken authenticationToken, final Task task) throws SemanticMarkupException {
-		//throw new SemanticMarkupException(task);
 		String numberOfSentences = getNumberOfSentences();
 		String numberOfWords = getNumberOfWords();
 		final SemanticMarkupConfiguration config = getSemanticMarkupConfiguration(task);
@@ -226,12 +225,15 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			String bioportalUserId = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalUserId();
 			String bioportalAPIKey = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalAPIKey();
 			final Learn learn = new ExtraJvmLearn(authenticationToken, glossary, input, tablePrefix, source, operator, bioportalUserId, bioportalAPIKey);
-			//Learn learn = new InJvmLearn(authenticationToken, glossary, input, tablePrefix, source, operator, bioportalUserId, bioportalAPIKey);
+			//final Learn learn = new InJvmLearn(authenticationToken, glossary, input, tablePrefix, source, operator, bioportalUserId, bioportalAPIKey);
 			activeLearns.put(config.getConfiguration().getId(), learn);
 			final ListenableFuture<LearnResult> futureResult = executorService.submit(learn);
 			activeLearnFutures.put(config.getConfiguration().getId(), futureResult);
 			futureResult.addListener(new Runnable() {
 			     	public void run() {
+			     		Learn learn = activeLearns.remove(config.getConfiguration().getId());
+			 			ListenableFuture<LearnResult> futureResult = activeLearnFutures.remove(config.getConfiguration().getId());
+			 			
 			     		if(learn.isExecutedSuccessfully()) {
 			     			if(!futureResult.isCancelled()) {
 			     				LearnResult result = null;
@@ -261,6 +263,10 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 									sendFinishedLearningTermsEmail(task);
 								}
 			     			}
+			     		} else {
+			     			task.setFailed(true);
+							task.setFailedTime(new Date());
+							daoManager.getTaskDAO().updateTask(task);
 			     		}
 			     	}
 			     }, executorService);
@@ -272,24 +278,6 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	@Override
 	public Task review(AuthenticationToken authenticationToken, Task task) throws SemanticMarkupException {
 		final SemanticMarkupConfiguration config = getSemanticMarkupConfiguration(task);
-		
-		Learn learn = activeLearns.remove(config.getConfiguration().getId());
-		if(learn != null) {
-			if(learn.isExecutedSuccessfully()) {
-	 			ListenableFuture<LearnResult> futureResult = activeLearnFutures.remove(config.getConfiguration().getId());
-	 			if(futureResult != null && !futureResult.isCancelled()) {
-					try {
-						LearnResult result = futureResult.get();
-					} catch (InterruptedException | ExecutionException e) {
-						log(LogLevel.ERROR, "Couldn't get the produced learn result", e);
-						throw new SemanticMarkupException(task);
-					}
-	 			}
-	 		} else if(!learn.isExecutedSuccessfully()){
-	 			throw new SemanticMarkupException(task);
-	 		}
-		}
-				
 		TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP);
 		TaskStage taskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.REVIEW_TERMS.toString());
 		task.setTaskStage(taskStage);
@@ -330,6 +318,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			futureResult.addListener(new Runnable() {
 				@Override
 				public void run() {
+					Parse parse = activeParses.remove(config.getConfiguration().getId());
+					ListenableFuture<ParseResult> futureResult = activeParseFutures.remove(config.getConfiguration().getId());
 					if(parse.isExecutedSuccessfully()) {
 						if(!futureResult.isCancelled()) {
 							task.setResumable(true);
@@ -339,6 +329,10 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 							daoManager.getTaskDAO().updateTask(task);
 							sendFinishedParsingEmail(task);
 						}
+					} else {
+						task.setFailed(true);
+						task.setFailedTime(new Date());
+						daoManager.getTaskDAO().updateTask(task);
 					}
 				}
 			}, executorService);
@@ -348,24 +342,6 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	@Override
 	public Task output(AuthenticationToken authenticationToken, Task task) throws SemanticMarkupException {	
 		final SemanticMarkupConfiguration config = getSemanticMarkupConfiguration(task);
-		
-		Parse parse = activeParses.remove(config.getConfiguration().getId());
-		if(parse != null) {
-			if(parse.isExecutedSuccessfully()) {
-				ListenableFuture<ParseResult> futureResult = activeParseFutures.remove(config.getConfiguration().getId());
-				if(futureResult != null && !futureResult.isCancelled()) {
-					try {
-						ParseResult result = futureResult.get();
-					} catch (InterruptedException | ExecutionException e) {
-						log(LogLevel.ERROR, "Couldn't get the produced parse result", e);
-						throw new SemanticMarkupException(task);
-					}
-				}
-			} else if(!parse.isExecutedSuccessfully()) {
-				throw new SemanticMarkupException(task);
-			}
-		}
-		
 		config.setOutput(config.getInput() + "_" + task.getName());
 		
 		String outputDirectory = config.getOutput();			

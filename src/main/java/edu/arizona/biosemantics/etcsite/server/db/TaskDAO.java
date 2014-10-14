@@ -165,6 +165,39 @@ public class TaskDAO {
 		return tasks;
 	}
 	
+	public List<Task> getFailedTasks(int userId) {
+		List<Task> tasks = new LinkedList<Task>();
+		try(Query query = new Query("SELECT * FROM (" + allUsersTasksQuery + ")AS allTasks WHERE failed=true")) {
+			query.setParameter(1, userId);
+			query.setParameter(2, userId);
+			ResultSet result = query.execute();
+			while(result.next()) {
+				Task task = createTask(result);
+				tasks.add(task);
+			}
+		} catch(Exception e) {
+			log(LogLevel.ERROR, "Couldn't get failed tasks of user", e);
+		}
+		return tasks;
+	}
+	
+	public List<Task> getFailedAndIncompletedTasks(int userId) {
+		List<Task> tasks = new LinkedList<Task>();
+		try(Query query = new Query("SELECT * FROM (" + allUsersTasksQuery + ")AS allTasks WHERE failed=true "
+				+ "AND complete=false")) {
+			query.setParameter(1, userId);
+			query.setParameter(2, userId);
+			ResultSet result = query.execute();
+			while(result.next()) {
+				Task task = createTask(result);
+				tasks.add(task);
+			}
+		} catch(Exception e) {
+			log(LogLevel.ERROR, "Couldn't get failed tasks of user", e);
+		}
+		return tasks;
+	}
+	
 	public List<Task> getCompletedTasks(int userId) {
 		List<Task> tasks = new LinkedList<Task>();
 		try(Query query = new Query("SELECT * FROM (" + allUsersTasksQuery + ")AS allTasks WHERE complete=true")) {
@@ -311,4 +344,6 @@ public class TaskDAO {
 			log(LogLevel.ERROR, "Couldn't delete task", e);
 		}
 	}
+
+	
 }

@@ -29,7 +29,7 @@ public interface ITaskService extends RemoteService {
 	
 	public boolean hasResumable(AuthenticationToken authenticationToken);
 	
-	public Map<Integer, Task> getResumableTasks(AuthenticationToken authenticationToken);
+	public Map<Integer, Task> getResumableOrFailedTasks(AuthenticationToken authenticationToken);
 	
 	//public void cancelTask(AuthenticationToken authenticationToken, Task task);
 	

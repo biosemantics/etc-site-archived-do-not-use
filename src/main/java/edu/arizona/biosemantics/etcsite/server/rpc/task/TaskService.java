@@ -63,10 +63,16 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	}
 
 	@Override
-	public Map<Integer, Task> getResumableTasks(AuthenticationToken authenticationToken) {		
+	public Map<Integer, Task> getResumableOrFailedTasks(AuthenticationToken authenticationToken) {		
 		Map<Integer, Task> result = new LinkedHashMap<Integer, Task>();
 		for(Task task : daoManager.getTaskDAO().getResumableTasks(authenticationToken.getUserId()))
 			result.put(task.getId(), task);
+		for(Task task : daoManager.getTaskDAO().getFailedAndIncompletedTasks(authenticationToken.getUserId())) {
+			result.put(task.getId(), task);
+			//only report failed tasks once to client
+			task.setComplete(true);
+			daoManager.getTaskDAO().updateTask(task);
+		}
 		return result;	
 	}
 
