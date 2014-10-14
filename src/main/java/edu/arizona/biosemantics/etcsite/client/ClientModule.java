@@ -150,20 +150,20 @@ import edu.arizona.biosemantics.etcsite.client.top.ITopView;
 import edu.arizona.biosemantics.etcsite.client.top.LoggedOutPlace;
 import edu.arizona.biosemantics.etcsite.client.top.LoginTopView;
 import edu.arizona.biosemantics.etcsite.client.top.TopView;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFilePermissionServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileSearchServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.ISetupServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.ITaskServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.ITaxonomyComparisonServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.ITreeGenerationServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IUserServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IVisualizationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.access.IFileAccessServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.format.IFileFormatServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.IFilePermissionServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.search.IFileSearchServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.setup.ISetupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.treegeneration.ITreeGenerationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.visualization.IVisualizationServiceAsync;
 
 public class ClientModule extends AbstractGinModule {
 	

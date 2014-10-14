@@ -23,7 +23,9 @@ public class UserDAO {
 	}
 
 	private ShortUser createShortUser(User user) {
-		return new ShortUser(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getAffiliation());
+		return new ShortUser(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), 
+				user.getAffiliation(), user.getOpenIdProvider(), user.getOpenIdProviderId(), 
+				user.getBioportalUserId(), user.getBioportalAPIKey());
 	}
 
 	public User getUser(int id) {
@@ -58,91 +60,80 @@ public class UserDAO {
 				bioportalAPIKey, created);
 	}
 
-	public User getUser(String email, String openIdProvider) {
+	public User getUser(String email) {
 		User user = null;
-		try(Query query = new Query(
-				"SELECT * FROM etcsite_users WHERE (openidproviderid) = ? AND openidprovider = ?")) {
+		try(Query query = new Query("SELECT * FROM etcsite_users WHERE email = ?")) {
 			query.setParameter(1, email);
-			query.setParameter(2, openIdProvider);
 			ResultSet result = query.execute();
 			while (result.next()) {
-				int id = result.getInt(1);
-				String openIdProviderId = result.getString(2);
-				openIdProvider = result.getString(3);
-				String password = result.getString(4);
-				String firstName = result.getString(5);
-				String lastName = result.getString(6);
-				String emailAddress = result.getString(7);
-				String affiliation = result.getString(8);
-				String bioportalUserId = result.getString(9);
-				String bioportalAPIKey = result.getString(10);
-				Date created = result.getTimestamp(11);
-	
-				user = new User(id, openIdProviderId, openIdProvider, password,
-						firstName, lastName, emailAddress, affiliation,
-						bioportalUserId, bioportalAPIKey, created);
+				user = createUser(result);
 			}
 		}catch(Exception e) {
-			log(LogLevel.ERROR, "Couldn't get user of email and openid provider", e);
+			log(LogLevel.ERROR, "Couldn't get user", e);
 		}
 		return user;
 	}
 	
-	public boolean addUser(String openIdProviderId, String encryptedPassword, String firstName, String lastName, String openIdProvider) {
-		if (getUser(openIdProviderId, openIdProvider) != null){ //if this user already exists, return false. 
-			return false;
-		} else {
-			try(Query addUser = new Query(
-					"INSERT INTO `etcsite_users`(`openIdProviderId`, `openidprovider`, `password`, `firstname`, `lastname`, " +
-					"`email`, `affiliation`, `bioportaluserid`, `bioportalapikey`) VALUES" +
-					" (?, ?, ?, ?, ?, ?, \"\", \"\", \"\")");) {
-				addUser.setParameter(1, openIdProviderId);
-				addUser.setParameter(2, openIdProvider);
-				addUser.setParameter(3, encryptedPassword);
-				addUser.setParameter(4, firstName);
-				addUser.setParameter(5, lastName);
-				addUser.setParameter(6, openIdProviderId); //email
-				addUser.execute();
-			}catch(Exception e) {
-				log(LogLevel.ERROR, "Couldn't add user", e);
+	public ShortUser getShortUser(String email) {
+		User user = getUser(email);
+		if(user != null) {
+			ShortUser shortUser = new ShortUser(user);
+			return shortUser;
+		}
+		return null;
+	}
+	
+	public User insert(User user) {
+		User result = null;
+		try(Query query = new Query(
+			"INSERT INTO `etcsite_users`(`openIdProviderId`, `openidprovider`, `password`, `firstname`, `lastname`, " +
+			"`email`, `affiliation`, `bioportaluserid`, `bioportalapikey`) VALUES" +
+			" (?, ?, ?, ?, ?, ?, ?, ?, ?)");) {
+			query.setParameter(1, user.getOpenIdProviderId());
+			query.setParameter(2, user.getOpenIdProvider());
+			query.setParameter(3, user.getPassword());
+			query.setParameter(4, user.getFirstName());
+			query.setParameter(5, user.getLastName());
+			query.setParameter(6, user.getEmail());
+			query.setParameter(7, user.getAffiliation());
+			query.setParameter(8, user.getBioportalUserId());
+			query.setParameter(9, user.getBioportalAPIKey());
+			query.execute();
+			ResultSet generatedKeys = query.getGeneratedKeys();
+			if(generatedKeys.next()) {
+				result = this.getUser(generatedKeys.getInt(1));
 			}
-			
-			//add a file directory for this user - name of directory is id. 
-			int id = getUser(openIdProviderId, openIdProvider).getId();	
-			String filename = Configuration.fileBase + File.separator + id;
+		} catch(Exception e) {
+			log(LogLevel.ERROR, "Couldn't add user", e);
+		}
+		
+		if(result != null) {
+			String filename = Configuration.fileBase + File.separator + result.getId();
 			new File(filename).mkdirs();
+		}
 			
-			return true;
+		return result;
+	}
+	
+	public void update(User user) {
+		try (Query query = new Query("UPDATE etcsite_users SET openidproviderid = ?, openidprovider = ?, password = ?, "
+				+ "firstname = ?, lastname = ?, email = ?, affiliation = ?, bioportaluserid = ?, bioportalapikey = ? WHERE id = ?")) {
+			query.setParameter(1, user.getOpenIdProviderId());
+			query.setParameter(2, user.getOpenIdProvider());
+			query.setParameter(3, user.getPassword());
+			query.setParameter(4, user.getFirstName());
+			query.setParameter(5, user.getLastName());
+			query.setParameter(6, user.getEmail());
+			query.setParameter(7, user.getAffiliation());
+			query.setParameter(8, user.getBioportalUserId());
+			query.setParameter(9, user.getBioportalAPIKey());
+			query.setParameter(10, user.getId());
+			query.execute();
+		} catch(Exception e) {
+			log(LogLevel.ERROR, "Couldn't update matrix generation configuration", e);
 		}
 	}
 	
-	public boolean updateUser(int id, String firstName, String lastName, String email,
-			String password, String affiliation, String bioportalUserId,
-			String bioportalAPIKey) {
-		
-		if (this.getUser(id) == null){ //if this user does not exist, return false.
-			return false;
-		} else {
-			try(Query updateUser = new Query(
-					"UPDATE `etcsite_users` SET `firstname`=?, `lastname`=?, `email`=?, `password`=?, `affiliation`=?, " +
-					"`bioportaluserid`=?, `bioportalapikey`=? WHERE (id) = ?")) {
-				updateUser.setParameter(1, firstName);
-				updateUser.setParameter(2, lastName);
-				updateUser.setParameter(3, email);
-				updateUser.setParameter(4, password);
-				updateUser.setParameter(5, affiliation);
-				updateUser.setParameter(6, bioportalUserId);
-				updateUser.setParameter(7, bioportalAPIKey);
-				updateUser.setParameter(8, id);
-				updateUser.execute();
-			}catch(Exception e) {
-				log(LogLevel.ERROR, "Couldn't update user", e);
-			}
-			
-			return true;
-		}
-	}
-
 	public List<ShortUser> getUsers() {
 		List<ShortUser> result = new LinkedList<ShortUser>();
 		try(Query query = new Query("SELECT * FROM etcsite_users")) {
@@ -169,4 +160,5 @@ public class UserDAO {
 		}
 		return result;
 	}
+
 }

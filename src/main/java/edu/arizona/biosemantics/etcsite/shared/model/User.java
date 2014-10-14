@@ -5,19 +5,18 @@ import java.util.Date;
 
 public class User implements Serializable {
 
-	private static final long serialVersionUID = 3596572148232966822L;		//old: 3593412522402966872L;
-	private int id; //the totally unique integer id identifying this User. 
+	private int id;
 	
-	private String openIdProviderId; //the realm-unique value provided by the openID provider, or the user's email address if a local account. 
-	private String openIdProvider; //e.g. "Google", "Yahoo".  "none" if local account. 
-	private String password; //only used if local account. Otherwise, openID provider handles authentication. 
+	private String openIdProviderId = ""; //the realm-unique value provided by the openID provider, or the user's email address if a local account. 
+	private String openIdProvider = ""; //e.g. "Google", "Yahoo".  "none" if local account. 
+	private String password = ""; //only used if local account. Otherwise, openID provider handles authentication. 
 	
-	private String firstName;
-	private String lastName;
-	private String email;
-	private String affiliation;
-	private String bioportalUserId;
-	private String bioportalAPIKey;
+	private String firstName = "";
+	private String lastName = "";
+	private String email = "";
+	private String affiliation = "";
+	private String bioportalUserId = "";
+	private String bioportalAPIKey = "";
 	private Date created;
 	
 	public User() { }
@@ -27,7 +26,6 @@ public class User implements Serializable {
 		this.openIdProviderId = openIdProviderId;
 		this.openIdProvider = openIdProvider;
 		this.password = password;
-		
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
@@ -35,6 +33,31 @@ public class User implements Serializable {
 		this.bioportalUserId = bioportalUserId;
 		this.bioportalAPIKey = bioportalAPIKey;
 		this.created = created;
+	}
+	
+	public User(String openIdProviderId, String openIdProvider, String password, String firstName, String lastName, 
+			String affiliation, String bioportalUserId, String bioportalAPIKey) {
+		this.openIdProviderId = openIdProviderId;
+		this.openIdProvider = openIdProvider;
+		this.password = password;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = openIdProviderId;
+		this.affiliation = affiliation;
+		this.bioportalUserId = bioportalUserId;
+		this.bioportalAPIKey = bioportalAPIKey;
+	}
+	
+	public User(String password, String firstName, String lastName, 
+			String email, String affiliation, String bioportalUserId, String bioportalAPIKey) {
+		this.openIdProvider = "none";
+		this.password = password;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.affiliation = affiliation;
+		this.bioportalUserId = bioportalUserId;
+		this.bioportalAPIKey = bioportalAPIKey;
 	}
 	
 	@Override

@@ -2,8 +2,8 @@ package edu.arizona.biosemantics.etcsite.client.common;
 
 import com.google.gwt.user.client.Cookies;
 
-import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.model.Setup;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 
 public class Authentication {
 

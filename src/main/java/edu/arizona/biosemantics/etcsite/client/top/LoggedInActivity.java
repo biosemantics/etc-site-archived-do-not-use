@@ -5,26 +5,26 @@ import java.util.Map;
 import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.google.web.bindery.event.shared.EventBus;
 
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.client.content.about.AboutPlace;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerPlace;
 import edu.arizona.biosemantics.etcsite.client.content.help.HelpPlace;
 import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
 import edu.arizona.biosemantics.etcsite.client.content.news.NewsPlace;
 import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsPlace;
-import edu.arizona.biosemantics.etcsite.client.content.taskManager.ResumableTasksEvent;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
+import edu.arizona.biosemantics.etcsite.client.event.ResumableTasksEvent;
 import edu.arizona.biosemantics.etcsite.client.top.ITopView.Presenter;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.ITaskServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
 
 public class LoggedInActivity implements Activity, Presenter {
 
@@ -33,7 +33,6 @@ public class LoggedInActivity implements Activity, Presenter {
 	private Timer resumableTasksTimer;
 	private int resumableTasksTime;
 	private IAuthenticationServiceAsync authenticationService;
-	private MessagePresenter messagePresenter = new MessagePresenter();
 
 	@Inject
 	public LoggedInActivity(final ITopView topView, PlaceController placeController, 
@@ -44,11 +43,15 @@ public class LoggedInActivity implements Activity, Presenter {
 		this.resumableTasksTime = resumableTasksTime;
 		this.resumableTasksTimer = new Timer() {
 	        public void run() {
-	        	taskService.getResumableTasks(Authentication.getInstance().getToken(), new RPCCallback<Map<Integer, Task>>() {
+	        	taskService.getResumableTasks(Authentication.getInstance().getToken(), new AsyncCallback<Map<Integer, Task>>() {
 					@Override
-					public void onResult(Map<Integer, Task> result) {
+					public void onSuccess(Map<Integer, Task> result) {
 						topView.setResumableTasks(!result.isEmpty());
 						tasksBus.fireEvent(new ResumableTasksEvent(result));
+					}
+					@Override
+					public void onFailure(Throwable caught) {
+						Alerter.failedToGetResumableTasks(caught);
 					}
 	    		});
 	        }
@@ -122,6 +125,6 @@ public class LoggedInActivity implements Activity, Presenter {
 	public void onLogout() {
 		Authentication.getInstance().destroy();
 		placeController.goTo(new LoggedOutPlace());
-		messagePresenter.showOkBox("Sign-out", "You are now signed out.");
+		Alerter.signOutSuccessful();
 	}
 }

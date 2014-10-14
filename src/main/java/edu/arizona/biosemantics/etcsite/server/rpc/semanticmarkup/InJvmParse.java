@@ -2,14 +2,11 @@ package edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup;
 
 import java.io.File;
 import java.util.HashSet;
-import java.util.Set;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
-import edu.arizona.biosemantics.etcsite.server.Task.FailHandler;
 import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
-import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
-import edu.arizona.biosemantics.etcsite.shared.model.DatasetPrefix;
-import edu.arizona.biosemantics.semanticmarkup.ETCLearnMain;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkupException;
 import edu.arizona.biosemantics.semanticmarkup.ETCMarkupMain;
 
 public class InJvmParse implements Parse {
@@ -37,7 +34,7 @@ public class InJvmParse implements Parse {
 	}
 	
 	@Override
-	public ParseResult call() throws Exception {
+	public ParseResult call() throws SemanticMarkupException {
 		ParseResult result = new ParseResult(new HashSet<File>());
 		String databaseName = Configuration.charaparser_databaseName;
 		String databaseUser = Configuration.databaseUser;
@@ -70,11 +67,8 @@ public class InJvmParse implements Parse {
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Semantic Markup Parse failed with exception.", e);
 			executedSuccessfully = false;
+			throw new SemanticMarkupException(null);
 		}
-		if(!isExecutedSuccessfully()) {
-			handleFail();
-		}
-		
 		
 		//File outputFile = new File("workspace" + File.separator + tablePrefix + File.separator + "out");
 		//for(File outFile : outputFile.listFiles()) {
@@ -93,27 +87,9 @@ public class InJvmParse implements Parse {
 		}*/
 		return result;
 	}
-
-	protected void handleFail() {
-		for(FailHandler failHandler : failHandlers) {
-			failHandler.onFail();
-		}
-	}
 	
 	@Override
 	public void destroy() {}
-
-	private Set<FailHandler> failHandlers = new HashSet<FailHandler>();
-	
-	@Override
-	public void addFailHandler(FailHandler handler) {
-		failHandlers.add(handler);
-	}
-	
-	@Override
-	public void removeFailHandler(FailHandler handler) {
-		failHandlers.remove(handler);
-	}
 
 	@Override
 	public boolean isExecutedSuccessfully() {

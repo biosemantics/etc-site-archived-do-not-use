@@ -4,11 +4,11 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.ExtraJvmCallable;
-import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkupException;
 import edu.arizona.biosemantics.semanticmarkup.ETCMarkupMain;
 
 public class ExtraJvmParse extends ExtraJvmCallable<ParseResult> implements Parse {
@@ -125,26 +125,11 @@ public class ExtraJvmParse extends ExtraJvmCallable<ParseResult> implements Pars
 	}
 
 	@Override
-	public ParseResult createReturn() {
+	public ParseResult createReturn() throws SemanticMarkupException {
+		if(exitStatus != 0)
+			throw new SemanticMarkupException(null);
 		ParseResult result = new ParseResult(new HashSet<File>());
 		return result;
-	}
-
-	private Set<FailHandler> failHandlers = new HashSet<FailHandler>();
-	
-	@Override
-	public void addFailHandler(FailHandler handler) {
-		failHandlers.add(handler);
-	}
-	
-	@Override
-	public void removeFailHandler(FailHandler handler) {
-		failHandlers.remove(handler);
-	}
-
-	@Override
-	public boolean isExecutedSuccessfully() {
-		return false;
 	}
 
 

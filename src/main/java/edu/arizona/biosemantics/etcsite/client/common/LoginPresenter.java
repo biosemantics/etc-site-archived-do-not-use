@@ -1,13 +1,13 @@
 package edu.arizona.biosemantics.etcsite.client.common;
 
 import com.google.gwt.user.client.Window.Location;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.sencha.gxt.widget.core.client.Dialog;
 
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView.ILoginListener;
-import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationResult;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationResult;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 
 public class LoginPresenter implements ILoginView.Presenter {
 
@@ -39,9 +39,9 @@ public class LoginPresenter implements ILoginView.Presenter {
 	@Override
 	public void onLogin() {
 		String password = loginView.getPassword();
-		authenticationService.login(loginView.getUsername(), password, new RPCCallback<AuthenticationResult>() {
+		authenticationService.login(loginView.getUsername(), password, new AsyncCallback<AuthenticationResult>() {
 			@Override
-			public void onResult(AuthenticationResult result) {
+			public void onSuccess(AuthenticationResult result) {
 				if(result.getResult()) {
 					Authentication auth = Authentication.getInstance();
 					auth.setUserId(result.getUser().getId());
@@ -58,6 +58,10 @@ public class LoginPresenter implements ILoginView.Presenter {
 					if(currentListener != null)
 						currentListener.onLoginFailure();
 				}
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToAuthenticate(caught);
 			}
 		});
 	}

@@ -5,6 +5,8 @@ import java.util.Set;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.ExtraJvmCallable;
+import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkupException;
 
 public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements MatrixGeneration {
 
@@ -36,7 +38,9 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements 
 	}
 
 	@Override
-	public Void createReturn() { 
+	public Void createReturn() throws MatrixGenerationException {
+		if(exitStatus != 0)
+			throw new MatrixGenerationException(null);
 		return null;
 	}
 	

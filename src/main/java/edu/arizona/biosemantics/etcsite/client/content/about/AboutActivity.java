@@ -12,7 +12,7 @@ import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
 import edu.arizona.biosemantics.etcsite.client.content.about.IAboutView;
 import edu.arizona.biosemantics.etcsite.client.content.about.IAboutView.Presenter;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 
 
 public class AboutActivity extends MyAbstractActivity implements Presenter {

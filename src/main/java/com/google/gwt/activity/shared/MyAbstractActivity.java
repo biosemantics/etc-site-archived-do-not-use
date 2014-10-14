@@ -1,7 +1,9 @@
 package com.google.gwt.activity.shared;
 
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
@@ -9,11 +11,10 @@ import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView.ILoginListener;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView.IRegisterListener;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView.IResetPasswordListener;
-import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.client.top.LoggedInPlace;
-import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationResult;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationResult;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 
 public abstract class MyAbstractActivity implements MyActivity {
 	
@@ -22,7 +23,6 @@ public abstract class MyAbstractActivity implements MyActivity {
 	private ILoginView.Presenter loginPresenter;
 	private IRegisterView.Presenter registerPresenter;
 	private IResetPasswordView.Presenter resetPasswordPresenter;
-	protected MessagePresenter messagePresenter = new MessagePresenter();
 	
 	public MyAbstractActivity(PlaceController placeController, IAuthenticationServiceAsync authenticationService, 
 			ILoginView.Presenter loginPresenter, IRegisterView.Presenter registerPresenter, 
@@ -32,7 +32,6 @@ public abstract class MyAbstractActivity implements MyActivity {
 		this.loginPresenter = loginPresenter;
 		this.registerPresenter = registerPresenter;
 		this.resetPasswordPresenter = resetPasswordPresenter;
-		this.messagePresenter = messagePresenter;
 	}
 	
 	/**
@@ -75,9 +74,9 @@ public abstract class MyAbstractActivity implements MyActivity {
 	protected void requireLogin(final LoggedInListener listener){
 		Authentication authentication = Authentication.getInstance();
 		if(authentication.isSet()) {
-			authenticationService.isValidSession(authentication.getToken(), new RPCCallback<AuthenticationResult>() {
+			authenticationService.isValidSession(authentication.getToken(), new AsyncCallback<AuthenticationResult>() {
 				@Override
-				public void onResult(AuthenticationResult result) {
+				public void onSuccess(AuthenticationResult result) {
 					if(result.getResult()) { //user is already logged in.
 						
 						listener.onLoggedIn(); //notify the listener that the user is logged in; they may proceed. 
@@ -98,6 +97,10 @@ public abstract class MyAbstractActivity implements MyActivity {
 							}
 						});
 					}
+				}
+				@Override
+				public void onFailure(Throwable caught) {
+					Alerter.failedToAuthenticate(caught);
 				}
 			});
 		} else {
@@ -182,18 +185,18 @@ public abstract class MyAbstractActivity implements MyActivity {
 	private void showRegisterWindow(final LoggedInListener listener){
 		registerPresenter.show(new IRegisterListener() {
 			@Override
-			public void onRegister(String message) {
-				loginPresenter.setMessage(message);
+			public void onRegister() {
+				loginPresenter.setMessage("Your account has been registered!");
 				loginPresenter.setEmailField(registerPresenter.getEmail());
 				registerPresenter.clearAllBoxes();
-				showLoginWindow(message, listener);
-			}
-			@Override
-			public void onRegisterFailure(String message) {
-				messagePresenter.showOkBox("Registration failure", message);
+				showLoginWindow("Your account has been registered!", listener);
 			}
 			@Override
 			public void onCancel() {}
+			@Override
+			public void onRegisterFailure() {
+				Alerter.failedToRegister(null);
+			}
 		});
 	}
 	
@@ -201,22 +204,15 @@ public abstract class MyAbstractActivity implements MyActivity {
 		resetPasswordPresenter.setEmail(loginPresenter.getEmailField());
 		resetPasswordPresenter.show(new IResetPasswordListener(){
 			@Override
-			public void onCodeSent(String message) {
-				messagePresenter.showOkBox("Code sent", message);
+			public void onCodeSent() {
+				Alerter.resetCodeSent(resetPasswordPresenter.getEmail());
 				loginPresenter.setEmailField(resetPasswordPresenter.getEmail());
 			}
-			
 			@Override
-			public void onSuccess(String message) {
+			public void onSuccess() {
 				loginPresenter.setEmailField(resetPasswordPresenter.getEmail());
-				showLoginWindow(message, listener);
+				showLoginWindow("Login", listener);
 			}
-			
-			@Override
-			public void onFailure(String message) {
-				messagePresenter.showOkBox("Failure", message);
-			}
-			
 			@Override
 			public void onCancel() {
 				showLoginWindow(listener);

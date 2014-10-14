@@ -9,7 +9,7 @@ import com.google.inject.Inject;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 
 public class AnnotationReviewActivity extends MyAbstractActivity {
 

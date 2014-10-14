@@ -4,20 +4,25 @@ import com.google.gwt.activity.shared.MyAbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.regexp.shared.RegExp;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
-import edu.arizona.biosemantics.etcsite.shared.model.UpdateUserResult;
+import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.User;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.user.InvalidPasswordException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserNotFoundException;
 
 public class SettingsActivity extends MyAbstractActivity implements ISettingsView.Presenter {
 
+	private IUserServiceAsync userService;
 	private ISettingsView settingsView;
 
 	@Inject
@@ -26,9 +31,11 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 			IAuthenticationServiceAsync authenticationService, 
 			ILoginView.Presenter loginPresenter, 
 			IRegisterView.Presenter registerPresenter, 
-			IResetPasswordView.Presenter resetPasswordPresenter) {
+			IResetPasswordView.Presenter resetPasswordPresenter, 
+			IUserServiceAsync userService) {
 		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter);
 		this.settingsView = settingsView;
+		this.userService = userService;
 	}
 	
 	@Override
@@ -36,10 +43,15 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 		settingsView.setPresenter(this);
 		panel.setWidget(settingsView.asWidget());
 		
-		authenticationService.getUser(Authentication.getInstance().getToken(), new RPCCallback<User>() {
+		userService.getUser(Authentication.getInstance().getToken(), new AsyncCallback<ShortUser>() {
 			@Override
-			public void onResult(User user) {
+			public void onSuccess(ShortUser user) {
 				settingsView.setData(user);
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToGetUsers(caught);
 			}
 		});
 	}
@@ -58,7 +70,7 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 		if (openIdProvider.equals("none"))
 			oldPassword = settingsView.getOldPassword();
 		else
-			oldPassword = firstName+lastName; //if this is not a local account, use the dummy password.
+			oldPassword = firstName+lastName;
 		final String newPassword = settingsView.getNewPassword();
 		final String confirmNewPassword = settingsView.getConfirmNewPassword();
 		
@@ -88,22 +100,20 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 			}
 		}
 		
-		//if the user has specified a new password, send it. If not, simply send the old password
-		//	- it will be encrypted and stored either way. 
 		final String password= newPassword.length() > 0 ? newPassword : oldPassword;
-			
-		authenticationService.updateUser(Authentication.getInstance().getToken(), oldPassword, firstName, lastName, email, password, affiliation, bioportalUserId, bioportalAPIKey, new RPCCallback<UpdateUserResult>() {
+		ShortUser newUser = new ShortUser(-1, email, firstName, lastName, affiliation, 
+				openIdProvider, "", bioportalUserId, bioportalAPIKey);
+		userService.update(Authentication.getInstance().getToken(), oldPassword, 
+				password, newUser, new AsyncCallback<Void>() {
 			@Override
-			public void onResult(UpdateUserResult result) {
-				if (result.getResult()){
-					//save the new session id that matches the new password. 
-					Authentication auth = Authentication.getInstance();
-					auth.setSessionID(result.getNewSessionId());
-					
-					settingsView.clearPasswords();						
-				}
-				
-				messagePresenter.showOkBox("Settings", result.getMessage());
+			public void onSuccess(Void result) {
+				settingsView.clearPasswords();					
+				Alerter.savedSettingsSuccesfully();
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToUpdateUser(caught);
 			}
 		});
 	}

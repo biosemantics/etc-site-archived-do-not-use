@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 
 import org.jdom2.Document;
@@ -43,26 +44,34 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Emailer;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
-import edu.arizona.biosemantics.etcsite.server.rpc.AdminAuthenticationToken;
-import edu.arizona.biosemantics.etcsite.server.rpc.FileAccessService;
-import edu.arizona.biosemantics.etcsite.server.rpc.FileFormatService;
-import edu.arizona.biosemantics.etcsite.server.rpc.FilePermissionService;
-import edu.arizona.biosemantics.etcsite.server.rpc.FileService;
+import edu.arizona.biosemantics.etcsite.server.rpc.auth.AdminAuthenticationToken;
+import edu.arizona.biosemantics.etcsite.server.rpc.file.FileService;
+import edu.arizona.biosemantics.etcsite.server.rpc.file.access.FileAccessService;
+import edu.arizona.biosemantics.etcsite.server.rpc.file.format.FileFormatService;
+import edu.arizona.biosemantics.etcsite.server.rpc.file.permission.FilePermissionService;
+import edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup.ParseResult;
 import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
-import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationConfiguration;
-import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
 import edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFilePermissionService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.CopyFilesFailedException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.CreateDirectoryFailedException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.CreateFileFailedException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.access.GetFileContentFailedException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.access.IFileAccessService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.access.SetFileContentFailedException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.format.IFileFormatService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.IFilePermissionService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDeniedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkupException;
 import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.Character;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.Organ;
@@ -179,14 +188,13 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		}
 	}
 	
-	private static final long serialVersionUID = -7871896158610489838L;
 	private IFileService fileService = new FileService();
 	private IFileFormatService fileFormatService = new FileFormatService();
 	private IFileAccessService fileAccessService = new FileAccessService();
 	private IFilePermissionService filePermissionService = new FilePermissionService();
 	private ListeningExecutorService executorService;
 	private Map<Integer, ListenableFuture<Void>> activeProcessFutures = new HashMap<Integer, ListenableFuture<Void>>();
-	private Map<Integer, MatrixGeneration> activeMatrixGenerations = new HashMap<Integer, MatrixGeneration>();
+	private Map<Integer, MatrixGeneration> activeProcess = new HashMap<Integer, MatrixGeneration>();
 	private DAOManager daoManager = new DAOManager();
 	private Emailer emailer = new Emailer();
 	
@@ -195,282 +203,426 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 	
 	@Override
-	public RPCResult<Task> start(AuthenticationToken authenticationToken, String taskName, String input) {	
+	protected void doUnexpectedFailure(Throwable t) {
+		String message = "Unexpected failure";
+		log(message, t);
+	    log(LogLevel.ERROR, "Unexpected failure", t);
+	    super.doUnexpectedFailure(t);
+	}
+	
+	@Override
+	public Task start(AuthenticationToken authenticationToken, String taskName, String input) throws MatrixGenerationException {	
+		boolean isShared = filePermissionService.isSharedFilePath(authenticationToken.getUserId(), input);
+		String fileName;
 		try {
-			RPCResult<Boolean> sharedResult = filePermissionService.isSharedFilePath(authenticationToken.getUserId(), input);
-			if(!sharedResult.isSucceeded())
-				return new RPCResult<Task>(false, "Couldn't verify permission on input directory");
-			RPCResult<String> fileNameResult = fileService.getFileName(authenticationToken, input);
-			if(!fileNameResult.isSucceeded())
-				return new RPCResult<Task>(false, "Couldn't find file name for import");
-			if(sharedResult.getData()) {
-				RPCResult<String> destinationResult = 
-						fileService.createDirectory(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUserId(), 
-								fileNameResult.getData(), true);
-				RPCResult<Void> destination = fileService.copyFiles(authenticationToken, input, destinationResult.getData());
-				if(!destinationResult.isSucceeded() || !destination.isSucceeded())
-					return new RPCResult<Task>(false, "Couldn't copy shared files to an owned destination for input to task");
-				input = destinationResult.getData();
+			fileName = fileService.getFileName(authenticationToken, input);
+		} catch (PermissionDeniedException e) {
+			throw new MatrixGenerationException();
+		}
+		if(isShared) {
+			String destination;
+			try {
+				destination = fileService.createDirectory(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUserId(), 
+						fileName, true);
+			} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
+				throw new MatrixGenerationException();
 			}
-			
-			MatrixGenerationConfiguration matrixGenerationConfiguration = new MatrixGenerationConfiguration();
-			matrixGenerationConfiguration.setInput(input);	
-			matrixGenerationConfiguration.setOutput(matrixGenerationConfiguration.getInput() + "_" + taskName);
-			matrixGenerationConfiguration = daoManager.getMatrixGenerationConfigurationDAO().addMatrixGenerationConfiguration(matrixGenerationConfiguration);
-			
-			edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum taskType = edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION;
-			TaskType dbTaskType = daoManager.getTaskTypeDAO().getTaskType(taskType);
-			TaskStage taskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.INPUT.toString());
-			ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
-			Task task = new Task();
-			task.setName(taskName);
-			task.setResumable(true);
-			task.setUser(user);
-			task.setTaskStage(taskStage);
-			task.setTaskConfiguration(matrixGenerationConfiguration);
-			task.setTaskType(dbTaskType);
-			
-			task = daoManager.getTaskDAO().addTask(task);
-			taskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.PROCESS.toString());
-			task.setTaskStage(taskStage);
-			daoManager.getTaskDAO().updateTask(task);
+			try {
+				fileService.copyFiles(authenticationToken, input, destination);
+			} catch (CopyFilesFailedException | PermissionDeniedException e) {
+				throw new MatrixGenerationException();
+			}
+			input = destination;
+		}
+		
+		MatrixGenerationConfiguration config = new MatrixGenerationConfiguration();
+		config.setInput(input);	
+		config.setOutput(config.getInput() + "_" + taskName);
+		config = daoManager.getMatrixGenerationConfigurationDAO().addMatrixGenerationConfiguration(config);
+		
+		edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum taskType = edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION;
+		TaskType dbTaskType = daoManager.getTaskTypeDAO().getTaskType(taskType);
+		TaskStage taskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.INPUT.toString());
+		ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
+		Task task = new Task();
+		task.setName(taskName);
+		task.setResumable(true);
+		task.setUser(user);
+		task.setTaskStage(taskStage);
+		task.setTaskConfiguration(config);
+		task.setTaskType(dbTaskType);
+		
+		task = daoManager.getTaskDAO().addTask(task);
+		taskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.PROCESS.toString());
+		task.setTaskStage(taskStage);
+		daoManager.getTaskDAO().updateTask(task);
 
+		try {
 			fileService.setInUse(authenticationToken, true, input, task);
-			return new RPCResult<Task>(true, task);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new RPCResult<Task>(false, "Internal Server Error");
+		} catch (PermissionDeniedException e) {
+			throw new MatrixGenerationException();
 		}
+		return task;
 	}
 	
 	@Override
-	public RPCResult<Task> process(AuthenticationToken authenticationToken, final Task task) {	
-		try {
-			final AbstractTaskConfiguration configuration = task.getConfiguration();
-			if(!(configuration instanceof MatrixGenerationConfiguration))
-				return new RPCResult<Task>(false, "Not a compatible task");
-			final MatrixGenerationConfiguration matrixGenerationConfiguration = (MatrixGenerationConfiguration)configuration;
-				
-			//browser back button may invoke another "learn"
-			if(activeProcessFutures.containsKey(configuration.getConfiguration().getId())) {
-				return new RPCResult<Task>(true, task);
-			} else {
-				final TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION);
-				TaskStage taskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.PROCESS.toString());
-				task.setTaskStage(taskStage);
-				task.setResumable(false);
-				daoManager.getTaskDAO().updateTask(task);
-				
-				String input = matrixGenerationConfiguration.getInput();
-				RPCResult<String> createDirResult = fileService.createDirectory(new AdminAuthenticationToken(), Configuration.matrixGeneration_tempFileBase, 
-						String.valueOf(task.getId()), false);
-				
-				if(!createDirResult.isSucceeded()) 
-					return new RPCResult<Task>(false, createDirResult.getMessage());
-				fileService.createDirectory(new AdminAuthenticationToken(), Configuration.matrixGeneration_tempFileBase, String.valueOf(task.getId()), false);
-				final String outputFile = Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "Matrix.mx";
-				
-				final MatrixGeneration matrixGeneration = new ExtraJvmMatrixGeneration(input, outputFile);
-				activeMatrixGenerations.put(configuration.getConfiguration().getId(), matrixGeneration);
-				final ListenableFuture<Void> futureResult = executorService.submit(matrixGeneration);
-				this.activeProcessFutures.put(configuration.getConfiguration().getId(), futureResult);
-				futureResult.addListener(new Runnable() {
-				     	public void run() {
-				     		if(matrixGeneration.isExecutedSuccessfully()) {
-					     			TaxonMatrix matrix = null;
-									try {
-										matrix = createTaxonMatrix(matrixGenerationConfiguration, outputFile);
-									} catch (IOException | JDOMException e) {
-										log(LogLevel.ERROR, "Couldn't create taxon matrix from generated output", e);
-										handleProcessFault(); //throw a custom exception to client side
-									}
-									if(matrix != null) {
-						     			Model model = new Model(matrix);
-						     			try {
-											serializeMatrix(model, Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "TaxonMatrix.ser");
-										} catch (IOException e) {
-											log(LogLevel.ERROR, "Couldn't serialize matrix to disk", e);
-											handleProcessFault();
-										}
-									}
-									
-					     			activeMatrixGenerations.remove(configuration.getConfiguration().getId());
-					     			activeProcessFutures.remove(configuration.getConfiguration().getId());
-					     			if(!futureResult.isCancelled()) {
-										TaskStage newTaskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.REVIEW.toString());
-										task.setTaskStage(newTaskStage);
-										task.setResumable(true);
-										daoManager.getTaskDAO().updateTask(task);
-										
-										// send an email to the user who owns the task.
-										sendFinishedGeneratingMatrixEmail(task);
-					     			}
-					     		
-				     		} else {
-				     			handleProcessFault();
-				     		}
-				     	}
-				     }, executorService);
-				
-				return new RPCResult<Task>(true, task);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new RPCResult<Task>(false, "Internal Server Error");
-		}
-	}
-	
-	protected void handleProcessFault() {
-		// TODO Auto-generated method stub
+	public Task process(AuthenticationToken authenticationToken, final Task task) throws MatrixGenerationException {
+		final MatrixGenerationConfiguration config = getMatrixGenerationConfiguration(task);
 		
-	}
-
-	private void serializeMatrix(Model model, String file) throws IOException {
-		try(ObjectOutput output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
-			output.writeObject(model);
-		}
-	}
-	
-	private Model unserializeMatrix(String file) throws FileNotFoundException, IOException, ClassNotFoundException {
-		try(ObjectInput input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
-			Model model = (Model)input.readObject();
-			return model;
-		}
-	}
-	
-	@Override
-	public RPCResult<Model> review(AuthenticationToken authenticationToken, Task task) {
-		try {
-			final AbstractTaskConfiguration configuration = task.getConfiguration();
-			if(!(configuration instanceof MatrixGenerationConfiguration))
-				return new RPCResult<Model>(false, "Not a compatible task");
-			final MatrixGenerationConfiguration matrixGenerationConfiguration = (MatrixGenerationConfiguration)configuration;
-			
-			Model model = unserializeMatrix(Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "TaxonMatrix.ser");
-			return new RPCResult<Model>(true, model);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new RPCResult<Model>(false, "Internal Server Error");
-		}
-	}
-	
-	@Override
-	public RPCResult<Task> completeReview(AuthenticationToken authenticationToken, Task task) {
-		try {
-			final AbstractTaskConfiguration configuration = task.getConfiguration();
-			if(!(configuration instanceof MatrixGenerationConfiguration))
-				return new RPCResult<Task>(false, "Not a compatible task");
-			
-			final MatrixGenerationConfiguration matrixGenerationConfiguration = (MatrixGenerationConfiguration)configuration;
+		//browser back button may invoke another "learn"
+		if(activeProcessFutures.containsKey(config.getConfiguration().getId())) {
+			return task;
+		} else {
 			final TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION);
-			TaskStage taskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.OUTPUT.toString());
+			TaskStage taskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.PROCESS.toString());
 			task.setTaskStage(taskStage);
-			task.setResumable(true);
+			task.setResumable(false);
 			daoManager.getTaskDAO().updateTask(task);
 			
-			return new RPCResult<Task>(true, task);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new RPCResult<Task>(false, "Internal Server Error");
+			String input = config.getInput();
+			try {
+				String createDirResult = fileService.createDirectory(new AdminAuthenticationToken(), Configuration.matrixGeneration_tempFileBase, 
+						String.valueOf(task.getId()), false);
+			} catch (PermissionDeniedException | CreateDirectoryFailedException e1) {
+				throw new MatrixGenerationException();
+			}
+			
+			try {
+				fileService.createDirectory(new AdminAuthenticationToken(), Configuration.matrixGeneration_tempFileBase, String.valueOf(task.getId()), false);
+			} catch (PermissionDeniedException | CreateDirectoryFailedException e1) {
+				throw new MatrixGenerationException();
+			}
+			final String outputFile = getOutputFile(task);
+			
+			final MatrixGeneration matrixGeneration = new ExtraJvmMatrixGeneration(input, outputFile);
+			activeProcess.put(config.getConfiguration().getId(), matrixGeneration);
+			final ListenableFuture<Void> futureResult = executorService.submit(matrixGeneration);
+			this.activeProcessFutures.put(config.getConfiguration().getId(), futureResult);
+			futureResult.addListener(new Runnable() {
+			     	public void run() {						
+		     			if(!futureResult.isCancelled()) {
+							TaskStage newTaskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.REVIEW.toString());
+							task.setTaskStage(newTaskStage);
+							task.setResumable(true);
+							daoManager.getTaskDAO().updateTask(task);
+							
+							// send an email to the user who owns the task.
+							sendFinishedGeneratingMatrixEmail(task);
+		     			}
+			     	}
+			     }, executorService);
+			
+			return task;
+		}
+	}
+
+
+	@Override
+	public Model review(AuthenticationToken authenticationToken, Task task) throws MatrixGenerationException {
+		final MatrixGenerationConfiguration config = getMatrixGenerationConfiguration(task);
+		
+		MatrixGeneration matrixGeneration = activeProcess.remove(config.getConfiguration().getId());
+		if(matrixGeneration != null) {
+			if(matrixGeneration.isExecutedSuccessfully()) {
+				ListenableFuture<Void> futureResult = activeProcessFutures.remove(config.getConfiguration().getId());
+				if(futureResult != null && !futureResult.isCancelled()) {
+					try {
+						Void result = futureResult.get();
+					} catch (InterruptedException | ExecutionException e) {
+						log(LogLevel.ERROR, "Couldn't get the produced matrix generation result", e);
+						throw new MatrixGenerationException();
+					}
+				}
+			} else if(!matrixGeneration.isExecutedSuccessfully())
+				throw new MatrixGenerationException();
+		}
+			
+		String outputFile = getOutputFile(task);
+		TaxonMatrix matrix = null;
+		try {
+			matrix = createTaxonMatrix(config, outputFile);
+		} catch (IOException | JDOMException e) {
+			log(LogLevel.ERROR, "Couldn't create taxon matrix from generated output", e);
+			throw new MatrixGenerationException();
+		}
+		if(matrix == null) 
+			throw new MatrixGenerationException();
+		
+		Model model = new Model(matrix);
+		try {
+			serializeMatrix(model, Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "TaxonMatrix.ser");
+		} catch (IOException e) {
+			log(LogLevel.ERROR, "Couldn't serialize matrix to disk", e);
+			throw new MatrixGenerationException();
 		}
 		
+		return model;
+	}
+	
+	@Override
+	public Task completeReview(AuthenticationToken authenticationToken, Task task) throws MatrixGenerationException {
+		final MatrixGenerationConfiguration config = getMatrixGenerationConfiguration(task);
+		final TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION);
+		TaskStage taskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.OUTPUT.toString());
+		task.setTaskStage(taskStage);
+		task.setResumable(true);
+		daoManager.getTaskDAO().updateTask(task);
+		return task;
+	}
+	
+	@Override
+	public Task output(AuthenticationToken authenticationToken, Task task) throws MatrixGenerationException {
+		final MatrixGenerationConfiguration config = getMatrixGenerationConfiguration(task);
+		config.setOutput(config.getInput() + "_" + task.getName());
+			
+		String outputDirectory = config.getOutput();			
+		String outputDirectoryParentResult;
+		try {
+			outputDirectoryParentResult = fileService.getParent(authenticationToken, outputDirectory);
+		} catch (PermissionDeniedException e) {
+			throw new MatrixGenerationException();
+		}
+		String outputDirectoryNameResult;
+		try {
+			outputDirectoryNameResult = fileService.getFileName(authenticationToken, outputDirectory);
+		} catch (PermissionDeniedException e) {
+			throw new MatrixGenerationException();
+		}
+			
+		//find a suitable destination filePath
+		String createDirectoryResult;
+		try {
+			createDirectoryResult = fileService.createDirectory(authenticationToken, outputDirectoryParentResult, 
+				outputDirectoryNameResult, true);
+		} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
+			throw new MatrixGenerationException();
+		}
+			
+		String csvContent;
+		try {
+			csvContent = getCSVMatrix(unserializeMatrix(Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "TaxonMatrix.ser").getTaxonMatrix());
+		} catch (ClassNotFoundException | IOException e) {
+			log(LogLevel.ERROR, "Couldn't get CSV from matrix", e);
+			throw new MatrixGenerationException();
+		}
+		try {
+			String createFileResult = 
+					fileService.createFile(new AdminAuthenticationToken(), createDirectoryResult, "Matrix.mx", true);
+		} catch (CreateFileFailedException | PermissionDeniedException e) {
+			throw new MatrixGenerationException();
+		}
+		try {
+			fileAccessService.setFileContent(authenticationToken, 
+					createDirectoryResult + File.separator + "Matrix.mx", csvContent);
+		} catch (SetFileContentFailedException | PermissionDeniedException e) {
+			throw new MatrixGenerationException();
+		}
+		
+		//update task
+		config.setOutput(createDirectoryResult);
+		task.setResumable(false);
+		task.setComplete(true);
+		task.setCompleted(new Date());
+		daoManager.getTaskDAO().updateTask(task);
+		
+		daoManager.getTasksOutputFilesDAO().addOutput(task, createDirectoryResult);
+		
+		return task;
+	}
+	
+	@Override
+	public Task getLatestResumable(AuthenticationToken authenticationToken) {
+		ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
+		List<Task> tasks = daoManager.getTaskDAO().getOwnedTasks(user.getId());
+		for(Task task : tasks) {
+			if(task.isResumable() && 
+					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION)) {
+						return task;
+			}
+		}
+		return null;
+	}
 
+	@Override
+	public void cancel(AuthenticationToken authenticationToken, Task task) throws MatrixGenerationException {
+		final MatrixGenerationConfiguration config = getMatrixGenerationConfiguration(task);
+						
+		//remove matrix generation configuration
+		if(config.getInput() != null)
+			try {
+				fileService.setInUse(authenticationToken, false, config.getInput(), task);
+			} catch (PermissionDeniedException e) {
+				throw new MatrixGenerationException();
+			}
+		daoManager.getMatrixGenerationConfigurationDAO().remove(config);
+		
+		//remove task
+		daoManager.getTaskDAO().removeTask(task);
+		if(task.getConfiguration() != null)
+			//remove configuration
+			daoManager.getConfigurationDAO().remove(task.getConfiguration().getConfiguration());
+	
+		//cancel possible futures
+		if(task.getTaskStage() != null) {
+			switch(TaskStageEnum.valueOf(task.getTaskStage().getTaskStage())) {
+			case INPUT:
+				break;
+			case PROCESS:
+				if(activeProcessFutures.containsKey(config.getConfiguration().getId())) {
+					ListenableFuture<Void> processFuture = this.activeProcessFutures.get(config.getConfiguration().getId());
+					processFuture.cancel(true);
+				}
+				if(activeProcess.containsKey(config.getConfiguration().getId())) {
+					activeProcess.get(config.getConfiguration().getId()).destroy();
+				}
+				break;
+			case OUTPUT:
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	@Override
+	public void save(AuthenticationToken authenticationToken, Model model, Task task) throws MatrixGenerationException {
+		final MatrixGenerationConfiguration config = getMatrixGenerationConfiguration(task);
+		String outputFile = Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "Matrix.mx";
+		try {
+			serializeMatrix(model, Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "TaxonMatrix.ser");
+		} catch (IOException e) {
+			throw new MatrixGenerationException();
+		}
+		//saveFile(matrix, outputFile);
+	}
+	
+	@Override
+	public Task goToTaskStage(AuthenticationToken authenticationToken, Task task, TaskStageEnum taskStageEnum) {
+		TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION);
+		TaskStage taskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(taskStageEnum.toString());
+		task.setTaskStage(taskStage);
+		task.setResumable(true);
+		task.setComplete(false);
+		task.setCompleted(null);
+		daoManager.getTaskDAO().updateTask(task);
+		return task;
+	}
+	
+	@Override
+	public boolean isValidInput(AuthenticationToken authenticationToken, String filePath) {
+		boolean readPermission = filePermissionService.hasReadPermission(authenticationToken, filePath);
+		if(!readPermission)
+			return false;
+		boolean isDirectory = true;
+		try {
+			isDirectory = fileService.isDirectory(authenticationToken, filePath);
+		} catch (PermissionDeniedException e) {
+			return false;
+		}
+		if(!isDirectory)
+			return false;
+		List<String> files;
+		try {
+			files = fileService.getDirectoriesFiles(authenticationToken, filePath);
+		} catch (PermissionDeniedException e) {
+			return false;
+		}
+		
+		//extra validation, since a valid taxon description is automatically also a valid marked up taxon description according to 
+		//the schema. Check for min. 1 statement
+		boolean statementFound = false;
+		for(String file : files) {
+			boolean valid;
+			try {
+				valid = fileFormatService.isValidMarkedupTaxonDescription(authenticationToken, filePath + File.separator + file);
+			} catch (PermissionDeniedException | GetFileContentFailedException e) {
+				return false;
+			}
+
+			if(!valid)
+				return false;
+			
+			SAXBuilder saxBuilder = new SAXBuilder();
+			Document document;
+			try {
+				document = saxBuilder.build(new File(filePath + File.separator + file));
+			} catch (JDOMException | IOException e) {
+				return false;
+			}
+			XPathFactory xPathFactory = XPathFactory.instance();
+			XPathExpression<Element> xPathExpression = 
+					xPathFactory.compile("/bio:treatment/description[@type=\"morphology\"]/statement", Filters.element(), 
+							null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics")); 
+			if(!xPathExpression.evaluate(document).isEmpty()) {
+				statementFound = true;
+			}
+		}
+		return statementFound;
+	}
+
+	@Override
+	public String outputMatrix(AuthenticationToken authenticationToken, Task task, Model model) throws MatrixGenerationException {
+		final MatrixGenerationConfiguration config = getMatrixGenerationConfiguration(task);
+		
+		String path = Configuration.tempFiles + 
+				File.separator + "matrix-review" + File.separator + authenticationToken.getUserId() +
+				File.separator + "matrix_task-" + task.getName() + ".csv";
+		File file = new File(path);
+		file.getParentFile().mkdirs();
+		try {
+			file.createNewFile();
+		} catch (IOException e) {
+			log(LogLevel.ERROR, "Couldn't create output file", e);
+			throw new MatrixGenerationException();
+		}
+		
+		String[] characters = new String[model.getTaxonMatrix().getCharacterCount() + 1];
+		List<Character> flatCharacters = model.getTaxonMatrix().getFlatCharacters();
+		int columns = flatCharacters.size() + 1;
+		characters[0] = "Taxa/Characters";
+		for(int i=0; i<flatCharacters.size(); i++) {
+			characters[i+1] = flatCharacters.get(i).toString();
+		}
+		try(CSVWriter csvWriter = new CSVWriter(new FileWriter(file))) {
+			csvWriter.writeNext(characters);
+			for(Taxon taxon : model.getTaxonMatrix().getFlatTaxa()) {
+				String[] line = new String[columns];
+				line[0] = taxon.getFullName();
+				for(int i=0; i<flatCharacters.size(); i++) {
+					Character character = flatCharacters.get(i);
+					line[i+1] = model.getTaxonMatrix().getValue(taxon, character).toString();
+				}
+				csvWriter.writeNext(line);
+			}
+		} catch (IOException e) {
+			log(LogLevel.ERROR, "Couldn't open or close writer", e);
+			throw new MatrixGenerationException();
+		}
+		
+		/*ObjectMapper mapper = new ObjectMapper();
+		ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
+		String jsonModel = writer.writeValueAsString(model);
+		try (FileWriter fileWriter = new FileWriter(new File(path))) {
+			fileWriter.write(jsonModel);
+		}*/
+		return path;
+	}
+	
+	@Override
+	public void destroy() {
+		this.executorService.shutdownNow();
+		for(MatrixGeneration matrixGeneration : activeProcess.values()) {
+			matrixGeneration.destroy();
+		}
+		super.destroy();
 	}
 	
 	private void sendFinishedGeneratingMatrixEmail(Task task){
-		try {
-			String email = daoManager.getUserDAO().getUser(task.getUser().getId()).getEmail();
-			String subject = Configuration.finishedMatrixgenerationGenerateSubject.replace("<taskname>", task.getName());
-			String body = Configuration.finishedMatrixgenerationGenerateBody.replace("<taskname>", task.getName());
-			
-			emailer.sendEmail(email, subject, body);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return;
-		} 
-	}
-	
-	/*private TaxonMatrix createSampleMatrix() {
-		List<Character> characters = new LinkedList<Character>();
-		Organ o1 = new Organ("stem");
-		Organ o2 = new Organ("leaf");
-		Organ o3 = new Organ("head");
-		Character a1 = new Character("length", o1);
-		Character a2 = new Character("shape", o1);
-		Character a3 = new Character("architecture", o1);
+		String email = daoManager.getUserDAO().getUser(task.getUser().getId()).getEmail();
+		String subject = Configuration.finishedMatrixgenerationGenerateSubject.replace("<taskname>", task.getName());
+		String body = Configuration.finishedMatrixgenerationGenerateBody.replace("<taskname>", task.getName());
 		
-		Character b1 = new Character("width", o2);
-		Character b2 = new Character("shape", o2);
-		Character b3 = new Character("pubescence", o2);
-		
-		Character c1 = new Character("size", o3);
-		Character c2 = new Character("color", o3);
-		Character c3 = new Character("architecture", o3);
-		
-		
-		characters.add(a1);
-		characters.add(a2);
-		characters.add(a3);
-		characters.add(b1);
-		characters.add(b2);
-		characters.add(b3);
-		characters.add(c1);
-		characters.add(c2);
-		characters.add(c3);
-		
-		for(int i=0; i<20; i++) {
-			Character o = new Character("o" + i, o2);
-			characters.add(o);
-		}
-		
-		TaxonMatrix taxonMatrix = new TaxonMatrix(characters);
-
-		for(int i=0; i<1; i++) {
-			Taxon t1 = new Taxon("server" + i * 4 + 1, Rank.FAMILY, "rosacea", "author1", "1979", "this is the description about t1");
-			Taxon t2 = new Taxon("server" +  i * 4 + 2, Rank.GENUS, "rosa", "author2", "1985",  "this is the description about t2");
-			Taxon t3 = new Taxon("server" +  i * 4 + 3, Rank.SPECIES,
-					"example", "author3", "2002", 
-					"Lorem ipsum dolor sit amet, consectetuer adipiscing elit. "
-							+ "Sed metus nibh, sodales a, porta at, vulputate eget, dui. Pellentesque ut nisl. "
-							+ "Maecenas tortor turpis, interdum non, sodales non, iaculis ac, lacus. Vestibulum auctor, "
-							+ "tortor quis iaculis malesuada, libero lectus bibendum purus, sit amet tincidunt quam turpis "
-							+ "vel lacus. In pellentesque nisl non sem. Suspendisse nunc sem, pretium eget, cursus a, "
-							+ "fringilla vel, urna.<br/><br/>Aliquam commodo ullamcorper erat. Nullam vel justo in neque "
-							+ "porttitor laoreet. Aenean lacus dui, consequat eu, adipiscing eget, nonummy non, nisi. "
-							+ "Morbi nunc est, dignissim non, ornare sed, luctus eu, massa. Vivamus eget quam. Vivamus "
-							+ "tincidunt diam nec urna. Curabitur velit.");
-			Taxon t4 = new Taxon("server" +  i * 4 + 4, Rank.VARIETY,
-					"prototype", "author4", "2014", 
-					"Lorem ipsum dolor sit amet, consectetuer adipiscing elit. "
-							+ "Sed metus nibh, sodales a, porta at, vulputate eget, dui. Pellentesque ut nisl. "
-							+ "Maecenas tortor turpis, interdum non, sodales non, iaculis ac, lacus. Vestibulum auctor, "
-							+ "tortor quis iaculis malesuada, libero lectus bibendum purus, sit amet tincidunt quam turpis "
-							+ "vel lacus. In pellentesque nisl non sem. Suspendisse nunc sem, pretium eget, cursus a, "
-							+ "fringilla vel, urna.<br/><br/>Aliquam commodo ullamcorper erat. Nullam vel justo in neque "
-							+ "porttitor laoreet. Aenean lacus dui, consequat eu, adipiscing eget, nonummy non, nisi. "
-							+ "Morbi nunc est, dignissim non, ornare sed, luctus eu, massa. Vivamus eget quam. Vivamus "
-							+ "tincidunt diam nec urna. Curabitur velit.");
-			
-			taxonMatrix.addRootTaxon(t1);
-			taxonMatrix.addTaxon(t1, t2);
-			taxonMatrix.addTaxon(t2, t3);
-			taxonMatrix.addTaxon(t2, t4);
-
-			Random random = new Random();
-			taxonMatrix.setValue(t1, b1, new Value(String.valueOf(random.nextInt(50))));
-		}
-		
-		/*for(int i=5; i<50; i++) {
-			Taxon t5 = new Taxon("server" + i, Level.SPECIES, "t123", "a", "2", "de");
-			taxonMatrix.addRootTaxon(t4);
-		}*/
-		
-	/*	return taxonMatrix;
-	}*/
-	
-	public static void main(String[] args) throws Exception {
-		MatrixGenerationService service = new MatrixGenerationService();
-		service.createTaxonMatrix("C:/test/Test_mmm", "C:/test/Test_mmm.mx");
+		emailer.sendEmail(email, subject, body);
 	}
 
 	private TaxonMatrix createTaxonMatrix(String inputDirectory, String filePath) throws FileNotFoundException, IOException, JDOMException {
@@ -558,8 +710,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		}
 	}
 	
-	private TaxonMatrix createTaxonMatrix(MatrixGenerationConfiguration matrixGenerationConfiguration, String filePath) throws FileNotFoundException, IOException, JDOMException {
-		String inputDirectory = matrixGenerationConfiguration.getInput();
+	private TaxonMatrix createTaxonMatrix(MatrixGenerationConfiguration config, String filePath) throws FileNotFoundException, IOException, JDOMException {
+		String inputDirectory = config.getInput();
 		return createTaxonMatrix(inputDirectory, filePath);
 	}
 
@@ -632,54 +784,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		RankData lowestRank = taxonName.getRankData().getLast();
 		return new Taxon(lowestRank.getRank(), lowestRank.getValue(), taxonName.getAuthor(), taxonName.getDate(), description);
 	}
-	
-	@Override
-	public RPCResult<Task> output(AuthenticationToken authenticationToken, Task task) {
-		try {
-			AbstractTaskConfiguration configuration = task.getConfiguration();
-			if(!(configuration instanceof MatrixGenerationConfiguration))
-				return new RPCResult<Task>(false, "Not a compatible task");
-			final MatrixGenerationConfiguration matrixGenerationConfiguration = (MatrixGenerationConfiguration)configuration;
-			matrixGenerationConfiguration.setOutput(matrixGenerationConfiguration.getInput() + "_" + task.getName());
-			
-			String outputDirectory = matrixGenerationConfiguration.getOutput();			
-			RPCResult<String> outputDirectoryParentResult = fileService.getParent(authenticationToken, outputDirectory);
-			RPCResult<String> outputDirectoryNameResult = fileService.getFileName(authenticationToken, outputDirectory);
-			if(!outputDirectoryParentResult.isSucceeded() || !outputDirectoryNameResult.isSucceeded())
-				return new RPCResult<Task>(false, outputDirectoryParentResult.getMessage());
-			
-			//find a suitable destination filePath
-			RPCResult<String> createDirectoryResult = fileService.createDirectory(authenticationToken, outputDirectoryParentResult.getData(), 
-					outputDirectoryNameResult.getData(), true);
-			
-			if(!createDirectoryResult.isSucceeded()) 
-				return new RPCResult<Task>(false, createDirectoryResult.getMessage());
-			
-			String csvContent = getCSVMatrix(unserializeMatrix(Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "TaxonMatrix.ser").getTaxonMatrix());
-			RPCResult<String> createFileResult = 
-					fileService.createFile(new AdminAuthenticationToken(), createDirectoryResult.getData(), "Matrix.mx", true);
-			if(!createFileResult.isSucceeded())
-				return new RPCResult<Task>(false, createFileResult.getMessage());
-			RPCResult<Void> setFileContentResult = fileAccessService.setFileContent(authenticationToken, 
-					createDirectoryResult.getData() + File.separator + "Matrix.mx", csvContent);
-			if(!setFileContentResult.isSucceeded())
-				return new RPCResult<Task>(false, setFileContentResult.getMessage());
-			
-			//update task
-			matrixGenerationConfiguration.setOutput(createDirectoryResult.getData());
-			task.setResumable(false);
-			task.setComplete(true);
-			task.setCompleted(new Date());
-			daoManager.getTaskDAO().updateTask(task);
-			
-			daoManager.getTasksOutputFilesDAO().addOutput(task, createDirectoryResult.getData());
-			
-			return new RPCResult<Task>(true, task);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new RPCResult<Task>(false, "Internal Server Error");
-		}
-	}
 
 	private String getCSVMatrix(TaxonMatrix matrix) throws IOException {
 		//TODO: Add RankData authority and date
@@ -711,103 +815,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		}
 	}
 
-	@Override
-	public RPCResult<Task> getLatestResumable(AuthenticationToken authenticationToken) {
-		try {
-			ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
-			List<Task> tasks = daoManager.getTaskDAO().getOwnedTasks(user.getId());
-			for(Task task : tasks) {
-				if(task.isResumable() && 
-						task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION)) {
-							//SemanticMarkupConfiguration configuration = SemanticMarkupdaoManager.getConfigurationDAO().getInstance().getSemanticMarkupConfiguration(task.getConfiguration().getConfiguration().getId());
-							return new RPCResult<Task>(true, task);
-				}
-			}
-			return new RPCResult<Task>(true, "", null);
-		} catch(Exception e) {
-			e.printStackTrace();
-			return new RPCResult<Task>(false, "Internal Server Error");
-		}
-	}
-
-	@Override
-	public RPCResult<Void> cancel(AuthenticationToken authenticationToken, Task task) {
-		try {
-			AbstractTaskConfiguration configuration = task.getConfiguration();
-			if(!(configuration instanceof MatrixGenerationConfiguration))
-				return new RPCResult<Void>(false, "Not a compatible task");
-			final MatrixGenerationConfiguration matrixGenerationConfiguration = (MatrixGenerationConfiguration)configuration;
-						
-			//remove matrix generation configuration
-			if(matrixGenerationConfiguration != null) {
-				if(matrixGenerationConfiguration.getInput() != null)
-					fileService.setInUse(authenticationToken, false, matrixGenerationConfiguration.getInput(), task);
-				daoManager.getMatrixGenerationConfigurationDAO().remove(matrixGenerationConfiguration);
-			}
-			
-			//remove task
-			if(task != null) {
-				daoManager.getTaskDAO().removeTask(task);
-				if(task.getConfiguration() != null)
-					
-					//remove configuration
-					daoManager.getConfigurationDAO().remove(task.getConfiguration().getConfiguration());
-			
-				//cancel possible futures
-				if(task.getTaskStage() != null) {
-					switch(TaskStageEnum.valueOf(task.getTaskStage().getTaskStage())) {
-					case INPUT:
-						break;
-					case PROCESS:
-						if(activeProcessFutures.containsKey(matrixGenerationConfiguration.getConfiguration().getId())) {
-							ListenableFuture<Void> processFuture = this.activeProcessFutures.get(matrixGenerationConfiguration.getConfiguration().getId());
-							processFuture.cancel(true);
-						}
-						if(activeMatrixGenerations.containsKey(matrixGenerationConfiguration.getConfiguration().getId())) {
-							activeMatrixGenerations.get(matrixGenerationConfiguration.getConfiguration().getId()).destroy();
-						}
-						break;
-					case OUTPUT:
-						break;
-					default:
-						break;
-					}
-				}
-			}
-			return new RPCResult<Void>(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new RPCResult<Void>(false, "Internal Server Error");
-		}
-	}
-
-	@Override
-	public void destroy() {
-		this.executorService.shutdownNow();
-		for(MatrixGeneration matrixGeneration : activeMatrixGenerations.values()) {
-			matrixGeneration.destroy();
-		}
-		super.destroy();
-	}
-
-	@Override
-	public RPCResult<Void> save(AuthenticationToken authenticationToken, Model model, Task task) {
-		try {
-			final AbstractTaskConfiguration configuration = task.getConfiguration();
-			if(!(configuration instanceof MatrixGenerationConfiguration))
-				return new RPCResult<Void>(false, "Not a compatible task");
-			final MatrixGenerationConfiguration matrixGenerationConfiguration = (MatrixGenerationConfiguration)configuration;
-			
-			String outputFile = Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "Matrix.mx";
-			serializeMatrix(model, Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "TaxonMatrix.ser");
-			//saveFile(matrix, outputFile);
-			return new RPCResult<Void>(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new RPCResult<Void>(false, "Internal Server Error");
-		}
-	}
-
 	private String getTaxonName(Taxon taxon) {
 		String name = "";
 		ArrayList<Taxon> taxonPath = new ArrayList<Taxon>();
@@ -831,117 +838,113 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		return name;
 	}
 
-	@Override
-	public RPCResult<Task> goToTaskStage(AuthenticationToken authenticationToken, Task task, TaskStageEnum taskStageEnum) {
-		try {
-			TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION);
-			TaskStage taskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(taskStageEnum.toString());
-			task.setTaskStage(taskStage);
-			task.setResumable(true);
-			task.setComplete(false);
-			task.setCompleted(null);
-			daoManager.getTaskDAO().updateTask(task);
-			return new RPCResult<Task>(true, task);
-		} catch(Exception e) {
-			e.printStackTrace();
-			return new RPCResult<Task>(false, "Internal Server Error");
+
+	
+	private void serializeMatrix(Model model, String file) throws IOException {
+		try(ObjectOutput output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
+			output.writeObject(model);
 		}
 	}
 	
-	@Override
-	public RPCResult<Boolean> isValidInput(AuthenticationToken authenticationToken, String filePath) {
-		RPCResult<Boolean> readPermission = filePermissionService.hasReadPermission(authenticationToken, filePath);
-		if(!readPermission.isSucceeded())
-			return new RPCResult<Boolean>(false, readPermission.getMessage());
-		if(!readPermission.getData()) 
-			return new RPCResult<Boolean>(true, false);
-		RPCResult<Boolean> directoryResult = fileService.isDirectory(authenticationToken, filePath);
-		if(!directoryResult.isSucceeded())
-			return new RPCResult<Boolean>(false, directoryResult.getMessage());
-		if(!directoryResult.getData())
-			return new RPCResult<Boolean>(true, false);
-		RPCResult<List<String>> filesResult = fileService.getDirectoriesFiles(authenticationToken, filePath);
-		if(!filesResult.isSucceeded())
-			return new RPCResult<Boolean>(false, filesResult.getMessage());
-		List<String> files = filesResult.getData();
-		
-		//extra validation, since a valid taxon description is automatically also a valid marked up taxon description according to 
-		//the schema. Check for min. 1 statement
-		boolean statementFound = false;
-		for(String file : files) {
-			RPCResult<Boolean> validResult = fileFormatService.isValidMarkedupTaxonDescription(authenticationToken, filePath + File.separator + file);
-
-			if(!validResult.isSucceeded())
-				return new RPCResult<Boolean>(false, validResult.getMessage());
-			if(!validResult.getData())
-				return new RPCResult<Boolean>(true, false);
-			
-			SAXBuilder saxBuilder = new SAXBuilder();
-			Document document;
-			try {
-				document = saxBuilder.build(new File(filePath + File.separator + file));
-				XPathFactory xPathFactory = XPathFactory.instance();
-				XPathExpression<Element> xPathExpression = 
-						xPathFactory.compile("/bio:treatment/description[@type=\"morphology\"]/statement", Filters.element(), 
-								null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics")); 
-				if(!xPathExpression.evaluate(document).isEmpty()) {
-					statementFound = true;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				return new RPCResult<Boolean>(false, "Couldn't read XML file");
-			}
+	private Model unserializeMatrix(String file) throws FileNotFoundException, IOException, ClassNotFoundException {
+		try(ObjectInput input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
+			Model model = (Model)input.readObject();
+			return model;
 		}
-		return new RPCResult<Boolean>(true, statementFound);
 	}
-
-	@Override
-	public RPCResult<String> saveMatrix(AuthenticationToken authenticationToken, 
-			Task task, Model model) {
+	
+	private MatrixGenerationConfiguration getMatrixGenerationConfiguration(Task task) throws MatrixGenerationException {
 		final AbstractTaskConfiguration configuration = task.getConfiguration();
 		if(!(configuration instanceof MatrixGenerationConfiguration))
-			return null;
-		final MatrixGenerationConfiguration matrixGenerationConfiguration = (MatrixGenerationConfiguration)configuration;
-		
-		try {
-			String path = Configuration.tempFiles + 
-					File.separator + "matrix-review" + File.separator + authenticationToken.getUserId() +
-					File.separator + "matrix_task-" + task.getName() + ".csv";
-			File file = new File(path);
-			file.getParentFile().mkdirs();
-			file.createNewFile();
-			
-			String[] characters = new String[model.getTaxonMatrix().getCharacterCount() + 1];
-			List<Character> flatCharacters = model.getTaxonMatrix().getFlatCharacters();
-			int columns = flatCharacters.size() + 1;
-			characters[0] = "Taxa/Characters";
-			for(int i=0; i<flatCharacters.size(); i++) {
-				characters[i+1] = flatCharacters.get(i).toString();
-			}
-			try(CSVWriter csvWriter = new CSVWriter(new FileWriter(file))) {
-				csvWriter.writeNext(characters);
-				for(Taxon taxon : model.getTaxonMatrix().getFlatTaxa()) {
-					String[] line = new String[columns];
-					line[0] = taxon.getFullName();
-					for(int i=0; i<flatCharacters.size(); i++) {
-						Character character = flatCharacters.get(i);
-						line[i+1] = model.getTaxonMatrix().getValue(taxon, character).toString();
-					}
-					csvWriter.writeNext(line);
-				}
-			}
-			
-			/*ObjectMapper mapper = new ObjectMapper();
-			ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
-			String jsonModel = writer.writeValueAsString(model);
-			try (FileWriter fileWriter = new FileWriter(new File(path))) {
-				fileWriter.write(jsonModel);
-			}*/
-			return new RPCResult<String>(true, "", path);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new RPCResult<String>(false, "Internal Server Error" ,"");
-		}
+			throw new MatrixGenerationException();
+		final MatrixGenerationConfiguration mtrixGenerationConfiguration = (MatrixGenerationConfiguration)configuration;
+		return mtrixGenerationConfiguration;
 	}
 
+	private String getOutputFile(Task task) {
+		return  Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "Matrix.mx";
+	}
+	
+	/*private TaxonMatrix createSampleMatrix() {
+		List<Character> characters = new LinkedList<Character>();
+		Organ o1 = new Organ("stem");
+		Organ o2 = new Organ("leaf");
+		Organ o3 = new Organ("head");
+		Character a1 = new Character("length", o1);
+		Character a2 = new Character("shape", o1);
+		Character a3 = new Character("architecture", o1);
+		
+		Character b1 = new Character("width", o2);
+		Character b2 = new Character("shape", o2);
+		Character b3 = new Character("pubescence", o2);
+		
+		Character c1 = new Character("size", o3);
+		Character c2 = new Character("color", o3);
+		Character c3 = new Character("architecture", o3);
+		
+		
+		characters.add(a1);
+		characters.add(a2);
+		characters.add(a3);
+		characters.add(b1);
+		characters.add(b2);
+		characters.add(b3);
+		characters.add(c1);
+		characters.add(c2);
+		characters.add(c3);
+		
+		for(int i=0; i<20; i++) {
+			Character o = new Character("o" + i, o2);
+			characters.add(o);
+		}
+		
+		TaxonMatrix taxonMatrix = new TaxonMatrix(characters);
+	
+		for(int i=0; i<1; i++) {
+			Taxon t1 = new Taxon("server" + i * 4 + 1, Rank.FAMILY, "rosacea", "author1", "1979", "this is the description about t1");
+			Taxon t2 = new Taxon("server" +  i * 4 + 2, Rank.GENUS, "rosa", "author2", "1985",  "this is the description about t2");
+			Taxon t3 = new Taxon("server" +  i * 4 + 3, Rank.SPECIES,
+					"example", "author3", "2002", 
+					"Lorem ipsum dolor sit amet, consectetuer adipiscing elit. "
+							+ "Sed metus nibh, sodales a, porta at, vulputate eget, dui. Pellentesque ut nisl. "
+							+ "Maecenas tortor turpis, interdum non, sodales non, iaculis ac, lacus. Vestibulum auctor, "
+							+ "tortor quis iaculis malesuada, libero lectus bibendum purus, sit amet tincidunt quam turpis "
+							+ "vel lacus. In pellentesque nisl non sem. Suspendisse nunc sem, pretium eget, cursus a, "
+							+ "fringilla vel, urna.<br/><br/>Aliquam commodo ullamcorper erat. Nullam vel justo in neque "
+							+ "porttitor laoreet. Aenean lacus dui, consequat eu, adipiscing eget, nonummy non, nisi. "
+							+ "Morbi nunc est, dignissim non, ornare sed, luctus eu, massa. Vivamus eget quam. Vivamus "
+							+ "tincidunt diam nec urna. Curabitur velit.");
+			Taxon t4 = new Taxon("server" +  i * 4 + 4, Rank.VARIETY,
+					"prototype", "author4", "2014", 
+					"Lorem ipsum dolor sit amet, consectetuer adipiscing elit. "
+							+ "Sed metus nibh, sodales a, porta at, vulputate eget, dui. Pellentesque ut nisl. "
+							+ "Maecenas tortor turpis, interdum non, sodales non, iaculis ac, lacus. Vestibulum auctor, "
+							+ "tortor quis iaculis malesuada, libero lectus bibendum purus, sit amet tincidunt quam turpis "
+							+ "vel lacus. In pellentesque nisl non sem. Suspendisse nunc sem, pretium eget, cursus a, "
+							+ "fringilla vel, urna.<br/><br/>Aliquam commodo ullamcorper erat. Nullam vel justo in neque "
+							+ "porttitor laoreet. Aenean lacus dui, consequat eu, adipiscing eget, nonummy non, nisi. "
+							+ "Morbi nunc est, dignissim non, ornare sed, luctus eu, massa. Vivamus eget quam. Vivamus "
+							+ "tincidunt diam nec urna. Curabitur velit.");
+			
+			taxonMatrix.addRootTaxon(t1);
+			taxonMatrix.addTaxon(t1, t2);
+			taxonMatrix.addTaxon(t2, t3);
+			taxonMatrix.addTaxon(t2, t4);
+	
+			Random random = new Random();
+			taxonMatrix.setValue(t1, b1, new Value(String.valueOf(random.nextInt(50))));
+		}
+		
+		/*for(int i=5; i<50; i++) {
+			Taxon t5 = new Taxon("server" + i, Level.SPECIES, "t123", "a", "2", "de");
+			taxonMatrix.addRootTaxon(t4);
+		}*/
+		
+	/*	return taxonMatrix;
+	}*/
+	
+	public static void main(String[] args) throws Exception {
+		MatrixGenerationService service = new MatrixGenerationService();
+		service.createTaxonMatrix("C:/test/Test_mmm", "C:/test/Test_mmm.mx");
+	}
 }

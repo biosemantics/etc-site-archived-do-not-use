@@ -20,13 +20,11 @@ public interface IResetPasswordView extends IsWidget {
 	
 	public interface IResetPasswordListener {
 		
-		void onCodeSent(String message);
-
-		void onSuccess(String message);
-		
-		void onFailure(String message);
+		void onCodeSent();
 
 		void onCancel();
+		
+		void onSuccess();
 	}
 	
 	void setPresenter(Presenter presenter);

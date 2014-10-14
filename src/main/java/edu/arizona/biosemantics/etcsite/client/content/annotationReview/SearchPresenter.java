@@ -2,10 +2,12 @@ package edu.arizona.biosemantics.etcsite.client.content.annotationReview;
 
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.google.web.bindery.event.shared.EventBus;
 
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileImageLabelTreeItem;
 import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView;
@@ -14,9 +16,8 @@ import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePr
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
 import edu.arizona.biosemantics.etcsite.shared.model.file.search.Search;
 import edu.arizona.biosemantics.etcsite.shared.model.file.search.SearchResult;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileSearchServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.search.IFileSearchServiceAsync;
 
 public class SearchPresenter implements ISearchView.Presenter {
 
@@ -47,10 +48,14 @@ public class SearchPresenter implements ISearchView.Presenter {
 		this.search = search;
 		if(search != null) {
 			fileSearchService.search(Authentication.getInstance().getToken(), input, search,
-					new RPCCallback<List<SearchResult>>() {
+					new AsyncCallback<List<SearchResult>>() {
 				@Override
-				public void onResult(List<SearchResult> result) {
+				public void onSuccess(List<SearchResult> result) {
 					eventBus.fireEvent(new SearchResultEvent(result));
+				}
+				@Override
+				public void onFailure(Throwable caught) {
+					Alerter.failedToSearch(caught);
 				}
 			});
 		}

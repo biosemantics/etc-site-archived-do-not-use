@@ -12,11 +12,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import edu.arizona.biosemantics.etcsite.server.rpc.AuthenticationService;
+import edu.arizona.biosemantics.etcsite.server.rpc.auth.AuthenticationService;
 import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
-import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationResult;
-import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationResult;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationService;
 
 public class DownloadServlet extends HttpServlet {
 

@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.Properties;
 
@@ -28,21 +29,25 @@ public class CaptchaDAO {
 		captchaProducer = captchaConfig.getProducerImpl();
 	}
 	
-	public Captcha getCaptcha(int id) {
+	public Captcha get(int id) {
 		Captcha captcha = null;
 		try(Query query = new Query("SELECT * FROM etcsite_captchas WHERE id = ?")) {
 			query.setParameter(1, id);
 			ResultSet result = query.execute();
 			while(result.next()) {
-				id = result.getInt(1);
-				String solution = result.getString(2);
-				Date created = result.getTimestamp(3);
-				captcha = new Captcha(id, solution, created);
+				captcha = createCaptcha(result);
 			}
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't get captcha", e);
 		}
 		return captcha;
+	}
+
+	private Captcha createCaptcha(ResultSet result) throws SQLException {
+		int id = result.getInt(1);
+		String solution = result.getString(2);
+		Date created = result.getTimestamp(3);
+		return new Captcha(id, solution, created);
 	}
 
 	public void remove(int captchaId) {
@@ -79,9 +84,9 @@ public class CaptchaDAO {
 		}
 	}
 
-	public boolean isValidSolution(int id, String solution) {
-		Captcha captcha = getCaptcha(id);
-		remove(id);		
+	public boolean isValidSolution(int captchaId, String solution) {
+		Captcha captcha = get(captchaId);
+		remove(captchaId);		
 		if(captcha == null)
 			return false;
 		
@@ -92,7 +97,7 @@ public class CaptchaDAO {
 		return captcha.getSolution().equals(solution);
 	}
 
-	public int insert() {
+	public Captcha insert() {
 		String solution = captchaProducer.createText();
 		BufferedImage img = captchaProducer.createImage(solution);
 		
@@ -108,16 +113,16 @@ public class CaptchaDAO {
 				} catch(IOException e) {
 					log(LogLevel.ERROR, "Couldn't write captcha to FS", e);
 				}
-				return id;
+				return get(id);
 			}
 		}catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't insert captcha", e);
 		}
-		return -1;
+		return null;
 	}
 
-	public BufferedImage getImage(int id) {
-		File imageFile = getCaptchaFile(id);
+	public BufferedImage getImage(int captchaId) {
+		File imageFile = getCaptchaFile( captchaId);
 		try {
 			BufferedImage image = ImageIO.read(imageFile);
 			return image;

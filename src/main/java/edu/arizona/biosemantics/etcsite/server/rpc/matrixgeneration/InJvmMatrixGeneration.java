@@ -1,10 +1,7 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import edu.arizona.biosemantics.etcsite.server.Task.FailHandler;
 import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
+import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
 
 public class InJvmMatrixGeneration implements MatrixGeneration {
 	
@@ -18,7 +15,7 @@ public class InJvmMatrixGeneration implements MatrixGeneration {
 	}
 	
 	@Override
-	public Void call() throws Exception {
+	public Void call() throws MatrixGenerationException {
 		//String[] args = { inputDir, outputFile };
 		try {
 			edu.arizona.biosemantics.matrixgeneration.Main main = new edu.arizona.biosemantics.matrixgeneration.Main(inputDir, outputFile);
@@ -30,31 +27,13 @@ public class InJvmMatrixGeneration implements MatrixGeneration {
 			executedSuccessfully = false;
 		}
 		if(!isExecutedSuccessfully()) {
-			handleFail();
+			throw new MatrixGenerationException(null);
 		}
 		return null;
 	}
 
-	protected void handleFail() {
-		for(FailHandler failHandler : failHandlers) {
-			failHandler.onFail();
-		}
-	}
-
 	@Override
 	public void destroy() { }
-
-	private Set<FailHandler> failHandlers = new HashSet<FailHandler>();
-	
-	@Override
-	public void addFailHandler(FailHandler handler) {
-		failHandlers.add(handler);
-	}
-	
-	@Override
-	public void removeFailHandler(FailHandler handler) {
-		failHandlers.remove(handler);
-	}
 
 	@Override
 	public boolean isExecutedSuccessfully() {

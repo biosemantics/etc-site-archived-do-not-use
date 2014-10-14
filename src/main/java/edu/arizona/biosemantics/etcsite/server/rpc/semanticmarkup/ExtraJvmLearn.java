@@ -1,19 +1,20 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup;
 
 import java.io.File;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.ExtraJvmCallable;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
-import edu.arizona.biosemantics.etcsite.server.rpc.AdminAuthenticationToken;
-import edu.arizona.biosemantics.etcsite.server.rpc.FileService;
-import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.server.rpc.auth.AdminAuthenticationToken;
+import edu.arizona.biosemantics.etcsite.server.rpc.file.FileService;
 import edu.arizona.biosemantics.etcsite.shared.model.DatasetPrefix;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.CreateDirectoryFailedException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDeniedException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkupException;
 import edu.arizona.biosemantics.semanticmarkup.ETCLearnMain;
 
 public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Learn {
@@ -30,7 +31,7 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 	private IFileService fileService = new FileService();
 
 	public ExtraJvmLearn(AuthenticationToken authenticationToken, String config, String input, String tablePrefix,
-			String source, String operator, String bioportalUserId, String bioportalAPIKey) {
+			String source, String operator, String bioportalUserId, String bioportalAPIKey) throws SemanticMarkupException {
 		this.authenticationToken = authenticationToken;
 		this.config = config;
 		this.input = input;
@@ -40,7 +41,11 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 		this.bioportalUserId = bioportalUserId;
 		this.bioportalAPIKey = bioportalAPIKey;
 		
-		this.setArgs(createArgs());
+		try {
+			this.setArgs(createArgs());
+		} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
+			throw new SemanticMarkupException(null);
+		}
 		if(!Configuration.charaparser_xms.isEmpty()) 
 			this.setXms(Configuration.charaparser_xms);
 		if(!Configuration.charaparser_xmx.isEmpty()) 
@@ -54,7 +59,7 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 		this.setMainClass(ETCLearnMain.class);
 	}
 	
-	private String[] createArgs() {
+	private String[] createArgs() throws PermissionDeniedException, CreateDirectoryFailedException {
 		String databaseName = Configuration.charaparser_databaseName;
 		String databaseUser = Configuration.databaseUser;
 		String databasePassword = Configuration.databasePassword;
@@ -68,6 +73,7 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 		String errorFile = workspace + File.separator + tablePrefix + File.separator + "error.log";
 		
 		fileService.createDirectory(new AdminAuthenticationToken(), workspace, tablePrefix, false);
+
 		
 		//only temporary until charaparser can deal with the namespaces and they don't need to be pre- and post treated with XmlNamespaceManager
 		/*fileService.createDirectory(new AdminAuthenticationToken(), workspace + File.separator + tablePrefix, "in", false);
@@ -117,27 +123,14 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 	}
 
 	@Override
-	public LearnResult createReturn() {
+	public LearnResult createReturn() throws SemanticMarkupException {
+		if(exitStatus != 0)
+			throw new SemanticMarkupException(null);
 		DatasetPrefix datasetPrefix = daoManager.getDatasetPrefixDAO().getDatasetPrefix(tablePrefix);
+		if(datasetPrefix == null)
+			throw new SemanticMarkupException(null);
 		LearnResult result = new LearnResult(datasetPrefix.getOtoUploadId(), datasetPrefix.getOtoSecret());
 		return result;
-	}
-
-	private Set<FailHandler> failHandlers = new HashSet<FailHandler>();
-	
-	@Override
-	public void addFailHandler(FailHandler handler) {
-		failHandlers.add(handler);
-	}
-	
-	@Override
-	public void removeFailHandler(FailHandler handler) {
-		failHandlers.remove(handler);
-	}
-
-	@Override
-	public boolean isExecutedSuccessfully() {
-		return false;
 	}
 
 }

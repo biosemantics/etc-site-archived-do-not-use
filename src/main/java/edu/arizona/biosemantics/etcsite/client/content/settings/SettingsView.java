@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.User;
 
 public class SettingsView extends Composite implements ISettingsView {
@@ -61,7 +62,7 @@ public class SettingsView extends Composite implements ISettingsView {
 	private Presenter presenter;
 	private final int FIELD_WIDTH = 180;
 	
-	private User user;
+	private ShortUser user;
 	
 	public SettingsView() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -88,14 +89,14 @@ public class SettingsView extends Composite implements ISettingsView {
 	}
 	
 	@Override
-	public void setData(User user){
+	public void setData(ShortUser user){
 		firstNameBox.setText(user.getFirstName());
 		lastNameBox.setText(user.getLastName());
 		idLabel.setText(user.getOpenIdProviderId());
 		emailBox.setText(user.getEmail());
 		affiliationBox.setText(user.getAffiliation());
 		bioportalUserIdBox.setText(user.getBioportalUserId());
-		bioportalAPIKeyBox.setText(user.getBioportalAPIKey());
+		bioportalAPIKeyBox.setText(user.getBioportalApiKey());
 		oldPasswordBox.setText("");
 		newPasswordBox.setText("");
 		confirmNewPasswordBox.setText("");
@@ -115,7 +116,7 @@ public class SettingsView extends Composite implements ISettingsView {
 		if (!user.getOpenIdProvider().equals("none")){
 			firstNameBox.setEnabled(false);
 			lastNameBox.setEnabled(false);
-			oldPasswordBox.setText(user.getPassword());
+			//oldPasswordBox.setText(user.getPassword());
 			oldPasswordBox.setEnabled(false);
 			newPasswordBox.setEnabled(false);
 			confirmNewPasswordBox.setEnabled(false);

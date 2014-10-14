@@ -8,9 +8,9 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileSearchServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.access.IFileAccessServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.format.IFileFormatServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.search.IFileSearchServiceAsync;
  
 public class AnnotationReviewView extends Composite implements IAnnotationReviewView {
  

@@ -1,15 +1,17 @@
 package edu.arizona.biosemantics.etcsite.client.content.matrixGeneration;
 
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.LoadingPopup;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review.IReviewView;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review.IReviewView.Presenter;
+import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
 
 public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewView.Presenter {
 
@@ -18,7 +20,6 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 	private IMatrixGenerationReviewView view;
 	private PlaceController placeController;
 	private IReviewView.Presenter reviewPresenter;
-	private LoadingPopup loadingPopup = new LoadingPopup();
 
 	@Inject
 	public MatrixGenerationReviewPresenter(IMatrixGenerationReviewView view, 
@@ -35,20 +36,34 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 	@Override
 	public void onNext() {
 		if(task != null) {
-			loadingPopup.start();
-			matrixGenerationService.save(Authentication.getInstance().getToken(), reviewPresenter.getTaxonMatrix(), task, new RPCCallback<Void>(loadingPopup) {
+			Alerter.startLoading();
+			matrixGenerationService.save(Authentication.getInstance().getToken(), reviewPresenter.getTaxonMatrix(), task, new AsyncCallback<Void>() {
 				@Override
-				public void onResult(Void result) { 
+				public void onSuccess(Void result) { 
 					matrixGenerationService.completeReview(Authentication.getInstance().getToken(), 
-							task, new RPCCallback<Task>(loadingPopup) {
+							task, new AsyncCallback<Task>() {
 						@Override
-						public void onResult(Task result) {	
-							loadingPopup.stop();
+						public void onSuccess(Task result) {	
+							Alerter.stopLoading();
 							placeController.goTo(new MatrixGenerationOutputPlace(result));
+						}
+						@Override
+						public void onFailure(Throwable caught) {
+							if(caught instanceof MatrixGenerationException)
+								placeController.goTo(new TaskManagerPlace());
+							Alerter.failedToCompleteReview(caught);
+							Alerter.stopLoading();
 						}
 					});
 				}
-			}); 
+
+				@Override
+				public void onFailure(Throwable caught) {
+					if(caught instanceof MatrixGenerationException)
+						placeController.goTo(new TaskManagerPlace());
+					Alerter.failedToSaveMatrixGeneration(caught);
+				}
+			});
 		}
 	}
 

@@ -29,7 +29,9 @@ public abstract class AbstractTaskConfiguration implements Serializable {
 	
 	@Override
 	public int hashCode() {
-		return configuration.getId();
+		if(configuration != null)
+			return configuration.getId();
+		return super.hashCode();
 	}
 	
 	@Override

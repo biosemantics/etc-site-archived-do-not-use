@@ -178,6 +178,8 @@ CREATE TABLE IF NOT EXISTS `etcsite_tasks` (
   `resumable` tinyint(1) DEFAULT NULL,
   `complete` tinyint(1) DEFAULT NULL,
   `completed` timestamp NULL DEFAULT NULL,
+  `failed` tinyint(1) DEFAULT NULL,
+  `failedtime` timestamp NULL DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),

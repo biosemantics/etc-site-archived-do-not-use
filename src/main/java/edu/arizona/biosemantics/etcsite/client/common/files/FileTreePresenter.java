@@ -5,24 +5,23 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.LoadingPopup;
 import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView.IFileTreeSelectionListener;
-import edu.arizona.biosemantics.etcsite.shared.model.Tree;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.model.file.Tree;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
 
 public class FileTreePresenter implements IFileTreeView.Presenter {
 	
 	private IFileServiceAsync fileService;
 	protected IFileTreeView view;
 	
-	private LoadingPopup loadingPopup = new LoadingPopup();
 	protected FileTreeDecorator fileTreeDecorator;
 	private FileImageLabelTreeItem selectedItem;
 	private Set<IFileTreeSelectionListener> selectionListeners = new HashSet<IFileTreeSelectionListener>();
@@ -46,12 +45,18 @@ public class FileTreePresenter implements IFileTreeView.Presenter {
 		//remove previous data
 		view.clear();
 		
-		loadingPopup.start();
+		Alerter.startLoading();
 		this.fileService.getUsersFiles(Authentication.getInstance().getToken(), FileFilter.ALL, 
-				new RPCCallback<Tree<FileInfo>>(loadingPopup) {
+				new AsyncCallback<Tree<FileInfo>>() {
 				@Override
-				public void onResult(Tree<FileInfo> result) {
+				public void onSuccess(Tree<FileInfo> result) {
 					decorate(result, selectionPath, retainedStates, fileFilter);
+					Alerter.stopLoading();
+				}
+				@Override
+				public void onFailure(Throwable caught) {
+					Alerter.failedToGetUsersFiles(caught);
+					Alerter.stopLoading();
 				}
 			}
 		);

@@ -2,15 +2,12 @@ package edu.arizona.biosemantics.etcsite.server;
 
 import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
 import org.apache.tools.ant.util.JavaEnvUtils;
 
-import edu.arizona.biosemantics.etcsite.server.Task.FailHandler;
 import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 
 public abstract class ExtraJvmCallable<T> implements Callable<T>, Task {
@@ -22,8 +19,6 @@ public abstract class ExtraJvmCallable<T> implements Callable<T>, Task {
 	protected int exitStatus = -1;
 	private String xmx;
 	private String xms;
-	
-	private Set<FailHandler> failHandlers = new HashSet<FailHandler>();
 		
 	protected ExtraJvmCallable() {  }
 
@@ -56,7 +51,7 @@ public abstract class ExtraJvmCallable<T> implements Callable<T>, Task {
 	}
 
 	@Override
-	public T call() {
+	public T call() throws Exception {
 		String command = "java -cp " + classPath + " " + mainClass.getName();
 		for(String arg : args)
 			command += " " + arg;
@@ -64,7 +59,7 @@ public abstract class ExtraJvmCallable<T> implements Callable<T>, Task {
 			command += " -Xmx " + xmx;
 		if(xms != null)
 			command += " -Xms " + xms;
-		System.out.println("Run in an extra JVM: " + command);
+		log(LogLevel.INFO, "Run in an extra JVM: " + command);
 		
 		exitStatus = -1;
 		if(classPath != null && mainClass != null && args != null) {
@@ -89,37 +84,17 @@ public abstract class ExtraJvmCallable<T> implements Callable<T>, Task {
 			} catch(IOException | InterruptedException e) {
 				log(LogLevel.ERROR, "Process couldn't execute successfully", e);
 			}
-				
-			if(!isExecutedSuccessfully()) {
-				handleFail();
-			}
 			
 			return createReturn();
 		} 
 		return null;
 	}
-
-	protected void handleFail() {
-		for(FailHandler failHandler : failHandlers) {
-			failHandler.onFail();
-		}
-	}
 	
-	public abstract T createReturn();
+	public abstract T createReturn() throws Exception;
 	
 	public void destroy() {
 		if(process != null)
 			process.destroy();
-	}
-	
-	@Override
-	public void addFailHandler(FailHandler handler) {
-		failHandlers.add(handler);
-	}
-	
-	@Override
-	public void removeFailHandler(FailHandler handler) {
-		failHandlers.remove(handler);
 	}
 
 	@Override

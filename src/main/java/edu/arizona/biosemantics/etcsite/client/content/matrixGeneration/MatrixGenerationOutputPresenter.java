@@ -1,15 +1,18 @@
 package edu.arizona.biosemantics.etcsite.client.content.matrixGeneration;
 
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerPlace;
+import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
 import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
 
 public class MatrixGenerationOutputPresenter implements IMatrixGenerationOutputView.Presenter {
 
@@ -44,11 +47,17 @@ public class MatrixGenerationOutputPresenter implements IMatrixGenerationOutputV
 	@Override
 	public void setTask(Task task) {
 		matrixGenerationService.output(Authentication.getInstance().getToken(), task, 
-				new RPCCallback<Task>() {
+				new AsyncCallback<Task>() {
 			@Override
-			public void onResult(Task result) {
+			public void onSuccess(Task result) {
 				String output = ((MatrixGenerationConfiguration)result.getConfiguration()).getOutput();
 				view.setOutput(filePathShortener.shortenOutput(output, result, Authentication.getInstance().getUserId()));
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				if(caught instanceof MatrixGenerationException)
+					placeController.goTo(new TaskManagerPlace());
+				Alerter.failedToOutput(caught);
 			}
 		});
 	}

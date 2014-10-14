@@ -22,7 +22,7 @@ public class Zipper {
 			try {
 				deleteResult = destinationFile.delete();
 			} catch(Exception e) {
-				e.printStackTrace();
+				log(LogLevel.ERROR, "Couldn't delete file", e);
 			}
 			
 			if(!deleteResult) {
@@ -68,7 +68,7 @@ public class Zipper {
 			String s = "";
 			int i = 0;
 			while ((s = stdInput.readLine()) != null) {
-				System.out.println(s);
+				log(LogLevel.INFO, "Zipper out: " + s);
 			}
 		} catch (IOException e) {
 			log(LogLevel.ERROR, "Couldn't close reader", e);
@@ -79,7 +79,7 @@ public class Zipper {
 			// read the errors from the command
 			String e = "";
 			while ((e = errInput.readLine()) != null) {
-				System.out.println(e);
+				log(LogLevel.INFO, "Zipper err: " + e);
 			}
 		} catch (IOException e) {
 			log(LogLevel.ERROR, "Couldn't close reader", e);

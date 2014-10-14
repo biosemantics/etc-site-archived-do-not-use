@@ -16,20 +16,17 @@ import com.google.inject.Inject;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
 
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.Configuration;
-import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
-import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
 
 public class FileDragDropHandler implements DragStartHandler, DropHandler, DragOverHandler {
 
 	private final IFileServiceAsync fileService = GWT.create(IFileService.class);
 	private Set<IFileMoveListener> listeners = new HashSet<IFileMoveListener>();
-	private MessagePresenter messagePresenter = new MessagePresenter();
 		
 	@Override
 	public void onDragStart(DragStartEvent event) {	
@@ -55,9 +52,9 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 			String targetPath = fileImageLabel.getFileInfo().getFilePath();
 			
 			if(!targetPath.contains(sourcePath)) {
-				fileService.isDirectory(Authentication.getInstance().getToken(), sourcePath, new RPCCallback<Boolean>() {
+				fileService.isDirectory(Authentication.getInstance().getToken(), sourcePath, new AsyncCallback<Boolean>() {
 						@Override
-						public void onResult(Boolean isDirectory) {
+						public void onSuccess(Boolean isDirectory) {
 							//String targetAndAddonPath = fileImageLabel.getFileInfo().getFilePath() + File.seperator + sourceName;
 							String targetPath = fileImageLabel.getFileInfo().getFilePath();
 							if(!fileImageLabel.getFileInfo().getFileType().equals(FileTypeEnum.DIRECTORY))
@@ -68,31 +65,32 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 							
 							if(isDirectory) {
 								fileService.getDepth(Authentication.getInstance().getToken(), sourcePath, 
-										new AsyncCallback<RPCResult<Integer>>() {
-									
+										new AsyncCallback<Integer>() {
 									@Override
-									public void onFailure(Throwable caught) {
-										caught.printStackTrace();
+									public void onSuccess(Integer sourceDepth) {
+										int overallDepth = targetLevel + (sourceDepth + 1);
+										if(overallDepth > Configuration.fileManagerMaxDepth) {
+											Alerter.maxDepthReached();
+											return;
+										} else {
+											moveFile(sourcePath, targetPathFinal);
+										}
 									}
 									@Override
-									public void onSuccess(RPCResult<Integer> sourceDepth) {
-										if(sourceDepth.isSucceeded()) {
-											int overallDepth = targetLevel + (sourceDepth.getData() + 1);
-											if(overallDepth > Configuration.fileManagerMaxDepth) {
-												messagePresenter.showOkBox("File Manager", "Only a directory depth of " + Configuration.fileManagerMaxDepth + " is allowed.");
-												return;
-											} else {
-												moveFile(sourcePath, targetPathFinal);
-											}
-										}
+									public void onFailure(Throwable caught) {
+										Alerter.failedToGetDepth(caught);
 									}
 								});
 							} else 
 								moveFile(sourcePath, targetPathFinal);
 						}
+						@Override
+						public void onFailure(Throwable caught) {
+							Alerter.failedToIsDirectory(caught);
+						}
 				});
 			} else {
-				messagePresenter.showOkBox("File Manager", "Directory cannot be moved into its descendants.");
+				Alerter.invalidMoveToDecendant();
 			}
 		}
 	}
@@ -120,14 +118,12 @@ public class FileDragDropHandler implements DragStartHandler, DropHandler, DragO
 	
 	protected void moveFile(String sourcePath, String targetPath) {
 		fileService.moveFile(Authentication.getInstance().getToken(), sourcePath, targetPath, 
-				new AsyncCallback<RPCResult<Void>>() {
-			public void onSuccess(RPCResult<Void> result) {
-				if(result.isSucceeded()) {
-					notifyListeners();
-				}	
+				new AsyncCallback<Void>() {
+			public void onSuccess(Void result) {
+				notifyListeners();	
 			}
 			public void onFailure(Throwable caught) {
-				caught.printStackTrace();
+				Alerter.failedToMoveFile(caught);
 			}
 		});
 	}

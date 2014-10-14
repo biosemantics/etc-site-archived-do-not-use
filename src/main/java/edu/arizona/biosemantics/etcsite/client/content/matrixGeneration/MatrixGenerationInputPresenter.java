@@ -1,12 +1,12 @@
 package edu.arizona.biosemantics.etcsite.client.content.matrixGeneration;
 
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.LoadingPopup;
-import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileImageLabelTreeItem;
 import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView;
@@ -14,10 +14,11 @@ import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeV
 import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePresenter.ISelectListener;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupInputView;
+import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
 
 public class MatrixGenerationInputPresenter implements IMatrixGenerationInputView.Presenter {
 
@@ -29,8 +30,6 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 	private FilePathShortener filePathShortener;
 	private String inputFile;
 	private IFileManagerDialogView.Presenter fileManagerDialogPresenter;
-	private LoadingPopup loadingPopup = new LoadingPopup();
-	private MessagePresenter messagePresenter = new MessagePresenter();
 	
 	@Inject
 	public MatrixGenerationInputPresenter(IMatrixGenerationInputView view, 
@@ -62,7 +61,7 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 					view.setFilePath(shortendPath);
 					view.setEnabledNext(true);			
 					if(selection.getFileInfo().getOwnerUserId() != Authentication.getInstance().getUserId()) {
-						messagePresenter.showOkBox("Shared input", "The selected input is not owned. To start the task the files will be copied to your own space.");
+						Alerter.sharedInputForTask();
 						fileManagerDialogPresenter.hide();
 					} else {
 						fileManagerDialogPresenter.hide();
@@ -82,34 +81,46 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 		
 		//error checking.
 		if (inputFile == null || inputFile.equals("")){
-			messagePresenter.showOkBox("", "Please enter a valid directory.");
+			Alerter.selectValidInputDirectory();
 			return;
 		}
 		if (view.getTaskName() == null || view.getTaskName().equals("")){
-			messagePresenter.showOkBox("", "Please enter a name for this task.");
+			Alerter.selectTaskName();
 			return;
 		}
 		
 		//end error checking.
 		
-		loadingPopup.start();
-		matrixGenerationService.isValidInput(Authentication.getInstance().getToken(), inputFile, new RPCCallback<Boolean>() {
+		Alerter.startLoading();
+		matrixGenerationService.isValidInput(Authentication.getInstance().getToken(), inputFile, new AsyncCallback<Boolean>() {
 			@Override
-			public void onResult(Boolean result) {
+			public void onSuccess(Boolean result) {
 				if(!result) {
-					messagePresenter.showOkBox("Input", "Not a valid input directory.");
-					loadingPopup.stop();
+					Alerter.invalidInputDirectory();
+					Alerter.stopLoading();
 				} else {
 					matrixGenerationService.start(Authentication.getInstance().getToken(), 
-							view.getTaskName(), inputFile, new RPCCallback<Task>() {
+							view.getTaskName(), inputFile, new AsyncCallback<Task>() {
 								@Override
-								public void onResult(Task result) {
+								public void onSuccess(Task result) {
 									placeController.goTo(new MatrixGenerationProcessPlace(result));
-									loadingPopup.stop();
+									Alerter.stopLoading();
+								}
+								@Override
+								public void onFailure(Throwable caught) {
+									if(caught instanceof MatrixGenerationException)
+										placeController.goTo(new TaskManagerPlace());
+									Alerter.failedToStartMatrixGeneration(caught);
 								}
 					});
 				}
 				
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				if(caught instanceof MatrixGenerationException)
+					placeController.goTo(new TaskManagerPlace());
+				Alerter.failedToIsValidInput(caught);
 			}
 		});
 	}

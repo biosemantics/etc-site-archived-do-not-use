@@ -1,25 +1,30 @@
 package edu.arizona.biosemantics.etcsite.client.common;
 
 import com.google.gwt.regexp.shared.RegExp;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.sencha.gxt.widget.core.client.Dialog;
 
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView.IRegisterListener;
-import edu.arizona.biosemantics.etcsite.shared.model.RegistrationResult;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.CaptchaException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.RegistrationFailedException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
 
 public class RegisterPresenter implements IRegisterView.Presenter {
 
 	private IAuthenticationServiceAsync authenticationService;
+	private IUserServiceAsync userService;
 	private IRegisterView view;
 	private Dialog dialog;
 	private IRegisterListener currentListener;
 	private CaptchaPresenter captchaPresenter;
 
 	@Inject
-	public RegisterPresenter(IRegisterView view, IAuthenticationServiceAsync authenticationService) {
+	public RegisterPresenter(IRegisterView view, IUserServiceAsync userService, 
+			IAuthenticationServiceAsync authenticationService) {
 		this.view = view;
+		this.userService = userService;
 		this.authenticationService = authenticationService;
 		
 		view.setPresenter(this);
@@ -78,17 +83,17 @@ public class RegisterPresenter implements IRegisterView.Presenter {
 		}
 		
 		view.setErrorMessage("");
-		authenticationService.registerLocalAccount(captchaId, captchaSolution, firstName, lastName, email, password, new RPCCallback<RegistrationResult>() {
+		userService.add(captchaId, captchaSolution, firstName, lastName, email, password, 
+				new AsyncCallback<Void>() {
 			@Override
-			public void onResult(RegistrationResult result) {
+			public void onSuccess(Void result) {
 				captchaPresenter.requestNewCaptcha();
-				if (result.getResult() == true){
-					dialog.hide();
-					currentListener.onRegister(result.getMessage());
-				} else {
-					view.getCaptchaPanel().clearText();
-					currentListener.onRegisterFailure(result.getMessage());
-				}
+				dialog.hide();
+				currentListener.onRegister();
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToRegister(caught);
 			}
 		});
 	}

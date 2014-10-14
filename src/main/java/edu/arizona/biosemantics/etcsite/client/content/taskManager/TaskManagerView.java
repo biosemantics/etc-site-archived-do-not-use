@@ -187,6 +187,8 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 			public String getValue(TaskData object) {
 				if(object.getTask().isComplete())
 					return "Completed";
+				if(object.getTask().isFailed())
+					return "Failed";
 				return "Step " + object.getTask().getTaskStage().getTaskStageNumber() + " of " + object.getTask().getTaskStage().getMaxTaskStageNumber() + ": " + object.getTask().getTaskStage().getDisplayName();
 			}
 		};

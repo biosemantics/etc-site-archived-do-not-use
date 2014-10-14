@@ -1,15 +1,17 @@
 package edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review;
 
 import com.google.gwt.http.client.URL;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.LoadingPopup;
-import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
+import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
 import edu.arizona.biosemantics.matrixreview.client.MatrixReviewView;
 import edu.arizona.biosemantics.matrixreview.client.event.SaveEvent;
 import edu.arizona.biosemantics.matrixreview.client.event.SaveEvent.SaveHandler;
@@ -22,26 +24,32 @@ public class ReviewPresenter implements IReviewView.Presenter {
 	private MatrixReviewView matrixReviewView = new MatrixReviewView();
 	private Model model;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
-	private MessagePresenter messagePresenter = new MessagePresenter();
 	private Task task;
-	private LoadingPopup loadingPopup = new LoadingPopup();
+	private PlaceController placeController;
 	
 	@Inject
-	public ReviewPresenter(IReviewView view, final IMatrixGenerationServiceAsync matrixGenerationService) {
+	public ReviewPresenter(IReviewView view, final IMatrixGenerationServiceAsync matrixGenerationService, 
+			 PlaceController placeController) {
 		this.matrixGenerationService = matrixGenerationService;
 		this.view = view;
+		this.placeController = placeController;
 		matrixReviewView.setSaveHandler(new SaveHandler() {
 			@Override
 			public void onSave(SaveEvent event) {
-				loadingPopup.start();
-				matrixGenerationService.saveMatrix(Authentication.getInstance().getToken(), 
-						task, event.getModel(), new RPCCallback<String>() {
+				Alerter.startLoading();
+				matrixGenerationService.outputMatrix(Authentication.getInstance().getToken(), 
+						task, event.getModel(), new AsyncCallback<String>() {
 					@Override
-					public void onResult(String result) {
-						loadingPopup.stop();
+					public void onSuccess(String result) {
+						Alerter.stopLoading();
 						Window.open("download.dld?target=" + URL.encodeQueryString(result) + 
 								"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
 								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()), "_blank", "");
+					}
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Alerter.failedToOutputMatrix(caught);
 					}
 				});
 			}
@@ -51,19 +59,22 @@ public class ReviewPresenter implements IReviewView.Presenter {
 	@Override
 	public void refresh(Task task) {
 		this.task = task;
-		loadingPopup.start();
-		matrixGenerationService.review(Authentication.getInstance().getToken(), task, new RPCCallback<Model>() { 
-			public void onResult(Model result) {
+		Alerter.startLoading();
+		matrixGenerationService.review(Authentication.getInstance().getToken(), task, new AsyncCallback<Model>() { 
+			public void onSuccess(Model result) {
 				model = result;
 				TaxonMatrix taxonMatrix = model.getTaxonMatrix();
 				matrixReviewView.setFullModel(model);
 				view.setMatrixReviewView(matrixReviewView);
-				loadingPopup.stop();
+				Alerter.stopLoading();
 				if (taxonMatrix.getCharacterCount() == 0 || (taxonMatrix.getCharacterCount() == 1 && taxonMatrix.getFlatCharacters().get(0).getName().equals(""))){
-					messagePresenter.showOkBox("Error", 	"Note: No data was generated for this matrix. This could be due to insufficient or invalid input. <br/><br/>"
-							+ 								"If you feel this is an error, please <a href=\"https://github.com/biosemantics/matrix-generation/issues\" target=\"_blank\">report the issue on github</a>. (Remember to include your ETC <br/>"
-							+ 								"username and the name of the folder containing your input files!)");
-				}
+					Alerter.matrixGeneratedEmpty();}
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				if(caught instanceof MatrixGenerationException)
+					placeController.goTo(new TaskManagerPlace());
+				Alerter.failedToReview(caught);
 			}
 		}); 
 		

@@ -4,17 +4,19 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.Inject;
 
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
+import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.process.semanticmarkup.BracketValidator;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.PreprocessedDescription;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkupException;
 
 public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreprocessView.Presenter {
 
@@ -26,7 +28,6 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 	private BracketColorizer bracketColorizer;
 	private BracketValidator bracketValidator;
 	private PlaceController placeController;
-	private MessagePresenter messagePresenter = new MessagePresenter();
 	
 	@Inject
 	public SemanticMarkupPreprocessPresenter(ISemanticMarkupPreprocessView view, 
@@ -45,14 +46,22 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 	@Override
 	public void setTask(final Task task) {
 		this.task = task;
-		semanticMarkupService.preprocess(Authentication.getInstance().getToken(), task, new RPCCallback<List<PreprocessedDescription>>() {
+		semanticMarkupService.preprocess(Authentication.getInstance().getToken(), task, new AsyncCallback<List<PreprocessedDescription>>() {
 			@Override
-			public void onResult(List<PreprocessedDescription> result) {
+			public void onSuccess(List<PreprocessedDescription> result) {
                 if(result.isEmpty()) {
-                    semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), task, TaskStageEnum.LEARN_TERMS, new RPCCallback<Task>() {
+                    semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), task, 
+                    		TaskStageEnum.LEARN_TERMS, new AsyncCallback<Task>() {
 						@Override
-						public void onResult(Task result) {
+						public void onSuccess(Task result) {
 							placeController.goTo(new SemanticMarkupLearnPlace(task));
+						}
+						@Override
+						public void onFailure(Throwable caught) {
+							if(caught instanceof SemanticMarkupException) {
+								placeController.goTo(new TaskManagerPlace());
+							}
+							Alerter.failedToGoToTaskStage(caught);
 						}
                     });
                     return;
@@ -68,6 +77,13 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
                 currentPreprocessedDescription = 0;
                 setPreprocessedDescription(preprocessedDescriptions.get(currentPreprocessedDescription));
 			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				if(caught instanceof SemanticMarkupException) {
+					placeController.goTo(new TaskManagerPlace());
+				}
+			}
 		});
 	}
 
@@ -82,30 +98,46 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 				bracketValidator.validate(view.getHTML())))
 			storeAndLeave();
 		else {
-			messagePresenter.showOkBox("Unmatched Brackets", "You have not corrected all the unmatched brackets.");
+			Alerter.unmatchedBrackets();
 		}
 	}
 
 	private void storeAndLeave() {
-		store(new RPCCallback<Void>() {
+		store(new AsyncCallback<Void>() {
 			@Override
-			public void onResult(Void result) {	
+			public void onSuccess(Void result) {	
 				semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), task, 
-						TaskStageEnum.LEARN_TERMS, new RPCCallback<Task>() {
+						TaskStageEnum.LEARN_TERMS, new AsyncCallback<Task>() {
 							@Override
-							public void onResult(Task task) {
+							public void onSuccess(Task task) {
 								placeController.goTo(new SemanticMarkupLearnPlace(task));
+							}
+
+							@Override
+							public void onFailure(Throwable caught) {
+								if(caught instanceof SemanticMarkupException) {
+									placeController.goTo(new TaskManagerPlace());
+								}
+								Alerter.failedToGoToTaskStage(caught);
 							} 
 				});
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				if(caught instanceof SemanticMarkupException) {
+					placeController.goTo(new TaskManagerPlace());
+				}
+				Alerter.failedToSetDescription(caught);
 			}
 		});
 	}
 
 	@Override
 	public void onNextDescription() {
-		store(new RPCCallback<Void>() {
+		store(new AsyncCallback<Void>() {
 			@Override
-			public void onResult(Void result) {
+			public void onSuccess(Void result) {
 				String text = view.getHTML();
 				if(bracketValidator.validate(text)) {
 					preprocessedDescriptions.remove(currentPreprocessedDescription);
@@ -118,14 +150,22 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 					currentPreprocessedDescription = 0;
 				setPreprocessedDescription(preprocessedDescriptions.get(currentPreprocessedDescription));
 			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				if(caught instanceof SemanticMarkupException) {
+					placeController.goTo(new TaskManagerPlace());
+				}
+				Alerter.failedToSetDescription(caught);
+			}
 		});
 	}
 
 	@Override
 	public void onPreviousDescription() {
-		store(new RPCCallback<Void>() {
+		store(new AsyncCallback<Void>() {
 			@Override
-			public void onResult(Void result) {
+			public void onSuccess(Void result) {
 				String text = view.getHTML();
 				if(bracketValidator.validate(text)) {
 					preprocessedDescriptions.remove(currentPreprocessedDescription);
@@ -136,6 +176,13 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 				if(currentPreprocessedDescription < 0)
 					currentPreprocessedDescription = preprocessedDescriptions.size() - 1;
 				setPreprocessedDescription(preprocessedDescriptions.get(currentPreprocessedDescription));
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				if(caught instanceof SemanticMarkupException) {
+					placeController.goTo(new TaskManagerPlace());
+				}
+				Alerter.failedToSetDescription(caught);
 			}
 		});
 	}
@@ -168,18 +215,22 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 	}
 
 	private void setPreprocessedDescription(final PreprocessedDescription preprocessedDescription) {
-		try {
-			semanticMarkupService.getDescription(Authentication.getInstance().getToken(), 
-					preprocessedDescription.getFilePath(), new RPCCallback<String>() {
-						@Override
-						public void onResult(String result) {
-							setText(preprocessedDescription.getFileName(), 
-									result, preprocessedDescription.getBracketCounts());
+		semanticMarkupService.getDescription(Authentication.getInstance().getToken(), 
+				preprocessedDescription.getFilePath(), new AsyncCallback<String>() {
+					@Override
+					public void onSuccess(String result) {
+						setText(preprocessedDescription.getFileName(), 
+								result, preprocessedDescription.getBracketCounts());
+					}
+
+					@Override
+					public void onFailure(Throwable caught) {
+						if(caught instanceof SemanticMarkupException) {
+							placeController.goTo(new TaskManagerPlace());
 						}
-			});
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+						Alerter.failedToGetDescription(caught);
+					}
+		});
 	}
 	
 	private void setText(String descriptionId, String text, Map<Character, Integer> bracketCounts) {
@@ -195,7 +246,6 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 		view.setDescriptionIDLabel("Description: " + descriptionId);
 		updateBracketCounts(bracketCounts);
 		text = bracketColorizer.colorize(text);
-		System.out.println(text);
 		
 		/*System.out.println(display.getTextArea().getFormatter().getForeColor());
 		System.out.println(display.getTextArea().getFormatter().isBold());
@@ -221,7 +271,7 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 
 	}
 	
-	protected void store(RPCCallback<Void> callback) {
+	protected void store(AsyncCallback<Void> callback) {
 		String target = preprocessedDescriptions.get(currentPreprocessedDescription).getFilePath();
 		String content = view.getHTML();
 		semanticMarkupService.setDescription(Authentication.getInstance().getToken(), 

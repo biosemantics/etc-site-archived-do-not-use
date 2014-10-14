@@ -3,11 +3,16 @@ package edu.arizona.biosemantics.etcsite.client.menu;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.ResumeTaskPlaceMapper;
@@ -16,7 +21,6 @@ import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenera
 import edu.arizona.biosemantics.etcsite.client.content.visualization.VisualizationPlace;
 import edu.arizona.biosemantics.etcsite.client.menu.IMenuView.Presenter;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
 
@@ -27,7 +31,6 @@ public class MenuActivity extends AbstractActivity implements Presenter {
 	private ISemanticMarkupServiceAsync semanticMarkupService;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
 	private ResumeTaskPlaceMapper resumeTaskPlaceMapper;
-	private MessagePresenter messagePresenter = new MessagePresenter();
 
 	@Inject
 	public MenuActivity(IMenuView menuView, PlaceController placeController, 
@@ -51,21 +54,30 @@ public class MenuActivity extends AbstractActivity implements Presenter {
 	@Override
 	public void onSemanticMarkup() {		
 		semanticMarkupService.getLatestResumable(Authentication.getInstance().getToken(),
-				new RPCCallback<Task>() {
+				new AsyncCallback<Task>() {
 			@Override
-			public void onResult(final Task task) {
-				if(task != null)
-					messagePresenter.showOkCandelBox(
-						"Resumable Task", "You have a resumable task of this type",  "Start new", "Resume", new MessagePresenter.IConfirmListener() {
-							public void onConfirm() {
-								placeController.goTo(resumeTaskPlaceMapper.getPlace(task));
-							}
-							public void onCancel() {
-								placeController.goTo(new SemanticMarkupInputPlace());
-							}
-						});
-				else 
+			public void onSuccess(final Task task) {
+				if(task != null) {
+					MessageBox resumable = Alerter.resumableTask();
+					resumable.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
+						@Override
+						public void onSelect(SelectEvent event) {
+							placeController.goTo(resumeTaskPlaceMapper.getPlace(task));
+						}
+					});
+					resumable.getButton(PredefinedButton.NO).addSelectHandler(new SelectHandler() {
+						@Override
+						public void onSelect(SelectEvent event) {
+							placeController.goTo(new SemanticMarkupInputPlace());
+						}
+					});
+				} else 
 					placeController.goTo(new SemanticMarkupInputPlace());
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToGetLatestResumable(caught);
 			}
 		});
 	}
@@ -73,21 +85,30 @@ public class MenuActivity extends AbstractActivity implements Presenter {
 	@Override
 	public void onMatrixGeneration() {
 		matrixGenerationService.getLatestResumable(Authentication.getInstance().getToken(),
-				new RPCCallback<Task>() {
+				new AsyncCallback<Task>() {
 			@Override
-			public void onResult(final Task task) {
-				if(task != null) 
-					messagePresenter.showOkCandelBox(
-						"Resumable Task", "You have a resumable task of this type", "Start new", "Resume",  new MessagePresenter.IConfirmListener() {
-							public void onConfirm() {
-								placeController.goTo(resumeTaskPlaceMapper.getPlace(task));
-							}
-							public void onCancel() {
-								placeController.goTo(new MatrixGenerationInputPlace());
-							}
-						});
-				else 
+			public void onSuccess(final Task task) {
+				if(task != null) {
+					MessageBox resumable = Alerter.resumableTask();
+					resumable.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
+						@Override
+						public void onSelect(SelectEvent event) {
+							placeController.goTo(resumeTaskPlaceMapper.getPlace(task));
+						}
+					});
+					resumable.getButton(PredefinedButton.NO).addSelectHandler(new SelectHandler() {
+						@Override
+						public void onSelect(SelectEvent event) {
+							placeController.goTo(new MatrixGenerationInputPlace());
+						}
+					});
+				} else 
 					placeController.goTo(new MatrixGenerationInputPlace());
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToGetLatestResumable(caught);
 			}
 		});
 	}

@@ -191,7 +191,9 @@ public class TaskDAO {
 		boolean resumable = result.getBoolean(7);
 		boolean complete = result.getBoolean(8);
 		Date completed = result.getTimestamp(9);
-		Date created = result.getTimestamp(10);
+		boolean failed = result.getBoolean(10);
+		Date failedTime = result.getTimestamp(11);
+		Date created = result.getTimestamp(12);
 		ShortUser user = userDAO.getShortUser(userId);
 		TaskStage taskStage = taskStageDAO.getTaskStage(taskStageId);
 		Configuration configuration = configurationDAO.getConfiguration(configurationId);
@@ -209,11 +211,13 @@ public class TaskDAO {
 		case MATRIX_GENERATION:
 			MatrixGenerationTaskStage matrixGenerationTaskStage = taskStageDAO.getMatrixGenerationTaskStage(taskStageId);
 			MatrixGenerationConfiguration matrixGenerationConfiguration = matrixGenerationConfigurationDAO.getMatrixGenerationConfiguration(configurationId);
-			return new Task(id, name, taskType, matrixGenerationTaskStage, matrixGenerationConfiguration, user, resumable, complete, completed, created);
+			return new Task(id, name, taskType, matrixGenerationTaskStage, matrixGenerationConfiguration, user, 
+					resumable, complete, completed, failed, failedTime, created);
 		case SEMANTIC_MARKUP:
 			SemanticMarkupTaskStage semanticMarkupTaskStage = taskStageDAO.getSemanticMarkupTaskStage(taskStageId);
 			SemanticMarkupConfiguration semanticMarkupConfiguration = semanticMarkupConfigurationDAO.getSemanticMarkupConfiguration(configurationId);
-			return new Task(id, name, taskType, semanticMarkupTaskStage, semanticMarkupConfiguration, user, resumable, complete, completed, created);
+			return new Task(id, name, taskType, semanticMarkupTaskStage, semanticMarkupConfiguration, user, 
+					resumable, complete, completed, failed, failedTime, created);
 		case TAXONOMY_COMPARISON:
 			break;
 		case TREE_GENERATION:
@@ -228,8 +232,9 @@ public class TaskDAO {
 
 	public Task addTask(Task task) {
 		Task result = null;
-		try(Query query = new Query("INSERT INTO `etcsite_tasks` (`name`, `tasktype`, `taskstage`, `configuration`, `user`, `resumable`, `complete`) VALUES " +
-				"(?, ?, ?, ?, ?, ?, ?)")) {
+		try(Query query = new Query("INSERT INTO `etcsite_tasks` (`name`, `tasktype`, `taskstage`, `configuration`, "
+				+ "`user`, `resumable`, `complete`, `failed`) VALUES " +
+				"(?, ?, ?, ?, ?, ?, ?, ?)")) {
 			query.setParameter(1, task.getName());
 			query.setParameter(2, task.getTaskType().getId());
 			query.setParameter(3, task.getTaskStage().getId());
@@ -237,6 +242,7 @@ public class TaskDAO {
 			query.setParameter(5, task.getUser().getId());
 			query.setParameter(6, task.isResumable());
 			query.setParameter(7, task.isComplete());
+			query.setParameter(8, task.isFailed());
 			query.execute();
 			ResultSet generatedKeys = query.getGeneratedKeys();
 	        if (generatedKeys.next()) {
@@ -258,7 +264,10 @@ public class TaskDAO {
 		boolean resumable = task.isResumable();
 		boolean complete = task.isComplete();
 		Date completed = task.getCompleted();
-		String sql = "UPDATE etcsite_tasks SET name = ?, tasktype = ?, taskstage=?, configuration=?, user=?, resumable=?, complete=?, completed=? WHERE id = ?";
+		boolean failed = task.isFailed();
+		Date failedTime = task.getFailedTime();
+		String sql = "UPDATE etcsite_tasks SET name = ?, tasktype = ?, taskstage=?, configuration=?, user=?, resumable=?, complete=?, "
+				+ "completed=?, failed=?, failedtime=? WHERE id = ?";
 		try(Query query = new Query(sql)) {
 			query.setParameter(1, name);
 			query.setParameter(2, taskTypeId);
@@ -268,7 +277,9 @@ public class TaskDAO {
 			query.setParameter(6, resumable);
 			query.setParameter(7, complete);
 			query.setParameter(8, (completed==null? null : new Timestamp(completed.getTime())));
-			query.setParameter(9, id);
+			query.setParameter(9, failed);
+			query.setParameter(10, (failedTime==null? null : new Timestamp(failedTime.getTime())));
+			query.setParameter(11, id);
 			
 			//Query query = new Query("UPDATE tasks SET name = '" + name + "',  tasktype=" + taskTypeId + ", taskstage=" + taskStageId + ", configuration=" + configurationId + 
 			//		", user=" + userId + ", resumable=" + resumable + ", complete=" + complete + ", completed=" + (completed==null? completed : completed.getTime()) + " WHERE id = " + id);

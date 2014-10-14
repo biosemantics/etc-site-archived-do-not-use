@@ -27,7 +27,7 @@ public class KaptchaServlet extends HttpServlet implements Servlet {
 		try {
 			super.init(conf);
 		} catch (ServletException e) {
-			String message = "Couldn't init servlet";
+			String message = "Couldn't initialize servlet";
 			log(message, e);
 			log(LogLevel.ERROR, message, e);
 		}

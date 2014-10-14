@@ -1,28 +1,24 @@
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.LoadingPopup;
-import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
-import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.access.IFileAccessServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.format.IFileFormatServiceAsync;
 
 public class FileContentPresenter implements IFileContentView.Presenter {
 
 	private IFileContentView view;
 	private IFileAccessServiceAsync fileAccessService;
 	private IFileFormatServiceAsync fileFormatService;
-	private LoadingPopup loadingPopup = new LoadingPopup();
 	private FileInfo currentFileInfo;
 	private FileTypeEnum fileType; 
-	private MessagePresenter messagePresenter = new MessagePresenter();
 	private String currentXmlSchema;
 	private Dialog dialog;
 
@@ -51,19 +47,19 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 		this.currentFileInfo = fileInfo;
 		//this.dialogBox.setText("File Content of "+path);
 		this.dialog.show();
-		loadingPopup.start();
+		Alerter.startLoading();
 		fileType = FileTypeEnum.getEnum(view.getFormat());
 		fileAccessService.getFileContent(Authentication.getInstance().getToken(), 
-				currentFileInfo.getFilePath(), fileType, new FileContentCallback(true, loadingPopup));
+				currentFileInfo.getFilePath(), fileType, new FileContentCallback(true));
 	}
 	
 	@Override
 	public void onFormatChange(String format) {
-		loadingPopup.start();
+		Alerter.startLoading();
 		fileType = FileTypeEnum.getEnum(format);
 		fileAccessService.getFileContent(
 				Authentication.getInstance().getToken(), 
-				currentFileInfo.getFilePath(), fileType, new FileContentCallback(false, loadingPopup));
+				currentFileInfo.getFilePath(), fileType, new FileContentCallback(false));
 	}
 	
 	@Override
@@ -73,21 +69,32 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 	
 	@Override
 	public void onSave(){
-		fileFormatService.isValidXmlContentForSchema(Authentication.getInstance().getToken(), view.getText(), this.currentXmlSchema, new RPCCallback<Boolean>(){
+		fileFormatService.isValidXmlContentForSchema(Authentication.getInstance().getToken(), view.getText(), this.currentXmlSchema, 
+				new AsyncCallback<Boolean>(){
 			@Override
-			public void onResult(Boolean result){
+			public void onSuccess(Boolean result){
 				if(!result.booleanValue()){
-					messagePresenter.showOkBox("Not saved", "Content is no longer valid against the <a href='https://raw.githubusercontent.com/biosemantics/schemas/master/consolidation_01272014/semanticMarkupInput.xsd' target='_blank'>input schema</a>. "
-							+ "correct the problems and try to save again.");
+					Alerter.notSavedInvalidXmlContent();
 				}else{
 					//user could have possibly manipulated the schema url
-					fileFormatService.setSchema(Authentication.getInstance().getToken(), view.getText(), currentFileInfo.getFileType(), new RPCCallback<String>() {
+					fileFormatService.setSchema(Authentication.getInstance().getToken(), view.getText(), currentFileInfo.getFileType(), 
+							new AsyncCallback<String>() {
 						@Override
-						public void onResult(String result) {
-							fileAccessService.setFileContent(Authentication.getInstance().getToken(), currentFileInfo.getFilePath(), result, new FileContentSaveCallback());
+						public void onSuccess(String result) {
+							fileAccessService.setFileContent(Authentication.getInstance().getToken(), currentFileInfo.getFilePath(), 
+									result, new FileContentSaveCallback());
+						}
+						@Override
+						public void onFailure(Throwable caught) {
+							Alerter.failedToSetSchema(caught);
 						}
 					});
 				}
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToValidateXmlContentForSchema(caught);
 			}
 		});
 	}
@@ -95,51 +102,55 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 	@Override
 	public void onEdit(){
 		if(currentFileInfo.isEditable()) {
-			fileFormatService.getSchema(Authentication.getInstance().getToken(), currentFileInfo.getFilePath(), new RPCCallback<String>() {
+			fileFormatService.getSchema(Authentication.getInstance().getToken(), currentFileInfo.getFilePath(), new AsyncCallback<String>() {
 				@Override
-				public void onResult(String result) {
+				public void onSuccess(String result) {
 					currentXmlSchema = result;
 					view.setEditable(true);
 				}
+				@Override
+				public void onFailure(Throwable caught) {
+					Alerter.failedToGetSchema(caught);
+				}
 			});
 		} else {
-			messagePresenter.showOkBox("File not editable", "This file type can't be edited at this time.");
+			Alerter.fileNotEditable();
 		}
 	}
 
-	private class FileContentSaveCallback extends RPCCallback<Void>{
+	private class FileContentSaveCallback implements AsyncCallback<Void>{
 		public FileContentSaveCallback(){}
 		
 		@Override
-		public void onResult(Void result){
-			System.out.println("should not land here");
+		public void onSuccess(Void result){
+			Alerter.fileSaved();
 		}
-		@Override
-		public void onSuccess(RPCResult<Void> result){
-			messagePresenter.showOkBox("File saved", "File saved successfully.");
-		}
-		
 		@Override
 		public void onFailure(Throwable caught){
-			messagePresenter.showOkBox("File not saved", "Internal error.");
+			Alerter.failedToSetFileContent(caught);
 		}
 		
 	}
 	
 	
 	
-	private class FileContentCallback extends RPCCallback<String> {
+	private class FileContentCallback implements AsyncCallback<String> {
 		private boolean center;
-		public FileContentCallback(boolean center, LoadingPopup loadingPopup) {
-			super(loadingPopup);
+		public FileContentCallback(boolean center) {
 			this.center = center;
 		}
 		@Override
-		public void onResult(String result) {
+		public void onSuccess(String result) {
 			view.setText(result);
 			view.setEditable(false);
 			if(center)
 				dialog.show();
+			Alerter.stopLoading();
+		}
+		@Override
+		public void onFailure(Throwable caught) {
+			Alerter.failedToGetFileContent(caught);
+			Alerter.stopLoading();
 		}
 	}
 

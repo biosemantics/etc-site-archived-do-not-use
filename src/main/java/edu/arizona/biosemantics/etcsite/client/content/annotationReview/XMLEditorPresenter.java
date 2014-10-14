@@ -6,14 +6,13 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.google.web.bindery.event.shared.EventBus;
 
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
-import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileSearchServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.access.IFileAccessServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.format.IFileFormatServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.search.IFileSearchServiceAsync;
 
 public class XMLEditorPresenter implements IXMLEditorView.Presenter {
 
@@ -45,19 +44,29 @@ public class XMLEditorPresenter implements IXMLEditorView.Presenter {
 	
 	@Override
 	public void onSaveButtonClicked() {
-		fileFormatService.isValidMarkedupTaxonDescriptionContent(Authentication.getInstance().getToken(), view.getText(), new RPCCallback<Boolean>() {
+		fileFormatService.isValidMarkedupTaxonDescriptionContent(Authentication.getInstance().getToken(), view.getText(), new AsyncCallback<Boolean>() {
 			@Override
-			public void onResult(Boolean result) {
+			public void onSuccess(Boolean result) {
 				if(result) {
-					fileAccessService.setFileContent(Authentication.getInstance().getToken(), target, view.getText(), new RPCCallback<Void>() {
+					fileAccessService.setFileContent(Authentication.getInstance().getToken(), target, view.getText(), new AsyncCallback<Void>() {
 						@Override
-						public void onResult(Void result) {
-							Window.alert("Saved successfully");
+						public void onSuccess(Void result) {
+							Alerter.savedSuccessfully();
+						}
+						@Override
+						public void onFailure(Throwable caught) {
+							Alerter.failedToSetFileContent(caught);
 						}
 					});
 				} else {
-					Window.alert("Invalid format. Can't save.");
+					Alerter.invalidFormat();
 				}
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 	}
@@ -71,19 +80,17 @@ public class XMLEditorPresenter implements IXMLEditorView.Presenter {
 	    }
 	    System.out.println(sb.toString());*/
 		
-		fileFormatService.isValidMarkedupTaxonDescriptionContent(Authentication.getInstance().getToken(), view.getText(), new AsyncCallback<RPCResult<Boolean>>() {
+		fileFormatService.isValidMarkedupTaxonDescriptionContent(Authentication.getInstance().getToken(), view.getText(), new AsyncCallback<Boolean>() {
 			@Override
-			public void onFailure(Throwable caught) {
-				caught.printStackTrace();
+			public void onSuccess(Boolean result) {
+				if(result)
+					Alerter.validFormat();
+				else
+					Alerter.invalidFormat();
 			}
 			@Override
-			public void onSuccess(RPCResult<Boolean> result) {
-				if(result.isSucceeded()) {
-					if(result.getData())
-						Window.alert("Valid format");
-					else
-						Window.alert("Invalid format");
-				}
+			public void onFailure(Throwable caught) {
+				Alerter.failedToIsvalidMarkedupTaxonDescriptionContent(caught);
 			}
 		});
 	}
@@ -92,15 +99,14 @@ public class XMLEditorPresenter implements IXMLEditorView.Presenter {
 	public void setTarget(String target) {
 		this.setEnabled(true);
 		this.target = target;
-		fileAccessService.getFileContentHighlighted(Authentication.getInstance().getToken(), target, FileTypeEnum.TAXON_DESCRIPTION, new AsyncCallback<RPCResult<String>>() {
+		fileAccessService.getFileContentHighlighted(Authentication.getInstance().getToken(), target, FileTypeEnum.TAXON_DESCRIPTION, new AsyncCallback<String>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				caught.printStackTrace();
+				Alerter.failedToGetFileContentHighlighted(caught);
 			}
 			@Override
-			public void onSuccess(RPCResult<String> result) {
-				if(result.isSucceeded())
-					view.setText(result.getData());
+			public void onSuccess(String result) {
+				view.setText(result);
 			}
 		}); 
 	}

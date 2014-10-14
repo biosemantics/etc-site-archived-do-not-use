@@ -1,50 +1,48 @@
 package edu.arizona.biosemantics.etcsite.server.db;
 
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-
-import org.eclipse.persistence.exceptions.QueryException;
+import java.util.Date;
 
 import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.PasswordResetRequest;
+import edu.arizona.biosemantics.etcsite.shared.model.User;
 
 public class PasswordResetRequestDAO {
 
-	/**
-	 * Returns null if no such user exists. 
-	 */
-	public PasswordResetRequest getRequest(int user) {
+	public PasswordResetRequest get(User user) {
 		PasswordResetRequest request = null;
-		
 		try(Query query = new Query("SELECT * FROM etcsite_passwordresetrequests WHERE user = ?")) {
-			query.setParameter(1, user);
+			query.setParameter(1, user.getId());
 			ResultSet result = query.execute();
 			while(result.next()){
-				String authenticationCode = result.getString(2);
-				Timestamp timeCreated = result.getTimestamp(3);
-				request = new PasswordResetRequest(user, authenticationCode, timeCreated);
+				request = createPasswordResetRequest(result);
 			}
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't get password reset request", e);
 		}
-		
 		return request;
 	}
 	
-	public void removeRequests(int user) {
+	private PasswordResetRequest createPasswordResetRequest(ResultSet result) throws SQLException {
+		int user = result.getInt(1);
+		String authenticationCode = result.getString(2);
+		Date requestTime = result.getTimestamp(3);
+		return new PasswordResetRequest(user, authenticationCode, requestTime);
+	}
+
+	public void remove(User user) {
 		try(Query removeRequest = new Query("DELETE FROM `etcsite_passwordresetrequests` WHERE `user`=?")) {
-			removeRequest.setParameter(1, user);
+			removeRequest.setParameter(1, user.getId());
 			removeRequest.execute();
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't remove password reset request", e);
 		}
 	}
 	
-	public void addRequest(int user, String authenticationCode) {
+	public void insert(User user, String authenticationCode) {
 		try(Query addRequest = new Query("INSERT INTO `etcsite_passwordresetrequests`(`user`, `authenticationcode`) VALUES (?, ?)")) {
-			addRequest.setParameter(1, user);
+			addRequest.setParameter(1, user.getId());
 			addRequest.setParameter(2, authenticationCode);
 			addRequest.execute();
 		}catch(Exception e) {

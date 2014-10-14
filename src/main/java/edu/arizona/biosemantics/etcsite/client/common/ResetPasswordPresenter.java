@@ -1,5 +1,6 @@
 package edu.arizona.biosemantics.etcsite.client.common;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
@@ -7,9 +8,11 @@ import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView.IResetPasswordListener;
-import edu.arizona.biosemantics.etcsite.shared.model.PasswordResetResult;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IncorrectCaptchaSolutionException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.InvalidPasswordResetException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.NoSuchUserException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.OpenPasswordResetRequestException;
 
 public class ResetPasswordPresenter implements IResetPasswordView.Presenter {
 
@@ -75,16 +78,15 @@ public class ResetPasswordPresenter implements IResetPasswordView.Presenter {
 		
 		captchaPresenter.requestNewCaptcha();
 		
-		authenticationService.requestPasswordResetCode(captchaId, captchaSolution, openIdProviderId, new RPCCallback<PasswordResetResult>(){
+		authenticationService.requestPasswordResetCode(captchaId, captchaSolution, openIdProviderId, new AsyncCallback<Void>(){
 			@Override
-			public void onResult(PasswordResetResult result) {
-				if (result.getResult()){ //code generation was successful. 
-					if (currentListener != null)
-						currentListener.onCodeSent(result.getMessage());
-				} else {
-					if (currentListener != null)
-						currentListener.onFailure(result.getMessage());
-				}
+			public void onSuccess(Void result) {			 
+				if (currentListener != null)
+					currentListener.onCodeSent();
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToRequestPasswordResetCode(caught);
 			}
 		});
 	}
@@ -112,19 +114,17 @@ public class ResetPasswordPresenter implements IResetPasswordView.Presenter {
 			return;
 		}
 		
-		authenticationService.requestPasswordReset(openIdProviderId, code, newPassword, new RPCCallback<PasswordResetResult>(){
+		authenticationService.resetPassword(openIdProviderId, code, newPassword, new AsyncCallback<Void>(){
 			@Override
-			public void onResult(PasswordResetResult result) {
-				if (result.getResult()){
-					resetPasswordView.clearFields();
-					dialog.hide();
-					
-					if (currentListener != null)
-						currentListener.onSuccess(result.getMessage());
-				} else {
-					if (currentListener != null)
-						currentListener.onFailure(result.getMessage());
-				}
+			public void onSuccess(Void result) {
+				resetPasswordView.clearFields();
+				dialog.hide();
+				if (currentListener != null)
+					currentListener.onSuccess();
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToResetPassword(caught);
 			}
 		});
 	}

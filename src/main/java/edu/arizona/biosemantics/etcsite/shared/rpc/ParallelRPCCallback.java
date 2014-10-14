@@ -1,6 +1,8 @@
 package edu.arizona.biosemantics.etcsite.shared.rpc;
 
-public class ParallelRPCCallback<T> extends RPCCallback<T> {
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
+public class ParallelRPCCallback<T> implements AsyncCallback<T> {
 
     private T data;
     protected ParentRPCCallback parent;
@@ -15,7 +17,7 @@ public class ParallelRPCCallback<T> extends RPCCallback<T> {
     }
 
 	@Override
-	public void onResult(T result) {
+	public void onSuccess(T result) {
 		this.data = result;
         parent.done();
 	}
@@ -23,7 +25,7 @@ public class ParallelRPCCallback<T> extends RPCCallback<T> {
 	@Override
 	public void onFailure(Throwable caught) {
 		setFailure();
-		super.onFailure(caught);
+		//super.onFailure(caught);
 	}
 	
 	public void setFailure() {

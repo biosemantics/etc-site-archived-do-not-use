@@ -1,12 +1,12 @@
 package edu.arizona.biosemantics.etcsite.shared.rpc;
 
-import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
-import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
 
 public interface IHasTasksService {
 
-	public RPCResult<Task> getLatestResumable(AuthenticationToken authenticationToken);	
+	public Task getLatestResumable(AuthenticationToken authenticationToken);	
 
-	public RPCResult<Void> cancel(AuthenticationToken authenticationToken, Task task);
+	public void cancel(AuthenticationToken authenticationToken, Task task) throws Exception;
 }

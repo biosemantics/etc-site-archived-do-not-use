@@ -1,18 +1,18 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
-import edu.arizona.biosemantics.etcsite.server.Task.FailHandler;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
-import edu.arizona.biosemantics.etcsite.server.rpc.AdminAuthenticationToken;
-import edu.arizona.biosemantics.etcsite.server.rpc.FileService;
+import edu.arizona.biosemantics.etcsite.server.rpc.auth.AdminAuthenticationToken;
+import edu.arizona.biosemantics.etcsite.server.rpc.file.FileService;
 import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
-import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.model.DatasetPrefix;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.CreateDirectoryFailedException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDeniedException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkupException;
 import edu.arizona.biosemantics.semanticmarkup.ETCLearnMain;
 
 public class InJvmLearn implements Learn {
@@ -42,7 +42,7 @@ public class InJvmLearn implements Learn {
 	}
 	
 	@Override
-	public LearnResult call() throws Exception {
+	public LearnResult call() throws SemanticMarkupException {
 		String databaseName = Configuration.charaparser_databaseName;
 		String databaseUser = Configuration.databaseUser;
 		String databasePassword = Configuration.databasePassword;
@@ -55,7 +55,11 @@ public class InJvmLearn implements Learn {
 		String debugFile = workspace + File.separator + tablePrefix + File.separator + "debug.log";
 		String errorFile = workspace + File.separator + tablePrefix + File.separator + "error.log";
 		
-		fileService.createDirectory(new AdminAuthenticationToken(), workspace, tablePrefix, false);
+		try {
+			fileService.createDirectory(new AdminAuthenticationToken(), workspace, tablePrefix, false);
+		} catch (PermissionDeniedException | CreateDirectoryFailedException e1) {
+			throw new SemanticMarkupException(null);
+		}
 		
 		//only temporary until charaparser can deal with the namespaces and they don't need to be pre- and post treated with XmlNamespaceManager
 		/*fileService.createDirectory(new AdminAuthenticationToken(), workspace + File.separator + tablePrefix, "in", false);
@@ -78,33 +82,12 @@ public class InJvmLearn implements Learn {
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Semantic Markup Learn failed with exception.", e);
 			executedSuccessfully = false;
+			throw new SemanticMarkupException(null);
 		}
-		if(!isExecutedSuccessfully()) {
-			handleFail();
-		}
-		return null;
 	}
 	
-	protected void handleFail() {
-		for(FailHandler failHandler : failHandlers) {
-			failHandler.onFail();
-		}
-	}
-
 	@Override
 	public void destroy() {}
-
-	private Set<FailHandler> failHandlers = new HashSet<FailHandler>();
-	
-	@Override
-	public void addFailHandler(FailHandler handler) {
-		failHandlers.add(handler);
-	}
-	
-	@Override
-	public void removeFailHandler(FailHandler handler) {
-		failHandlers.remove(handler);
-	}
 
 	@Override
 	public boolean isExecutedSuccessfully() {

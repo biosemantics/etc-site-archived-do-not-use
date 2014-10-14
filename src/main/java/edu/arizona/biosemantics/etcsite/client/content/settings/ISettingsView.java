@@ -3,6 +3,7 @@ package edu.arizona.biosemantics.etcsite.client.content.settings;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
+import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.User;
 
 public interface ISettingsView extends IsWidget {
@@ -25,7 +26,7 @@ public interface ISettingsView extends IsWidget {
 	String getConfirmNewPassword();
 	String getOpenIdProvider();
 	
-	void setData(User user);
+	void setData(ShortUser user);
 	void setErrorMessage(String str);
 	void clearPasswords();
 }

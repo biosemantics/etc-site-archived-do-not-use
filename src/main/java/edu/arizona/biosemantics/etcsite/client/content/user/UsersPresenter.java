@@ -3,12 +3,13 @@ package edu.arizona.biosemantics.etcsite.client.content.user;
 import java.util.List;
 import java.util.Set;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IUserServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
 
 public class UsersPresenter implements IUsersView.Presenter {
 
@@ -24,10 +25,15 @@ public class UsersPresenter implements IUsersView.Presenter {
 	
 	@Override
 	public void refresh() {
-		userService.getUsers(Authentication.getInstance().getToken(), false, new RPCCallback<List<ShortUser>>() {
+		userService.getUsers(Authentication.getInstance().getToken(), false, new AsyncCallback<List<ShortUser>>() {
 			@Override
-			public void onResult(List<ShortUser> result) {
+			public void onSuccess(List<ShortUser> result) {
 				view.setUsers(result);
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToGetUsers(caught);
 			}
 		});
 	}

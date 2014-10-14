@@ -24,7 +24,6 @@ public class HighlightXMLWriter extends XMLWriter {
 	public void writeNode(Node node) throws IOException {
 		for(int i=0; i<nodeList.getLength(); i++) {
 			com.google.gwt.xml.client.Node highlightNode = nodeList.item(i);
-			System.out.println(node.getClass());
 			node = ifEqualsHiglight(node, highlightNode);
 		}
 		super.writeNode(node);

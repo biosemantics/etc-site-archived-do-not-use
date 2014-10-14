@@ -19,8 +19,8 @@ public interface IRegisterView extends IsWidget {
 	}
 	
 	public interface IRegisterListener {
-		void onRegister(String message);
-		void onRegisterFailure(String message);
+		void onRegister();
+		void onRegisterFailure();
 		void onCancel();
 	}
 	

@@ -7,32 +7,37 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.google.web.bindery.event.shared.EventBus;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.client.content.user.IUserSelectView;
 import edu.arizona.biosemantics.etcsite.client.content.user.IUsersView;
 import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectPresenter.ISelectListener;
 import edu.arizona.biosemantics.etcsite.client.content.user.UsersPresenter;
+import edu.arizona.biosemantics.etcsite.client.event.FailedTaskEvent;
+import edu.arizona.biosemantics.etcsite.client.event.ResumableTasksEvent;
 import edu.arizona.biosemantics.etcsite.shared.model.Share;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.rpc.ITaskServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
 
 public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 	
 	private IUserSelectView.Presenter userSelectPresenter;
 	private IUsersView.Presenter usersPresenter;
 	private Map<Task, Set<ShortUser>> inviteesForOwnedTasks = new HashMap<Task, Set<ShortUser>>();
-	private MessagePresenter messagePresenter = new MessagePresenter();
 	private ITaskServiceAsync taskService;
 	private ITaskManagerView view;
 	private ISemanticMarkupServiceAsync semanticMarkupService;
@@ -42,7 +47,8 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 	private ResumeTaskPlaceMapper resumeTaskPlaceMapper;
 	
 	@Inject 
-	public TaskManagerPresenter(final ITaskManagerView view, PlaceController placeController, @Named("Tasks")EventBus eventBus,
+	public TaskManagerPresenter(final ITaskManagerView view, PlaceController placeController, 
+			@Named("Tasks")EventBus eventBus,
 			final ITaskServiceAsync taskService, 
 			ISemanticMarkupServiceAsync semanticMarkupService,
 			IMatrixGenerationServiceAsync matrixGenerationService, ResumeTaskPlaceMapper resumeTaskPlaceMapper, 
@@ -58,12 +64,19 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 		this.matrixGenerationService = matrixGenerationService;
 		this.resumeTaskPlaceMapper = resumeTaskPlaceMapper;
 		
-		eventBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEventHandler() {
+		eventBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEvent.ResumableTasksEventHandler() {
 			@Override
 			public void onResumableTaskEvent(ResumableTasksEvent resumableTasksEvent) {
 				for(Task task : resumableTasksEvent.getTasks().values()) {
 					view.updateTaskData(new TaskData(task, inviteesForOwnedTasks.get(task)));
 				}
+			}
+		});
+		eventBus.addHandler(FailedTaskEvent.TYPE, new FailedTaskEvent.FailedTaskEventHandler() {
+			@Override
+			public void onResumableTaskEvent(FailedTaskEvent failedTaskEvent) {
+				Task task = failedTaskEvent.getTask();
+				view.updateTaskData(new TaskData(task, inviteesForOwnedTasks.get(task)));
 			}
 		});
 	}
@@ -73,9 +86,9 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 		final Task task = taskData.getTask();
 		final Share share = new Share();
 		share.setTask(task);
-		taskService.getInvitees(Authentication.getInstance().getToken(), task, new RPCCallback<Set<ShortUser>>() {			
+		taskService.getInvitees(Authentication.getInstance().getToken(), task, new AsyncCallback<Set<ShortUser>>() {			
 			@Override
-			public void onResult(Set<ShortUser> result) {
+			public void onSuccess(Set<ShortUser> result) {
 				usersPresenter.refresh();
 				//usersPresenter.setSelected(result);
 				userSelectPresenter.show(new ISelectListener() {
@@ -84,23 +97,33 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 						inviteesForOwnedTasks.put(task, users);
 						view.updateTaskData(new TaskData(task, users));						
 						share.setInvitees(users);
-						taskService.addOrUpdateShare(Authentication.getInstance().getToken(), share, new RPCCallback<Share>() {
+						taskService.addOrUpdateShare(Authentication.getInstance().getToken(), share, new AsyncCallback<Share>() {
 							@Override
-							public void onResult(Share result) {} 				
+							public void onSuccess(Share result) {}
+
+							@Override
+							public void onFailure(Throwable caught) {
+								Alerter.failedToAddOrUpdateShare(caught);
+							} 				
 						});
 					}
 				});
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToGetInvitees(caught);
 			}
 		});
 	}
 
 	@Override
 	public void onDelete(final List<TaskData> list){
-		messagePresenter.showOkCandelBox("Confirm Delete", "Are you sure you want to delete these " + list.size() + " tasks?", new MessagePresenter.AbstractConfirmListener() {
+		MessageBox confirm = Alerter.confirmTaskDelete(list.size());
+		confirm.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
+
 			@Override
-			public void onConfirm() {
-				
-				boolean deleteShared = false; //see if the user is trying to delete any owned, shared tasks. 
+			public void onSelect(SelectEvent event) {
+				boolean deleteShared = false; 
 				for (final TaskData data: list) {
 					if(data.getTask().getUser().getId() == Authentication.getInstance().getUserId() && !data.getInvitees().isEmpty()) {
 						deleteShared = true;
@@ -108,45 +131,57 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 					}
 				}
 				if (deleteShared){
-					messagePresenter.showOkCandelBox("Delete Shared Task", "Some of these tasks have been shared with other users. If you delete them they will be removed for all users. Do you want to continue?", new MessagePresenter.AbstractConfirmListener() {
+					MessageBox confirm = Alerter.confirmSharedTasksDelete();
+					confirm.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
 						@Override
-						public void onConfirm() {
+						public void onSelect(SelectEvent event) {
 							for (final TaskData data: list) {
 								final Task task = data.getTask();
 								
-								if(task.getUser().getId() != Authentication.getInstance().getUserId()){ //user is not the owner
-									taskService.removeMeFromShare(Authentication.getInstance().getToken(), task, new RPCCallback<Void>() {
+								if(task.getUser().getId() != Authentication.getInstance().getUserId()){
+									taskService.removeMeFromShare(Authentication.getInstance().getToken(), task, new AsyncCallback<Void>() {
 										@Override
-										public void onResult(Void result) {
+										public void onSuccess(Void result) {
 											inviteesForOwnedTasks.remove(task);
 											view.removeTaskData(data);
 										}
+
+										@Override
+										public void onFailure(Throwable caught) {
+											Alerter.failedToRemoveMeFromShare(caught);
+										}
 									});
-								} else { //user is the owner, cancel the task
+								} else {
 									cancelTask(data);
 								}
 							}
 						}
 					});
-				} else { //no owned, shared tasks here. 
+				} else {
 					for (final TaskData data: list) {
 						final Task task = data.getTask();
 						
 						if(task.getUser().getId() != Authentication.getInstance().getUserId()){ //user is not the owner
-							taskService.removeMeFromShare(Authentication.getInstance().getToken(), task, new RPCCallback<Void>() {
+							taskService.removeMeFromShare(Authentication.getInstance().getToken(), task, new AsyncCallback<Void>() {
 								@Override
-								public void onResult(Void result) {
+								public void onSuccess(Void result) {
 									inviteesForOwnedTasks.remove(task);
 									view.removeTaskData(data);
 								}
+
+								@Override
+								public void onFailure(Throwable caught) {
+									Alerter.failedToRemoveMeFromShare(caught);
+								}
 							});
-						} else { //user is the owner, cancel the task
+						} else {
 							cancelTask(data);
 						}
 					}
 				}
 				view.resetSelection();
 			}
+			
 		});
 	}
 	
@@ -154,15 +189,16 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 	public void onDelete(final TaskData taskData) {
 		final Task task = taskData.getTask();
 		
-		messagePresenter.showOkCandelBox("Confirm Delete", "Are you sure you want to delete task '" + task.getName() + "'?", new MessagePresenter.AbstractConfirmListener() {
+		MessageBox confirm = Alerter.confirmTaskDelete(task.getName());
+		confirm.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
 			@Override
-			public void onConfirm() {
+			public void onSelect(SelectEvent event) {
 				if(task.getUser().getId() == Authentication.getInstance().getUserId()) {
 					if(!taskData.getInvitees().isEmpty()) {
-						//bring up popup asking
-						messagePresenter.showOkCandelBox("Format Requirements", "If you delete this task it will be removed for all invitees of the share. Do you want to continue?", new MessagePresenter.AbstractConfirmListener() {
+						MessageBox confirm = Alerter.confirmSharedTaskDelete();
+						confirm.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
 							@Override
-							public void onConfirm() {
+							public void onSelect(SelectEvent event) {
 								cancelTask(taskData);
 								view.resetSelection();
 							}
@@ -172,11 +208,16 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 						view.resetSelection();
 					}
 				} else {
-					taskService.removeMeFromShare(Authentication.getInstance().getToken(), task, new RPCCallback<Void>() {
+					taskService.removeMeFromShare(Authentication.getInstance().getToken(), task, new AsyncCallback<Void>() {
 						@Override
-						public void onResult(Void result) {
+						public void onSuccess(Void result) {
 							inviteesForOwnedTasks.remove(task);
 							view.removeTaskData(taskData);
+						}
+
+						@Override
+						public void onFailure(Throwable caught) {
+							Alerter.failedToRemoveMeFromShare(caught);
 						}
 					});
 				}
@@ -185,11 +226,16 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 	}
 	
 	private void cancelTask(final TaskData taskData) {
-		taskService.cancelTask(Authentication.getInstance().getToken(), taskData.getTask(), new RPCCallback<Void>() {
+		taskService.cancelTask(Authentication.getInstance().getToken(), taskData.getTask(), new AsyncCallback<Void>() {
 			@Override
-			public void onResult(Void result) {
+			public void onSuccess(Void result) {
 				inviteesForOwnedTasks.remove(taskData.getTask());
 				view.removeTaskData(taskData);
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToCancelTask(caught);
 			}
 		});
 	}
@@ -199,19 +245,29 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 		switch(taskData.getTask().getTaskType().getTaskTypeEnum()) {
 		case SEMANTIC_MARKUP:
 			semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), taskData.getTask(), 
-					edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum.REVIEW_TERMS ,new RPCCallback<Task>() {
+					edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum.REVIEW_TERMS ,new AsyncCallback<Task>() {
 				@Override
-				public void onResult(Task result) {
+				public void onSuccess(Task result) {
 					placeController.goTo(new edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupReviewPlace(result));
+				}
+
+				@Override
+				public void onFailure(Throwable caught) {
+					Alerter.failedToGoToTaskStage(caught);
 				}
 			});
 			break;
 		case MATRIX_GENERATION:
 			matrixGenerationService.goToTaskStage(Authentication.getInstance().getToken(), taskData.getTask(), 
-					edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum.REVIEW, new RPCCallback<Task>() {
+					edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum.REVIEW, new AsyncCallback<Task>() {
 				@Override
-				public void onResult(Task result) {
+				public void onSuccess(Task result) {
 					placeController.goTo(new edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationReviewPlace(result));
+				}
+
+				@Override
+				public void onFailure(Throwable caught) {
+					Alerter.failedToGoToTaskStage(caught);
 				}
 			});
 			break;
@@ -231,19 +287,29 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 	@Override
 	public void refresh() {
 		view.resetSelection();
-		taskService.getAllTasks(Authentication.getInstance().getToken(), new RPCCallback<List<Task>>() {
+		taskService.getAllTasks(Authentication.getInstance().getToken(), new AsyncCallback<List<Task>>() {
 			@Override
-			public void onResult(final List<Task> taskResult) {
-				taskService.getInviteesForOwnedTasks(Authentication.getInstance().getToken(), new RPCCallback<Map<Task, Set<ShortUser>>>() {
+			public void onSuccess(final List<Task> taskResult) {
+				taskService.getInviteesForOwnedTasks(Authentication.getInstance().getToken(), new AsyncCallback<Map<Task, Set<ShortUser>>>() {
 					@Override
-					public void onResult(Map<Task, Set<ShortUser>> result) {
+					public void onSuccess(Map<Task, Set<ShortUser>> result) {
 						inviteesForOwnedTasks = result;
 						List<TaskData> taskData = new LinkedList<TaskData>();
 						for(Task task : taskResult)
 							taskData.add(new TaskData(task, result.get(task)));
 						view.setTaskData(taskData);
 					}
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Alerter.failedToGetInvitees(caught);
+					}
 				});
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToGetAllTasks(caught);
 			}
 		});
 	}

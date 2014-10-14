@@ -3,33 +3,32 @@ package edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationToken;
-import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 
 @RemoteServiceRelativePath("matrixGeneration")
 public interface IMatrixGenerationService extends RemoteService, IHasTasksService {
 
-	public RPCResult<Task> start(AuthenticationToken authenticationToken, String taskName, String input);
+	public Task start(AuthenticationToken authenticationToken, String taskName, String input) throws MatrixGenerationException;
 	
-	public RPCResult<Task> process(AuthenticationToken authenticationToken, Task task);
+	public Task process(AuthenticationToken authenticationToken, Task task) throws MatrixGenerationException;
 	
-	public RPCResult<Model> review(AuthenticationToken authenticationToken, Task task);
+	public Model review(AuthenticationToken authenticationToken, Task task) throws MatrixGenerationException;
 	
-	public RPCResult<Task> completeReview(AuthenticationToken authenticationToken, Task task);
+	public Task completeReview(AuthenticationToken authenticationToken, Task task) throws MatrixGenerationException;
 	
-	public RPCResult<Task> output(AuthenticationToken authenticationToken, Task task);
+	public Task output(AuthenticationToken authenticationToken, Task task) throws MatrixGenerationException;
 	
-	public RPCResult<Void> save(AuthenticationToken authenticationToken, Model model, Task task);
+	public void save(AuthenticationToken authenticationToken, Model model, Task task) throws MatrixGenerationException;
 	
-	public RPCResult<Task> goToTaskStage(AuthenticationToken authenticationToken, Task task, TaskStageEnum review);
+	public Task goToTaskStage(AuthenticationToken authenticationToken, Task task, TaskStageEnum review);
 
-	public RPCResult<Boolean> isValidInput(AuthenticationToken authenticationToken,
+	public boolean isValidInput(AuthenticationToken authenticationToken,
 			String filePath);
 	
-	public RPCResult<String> saveMatrix(AuthenticationToken token, Task task, Model model);
+	public String outputMatrix(AuthenticationToken token, Task task, Model model) throws MatrixGenerationException;
 
 }

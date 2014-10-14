@@ -3,9 +3,11 @@ package edu.arizona.biosemantics.etcsite.client.top;
 import com.google.gwt.activity.shared.MyAbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
@@ -15,9 +17,8 @@ import edu.arizona.biosemantics.etcsite.client.content.help.HelpPlace;
 import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
 import edu.arizona.biosemantics.etcsite.client.content.news.NewsPlace;
 import edu.arizona.biosemantics.etcsite.client.top.ILoginTopView.Presenter;
-import edu.arizona.biosemantics.etcsite.shared.model.AuthenticationResult;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationResult;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 
 public class LoggedOutActivity extends MyAbstractActivity implements Presenter {
 	
@@ -38,9 +39,9 @@ public class LoggedOutActivity extends MyAbstractActivity implements Presenter {
 	public void start(final AcceptsOneWidget panel, EventBus eventBus) {
 		Authentication authentication = Authentication.getInstance();
 		if(authentication.isSet()) {
-			authenticationService.isValidSession(authentication.getToken(), new RPCCallback<AuthenticationResult>() {
+			authenticationService.isValidSession(authentication.getToken(), new AsyncCallback<AuthenticationResult>() {
 				@Override
-				public void onResult(AuthenticationResult result) {
+				public void onSuccess(AuthenticationResult result) {
 					if(result.getResult()) {
 						placeController.goTo(new LoggedInPlace());
 					} else {
@@ -48,13 +49,17 @@ public class LoggedOutActivity extends MyAbstractActivity implements Presenter {
 						setLoginView(panel);
 					}
 				}
+				@Override
+				public void onFailure(Throwable caught) {
+					Alerter.failedToValidateSession(caught);
+				}
 			});
 		} else if (authentication.getExternalAccessToken() != null){ //check to see if this is a redirect from Google
 			String accessToken = authentication.getExternalAccessToken();
 			authentication.setExternalAccessToken(null); //don't need this anymore. 
-			authenticationService.loginWithGoogle(accessToken, new RPCCallback<AuthenticationResult>(){
+			authenticationService.loginWithGoogle(accessToken, new AsyncCallback<AuthenticationResult>(){
 				@Override
-				public void onResult(AuthenticationResult result) {
+				public void onSuccess(AuthenticationResult result) {
 					if(result.getResult()) {
 						Authentication auth = Authentication.getInstance();
 						auth.setUserId(result.getUser().getId());
@@ -65,8 +70,13 @@ public class LoggedOutActivity extends MyAbstractActivity implements Presenter {
 						auth.setAffiliation(result.getUser().getAffiliation());
 						placeController.goTo(new LoggedInPlace());
 					} else {
-						messagePresenter.showOkBox("Sign-out", "An error occurred. Please try signing in again later.");
+						Alerter.failedToLoginWithgGoogle(null);
 					}
+				}
+
+				@Override
+				public void onFailure(Throwable caught) {
+					Alerter.failedToLoginWithgGoogle(caught);
 				}
 			});
 		} else {

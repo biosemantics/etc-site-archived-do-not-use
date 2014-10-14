@@ -3,12 +3,13 @@ package edu.arizona.biosemantics.etcsite.client;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.ServerSetup;
 import edu.arizona.biosemantics.etcsite.shared.model.Setup;
-import edu.arizona.biosemantics.etcsite.shared.rpc.ISetupServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.setup.ISetupServiceAsync;
 
 public class Client implements EntryPoint {
 
@@ -22,15 +23,19 @@ public class Client implements EntryPoint {
 	    });
 		
 		ISetupServiceAsync setupService = injector.getSetupService();
-		setupService.getSetup(new RPCCallback<Setup>() {
+		setupService.getSetup(new AsyncCallback<Setup>() {
 			@Override
-			public void onResult(Setup result) {
+			public void onSuccess(Setup result) {
 				ServerSetup.getInstance().setSetup(result);
 				
 				//init layout
 				RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
 				RootLayoutPanelDecorator decorator = injector.getRootLayoutPanelDecorator();
 				decorator.decorate(rootLayoutPanel);
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToRetrieveSetup(caught);
 			}
 		}); 
 	}

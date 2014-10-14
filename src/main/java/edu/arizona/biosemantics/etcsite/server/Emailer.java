@@ -43,7 +43,7 @@ public class Emailer {
 					try {
 						Transport.send(message);
 					} catch (MessagingException e) {
-						e.printStackTrace();
+						log(LogLevel.ERROR, "Couldn't send email", e);
 					}
 				}
 			};

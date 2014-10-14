@@ -3,6 +3,8 @@ package edu.arizona.biosemantics.etcsite.server.log;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
+
 /**
  * A singleton ObjectStringifier transforms objects into String representations by using Jackson
  * @author rodenhausen
@@ -41,7 +43,7 @@ public class ObjectStringifier {
 		try {
 			return writer.writeValueAsString(object);
 		} catch (Exception e) {
-			//log(LogLevel.ERROR, "Problem writing object as String", e);
+			log(LogLevel.ERROR, "Problem writing object as String", e);
 			return null;
 		}
 	}

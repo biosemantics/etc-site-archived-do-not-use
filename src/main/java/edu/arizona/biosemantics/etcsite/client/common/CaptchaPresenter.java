@@ -1,12 +1,13 @@
 package edu.arizona.biosemantics.etcsite.client.common;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CaptchaPanel;
 
-import edu.arizona.biosemantics.etcsite.shared.model.RequestCaptchaResult;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.model.Captcha;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 
 public class CaptchaPresenter {
+	
 	private CaptchaPanel captchaPanel;
 	private IAuthenticationServiceAsync authenticationService;
 	
@@ -17,9 +18,14 @@ public class CaptchaPresenter {
 	}
 
 	public void requestNewCaptcha() {
-		authenticationService.createCaptcha(new RPCCallback<RequestCaptchaResult>(){
-			public void onResult(RequestCaptchaResult result){
-				captchaPanel.updateCaptcha(result.getId());
+		authenticationService.createCaptcha(new AsyncCallback<Captcha>(){
+			@Override
+			public void onSuccess(Captcha captcha) {
+				captchaPanel.updateCaptcha(captcha.getId());
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToCreateCaptcha(caught);
 			}
 		});
 	}

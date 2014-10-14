@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
 
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
+
 public class Query implements AutoCloseable {
 
 	public static class QueryException extends Exception {
@@ -16,15 +18,14 @@ public class Query implements AutoCloseable {
 		
 		public QueryException(String message, Throwable cause) {
 			super(message, cause);
-			System.out.println(message);
 			if(cause != null)
-				cause.printStackTrace();
+				log(LogLevel.ERROR, message, cause);
 		}
 		
 		public QueryException(Throwable cause) {
 			super(cause);
 			if(cause != null)
-				cause.printStackTrace();
+				log(LogLevel.ERROR, "Query exception occured", cause);
 		}
 		
 	}

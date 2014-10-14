@@ -9,23 +9,23 @@
 	<!-- Servlets -->
 	<servlet>
 		<servlet-name>authenticationServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.AuthenticationService</servlet-class>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.auth.AuthenticationService</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>fileServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.FileService</servlet-class>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.file.FileService</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>fileAccessServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.FileAccessService</servlet-class>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.file.access.FileAccessService</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>fileSearchServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.FileSearchService</servlet-class>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.file.search.FileSearchService</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>taskServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.TaskService</servlet-class>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.task.TaskService</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>semanticMarkupServlet</servlet-name>
@@ -37,35 +37,35 @@
 	</servlet>
 	<servlet>
 		<servlet-name>fileFormatServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.FileFormatService</servlet-class>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.file.format.FileFormatService</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>userServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.UserService</servlet-class>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.user.UserService</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>setupServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.SetupService</servlet-class>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.setup.SetupService</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>pipelineServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.PipelineService</servlet-class>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.pipeline.PipelineService</servlet-class>
 	</servlet>
 		<servlet>
 		<servlet-name>visualizationServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.VisualizationService</servlet-class>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.visualization.VisualizationService</servlet-class>
 	</servlet>
 		<servlet>
 		<servlet-name>taxonomyComparisonServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.TaxonomyComparisonService</servlet-class>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison.TaxonomyComparisonService</servlet-class>
 	</servlet>
 		<servlet>
 		<servlet-name>treeGenerationServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.TreeGenerationService</servlet-class>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.treegeneration.TreeGenerationService</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>Kaptcha</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.MyKaptchaServlet</servlet-class>
+		<servlet-name>kaptchaServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.KaptchaServlet</servlet-class>
 		<!-- <servlet-class>com.google.code.kaptcha.servlet.KaptchaServlet</servlet-class> -->
 	</servlet>
 	<servlet>
@@ -141,7 +141,7 @@
 		<url-pattern>/etcsite/taxonomyComparison</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>Kaptcha</servlet-name>
+		<servlet-name>kaptchaServlet</servlet-name>
 		<url-pattern>/etcsite/captcha/*</url-pattern>
 	</servlet-mapping>
 

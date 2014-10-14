@@ -6,19 +6,40 @@ public class ShortUser implements Serializable {
 	
 	private static final long serialVersionUID = 9014388467462637993L;
 	private int id;
-	private String email;
-	private String firstName;
-	private String lastName;
-	private String affiliation;
+	private String email = "";
+	private String firstName = "";
+	private String lastName = "";
+	private String affiliation = "";
+	private String openIdProvider = "";
+	private String openIdProviderId = "";
+	private String bioportalUserId = "";
+	private String bioportalApiKey = "";
 	
 	public ShortUser() { }
 	
-	public ShortUser(int id, String email, String firstName, String lastName, String affiliation) {
+	public ShortUser(int id, String email, String firstName, String lastName, String affiliation, 
+			String openIdProvider, String openIdProivderId, String bioportalUserId, String bioportalApiKey) {
 		this.id = id;
 		this.email = email;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.affiliation = affiliation;
+		this.openIdProvider = openIdProvider;
+		this.openIdProviderId = openIdProivderId;
+		this.bioportalUserId = bioportalUserId;
+		this.bioportalApiKey = bioportalApiKey;
+	}
+
+	public ShortUser(User user) {
+		this.id = user.getId();
+		this.email = user.getEmail();
+		this.firstName = user.getFirstName();
+		this.lastName = user.getLastName();
+		this.affiliation = user.getAffiliation();
+		this.openIdProvider = user.getOpenIdProvider();
+		this.openIdProviderId = user.getOpenIdProviderId();
+		this.bioportalUserId = user.getBioportalUserId();
+		this.bioportalApiKey = user.getBioportalAPIKey();
 	}
 
 	public int getId() {
@@ -61,6 +82,38 @@ public class ShortUser implements Serializable {
 		this.affiliation = affiliation;
 	}
 	
+	public String getOpenIdProvider() {
+		return openIdProvider;
+	}
+
+	public void setOpenIdProvider(String openIdProvider) {
+		this.openIdProvider = openIdProvider;
+	}
+
+	public String getOpenIdProviderId() {
+		return openIdProviderId;
+	}
+
+	public void setOpenIdProviderId(String openIdProviderId) {
+		this.openIdProviderId = openIdProviderId;
+	}
+
+	public String getBioportalUserId() {
+		return bioportalUserId;
+	}
+
+	public void setBioportalUserId(String bioportalUserId) {
+		this.bioportalUserId = bioportalUserId;
+	}
+
+	public String getBioportalApiKey() {
+		return bioportalApiKey;
+	}
+
+	public void setBioportalApiKey(String bioportalApiKey) {
+		this.bioportalApiKey = bioportalApiKey;
+	}
+
 	public String getFullName() {
 		return firstName + " "  + lastName;
 	}

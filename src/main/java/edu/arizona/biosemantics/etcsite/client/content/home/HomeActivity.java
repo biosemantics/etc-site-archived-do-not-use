@@ -5,16 +5,20 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.HasTaskPlace;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
-import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter.IConfirmListener;
-import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.pipeline.PipelinePlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPlace;
@@ -22,18 +26,16 @@ import edu.arizona.biosemantics.etcsite.client.content.taskManager.ResumeTaskPla
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonPlace;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationPlace;
 import edu.arizona.biosemantics.etcsite.client.content.visualization.VisualizationPlace;
-import edu.arizona.biosemantics.etcsite.client.menu.IStartMenuView;
 import edu.arizona.biosemantics.etcsite.client.top.LoggedInPlace;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IPipelineServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.ITaxonomyComparisonServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.ITreeGenerationServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IVisualizationServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.pipeline.IPipelineServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.treegeneration.ITreeGenerationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.visualization.IVisualizationServiceAsync;
 
 public class HomeActivity extends MyAbstractActivity implements IHomeContentView.Presenter {
 
@@ -45,7 +47,6 @@ public class HomeActivity extends MyAbstractActivity implements IHomeContentView
 	private ITreeGenerationServiceAsync treeGenerationService;
 	private IVisualizationServiceAsync visualizationService;
 	private IPipelineServiceAsync pipelineService;
-	private MessagePresenter messagePresenter = new MessagePresenter();
 
 	@Inject
 	public HomeActivity(IHomeContentView homeContentView, 
@@ -127,24 +128,32 @@ public class HomeActivity extends MyAbstractActivity implements IHomeContentView
 	
 	private void doGotoPlace(final HasTaskPlace gotoPlace, IHasTasksServiceAsync tasksService) {
 		tasksService.getLatestResumable(Authentication.getInstance().getToken(),
-				new RPCCallback<Task>() {
+				new AsyncCallback<Task>() {
 			@Override
-			public void onResult(final Task task) {
+			public void onSuccess(final Task task) {
 				if(task != null) {
-					messagePresenter.showOkCandelBox(
-							"Resumable Task", "You have a resumable task of this type", "Start new", "Resume", new IConfirmListener() {
-							public void onConfirm() {
-								gotoPlace.setTask(task);
-								placeController.goTo(gotoPlace);
-							}
-							public void onCancel() {
-								placeController.goTo(gotoPlace);
-							}
-						});
+					MessageBox resumable = Alerter.resumableTask();
+					resumable.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
+						@Override
+						public void onSelect(SelectEvent event) {
+							gotoPlace.setTask(task);
+							placeController.goTo(gotoPlace);
+						}
+					});
+					resumable.getButton(PredefinedButton.NO).addSelectHandler(new SelectHandler() {
+						@Override
+						public void onSelect(SelectEvent event) {
+							placeController.goTo(gotoPlace);
+						}
+					});
 				}
 				else {
 					placeController.goTo(gotoPlace);
 				}
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToGetLatestResumable(caught);
 			}
 		});
 	}

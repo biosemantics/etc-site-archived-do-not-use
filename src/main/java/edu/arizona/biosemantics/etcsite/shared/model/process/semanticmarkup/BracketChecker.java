@@ -1,7 +1,5 @@
 package edu.arizona.biosemantics.etcsite.shared.model.process.semanticmarkup;
 
-import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
-
 public class BracketChecker {
 	
 	/**

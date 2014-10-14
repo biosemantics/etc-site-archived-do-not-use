@@ -10,22 +10,19 @@ import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.MessagePresenter;
 import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
-import edu.arizona.biosemantics.etcsite.shared.model.RPCResult;
 import edu.arizona.biosemantics.etcsite.shared.model.file.TaxonIdentificationEntry;
 import edu.arizona.biosemantics.etcsite.shared.model.file.XmlModelFile;
 import edu.arizona.biosemantics.etcsite.shared.model.process.file.XmlModelFileCreator;
 import edu.arizona.biosemantics.etcsite.shared.model.process.semanticmarkup.BracketChecker;
 //import edu.arizona.biosemantics.etcsite.server.rpc.FileFormatService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileAccessServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileFormatServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IFileServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.access.IFileAccessServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.format.IFileFormatServiceAsync;
 
 public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkupFilesView.Presenter {
 
-	public class TaxonDescriptionCreateRPCCallback extends RPCCallback<List<XmlModelFile>> {
+	public class TaxonDescriptionCreateRPCCallback implements AsyncCallback<List<XmlModelFile>> {
 		private List<String> treatments;
 		private int i;
 		private StringBuilder overallError;
@@ -41,7 +38,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 			Alerter.failedToCreateTaxonDescription(caught);
 		}
 		@Override
-		public void onResult(final List<XmlModelFile> xmlModelFiles) {
+		public void onSuccess(final List<XmlModelFile> xmlModelFiles) {
 			StringBuilder errorOfThisBatch = new StringBuilder();
 			for(XmlModelFile xmlModelFile : xmlModelFiles) {
 				if(xmlModelFile.hasError())
@@ -71,14 +68,14 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 					createXmlFiles(overallXmlModelFiles, destinationFilePath);
 				else {
 					overallErrorString += "Did not create any files";
-					messagePresenter.showOkBox("Input Error", overallErrorString.replaceAll("\n", "</br>"));
+					Alerter.inputError(overallErrorString.replaceAll("\n", "</br>"));
 					view.hideProgress();
 				}
 			}
 		}
 	}
 	
-	public class FileCreateRPCCallback extends RPCCallback<Boolean> {
+	public class FileCreateRPCCallback implements AsyncCallback<Boolean> {
 		
 		private List<XmlModelFile> modelFiles;
 		private int i;
@@ -114,7 +111,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 			 */
 		}
 		@Override
-		public void onResult(final Boolean formatResult) {
+		public void onSuccess(final Boolean formatResult) {
 			view.updateProgress((i * 3 + modelFiles.size()) / ((double)modelFiles.size() * 4));
 			
 			final XmlModelFile modelFile = modelFiles.get(i);
@@ -123,31 +120,30 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 				@Override
 				public void execute() {
 					fileService.createFile(Authentication.getInstance().getToken(), destinationFilePath, modelFile.getFileName(), 
-							true, new AsyncCallback<RPCResult<String>>() {
+							true, new AsyncCallback<String>() {
 								@Override
 								public void onFailure(Throwable caught) {
 									Alerter.failedToCreateFile(caught);
 									view.hideProgress();
 								}
 								@Override
-								public void onSuccess(RPCResult<String> data) {
+								public void onSuccess(final String filePath) {
 									view.updateProgress(((i * 3) + 1 + modelFiles.size()) / ((double)modelFiles.size() * 4));
 									final String content = modelFile.getXML();
-									final String filePath = data.getData();
 									
 									Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
 										@Override
 										public void execute() {
 											fileAccessService.setFileContent(Authentication.getInstance().getToken(), filePath, content, 
-													new AsyncCallback<RPCResult<Void>>() {
+													new AsyncCallback<Void>() {
 														@Override
 														public void onFailure(Throwable caught) {
 															Alerter.failedToSetContent(caught);
 															view.hideProgress();
 														}
 														@Override
-														public void onSuccess(RPCResult<Void> result) {
+														public void onSuccess(Void result) {
 															view.updateProgress(((i * 3) + 2 + modelFiles.size()) / ((double)modelFiles.size() * 4));
 															/*messageBuilder.append("File " +
 																	filePathShortener.shortenOwnedPath(filePath) + " " +
@@ -166,8 +162,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 																view.updateProgress(1.0);
 																view.hideProgress();
 																int count =  modelFiles.size();
-																messagePresenter.showOkBox("File creation", count+" file(s) successfully created</br>" +  
-																		messageBuilder.toString().replace("\n", "<br>"));
+																Alerter.fileCreationSuccessful(count, messageBuilder.toString().replace("\n", "<br>"));
 																filesCreated += count;
 															}
 														}
@@ -194,7 +189,6 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	private String destinationFilePath;
 	private BracketChecker bracketChecker = new BracketChecker();
 	private XmlModelFileCreator xmlModelFileCreator = new XmlModelFileCreator();
-	private MessagePresenter messagePresenter = new MessagePresenter();
 	
 	@Inject
 	public CreateSemanticMarkupFilesPresenter(ICreateSemanticMarkupFilesView view, IFileServiceAsync fileService, 
@@ -235,9 +229,9 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 		textBuilder.append("phenology: #" + view.getPhenologyDescription().trim() + "#\n");		
 		
 		fileFormatService.createTaxonDescriptionFile(Authentication.getInstance().getToken(), textBuilder.toString(), 
-				new RPCCallback<List<XmlModelFile>>() {
+				new AsyncCallback<List<XmlModelFile>>() {
 			@Override
-			public void onResult(List<XmlModelFile> modelFiles) {
+			public void onSuccess(List<XmlModelFile> modelFiles) {
 				StringBuilder overallError = new StringBuilder();
 				
 				for(XmlModelFile xmlModelFile : modelFiles) {
@@ -250,8 +244,13 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 					createXmlFiles(modelFiles, destinationFilePath);
 				else {
 					error += "Did not create any files";
-					messagePresenter.showOkBox("Input Error", error.replaceAll("\n", "</br>"));
+					Alerter.inputError(error.replaceAll("\n", "</br>"));
 				}
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToCreateTaxonDescription(caught);
 			}
 		});
 	}
@@ -302,7 +301,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 		
 		//temporarily in place as long as we are not sure about the stability of out of memory issue
 		if(treatments.size() > 50) {
-			messagePresenter.showOkBox("Too many files", "Currently only uploads <= 50 files are allowed");
+			Alerter.tooManyFiles();
 			view.hideProgress();
 			return;
 		}
