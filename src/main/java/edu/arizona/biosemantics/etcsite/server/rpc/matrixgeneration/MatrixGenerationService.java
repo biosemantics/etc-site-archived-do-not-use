@@ -211,7 +211,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 	
 	@Override
-	public Task start(AuthenticationToken authenticationToken, String taskName, String input) throws MatrixGenerationException {	
+	public Task start(AuthenticationToken authenticationToken, String taskName, String input, boolean inheritValues, boolean generateAbsentPresent) throws MatrixGenerationException {	
 		boolean isShared = filePermissionService.isSharedFilePath(authenticationToken.getUserId(), input);
 		String fileName;
 		try {
@@ -238,6 +238,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		MatrixGenerationConfiguration config = new MatrixGenerationConfiguration();
 		config.setInput(input);	
 		config.setOutput(config.getInput() + "_" + taskName);
+		config.setInheritValues(inheritValues);
+		config.setGenerateAbsentPresent(generateAbsentPresent);
 		config = daoManager.getMatrixGenerationConfigurationDAO().addMatrixGenerationConfiguration(config);
 		
 		edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum taskType = edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION;
@@ -294,7 +296,10 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			}
 			final String outputFile = getOutputFile(task);
 			
-			final MatrixGeneration matrixGeneration = new ExtraJvmMatrixGeneration(input, outputFile);
+			boolean inheritValues = config.isInheritValues();
+			boolean generateAbsentPresent = config.isGenerateAbsentPresent();
+			
+			final MatrixGeneration matrixGeneration = new ExtraJvmMatrixGeneration(input, outputFile, inheritValues, generateAbsentPresent);
 			activeProcess.put(config.getConfiguration().getId(), matrixGeneration);
 			final ListenableFuture<Void> futureResult = executorService.submit(matrixGeneration);
 			this.activeProcessFutures.put(config.getConfiguration().getId(), futureResult);

@@ -7,12 +7,26 @@ import java.util.List;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.ExtraJvmCallable;
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkupException;
+import edu.arizona.biosemantics.semanticmarkup.ETCLearnMain;
 import edu.arizona.biosemantics.semanticmarkup.ETCMarkupMain;
 
 public class ExtraJvmParse extends ExtraJvmCallable<ParseResult> implements Parse {
 
+	public static class MainWrapper {
+		
+		public static void main(String[] args) {
+			try {
+				ETCMarkupMain.main(args);
+			} catch (Exception e) {
+				System.exit(-1);
+			}
+		}
+		
+	}
+	
 	private String config;
 	private String input;
 	private String tablePrefix;
@@ -45,7 +59,7 @@ public class ExtraJvmParse extends ExtraJvmCallable<ParseResult> implements Pars
 			this.setClassPath(System.getProperty("java.class.path"));
 		else
 			this.setClassPath(Configuration.classpath);
-		this.setMainClass(ETCMarkupMain.class);
+		this.setMainClass(MainWrapper.class);
 	}
 
 	private String[] createArgs() {
@@ -126,8 +140,10 @@ public class ExtraJvmParse extends ExtraJvmCallable<ParseResult> implements Pars
 
 	@Override
 	public ParseResult createReturn() throws SemanticMarkupException {
-		if(exitStatus != 0)
+		if(exitStatus != 0) {
+			log(LogLevel.ERROR, "Semantic Markup Parse failed.");
 			throw new SemanticMarkupException(null);
+		}
 		ParseResult result = new ParseResult(new HashSet<File>());
 		return result;
 	}

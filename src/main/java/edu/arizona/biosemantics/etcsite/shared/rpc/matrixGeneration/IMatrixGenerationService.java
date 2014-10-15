@@ -12,7 +12,7 @@ import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 @RemoteServiceRelativePath("matrixGeneration")
 public interface IMatrixGenerationService extends RemoteService, IHasTasksService {
 
-	public Task start(AuthenticationToken authenticationToken, String taskName, String input) throws MatrixGenerationException;
+	public Task start(AuthenticationToken authenticationToken, String taskName, String input, boolean inheritValues, boolean generateAbsentPresent) throws MatrixGenerationException;
 	
 	public Task process(AuthenticationToken authenticationToken, Task task) throws MatrixGenerationException;
 	

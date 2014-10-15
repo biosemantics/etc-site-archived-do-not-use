@@ -8,6 +8,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
@@ -30,6 +31,12 @@ public class MatrixGenerationInputView extends Composite implements IMatrixGener
 	
 	@UiField
 	Button nextButton;
+	
+	@UiField
+	CheckBox inheritValuesBox;
+	
+	@UiField
+	CheckBox generateAbsentPresentBox;
 	
 	@UiField
 	SubMenu subMenu;
@@ -82,5 +89,15 @@ public class MatrixGenerationInputView extends Composite implements IMatrixGener
 	public void resetFields(){
 		this.taskNameTextBox.setText("");
 		this.inputLabel.setText("");
+	}
+
+	@Override
+	public boolean isInheritValues() {
+		return inheritValuesBox.getValue();
+	}
+
+	@Override
+	public boolean isGenerateAbsentPresent() {
+		return generateAbsentPresentBox.getValue();
 	}
 }

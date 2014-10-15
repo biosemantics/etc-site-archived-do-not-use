@@ -8,13 +8,17 @@ public class MatrixGenerationConfiguration extends AbstractTaskConfiguration imp
 
 	private String input;
 	private String output;
+	private boolean inheritValues;
+	private boolean generateAbsentPresent;
 
 	public MatrixGenerationConfiguration () { }
 	
-	public MatrixGenerationConfiguration(Configuration configuration, String input, String output) {
+	public MatrixGenerationConfiguration(Configuration configuration, String input, String output, boolean inheritValues, boolean generateAbsentPresent) {
 		super(configuration);
 		this.input = input;
 		this.output = output;
+		this.inheritValues = inheritValues;
+		this.generateAbsentPresent = generateAbsentPresent;
 	}
 
 	public String getInput() {
@@ -33,6 +37,22 @@ public class MatrixGenerationConfiguration extends AbstractTaskConfiguration imp
 		this.output = output;
 	}
 
+	public void setInheritValues(boolean inheritValues) {
+		this.inheritValues = inheritValues;
+	}
+
+	public void setGenerateAbsentPresent(boolean generateAbsentPresent) {
+		this.generateAbsentPresent = generateAbsentPresent;
+	}
+
+	public boolean isInheritValues() {
+		return inheritValues;
+	}
+
+	public boolean isGenerateAbsentPresent() {
+		return generateAbsentPresent;
+	}
+	
 	@Override
 	public List<String> getInputs() {
 		List<String> result = new LinkedList<String>();

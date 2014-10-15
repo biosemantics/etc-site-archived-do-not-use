@@ -84,6 +84,8 @@ CREATE TABLE IF NOT EXISTS `etcsite_matrixgenerationconfigurations` (
   `configuration` bigint(20) unsigned DEFAULT NULL,
   `input` varchar(200) DEFAULT NULL,
   `output` varchar(200) DEFAULT NULL,
+  `inheritvalues` tinyint(1) DEFAULT NULL,
+  `generateabsentpresent` tinyint(1) DEFAULT NULL,
   KEY `configurations_matrixgenerationconfigurations_CON` (`configuration`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

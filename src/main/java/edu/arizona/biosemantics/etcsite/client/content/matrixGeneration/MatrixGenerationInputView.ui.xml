@@ -5,23 +5,29 @@
 	xmlns:my2="urn:import:edu.arizona.biosemantics.etcsite.client.common"
 	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout">
 	<ui:style>
-		.important {
-			font-weight: bold;
-			margin-left: 10px;
-		}
-		.subMenuEntry {
-			margin-left: 0px;
-			padding-top: 10px;
-			padding-bottom:10px;
-		}
-	    .padding{
-			padding-top: 10px;
-			padding-bottom:10px;
-		}
-		.note {
-			font-size: 10px;
-			color: #999999;
-		}
+	.important {
+		font-weight: bold;
+		margin-left: 10px;
+	}
+	
+	.subMenuEntry {
+		margin-left: 0px;
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
+	
+	.padding {
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
+	
+	.note {
+		font-size: 10px;
+		color: #999999;
+	}
+	.firstColumn {
+		width: 220px;
+	}
 	</ui:style>	
 	<lay:CenteredContentPanel>
 		<g:VerticalPanel>
@@ -48,25 +54,25 @@
 			        <g:VerticalPanel styleName="{style.padding}"/>
 			        <g:VerticalPanel styleName="{style.padding}">
 			    <g:HorizontalPanel styleName="inputForm">
-			        <g:VerticalPanel>
-			    	<g:cell verticalAlignment="ALIGN_TOP">
-			        	<g:Label>Task name:</g:Label>
-			        </g:cell>
-			          <g:InlineLabel styleName="{style.note}">
-			            Provide a name to
-			        </g:InlineLabel>
-			         <g:InlineLabel styleName="{style.note}">
-			            identify your task.
-			        </g:InlineLabel>
+			        <g:VerticalPanel styleName="{style.firstColumn}">
+				    	<g:cell verticalAlignment="ALIGN_TOP">
+				        	<g:Label>Task name:</g:Label>
+				        </g:cell>
+				          <g:InlineLabel styleName="{style.note}">
+				            Provide a name to
+				        </g:InlineLabel>
+				         <g:InlineLabel styleName="{style.note}">
+				            identify your task.
+				        </g:InlineLabel>
 			        </g:VerticalPanel>
 			        <g:cell verticalAlignment="ALIGN_MIDDLE">
 			        	<g:TextBox ui:field="taskNameTextBox"></g:TextBox>
-			        	</g:cell>
+		        	</g:cell>
 			    </g:HorizontalPanel>
 			    </g:VerticalPanel>
 			    <g:VerticalPanel styleName="{style.padding}">
 			    <g:HorizontalPanel>
-			        <g:VerticalPanel>
+			        <g:VerticalPanel styleName="{style.firstColumn}">
 			             <g:cell verticalAlignment="ALIGN_TOP">
 			        	<g:Label>Select Folder/File:</g:Label>
 			            </g:cell>
@@ -84,6 +90,38 @@
 					<g:cell verticalAlignment="ALIGN_TOP">
 			        	<g:Label ui:field="inputLabel" styleName="{style.important}"></g:Label>
 					</g:cell>
+			    </g:HorizontalPanel>
+			    </g:VerticalPanel>
+			    <g:VerticalPanel styleName="{style.padding}">
+			    <g:HorizontalPanel>
+			        <g:VerticalPanel styleName="{style.firstColumn}">
+			             <g:cell verticalAlignment="ALIGN_TOP">
+			        	<g:Label>Inherit Values:</g:Label>
+			            </g:cell>
+			            <g:InlineLabel styleName="{style.note}">
+			            Inherits values from upper rank taxa 
+			            </g:InlineLabel>
+			            <g:InlineLabel styleName="{style.note}">
+			            to their descendant lower rank taxa.
+			            </g:InlineLabel>
+			        </g:VerticalPanel>
+			        <g:CheckBox ui:field="inheritValuesBox" value="true"></g:CheckBox>
+			    </g:HorizontalPanel>
+			    </g:VerticalPanel>
+			   	<g:VerticalPanel styleName="{style.padding}">
+			    <g:HorizontalPanel>
+			        <g:VerticalPanel styleName="{style.firstColumn}">
+			             <g:cell verticalAlignment="ALIGN_TOP">
+			        	<g:Label>Generate Absent/Present Values:</g:Label>
+			            </g:cell>
+			            <g:InlineLabel styleName="{style.note}">
+			            Generates absent present values from
+			            </g:InlineLabel>
+			            <g:InlineLabel styleName="{style.note}">
+			            determined structure relationships.
+			            </g:InlineLabel>
+			        </g:VerticalPanel>
+			        <g:CheckBox ui:field="generateAbsentPresentBox" value="false"></g:CheckBox>
 			    </g:HorizontalPanel>
 			    </g:VerticalPanel>
 			    <g:VerticalPanel styleName="{style.padding}">

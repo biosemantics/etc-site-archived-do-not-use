@@ -36,8 +36,10 @@ public class MatrixGenerationConfigurationDAO {
 		int configurationId = result.getInt(1);
 		String input = result.getString(2);
 		String output = result.getString(3);
+		boolean inheritValues = result.getBoolean(4);
+		boolean generateAbsentPresent = result.getBoolean(5);
 		Configuration configuration = configurationDAO.getConfiguration(configurationId);
-		return  new MatrixGenerationConfiguration(configuration, input, output);
+		return  new MatrixGenerationConfiguration(configuration, input, output, inheritValues, generateAbsentPresent);
 	}
 
 	public MatrixGenerationConfiguration addMatrixGenerationConfiguration(MatrixGenerationConfiguration matrixGenerationConfiguration) {
@@ -48,10 +50,12 @@ public class MatrixGenerationConfigurationDAO {
 			while(generatedKeys.next()) {
 				Configuration configuration = configurationDAO.getConfiguration(generatedKeys.getInt(1));
 				try (Query matrixGenerationQuery = new Query("INSERT INTO `etcsite_matrixgenerationconfigurations` " +
-						"(`configuration`, `input`, `output`) VALUES (?, ?, ?)")) {
+						"(`configuration`, `input`, `output`, `inheritvalues`, `generateabsentpresent`) VALUES (?, ?, ?, ?, ?)")) {
 					matrixGenerationQuery.setParameter(1, configuration.getId());
 					matrixGenerationQuery.setParameter(2, matrixGenerationConfiguration.getInput());
 					matrixGenerationQuery.setParameter(3, matrixGenerationConfiguration.getOutput());
+					matrixGenerationQuery.setParameter(4, matrixGenerationConfiguration.isInheritValues());
+					matrixGenerationQuery.setParameter(5, matrixGenerationConfiguration.isInheritValues());
 					matrixGenerationQuery.execute();
 				}
 				result = this.getMatrixGenerationConfiguration(generatedKeys.getInt(1));
@@ -66,10 +70,15 @@ public class MatrixGenerationConfigurationDAO {
 		Configuration configuration = matrixGenerationConfiguration.getConfiguration();
 		String input = matrixGenerationConfiguration.getInput();
 		String output = matrixGenerationConfiguration.getOutput();
-		try (Query query = new Query("UPDATE etcsite_matrixgenerationconfigurations SET input = ?, output = ? WHERE configuration = ?")) {
+		boolean inheritValues = matrixGenerationConfiguration.isInheritValues();
+		boolean generateAbsentPresent = matrixGenerationConfiguration.isGenerateAbsentPresent();
+		try (Query query = new Query("UPDATE etcsite_matrixgenerationconfigurations SET input = ?, output = ?, "
+				+ "inheritvalues = ?, generateabsentpresent = ? WHERE configuration = ?")) {
 			query.setParameter(1, input);
 			query.setParameter(2, output);
-			query.setParameter(3, configuration.getId());
+			query.setParameter(3, inheritValues);
+			query.setParameter(4, generateAbsentPresent);
+			query.setParameter(5, configuration.getId());
 			query.execute();
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't update matrix generation configuration", e);

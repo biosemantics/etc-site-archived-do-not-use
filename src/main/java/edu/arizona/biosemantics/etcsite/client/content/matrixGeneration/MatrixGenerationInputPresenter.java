@@ -78,8 +78,6 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 
 	@Override
 	public void onNext() {
-		
-		//error checking.
 		if (inputFile == null || inputFile.equals("")){
 			Alerter.selectValidInputDirectory();
 			return;
@@ -88,8 +86,6 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 			Alerter.selectTaskName();
 			return;
 		}
-		
-		//end error checking.
 		
 		Alerter.startLoading();
 		matrixGenerationService.isValidInput(Authentication.getInstance().getToken(), inputFile, new AsyncCallback<Boolean>() {
@@ -100,7 +96,7 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 					Alerter.stopLoading();
 				} else {
 					matrixGenerationService.start(Authentication.getInstance().getToken(), 
-							view.getTaskName(), inputFile, new AsyncCallback<Task>() {
+							view.getTaskName(), inputFile, view.isInheritValues(), view.isGenerateAbsentPresent(), new AsyncCallback<Task>() {
 								@Override
 								public void onSuccess(Task result) {
 									placeController.goTo(new MatrixGenerationProcessPlace(result));

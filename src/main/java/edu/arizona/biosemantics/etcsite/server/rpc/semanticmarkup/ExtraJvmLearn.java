@@ -9,6 +9,7 @@ import edu.arizona.biosemantics.etcsite.server.ExtraJvmCallable;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.auth.AdminAuthenticationToken;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.FileService;
+import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.DatasetPrefix;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.CreateDirectoryFailedException;
@@ -19,6 +20,18 @@ import edu.arizona.biosemantics.semanticmarkup.ETCLearnMain;
 
 public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Learn {
 
+	public static class MainWrapper {
+		
+		public static void main(String[] args) {
+			try {
+				ETCLearnMain.main(args);
+			} catch (Exception e) {
+				System.exit(-1);
+			}
+		}
+		
+	}
+	
 	private DAOManager daoManager = new DAOManager();
 	private String config;
 	private String input;
@@ -56,7 +69,7 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 			this.setClassPath(System.getProperty("java.class.path"));
 		else
 			this.setClassPath(Configuration.classpath);
-		this.setMainClass(ETCLearnMain.class);
+		this.setMainClass(MainWrapper.class);
 	}
 	
 	private String[] createArgs() throws PermissionDeniedException, CreateDirectoryFailedException {
@@ -124,8 +137,10 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 
 	@Override
 	public LearnResult createReturn() throws SemanticMarkupException {
-		if(exitStatus != 0)
+		if(exitStatus != 0) {
+			log(LogLevel.ERROR, "Semantic Markup Learn failed.");
 			throw new SemanticMarkupException(null);
+		}
 		DatasetPrefix datasetPrefix = daoManager.getDatasetPrefixDAO().getDatasetPrefix(tablePrefix);
 		if(datasetPrefix == null)
 			throw new SemanticMarkupException(null);
