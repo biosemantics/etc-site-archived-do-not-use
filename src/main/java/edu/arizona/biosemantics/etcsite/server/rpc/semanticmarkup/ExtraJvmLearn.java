@@ -25,7 +25,7 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 		public static void main(String[] args) {
 			try {
 				ETCLearnMain.main(args);
-			} catch (Exception e) {
+			} catch (Throwable t) {
 				System.exit(-1);
 			}
 		}

@@ -20,7 +20,7 @@ public class ExtraJvmParse extends ExtraJvmCallable<ParseResult> implements Pars
 		public static void main(String[] args) {
 			try {
 				ETCMarkupMain.main(args);
-			} catch (Exception e) {
+			} catch (Throwable t) {
 				System.exit(-1);
 			}
 		}

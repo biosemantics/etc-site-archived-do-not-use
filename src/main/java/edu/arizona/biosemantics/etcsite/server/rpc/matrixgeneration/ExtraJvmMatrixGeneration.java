@@ -16,7 +16,7 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements 
 		public static void main(String[] args) {
 			try {
 				edu.arizona.biosemantics.matrixgeneration.Main.main(args);
-			} catch (Exception e) {
+			} catch (Throwable t) {
 				System.exit(-1);
 			}
 		}
