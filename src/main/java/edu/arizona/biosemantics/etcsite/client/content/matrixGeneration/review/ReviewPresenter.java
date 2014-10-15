@@ -72,8 +72,6 @@ public class ReviewPresenter implements IReviewView.Presenter {
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				if(caught instanceof MatrixGenerationException)
-					placeController.goTo(new TaskManagerPlace());
 				Alerter.failedToReview(caught);
 			}
 		}); 

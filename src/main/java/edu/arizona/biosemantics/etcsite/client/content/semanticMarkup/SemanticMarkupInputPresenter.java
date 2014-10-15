@@ -96,9 +96,6 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 
 								@Override
 								public void onFailure(Throwable caught) {
-									if(caught instanceof SemanticMarkupException) {
-										placeController.goTo(new TaskManagerPlace());
-									}
 									Alerter.failedToStartSemanticMarkup(caught);
 								}
 					});
@@ -107,9 +104,6 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 
 			@Override
 			public void onFailure(Throwable caught) {
-				if(caught instanceof SemanticMarkupException) {
-					placeController.goTo(new TaskManagerPlace());
-				}
 				Alerter.failedToIsValidInput(caught);
 			}
 		});

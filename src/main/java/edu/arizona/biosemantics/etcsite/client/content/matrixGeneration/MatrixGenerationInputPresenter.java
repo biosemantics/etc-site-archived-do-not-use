@@ -108,8 +108,6 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 								}
 								@Override
 								public void onFailure(Throwable caught) {
-									if(caught instanceof MatrixGenerationException)
-										placeController.goTo(new TaskManagerPlace());
 									Alerter.failedToStartMatrixGeneration(caught);
 								}
 					});
@@ -118,8 +116,6 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				if(caught instanceof MatrixGenerationException)
-					placeController.goTo(new TaskManagerPlace());
 				Alerter.failedToIsValidInput(caught);
 			}
 		});

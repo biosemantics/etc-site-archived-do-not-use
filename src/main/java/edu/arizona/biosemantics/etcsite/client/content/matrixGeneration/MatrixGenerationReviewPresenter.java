@@ -49,8 +49,6 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 						}
 						@Override
 						public void onFailure(Throwable caught) {
-							if(caught instanceof MatrixGenerationException)
-								placeController.goTo(new TaskManagerPlace());
 							Alerter.failedToCompleteReview(caught);
 							Alerter.stopLoading();
 						}
@@ -59,8 +57,6 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 
 				@Override
 				public void onFailure(Throwable caught) {
-					if(caught instanceof MatrixGenerationException)
-						placeController.goTo(new TaskManagerPlace());
 					Alerter.failedToSaveMatrixGeneration(caught);
 				}
 			});

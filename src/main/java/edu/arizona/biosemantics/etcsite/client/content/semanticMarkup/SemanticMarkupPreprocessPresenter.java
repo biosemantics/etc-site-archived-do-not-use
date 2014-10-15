@@ -58,9 +58,6 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 						}
 						@Override
 						public void onFailure(Throwable caught) {
-							if(caught instanceof SemanticMarkupException) {
-								placeController.goTo(new TaskManagerPlace());
-							}
 							Alerter.failedToGoToTaskStage(caught);
 						}
                     });
@@ -115,9 +112,6 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 
 							@Override
 							public void onFailure(Throwable caught) {
-								if(caught instanceof SemanticMarkupException) {
-									placeController.goTo(new TaskManagerPlace());
-								}
 								Alerter.failedToGoToTaskStage(caught);
 							} 
 				});
@@ -125,9 +119,6 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 
 			@Override
 			public void onFailure(Throwable caught) {
-				if(caught instanceof SemanticMarkupException) {
-					placeController.goTo(new TaskManagerPlace());
-				}
 				Alerter.failedToSetDescription(caught);
 			}
 		});
@@ -153,9 +144,6 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 
 			@Override
 			public void onFailure(Throwable caught) {
-				if(caught instanceof SemanticMarkupException) {
-					placeController.goTo(new TaskManagerPlace());
-				}
 				Alerter.failedToSetDescription(caught);
 			}
 		});
@@ -179,9 +167,6 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				if(caught instanceof SemanticMarkupException) {
-					placeController.goTo(new TaskManagerPlace());
-				}
 				Alerter.failedToSetDescription(caught);
 			}
 		});
@@ -225,9 +210,6 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 
 					@Override
 					public void onFailure(Throwable caught) {
-						if(caught instanceof SemanticMarkupException) {
-							placeController.goTo(new TaskManagerPlace());
-						}
 						Alerter.failedToGetDescription(caught);
 					}
 		});

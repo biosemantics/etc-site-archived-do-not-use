@@ -91,9 +91,7 @@ public class MatrixGenerationProcessPresenter implements IMatrixGenerationProces
 				MatrixGenerationProcessPresenter.this.task = result;
 			}
 			@Override
-			public void onFailure(Throwable caught) {
-				Alerter.failedToProcess(caught);
-			}
+			public void onFailure(Throwable caught) { }
 		});
 	}
 }

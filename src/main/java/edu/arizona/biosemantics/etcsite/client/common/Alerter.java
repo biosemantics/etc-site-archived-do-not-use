@@ -12,6 +12,19 @@ import edu.arizona.biosemantics.oto2.oto.client.common.Alerter.InfoMessageBox;
 public class Alerter {
 	
 	private static AutoProgressMessageBox box;
+	
+	public static MessageBox startLoading() {
+		box = new AutoProgressMessageBox("Loading", "Loading your data, please wait...");
+        box.setProgressText("Loading...");
+        box.auto();
+        box.show();
+        return box;
+	}
+	
+	public static void stopLoading() {
+		box.hide();
+		box = null;
+	}
 
 	public static MessageBox failedToCreateTaxonDescription(Throwable caught) {
 		return showAlert("Create Taxon Description", "Failed to create taxon description.", caught);
@@ -251,24 +264,6 @@ public class Alerter {
 				+ "your email address (" + email + "). ");
 	}
 
-	private static MessageBox showAlert(String title, String message, Throwable caught) {
-		if(caught != null)
-			caught.printStackTrace();
-		return showAlert(title, message);
-	}
-	
-	private static MessageBox showAlert(String title, String message) {
-		AlertMessageBox alert = new AlertMessageBox(title, message);
-		alert.show();
-		return alert;
-	}
-
-	private static MessageBox showInfo(String title, String message) {
-		InfoMessageBox info = new InfoMessageBox(title, message);
-		info.show();
-		return info;
-	}
-
 	public static MessageBox inputError(String message) {
 		return showAlert("Input error", message);
 	}
@@ -281,19 +276,6 @@ public class Alerter {
 		return showAlert("Too many files", "Currently only uploads <= 50 files are allowed");
 	}
 	
-	public static MessageBox startLoading() {
-		box = new AutoProgressMessageBox("Loading", "Loading your data, please wait...");
-        box.setProgressText("Loading...");
-        box.auto();
-        box.show();
-        return box;
-	}
-	
-	public static void stopLoading() {
-		box.hide();
-		box = null;
-	}
-
 	public static MessageBox notSavedInvalidXmlContent() {
 		return showAlert("Not saved", "Content is no longer valid against the <a href='https://raw.githubusercontent.com/biosemantics/schemas/master/consolidation_01272014/semanticMarkupInput.xsd' target='_blank'>input schema</a>. "
 							+ "correct the problems and try to save again.");
@@ -346,12 +328,6 @@ public class Alerter {
 	public static MessageBox sureToDelete(String file) {
 		return showConfirm("File Manager", 
 				"Are you sure you want to delete '" + file + "'?");				
-	}
-
-	private static MessageBox showConfirm(String title, String message) {
-		 ConfirmMessageBox confirm = new ConfirmMessageBox(title, message);
-		 confirm.show();
-         return confirm;
 	}
 
 	public static MessageBox resumableTask() {
@@ -412,6 +388,30 @@ public class Alerter {
 
 	public static MessageBox confirmTaskDelete(String name) {
 		return showConfirm("Task Manager", "Are you sure you want to delete task '" + name + "'?");
+	}
+	
+	private static MessageBox showAlert(String title, String message, Throwable caught) {
+		if(caught != null)
+			caught.printStackTrace();
+		return showAlert(title, message);
+	}
+	
+	private static MessageBox showAlert(String title, String message) {
+		AlertMessageBox alert = new AlertMessageBox(title, message);
+		alert.show();
+		return alert;
+	}
+
+	private static MessageBox showInfo(String title, String message) {
+		InfoMessageBox info = new InfoMessageBox(title, message);
+		info.show();
+		return info;
+	}
+	
+	private static MessageBox showConfirm(String title, String message) {
+		 ConfirmMessageBox confirm = new ConfirmMessageBox(title, message);
+		 confirm.show();
+         return confirm;
 	}
 
 }

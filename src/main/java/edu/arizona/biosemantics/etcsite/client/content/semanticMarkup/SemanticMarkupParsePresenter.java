@@ -77,10 +77,7 @@ public class SemanticMarkupParsePresenter implements ISemanticMarkupParseView.Pr
 				placeController.goTo(new SemanticMarkupToOntologiesPlace(task));
 			}
 			@Override
-			public void onFailure(Throwable caught) {
-				if(caught instanceof SemanticMarkupException) {
-					placeController.goTo(new TaskManagerPlace());
-				}
+			public void onFailure(Throwable caught) { 
 				Alerter.failedToGoToTaskStage(caught);
 			}
 		});
@@ -104,13 +101,11 @@ public class SemanticMarkupParsePresenter implements ISemanticMarkupParseView.Pr
 			task, new AsyncCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {
-				//MatrixGenerationProcessPresenter.this.task = result;
+				//SemanticMarkupParsePresenter.this.task = result;
 			}
 
 			@Override
-			public void onFailure(Throwable caught) {
-				Alerter.failedToParse(caught);
-			}
+			public void onFailure(Throwable caught) { }
 		});
 	}
 

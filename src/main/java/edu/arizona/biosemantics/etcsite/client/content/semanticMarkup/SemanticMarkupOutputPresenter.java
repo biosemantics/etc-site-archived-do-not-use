@@ -55,9 +55,6 @@ public class SemanticMarkupOutputPresenter implements ISemanticMarkupOutputView.
 
 			@Override
 			public void onFailure(Throwable caught) {
-				if(caught instanceof SemanticMarkupException) {
-					placeController.goTo(new TaskManagerPlace());
-				}
 				Alerter.failedToOutput(caught);
 			}
 		});

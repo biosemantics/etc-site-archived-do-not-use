@@ -91,12 +91,10 @@ public class SemanticMarkupLearnPresenter implements ISemanticMarkupLearnView.Pr
 			task, new AsyncCallback<LearnInvocation>() {
 			@Override
 			public void onSuccess(LearnInvocation result) {
-				//MatrixGenerationProcessPresenter.this.task = result;
+				//SemanticMarkupLearnPresenter.this.task = result;
 			}
 			@Override
-			public void onFailure(final Throwable caught) {
-				Alerter.failedToLearn(caught);
-			}
+			public void onFailure(final Throwable caught) {	}
 		});
 	}
 }

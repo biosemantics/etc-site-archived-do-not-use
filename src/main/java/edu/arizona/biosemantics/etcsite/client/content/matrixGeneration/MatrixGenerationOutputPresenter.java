@@ -55,8 +55,6 @@ public class MatrixGenerationOutputPresenter implements IMatrixGenerationOutputV
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				if(caught instanceof MatrixGenerationException)
-					placeController.goTo(new TaskManagerPlace());
 				Alerter.failedToOutput(caught);
 			}
 		});

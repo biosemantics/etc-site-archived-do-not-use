@@ -44,9 +44,6 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 
 				@Override
 				public void onFailure(Throwable caught) {
-					if(caught instanceof SemanticMarkupException) {
-						placeController.goTo(new TaskManagerPlace());
-					}
 					Alerter.failedToSaveOto(caught);
 				}
 			});
@@ -64,7 +61,6 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 		this.placeController = placeController;
 		this.semanticMarkupService = semanticMarkupService;
 		this.fileService = fileService;
-		initIFrameMessaging();
 	}
 
 	@Override
@@ -83,9 +79,6 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 
 			@Override
 			public void onFailure(Throwable caught) {
-				if(caught instanceof SemanticMarkupException) {
-					placeController.goTo(new TaskManagerPlace());
-				}
 				Alerter.failedToReview(caught);
 			}
 		});
@@ -106,22 +99,8 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 
 			@Override
 			public void onFailure(Throwable caught) {
-				if(caught instanceof SemanticMarkupException) {
-					placeController.goTo(new TaskManagerPlace());
-				}
 				Alerter.failedToGoToTaskStage(caught);
 			}
 		});
 	}
-
-	public native void initIFrameMessaging() /*-{
-		var thisPresenterReference = this;
-		$wnd.onmessage = function(e) {
-		    if (e.data == 'done') {
-		    	//if simply this is used here, the reference in javascript will then be the $wnd object rather than the java 'this'. 
-		    	//Therefore the reference is passed above already
-		        thisPresenterReference.@edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupReviewPresenter::onNext()();
-		    }
-		}
-	}-*/;
 }
