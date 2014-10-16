@@ -68,7 +68,8 @@ public class ReviewPresenter implements IReviewView.Presenter {
 				view.setMatrixReviewView(matrixReviewView);
 				Alerter.stopLoading();
 				if (taxonMatrix.getCharacterCount() == 0 || (taxonMatrix.getCharacterCount() == 1 && taxonMatrix.getFlatCharacters().get(0).getName().equals(""))){
-					Alerter.matrixGeneratedEmpty();}
+					Alerter.matrixGeneratedEmpty();
+				}
 			}
 			@Override
 			public void onFailure(Throwable caught) {
