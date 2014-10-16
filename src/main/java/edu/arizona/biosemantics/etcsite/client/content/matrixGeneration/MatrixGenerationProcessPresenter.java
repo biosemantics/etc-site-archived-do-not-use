@@ -58,8 +58,6 @@ public class MatrixGenerationProcessPresenter implements IMatrixGenerationProces
 							placeController.goTo(new TaskManagerPlace());
 						}
 					});
-				} else {
-					view.setNonResumable();
 				}
 			}
 		});

@@ -61,8 +61,6 @@ public class SemanticMarkupLearnPresenter implements ISemanticMarkupLearnView.Pr
 							placeController.goTo(new TaskManagerPlace());
 						}
 					});
-				} else {
-					view.setNonResumable();
 				}
 			}
 		});

@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.slf4j.bridge.SLF4JBridgeHandler;
+
 import edu.arizona.biosemantics.etcsite.server.db.ConnectionPool;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.db.Query;
@@ -31,7 +33,11 @@ public class ETCSiteServletContextListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent event) {
 		log(LogLevel.INFO, "Initializing etcsite context at context path: " + event.getServletContext().getContextPath());
 		log(LogLevel.INFO, "Configuration used " + Configuration.asString());
-			
+		
+		log(LogLevel.INFO, "Install Java logging to SLF4J");
+		SLF4JBridgeHandler.removeHandlersForRootLogger();
+		SLF4JBridgeHandler.install();
+		
 		log(LogLevel.INFO, "Initializing connection pool");
 		try {
 			connectionPool = new ConnectionPool();

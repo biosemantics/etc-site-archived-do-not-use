@@ -49,11 +49,11 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements 
 	}
 	
 	private String[] createArgs() {
-		String[] args = new String[2];
+		String[] args = new String[4];
 		args[0] = inputDir;
 		args[1] = outputFile;
-		args[2] = String.valueOf(inheritValues);
-		args[3] = String.valueOf(generateAbsentPresent);
+		args[2] = Boolean.toString(inheritValues);
+		args[3] = Boolean.toString(generateAbsentPresent);
 		return args;
 	}
 

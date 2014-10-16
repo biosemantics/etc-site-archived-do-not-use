@@ -60,8 +60,10 @@ public class LoggedInActivity implements Activity, Presenter {
 								failedTasks.put(id, task);
 						}
 						
-						tasksBus.fireEvent(new ResumableTasksEvent(resumableTasks));
-						tasksBus.fireEvent(new FailedTasksEvent(failedTasks));
+						if(!resumableTasks.isEmpty())
+							tasksBus.fireEvent(new ResumableTasksEvent(resumableTasks));
+						if(!failedTasks.isEmpty())
+							tasksBus.fireEvent(new FailedTasksEvent(failedTasks));
 					}
 					@Override
 					public void onFailure(Throwable caught) {

@@ -64,7 +64,7 @@ public class InJvmParse implements Parse {
 		try {
 			ETCMarkupMain.main(args);
 			executedSuccessfully = true;
-		} catch(Exception e) {
+		} catch(Throwable e) {
 			log(LogLevel.ERROR, "Semantic Markup Parse failed with exception.", e);
 			executedSuccessfully = false;
 			throw new SemanticMarkupException(null);

@@ -23,16 +23,33 @@ public class FailTask {
 			return proceedingJoinPoint.proceed();
 		} catch(SemanticMarkupException e) {
 			Task task = e.getTask();
-			if(task != null) {
-				task.setFailed(true);
-				task.setFailedTime(new Date());
-				daoManager.getTaskDAO().updateTask(task);
-			}
+			if(task == null)
+				task = getTask(proceedingJoinPoint);
+			failTask(task);
 			throw e;
-		} catch (Throwable e) {
-			log(LogLevel.ERROR, "Unexpected throwable caught in fail task aspect. Check the pointcut/joinpoint interface.", e);
+		} catch (Throwable t) {
+			failTask(getTask(proceedingJoinPoint));
+			log(LogLevel.ERROR, "Unexpected throwable caught in fail task aspect. Check the pointcut/joinpoint interface.", t);
 			return null;
 		}
 	}
+	
+	private void failTask(Task task) {
+		if(task != null) {
+			task.setFailed(true);
+			task.setFailedTime(new Date());
+			daoManager.getTaskDAO().updateTask(task);
+		}
+	}
+
+
+	private Task getTask(ProceedingJoinPoint proceedingJoinPoint) {
+		for(Object arg : proceedingJoinPoint.getArgs()) {
+			if(arg instanceof Task) {
+				return (Task)arg;
+			}
+		}
+		return null;
+	}	
 
 }

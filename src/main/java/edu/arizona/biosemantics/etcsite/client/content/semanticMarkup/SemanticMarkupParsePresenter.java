@@ -60,8 +60,6 @@ public class SemanticMarkupParsePresenter implements ISemanticMarkupParseView.Pr
 							placeController.goTo(new TaskManagerPlace());
 						}
 					});
-				} else {
-					view.setNonResumable();
 				}
 			}
 		});

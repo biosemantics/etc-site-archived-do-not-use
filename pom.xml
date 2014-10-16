@@ -149,6 +149,11 @@
 			<version>1.7.7</version>
 		</dependency>
 		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+			<version>1.7.7</version>
+		</dependency>
+		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>15.0</version>
@@ -187,7 +192,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>semantic-markup</artifactId>
-			<version>0.1.52-SNAPSHOT</version>
+			<version>0.1.53-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>app</artifactId>
@@ -198,13 +203,13 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.55-SNAPSHOT</version>
+		  <version>0.0.56-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.55-SNAPSHOT</version>
+		  <version>0.0.56-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
@@ -215,7 +220,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.oto</groupId>
 			<artifactId>oto-client</artifactId>
-			<version>0.0.28-SNAPSHOT</version>
+			<version>0.0.29-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.oto</groupId>
@@ -225,7 +230,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics</groupId>
 			<artifactId>bioportal-client</artifactId>
-			<version>0.0.11-SNAPSHOT</version>
+			<version>0.0.12-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.gwtquery</groupId>

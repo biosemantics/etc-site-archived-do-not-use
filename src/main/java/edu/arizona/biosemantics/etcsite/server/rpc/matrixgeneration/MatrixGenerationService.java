@@ -281,14 +281,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			task.setResumable(false);
 			daoManager.getTaskDAO().updateTask(task);
 			
-			String input = config.getInput();
-			try {
-				String createDirResult = fileService.createDirectory(new AdminAuthenticationToken(), Configuration.matrixGeneration_tempFileBase, 
-						String.valueOf(task.getId()), false);
-			} catch (PermissionDeniedException | CreateDirectoryFailedException e1) {
-				throw new MatrixGenerationException(task);
-			}
-			
+			String input = config.getInput();			
 			try {
 				fileService.createDirectory(new AdminAuthenticationToken(), Configuration.matrixGeneration_tempFileBase, String.valueOf(task.getId()), false);
 			} catch (PermissionDeniedException | CreateDirectoryFailedException e1) {
