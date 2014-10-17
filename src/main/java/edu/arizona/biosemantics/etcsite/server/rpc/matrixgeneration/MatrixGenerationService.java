@@ -298,19 +298,25 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			this.activeProcessFutures.put(config.getConfiguration().getId(), futureResult);
 			futureResult.addListener(new Runnable() {
 			     	public void run() {	
-			     		MatrixGeneration matrixGeneration = activeProcess.remove(config.getConfiguration().getId());
-			    		ListenableFuture<Void> futureResult = activeProcessFutures.remove(config.getConfiguration().getId());
-			     		if(matrixGeneration.isExecutedSuccessfully()) {
-			     			if(!futureResult.isCancelled()) {
-								TaskStage newTaskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.REVIEW.toString());
-								task.setTaskStage(newTaskStage);
-								task.setResumable(true);
+			     		try {
+				     		MatrixGeneration matrixGeneration = activeProcess.remove(config.getConfiguration().getId());
+				    		ListenableFuture<Void> futureResult = activeProcessFutures.remove(config.getConfiguration().getId());
+				     		if(matrixGeneration.isExecutedSuccessfully()) {
+				     			if(!futureResult.isCancelled()) {
+									TaskStage newTaskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.REVIEW.toString());
+									task.setTaskStage(newTaskStage);
+									task.setResumable(true);
+									daoManager.getTaskDAO().updateTask(task);
+									
+									// send an email to the user who owns the task.
+									sendFinishedGeneratingMatrixEmail(task);
+				     			}
+				     		} else {
+				     			task.setFailed(true);
+								task.setFailedTime(new Date());
 								daoManager.getTaskDAO().updateTask(task);
-								
-								// send an email to the user who owns the task.
-								sendFinishedGeneratingMatrixEmail(task);
-			     			}
-			     		} else {
+				     		}
+			     		} catch(Throwable t) {
 			     			task.setFailed(true);
 							task.setFailedTime(new Date());
 							daoManager.getTaskDAO().updateTask(task);

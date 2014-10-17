@@ -231,40 +231,46 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			activeLearnFutures.put(config.getConfiguration().getId(), futureResult);
 			futureResult.addListener(new Runnable() {
 			     	public void run() {
-			     		Learn learn = activeLearns.remove(config.getConfiguration().getId());
-			 			ListenableFuture<LearnResult> futureResult = activeLearnFutures.remove(config.getConfiguration().getId());
-			 			
-			     		if(learn.isExecutedSuccessfully()) {
-			     			if(!futureResult.isCancelled()) {
-			     				LearnResult result = null;
-								try {
-									result = futureResult.get();
-								} catch (InterruptedException | ExecutionException e) {
-									log(LogLevel.ERROR, "Couldn't get the produced learn result", e);
-								}
-								if(result != null) {
-					     			config.setOtoUploadId(result.getOtoUploadId());
-					     			config.setOtoSecret(result.getOtoSecret());
-					     			try {
-										createOTOContexts(authenticationToken, task, result, input);
-									} catch (SemanticMarkupException e1) { }
-					     			try {
-										otoCollectionService.initializeFromHistory(new Collection(result.getOtoUploadId(), result.getOtoSecret()));
-									} catch (Exception e) {
-										log(LogLevel.ERROR, "Couldn't initialize the uploaded oto dataset from history", e);
+			     		try {
+				     		Learn learn = activeLearns.remove(config.getConfiguration().getId());
+				 			ListenableFuture<LearnResult> futureResult = activeLearnFutures.remove(config.getConfiguration().getId());
+				 			
+				     		if(learn.isExecutedSuccessfully()) {
+				     			if(!futureResult.isCancelled()) {
+				     				LearnResult result = null;
+									try {
+										result = futureResult.get();
+									} catch (InterruptedException | ExecutionException e) {
+										log(LogLevel.ERROR, "Couldn't get the produced learn result", e);
 									}
-					     			daoManager.getSemanticMarkupConfigurationDAO().updateSemanticMarkupConfiguration(config);
-									TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.REVIEW_TERMS.toString());
-									task.setTaskStage(newTaskStage);
-									task.setResumable(true);
-									daoManager.getTaskDAO().updateTask(task);
-									
-									// send an email to the user who owns the task.
-									sendFinishedLearningTermsEmail(task);
-								}
-			     			}
-			     		} else {
-			     			task.setFailed(true);
+									if(result != null) {
+						     			config.setOtoUploadId(result.getOtoUploadId());
+						     			config.setOtoSecret(result.getOtoSecret());
+						     			try {
+											createOTOContexts(authenticationToken, task, result, input);
+										} catch (SemanticMarkupException e1) { }
+						     			try {
+											otoCollectionService.initializeFromHistory(new Collection(result.getOtoUploadId(), result.getOtoSecret()));
+										} catch (Exception e) {
+											log(LogLevel.ERROR, "Couldn't initialize the uploaded oto dataset from history", e);
+										}
+						     			daoManager.getSemanticMarkupConfigurationDAO().updateSemanticMarkupConfiguration(config);
+										TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.REVIEW_TERMS.toString());
+										task.setTaskStage(newTaskStage);
+										task.setResumable(true);
+										daoManager.getTaskDAO().updateTask(task);
+										
+										// send an email to the user who owns the task.
+										sendFinishedLearningTermsEmail(task);
+									}
+				     			}
+				     		} else {
+				     			task.setFailed(true);
+								task.setFailedTime(new Date());
+								daoManager.getTaskDAO().updateTask(task);
+				     		}
+			     		} catch(Throwable t) {
+				     		task.setFailed(true);
 							task.setFailedTime(new Date());
 							daoManager.getTaskDAO().updateTask(task);
 			     		}
@@ -318,22 +324,28 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			futureResult.addListener(new Runnable() {
 				@Override
 				public void run() {
-					Parse parse = activeParses.remove(config.getConfiguration().getId());
-					ListenableFuture<ParseResult> futureResult = activeParseFutures.remove(config.getConfiguration().getId());
-					if(parse.isExecutedSuccessfully()) {
-						if(!futureResult.isCancelled()) {
-							task.setResumable(true);
-							//TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.TO_ONTOLOGIES.toString());
-							TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.OUTPUT.toString());
-							task.setTaskStage(newTaskStage);
+					try {
+						Parse parse = activeParses.remove(config.getConfiguration().getId());
+						ListenableFuture<ParseResult> futureResult = activeParseFutures.remove(config.getConfiguration().getId());
+						if(parse.isExecutedSuccessfully()) {
+							if(!futureResult.isCancelled()) {
+								task.setResumable(true);
+								//TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.TO_ONTOLOGIES.toString());
+								TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.OUTPUT.toString());
+								task.setTaskStage(newTaskStage);
+								daoManager.getTaskDAO().updateTask(task);
+								sendFinishedParsingEmail(task);
+							}
+						} else {
+							task.setFailed(true);
+							task.setFailedTime(new Date());
 							daoManager.getTaskDAO().updateTask(task);
-							sendFinishedParsingEmail(task);
 						}
-					} else {
-						task.setFailed(true);
+					} catch(Throwable t) {
+			     		task.setFailed(true);
 						task.setFailedTime(new Date());
 						daoManager.getTaskDAO().updateTask(task);
-					}
+		     		}
 				}
 			}, executorService);
 		}
