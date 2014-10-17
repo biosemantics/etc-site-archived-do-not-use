@@ -201,6 +201,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	}
 
 	public void onCreate() {
+		view.showProgress();
 		createModelFile();
 	}
 	

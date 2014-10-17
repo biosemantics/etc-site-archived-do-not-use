@@ -177,24 +177,40 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		//don't allow rename of root node
 		if(selection != null && !selection.getFileInfo().isSystemFile()) {
 			final PromptMessageBox box = new PromptMessageBox("Rename", "New name:");
-			 box.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
+			box.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
 				@Override
 				public void onSelect(SelectEvent event) {
 					final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
 					if(selection != null && !selection.getFileInfo().isSystemFile()) {
-						fileService.renameFile(Authentication.getInstance().getToken(), selection.getFileInfo().getFilePath(), 
-								box.getValue() + "." + selection.getFileInfo().getExtension(), 
-								new AsyncCallback<Void>() {
-							@Override
-							public void onSuccess(Void result) {
-								fileTreePresenter.refresh(fileFilter);
-								selection.getFileInfo().setName(box.getValue(), true);
-							}
-							@Override
-							public void onFailure(Throwable caught) {
-								Alerter.failedToRenameFile(caught);
-							}
-						});
+						if(selection.getFileImageLabel().getFileInfo().getFileType().equals(FileTypeEnum.DIRECTORY)) {
+							fileService.renameFile(Authentication.getInstance().getToken(), selection.getFileInfo().getFilePath(), 
+								box.getValue(), new AsyncCallback<Void>() {
+									@Override
+									public void onFailure(Throwable caught) {
+										Alerter.failedToRenameFile(caught);
+									}
+									@Override
+									public void onSuccess(Void result) {
+										fileTreePresenter.refresh(fileFilter);
+										selection.getFileInfo().setName(box.getValue());
+									}
+							});
+						} else {
+							final String newFileName = selection.getFileInfo().getExtension().isEmpty() ? 
+									box.getValue() : box.getValue() + "." + selection.getFileInfo().getExtension();
+							fileService.renameFile(Authentication.getInstance().getToken(), selection.getFileInfo().getFilePath(), 
+									newFileName, new AsyncCallback<Void>() {
+								@Override
+								public void onSuccess(Void result) {
+									fileTreePresenter.refresh(fileFilter);
+									selection.getFileInfo().setName(newFileName);
+								}
+								@Override
+								public void onFailure(Throwable caught) {
+									Alerter.failedToRenameFile(caught);
+								}
+							});
+						}
 					}
 				}
 			 });

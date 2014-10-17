@@ -40,15 +40,11 @@ public class FileInfo implements Serializable {
 	}
 	
 	public String getExtension() {
-		return name.substring(name.lastIndexOf("."), name.length());
+		if(name.lastIndexOf(".") != -1) 
+			return name.substring(name.lastIndexOf(".") + 1, name.length());
+		return "";
 	}
 	
-	public void setName(String name, boolean maintainExtension) {
-		if(maintainExtension)
-			this.setName(name + "." + getExtension());
-		else
-			this.setName(name);
-	}
 	public FileTypeEnum getFileType() {
 		return fileType;
 	}

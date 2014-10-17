@@ -295,6 +295,8 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		if(idealFolderName.trim().isEmpty()) 
 			throw new CreateDirectoryFailedException("Directory name may not be empty. The directory was not created.");
 		
+		idealFolderName = normalizeFileName(idealFolderName);
+		
 		File dir = new File(filePath);
 		dir.mkdirs();
 		
@@ -327,6 +329,15 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		}
 	}
 	
+	private String normalizeFileName(String name) {
+		//replace all non-(word characters, dots, hyphens, whitespaces) by empty string
+		String notAllowedFileNameCharacters = "[^\\w\\.\\-\\s]";
+		name = name.replaceAll(notAllowedFileNameCharacters, "");
+		//remove multiple whitespace
+		name = name.replaceAll("\\s+", "\\s");
+		return name;
+	}
+
 	/**
 	 * create file successfully: message="", result = file created
 	 * failed to create file: message=error, result = "";
@@ -335,6 +346,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	@Override
 	public String createFile(AuthenticationToken authenticationToken, String directory, String idealFileName, boolean force) 
 			throws CreateFileFailedException, PermissionDeniedException {					
+		idealFileName = normalizeFileName(idealFileName);
 		boolean permissionResult = filePermissionService.hasWritePermission(authenticationToken, directory);
 		if(!permissionResult)
 			throw new PermissionDeniedException();
