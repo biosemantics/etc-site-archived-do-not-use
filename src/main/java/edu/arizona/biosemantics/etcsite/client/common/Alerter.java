@@ -103,7 +103,7 @@ public class Alerter {
 	}
 
 	public static MessageBox failedToRenameFile(Throwable caught) {
-		return showAlert("Rename File", "Failed to rename file", caught);
+		return showAlert("Rename File", "Failed to rename file.\n" + caught.getMessage(), caught);
 	}
 
 	public static MessageBox failedToDeleteFile(Throwable caught) {

@@ -122,7 +122,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		try {
 			fileNameResult = fileService.getFileName(authenticationToken, filePath);
 		} catch (PermissionDeniedException e) {
-			throw new SemanticMarkupException(null);
+			throw new SemanticMarkupException();
 		}
 		if(isShared) {
 			String destinationResult;
@@ -130,12 +130,12 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				destinationResult = fileService.createDirectory(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUserId(), 
 						fileNameResult, true);
 			} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
-				throw new SemanticMarkupException(null);
+				throw new SemanticMarkupException();
 			}
 			try {
 				fileService.copyFiles(authenticationToken, filePath, destinationResult);
 			} catch (CopyFilesFailedException | PermissionDeniedException e) {
-				throw new SemanticMarkupException(null);
+				throw new SemanticMarkupException();
 			}
 			filePath = destinationResult;
 		}
@@ -144,7 +144,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		try {
 			directoriesFilesResult = fileService.getDirectoriesFiles(authenticationToken, filePath);
 		} catch (PermissionDeniedException e) {
-			throw new SemanticMarkupException(null);
+			throw new SemanticMarkupException();
 		}
 		int numberOfInputFiles = directoriesFilesResult.size();
 		Glossary glossary = daoManager.getGlossaryDAO().getGlossary(glossaryName);
@@ -414,7 +414,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		try {
 			isDirectory = fileService.isDirectory(authenticationToken, filePath);
 		} catch (PermissionDeniedException e) {
-			throw new SemanticMarkupException(null);
+			throw new SemanticMarkupException();
 		}
 		if(!isDirectory)
 			return false;
@@ -422,14 +422,14 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		try {
 			files = fileService.getDirectoriesFiles(authenticationToken, filePath);
 		} catch (PermissionDeniedException e) {
-			throw new SemanticMarkupException(null);
+			throw new SemanticMarkupException();
 		}
 		for(String file : files) {
 			boolean validResult;
 			try {
 				validResult = fileFormatService.isValidTaxonDescription(authenticationToken, filePath + File.separator + file);
 			} catch (PermissionDeniedException | GetFileContentFailedException e) {
-				throw new SemanticMarkupException(null);
+				throw new SemanticMarkupException();
 			}
 			if(!validResult)
 				return false;
@@ -592,18 +592,18 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		try {
 			content = fileAccessService.getFileContent(authenticationToken, filePath);
 		} catch (PermissionDeniedException | GetFileContentFailedException e) {
-			throw new SemanticMarkupException(null);
+			throw new SemanticMarkupException();
 		}
 		String newContent;
 		try {
 			newContent = replaceDescription(content, description);
 		} catch (JDOMException | IOException e1) {
-			throw new SemanticMarkupException(null);
+			throw new SemanticMarkupException();
 		}
 		try {
 			fileAccessService.setFileContent(authenticationToken, filePath, newContent);
 		} catch (SetFileContentFailedException | PermissionDeniedException e) {
-			throw new SemanticMarkupException(null);
+			throw new SemanticMarkupException();
 		}
 	}
 	

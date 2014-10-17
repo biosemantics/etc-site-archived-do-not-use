@@ -13,10 +13,5 @@
 	    <div style="padding:5px">
 	        <my:IUsersView ui:field="usersView"></my:IUsersView>
 	    </div>
-		<div style="padding:5px">
-		    <g:HorizontalPanel>
-	    		<g:Button ui:field="selectButton">Select</g:Button>
-			</g:HorizontalPanel>
-		</div>
 	</g:HTMLPanel>
 </ui:UiBinder> 

@@ -61,7 +61,7 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements 
 	public Void createReturn() throws MatrixGenerationException {
 		if(exitStatus != 0) {
 			log(LogLevel.ERROR, "Matrix generation failed.");
-			throw new MatrixGenerationException(null);
+			throw new MatrixGenerationException();
 		}
 		return null;
 	}

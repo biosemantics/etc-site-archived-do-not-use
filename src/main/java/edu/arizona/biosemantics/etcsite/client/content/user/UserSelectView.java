@@ -1,5 +1,7 @@
 package edu.arizona.biosemantics.etcsite.client.content.user;
 
+import java.util.Set;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -10,6 +12,8 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+
+import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 
 public class UserSelectView extends Composite implements IUserSelectView {
 
@@ -22,8 +26,6 @@ public class UserSelectView extends Composite implements IUserSelectView {
 	@UiField(provided=true)
 	IUsersView usersView;
 	
-	@UiField
-	Button selectButton;
 	private Presenter presenter;
 	
 	@Inject
@@ -32,14 +34,14 @@ public class UserSelectView extends Composite implements IUserSelectView {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
-	@UiHandler("selectButton")
-	void onClick(ClickEvent e) {
-		presenter.onSelect(usersView.getSelectedUsers());
-	}
-
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
+	}
+
+	@Override
+	public Set<ShortUser> getSelectedUsers() {
+		return usersView.getSelectedUsers();	
 	}
 
 }

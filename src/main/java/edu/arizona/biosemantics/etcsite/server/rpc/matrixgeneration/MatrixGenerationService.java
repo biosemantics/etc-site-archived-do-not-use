@@ -217,7 +217,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		try {
 			fileName = fileService.getFileName(authenticationToken, input);
 		} catch (PermissionDeniedException e) {
-			throw new MatrixGenerationException(null);
+			throw new MatrixGenerationException();
 		}
 		if(isShared) {
 			String destination;
@@ -225,12 +225,12 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				destination = fileService.createDirectory(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUserId(), 
 						fileName, true);
 			} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
-				throw new MatrixGenerationException(null);
+				throw new MatrixGenerationException();
 			}
 			try {
 				fileService.copyFiles(authenticationToken, input, destination);
 			} catch (CopyFilesFailedException | PermissionDeniedException e) {
-				throw new MatrixGenerationException(null);
+				throw new MatrixGenerationException();
 			}
 			input = destination;
 		}

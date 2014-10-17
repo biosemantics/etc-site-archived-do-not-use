@@ -4,6 +4,9 @@ import java.util.Set;
 
 import com.google.inject.Inject;
 import com.sencha.gxt.widget.core.client.Dialog;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 import edu.arizona.biosemantics.etcsite.client.content.user.IUsersView.Presenter;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
@@ -16,14 +19,14 @@ public class UserSelectPresenter implements IUserSelectView.Presenter {
 	private Presenter usersPresenter;
 
 	@Inject
-	public UserSelectPresenter(IUserSelectView view, IUsersView.Presenter usersPresenter) {
+	public UserSelectPresenter(final IUserSelectView view, IUsersView.Presenter usersPresenter) {
 		this.view = view;
 		view.setPresenter(this);
 		this.usersPresenter = usersPresenter;
 		
 		dialog = new Dialog();
 		dialog.setBodyBorder(false);
-		dialog.setHeadingText("Register");
+		dialog.setHeadingText("Select User");
 		dialog.setPixelSize(-1, -1);
 		dialog.setMinWidth(0);
 		dialog.setMinHeight(0);
@@ -31,6 +34,14 @@ public class UserSelectPresenter implements IUserSelectView.Presenter {
 	    dialog.setShadow(true);
 		dialog.setHideOnButtonClick(true);
 		dialog.add(view.asWidget());
+		dialog.getButton(PredefinedButton.OK).setText("Select");
+		dialog.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				currentListener.onSelect(view.getSelectedUsers());
+				dialog.hide();
+			}
+		});
 	}
 	
 	@Override
@@ -38,12 +49,6 @@ public class UserSelectPresenter implements IUserSelectView.Presenter {
 		usersPresenter.refresh();
 		this.currentListener = listener;
 		dialog.show();	
-	}
-
-	@Override
-	public void onSelect(Set<ShortUser> users) {
-		currentListener.onSelect(users);
-		dialog.hide();
 	}
 	
 	public interface ISelectListener {

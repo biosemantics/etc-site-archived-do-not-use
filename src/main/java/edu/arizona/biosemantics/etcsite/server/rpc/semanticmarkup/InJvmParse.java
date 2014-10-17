@@ -67,7 +67,7 @@ public class InJvmParse implements Parse {
 		} catch(Throwable e) {
 			log(LogLevel.ERROR, "Semantic Markup Parse failed with exception.", e);
 			executedSuccessfully = false;
-			throw new SemanticMarkupException(null);
+			throw new SemanticMarkupException();
 		}
 		
 		//File outputFile = new File("workspace" + File.separator + tablePrefix + File.separator + "out");

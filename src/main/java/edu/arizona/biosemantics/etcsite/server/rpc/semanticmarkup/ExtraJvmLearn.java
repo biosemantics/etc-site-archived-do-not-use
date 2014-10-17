@@ -57,7 +57,7 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 		try {
 			this.setArgs(createArgs());
 		} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
-			throw new SemanticMarkupException(null);
+			throw new SemanticMarkupException();
 		}
 		if(!Configuration.charaparser_xms.isEmpty()) 
 			this.setXms(Configuration.charaparser_xms);
@@ -139,11 +139,11 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 	public LearnResult createReturn() throws SemanticMarkupException {
 		if(exitStatus != 0) {
 			log(LogLevel.ERROR, "Semantic Markup Learn failed.");
-			throw new SemanticMarkupException(null);
+			throw new SemanticMarkupException();
 		}
 		DatasetPrefix datasetPrefix = daoManager.getDatasetPrefixDAO().getDatasetPrefix(tablePrefix);
 		if(datasetPrefix == null)
-			throw new SemanticMarkupException(null);
+			throw new SemanticMarkupException();
 		LearnResult result = new LearnResult(datasetPrefix.getOtoUploadId(), datasetPrefix.getOtoSecret());
 		return result;
 	}

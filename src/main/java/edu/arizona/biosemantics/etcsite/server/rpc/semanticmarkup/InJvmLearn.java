@@ -58,7 +58,7 @@ public class InJvmLearn implements Learn {
 		try {
 			fileService.createDirectory(new AdminAuthenticationToken(), workspace, tablePrefix, false);
 		} catch (PermissionDeniedException | CreateDirectoryFailedException e1) {
-			throw new SemanticMarkupException(null);
+			throw new SemanticMarkupException();
 		}
 		
 		//only temporary until charaparser can deal with the namespaces and they don't need to be pre- and post treated with XmlNamespaceManager
@@ -79,11 +79,11 @@ public class InJvmLearn implements Learn {
 			LearnResult result = new LearnResult(datasetPrefix.getOtoUploadId(), datasetPrefix.getOtoSecret());	
 			executedSuccessfully = true;
 			return result;
-			//throw new SemanticMarkupException(null); //test failing process
+			//throw new SemanticMarkupException(); //test failing process
 		} catch(Throwable e) {
 			log(LogLevel.ERROR, "Semantic Markup Learn failed with exception.", e);
 			executedSuccessfully = false;
-			throw new SemanticMarkupException(null);
+			throw new SemanticMarkupException();
 		}
 	}
 	

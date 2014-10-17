@@ -69,7 +69,7 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		TextPresenter presenter = new TextPresenter(view);
 		view.setPresenter(presenter);
 		presenter.showMessage(title, text);*/
-		//log(LogLevel.DEBUG, title + ": " + text);
+		log(LogLevel.TRACE, title + ": " + text);
 	}	
 
 	public XmlModelFile createXmlModelFile(String text, String operator) {

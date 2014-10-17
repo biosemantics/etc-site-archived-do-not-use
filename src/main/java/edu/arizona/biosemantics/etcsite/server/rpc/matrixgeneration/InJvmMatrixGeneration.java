@@ -1,6 +1,7 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration;
 
 import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
+import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
 import edu.arizona.biosemantics.matrixgeneration.Main;
 
@@ -35,7 +36,7 @@ public class InJvmMatrixGeneration implements MatrixGeneration {
 			executedSuccessfully = false;
 		}
 		if(!isExecutedSuccessfully()) {
-			throw new MatrixGenerationException(null);
+			throw new MatrixGenerationException();
 		}
 		return null;
 	}

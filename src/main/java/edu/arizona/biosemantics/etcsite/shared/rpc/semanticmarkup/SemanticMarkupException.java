@@ -6,9 +6,18 @@ public class SemanticMarkupException extends Exception {
 
 	private Task task;
 	
-	private SemanticMarkupException() { }
+	public SemanticMarkupException() { }
+	
+	public SemanticMarkupException(String message) {
+		super(message);
+	}
 	
 	public SemanticMarkupException(Task task) {
+		this.task = task;
+	}
+	
+	public SemanticMarkupException(String message, Task task) {
+		super(message);
 		this.task = task;
 	}
 	

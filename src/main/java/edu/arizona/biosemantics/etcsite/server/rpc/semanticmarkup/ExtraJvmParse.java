@@ -142,7 +142,7 @@ public class ExtraJvmParse extends ExtraJvmCallable<ParseResult> implements Pars
 	public ParseResult createReturn() throws SemanticMarkupException {
 		if(exitStatus != 0) {
 			log(LogLevel.ERROR, "Semantic Markup Parse failed.");
-			throw new SemanticMarkupException(null);
+			throw new SemanticMarkupException();
 		}
 		ParseResult result = new ParseResult(new HashSet<File>());
 		return result;
