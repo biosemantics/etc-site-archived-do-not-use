@@ -75,9 +75,14 @@ public class DirectoryDownload {
 			boolean permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);		
 			if(permissionResult) {			
 				File file = new File(filePath);
+				
+				String fileName = file.getName();
+				if(file.equals(new File(Configuration.fileBase + File.separator + authenticationToken.getUserId())))
+					fileName = "Owned";
+					
 				if(file.exists()) {
 					zipSource = gatherFiles(file, 
-							Configuration.compressedFileBase + File.separator + authenticationToken.getUserId() + File.separator + file.getName());					
+							Configuration.compressedFileBase + File.separator + authenticationToken.getUserId() + File.separator + fileName);					
 				} else {
 					this.error = "File was not found";
 					return false;
@@ -115,7 +120,7 @@ public class DirectoryDownload {
 		File destinationFile = new File(destination);
 		fileService.deleteFile(authenticationToken, destination);
 		fileService.createDirectory(authenticationToken, destinationFile.getParent(), destinationFile.getName(), false);				
-		fileService.copyFiles(new AdminAuthenticationToken(), file.getAbsolutePath(), destination);
+		fileService.copyFiles(authenticationToken, file.getAbsolutePath(), destination);
 		return destination;
 	}
 	

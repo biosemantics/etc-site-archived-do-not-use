@@ -97,7 +97,9 @@ public class FilePermissionService extends RemoteServiceServlet implements IFile
 		if(filePath.equals("Owned") || filePath.equals("Root"))
 			return true;
 		String ownedFilesDirectory = Configuration.fileBase + File.separator + userId;
-		return containedInPath(ownedFilesDirectory, filePath);
+		String compressedOwnedFilesDirectory = Configuration.compressedFileBase + File.separator + userId;
+		boolean result = containedInPath(ownedFilesDirectory, filePath) || containedInPath(compressedOwnedFilesDirectory, filePath);
+		return result;
 	}
 
 }

@@ -100,7 +100,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			for(String output : outputs) {
 				File child = new File(output);
 				if(child.exists()) {
-					Boolean permissionResult = filePermissionService.hasReadPermission(authenticationToken, output);
+					boolean permissionResult = filePermissionService.hasReadPermission(authenticationToken, output);
 					if(!permissionResult)
 						throw new PermissionDeniedException();
 					else {
@@ -226,11 +226,11 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	@Override
 	public void deleteFile(AuthenticationToken authenticationToken, String filePath) throws PermissionDeniedException, 
 			FileDeleteFailedException {
-		Boolean permissionResult = filePermissionService.hasWritePermission(authenticationToken, filePath);
+		boolean permissionResult = filePermissionService.hasWritePermission(authenticationToken, filePath);
 		if(!permissionResult)
 			throw new PermissionDeniedException();
 		else {
-			Boolean inUseResult = this.isInUse(authenticationToken, filePath);
+			boolean inUseResult = this.isInUse(authenticationToken, filePath);
 			if(!inUseResult) {
 				File file = new File(filePath);
 				boolean resultDelete = deleteRecursively(authenticationToken, file);
@@ -255,25 +255,29 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		boolean result = false;
 		
 		String filePath = file.getAbsolutePath();
-		Boolean permissionResult = filePermissionService.hasWritePermission(authenticationToken, filePath);
+		boolean permissionResult = filePermissionService.hasWritePermission(authenticationToken, filePath);
 		if(!permissionResult)
 			throw new PermissionDeniedException();
 		else {
-			if (file.isDirectory()) {
-				if (file.list().length == 0) {
-					result = file.delete();
-				} else {
-					String files[] = file.list();
-					for (String child : files) {
-						File fileDelete = new File(file, child);
-						result |= deleteRecursively(authenticationToken, fileDelete);
-					}
+			if(file.exists()) {
+				if (file.isDirectory()) {
 					if (file.list().length == 0) {
-						result |= file.delete();
+						result = file.delete();
+					} else {
+						String files[] = file.list();
+						for (String child : files) {
+							File fileDelete = new File(file, child);
+							result |= deleteRecursively(authenticationToken, fileDelete);
+						}
+						if (file.list().length == 0) {
+							result |= file.delete();
+						}
 					}
+				} else {
+					result = file.delete();
 				}
 			} else {
-				result = file.delete();
+				return true;
 			}
 		}
 		return result;
@@ -294,7 +298,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		File dir = new File(filePath);
 		dir.mkdirs();
 		
-		Boolean permissionResult = filePermissionService.hasWritePermission(authenticationToken, filePath);
+		boolean permissionResult = filePermissionService.hasWritePermission(authenticationToken, filePath);
 		if(!permissionResult)
 			throw new PermissionDeniedException();
 		else {
@@ -408,7 +412,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 
 	@Override
 	public Integer getDepth(AuthenticationToken authenticationToken, String filePath) throws PermissionDeniedException {
-		Boolean permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
+		boolean permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
 		if(!permissionResult)
 			throw new PermissionDeniedException();
 		else {

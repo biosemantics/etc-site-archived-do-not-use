@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
               http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-         version="2.5"
-         xmlns="http://java.sun.com/xml/ns/javaee">
+	version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
 	<display-name>etcsite</display-name>
 
 	<!-- Servlets -->
@@ -51,15 +50,15 @@
 		<servlet-name>pipelineServlet</servlet-name>
 		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.pipeline.PipelineService</servlet-class>
 	</servlet>
-		<servlet>
+	<servlet>
 		<servlet-name>visualizationServlet</servlet-name>
 		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.visualization.VisualizationService</servlet-class>
 	</servlet>
-		<servlet>
+	<servlet>
 		<servlet-name>taxonomyComparisonServlet</servlet-name>
 		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison.TaxonomyComparisonService</servlet-class>
 	</servlet>
-		<servlet>
+	<servlet>
 		<servlet-name>treeGenerationServlet</servlet-name>
 		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.treegeneration.TreeGenerationService</servlet-class>
 	</servlet>
@@ -68,26 +67,9 @@
 		<servlet-class>edu.arizona.biosemantics.etcsite.server.KaptchaServlet</servlet-class>
 		<!-- <servlet-class>com.google.code.kaptcha.servlet.KaptchaServlet</servlet-class> -->
 	</servlet>
-	<servlet>
-	<servlet-name>contextServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.oto2.oto.server.rpc.ContextService</servlet-class>
-	</servlet>
-	<servlet-mapping>
-	<servlet-name>contextServlet</servlet-name>
-		<url-pattern>/etcsite/context</url-pattern>
-	</servlet-mapping>
-		<servlet>
-		<servlet-name>ontologyServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.oto2.oto.server.rpc.OntologyService</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ontologyServlet</servlet-name>
-		<url-pattern>/etcsite/ontology</url-pattern>
-	</servlet-mapping>
-	
 
-	<!-- http://www.gwtproject.org/doc/latest/DevGuideServerCommunication.html#DevGuideImplementingServices
-	       -> Common pitfalls: for url-pattern help -->
+	<!-- http://www.gwtproject.org/doc/latest/DevGuideServerCommunication.html#DevGuideImplementingServices 
+		-> Common pitfalls: for url-pattern help -->
 	<servlet-mapping>
 		<servlet-name>authenticationServlet</servlet-name>
 		<url-pattern>/etcsite/auth</url-pattern>
@@ -127,7 +109,7 @@
 	<servlet-mapping>
 		<servlet-name>setupServlet</servlet-name>
 		<url-pattern>/etcsite/setup</url-pattern>
-	</servlet-mapping> 
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>visualizationServlet</servlet-name>
 		<url-pattern>/etcsite/visualization</url-pattern>
@@ -149,10 +131,33 @@
 		<servlet-name>collectionServlet</servlet-name>
 		<servlet-class>edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>collectionServlet</servlet-name>
 		<url-pattern>/etcsite/collection</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>communityServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.oto2.oto.server.rpc.CommunityService</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>communityServlet</servlet-name>
+		<url-pattern>/etcsite/community</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>contextServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.oto2.oto.server.rpc.ContextService</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>contextServlet</servlet-name>
+		<url-pattern>/etcsite/context</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>ontologyServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.oto2.oto.server.rpc.OntologyService</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ontologyServlet</servlet-name>
+		<url-pattern>/etcsite/ontology</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
@@ -191,9 +196,9 @@
 		<param-value>31457280</param-value>
 	</context-param>
 	<context-param>
-		<!-- Useful in development mode to slow down the uploads in fast networks.
-	         Put the number of milliseconds to sleep in each block received in the server.
-	         false or 0, means don't use slow uploads  -->
+		<!-- Useful in development mode to slow down the uploads in fast networks. 
+			Put the number of milliseconds to sleep in each block received in the server. 
+			false or 0, means don't use slow uploads -->
 		<param-name>slowUploads</param-name>
 		<param-value>200</param-value>
 	</context-param>
@@ -220,7 +225,7 @@
 
 	<listener>
 		<listener-class>
-  		edu.arizona.biosemantics.etcsite.server.ETCSiteServletContextListener
+			edu.arizona.biosemantics.etcsite.server.ETCSiteServletContextListener
 		</listener-class>
 	</listener>
 	<listener>
@@ -233,59 +238,23 @@
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
-	
-	
-	
-	<!-- oto lite
-	<servlet>
-		<servlet-name>GeneralServiceIml</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.otolite.server.rpc.GeneralServiceIml</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>GeneralServiceIml</servlet-name>
-		<url-pattern>/etcsite/general</url-pattern>
-	</servlet-mapping>
 
 
-	<servlet>
-		<servlet-name>TermInfoServiceIml</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.otolite.server.rpc.TermInfoServiceIml</servlet-class>
-	</servlet>
 
-	<servlet-mapping>
-		<servlet-name>TermInfoServiceIml</servlet-name>
-		<url-pattern>/etcsite/termInfo</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>ToOntologiesServiceImpl</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.otolite.server.rpc.ToOntologiesServiceImpl</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>ToOntologiesServiceImpl</servlet-name>
-		<url-pattern>/etcsite/toOntologies</url-pattern>
-	</servlet-mapping>
-	
-	<servlet>
-		<servlet-name>HierarchyServiceImpl</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.otolite.server.rpc.HierarchyServiceImpl</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>HierarchyServiceImpl</servlet-name>
-		<url-pattern>/etcsite/hierarchy</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>OrderServiceImpl</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.otolite.server.rpc.OrderServiceImpl</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>OrderServiceImpl</servlet-name>
-		<url-pattern>/etcsite/orders</url-pattern>
-	</servlet-mapping> -->
+	<!-- oto lite <servlet> <servlet-name>GeneralServiceIml</servlet-name> <servlet-class>edu.arizona.biosemantics.otolite.server.rpc.GeneralServiceIml</servlet-class> 
+		</servlet> <servlet-mapping> <servlet-name>GeneralServiceIml</servlet-name> 
+		<url-pattern>/etcsite/general</url-pattern> </servlet-mapping> <servlet> 
+		<servlet-name>TermInfoServiceIml</servlet-name> <servlet-class>edu.arizona.biosemantics.otolite.server.rpc.TermInfoServiceIml</servlet-class> 
+		</servlet> <servlet-mapping> <servlet-name>TermInfoServiceIml</servlet-name> 
+		<url-pattern>/etcsite/termInfo</url-pattern> </servlet-mapping> <servlet> 
+		<servlet-name>ToOntologiesServiceImpl</servlet-name> <servlet-class>edu.arizona.biosemantics.otolite.server.rpc.ToOntologiesServiceImpl</servlet-class> 
+		</servlet> <servlet-mapping> <servlet-name>ToOntologiesServiceImpl</servlet-name> 
+		<url-pattern>/etcsite/toOntologies</url-pattern> </servlet-mapping> <servlet> 
+		<servlet-name>HierarchyServiceImpl</servlet-name> <servlet-class>edu.arizona.biosemantics.otolite.server.rpc.HierarchyServiceImpl</servlet-class> 
+		</servlet> <servlet-mapping> <servlet-name>HierarchyServiceImpl</servlet-name> 
+		<url-pattern>/etcsite/hierarchy</url-pattern> </servlet-mapping> <servlet> 
+		<servlet-name>OrderServiceImpl</servlet-name> <servlet-class>edu.arizona.biosemantics.otolite.server.rpc.OrderServiceImpl</servlet-class> 
+		</servlet> <servlet-mapping> <servlet-name>OrderServiceImpl</servlet-name> 
+		<url-pattern>/etcsite/orders</url-pattern> </servlet-mapping> -->
 
 </web-app>

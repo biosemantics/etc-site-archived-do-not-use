@@ -39,8 +39,8 @@ public class Authentication {
 		AuthenticationResult authenticationResult = authenticationService.isValidSession(authenticationToken);
 		if(authenticationResult.getResult()) {
 			if(!isGetResumableTasksCall(proceedingJoinPoint)) {
-			log(LogLevel.INFO, "User " + authenticationResult.getUser().getFullNameEmailAffiliation() + " calls: " + 
-					proceedingJoinPoint.getSignature().toShortString() + " with arguments " + getArgsString(proceedingJoinPoint.getArgs()));
+				log(LogLevel.INFO, "User " + authenticationResult.getUser().getFullNameEmailAffiliation() + " calls: " + 
+						proceedingJoinPoint.getSignature().toShortString() + " with arguments " + getArgsString(proceedingJoinPoint.getArgs()));
 			}
 			return actualResult(proceedingJoinPoint);
 		} else {
@@ -54,7 +54,7 @@ public class Authentication {
 	private boolean isGetResumableTasksCall(ProceedingJoinPoint proceedingJoinPoint) {
 		boolean result = true;
 		result &= proceedingJoinPoint.getSignature().getDeclaringType().equals(TaskService.class);
-		result &= proceedingJoinPoint.getSignature().getName().startsWith("getResumableTasks");
+		result &= proceedingJoinPoint.getSignature().getName().startsWith("getResumableOrFailedTasks");
 		return result;
 	}
 

@@ -55,15 +55,17 @@ public class XMLValidator implements IContentValidator {
 			try {
 				schema = factory.newSchema(schemaSource);
 			} catch (SAXException e) {
-				log(LogLevel.ERROR, "Couldn't output xml document", e);
+				log(LogLevel.ERROR, "Couldn't create schema", e);
 			}
 			if(schema != null) {
 				Validator validator = schema.newValidator();	
 				try(ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(input.getBytes("UTF-8"))) {
 					try {
 						validator.validate(new StreamSource(byteArrayInputStream));
-					} catch (SAXException | IOException e) {
+					} catch (IOException e) {
 						log(LogLevel.ERROR, "Couldn't validate xml document", e);
+					} catch(SAXException e) {
+						return false;
 					}
 					return true;
 				} catch (UnsupportedEncodingException e) {
