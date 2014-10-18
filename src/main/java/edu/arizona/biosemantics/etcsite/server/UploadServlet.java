@@ -4,7 +4,7 @@ import edu.arizona.biosemantics.etcsite.server.process.file.ContentValidatorProv
 import edu.arizona.biosemantics.etcsite.server.process.file.IContentValidator;
 import edu.arizona.biosemantics.etcsite.server.process.file.XmlNamespaceManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.auth.AuthenticationService;
-import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
+import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;

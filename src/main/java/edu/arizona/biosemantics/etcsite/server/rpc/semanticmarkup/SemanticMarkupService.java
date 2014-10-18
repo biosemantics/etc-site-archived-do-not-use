@@ -42,7 +42,9 @@ import edu.arizona.biosemantics.etcsite.server.rpc.file.format.FileFormatService
 import edu.arizona.biosemantics.etcsite.server.rpc.file.permission.FilePermissionService;
 import edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration.MatrixGeneration;
 import edu.arizona.biosemantics.etcsite.server.rpc.user.UserService;
-import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
+import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.common.taxonomy.Rank;
+import edu.arizona.biosemantics.common.taxonomy.RankData;
 import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.Glossary;
 import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationConfiguration;
@@ -76,8 +78,6 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarku
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkupException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserNotFoundException;
-import edu.arizona.biosemantics.matrixgeneration.model.RankData;
-import edu.arizona.biosemantics.matrixgeneration.model.Taxon.Rank;
 import edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Collection;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Context;
@@ -726,7 +726,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			String description = getDescription(authenticationToken, input + File.separator + file);
 			if(description != null) {
 				try {
-					contexts.add(new Context(learnResult.getOtoUploadId(), getTaxonName(authenticationToken, input + File.separator + file), description));
+					contexts.add(new Context(learnResult.getOtoUploadId(), getTaxonIdentification(authenticationToken, input + File.separator + file), description));
 				} catch (PermissionDeniedException | GetFileContentFailedException e) {
 					throw new SemanticMarkupException(task);
 				}
@@ -765,7 +765,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	}
 	
 	
-	private String getTaxonName(AuthenticationToken authenticationToken, String filePath) throws PermissionDeniedException, GetFileContentFailedException {
+	private String getTaxonIdentification(AuthenticationToken authenticationToken, String filePath) throws PermissionDeniedException, GetFileContentFailedException {
 		String fileContent = fileAccessService.getFileContent(authenticationToken, filePath);
 		SAXBuilder sax = new SAXBuilder();
 		try(StringReader reader = new StringReader(fileContent)) {
@@ -781,14 +781,14 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 					Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
 
 			if(doc != null) {
-				List<Element> taxonNames = xp.evaluate(doc);
-				return createTaxonName(taxonNames);
+				List<Element> taxonIdentification = xp.evaluate(doc);
+				return createTaxonIdentification(taxonIdentification);
 			}
 		}
 		return null;
 	}
 	
-	private String createTaxonName(List<Element> taxonNames) {
+	private String createTaxonIdentification(List<Element> taxonIdentifications) {
 		//StringBuilder taxonNameBuilder = new StringBuilder();
 		
 		//the whole set of classes dealing with taxonomy building from plain text
@@ -796,12 +796,12 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		//between matrix-generation, matrix-review, etc-site (for oto2)
 		LinkedList<RankData> rankDatas = new LinkedList<RankData>();
 		Map<Rank, RankData> rankDataMap = new HashMap<Rank, RankData>();
-		for(Element taxonName : taxonNames) {
+		for(Element taxonIdentification : taxonIdentifications) {
 			String author = ""; //not used for oto2
 			String data = ""; //not used for oto2
-			Rank rank = Rank.valueOf(taxonName.getAttributeValue("rank").toUpperCase());
-			String name = taxonName.getValue();
-			RankData rankData = new RankData("", "", rank, name);
+			Rank rank = Rank.valueOf(taxonIdentification.getAttributeValue("rank").toUpperCase());
+			String name = taxonIdentification.getValue();
+			RankData rankData = new RankData(rank, name, "", "");
 			rankDatas.add(rankData);
 			rankDataMap.put(rank, rankData);
 			//taxonNameBuilder.append(taxonName.getAttributeValue("rank") + "=" + taxonName.getValue() + ",");

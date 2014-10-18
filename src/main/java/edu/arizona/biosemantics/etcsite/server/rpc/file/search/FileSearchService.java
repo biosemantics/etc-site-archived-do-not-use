@@ -34,7 +34,7 @@ import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.process.file.XMLFileFormatter;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.FileService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.access.FileAccessService;
-import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
+import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.file.search.ElementAttributeValuesSearch;
 import edu.arizona.biosemantics.etcsite.shared.model.file.search.ElementValuesSearch;
 import edu.arizona.biosemantics.etcsite.shared.model.file.search.ElementsSearch;

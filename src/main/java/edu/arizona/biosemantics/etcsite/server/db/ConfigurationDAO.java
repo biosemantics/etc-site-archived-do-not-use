@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import edu.arizona.biosemantics.etcsite.server.db.Query.QueryException;
-import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
+import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.Configuration;
 
 public class ConfigurationDAO {

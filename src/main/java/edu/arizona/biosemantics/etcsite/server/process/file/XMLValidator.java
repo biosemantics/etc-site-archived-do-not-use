@@ -16,7 +16,7 @@ import javax.xml.validation.Validator;
 
 import org.xml.sax.SAXException;
 
-import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
+import edu.arizona.biosemantics.common.log.LogLevel;
 
 public class XMLValidator implements IContentValidator {
 

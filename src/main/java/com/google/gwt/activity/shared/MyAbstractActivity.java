@@ -12,7 +12,7 @@ import edu.arizona.biosemantics.etcsite.client.common.ILoginView.ILoginListener;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView.IRegisterListener;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView.IResetPasswordListener;
 import edu.arizona.biosemantics.etcsite.client.top.LoggedInPlace;
-import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
+import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 

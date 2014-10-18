@@ -11,7 +11,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 import edu.arizona.biosemantics.etcsite.server.db.ConnectionPool;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.db.Query;
-import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
+import edu.arizona.biosemantics.common.log.LogLevel;
 
 public class ETCSiteServletContextListener implements ServletContextListener {
 

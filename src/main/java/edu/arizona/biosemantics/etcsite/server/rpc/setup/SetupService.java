@@ -5,7 +5,7 @@ import java.io.File;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
-import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
+import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.Setup;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.setup.ISetupService;
 

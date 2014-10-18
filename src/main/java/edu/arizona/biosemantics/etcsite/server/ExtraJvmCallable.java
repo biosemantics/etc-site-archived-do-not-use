@@ -8,7 +8,7 @@ import java.util.concurrent.Callable;
 
 import org.apache.tools.ant.util.JavaEnvUtils;
 
-import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
+import edu.arizona.biosemantics.common.log.LogLevel;
 
 public abstract class ExtraJvmCallable<T> implements Callable<T>, Task {
 	

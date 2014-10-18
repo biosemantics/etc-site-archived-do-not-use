@@ -50,7 +50,10 @@ import edu.arizona.biosemantics.etcsite.server.rpc.file.access.FileAccessService
 import edu.arizona.biosemantics.etcsite.server.rpc.file.format.FileFormatService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.permission.FilePermissionService;
 import edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup.ParseResult;
-import edu.arizona.biosemantics.etcsite.shared.log.LogLevel;
+import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.common.taxonomy.Rank;
+import edu.arizona.biosemantics.common.taxonomy.RankData;
+import edu.arizona.biosemantics.common.taxonomy.TaxonIdentification;
 import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
@@ -72,121 +75,17 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDen
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkupException;
+import edu.arizona.biosemantics.matrixgeneration.model.raw.ColumnHead;
+import edu.arizona.biosemantics.matrixgeneration.model.raw.RawMatrix;
+import edu.arizona.biosemantics.matrixgeneration.model.raw.RowHead;
 import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.Character;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.Organ;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.Taxon;
-import edu.arizona.biosemantics.matrixreview.shared.model.core.Taxon.Rank;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.TaxonMatrix;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.Value;
 
 public class MatrixGenerationService extends RemoteServiceServlet implements IMatrixGenerationService  {
-
-	private static class RankData {
-		
-		private RankData parent;
-		private Rank rank;
-		private String value;
-		private String authority;
-		private String date;
-		
-		public RankData(RankData parent, Rank rank, String value, String authority, String date) {
-			super();
-			this.parent = parent;
-			this.rank = rank;
-			this.value = value;
-			this.authority = authority;
-			this.date = date;
-		}
-		public RankData getParent() {
-			return parent;
-		}
-		public Rank getRank() {
-			return rank;
-		}
-		public String getValue() {
-			return value;
-		}
-		public String getAuthority() {
-			return authority;
-		}
-		public String getDate() {
-			return date;
-		}		
-		public String toString() {
-			return rank + "=" + value;// + "," + authority + "," + date;
-		}
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result
-					+ ((authority == null) ? 0 : authority.hashCode());
-			result = prime * result + ((date == null) ? 0 : date.hashCode());
-			result = prime * result
-					+ ((parent == null) ? 0 : parent.hashCode());
-			result = prime * result + ((rank == null) ? 0 : rank.hashCode());
-			result = prime * result + ((value == null) ? 0 : value.hashCode());
-			return result;
-		}
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			RankData other = (RankData) obj;
-			if (authority == null) {
-				if (other.authority != null)
-					return false;
-			} else if (!authority.equals(other.authority))
-				return false;
-			if (date == null) {
-				if (other.date != null)
-					return false;
-			} else if (!date.equals(other.date))
-				return false;
-			if (parent == null) {
-				if (other.parent != null)
-					return false;
-			} else if (!parent.equals(other.parent))
-				return false;
-			if (rank != other.rank)
-				return false;
-			if (value == null) {
-				if (other.value != null)
-					return false;
-			} else if (!value.equals(other.value))
-				return false;
-			return true;
-		}
-	}
-	
-	private class TaxonName {
-		private LinkedList<RankData> rankData;
-		private String author;
-		private String date;		
-		public TaxonName(LinkedList<RankData> rankData, String author, String date) {
-			super();
-			this.rankData = rankData;
-			this.author = author;
-			this.date = date;
-		}
-		public LinkedList<RankData> getRankData() {
-			return rankData;
-		}
-		public String getAuthor() {
-			return author;
-		}
-		public String getDate() {
-			return date;
-		}
-		public String toString() {
-			return rankData.toString() + ":" + author + "," + date;
-		}
-	}
 	
 	private IFileService fileService = new FileService();
 	private IFileFormatService fileFormatService = new FileFormatService();
@@ -337,7 +236,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		TaxonMatrix matrix = null;
 		try {
 			matrix = createTaxonMatrix(config, outputFile);
-		} catch (IOException | JDOMException e) {
+		} catch (IOException | JDOMException | ClassNotFoundException e) {
 			log(LogLevel.ERROR, "Couldn't create taxon matrix from generated output", e);
 			throw new MatrixGenerationException(task);
 		}
@@ -621,22 +520,23 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		emailer.sendEmail(email, subject, body);
 	}
 
-	private TaxonMatrix createTaxonMatrix(String inputDirectory, String filePath) throws FileNotFoundException, IOException, JDOMException {
+	private TaxonMatrix createTaxonMatrix(String inputDirectory, String filePath) throws ClassNotFoundException, IOException, JDOMException {
+		List<Organ> hierarhicalCharacters = new LinkedList<Organ>();
+		List<Taxon> hierarchyTaxa = new LinkedList<Taxon>();
 		
-		try(CSVReader reader = new CSVReader(new FileReader(filePath), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.DEFAULT_QUOTE_CHARACTER)) {
-			List<Character> charactesInFile = new LinkedList<Character>();
-			String[] head = reader.readNext();
-			
-			HashMap<String, Organ> organMap = new HashMap<String, Organ>();
-			List<Organ> hierarhicalCharacters = new LinkedList<Organ>();
-			for(int i=2; i<head.length; i++) {
-				String character = head[i];
+	    try(ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(filePath))) {
+	    	RawMatrix rawMatrix = (RawMatrix)objectInputStream.readObject();
+	    	
+	    	List<Character> charactersInMatrix = new LinkedList<Character>();
+	    	HashMap<String, Organ> organMap = new HashMap<String, Organ>();
+	    	for(ColumnHead columnHead : rawMatrix.getColumnHeads()) {
+	    		String character = columnHead.getValue();
 				int ofIndex = character.lastIndexOf(" of ");
 				
 				String organ = "";
 				if(character.contains(" of ")) {
 					organ = character.substring(ofIndex + 4);
-				} 
+				}
 				
 				Organ o;
 				if(!organMap.containsKey(organ)) {
@@ -649,30 +549,25 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 
 				character = character.substring(0, ofIndex);
 				Character c = new Character(character, o, o.getFlatCharacters().size());
-				charactesInFile.add(c);
-			}			
-						
-		    List<TaxonName> taxonNames = new LinkedList<TaxonName>();
-		    Map<RankData, Taxon> rankTaxaMap = new HashMap<RankData, Taxon>();
-		    Map<RankData, RankData> rankDataInstances = new HashMap<RankData, RankData>();
-		    List<String[]> allLines = reader.readAll();
-		    //init all taxa
-		    for(int i=0; i<allLines.size(); i++) {
-		    	String[] line = allLines.get(i);
-		    	String sourceFile = line[1];
-		    	String name = line[0];
-		    	TaxonName taxonName = createTaxonName(name, rankDataInstances);
-		    	taxonNames.add(taxonName);
-		    	
-		    	String description = getMorphologyDescription(new File(inputDirectory, sourceFile));
-		    	Taxon taxon = createPlainTaxon(taxonName, description);
-		    	rankTaxaMap.put(taxonName.getRankData().getLast(), taxon);
-		    }
-		    
-		    //assign parents or root
-		    List<Taxon> hierarchyTaxa = new LinkedList<Taxon>();
-		    for(TaxonName taxonName : taxonNames) {
-		    	LinkedList<RankData> rankData = taxonName.getRankData();
+				charactersInMatrix.add(c);
+	    	}
+
+	    	List<TaxonIdentification> taxonIdentifications = new LinkedList<TaxonIdentification>();
+	    	Map<RankData, Taxon> rankTaxaMap = new HashMap<RankData, Taxon>();
+	    	Map<Taxon, RowHead> taxonRowHeadMap = new HashMap<Taxon, RowHead>();
+	    	for(RowHead rowHead : rawMatrix.getRowHeads()) {
+	    		 TaxonIdentification taxonIdentification = 
+	    				 rowHead.getSource().getTaxonIdentification();
+	    		 taxonIdentifications.add(taxonIdentification);
+	    		 String sourceFile = rawMatrix.getCellValues().get(rowHead).get(1).getValue();
+	    		 String description = getMorphologyDescription(new File(inputDirectory, sourceFile));
+	    		 Taxon taxon = createPlainTaxon(taxonIdentification, description);
+	    		 rankTaxaMap.put(taxonIdentification.getRankData().getLast(), taxon);
+	    		 taxonRowHeadMap.put(taxon, rowHead);
+	    	 }
+	    	
+	    	for(TaxonIdentification taxonIdentification : taxonIdentifications) {
+		    	LinkedList<RankData> rankData = taxonIdentification.getRankData();
 		    	Taxon taxon = rankTaxaMap.get(rankData.getLast());
 		    	if(rankData.size() == 1) 
 		    		hierarchyTaxa.add(taxon);
@@ -690,23 +585,23 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			    		parentTaxon.addChild(taxon);
 			    }
 		    }
+	    	
 		    TaxonMatrix taxonMatrix = new TaxonMatrix(hierarhicalCharacters, hierarchyTaxa);
 		    
 		    //set values
-		    for(int i=0; i<allLines.size(); i++) {
-		    	String[] line = allLines.get(i);
-			    for(int j=2; j<line.length; j++) {
-			    	Taxon taxon = rankTaxaMap.get(taxonNames.get(i).getRankData().getLast());
-			    	Character character = charactesInFile.get(j-2);
-		    		taxonMatrix.setValue(taxon, character, new Value(line[j]));
+		    for(Taxon taxon : taxonMatrix.getFlatTaxa()) {
+		    	RowHead rowHead = taxonRowHeadMap.get(taxon);
+		    	for(int j=0; j<charactersInMatrix.size(); j++) {
+		    		Character character = charactersInMatrix.get(j);
+		    		String value = rawMatrix.getCellValues().get(rowHead).get(j + 2).getValue();
+		    		taxonMatrix.setValue(taxon, character, new Value(value));
 		    	}
-		    }
-		    
-		    return taxonMatrix; 
-		}
+		    }  
+			return taxonMatrix;
+	    }
 	}
 	
-	private TaxonMatrix createTaxonMatrix(MatrixGenerationConfiguration config, String filePath) throws FileNotFoundException, IOException, JDOMException {
+	private TaxonMatrix createTaxonMatrix(MatrixGenerationConfiguration config, String filePath) throws FileNotFoundException, IOException, JDOMException, ClassNotFoundException {
 		String inputDirectory = config.getInput();
 		return createTaxonMatrix(inputDirectory, filePath);
 	}
@@ -730,7 +625,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		return result.toString();
 	}
 
-	private TaxonName createTaxonName(String name, Map<RankData, RankData> rankDataInstances) {
+	private TaxonIdentification createTaxonIdentification(String name, Map<RankData, RankData> rankDataInstances) {
 		String[] ranksAuthorParts = name.split(":");
     	String[] authorParts = ranksAuthorParts[1].split(",");
     	String author = authorParts[0];
@@ -740,12 +635,12 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
     	LinkedList<RankData> rankData = new LinkedList<RankData>();
     	
     	RankData parent = null;
-    	for(String rank : ranks) {
-    		String[] rankParts = rank.split(",");
+    	for(String rankString : ranks) {
+    		String[] rankParts = rankString.split(",");
     		String authority = "";
     		String rankDate = "";
     		String value = "";
-    		Rank level = Rank.UNRANKED;
+    		Rank rank = Rank.UNRANKED;
     		for(String rankPart : rankParts) {
         		String[] rankPartValues = rankPart.split("=");
         		if(rankPartValues[0].equals("authority")) {
@@ -757,13 +652,13 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
         			continue;
         		}
         		try {
-        			level = Rank.valueOf(rankPartValues[0].toUpperCase());
+        			rank = Rank.valueOf(rankPartValues[0].toUpperCase());
         			value = rankPartValues[1];
         		} catch(Exception e) {
         		}
         	}
     		
-    		RankData rankDataInstance = new RankData(parent, level, value, authority, date);
+    		RankData rankDataInstance = new RankData(rank, value, parent, authority, date);
 			if(!rankDataInstances.containsKey(rankDataInstance))
 				rankDataInstances.put(rankDataInstance, rankDataInstance);
 			rankDataInstance = rankDataInstances.get(rankDataInstance);
@@ -771,14 +666,14 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
     		parent = rankDataInstance;
     	}
     			
-		TaxonName result = new TaxonName(rankData, author.split("=")[1], date.split("=")[1]);
+		TaxonIdentification result = new TaxonIdentification(rankData, author.split("=")[1], date.split("=")[1]);
 		return result;
 	}
 
 	//TODO: Integrate rank authority and date
-	private Taxon createPlainTaxon(TaxonName taxonName, String description) {
+	private Taxon createPlainTaxon(TaxonIdentification taxonName, String description) {
 		RankData lowestRank = taxonName.getRankData().getLast();
-		return new Taxon(lowestRank.getRank(), lowestRank.getValue(), taxonName.getAuthor(), taxonName.getDate(), description);
+		return new Taxon(lowestRank.getRank(), lowestRank.getName(), taxonName.getAuthor(), taxonName.getDate(), description);
 	}
 
 	private String getCSVMatrix(TaxonMatrix matrix) throws IOException {
