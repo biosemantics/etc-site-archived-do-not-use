@@ -83,13 +83,13 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.18-SNAPSHOT</version>
+		  <version>0.0.19-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.18-SNAPSHOT</version>
+		  <version>0.0.19-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
@@ -203,19 +203,19 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.61-SNAPSHOT</version>
+		  <version>0.0.62-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.61-SNAPSHOT</version>
+		  <version>0.0.62-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.matrixgeneration</groupId>
 			<artifactId>matrix-generation</artifactId>
-			<version>0.1.13-SNAPSHOT</version>
+			<version>0.1.15-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.oto</groupId>
@@ -291,12 +291,24 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>log</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>edu.arizona.biosemantics.common</groupId>
+			<artifactId>log</artifactId>
+			<version>0.0.3-SNAPSHOT</version>
+			<classifier>sources</classifier>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>taxonomy</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>0.0.11-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>edu.arizona.biosemantics.common</groupId>
+			<artifactId>taxonomy</artifactId>
+			<version>0.0.11-SNAPSHOT</version>
+			<classifier>sources</classifier>
 		</dependency>
 	</dependencies>
 

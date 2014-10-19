@@ -51,7 +51,7 @@ public class MatrixGenerationProcessPresenter implements IMatrixGenerationProces
 			@Override
 			public void onFailedTasksEvent(FailedTasksEvent failedTasksEvent) {
 				if(task != null && failedTasksEvent.getTasks().containsKey(task.getId())) {
-					MessageBox alert = Alerter.failedToLearn(null);
+					MessageBox alert = Alerter.failedToGenerateMatrix(null);
 					alert.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
 						@Override
 						public void onSelect(SelectEvent event) {

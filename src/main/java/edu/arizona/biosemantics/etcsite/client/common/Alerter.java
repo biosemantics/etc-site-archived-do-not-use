@@ -242,7 +242,7 @@ public class Alerter {
 		return showAlert("Save Matrix", "Failed to save matrix", caught);
 	}
 
-	public static MessageBox failedToProcess(Throwable caught) {
+	public static MessageBox failedToGenerateMatrix(Throwable caught) {
 		return showAlert("Matrix Generation", "Failed to generate matrix", caught);
 	}
 
@@ -413,5 +413,7 @@ public class Alerter {
 		 confirm.show();
          return confirm;
 	}
+
+
 
 }

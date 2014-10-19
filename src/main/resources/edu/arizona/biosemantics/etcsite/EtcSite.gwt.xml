@@ -29,6 +29,8 @@
   
   <!-- Matrix Review Module -->
   <inherits name='edu.arizona.biosemantics.matrixreview.Matrix_review'/>
+  <inherits name='edu.arizona.biosemantics.common.log.Log'/>
+  <inherits name='edu.arizona.biosemantics.common.taxonomy.Taxonomy'/>
   
   <!-- Include GWTUpload library -->
   <inherits name="gwtupload.GWTUpload"/>

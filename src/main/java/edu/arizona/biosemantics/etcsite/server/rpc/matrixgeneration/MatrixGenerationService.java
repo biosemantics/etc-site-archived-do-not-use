@@ -192,6 +192,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			boolean generateAbsentPresent = config.isGenerateAbsentPresent();
 			
 			final MatrixGeneration matrixGeneration = new ExtraJvmMatrixGeneration(input, outputFile, inheritValues, generateAbsentPresent);
+			//final MatrixGeneration matrixGeneration = new InJvmMatrixGeneration(input, outputFile, inheritValues, generateAbsentPresent);
 			activeProcess.put(config.getConfiguration().getId(), matrixGeneration);
 			final ListenableFuture<Void> futureResult = executorService.submit(matrixGeneration);
 			this.activeProcessFutures.put(config.getConfiguration().getId(), futureResult);
@@ -526,10 +527,12 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		
 	    try(ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(filePath))) {
 	    	RawMatrix rawMatrix = (RawMatrix)objectInputStream.readObject();
-	    	
 	    	List<Character> charactersInMatrix = new LinkedList<Character>();
 	    	HashMap<String, Organ> organMap = new HashMap<String, Organ>();
-	    	for(ColumnHead columnHead : rawMatrix.getColumnHeads()) {
+	    	List<ColumnHead> columnHeads = rawMatrix.getColumnHeads();
+	    	for(int i=1; i<columnHeads.size(); i++) {
+	    		ColumnHead columnHead = columnHeads.get(i);
+	    		
 	    		String character = columnHead.getValue();
 				int ofIndex = character.lastIndexOf(" of ");
 				
@@ -547,11 +550,12 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 					o = organMap.get(organ);
 				}
 
-				character = character.substring(0, ofIndex);
+				if(character.contains(" of "))
+					character = character.substring(0, ofIndex);
 				Character c = new Character(character, o, o.getFlatCharacters().size());
 				charactersInMatrix.add(c);
 	    	}
-
+	    	
 	    	List<TaxonIdentification> taxonIdentifications = new LinkedList<TaxonIdentification>();
 	    	Map<RankData, Taxon> rankTaxaMap = new HashMap<RankData, Taxon>();
 	    	Map<Taxon, RowHead> taxonRowHeadMap = new HashMap<Taxon, RowHead>();
@@ -559,7 +563,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	    		 TaxonIdentification taxonIdentification = 
 	    				 rowHead.getSource().getTaxonIdentification();
 	    		 taxonIdentifications.add(taxonIdentification);
-	    		 String sourceFile = rawMatrix.getCellValues().get(rowHead).get(1).getValue();
+	    		 String sourceFile = rawMatrix.getCellValues().get(rowHead).get(0).getValue();
 	    		 String description = getMorphologyDescription(new File(inputDirectory, sourceFile));
 	    		 Taxon taxon = createPlainTaxon(taxonIdentification, description);
 	    		 rankTaxaMap.put(taxonIdentification.getRankData().getLast(), taxon);
@@ -593,7 +597,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		    	RowHead rowHead = taxonRowHeadMap.get(taxon);
 		    	for(int j=0; j<charactersInMatrix.size(); j++) {
 		    		Character character = charactersInMatrix.get(j);
-		    		String value = rawMatrix.getCellValues().get(rowHead).get(j + 2).getValue();
+		    		String value = rawMatrix.getCellValues().get(rowHead).get(j + 1).getValue();
 		    		taxonMatrix.setValue(taxon, character, new Value(value));
 		    	}
 		    }  
