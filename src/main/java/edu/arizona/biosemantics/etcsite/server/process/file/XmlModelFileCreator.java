@@ -3,6 +3,8 @@ package edu.arizona.biosemantics.etcsite.server.process.file;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,6 +21,7 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.common.taxonomy.Rank;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.file.TaxonIdentificationEntry;
 import edu.arizona.biosemantics.etcsite.shared.model.file.XmlModelFile;
@@ -47,6 +50,8 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 	
 	public XmlModelFileCreator() {
 		this.allLabels.addAll(Arrays.asList(fields));
+		for(Rank rank : Rank.values())
+			this.allLabels.add(rank.name().toLowerCase() + " name");
 	}
 	
 	public synchronized List<XmlModelFile> createXmlModelFiles(String text, String operator) {
@@ -123,9 +128,11 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		
 		
 		for(String key : data.keySet()) {
-			if(key.endsWith(" name")) nameTypes.add(key);
-			if(!this.allLabels.contains(key) && !key.endsWith(" name")) {
+			if(!this.allLabels.contains(key)) {
 				modelFile.appendError("Don't know what " +key + " is.");
+			} else {
+				if(key.endsWith(" name"))	 
+					nameTypes.add(key);
 			}
 		}
 	
@@ -235,6 +242,20 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		}*/
 		Element taxonIdentification = new Element("taxon_identification");
 		treatment.addContent(taxonIdentification);
+		Collections.sort(nameTypes, new Comparator<String>() {
+			@Override
+			public int compare(String a, String b) {
+				a = a.replaceFirst(" name$", "");
+				b = b.replaceFirst(" name$", "");
+				try {
+					Rank aRank = Rank.valueOf(a.toUpperCase());
+					Rank bRank = Rank.valueOf(b.toUpperCase());
+					return aRank.getId() - bRank.getId();
+				} catch(Exception e) {
+					return -Integer.MAX_VALUE;
+				}
+			}
+		});
 		for(String nameType: nameTypes){
 			String rank = nameType.replaceFirst(" name$", "");
 			String nameString = data.get(nameType).trim();
@@ -334,10 +355,12 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		List<TaxonIdentificationEntry> taxonIdentificationEntries = new LinkedList<TaxonIdentificationEntry>();
 		for(String nameType : nameTypes) {
 			if(data.containsKey(nameType) && data.get(nameType) != null && !data.get(nameType).trim().isEmpty()) {
-				taxonIdentificationEntries.add(new TaxonIdentificationEntry(nameType.replaceFirst(" name$", ""), data.get(nameType)));
+				taxonIdentificationEntries.add(new TaxonIdentificationEntry(Rank.valueOf(nameType.replaceFirst(" name$", "").toUpperCase()), 
+						data.get(nameType)));
 			}
 		}
-				
+		Collections.sort(taxonIdentificationEntries);
+		
 		String filename = data.get("author") + data.get("year") + "_";
 		for (TaxonIdentificationEntry taxonIdentificationEntry : taxonIdentificationEntries) {
 			if (filename.matches(".*(_|^)" + taxonIdentificationEntry.getRank()	+ "(_|$).*"))

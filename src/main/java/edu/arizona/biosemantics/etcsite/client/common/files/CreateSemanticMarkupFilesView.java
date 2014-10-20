@@ -1,7 +1,10 @@
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -10,15 +13,24 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
+import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.box.ProgressMessageBox;
+import com.sencha.gxt.widget.core.client.form.ComboBox;
+import com.sencha.gxt.widget.core.client.form.TextField;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.LabelProvider;
 
+import edu.arizona.biosemantics.common.taxonomy.Rank;
 import edu.arizona.biosemantics.etcsite.shared.model.file.TaxonIdentificationEntry;
 
 
@@ -69,12 +81,9 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	
 	@UiField
 	Grid ranksGrid;
-	
-	//@UiField
-	//ListBox ranksList;
-	
-	@UiField
-	SuggestBox ranksList;
+		
+	@UiField(provided=true)
+	ComboBox<Rank> ranksCombo;
 	
 	@UiField
 	Button addRankButton;
@@ -88,111 +97,64 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	@UiField
 	TabPanel tabPanel;
 	
+	@UiField
+	DisclosurePanel strainPanel;
+	
 	private ICreateSemanticMarkupFilesView.Presenter presenter;
 
 	private ProgressMessageBox progressBox;
 
 	public CreateSemanticMarkupFilesView() {
-		ranksList = initRanksListBox();
+	    ListStore<Rank> store = new ListStore<Rank>(new ModelKeyProvider<Rank>() {
+			@Override
+			public String getKey(Rank item) {
+				return String.valueOf(item.getId());
+			}
+	    });
+	    store.addAll(Arrays.asList(Rank.values()));
+	 
+	    ranksCombo = new ComboBox<Rank>(store, new LabelProvider<Rank>() {
+			@Override
+			public String getLabel(Rank item) {
+				return item.name();
+			}
+	    });
+	    ranksCombo.setAllowBlank(false);
+	    ranksCombo.setForceSelection(true);
+	    ranksCombo.setTriggerAction(TriggerAction.ALL);
+	    ranksCombo.setValue(Rank.LIFE);
+		
 		initWidget(uiBinder.createAndBindUi(this));
 		tabPanel.selectTab(0);
-		
-		//initRanksListBox(ranksList);
-		//ranksList = initRanksListBox();
-	}
-
-	private SuggestBox initRanksListBox() {
-		//reference http://en.wikipedia.org/wiki/Taxonomic_rank
-		MultiWordSuggestOracle ranks = new MultiWordSuggestOracle();
-		ranks.add("domain");
-		ranks.add("subdomain");
-		ranks.add("superkingdom");
-		ranks.add("kingdom");
-		ranks.add("subkingdom");
-		ranks.add("superphylum");
-		ranks.add("phylum");
-		ranks.add("subphylum");
-		ranks.add("superdivision");
-		ranks.add("division");
-		ranks.add("subdivision");
-		ranks.add("superclass");
-		ranks.add("class");
-		ranks.add("subclass");
-		ranks.add("superorder");
-		ranks.add("order");
-		ranks.add("suborder");
-		ranks.add("superfamily");
-		ranks.add("family");
-		ranks.add("subfamily");
-		ranks.add("supertribe");
-		ranks.add("tribe");
-		ranks.add("subtribe");
-		ranks.add("supergenus");
-		ranks.add("genus");
-		ranks.add("subgenus");
-		ranks.add("supersection");
-		ranks.add("section");
-		ranks.add("subsection");
-		ranks.add("superseries");
-		ranks.add("series");
-		ranks.add("subseries");
-		ranks.add("superseries");
-		ranks.add("species group");
-		ranks.add("species subgroup");
-		ranks.add("species complex");
-		ranks.add("superspecies");
-		ranks.add("species");
-		ranks.add("subspecies");
-		ranks.add("supervariety");
-		ranks.add("variety");
-		ranks.add("subvariety");
-		ranks.add("superforma");
-		ranks.add("forma");
-		ranks.add("subforma");
-		ranks.add("unranked");
-		return new SuggestBox(ranks);
-		/*ranksList.addItem("class");
-		ranksList.addItem("subclass");
-		ranksList.addItem("order");
-		ranksList.addItem("suborder");
-		ranksList.addItem("superfamily");
-		ranksList.addItem("family");
-		ranksList.addItem("subfamily");
-		ranksList.addItem("tribe");
-		ranksList.addItem("subtribe");
-		ranksList.addItem("genus");
-		ranksList.addItem("subgenus");
-		ranksList.addItem("section");
-		ranksList.addItem("subsection");
-		ranksList.addItem("series");
-		ranksList.addItem("species");
-		ranksList.addItem("subspecies");
-		ranksList.addItem("variety");
-		ranksList.addItem("subvarietas");
-		ranksList.addItem("forma");
-		ranksList.addItem("subforma");
-		ranksList.addItem("unranked");*/
-		//return ranksList;
 	}
 
 	@UiHandler("addRankButton")
 	public void onAddRank(ClickEvent event) {
-		int newrow = ranksGrid.insertRow(ranksGrid.getRowCount() - 1);
-		//ListBox ranksBox = new ListBox();
-		//initRanksListBox(ranksBox);
-		SuggestBox ranksBox = initRanksListBox();
-		/*if(newrow > 0)  {
-			Widget widget = ranksGrid.getWidget(newrow -1, 0);
-			if(widget instanceof ListBox) {
-				ListBox previousRanksBox = (ListBox)widget;
-				if(previousRanksBox.getSelectedIndex() < ranksBox.getItemCount() - 1)
-					ranksBox.setItemSelected(previousRanksBox.getSelectedIndex() + 1, true);
-			}
-		}*/
-		ranksGrid.setWidget(newrow, 0, ranksBox);
-		ranksGrid.setWidget(newrow, 1, new TextBox());
+		if(currentRankIsStrain()) {
+			strainPanel.setVisible(true);
+		}
+		
+		int newRow = ranksGrid.insertRow(ranksGrid.getRowCount() - 1);
+		Label label = new Label(ranksCombo.getValue().name());
+		ranksGrid.setWidget(newRow - 1, 0, label);
+		ranksGrid.setWidget(newRow, 0, ranksCombo);
+		ranksGrid.setWidget(newRow, 1, new TextField());
+		ranksCombo.setValue(Rank.values()[ranksCombo.getValue().getId() + 1]);
+		
 	}
 	
+	private boolean currentRankIsStrain() {
+		Rank rank = ranksCombo.getValue();
+		Set<Rank> strainRanks = new HashSet<Rank>();
+		strainRanks.add(Rank.STRAIN);
+		strainRanks.add(Rank.SUPERSTRAIN);
+		strainRanks.add(Rank.SUBSTRAIN);
+		strainRanks.add(Rank.SUPER_TYPE_STRAIN);
+		strainRanks.add(Rank.TYPE_STRAIN);
+		strainRanks.add(Rank.SUB_TYPE_STRAIN);
+		return strainRanks.contains(rank);
+	}
+
 	@UiHandler("createButton") 
 	public void onCreate(ClickEvent event) {
 		presenter.onCreate();
@@ -226,14 +188,23 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		for(int i = 1; i < ranksGrid.getRowCount() - 1; i++){ //row 0 is the header row, also there is a button at the end of table
 			Widget rankWidget = ranksGrid.getWidget(i, 0);
 			Widget valueWidget = ranksGrid.getWidget(i, 1);
-			if(rankWidget instanceof SuggestBox && valueWidget instanceof TextBox) { 
-				SuggestBox rankBox = (SuggestBox)rankWidget;
+			
+			Rank rank = null;
+			
+			if(rankWidget instanceof ComboBox) {
+				ComboBox<Rank> rankBox = (ComboBox)rankWidget;
 				//String rank = rankBox.getItemText(rankBox.getSelectedIndex());
-				String rank = rankBox.getText();
-				
-				TextBox valueBox = (TextBox)valueWidget;
+				rank = rankBox.getValue();
+			}
+			if(rankWidget instanceof Label) {
+				Label rankLabel = (Label)rankWidget;
+				rank = Rank.valueOf(rankLabel.getText());
+			}
+			if(valueWidget instanceof TextField) {
+				TextField valueBox = (TextField)valueWidget;
 				String value = valueBox.getText().trim();
-				result.add(new TaxonIdentificationEntry(rank, value));
+				if(rank != null)
+					result.add(new TaxonIdentificationEntry(rank, value));
 			}
 		}
 		return result;
@@ -273,6 +244,8 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		while(ranksGrid.getRowCount() > 3) {
 			ranksGrid.removeRow(ranksGrid.getRowCount() - 2);
 		}
+		ranksCombo.setValue(Rank.LIFE);
+		ranksGrid.setWidget(1, 0, ranksCombo);
 	}
 	
 	@UiHandler("batchButton")

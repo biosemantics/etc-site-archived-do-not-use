@@ -2,24 +2,26 @@ package edu.arizona.biosemantics.etcsite.shared.model.file;
 
 import java.io.Serializable;
 
-public class TaxonIdentificationEntry implements Serializable {
+import edu.arizona.biosemantics.common.taxonomy.Rank;
 
-	private String rank;
+public class TaxonIdentificationEntry implements Comparable<TaxonIdentificationEntry>, Serializable {
+
+	private Rank rank;
 	private String value;
 	
 	public TaxonIdentificationEntry() { }
 	
-	public TaxonIdentificationEntry(String rank, String value) {
+	public TaxonIdentificationEntry(Rank rank, String value) {
 		super();
 		this.rank = rank;
 		this.value = value;
 	}
 
-	public String getRank() {
+	public Rank getRank() {
 		return rank;
 	}
 
-	public void setRank(String rank) {
+	public void setRank(Rank rank) {
 		this.rank = rank;
 	}
 
@@ -30,7 +32,10 @@ public class TaxonIdentificationEntry implements Serializable {
 	public void setValue(String value) {
 		this.value = value;
 	}
-	
-	
+
+	@Override
+	public int compareTo(TaxonIdentificationEntry o) {
+		return rank.getId() - o.getRank().getId();
+	}
 
 }

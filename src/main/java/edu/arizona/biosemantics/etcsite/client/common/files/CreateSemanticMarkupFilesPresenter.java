@@ -11,6 +11,7 @@ import com.google.inject.Inject;
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.common.taxonomy.Rank;
 import edu.arizona.biosemantics.etcsite.shared.model.file.TaxonIdentificationEntry;
 import edu.arizona.biosemantics.etcsite.shared.model.file.XmlModelFile;
 import edu.arizona.biosemantics.etcsite.shared.model.process.file.XmlModelFileCreator;
@@ -214,9 +215,9 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 		textBuilder.append("full citation: " + view.getFullCitation().trim() + "\n");
 		List<TaxonIdentificationEntry> taxonIdentificationEntries = view.getTaxonIdentificationEntries();
 		for(TaxonIdentificationEntry taxonIdentificationEntry : taxonIdentificationEntries) {
-			String rank = taxonIdentificationEntry.getRank().trim();
+			Rank rank = taxonIdentificationEntry.getRank();
 			String name = taxonIdentificationEntry.getValue().trim();
-			if(!rank.isEmpty() && !name.isEmpty()){
+			if(rank != null && !name.isEmpty()){
 				textBuilder.append(rank + " name: " + name + "\n");
 			}
 		}

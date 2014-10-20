@@ -1,6 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:form='urn:import:com.sencha.gxt.widget.core.client.form'>
 	<ui:style>
 		.instruction {
 			padding: 10px;
@@ -59,10 +60,11 @@
 									</g:row> 
 									<g:row>
 										<g:customCell>
-											<g:SuggestBox ui:field="ranksList"></g:SuggestBox>
+											<form:ComboBox ui:field="ranksCombo" />
+											<!-- <g:SuggestBox ui:field="ranksCombo"></g:SuggestBox> -->
 										</g:customCell>
 										<g:customCell>
-											<g:TextBox></g:TextBox>
+											<form:TextField ui:field="rankNameField" />
 										</g:customCell>
 									</g:row>
 									<g:row>
@@ -73,7 +75,7 @@
 									</g:row>
 								</g:Grid> 
 							</g:DisclosurePanel>
-							<g:DisclosurePanel>
+							<g:DisclosurePanel ui:field="strainPanel" visible="false">
 								<g:header>Strain Information (* for microbes only)</g:header>
 								<g:FlowPanel>
 									<g:Label>Strain Number *</g:Label>
