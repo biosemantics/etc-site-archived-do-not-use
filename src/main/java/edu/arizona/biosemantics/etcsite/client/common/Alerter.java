@@ -91,7 +91,7 @@ public class Alerter {
 	}
 
 	public static MessageBox failedToMoveFile(Throwable caught) {
-		return showAlert("Move File", "Failed to move file", caught);
+		return showAlert("Move File", "Failed to move file,\n" + caught.getMessage(), caught);
 	}
 
 	public static MessageBox failedToGetUsersFiles(Throwable caught) {
@@ -99,7 +99,7 @@ public class Alerter {
 	}
 
 	public static MessageBox failedToCreateDirectory(Throwable caught) {
-		return showAlert("Create Directory Reset", "Failed to create directory", caught);
+		return showAlert("Create Directory Reset", "Failed to create directory.\n" + caught.getMessage(), caught);
 	}
 
 	public static MessageBox failedToRenameFile(Throwable caught) {
@@ -107,7 +107,7 @@ public class Alerter {
 	}
 
 	public static MessageBox failedToDeleteFile(Throwable caught) {
-		return showAlert("Delete File", "Failed to delete file", caught);
+		return showAlert("Delete File", "Failed to delete file.\n" + caught.getMessage(), caught);
 	}
 
 	public static MessageBox failedToGetDownloadPath(Throwable caught) {
