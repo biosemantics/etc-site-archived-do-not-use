@@ -254,15 +254,15 @@ targetNamespace="http://www.github.com/biosemantics">
 
 	<xs:complexType name="statement">
 		<xs:sequence>
-			<xs:element name="text" type="nonEmptyString" />
+			<xs:element name="text" type="xs:string" />
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element type="relation" name="relation" />
 				<xs:element type="structure" name="structure" />
 			</xs:choice>
 		</xs:sequence>
 		<xs:attribute name="id" use="required" type="xs:ID" />
-		<xs:attribute name="provenance" type="nonEmptyString" />
-		<xs:attribute name="notes" type="nonEmptyString" />
+		<xs:attribute name="provenance" type="xs:string" />
+		<xs:attribute name="notes" type="xs:string" />
 	</xs:complexType>
 
 	<xs:complexType name="relation">
@@ -278,9 +278,9 @@ targetNamespace="http://www.github.com/biosemantics">
 		<xs:attribute name="parallelism_constraint" type="xs:NCName" />
 		<xs:attribute name="taxon_constraint" />
 		<xs:attribute name="to" use="required" type="xs:NCName" />
-		<xs:attribute name="ontologyid" type="nonEmptyString" />
-		<xs:attribute name="provenance" type="nonEmptyString" />
-		<xs:attribute name="notes" type="nonEmptyString" />
+		<xs:attribute name="ontologyid" type="xs:string" />
+		<xs:attribute name="provenance" type="xs:string" />
+		<xs:attribute name="notes" type="xs:string" />
 	</xs:complexType>
 
 	<xs:complexType name="structure">
@@ -297,10 +297,10 @@ targetNamespace="http://www.github.com/biosemantics">
 		<xs:attribute name="name" use="required" />
 		<xs:attribute name="parallelism_constraint" type="xs:NCName" />
 		<xs:attribute name="taxon_constraint" />
-		<xs:attribute name="ontologyid" type="nonEmptyString" />
-		<xs:attribute name="provenance" type="nonEmptyString" />
-		<xs:attribute name="notes" type="nonEmptyString" />
-		<xs:attribute name="name_original" type="nonEmptyString" />
+		<xs:attribute name="ontologyid" type="xs:string" />
+		<xs:attribute name="provenance" type="xs:string" />
+		<xs:attribute name="notes" type="xs:string" />
+		<xs:attribute name="name_original" type="xs:string" />
 	</xs:complexType>
 
 	<xs:complexType name="character">
@@ -325,9 +325,9 @@ targetNamespace="http://www.github.com/biosemantics">
 		<xs:attribute name="unit" />
 		<xs:attribute name="upper_restricted" type="xs:boolean" />
 		<xs:attribute name="value" />
-		<xs:attribute name="ontologyid" type="nonEmptyString" />
-		<xs:attribute name="provenance" type="nonEmptyString" />
-		<xs:attribute name="notes" type="nonEmptyString" />
+		<xs:attribute name="ontologyid" type="xs:string" />
+		<xs:attribute name="provenance" type="xs:string" />
+		<xs:attribute name="notes" type="xs:string" />
 		<xs:attribute name="is_modifier" type="xs:boolean" />
 	</xs:complexType>
 

@@ -65,6 +65,7 @@ public class XMLValidator implements IContentValidator {
 					} catch (IOException e) {
 						log(LogLevel.ERROR, "Couldn't validate xml document", e);
 					} catch(SAXException e) {
+						log(LogLevel.INFO, "Validation of an input failed", e);
 						return false;
 					}
 					return true;
