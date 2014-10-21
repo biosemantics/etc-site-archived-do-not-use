@@ -149,9 +149,9 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		strainRanks.add(Rank.STRAIN);
 		strainRanks.add(Rank.SUPERSTRAIN);
 		strainRanks.add(Rank.SUBSTRAIN);
-		strainRanks.add(Rank.SUPER_TYPE_STRAIN);
-		strainRanks.add(Rank.TYPE_STRAIN);
-		strainRanks.add(Rank.SUB_TYPE_STRAIN);
+		strainRanks.add(Rank.SUPERTYPESTRAIN);
+		strainRanks.add(Rank.TYPESTRAIN);
+		strainRanks.add(Rank.SUBTYPESTRAIN);
 		return strainRanks.contains(rank);
 	}
 
