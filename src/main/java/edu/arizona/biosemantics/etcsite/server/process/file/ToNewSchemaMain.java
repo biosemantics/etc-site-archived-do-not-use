@@ -27,8 +27,12 @@ import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 public class ToNewSchemaMain {
 
 	public static void main(String[] args) throws JDOMException, IOException {
-		String input = "C:/Users/rodenhausen/Downloads/source/source";
-		String output = "C:/Users/rodenhausen/Downloads/source/source2";
+		//String input = "C:/Users/rodenhausen/Downloads/141020-FoC-Tiliaceae_141020-FoC-Tiliaceae-Text-Capture"
+			//	+ "/141020-FoC-Tiliaceae_141020-FoC-Tiliaceae-Text-Capture/";
+		//String output = "C:/Users/rodenhausen/Downloads/141020-FoC-Tiliaceae_141020-FoC-Tiliaceae-Text-Capture"
+			//	+ "/out/";
+		String input = "C:/Users/rodenhausen/Downloads/141020-FoC-Tiliaceae/141020-FoC-Tiliaceae";
+		String output = "C:/Users/rodenhausen/Downloads/141020-FoC-Tiliaceae/out";
 		
 		File in = new File(input);
 		SAXBuilder sax = new SAXBuilder();
@@ -41,7 +45,19 @@ public class ToNewSchemaMain {
 		
 		for(File file : in.listFiles()) {
 			Document doc = sax.build(file);
-			nsmgr.setXmlSchema(doc, FileTypeEnum.TAXON_DESCRIPTION);
+			
+			/*Element root = doc.getRootElement();
+			root.getChild("meta").getChild("source").getChild("author").setText("unknown");
+			root.getChild("meta").getChild("source").getChild("title").setText("unknown");
+			root.getChild("meta").getChild("source").getChild("date").setText("unknown");
+			for(Element processor : root.getChild("meta").getChild("processed_by").getChildren()) {
+				if(processor.getChild("date").getText().isEmpty())
+					processor.getChild("date").setText("unknown");
+				if(processor.getChild("operator").getText().isEmpty())
+					processor.getChild("operator").setText("unknown");
+			}*/
+			
+			/*nsmgr.setXmlSchema(doc, FileTypeEnum.TAXON_DESCRIPTION);
 			
 			XPathExpression<Element> xp = xpfac.compile("/bio:treatment/taxon_identification", 
 					Filters.element(), null, bioNamespace);
@@ -89,7 +105,7 @@ public class ToNewSchemaMain {
 				if(element.getValue().trim().isEmpty()) {
 					element.detach();
 				}
-			}
+			}*/
 			
 			File outFile = new File(out, file.getName());
 			XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());

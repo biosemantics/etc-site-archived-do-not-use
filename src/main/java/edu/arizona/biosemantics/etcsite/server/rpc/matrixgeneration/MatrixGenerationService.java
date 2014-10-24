@@ -533,26 +533,20 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	    	for(int i=1; i<columnHeads.size(); i++) {
 	    		ColumnHead columnHead = columnHeads.get(i);
 	    		
-	    		String character = columnHead.getValue();
-				int ofIndex = character.lastIndexOf(" of ");
-				
-				String organ = "";
-				if(character.contains(" of ")) {
-					organ = character.substring(ofIndex + 4);
-				}
-				
+	    		String characterName = columnHead.getSource().getName();
+	    		String connector = columnHead.getSource().getConnector();
+	    		String organName = columnHead.getSource().getStructureIdentifier().getDisplayName();
+	    		
 				Organ o;
-				if(!organMap.containsKey(organ)) {
-					o = new Organ(organ);
-					organMap.put(organ, o);
+				if(!organMap.containsKey(organName)) {
+					o = new Organ(organName);
+					organMap.put(organName, o);
 					hierarhicalCharacters.add(o);
 				} else {
-					o = organMap.get(organ);
+					o = organMap.get(organName);
 				}
 
-				if(character.contains(" of "))
-					character = character.substring(0, ofIndex);
-				Character c = new Character(character, o, o.getFlatCharacters().size());
+				Character c = new Character(characterName, connector, o, o.getFlatCharacters().size());
 				charactersInMatrix.add(c);
 	    	}
 	    	
