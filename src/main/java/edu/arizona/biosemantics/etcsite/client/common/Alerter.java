@@ -95,7 +95,7 @@ public class Alerter {
 	}
 
 	public static MessageBox failedToGetUsersFiles(Throwable caught) {
-		return showAlert("Password Reset", "Failed to request password reset code", caught);
+		return showAlert("Get users files", "Failed to get users files", caught);
 	}
 
 	public static MessageBox failedToCreateDirectory(Throwable caught) {
@@ -178,10 +178,6 @@ public class Alerter {
 		return showAlert("Get All Tasks", "Failed to get all tasks", caught);
 	}
 
-	public static MessageBox couldNotFindUser(UserNotFoundException e) {
-		return showAlert("Password Reset", "Failed to request password reset code");
-	}
-
 	public static MessageBox failedToUpdateUser(Throwable caught) {
 		return showAlert("Update User", "Failed to update user", caught);
 	}
@@ -219,7 +215,7 @@ public class Alerter {
 	}
 
 	public static MessageBox failedToParse(Throwable caught) {
-		return showAlert("Password Reset", "Failed to request password reset code", caught);
+		return showAlert("Parse", "Failed to parse", caught);
 	}
 
 	public static MessageBox failedToGetDescription(Throwable caught) {
@@ -256,7 +252,7 @@ public class Alerter {
 	
 	public static MessageBox failedToIsvalidMarkedupTaxonDescriptionContent(
 			Throwable caught) {
-		return showAlert("Is valid Markedup Taxon Description", "Failed to validate markedup taxon description", caught);
+		return showAlert("Validate Markedup Taxon Description", "Failed to validate markedup taxon description", caught);
 	}
 	
 	public static MessageBox resetCodeSent(String email) {
