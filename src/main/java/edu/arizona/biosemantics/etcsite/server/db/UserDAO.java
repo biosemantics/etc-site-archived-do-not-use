@@ -161,4 +161,8 @@ public class UserDAO {
 		return result;
 	}
 
+	public boolean hasUser(String email) {
+		return this.getUser(email) != null;
+	}
+
 }

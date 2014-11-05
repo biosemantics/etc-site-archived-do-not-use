@@ -130,9 +130,13 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 					//create an account for this user if they do not have one yet.	
 					String dummyPassword = firstName + lastName;
 					String encryptedDummyPassword = BCrypt.hashpw(dummyPassword, BCrypt.gensalt()); //encrypt password
-					User user = daoManager.getUserDAO().insert(
-							new User(openIdProviderId, "google", encryptedDummyPassword, firstName, lastName, "", "", ""));
 					
+					User user = daoManager.getUserDAO().getUser(openIdProviderId);
+					if (user == null) { 
+						user = daoManager.getUserDAO().insert(
+								new User(openIdProviderId, "google", encryptedDummyPassword, firstName, lastName, "", "", ""));
+					}
+
 					String sessionId = generateSessionId(user);
 					return new AuthenticationResult(true, sessionId, new ShortUser(user));
 				}
