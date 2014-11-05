@@ -76,7 +76,6 @@
 			<artifactId>validation-api</artifactId>
 			<version>1.0.0.GA</version>
 			<classifier>sources</classifier>
-			<scope>test</scope>
 		</dependency>
 
 		<!-- mine -->
@@ -192,7 +191,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>semantic-markup</artifactId>
-			<version>0.1.58-SNAPSHOT</version>
+			<version>0.1.67-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>app</artifactId>
@@ -262,11 +261,6 @@
 			<artifactId>mail</artifactId>
 			<version>1.4.7</version>
 		</dependency>
-        <dependency>
-			<groupId>org.apache.ant</groupId>
-			<artifactId>ant</artifactId>
-			<version>1.9.4</version>
-		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.gxt</groupId>
 		  <artifactId>theme</artifactId>
@@ -309,6 +303,12 @@
 			<artifactId>taxonomy</artifactId>
 			<version>0.0.12-SNAPSHOT</version>
 			<classifier>sources</classifier>
+		</dependency>
+		<!-- Neeeded For JavaEnvUtils.getJreExecutable(), even if removed no errors are displayed -->
+		<dependency>
+			<groupId>org.apache.ant</groupId>
+			<artifactId>ant</artifactId>
+			<version>1.9.4</version>
 		</dependency>
 	</dependencies>
 

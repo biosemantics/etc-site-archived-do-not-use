@@ -27,7 +27,8 @@ public class Authentication {
 	
 	//@Around("execution(RPCResult edu.arizona.biosemantics.etcsite.server.rpc..*(..)) && args(authenticationToken, ..) && " +
 	//		"!within(edu.arizona.biosemantics.etcsite.server.rpc.AuthenticationService) && !within(edu.arizona.biosemantics.etcsite.server.rpc.Authentication)")
-	@Around("execution(* edu.arizona.biosemantics.etcsite.server.rpc..*(..)) && " +
+	// Can't be on MainWrapper's static main otherwise ExtraJVM Calls will fail because NoAspectBoundException (!static)
+	@Around("execution(!static * edu.arizona.biosemantics.etcsite.server.rpc..*(..)) && " +
 			"!within(edu.arizona.biosemantics.etcsite.server.rpc.auth..*) && " +
 			"!within(edu.arizona.biosemantics.etcsite.server.rpc.setup..*)")
 	public Object verifyAuthentication(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {

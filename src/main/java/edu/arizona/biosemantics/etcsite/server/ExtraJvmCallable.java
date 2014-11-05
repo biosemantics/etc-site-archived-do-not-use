@@ -52,20 +52,35 @@ public abstract class ExtraJvmCallable<T> implements Callable<T>, Task {
 
 	@Override
 	public T call() throws Exception {
-		String command = "java -cp " + classPath + " " + mainClass.getName();
-		for(String arg : args)
-			command += " " + arg;
+		String command = "java";
 		if(xmx != null)
-			command += " -Xmx " + xmx;
+			command += " -Xmx" + xmx;
 		if(xms != null)
-			command += " -Xms " + xms;
+			command += " -Xms" + xms;
+		command += " -cp '" + classPath + "'";
+		command += " '" + mainClass.getName() + "'";
+		for(String arg : args)
+			if(arg.startsWith("-"))
+				command += " " + arg;
+			else
+				command += " '" + arg + "'";
 		log(LogLevel.INFO, "Run in an extra JVM: " + command);
 		
 		exitStatus = -1;
 		if(classPath != null && mainClass != null && args != null) {
-			String javaExecutable = JavaEnvUtils.getJreExecutable("java");
+			String javaExecutable = "java";
+			try {
+				javaExecutable = JavaEnvUtils.getJreExecutable("java");
+			} catch(Throwable t) {
+				log(LogLevel.ERROR, "Couldn't find JRE Executable", t);
+				javaExecutable = "java";
+			}
 			List<String> commandParts = new LinkedList<String>();
 			commandParts.add(javaExecutable);
+			if(xmx != null)
+				commandParts.add("-Xmx" + xmx);
+			if(xms != null)
+				commandParts.add("-Xms" + xms);
 			commandParts.add("-cp");
 			commandParts.add(classPath);
 			commandParts.add(mainClass.getName());		
@@ -87,6 +102,7 @@ public abstract class ExtraJvmCallable<T> implements Callable<T>, Task {
 			
 			return createReturn();
 		} 
+
 		return null;
 	}
 	
