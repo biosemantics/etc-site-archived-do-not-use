@@ -15,7 +15,9 @@ import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMa
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupReviewPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupToOntologiesPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonPlace;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationPlace;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationViewPlace;
 import edu.arizona.biosemantics.etcsite.client.content.visualization.VisualizationPlace;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 
@@ -56,9 +58,15 @@ public class ResumeTaskPlaceMapper {
 				case OUTPUT:
 					return new MatrixGenerationOutputPlace(task);
 			}
-			return new edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPlace();
+			return new MatrixGenerationInputPlace();
 		case TREE_GENERATION:
-			return new TreeGenerationPlace();
+			switch(edu.arizona.biosemantics.etcsite.shared.model.treegeneration.TaskStageEnum.valueOf(task.getTaskStage().getTaskStage())) {
+				case INPUT:
+					return new TreeGenerationInputPlace();
+				case VIEW:
+					return new TreeGenerationViewPlace(task);
+			}
+			return new TreeGenerationInputPlace();
 		case TAXONOMY_COMPARISON:
 			return new TaxonomyComparisonPlace();
 		case VISUALIZATION:

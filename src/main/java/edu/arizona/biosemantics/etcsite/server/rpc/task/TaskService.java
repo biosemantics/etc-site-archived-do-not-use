@@ -11,6 +11,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration.MatrixGenerationService;
 import edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup.SemanticMarkupService;
+import edu.arizona.biosemantics.etcsite.server.rpc.treegeneration.TreeGenerationService;
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.Share;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
@@ -20,12 +21,14 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGener
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.treegeneration.ITreeGenerationService;
 
 public class TaskService extends RemoteServiceServlet implements ITaskService {
 
 	private static final long serialVersionUID = -3080921351813858330L;
 	private IMatrixGenerationService matrixGenerationService = new MatrixGenerationService();
 	private ISemanticMarkupService semanticMarkupService = new SemanticMarkupService();
+	private ITreeGenerationService treeGenerationService = new TreeGenerationService();
 	
 	private DAOManager daoManager = new DAOManager();
 	
@@ -149,6 +152,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 		case TAXONOMY_COMPARISON:
 			break;
 		case TREE_GENERATION:
+			treeGenerationService.cancel(authenticationToken, task);
 			break;
 		case VISUALIZATION:
 			break;

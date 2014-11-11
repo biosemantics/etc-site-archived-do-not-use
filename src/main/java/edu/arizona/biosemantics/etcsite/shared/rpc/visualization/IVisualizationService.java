@@ -10,6 +10,5 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 @RemoteServiceRelativePath("visualization")
 public interface IVisualizationService extends RemoteService, IHasTasksService {
 
-	public Task getVisualizationTask(AuthenticationToken authenticationToken, Task task);
 
 }

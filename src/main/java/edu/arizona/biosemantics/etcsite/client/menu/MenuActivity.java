@@ -17,12 +17,14 @@ import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGe
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.ResumeTaskPlaceMapper;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonPlace;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationPlace;
 import edu.arizona.biosemantics.etcsite.client.content.visualization.VisualizationPlace;
 import edu.arizona.biosemantics.etcsite.client.menu.IMenuView.Presenter;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.treegeneration.ITreeGenerationServiceAsync;
 
 public class MenuActivity extends AbstractActivity implements Presenter {
 
@@ -30,17 +32,20 @@ public class MenuActivity extends AbstractActivity implements Presenter {
 	private PlaceController placeController;
 	private ISemanticMarkupServiceAsync semanticMarkupService;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
+	private ITreeGenerationServiceAsync treeGenerationService;
 	private ResumeTaskPlaceMapper resumeTaskPlaceMapper;
 
 	@Inject
 	public MenuActivity(IMenuView menuView, PlaceController placeController, 
 			ISemanticMarkupServiceAsync semanticMarkupService,
 			IMatrixGenerationServiceAsync matrixGenerationService, 
+			ITreeGenerationServiceAsync treeGenerationService,
 			ResumeTaskPlaceMapper resumeTaskPlaceMapper) {
 		this.menuView = menuView;
 		this.placeController = placeController;
 		this.semanticMarkupService = semanticMarkupService;
 		this.matrixGenerationService = matrixGenerationService;
+		this.treeGenerationService = treeGenerationService;
 		this.resumeTaskPlaceMapper = resumeTaskPlaceMapper;
 	}
 	
@@ -115,7 +120,33 @@ public class MenuActivity extends AbstractActivity implements Presenter {
 
 	@Override
 	public void onTreeGeneration() {
-		placeController.goTo(new TreeGenerationPlace());
+		treeGenerationService.getLatestResumable(Authentication.getInstance().getToken(),
+				new AsyncCallback<Task>() {
+			@Override
+			public void onSuccess(final Task task) {
+				if(task != null) {
+					MessageBox resumable = Alerter.resumableTask();
+					resumable.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
+						@Override
+						public void onSelect(SelectEvent event) {
+							placeController.goTo(resumeTaskPlaceMapper.getPlace(task));
+						}
+					});
+					resumable.getButton(PredefinedButton.NO).addSelectHandler(new SelectHandler() {
+						@Override
+						public void onSelect(SelectEvent event) {
+							placeController.goTo(new TreeGenerationInputPlace());
+						}
+					});
+				} else 
+					placeController.goTo(new TreeGenerationInputPlace());
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToGetLatestResumable(caught);
+			}
+		});
 	}
 
 	@Override

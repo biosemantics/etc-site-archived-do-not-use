@@ -8,6 +8,5 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 
 public interface IVisualizationServiceAsync extends IHasTasksServiceAsync {
 
-	public void getVisualizationTask(AuthenticationToken authenticationToken, Task task, AsyncCallback<Task> callback);
 
 }

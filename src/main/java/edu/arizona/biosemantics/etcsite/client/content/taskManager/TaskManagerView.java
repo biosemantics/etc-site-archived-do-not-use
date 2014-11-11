@@ -436,6 +436,7 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 					case TAXONOMY_COMPARISON:
 						break;
 					case TREE_GENERATION:
+						this.rewindButton.setEnabled(true);
 						break;
 					case VISUALIZATION:
 						break;

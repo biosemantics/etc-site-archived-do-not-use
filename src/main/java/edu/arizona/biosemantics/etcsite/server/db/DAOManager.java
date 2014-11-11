@@ -66,6 +66,8 @@ public class DAOManager {
 		taskConfigurationDAO.setTreeGenerationConfigurationDAO(treeGenerationConfigurationDAO);
 		taskConfigurationDAO.setVisualizationConfigurationDAO(visualizationConfigurationDAO);
 		taskConfigurationDAO.setMatrixGenerationConfigurationDAO(matrixGenerationConfigurationDAO);
+		treeGenerationConfigurationDAO.setConfigurationDAO(configurationDAO);
+		taskDAO.setTreeGenerationConfigurationDAO(treeGenerationConfigurationDAO);
 	}
 
 	public ConfigurationDAO getConfigurationDAO() {

@@ -4,7 +4,9 @@ import com.google.gwt.activity.shared.MyAbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.inject.Inject;
 
+import edu.arizona.biosemantics.etcsite.client.common.HasTaskPlace;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
@@ -30,6 +32,11 @@ public class VisualizationActivity extends MyAbstractActivity {
 	public void start(AcceptsOneWidget panel, EventBus eventBus) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public HasTaskPlace setTask(VisualizationPlace place) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

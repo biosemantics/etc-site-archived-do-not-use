@@ -11,6 +11,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupTaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum;
+import edu.arizona.biosemantics.etcsite.shared.model.TreeGenerationTaskStage;
 
 public class TaskStageDAO {
 	
@@ -98,7 +99,7 @@ public class TaskStageDAO {
 		case TAXONOMY_COMPARISON:
 			break;
 		case TREE_GENERATION:
-			break;
+			return new TreeGenerationTaskStage(id, taskType, created, edu.arizona.biosemantics.etcsite.shared.model.treegeneration.TaskStageEnum.valueOf(taskStage));
 		case VISUALIZATION:
 			break;
 		default:
@@ -106,5 +107,22 @@ public class TaskStageDAO {
 		}
 		return null;
 	}
+
+	public TaskStage getTreeGenerationTaskStage(String name) {
+		TaskType taskType = taskTypeDAO.getTaskType(TaskTypeEnum.TREE_GENERATION);
+		TaskStage taskStage = this.getTaskStage(taskType, name);
+		if(taskStage instanceof TreeGenerationTaskStage)
+			return (TreeGenerationTaskStage)taskStage;
+		return null;
+	}
+
+	public TreeGenerationTaskStage getTreeGenerationTaskStage(int taskStageId) {
+		TaskStage taskStage = this.getTaskStage(taskStageId);
+		if(taskStage instanceof TreeGenerationTaskStage)
+			return (TreeGenerationTaskStage)taskStage;
+		return null;
+	}
+	
+	
 
 }

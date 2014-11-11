@@ -27,10 +27,5 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	public void cancel(AuthenticationToken authenticationToken,	Task task) {
 	}
 
-	@Override
-	public Task getTaxonomyComparisonTask(
-			AuthenticationToken authenticationToken, Task task) {
-		return null;
-	}
 
 }

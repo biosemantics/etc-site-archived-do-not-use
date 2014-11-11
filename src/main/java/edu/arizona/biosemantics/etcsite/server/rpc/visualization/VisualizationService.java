@@ -18,20 +18,13 @@ public class VisualizationService extends RemoteServiceServlet implements IVisua
 	}
 	
 	@Override
-	public Task getLatestResumable(
-			AuthenticationToken authenticationToken) {
+	public Task getLatestResumable(AuthenticationToken authenticationToken) {
 		return null;
 	}
 
 	@Override
 	public void cancel(AuthenticationToken authenticationToken, Task task) {
 		
-	}
-
-	@Override
-	public Task getVisualizationTask(
-			AuthenticationToken authenticationToken, Task task) {
-		return null;
 	}
 
 }

@@ -161,6 +161,16 @@
 	</servlet-mapping>
 
 	<servlet>
+		<servlet-name>KeyGenerationServlet</servlet-name>
+		<servlet-class>edu.ucdavis.cs.cfgproject.server.rpc.KeyGenerationService</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>KeyGenerationServlet</servlet-name>
+		<url-pattern>/etcsite/keyGeneration</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<servlet-name>Jersey Web Application</servlet-name>
 		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
 		<init-param>

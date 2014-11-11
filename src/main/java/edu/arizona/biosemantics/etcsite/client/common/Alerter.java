@@ -193,6 +193,10 @@ public class Alerter {
 	public static MessageBox failedToReview(Throwable caught) {
 		return showAlert("Review Matrix", "Failed to review matrix", caught);
 	}
+	
+	public static MessageBox failedToViewKey(Throwable caught) {
+		return showAlert("View Key", "Failed to view key", caught);
+	}
 
 	public static MessageBox failedToGetTask(Throwable caught) {
 		return showAlert("Get Task", "Failed to get task", caught);
@@ -201,7 +205,11 @@ public class Alerter {
 	public static MessageBox failedToStartSemanticMarkup(Throwable caught) {
 		return showAlert("Start Text Capture", "Failed to start text capture", caught);
 	}
-
+	
+	public static MessageBox failedToStartTreeGeneration(Throwable caught) {
+		return showAlert("Start Tree Generation", "Failed to start tree generation", caught);
+	}
+	
 	public static MessageBox failedToIsValidInput(Throwable caught) {
 		return showAlert("Validate Input", "Failed to validate input", caught);
 	}

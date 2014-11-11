@@ -123,6 +123,12 @@ import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsView;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.ITaskManagerView;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerView;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.ITreeGenerationInputView;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.ITreeGenerationViewView;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationInputPresenter;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationInputView;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationViewPresenter;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationViewView;
 import edu.arizona.biosemantics.etcsite.client.content.user.IUserSelectView;
 import edu.arizona.biosemantics.etcsite.client.content.user.IUsersView;
 import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectPresenter;
@@ -255,6 +261,10 @@ public class ClientModule extends AbstractGinModule {
 		//bind(ISemanticMarkupHierarchyView.Presenter.class).to(SemanticMarkupHierarchyPresenter.class);
 		//bind(ISemanticMarkupOrdersView.class).to(SemanticMarkupOrdersView.class);
 		//bind(ISemanticMarkupOrdersView.Presenter.class).to(SemanticMarkupOrdersPresenter.class);
+		bind(ITreeGenerationInputView.class).to(TreeGenerationInputView.class);
+		bind(ITreeGenerationInputView.Presenter.class).to(TreeGenerationInputPresenter.class);
+		bind(ITreeGenerationViewView.class).to(TreeGenerationViewView.class);
+		bind(ITreeGenerationViewView.Presenter.class).to(TreeGenerationViewPresenter.class);
 		
 		//activites, places, eventbus
 		bind(EventBus.class).annotatedWith(Names.named("ActivitiesBus")).to(SimpleEventBus.class).in(Singleton.class);
@@ -294,6 +304,7 @@ public class ClientModule extends AbstractGinModule {
 		bind(ITreeGenerationServiceAsync.class).in(Singleton.class);
 		bind(IUserServiceAsync.class).in(Singleton.class);
 		bind(IVisualizationServiceAsync.class).in(Singleton.class);
+		bind(ITreeGenerationServiceAsync.class).in(Singleton.class);
 		
 		//misc
 		bind(FilePathShortener.class).in(Singleton.class);

@@ -331,7 +331,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
 		List<Task> tasks = daoManager.getTaskDAO().getOwnedTasks(user.getId());
 		for(Task task : tasks) {
-			if(task.isResumable() && 
+			if(task != null && task.isResumable() && 
 					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION)) {
 						return task;
 			}
@@ -677,7 +677,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	private String getCSVMatrix(TaxonMatrix matrix) throws IOException {
 		//TODO: Add RankData authority and date
 		try(StringWriter stringWriter = new StringWriter()) {
-			try(CSVWriter writer = new CSVWriter(stringWriter, '\t', CSVWriter.NO_QUOTE_CHARACTER)) {
+			try(CSVWriter writer = new CSVWriter(stringWriter)) {
 			
 				String[] line = new String[matrix.getCharacterCount() + 1];
 				line[0] = "Name";

@@ -19,6 +19,8 @@ import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
+import edu.arizona.biosemantics.etcsite.shared.model.TreeGenerationConfiguration;
+import edu.arizona.biosemantics.etcsite.shared.model.TreeGenerationTaskStage;
 
 public class TaskDAO {
 
@@ -29,6 +31,7 @@ public class TaskDAO {
 	private ConfigurationDAO configurationDAO;
 	private MatrixGenerationConfigurationDAO matrixGenerationConfigurationDAO;
 	private SemanticMarkupConfigurationDAO semanticMarkupConfigurationDAO;
+	private TreeGenerationConfigurationDAO treeGenerationConfigurationDAO;
 	private UserDAO userDAO;
 	private TaskStageDAO taskStageDAO;
 	private String ownerQuery = "SELECT * FROM etcsite_tasks WHERE user=?";
@@ -59,6 +62,13 @@ public class TaskDAO {
 	public void setMatrixGenerationConfigurationDAO(
 			MatrixGenerationConfigurationDAO matrixGenerationConfigurationDAO) {
 		this.matrixGenerationConfigurationDAO = matrixGenerationConfigurationDAO;
+	}
+	
+	
+
+	public void setTreeGenerationConfigurationDAO(
+			TreeGenerationConfigurationDAO treeGenerationConfigurationDAO) {
+		this.treeGenerationConfigurationDAO = treeGenerationConfigurationDAO;
 	}
 
 	public void setSemanticMarkupConfigurationDAO(
@@ -110,7 +120,8 @@ public class TaskDAO {
 			ResultSet result = query.execute();
 			while(result.next()) {			
 				Task task = createTask(result);
-				tasks.add(task);
+				if(task != null)
+					tasks.add(task);
 			}
 		}catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't get owned tasks of user", e);
@@ -125,7 +136,8 @@ public class TaskDAO {
 			ResultSet result = query.execute();
 			while(result.next()) {			
 				Task task = createTask(result);
-				tasks.add(task);
+				if(task != null)
+					tasks.add(task);
 			}
 		}catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't get tasks shared with user", e);
@@ -141,7 +153,8 @@ public class TaskDAO {
 			ResultSet result = query.execute();
 			while(result.next()) {			
 				Task task = createTask(result);
-				tasks.add(task);
+				if(task != null)
+					tasks.add(task);
 			}
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't get all tasks of user", e);
@@ -157,7 +170,8 @@ public class TaskDAO {
 			ResultSet result = query.execute();
 			while(result.next()) {
 				Task task = createTask(result);
-				tasks.add(task);
+				if(task !=  null) 
+					tasks.add(task);
 			}
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't get resumable tasks of user", e);
@@ -173,7 +187,8 @@ public class TaskDAO {
 			ResultSet result = query.execute();
 			while(result.next()) {
 				Task task = createTask(result);
-				tasks.add(task);
+				if(task != null)
+					tasks.add(task);
 			}
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't get failed tasks of user", e);
@@ -190,7 +205,8 @@ public class TaskDAO {
 			ResultSet result = query.execute();
 			while(result.next()) {
 				Task task = createTask(result);
-				tasks.add(task);
+				if(task != null)
+					tasks.add(task);
 			}
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't get failed tasks of user", e);
@@ -206,7 +222,8 @@ public class TaskDAO {
 			ResultSet result = query.execute();
 			while(result.next()) {
 				Task task = createTask(result);
-				tasks.add(task);
+				if(task != null)
+					tasks.add(task);
 			}
 		}catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't get completed tasks of user", e);
@@ -254,7 +271,9 @@ public class TaskDAO {
 		case TAXONOMY_COMPARISON:
 			break;
 		case TREE_GENERATION:
-			break;
+			TreeGenerationTaskStage treeGenerationTaskStage = taskStageDAO.getTreeGenerationTaskStage(taskStageId);
+			TreeGenerationConfiguration treeGenerationConfiguration = treeGenerationConfigurationDAO.getTreeGenerationConfiguration(configurationId);
+			return new Task(id, name, taskType, treeGenerationTaskStage, treeGenerationConfiguration, user, resumable, complete, completed, failed, failedTime, created);
 		case VISUALIZATION:
 			break;
 		default:

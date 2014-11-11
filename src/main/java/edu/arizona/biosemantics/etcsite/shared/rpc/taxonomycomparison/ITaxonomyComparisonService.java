@@ -10,6 +10,6 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 @RemoteServiceRelativePath("taxonomyComparison")
 public interface ITaxonomyComparisonService extends RemoteService, IHasTasksService {
 	
-	public Task getTaxonomyComparisonTask(AuthenticationToken authenticationToken, Task task);
+	
 
 }

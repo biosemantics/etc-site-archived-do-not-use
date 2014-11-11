@@ -31,7 +31,6 @@ public class SemanticMarkupReviewView extends Composite implements ISemanticMark
 	interface SemanticMarkupReviewViewUiBinder extends UiBinder<Widget, SemanticMarkupReviewView> {
 	}
 
-	private ISemanticMarkupServiceAsync semanticMarkupService;
 	private Presenter presenter;
 	private Oto oto = new Oto();
 
@@ -39,9 +38,8 @@ public class SemanticMarkupReviewView extends Composite implements ISemanticMark
 	SimpleLayoutPanel otoPanel;
 	
 	@Inject
-	public SemanticMarkupReviewView(ISemanticMarkupServiceAsync semanticMarkupService) {
+	public SemanticMarkupReviewView() {
 		super();
-		this.semanticMarkupService = semanticMarkupService;
 		initWidget(uiBinder.createAndBindUi(this));
 		otoPanel.setWidget(oto.getView().asWidget());
 	}

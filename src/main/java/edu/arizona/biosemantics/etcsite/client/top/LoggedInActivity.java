@@ -67,7 +67,10 @@ public class LoggedInActivity implements Activity, Presenter {
 					}
 					@Override
 					public void onFailure(Throwable caught) {
-						Alerter.failedToGetResumableTasks(caught);
+						//Usually don't want to show this to the user, as it may just have happened 
+						// e.g. because no connection could be obtained to retrieve the running tasks or similarly
+						// confuses because it happens from user's perspective *randomly*
+						//Alerter.failedToGetResumableTasks(caught);
 					}
 	    		});
 	        }

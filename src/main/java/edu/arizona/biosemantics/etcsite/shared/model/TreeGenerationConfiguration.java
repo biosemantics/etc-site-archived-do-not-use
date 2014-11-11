@@ -1,30 +1,38 @@
 package edu.arizona.biosemantics.etcsite.shared.model;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
 public class TreeGenerationConfiguration extends AbstractTaskConfiguration implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1363564148743413563L;
+	private String input;
+	
+	public TreeGenerationConfiguration() { }
+	
+	public TreeGenerationConfiguration(Configuration configuration, String input) {
+		super(configuration);
+		this.input = input;
+	}
 
-	public Task getTask() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getInput() {
+		return input;
+	}
+
+	public void setInput(String input) {
+		this.input = input;
 	}
 
 	@Override
 	public List<String> getInputs() {
-		// TODO Auto-generated method stub
-		return null;
+		List<String> inputs = new LinkedList<String>();
+		inputs.add(input);
+		return inputs;
 	}
 
 	@Override
 	public List<String> getOutputs() {
-		// TODO Auto-generated method stub
-		return null;
+		return new LinkedList<String>();
 	}
 
 }

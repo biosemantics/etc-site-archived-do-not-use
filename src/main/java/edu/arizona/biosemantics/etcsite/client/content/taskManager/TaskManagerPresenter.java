@@ -32,6 +32,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.treegeneration.ITreeGenerationServiceAsync;
 
 public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 	
@@ -45,13 +46,16 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 	private PlaceController placeController;
 	private EventBus eventBus;
 	private ResumeTaskPlaceMapper resumeTaskPlaceMapper;
+	private ITreeGenerationServiceAsync treeGenerationService;
 	
 	@Inject 
 	public TaskManagerPresenter(final ITaskManagerView view, PlaceController placeController, 
 			@Named("Tasks")EventBus eventBus,
 			final ITaskServiceAsync taskService, 
 			ISemanticMarkupServiceAsync semanticMarkupService,
-			IMatrixGenerationServiceAsync matrixGenerationService, ResumeTaskPlaceMapper resumeTaskPlaceMapper, 
+			IMatrixGenerationServiceAsync matrixGenerationService, 
+			ITreeGenerationServiceAsync treeGenerationService,
+			ResumeTaskPlaceMapper resumeTaskPlaceMapper, 
 			IUserSelectView.Presenter userSelectPresenter, IUsersView.Presenter usersPresenter) {
 		this.view = view;
 		this.view.setPresenter(this);
@@ -62,6 +66,7 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 		this.taskService = taskService;
 		this.semanticMarkupService = semanticMarkupService;
 		this.matrixGenerationService = matrixGenerationService;
+		this.treeGenerationService = treeGenerationService;
 		this.resumeTaskPlaceMapper = resumeTaskPlaceMapper;
 		
 		eventBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEvent.ResumableTasksEventHandler() {
@@ -272,7 +277,22 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 				}
 			});
 			break;
+		case TREE_GENERATION:
+			treeGenerationService.goToTaskStage(Authentication.getInstance().getToken(), taskData.getTask(), 
+					edu.arizona.biosemantics.etcsite.shared.model.treegeneration.TaskStageEnum.VIEW, new AsyncCallback<Task>() {
+				@Override
+				public void onSuccess(Task result) {
+					placeController.goTo(new edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationViewPlace(result));
+				}
+
+				@Override
+				public void onFailure(Throwable caught) {
+					Alerter.failedToGoToTaskStage(caught);
+				}
+			});
+			break;
 		}
+			
 	}
 
 	@Override

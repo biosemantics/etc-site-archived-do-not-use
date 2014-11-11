@@ -27,6 +27,8 @@ import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsActivity
 import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerActivity;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationActivity;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationPlace;
 import edu.arizona.biosemantics.etcsite.client.top.LoggedOutPlace;
 
 public class ContentActivityMapper implements MyActivityMapper {
@@ -41,13 +43,14 @@ public class ContentActivityMapper implements MyActivityMapper {
 	private SemanticMarkupActivity semanticMarkupActivity;
 	private MatrixGenerationActivity matrixGenerationActivity;
 	private AnnotationReviewActivity annotationReviewActivity;
+	private TreeGenerationActivity treeGenerationActivity;
 	
 	private MyActivity currentActivity;
 
 	@Inject
 	public ContentActivityMapper(HelpActivity helpActivity, HomeActivity homeActivity, AboutActivity aboutActivity, NewsActivity newsActivity, SettingsActivity settingsActivity, TaskManagerActivity taskManagerActivity,
 			FileManagerActivity fileManagerActivity, SemanticMarkupActivity semanticMarkupActivity, MatrixGenerationActivity matrixGenerationActivity, 
-			AnnotationReviewActivity annotationReviewActivity) {
+			AnnotationReviewActivity annotationReviewActivity, TreeGenerationActivity treeGenerationActivity) {
 		super();
 		this.helpActivity = helpActivity;
 		this.homeActivity = homeActivity;
@@ -59,6 +62,7 @@ public class ContentActivityMapper implements MyActivityMapper {
 		this.semanticMarkupActivity = semanticMarkupActivity;
 		this.matrixGenerationActivity = matrixGenerationActivity;
 		this.annotationReviewActivity = annotationReviewActivity;
+		this.treeGenerationActivity = treeGenerationActivity;
 	}
 
 	@Override
@@ -82,16 +86,14 @@ public class ContentActivityMapper implements MyActivityMapper {
 			currentActivity = taskManagerActivity;
 		if(place instanceof FileManagerPlace)
 			currentActivity = fileManagerActivity;
-		if(place instanceof SemanticMarkupPlace) {
-			semanticMarkupActivity.setTask(((SemanticMarkupPlace) place).getTask());
+		if(place instanceof SemanticMarkupPlace) 
 			currentActivity = semanticMarkupActivity;
-		}
-		if(place instanceof MatrixGenerationPlace) {
-			matrixGenerationActivity.setTask(((MatrixGenerationPlace)place).getTask());
+		if(place instanceof MatrixGenerationPlace)
 			currentActivity = matrixGenerationActivity;
-		}
 		if(place instanceof AnnotationReviewPlace)
 			currentActivity = annotationReviewActivity;
+		if(place instanceof TreeGenerationPlace)
+			currentActivity = treeGenerationActivity;
 		
 		return currentActivity;
 	}

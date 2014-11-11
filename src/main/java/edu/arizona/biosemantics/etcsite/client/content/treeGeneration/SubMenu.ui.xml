@@ -1,0 +1,21 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.common">
+	<ui:style>
+		.subMenuEntry {
+			margin-left: 20px;
+		}
+		.subMenu {
+			padding-top: 10px;
+			padding-bottom: 10px;
+		}
+	</ui:style>
+	<g:VerticalPanel>
+		<!-- <g:Label styleName="siteHeading">Tree Generation</g:Label> -->
+		<g:HorizontalPanel styleName="{style.subMenu}">
+			<my:ImageLabel ui:field="input" styleName="{style.subMenuEntry}" imagePath="images/Enumeration_unselected_1.gif" imageWidth="20px" imageHeight="20px" text="Input"></my:ImageLabel>
+			<my:ImageLabel ui:field="view" styleName="{style.subMenuEntry}" imagePath="images/Enumeration_unselected_2.gif" imageWidth="20px" imageHeight="20px" text="View"></my:ImageLabel>
+		</g:HorizontalPanel>
+	</g:VerticalPanel>
+</ui:UiBinder> 

@@ -2,6 +2,7 @@ package edu.arizona.biosemantics.etcsite.client.content.matrixGeneration;
 
 import com.google.gwt.activity.shared.MyAbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
@@ -26,7 +27,6 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 	private IMatrixGenerationReviewView.Presenter reviewPresenter;
 	private IMatrixGenerationOutputView.Presenter outputPresenter;
 	private AcceptsOneWidget panel;
-	private Task task;
 
 	@Inject
 	public MatrixGenerationActivity(ITaskServiceAsync taskService, 
@@ -57,12 +57,12 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 	public void update() {
 		this.setStepWidget();
 	}
-	
-	public void setTask(Task task) {
-		this.task = task;
-	}
 
 	private void setStepWidget() {
+		Task task = null;
+		Place place = placeController.getWhere();
+		if(place instanceof MatrixGenerationPlace)
+			task = ((MatrixGenerationPlace)place).getTask();
 		if(task == null) 
 			panel.setWidget(inputPresenter.getView());
 		else 

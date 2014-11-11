@@ -3,6 +3,7 @@ package edu.arizona.biosemantics.etcsite.server.db;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 
@@ -41,9 +42,13 @@ public class Query implements AutoCloseable {
 		this.sql = sql;
 		try {
 			connection = connectionPool.getConnection();
-			preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-		} catch(Exception e) {
-			throw new QueryException(e.getMessage(), e.getCause());
+			try {
+				preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			} catch(Exception e) {
+				throw new QueryException("Couldn't preprare statement. " + e.getMessage(), e.getCause());
+			}
+		} catch(SQLException e) {
+			throw new QueryException("Couldn't get connection. " + e.getMessage(), e.getCause());
 		}
 	}
 	

@@ -2,6 +2,7 @@ package edu.arizona.biosemantics.etcsite.client.content.semanticMarkup;
 
 import com.google.gwt.activity.shared.MyAbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
@@ -12,6 +13,7 @@ import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
+import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupInputView.Presenter;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum;
@@ -30,7 +32,6 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 	private ISemanticMarkupParseView.Presenter parsePresenter;
 	private ISemanticMarkupOutputView.Presenter outputPresenter;
 	private AcceptsOneWidget panel;
-	private Task task;
 	private edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupHierarchyView.Presenter hierarchyPresenter;
 	private edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupOrdersView.Presenter ordersPresenter;
 
@@ -75,11 +76,11 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 		this.setStepWidget();
 	}
 
-	public void setTask(Task task) {
-		this.task = task;
-	}
-
 	private void setStepWidget() {
+		Task task = null;
+		Place place = placeController.getWhere();
+		if(place instanceof SemanticMarkupPlace)
+			task = ((SemanticMarkupPlace)place).getTask();
 		if(task == null) 
 			panel.setWidget(inputPresenter.getView());
 		else 

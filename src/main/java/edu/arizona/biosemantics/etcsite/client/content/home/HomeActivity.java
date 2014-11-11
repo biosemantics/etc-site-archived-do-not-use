@@ -24,6 +24,7 @@ import edu.arizona.biosemantics.etcsite.client.content.pipeline.PipelinePlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.ResumeTaskPlaceMapper;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonPlace;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationPlace;
 import edu.arizona.biosemantics.etcsite.client.content.visualization.VisualizationPlace;
 import edu.arizona.biosemantics.etcsite.client.top.LoggedInPlace;
@@ -106,7 +107,7 @@ public class HomeActivity extends MyAbstractActivity implements IHomeContentView
 
 	@Override
 	public void onTreeGeneration() {
-		tryGotoPlace(new TreeGenerationPlace(), treeGenerationService);
+		tryGotoPlace(new TreeGenerationInputPlace(), treeGenerationService);
 	}
 	
 	private void tryGotoPlace(final HasTaskPlace gotoPlace, final IHasTasksServiceAsync tasksService) {
