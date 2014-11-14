@@ -6,7 +6,6 @@ import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review.IReviewView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupReviewPresenter;
 import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
@@ -20,18 +19,15 @@ public class TreeGenerationViewPresenter implements ITreeGenerationViewView.Pres
 	private ITreeGenerationServiceAsync treeGenerationService;
 	private ITreeGenerationViewView view;
 	private PlaceController placeController;
-	private IReviewView.Presenter reviewPresenter;
 
 	@Inject
 	public TreeGenerationViewPresenter(ITreeGenerationViewView view, 
 			ITreeGenerationServiceAsync treeGenerationService,
-			PlaceController placeController, 
-			IReviewView.Presenter reviewPresenter) {
+			PlaceController placeController) {
 		this.view = view;
 		this.view.setPresenter(this);
 		this.treeGenerationService = treeGenerationService;
 		this.placeController = placeController;
-		this.reviewPresenter = reviewPresenter;
 	}
 	
 	@Override

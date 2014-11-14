@@ -4,6 +4,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.matrixreview.client.MatrixReviewView;
+import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 
 public interface IMatrixGenerationReviewView extends IsWidget {
 
@@ -11,9 +13,12 @@ public interface IMatrixGenerationReviewView extends IsWidget {
 		void onNext();
 		IMatrixGenerationReviewView getView();
 		void setTask(Task task);
+		Model getTaxonMatrix();
 	}
 	  
 	void setPresenter(Presenter presenter);
 	Widget asWidget();
+	MatrixReviewView getMatrixReviewView();
+	void setFullModel(Model model);
 	
 }

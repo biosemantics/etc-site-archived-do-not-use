@@ -20,6 +20,7 @@
 			color:red;
 		}
 	</ui:style>
+	<g:ScrollPanel>
 	<lay:CenteredContentPanel>
 		<g:HTMLPanel styleName="{style.panel}">
 	
@@ -92,4 +93,5 @@
 			</div>
 		</g:HTMLPanel>
 	</lay:CenteredContentPanel>
+	</g:ScrollPanel>
 </ui:UiBinder> 

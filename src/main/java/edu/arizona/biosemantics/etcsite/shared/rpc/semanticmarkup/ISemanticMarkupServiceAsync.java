@@ -10,6 +10,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.Preprocessed
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.oto2.oto.shared.model.Term;
 
 public interface ISemanticMarkupServiceAsync extends IHasTasksServiceAsync {
 
@@ -35,6 +36,8 @@ public interface ISemanticMarkupServiceAsync extends IHasTasksServiceAsync {
 	public void setDescription(AuthenticationToken authenticationToken, String filePath, String description, AsyncCallback<Void> callback);
 
 	public void saveOto(AuthenticationToken authenticationToken, Task task, AsyncCallback<String> callback);
+
+	public void renameTerm(AuthenticationToken token, Task task, String term, String newName, AsyncCallback<Void> callback);
 	
 	//public void prepareOptionalOtoLiteSteps(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Void>> callback);
 

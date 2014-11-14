@@ -7,10 +7,12 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review.IReviewView;
+import edu.arizona.biosemantics.matrixreview.client.MatrixReviewView;
+import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 
 public class MatrixGenerationReviewView extends Composite implements IMatrixGenerationReviewView, RequiresResize {
 
@@ -21,14 +23,16 @@ public class MatrixGenerationReviewView extends Composite implements IMatrixGene
 
 	private Presenter presenter;
 
-	@UiField(provided = true)
-	IReviewView view;
+	private MatrixReviewView matrixReviewView = new MatrixReviewView();
+	
+	@UiField
+	SimpleLayoutPanel matrixReviewPanel;
 	
 	@Inject
-	public MatrixGenerationReviewView(IReviewView.Presenter reviewPresenter) {
+	public MatrixGenerationReviewView() {
 		super();
-		this.view = reviewPresenter.getView();
 		initWidget(uiBinder.createAndBindUi(this));
+		matrixReviewPanel.add(matrixReviewView.asWidget());
 	}
 
 	@Override
@@ -43,6 +47,16 @@ public class MatrixGenerationReviewView extends Composite implements IMatrixGene
 
 	@Override
 	public void onResize() {
-		((RequiresResize)view).onResize();
+		((RequiresResize)matrixReviewView).onResize();
+	}
+	
+	@Override
+	public MatrixReviewView getMatrixReviewView() {
+		return matrixReviewView;
+	}
+
+	@Override
+	public void setFullModel(Model model) {
+		matrixReviewView.setFullModel(model);
 	}
 }

@@ -3,7 +3,6 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.matrixGeneration"
 	xmlns:my2="urn:import:edu.arizona.biosemantics.etcsite.client.common"
-	xmlns:re="urn:import:edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review"
 	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout"
 	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container">
 	<!-- xmlns:ma="urn:import:edu.arizona.biosemantics.matrixreview.client" -->
@@ -73,8 +72,7 @@
 		    	    </g:SimplePanel>
 		    	</g:north>
 			   <g:center>
-			       <re:IReviewView ui:field="view"/>
-			     	<!-- <ma:MatrixReviewView ui:field="view"></ma:MatrixReviewView> -->
+			   	<g:SimpleLayoutPanel ui:field="matrixReviewPanel"/>
 			   </g:center>
 		 </g:DockLayoutPanel>
 	

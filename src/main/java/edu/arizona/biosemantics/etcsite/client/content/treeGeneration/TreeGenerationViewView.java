@@ -9,7 +9,6 @@ import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.review.IReviewView;
 import edu.ucdavis.cs.cfgproject.client.KeyView;
 
 public class TreeGenerationViewView extends Composite implements ITreeGenerationViewView, RequiresResize {
@@ -27,7 +26,7 @@ public class TreeGenerationViewView extends Composite implements ITreeGeneration
 	private KeyView keyView = new KeyView();
 	
 	@Inject
-	public TreeGenerationViewView(IReviewView.Presenter reviewPresenter) {
+	public TreeGenerationViewView() {
 		super();
 		initWidget(uiBinder.createAndBindUi(this));
 		cfgPanel.setWidget(keyView.asWidget());

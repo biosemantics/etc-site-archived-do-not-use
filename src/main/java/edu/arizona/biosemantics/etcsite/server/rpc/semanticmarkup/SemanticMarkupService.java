@@ -880,4 +880,28 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			return null;
 		return (SemanticMarkupConfiguration)configuration;
 	}
+
+
+	@Override
+	public void renameTerm(AuthenticationToken token, Task task, String term, String newName) {
+		SemanticMarkupConfiguration config = getSemanticMarkupConfiguration(task);
+		final String input = config.getInput();
+		List<String> files = new LinkedList<String>();
+		try {
+			files = fileService.getDirectoriesFiles(token, input);
+		} catch (PermissionDeniedException e) {
+			log(LogLevel.ERROR, "Couldn't access files of the task to rename terms", e);
+		}
+		for(String file : files) {
+			String description = getDescription(token, input + File.separator + file);
+			if(description != null) {
+				description.replaceAll("\\b" + term + "\\b", newName);
+				try {
+					setDescription(token, input + File.separator + file, description);
+				} catch (SemanticMarkupException e) {
+					log(LogLevel.ERROR, "Couldnt' set description upon rename term", e);
+				}
+			}
+		}
+	}
 }

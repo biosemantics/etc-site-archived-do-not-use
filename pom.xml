@@ -82,13 +82,13 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.23-SNAPSHOT</version>
+		  <version>0.0.27-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.23-SNAPSHOT</version>
+		  <version>0.0.27-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
@@ -191,7 +191,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>semantic-markup</artifactId>
-			<version>0.1.67-SNAPSHOT</version>
+			<version>0.1.68-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>app</artifactId>
@@ -202,13 +202,13 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.63-SNAPSHOT</version>
+		  <version>0.0.66-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.63-SNAPSHOT</version>
+		  <version>0.0.66-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
@@ -313,13 +313,13 @@
 		<dependency>
 			<groupId>edu.ucdavis.cs</groupId>
 			<artifactId>cfgproject</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
+			<version>0.0.4-SNAPSHOT</version>
 			<classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.ucdavis.cs</groupId>
 		  <artifactId>cfgproject</artifactId>
-		  <version>0.0.3-SNAPSHOT</version>
+		  <version>0.0.4-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 	</dependencies>

@@ -23,6 +23,7 @@
 			padding-bottom: 10px;
 		}
 	</ui:style>
+	<g:ScrollPanel>
 	<my:CenteredContentPanel>
 		<g:HTMLPanel>
 		    <div class='content900pxCentered'>
@@ -56,4 +57,5 @@
 		    </div>
 		</g:HTMLPanel>
 	</my:CenteredContentPanel>
+	</g:ScrollPanel>
 </ui:UiBinder> 

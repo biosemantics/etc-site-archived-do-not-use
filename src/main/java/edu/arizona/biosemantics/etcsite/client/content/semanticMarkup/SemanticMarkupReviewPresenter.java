@@ -6,6 +6,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.Inject;
+import com.google.web.bindery.event.shared.EventBus;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
@@ -18,6 +19,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkupException;
 import edu.arizona.biosemantics.oto2.oto.client.event.SaveEvent;
+import edu.arizona.biosemantics.oto2.oto.client.event.TermRenameEvent;
 import edu.arizona.biosemantics.oto2.oto.client.event.SaveEvent.SaveHandler;
 import edu.arizona.biosemantics.common.log.LogLevel;
 
@@ -49,15 +51,33 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 			});
 		}
 	};
+	private EventBus otoEventBus;
 	
 	@Inject
 	public SemanticMarkupReviewPresenter(ISemanticMarkupReviewView view, 
-			ISemanticMarkupServiceAsync semanticMarkupService,
+			final ISemanticMarkupServiceAsync semanticMarkupService,
 			IFileServiceAsync fileService,
 			PlaceController placeController) {
 		this.view = view;
 		view.setPresenter(this);
-		view.getOto().setSaveHandler(otoSaveHandler);
+		this.otoEventBus = view.getOto().getEventBus();
+		otoEventBus.addHandler(SaveEvent.TYPE, otoSaveHandler);
+		otoEventBus.addHandler(TermRenameEvent.TYPE, new TermRenameEvent.RenameTermHandler() {
+			@Override
+			public void onRename(TermRenameEvent event) {
+				semanticMarkupService.renameTerm(Authentication.getInstance().getToken(), 
+						task, event.getTerm().getTerm(), event.getNewName(), new AsyncCallback<Void>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								// don't really want to report issues here to user
+							}
+							@Override
+							public void onSuccess(Void result) {
+								// don't really want to report susccess here to user
+							}
+				});
+			}
+		});
 		this.placeController = placeController;
 		this.semanticMarkupService = semanticMarkupService;
 		this.fileService = fileService;

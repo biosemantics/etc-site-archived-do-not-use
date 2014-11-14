@@ -35,6 +35,7 @@
 	}
 	</ui:style>
 	
+	<g:ScrollPanel>
 	<lay:CenteredContentPanel>
 		<g:VerticalPanel>
 			<g:HorizontalPanel>
@@ -50,7 +51,7 @@
 			            <g:InlineLabel>
 			            	The input files must be in English and conform to this&nbsp;
 			            </g:InlineLabel>
-			            <g:Anchor href="https://raw.githubusercontent.com/biosemantics/schemas/master/consolidation_01272014/semanticMarkupInput.xsd" target="_blank"  styleName="{style.padding}">XML schema</g:Anchor>
+			            <g:Anchor href="http://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupInput.xsd" target="_blank"  styleName="{style.padding}">XML schema</g:Anchor>
 			            <g:InlineLabel>
 			            	. The 'Create Files' function in the&nbsp;
 			            </g:InlineLabel>
@@ -137,4 +138,5 @@
 			</g:VerticalPanel>
 		</g:VerticalPanel>
 	</lay:CenteredContentPanel>
+	</g:ScrollPanel>
 </ui:UiBinder> 

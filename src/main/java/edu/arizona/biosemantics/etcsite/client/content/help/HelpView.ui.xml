@@ -5,6 +5,7 @@
 	<ui:style>
 		
 	</ui:style>
+	<g:ScrollPanel>
 	<lay:CenteredContentPanel>
 		<g:HTMLPanel>
 		    <g:VerticalPanel>
@@ -26,4 +27,5 @@
 			</g:VerticalPanel>
 		</g:HTMLPanel>
 	</lay:CenteredContentPanel>
+	</g:ScrollPanel>
 </ui:UiBinder> 

@@ -12,6 +12,7 @@
 		}
 	</ui:style>
 	
+	<g:ScrollPanel>
 	<lay:CenteredContentPanel>
 		<g:VerticalPanel>
 		    <g:HorizontalPanel>
@@ -23,4 +24,5 @@
 			<g:Button ui:field="nextButton">Next</g:Button>
 		</g:VerticalPanel>
 	</lay:CenteredContentPanel>
+	</g:ScrollPanel>
 </ui:UiBinder>

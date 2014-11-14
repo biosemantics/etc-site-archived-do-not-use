@@ -11,6 +11,7 @@
 			font-weight:bold;
 		}
 	</ui:style>
+	<g:ScrollPanel>
 	<lay:CenteredContentPanel>
 		<g:VerticalPanel>
 		    <g:Label styleName="siteHeading">ETC Toolbox Development News</g:Label>
@@ -62,4 +63,5 @@
 		    
 		</g:VerticalPanel>
 	</lay:CenteredContentPanel>
+	</g:ScrollPanel>
 </ui:UiBinder> 

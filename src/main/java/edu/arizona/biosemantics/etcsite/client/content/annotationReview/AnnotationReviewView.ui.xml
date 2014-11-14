@@ -15,6 +15,7 @@
 			padding: 20px;
         }
     </ui:style>
+    <g:ScrollPanel>
     <g:HTMLPanel >
     <g:VerticalPanel>
         <g:cell>
@@ -37,4 +38,5 @@
     	</g:cell>
      </g:VerticalPanel>
      </g:HTMLPanel>
+     </g:ScrollPanel>
 </ui:UiBinder> 

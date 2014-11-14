@@ -29,6 +29,7 @@
 		width: 220px;
 	}
 	</ui:style>	
+	<g:ScrollPanel>
 	<lay:CenteredContentPanel>
 		<g:VerticalPanel>
 		    <g:HorizontalPanel>
@@ -48,7 +49,7 @@
 			        	<g:InlineLabel>
 			            . Files in the upload folder must conform to the   
 			        	</g:InlineLabel>
-			        	<g:Anchor href="https://raw.githubusercontent.com/biosemantics/schemas/master/consolidation_01272014/semanticMarkupOutput.xsd" target="_blank">&nbsp;format requirements.</g:Anchor>
+			        	<g:Anchor href="http://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupOutput.xsd" target="_blank">&nbsp;format requirements.</g:Anchor>
 			        </g:FlowPanel>
 			        </g:VerticalPanel>
 			        <g:VerticalPanel styleName="{style.padding}"/>
@@ -131,4 +132,5 @@
 			</g:VerticalPanel>
 		</g:VerticalPanel>
 	</lay:CenteredContentPanel>
+	</g:ScrollPanel>
 </ui:UiBinder>

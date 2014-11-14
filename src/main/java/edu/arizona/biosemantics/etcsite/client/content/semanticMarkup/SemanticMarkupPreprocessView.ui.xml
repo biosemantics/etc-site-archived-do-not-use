@@ -22,6 +22,7 @@
 			padding-bottom:10px;
 		}
 	</ui:style>
+	<g:ScrollPanel>
 	<lay:CenteredContentPanel>
 		<g:VerticalPanel>
 		     <g:HorizontalPanel>
@@ -53,4 +54,5 @@
 			</g:VerticalPanel>
 		</g:VerticalPanel>
 	</lay:CenteredContentPanel>
+	</g:ScrollPanel>
 </ui:UiBinder>
