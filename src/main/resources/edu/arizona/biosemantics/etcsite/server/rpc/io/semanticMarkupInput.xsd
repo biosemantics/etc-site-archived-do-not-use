@@ -222,7 +222,7 @@ targetNamespace="http://www.github.com/biosemantics">
 	<xs:complexType name="key_statement">
 		<xs:sequence>
 			<xs:element name="statement_id" type="nonEmptyString"/>
-			<xs:element name="statement" type="nonEmptyString"/>
+			<xs:element name="description" type="description"/>
 			<xs:choice minOccurs="0">
 				<xs:element name="next_statement_id" type="nonEmptyString"/>
 				<xs:element name="determination" type="determination"/>

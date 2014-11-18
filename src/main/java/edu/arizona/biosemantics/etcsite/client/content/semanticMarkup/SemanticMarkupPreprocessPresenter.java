@@ -13,6 +13,7 @@ import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.process.semanticmarkup.BracketValidator;
+import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.Description;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.PreprocessedDescription;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
@@ -201,13 +202,12 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 
 	private void setPreprocessedDescription(final PreprocessedDescription preprocessedDescription) {
 		semanticMarkupService.getDescription(Authentication.getInstance().getToken(), 
-				preprocessedDescription.getFilePath(), new AsyncCallback<String>() {
+				preprocessedDescription.getFilePath(), preprocessedDescription.getDescriptionNumber(), new AsyncCallback<Description>() {
 					@Override
-					public void onSuccess(String result) {
+					public void onSuccess(Description result) {
 						setText(preprocessedDescription.getFileName(), 
 								result, preprocessedDescription.getBracketCounts());
 					}
-
 					@Override
 					public void onFailure(Throwable caught) {
 						Alerter.failedToGetDescription(caught);
@@ -215,7 +215,7 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 		});
 	}
 	
-	private void setText(String descriptionId, String text, Map<Character, Integer> bracketCounts) {
+	private void setText(String filename, Description description, Map<Character, Integer> bracketCounts) {
 		//doesn't work because the getCursorPos uses element.selectionRange. However the element is an iframe with html content for
 		// the richtextarea, rather than a simpler html element (html textarea) that implemetns selectionRange...
 		/*
@@ -225,7 +225,8 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 		} catch(Exception e) {
 			e.printStackTrace();
 		}*/
-		view.setDescriptionIDLabel("Description: " + descriptionId);
+		String text = description.getContent();
+		view.setDescriptionIDLabel("Description: " + filename);
 		updateBracketCounts(bracketCounts);
 		text = bracketColorizer.colorize(text);
 		
@@ -254,9 +255,10 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 	}
 	
 	protected void store(AsyncCallback<Void> callback) {
-		String target = preprocessedDescriptions.get(currentPreprocessedDescription).getFilePath();
+		String filePath = preprocessedDescriptions.get(currentPreprocessedDescription).getFilePath();
+		int descriptionNumber = preprocessedDescriptions.get(currentPreprocessedDescription).getDescriptionNumber();
 		String content = view.getHTML();
 		semanticMarkupService.setDescription(Authentication.getInstance().getToken(), 
-				target, content, callback);
+				filePath, descriptionNumber, content, callback);
 	}
 }

@@ -610,7 +610,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		Document doc = sax.build(file);
 		
 		XPathFactory xpfac = XPathFactory.instance();
-		XPathExpression<Element> xp = xpfac.compile("//bio:treatment/description[@type='morphology']", Filters.element(), null,
+		XPathExpression<Element> xp = xpfac.compile("//description[@type='morphology']", Filters.element(), null,
 				Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
 		for(Element element : xp.evaluate(doc)) {
 			List<Element> statements = element.getChildren("statement");

@@ -54,6 +54,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
 import edu.arizona.biosemantics.etcsite.shared.model.process.semanticmarkup.BracketValidator;
+import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.Description;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.LearnInvocation;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.PreprocessedDescription;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum;
@@ -555,7 +556,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	
 
 	@Override
-	public String getDescription(AuthenticationToken authenticationToken, String filePath) {	
+	public List<Description> getDescriptions(AuthenticationToken authenticationToken, String filePath) {	
+		List<Description> descriptions = new LinkedList<Description>();
 		String fileContent;
 		try {
 			fileContent = fileAccessService.getFileContent(authenticationToken, filePath);
@@ -572,22 +574,29 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			}
 			
 			XPathFactory xpfac = XPathFactory.instance();
-			XPathExpression<Element> xp = xpfac.compile("/bio:treatment/description", Filters.element(), null,
+			XPathExpression<Element> xp = xpfac.compile("//description", Filters.element(), null,
 					Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
-			List<Element> descriptions = xp.evaluate(doc);
-			if(descriptions != null && !descriptions.isEmpty()) {
-				StringBuilder fullDescription = new StringBuilder();
-				for(Element description : descriptions)
-					fullDescription.append(description.getText() + "\n\n");
-				String fullDescr = fullDescription.toString();
-				return fullDescription.toString().substring(0, fullDescr.length() - 2);
-			} else 
-				return null;
+			List<Element> descriptionElements = xp.evaluate(doc);
+			if(descriptionElements != null) 
+				for(Element descriptionElement : descriptionElements) {
+					String type = descriptionElement.getAttributeValue("type");
+					String text = descriptionElement.getValue();
+					descriptions.add(new Description(text, type));
+				}
 		}
+		return descriptions;
 	}
 	
 	@Override
-	public void setDescription(AuthenticationToken authenticationToken, String filePath, String description) throws SemanticMarkupException {	
+	public Description getDescription(AuthenticationToken token, String filePath, int descriptionNumber) {
+		List<Description> descriptions = getDescriptions(token, filePath);
+		if(descriptions.size() > descriptionNumber)
+			return descriptions.get(descriptionNumber);
+		return null;
+	}
+	
+	@Override
+	public void setDescription(AuthenticationToken authenticationToken, String filePath, int descriptionNumber, String description) throws SemanticMarkupException {	
 		String content;
 		try {
 			content = fileAccessService.getFileContent(authenticationToken, filePath);
@@ -596,7 +605,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		}
 		String newContent;
 		try {
-			newContent = replaceDescription(content, description);
+			newContent = replaceDescription(content, description, descriptionNumber);
 		} catch (JDOMException | IOException e1) {
 			throw new SemanticMarkupException();
 		}
@@ -723,10 +732,11 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			throw new SemanticMarkupException(task);
 		}
 		for(String file : files) {
-			String description = getDescription(authenticationToken, input + File.separator + file);
-			if(description != null) {
+			List<Description> descriptions = getDescriptions(authenticationToken, input + File.separator + file);
+			for(Description description : descriptions) {
 				try {
-					contexts.add(new Context(learnResult.getOtoUploadId(), getTaxonIdentification(authenticationToken, input + File.separator + file), description));
+					contexts.add(new Context(learnResult.getOtoUploadId(), getTaxonIdentification(authenticationToken, input + File.separator + file), 
+							description.getContent()));
 				} catch (PermissionDeniedException | GetFileContentFailedException e) {
 					throw new SemanticMarkupException(task);
 				}
@@ -824,18 +834,16 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		}
 	}
 
-	private String replaceDescription(String content, String description) throws JDOMException, IOException {
+	private String replaceDescription(String content, String description, int descriptionNumber) throws JDOMException, IOException {
 		SAXBuilder sax = new SAXBuilder();
 		try(StringReader reader = new StringReader(content)) {
 			Document doc = sax.build(reader);
 			
 			XPathFactory xpfac = XPathFactory.instance();
-			XPathExpression<Element> xp = xpfac.compile("/bio:treatment/description", Filters.element(), null,
+			XPathExpression<Element> xp = xpfac.compile("//description", Filters.element(), null,
 					Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
 			List<Element> descriptions = xp.evaluate(doc);
-			if(descriptions != null && !descriptions.isEmpty())
-				descriptions.get(0).setText(description);
-			
+			descriptions.get(descriptionNumber).setText(description);
 			XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
 			return outputter.outputString(doc);
 		}
@@ -860,12 +868,13 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				return result;
 			}
 			for(String file : directoryFiles) {
-				String description = getDescription(authenticationToken, inputDirectory + File.separator + file);
-				if(description != null) {
-					if(!bracketValidator.validate(description)) {
+				List<Description> descriptions = getDescriptions(authenticationToken, inputDirectory + File.separator + file);
+				for(int descriptionNumber = 0; descriptionNumber<descriptions.size(); descriptionNumber++) {
+					String text = descriptions.get(descriptionNumber).getContent();
+					if(!bracketValidator.validate(text)) {
 						PreprocessedDescription preprocessedDescription = new PreprocessedDescription(
-								inputDirectory + File.separator + file, file, 0,
-										bracketValidator.getBracketCountDifferences(description));
+								inputDirectory + File.separator + file, file, descriptionNumber,
+										bracketValidator.getBracketCountDifferences(text));
 						result.add(preprocessedDescription);
 					}
 				}
@@ -893,15 +902,17 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			log(LogLevel.ERROR, "Couldn't access files of the task to rename terms", e);
 		}
 		for(String file : files) {
-			String description = getDescription(token, input + File.separator + file);
-			if(description != null) {
-				description.replaceAll("\\b" + term + "\\b", newName);
+			List<Description> descriptions = getDescriptions(token, input + File.separator + file);
+			for(int descriptionNumber = 0; descriptionNumber<descriptions.size(); descriptionNumber++) {
+				String text = descriptions.get(descriptionNumber).getContent();
+				text.replaceAll("\\b" + term + "\\b", newName);
 				try {
-					setDescription(token, input + File.separator + file, description);
+					setDescription(token, input + File.separator + file, descriptionNumber, text);
 				} catch (SemanticMarkupException e) {
 					log(LogLevel.ERROR, "Couldnt' set description upon rename term", e);
 				}
 			}
 		}
 	}
+
 }

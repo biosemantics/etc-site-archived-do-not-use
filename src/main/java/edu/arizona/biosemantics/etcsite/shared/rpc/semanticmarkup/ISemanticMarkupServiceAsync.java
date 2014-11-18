@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.Description;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.LearnInvocation;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.PreprocessedDescription;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum;
@@ -31,13 +32,17 @@ public interface ISemanticMarkupServiceAsync extends IHasTasksServiceAsync {
 	public void goToTaskStage(AuthenticationToken authenticationToken, Task semanticMarkupTask, TaskStageEnum taskStage, 
 			AsyncCallback<Task> callback);
 	
-	public void getDescription(AuthenticationToken authenticationToken, String filePath, AsyncCallback<String> callback);
+	public void getDescriptions(AuthenticationToken authenticationToken, String filePath, AsyncCallback<List<Description>> callback);
 	
-	public void setDescription(AuthenticationToken authenticationToken, String filePath, String description, AsyncCallback<Void> callback);
+	public void getDescription(AuthenticationToken token, String filePath, int descriptionNumber, AsyncCallback<Description> asyncCallback);
+	
+	public void setDescription(AuthenticationToken authenticationToken, String filePath, int descriptionNumber, String description, AsyncCallback<Void> callback);
 
 	public void saveOto(AuthenticationToken authenticationToken, Task task, AsyncCallback<String> callback);
 
 	public void renameTerm(AuthenticationToken token, Task task, String term, String newName, AsyncCallback<Void> callback);
+
+
 	
 	//public void prepareOptionalOtoLiteSteps(AuthenticationToken authenticationToken, Task task, AsyncCallback<RPCResult<Void>> callback);
 
