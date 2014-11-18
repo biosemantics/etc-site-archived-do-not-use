@@ -303,13 +303,13 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		}
 		try {
 			String createFileResult = 
-					fileService.createFile(new AdminAuthenticationToken(), createDirectoryResult, "Matrix.mx", true);
+					fileService.createFile(new AdminAuthenticationToken(), createDirectoryResult, "Matrix.csv", true);
 		} catch (CreateFileFailedException | PermissionDeniedException e) {
 			throw new MatrixGenerationException(task);
 		}
 		try {
 			fileAccessService.setFileContent(authenticationToken, 
-					createDirectoryResult + File.separator + "Matrix.mx", csvContent);
+					createDirectoryResult + File.separator + "Matrix.csv", csvContent);
 		} catch (SetFileContentFailedException | PermissionDeniedException e) {
 			throw new MatrixGenerationException(task);
 		}
@@ -383,7 +383,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	@Override
 	public void save(AuthenticationToken authenticationToken, Model model, Task task) throws MatrixGenerationException {
 		final MatrixGenerationConfiguration config = getMatrixGenerationConfiguration(task);
-		String outputFile = Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "Matrix.mx";
+		String outputFile = Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "Matrix.csv";
 		try {
 			serializeMatrix(model, Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "TaxonMatrix.ser");
 		} catch (IOException e) {
@@ -751,7 +751,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 
 	private String getOutputFile(Task task) {
-		return  Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "Matrix.mx";
+		return  Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "Matrix.csv";
 	}
 	
 	/*private TaxonMatrix createSampleMatrix() {
@@ -834,6 +834,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	
 	public static void main(String[] args) throws Exception {
 		MatrixGenerationService service = new MatrixGenerationService();
-		service.createTaxonMatrix("C:/test/Test_mmm", "C:/test/Test_mmm.mx");
+		service.createTaxonMatrix("C:/test/Test_mmm", "C:/test/Test_mmm.csv");
 	}
 }

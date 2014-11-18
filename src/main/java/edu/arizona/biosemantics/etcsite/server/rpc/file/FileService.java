@@ -199,7 +199,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 					log(LogLevel.ERROR, "Couldn't get file type", e);
 					return null;
 				}
-			} else if(file.getName().endsWith(".mx") || file.getName().endsWith(".nxs") || file.getName().endsWith(".nex") || file.getName().endsWith(".sdd")) {
+			} else if(file.getName().endsWith(".csv") || file.getName().endsWith(".mx") || file.getName().endsWith(".nxs") || file.getName().endsWith(".nex") || file.getName().endsWith(".sdd")) {
 				return FileTypeEnum.MATRIX;
 			} 
 			/*RPCResult<Boolean> validationResult = fileFormatService.isValidMarkedupTaxonDescription(authenticationToken, filePath);
