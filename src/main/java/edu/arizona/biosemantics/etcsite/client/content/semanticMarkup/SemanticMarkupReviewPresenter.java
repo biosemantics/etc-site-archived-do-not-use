@@ -66,7 +66,7 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 			@Override
 			public void onRename(TermRenameEvent event) {
 				semanticMarkupService.renameTerm(Authentication.getInstance().getToken(), 
-						task, event.getTerm().getTerm(), event.getNewName(), new AsyncCallback<Void>() {
+						task, event.getOldName(), event.getNewName(), new AsyncCallback<Void>() {
 							@Override
 							public void onFailure(Throwable caught) {
 								// don't really want to report issues here to user

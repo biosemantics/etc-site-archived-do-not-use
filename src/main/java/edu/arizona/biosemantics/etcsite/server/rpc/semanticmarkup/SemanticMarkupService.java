@@ -905,7 +905,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			List<Description> descriptions = getDescriptions(token, input + File.separator + file);
 			for(int descriptionNumber = 0; descriptionNumber<descriptions.size(); descriptionNumber++) {
 				String text = descriptions.get(descriptionNumber).getContent();
-				text.replaceAll("\\b" + term + "\\b", newName);
+				text = text.replaceAll("(?i)\\b" + term + "\\b", newName);
 				try {
 					setDescription(token, input + File.separator + file, descriptionNumber, text);
 				} catch (SemanticMarkupException e) {
