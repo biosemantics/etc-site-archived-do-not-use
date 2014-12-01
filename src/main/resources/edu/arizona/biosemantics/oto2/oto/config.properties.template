@@ -1,0 +1,13 @@
+#Database
+databaseName=
+databaseUser=
+databasePassword=
+databaseHost=
+databasePort=
+
+#Bioportal
+bioportalUrl=http://data.bioontology.org
+bioportalApiKey=
+
+#OTO
+otoClientUrl=http://biosemantics.arizona.edu:8080/OTO/
