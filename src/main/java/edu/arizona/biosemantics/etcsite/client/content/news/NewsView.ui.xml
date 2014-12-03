@@ -10,14 +10,19 @@
 		.important{
 			font-weight:bold;
 		}
+		.header{
+			font-size: 24px;
+			font-weight: bold;
+			color: #339900;
+		}
 	</ui:style>
 	<g:ScrollPanel>
 	<lay:CenteredContentPanel>
 		<g:VerticalPanel>
-		    <g:Label styleName="siteHeading">ETC Toolbox Development News</g:Label>
+		    <g:Label styleName="{style.header}">ETC Toolkit Development News</g:Label>
 		    
 		    <g:VerticalPanel styleName="{style.padding}">
-		       <g:InlineLabel>The development schedule of the ETC toolbox is shown below. </g:InlineLabel>
+		       <g:InlineLabel>The development updates of the ETC toolkit are shown below. </g:InlineLabel>
 		    	<g:FlowPanel><g:InlineLabel>Feature requests, bug reports,  and usability issue reports are accepted at&nbsp;</g:InlineLabel>
 		    		<g:Anchor href="https://github.com/biosemantics/etc-site/issues?state=open" target="_blank">&nbsp;the ETC GitHub issue tracker</g:Anchor>
 		    		<g:InlineLabel>.</g:InlineLabel>
@@ -31,19 +36,6 @@
 										<g:cell>&nbsp;</g:cell>
 										<g:cell styleName="{style.important}">Features</g:cell>
 									</g:row> 
-									<g:row>
-										<g:cell>
-											Jul 31, 2014
-										</g:cell>
-										<g:cell>&nbsp;</g:cell>	
-										<g:customCell>
-											<g:VerticalPanel>
-											    <g:InlineLabel>
-											        Beta release of the Text Capture tool.
-											    </g:InlineLabel>
-											</g:VerticalPanel>
-										</g:customCell>
-									</g:row>
 									<!--a new row -->
 									<g:row>
 										<g:cell>
@@ -58,6 +50,94 @@
 											</g:VerticalPanel>
 										</g:customCell>
 									</g:row>
+									
+									<g:row>
+										<g:cell>
+											Nov 15, 2014
+										</g:cell>
+										<g:cell>&nbsp;</g:cell>
+										<g:customCell>
+											<g:VerticalPanel>
+											    <g:InlineLabel>
+											        UMass Server firewall configuration changes, ETC tools stopped functioning.
+											    </g:InlineLabel>
+											</g:VerticalPanel>
+										</g:customCell>
+									</g:row>
+									
+									
+									<g:row>
+										<g:cell>
+											Nov 1, 2014
+										</g:cell>
+										<g:cell>&nbsp;</g:cell>
+										<g:customCell>
+											<g:VerticalPanel>
+											    <g:InlineLabel>
+											        Beta test of the Key Generation tool.
+											    </g:InlineLabel>
+											</g:VerticalPanel>
+										</g:customCell>
+									</g:row>
+									
+									<g:row>
+										<g:cell>
+											Oct 10, 2014
+										</g:cell>
+										<g:cell>&nbsp;</g:cell>
+										<g:customCell>
+											<g:VerticalPanel>
+											    <g:InlineLabel>
+											         Added Matrix Selection module in the Matrix Generation tool.
+											    </g:InlineLabel>
+											</g:VerticalPanel>
+										</g:customCell>
+									</g:row>
+									
+									<g:row>
+										<g:cell>
+											Sept 5, 2014
+										</g:cell>
+										<g:cell>&nbsp;</g:cell>
+										<g:customCell>
+											<g:VerticalPanel>
+											    <g:InlineLabel>
+											         Revamp Term Review module in the Text Capture tool.
+											    </g:InlineLabel>
+											</g:VerticalPanel>
+										</g:customCell>
+									</g:row>
+									
+									<g:row>
+										<g:cell>
+											Jul 31, 2014
+										</g:cell>
+										<g:cell>&nbsp;</g:cell>
+										<g:customCell>
+											<g:VerticalPanel>
+											    <g:InlineLabel>
+											         Beta test of the Matrix Generation tool.
+											    </g:InlineLabel>
+											</g:VerticalPanel>
+										</g:customCell>
+									</g:row>
+									
+									<g:row>
+										<g:cell>
+											Jul 31, 2014
+										</g:cell>
+										<g:cell>&nbsp;</g:cell>	
+										<g:customCell>
+											<g:VerticalPanel>
+											    <g:InlineLabel>
+											        Beta release of the Text Capture tool.
+											    </g:InlineLabel>
+											</g:VerticalPanel>
+										</g:customCell>
+									</g:row>
+									
+									
+									
 				</g:Grid> 
 		    </g:VerticalPanel>
 		    

@@ -104,7 +104,7 @@
 		<div class="{style.menuStart}">	
 			<div class='{style.etcLogo}'/>
 		    <!-- <div class="{style.etcPipelineText}"></div> -->
-		    <div class="{style.menuStartText}">A toolbox for rapidly converting taxonomic descriptions into character matrices for systematics and evolutionary studies. 
+		    <div class="{style.menuStartText}">Five tools are provided for rapidly converting taxonomic descriptions into character matrices for systematics and evolutionary studies. 
 		      	<g:Anchor ui:field="aboutAnchor">More</g:Anchor></div>
 		    <div class="{style.features}">
 				<div class="{style.featuresText}"></div>

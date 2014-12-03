@@ -51,7 +51,7 @@
 					</g:VerticalPanel>
 				</g:HorizontalPanel>
 				<g:FlowPanel styleName="{style.padding}">
-				<g:Button ui:field="nextButton" visible="false">Next</g:Button>
+				<g:Button ui:field="nextButton" visible="false">Next Step in Text Capture</g:Button>
 				</g:FlowPanel>
 			</g:VerticalPanel>
 		</g:VerticalPanel>

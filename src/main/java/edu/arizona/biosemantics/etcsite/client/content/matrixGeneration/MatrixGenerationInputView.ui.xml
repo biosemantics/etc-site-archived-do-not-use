@@ -11,7 +11,7 @@
 	}
 	
 	.subMenuEntry {
-		margin-left: 0px;
+		margin-left: 20px;
 		padding-top: 10px;
 		padding-bottom: 10px;
 	}
@@ -23,114 +23,144 @@
 	
 	.note {
 		font-size: 10px;
-		color: #999999;
+		color: #555555;
 	}
+	
 	.firstColumn {
 		width: 220px;
 	}
-	</ui:style>	
+	
+	.bold {
+		font-weight: bold;
+	}
+	</ui:style>
 	<g:ScrollPanel>
-	<lay:CenteredContentPanel>
-		<g:VerticalPanel>
-		    <g:HorizontalPanel>
-		    	<my2:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.MatrixGenerationShort.gif" imageWidth="80px" imageHeight="20px" text="" />
-		    	<my:SubMenu ui:field="subMenu" step="INPUT"/>
-			</g:HorizontalPanel>
-			<g:VerticalPanel styleName="{style.padding}">
-			        <g:VerticalPanel>
-						<g:InlineLabel>
-			            Please specify a csv matrix file or a folder output by the Text Capture tool. 
-			        	</g:InlineLabel>    
-			        <g:FlowPanel>
-			        	<g:InlineLabel> 
-			            You can also upload a folder using&nbsp;
-			        	</g:InlineLabel>
-			        	<g:Anchor ui:field="fileManagerAnchor">File Manager</g:Anchor>
-			        	<g:InlineLabel>
-			            . Files in the upload folder must conform to the   
-			        	</g:InlineLabel>
-			        	<g:Anchor href="http://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupOutput.xsd" target="_blank">&nbsp;format requirements.</g:Anchor>
-			        </g:FlowPanel>
-			        </g:VerticalPanel>
-			        <g:VerticalPanel styleName="{style.padding}"/>
-			        <g:VerticalPanel styleName="{style.padding}">
-			    <g:HorizontalPanel styleName="inputForm">
-			        <g:VerticalPanel styleName="{style.firstColumn}">
-				    	<g:cell verticalAlignment="ALIGN_TOP">
-				        	<g:Label>Task name:</g:Label>
-				        </g:cell>
-				          <g:InlineLabel styleName="{style.note}">
-				            Provide a name to
-				        </g:InlineLabel>
-				         <g:InlineLabel styleName="{style.note}">
-				            identify your task.
-				        </g:InlineLabel>
-			        </g:VerticalPanel>
-			        <g:cell verticalAlignment="ALIGN_MIDDLE">
-			        	<g:TextBox ui:field="taskNameTextBox"></g:TextBox>
-		        	</g:cell>
-			    </g:HorizontalPanel>
-			    </g:VerticalPanel>
-			    <g:VerticalPanel styleName="{style.padding}">
-			    <g:HorizontalPanel>
-			        <g:VerticalPanel styleName="{style.firstColumn}">
-			             <g:cell verticalAlignment="ALIGN_TOP">
-			        	<g:Label>Select Folder/File:</g:Label>
-			            </g:cell>
-			            <g:InlineLabel styleName="{style.note}">
-			            Select a folder of taxon descriptions
-			            </g:InlineLabel>
-			            <g:InlineLabel styleName="{style.note}">
-			            confirming to the format requirements,
-			            </g:InlineLabel>
-			            <g:InlineLabel styleName="{style.note}">
-			            or a csv matrix file.
-			            </g:InlineLabel>
-			        </g:VerticalPanel>
-			        <g:Button ui:field="inputButton">Select Input</g:Button>
-					<g:cell verticalAlignment="ALIGN_TOP">
-			        	<g:Label ui:field="inputLabel" styleName="{style.important}"></g:Label>
-					</g:cell>
-			    </g:HorizontalPanel>
-			    </g:VerticalPanel>
-			    <g:VerticalPanel styleName="{style.padding}">
-			    <g:HorizontalPanel>
-			        <g:VerticalPanel styleName="{style.firstColumn}">
-			             <g:cell verticalAlignment="ALIGN_TOP">
-			        	<g:Label>Inherit Values:</g:Label>
-			            </g:cell>
-			            <g:InlineLabel styleName="{style.note}">
-			            Inherits values from upper rank taxa 
-			            </g:InlineLabel>
-			            <g:InlineLabel styleName="{style.note}">
-			            to their descendant lower rank taxa.
-			            </g:InlineLabel>
-			        </g:VerticalPanel>
-			        <g:CheckBox ui:field="inheritValuesBox" value="true"></g:CheckBox>
-			    </g:HorizontalPanel>
-			    </g:VerticalPanel>
-			   	<g:VerticalPanel styleName="{style.padding}">
-			    <g:HorizontalPanel>
-			        <g:VerticalPanel styleName="{style.firstColumn}">
-			             <g:cell verticalAlignment="ALIGN_TOP">
-			        	<g:Label>Generate Absent/Present Values:</g:Label>
-			            </g:cell>
-			            <g:InlineLabel styleName="{style.note}">
-			            Generates absent present values from
-			            </g:InlineLabel>
-			            <g:InlineLabel styleName="{style.note}">
-			            determined structure relationships.
-			            </g:InlineLabel>
-			        </g:VerticalPanel>
-			        <g:CheckBox ui:field="generateAbsentPresentBox" value="false"></g:CheckBox>
-			    </g:HorizontalPanel>
-			    </g:VerticalPanel>
-			    <g:VerticalPanel styleName="{style.padding}">
-			    <g:Button ui:field="nextButton">Next</g:Button>
-			    </g:VerticalPanel>
-				<!--  <g:Button styleName="{style.important}" ui:field="button" /> -->
+		<lay:CenteredContentPanel>
+			<g:VerticalPanel>
+				<g:HorizontalPanel>
+					<!-- <my2:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.MatrixGenerationShort.gif" 
+						imageWidth="80px" imageHeight="20px" text="" /> -->
+					<my:SubMenu ui:field="subMenu" step="INPUT" />
+				</g:HorizontalPanel>
+				<g:VerticalPanel styleName="{style.padding}">
+					<g:VerticalPanel styleName="{style.padding}" />
+					<g:VerticalPanel>
+						<g:FlowPanel>
+							<g:InlineLabel styleName="{style.bold}">INPUT
+								REQUIREMENTS:&nbsp;
+							</g:InlineLabel>
+							<g:InlineLabel>Matrix Generation takes a folder output by the
+								Text Capture tool as input, or a folder with the files
+								conforming to this&nbsp;
+							</g:InlineLabel>
+							<g:Anchor
+								href="http://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupOutput.xsd"
+								target="_blank">format.</g:Anchor>
+						</g:FlowPanel>
+						<g:InlineLabel>&nbsp;
+						</g:InlineLabel>
+						<g:FlowPanel>
+							<g:InlineLabel styleName="{style.bold}">1.&nbsp;
+							</g:InlineLabel>
+							<g:InlineLabel>
+								If you do not have the input ready, please run the Text Capture
+								tool first to generate them, or upload files conforming to the
+								above-mentioned format using the&nbsp;
+							</g:InlineLabel>
+							<g:Anchor ui:field="fileManagerAnchor">File Manager.</g:Anchor>
+						</g:FlowPanel>
+						<g:FlowPanel>
+							<g:InlineLabel styleName="{style.bold}">2.&nbsp;
+							</g:InlineLabel>
+							<g:InlineLabel>
+								Then provide the information below to start the
+								process:
+							</g:InlineLabel>
+							<g:InlineLabel>&nbsp;
+							</g:InlineLabel>
+						</g:FlowPanel>
+					</g:VerticalPanel>
+					<!-- <g:VerticalPanel styleName="{style.padding}"> -->
+					<g:VerticalPanel styleName="{style.subMenuEntry}">
+						<g:HorizontalPanel styleName="inputForm">
+							<g:VerticalPanel styleName="{style.firstColumn}">
+								<g:cell verticalAlignment="ALIGN_TOP">
+									<g:Label>Task Name:</g:Label>
+								</g:cell>
+								<g:InlineLabel styleName="{style.note}">
+									Provide a name to
+								</g:InlineLabel>
+								<g:InlineLabel styleName="{style.note}">
+									identify your task/analysis.
+								</g:InlineLabel>
+							</g:VerticalPanel>
+							<g:cell verticalAlignment="ALIGN_MIDDLE">
+								<g:TextBox ui:field="taskNameTextBox"></g:TextBox>
+							</g:cell>
+						</g:HorizontalPanel>
+					</g:VerticalPanel>
+					<g:VerticalPanel styleName="{style.subMenuEntry}">
+						<g:HorizontalPanel>
+							<g:VerticalPanel styleName="{style.firstColumn}">
+								<g:cell verticalAlignment="ALIGN_TOP">
+									<g:Label>Select Folder:</g:Label>
+								</g:cell>
+								<g:InlineLabel styleName="{style.note}">
+									Select a folder of taxon
+									descriptions
+								</g:InlineLabel>
+								<g:InlineLabel styleName="{style.note}">
+									conforming to the format
+									requirements.
+								</g:InlineLabel>
+							</g:VerticalPanel>
+							<g:Button ui:field="inputButton">Select Input</g:Button>
+							<g:cell verticalAlignment="ALIGN_TOP">
+								<g:Label ui:field="inputLabel" styleName="{style.important}"></g:Label>
+							</g:cell>
+						</g:HorizontalPanel>
+					</g:VerticalPanel>
+					<g:VerticalPanel styleName="{style.subMenuEntry}">
+						<g:HorizontalPanel>
+							<g:VerticalPanel styleName="{style.firstColumn}">
+								<g:cell verticalAlignment="ALIGN_TOP">
+									<g:Label>Inherit Values:</g:Label>
+								</g:cell>
+								<g:InlineLabel styleName="{style.note}">
+									Inherits characters from
+									upper taxa
+								</g:InlineLabel>
+								<g:InlineLabel styleName="{style.note}">
+									to their lower taxa.
+								</g:InlineLabel>
+							</g:VerticalPanel>
+							<g:CheckBox ui:field="inheritValuesBox" value="false"></g:CheckBox>
+						</g:HorizontalPanel>
+					</g:VerticalPanel>
+					<g:VerticalPanel styleName="{style.subMenuEntry}">
+						<g:HorizontalPanel>
+							<g:VerticalPanel styleName="{style.firstColumn}">
+								<g:cell verticalAlignment="ALIGN_TOP">
+									<g:Label>Generate Absent/Present Values:</g:Label>
+								</g:cell>
+								<g:InlineLabel styleName="{style.note}">
+									Infers absent/present
+									values from
+								</g:InlineLabel>
+								<g:InlineLabel styleName="{style.note}">
+									determined structural
+									relationships.
+								</g:InlineLabel>
+							</g:VerticalPanel>
+							<g:CheckBox ui:field="generateAbsentPresentBox" value="false"></g:CheckBox>
+						</g:HorizontalPanel>
+					</g:VerticalPanel>
+					<g:VerticalPanel styleName="{style.padding}">
+						<g:Button ui:field="nextButton">Next Step in Matrix Generation</g:Button>
+					</g:VerticalPanel>
+					<!-- <g:Button styleName="{style.important}" ui:field="button" /> -->
+				</g:VerticalPanel>
 			</g:VerticalPanel>
-		</g:VerticalPanel>
-	</lay:CenteredContentPanel>
+		</lay:CenteredContentPanel>
 	</g:ScrollPanel>
 </ui:UiBinder>

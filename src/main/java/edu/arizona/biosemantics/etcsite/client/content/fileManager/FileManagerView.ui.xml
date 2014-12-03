@@ -4,21 +4,31 @@
 	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.common.files"
 	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout">
 	<ui:style>
-		
+	.bold {
+		font-weight: bold;
+	}
 	</ui:style>
 	<g:ScrollPanel>
-	<lay:CenteredContentPanel>
-		<g:VerticalPanel>
-		    <g:cell>
-		    	<g:Label>File Manager</g:Label>
-		    </g:cell>
-		    <g:cell>
-		        <my:IManagableFileTreeView ui:field="managableFileTreeView"></my:IManagableFileTreeView>
-		    </g:cell>
-		    <!-- <g:cell>
-		    	<g:Anchor ui:field="annotationReviewAnchor">Annotation Review</g:Anchor>
-	    	</g:cell> -->
-		</g:VerticalPanel>
-	</lay:CenteredContentPanel>
+		<lay:CenteredContentPanel>
+			<g:VerticalPanel>
+				<g:FlowPanel>
+					<g:InlineLabel styleName="{style.bold}">File Manager:&nbsp;</g:InlineLabel>
+					<g:InlineLabel>Files you own and shared with you are listed here,
+						including the files used as input to different tasks/analyses and
+						the files output by the software.</g:InlineLabel>
+				</g:FlowPanel>
+				<g:InlineLabel>* Select a folder to activate usable buttons. </g:InlineLabel>
+				<g:InlineLabel>* Do not upload files directly to Owned, instead, create sub-folders in Owned to hold your files.</g:InlineLabel>
+				<my:IManagableFileTreeView ui:field="managableFileTreeView"></my:IManagableFileTreeView>
+
+				<!-- <g:cell> <g:InlineLabel styleName="{style.bold}">File Manager: </g:InlineLabel> 
+					<g:InlineLabel>Files you own and shared with you are listed here, including 
+					the files used as input to different tasks/analyses and the files output 
+					by the software.</g:InlineLabel> </g:cell> <g:cell> <my:IManagableFileTreeView 
+					ui:field="managableFileTreeView"></my:IManagableFileTreeView> </g:cell> -->
+				<!-- <g:cell> <g:Anchor ui:field="annotationReviewAnchor">Annotation 
+					Review</g:Anchor> </g:cell> -->
+			</g:VerticalPanel>
+		</lay:CenteredContentPanel>
 	</g:ScrollPanel>
 </ui:UiBinder>

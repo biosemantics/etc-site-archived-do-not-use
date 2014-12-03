@@ -11,7 +11,7 @@
 	}
 	
 	.subMenuEntry {
-		margin-left: 0px;
+		margin-left: 20px;
 		padding-top: 10px;
 		padding-bottom: 10px;
 	}
@@ -23,75 +23,103 @@
 	
 	.note {
 		font-size: 10px;
-		color: #999999;
+		color: #555555;
 	}
+	
 	.firstColumn {
 		width: 220px;
 	}
-	</ui:style>	
+	
+	.bold {
+		font-weight: bold;
+	}
+	</ui:style>
 	<g:ScrollPanel>
-	<lay:CenteredContentPanel>
-		<g:VerticalPanel>
-		    <g:HorizontalPanel>
-		    	<my2:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.MatrixGenerationShort.gif" imageWidth="80px" imageHeight="20px" text="" />
-		    	<my:SubMenu ui:field="subMenu" step="INPUT"/>
-			</g:HorizontalPanel>
-			<g:VerticalPanel styleName="{style.padding}">
-			        <g:VerticalPanel>
-						<g:InlineLabel>
-			            Please specify a folder containing a csv matrix file or an output by the Matrix Generation tool. 
-			        	</g:InlineLabel>    
-			        <g:FlowPanel>
-			        	<g:InlineLabel> 
-			            You can also upload a folder using&nbsp;
-			        	</g:InlineLabel>
-			        	<g:Anchor ui:field="fileManagerAnchor">File Manager</g:Anchor>
-			        	<g:InlineLabel>
-			            . The only file in the upload folder must be a valid csv matrix file.
-			        	</g:InlineLabel>
-			        </g:FlowPanel>
-			        </g:VerticalPanel>
-			        <g:VerticalPanel styleName="{style.padding}"/>
-			        <g:VerticalPanel styleName="{style.padding}">
-			    <g:HorizontalPanel styleName="inputForm">
-			        <g:VerticalPanel styleName="{style.firstColumn}">
-				    	<g:cell verticalAlignment="ALIGN_TOP">
-				        	<g:Label>Task name:</g:Label>
-				        </g:cell>
-				          <g:InlineLabel styleName="{style.note}">
-				            Provide a name to
-				        </g:InlineLabel>
-				         <g:InlineLabel styleName="{style.note}">
-				            identify your task.
-				        </g:InlineLabel>
-			        </g:VerticalPanel>
-			        <g:cell verticalAlignment="ALIGN_MIDDLE">
-			        	<g:TextBox ui:field="taskNameTextBox"></g:TextBox>
-		        	</g:cell>
-			    </g:HorizontalPanel>
-			    </g:VerticalPanel>
-			    <g:VerticalPanel styleName="{style.padding}">
-			    <g:HorizontalPanel>
-			        <g:VerticalPanel styleName="{style.firstColumn}">
-			             <g:cell verticalAlignment="ALIGN_TOP">
-			        	<g:Label>Select Folder/File:</g:Label>
-			            </g:cell>
-			            <g:InlineLabel styleName="{style.note}">
-			            Select a valid folder containing a csv matrix file
-			            </g:InlineLabel>
-			        </g:VerticalPanel>
-			        <g:Button ui:field="inputButton">Select Input</g:Button>
-					<g:cell verticalAlignment="ALIGN_TOP">
-			        	<g:Label ui:field="inputLabel" styleName="{style.important}"></g:Label>
-					</g:cell>
-			    </g:HorizontalPanel>
-			    </g:VerticalPanel>	
-			    <g:VerticalPanel styleName="{style.padding}">
-			    <g:Button ui:field="nextButton">Next</g:Button>
-			    </g:VerticalPanel>
-				<!--  <g:Button styleName="{style.important}" ui:field="button" /> -->
+		<lay:CenteredContentPanel>
+			<g:VerticalPanel>
+				<g:HorizontalPanel>
+					<!-- <my2:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.TreeGenerationShort.gif" 
+						imageWidth="80px" imageHeight="20px" text="" /> -->
+					<my:SubMenu ui:field="subMenu" step="INPUT" />
+				</g:HorizontalPanel>
+						<g:InlineLabel>&nbsp;
+						</g:InlineLabel>
+				<g:VerticalPanel styleName="{style.padding}">
+					<g:VerticalPanel>
+						<g:FlowPanel>
+							<g:InlineLabel styleName="{style.bold}">INPUT
+								REQUIREMENTS:&nbsp;
+							</g:InlineLabel>
+							<g:InlineLabel>
+								Key Generation takes as input either a folder output by the Matrix
+								Generation tool or a folder containing a taxon-by-character
+								matrix file in .csv (comma seperated values) format.
+							</g:InlineLabel>
+						</g:FlowPanel>
+						<g:InlineLabel>&nbsp;
+						</g:InlineLabel>
+						<g:FlowPanel>
+							<g:InlineLabel styleName="{style.bold}">1.&nbsp;
+							</g:InlineLabel>
+							<g:InlineLabel>
+								If you do not the input ready, please run the Matrix Generation
+								tool first to generate it, or upload a folder using the &nbsp;
+							</g:InlineLabel>
+							<g:Anchor ui:field="fileManagerAnchor">File Manager</g:Anchor>
+							<g:InlineLabel>
+								. The only file in the upload folder must be a valid
+								taxon-by-character matrix file in .csv format.
+							</g:InlineLabel>
+						</g:FlowPanel>
+						<g:FlowPanel>
+							<g:InlineLabel styleName="{style.bold}">2.&nbsp;
+							</g:InlineLabel>
+							<g:InlineLabel>
+								Then provide the information below to start the process:
+							</g:InlineLabel>
+						</g:FlowPanel>
+					</g:VerticalPanel>
+					<!-- <g:VerticalPanel styleName="{style.padding}">  -->
+					<g:VerticalPanel styleName="{style.subMenuEntry}">
+						<g:HorizontalPanel styleName="inputForm">
+							<g:VerticalPanel styleName="{style.firstColumn}">
+								<g:cell verticalAlignment="ALIGN_TOP">
+									<g:Label>Task Name:</g:Label>
+								</g:cell>
+								<g:InlineLabel styleName="{style.note}">
+									Provide a name to
+								</g:InlineLabel>
+								<g:InlineLabel styleName="{style.note}">
+									identify your task/analysis.
+								</g:InlineLabel>
+							</g:VerticalPanel>
+							<g:cell verticalAlignment="ALIGN_MIDDLE">
+								<g:TextBox ui:field="taskNameTextBox"></g:TextBox>
+							</g:cell>
+						</g:HorizontalPanel>
+					</g:VerticalPanel>
+					<g:VerticalPanel styleName="{style.subMenuEntry}">
+						<g:HorizontalPanel>
+							<g:VerticalPanel styleName="{style.firstColumn}">
+								<g:cell verticalAlignment="ALIGN_TOP">
+									<g:Label>Select Folder:</g:Label>
+								</g:cell>
+								<g:InlineLabel styleName="{style.note}">
+									Select a valid folder containing a csv matrix file
+								</g:InlineLabel>
+							</g:VerticalPanel>
+							<g:Button ui:field="inputButton">Select Input</g:Button>
+							<g:cell verticalAlignment="ALIGN_TOP">
+								<g:Label ui:field="inputLabel" styleName="{style.important}"></g:Label>
+							</g:cell>
+						</g:HorizontalPanel>
+					</g:VerticalPanel>
+					<g:VerticalPanel styleName="{style.padding}">
+						<g:Button ui:field="nextButton">Next Step in Key Generation</g:Button>
+					</g:VerticalPanel>
+					<!-- <g:Button styleName="{style.important}" ui:field="button" /> -->
+				</g:VerticalPanel>
 			</g:VerticalPanel>
-		</g:VerticalPanel>
-	</lay:CenteredContentPanel>
+		</lay:CenteredContentPanel>
 	</g:ScrollPanel>
 </ui:UiBinder>

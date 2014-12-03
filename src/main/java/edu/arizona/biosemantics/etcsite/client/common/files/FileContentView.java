@@ -40,6 +40,7 @@ public class FileContentView extends Composite implements IFileContentView {
 	
 	public FileContentView() {
 		formatListBox = new ListBox();
+		
 		for(FileTypeEnum fileType : FileTypeEnum.values())
 			if(fileType.isViewable())
 				formatListBox.addItem(fileType.displayName());

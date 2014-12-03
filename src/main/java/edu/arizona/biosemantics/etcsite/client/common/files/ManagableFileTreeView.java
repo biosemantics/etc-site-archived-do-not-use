@@ -56,6 +56,9 @@ public class ManagableFileTreeView extends Composite implements IManagableFileTr
 	Button addButton;
 	
 	@UiField
+	Button downloadButton;
+	
+	@UiField
 	Button createSemanticMarkupInputButton;
 	
 	@UiField(provided=true)
@@ -65,6 +68,7 @@ public class ManagableFileTreeView extends Composite implements IManagableFileTr
 	public ManagableFileTreeView(IFileTreeView.Presenter fileTreePresenter) {
 		this.fileTreeView = fileTreePresenter.getView();
 		formatListBox = new ListBox();
+		formatListBox.addItem("Upload Files - Select File Type First:");
 		formatListBox.addItem(FileTypeEnum.TAXON_DESCRIPTION.displayName());
 		formatListBox.addItem(FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION.displayName());
 		initWidget(uiBinder.createAndBindUi(this));
@@ -73,6 +77,13 @@ public class ManagableFileTreeView extends Composite implements IManagableFileTr
 		fileInputElement.setPropertyString("multiple", "multiple");
 		String m = fileInputElement.getPropertyString("multiple");*/
 		statusWidgetContainer.setWidget(uploader.getStatusWidget().getWidget());
+		addButton.setHeight("20px");
+		createButton.setHeight("20px");
+		deleteButton.setHeight("20px");
+		createSemanticMarkupInputButton.setHeight("20px");
+		downloadButton.setHeight("20px");
+		renameButton.setHeight("20px");
+		uploader.setHeight("20px");
 	}
 	
 	@UiHandler("createButton")
@@ -152,6 +163,7 @@ public class ManagableFileTreeView extends Composite implements IManagableFileTr
 
 	@Override
 	public String getFormat() {
-		return formatListBox.getItemText(formatListBox.getSelectedIndex());
+		int index = formatListBox.getSelectedIndex()==0? 1 : formatListBox.getSelectedIndex();
+		return formatListBox.getItemText(index);
 	}
 }

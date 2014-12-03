@@ -23,7 +23,7 @@
 			</g:HorizontalPanel>
 			<g:SimplePanel ui:field="container">
 			</g:SimplePanel>
-			<g:Button ui:field="nextButton">Next</g:Button>
+			<g:Button ui:field="nextButton">Next Step in Text Capture</g:Button>
 		</g:VerticalPanel>
 	</lay:CenteredContentPanel>
 	</g:ScrollPanel>

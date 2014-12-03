@@ -10,10 +10,22 @@
 			padding-top: 10px;
 			padding-bottom: 10px;
 		}
+		
+		.bold {
+			font-weight: bold;
+		}
+		.padding {
+			padding-top: 10px;
+			padding-bottom: 10px;
+		}
 	</ui:style>
 	<g:VerticalPanel>
-		<!-- <g:Label styleName="siteHeading">Matrix Generation</g:Label> -->
+		<g:HorizontalPanel>
+			<!-- <my:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.MatrixGenerationShort.gif" imageWidth="80px" imageHeight="20px" text="" />-->
+			<g:InlineLabel styleName="{style.bold}">Matrix Generation generates taxon-character matrices from marked-up descriptions of organisms. It consists of the following steps: </g:InlineLabel>
+		</g:HorizontalPanel>
 		<g:HorizontalPanel styleName="{style.subMenu}">
+			<g:Label styleName="{style.subMenuEntry}">You are at: </g:Label>
 			<my:ImageLabel ui:field="input" styleName="{style.subMenuEntry}" imagePath="images/Enumeration_unselected_1.gif" imageWidth="20px" imageHeight="20px" text="Input"></my:ImageLabel>
 			<my:ImageLabel ui:field="process" styleName="{style.subMenuEntry}" imagePath="images/Enumeration_unselected_2.gif" imageWidth="20px" imageHeight="20px" text="Process"></my:ImageLabel>
 			<my:ImageLabel ui:field="review" styleName="{style.subMenuEntry}" imagePath="images/Enumeration_unselected_3.gif" imageWidth="20px" imageHeight="20px" text="Review"></my:ImageLabel>

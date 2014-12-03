@@ -10,10 +10,19 @@
 			padding-top: 10px;
 			padding-bottom: 10px;
 		}
+		.bold {
+			font-weight: bold;
+		}
 	</ui:style>
 	<g:VerticalPanel>
-		<!-- <g:Label styleName="siteHeading">Tree Generation</g:Label> -->
+		<g:HorizontalPanel>
+		<!-- <my:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.TreeGenerationShort.gif" imageWidth="80px" imageHeight="20px" text="" />  -->
+		<g:InlineLabel styleName="{style.bold}">Key Generation generates interactive identification keys from taxon-character matrices, using an information entropy based method which treats character polymorphisms gracefully. It consists of the following steps:  
+		 </g:InlineLabel>
+		</g:HorizontalPanel>
+
 		<g:HorizontalPanel styleName="{style.subMenu}">
+			<g:Label styleName="{style.subMenuEntry">You are at: </g:Label>
 			<my:ImageLabel ui:field="input" styleName="{style.subMenuEntry}" imagePath="images/Enumeration_unselected_1.gif" imageWidth="20px" imageHeight="20px" text="Input"></my:ImageLabel>
 			<my:ImageLabel ui:field="view" styleName="{style.subMenuEntry}" imagePath="images/Enumeration_unselected_2.gif" imageWidth="20px" imageHeight="20px" text="View"></my:ImageLabel>
 		</g:HorizontalPanel>

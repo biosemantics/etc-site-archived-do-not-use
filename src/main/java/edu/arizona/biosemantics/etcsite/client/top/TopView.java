@@ -49,6 +49,8 @@ public class TopView extends Composite implements ITopView {
 	
 	public TopView() {
 		initWidget(uiBinder.createAndBindUi(this));
+		taskManager.setTitle("Resume, rewind, delete, or share your analyses");
+		fileManager.setTitle("Create, upload, download, and manage your files");
 	}
 
 	@Override

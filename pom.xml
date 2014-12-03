@@ -330,7 +330,7 @@
 
 		<plugins>
 
-			<!-- GWT Maven Plugin -->
+		<!-- GWT Maven Plugin -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>

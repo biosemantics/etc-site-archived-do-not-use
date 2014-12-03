@@ -50,7 +50,7 @@
 					<g:Button ui:field="nextDescriptionButton">Next Description</g:Button>
 				</g:HorizontalPanel>
 				
-				<g:Button ui:field="nextButton">Next</g:Button>
+				<g:Button ui:field="nextButton">Next Step in Text Capture</g:Button>
 			</g:VerticalPanel>
 		</g:VerticalPanel>
 	</lay:CenteredContentPanel>

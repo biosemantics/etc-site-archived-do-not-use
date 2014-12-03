@@ -14,12 +14,15 @@
             width:100%;
 			padding: 20px;
         }
+        .bold{
+			font-weight:bold;
+		}
     </ui:style>
     <g:ScrollPanel>
     <g:HTMLPanel >
     <g:VerticalPanel>
         <g:cell>
-         <g:Label styleName="siteHeading">
+         <g:Label styleName="{style.bold}">
              Markup Review
          </g:Label>   
         </g:cell>

@@ -24,6 +24,12 @@
 			width:100px;
 			height:100px;
 		}
+		.bold {
+			font-weight: bold;
+		}
+		.clickable {
+			cursor:pointer;
+		}
 	</ui:style>
 	
 	<g:ScrollPanel>
@@ -37,9 +43,18 @@
 		    </g:HTMLPanel>
 
 		    <g:VerticalPanel styleName="{style.padding}">
-		    <g:InlineLabel>What is a taxon concept?</g:InlineLabel>    
+		    <g:InlineLabel styleName="{style.bold}">What is a taxon concept?</g:InlineLabel>    
 		    <g:Label>&nbsp;</g:Label>
 		    <g:InlineLabel>“A taxonomic [or taxon] concept is the underlying meaning, or referential extension, of a scientific name as stated by a particular author in a particular publication. It represents the author’s view of how the name is supposed to reach out to objects in nature” (Franz, 2008). In a sense, a taxon concept attaches a meaning to a scientific name. The ETC project aims to provide software tools for biologists to explore the relationships among taxon concepts based on the physical characters of the taxa in question. </g:InlineLabel>
+		    </g:VerticalPanel>
+		    
+		     <g:VerticalPanel styleName="{style.padding}">
+		    <g:InlineLabel styleName="{style.bold}">How to start?</g:InlineLabel>  
+		    <g:FlowPanel>
+		    <g:InlineLabel>The&nbsp;</g:InlineLabel>
+		    <g:Anchor ui:field="getStartAnchor" styleName="{style.clickable}">Getting Started</g:Anchor>
+		     <g:InlineLabel>&nbsp;page contains helpful information for new users.</g:InlineLabel>
+		     </g:FlowPanel>
 		    </g:VerticalPanel>
 		    
 		    <g:Label text="&nbsp;"/>

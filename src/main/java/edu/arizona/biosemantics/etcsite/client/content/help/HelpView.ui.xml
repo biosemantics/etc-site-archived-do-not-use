@@ -3,14 +3,50 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout">
 	<ui:style>
+		.siteHeading {
+			font-weight: bold;
+			font-size: 12px;
+			text-align: center;
+			padding-bottom: 10px;
+		}
 		
-	</ui:style>
+		.bold {
+			font-weight: bold;
+		}
+		
+		.padding {
+			padding-top: 10px;
+			padding-bottom: 10px;
+		}
+		.header{
+			font-size: 24px;
+			font-weight: bold;
+			color: #339900;
+		}
+		</ui:style>
 	<g:ScrollPanel>
 	<lay:CenteredContentPanel>
 		<g:HTMLPanel>
 		    <g:VerticalPanel>
-			    <g:Label>Watch the video tutorial: </g:Label>
+		    	<g:Label styleName="{style.header}">Getting Started Using ETC Tools</g:Label>
+		    	<g:VerticalPanel styleName="{style.padding}"/>
+		   		<g:InlineLabel>The ETC site provides five tools, with a task manager and a file manager supporting their functionalities. This page provides basic information about the site, including a Site Overview, a Quick Guide for First-Time Users, and a brief video demo. A full user manual is under preparation.</g:InlineLabel>
+		   		<g:VerticalPanel styleName="{style.padding}"/>
+		   		<g:Label styleName="{style.bold}">Site Overivew</g:Label>
+		    	<g:Image url="images/etc-overview.png" title="etc site overview" altText="etc site overview" width="800px" height="400px"/>
+		    	
+		    	<g:VerticalPanel styleName="{style.padding}"/>
+		    	<g:Label styleName="{style.bold}">Quick Guide for First-Time Users</g:Label>
+		        <g:InlineLabel>All the tools require input files in a certain format. The general steps of running each of the tools include:</g:InlineLabel>
+		        <g:InlineLabel>1. Click on a 'Begin ...' button on the homepage to start a tool.</g:InlineLabel>
+		        <g:InlineLabel>2. Read the INPUT REQUIREMENTS for the tool, and go to File Manager to create or upload input files.</g:InlineLabel> 
+		        <g:InlineLabel>3. Follow the instructions on the screen to complete the neccessary steps. Your progress is shown on the screen. </g:InlineLabel>
+			    <g:InlineLabel>4. The final step informs the user the location of output files if any is generated. Take note of the location, then go to File Manager to retrieve or download the output.</g:InlineLabel>
+			    <g:VerticalPanel styleName="{style.padding}"/>
+			    <g:Label>The user can leave the website at any time and come back to resume an analysis (also called a "task"). Go to Task Manager to check the status of a task or share the task with other registered users.</g:Label>
 			    
+			    <g:VerticalPanel styleName="{style.padding}"/>
+			    <g:Label styleName="{style.bold}">Brief video tutorial (Please wait a moment for the video to load) </g:Label>
 			    <g:HTMLPanel>
 			    <object ui:field="objectElement">
 		            <param ui:field="movieParamElement" name="movie"/>
