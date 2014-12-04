@@ -13,7 +13,8 @@ import edu.arizona.biosemantics.common.log.Logger;
 public class Configuration extends edu.arizona.biosemantics.etcsite.client.common.Configuration {
 
 	private final static Logger logger = Logger.getLogger(Configuration.class);
-	public static String deploymentUrl;
+
+	/** Java Setup **/
 	public static String classpath;
 	
 	/** Files **/

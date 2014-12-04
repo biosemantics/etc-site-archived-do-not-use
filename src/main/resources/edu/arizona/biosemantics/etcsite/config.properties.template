@@ -1,6 +1,5 @@
-deploymentUrl=
+oto2Url=
 classpath= #Order matters for log4j properties pickup. Put log4j path first
-
 
 #Files
 targetNamespace=http://www.github.com/biosemantics
@@ -24,6 +23,7 @@ charaparser_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/char
 maxActiveSemanticMarkup=4
 charaparser_xms=
 charaparser_xmx=2048m
+charaparser_ontologies=
 
 #Matrix Generation
 matrixGeneration_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/matrixGeneration

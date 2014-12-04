@@ -8,7 +8,6 @@ public class Setup implements Serializable {
 	private String fileBase;
 	private String googleRedirectURI;
 	private String googleClientId;
-	private String deploymentUrl;
 	
 	public String getSeperator() {
 		return seperator;
@@ -41,13 +40,4 @@ public class Setup implements Serializable {
 	public void setGoogleClientId(String googleClientId) {
 		this.googleClientId = googleClientId;
 	}
-
-	public String getDeploymentUrl() {
-		return deploymentUrl;
-	}
-	
-	public void setDeploymentUrl(String deploymentUrl) {
-		this.deploymentUrl = deploymentUrl;
-	}
-	
 }

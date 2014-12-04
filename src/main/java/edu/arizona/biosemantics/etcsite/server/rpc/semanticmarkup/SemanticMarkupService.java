@@ -721,7 +721,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 
 	//TODO: Could also access the servlet instead of using oto's client
 	private void createOTOContexts(AuthenticationToken authenticationToken, Task task, LearnResult learnResult, String input) throws SemanticMarkupException {
-		edu.arizona.biosemantics.oto.client.oto2.Client client = new edu.arizona.biosemantics.oto.client.oto2.Client(Configuration.deploymentUrl);
+		edu.arizona.biosemantics.oto.client.oto2.Client client = new edu.arizona.biosemantics.oto.client.oto2.Client(Configuration.oto2Url);
 		client.open();
 		List<Context> contexts = new LinkedList<Context>();
 		
