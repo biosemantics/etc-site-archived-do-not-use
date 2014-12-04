@@ -17,11 +17,19 @@
 			padding-top: 10px;
 			padding-bottom: 10px;
 		}
+					
+		.middle{
+			vertical-align: middle;
+
+		}
 	</ui:style>
 	<g:VerticalPanel styleName="{style.padding}">
-	    <my:IFileTreeView ui:field="fileTreeView"></my:IFileTreeView>
+	   <!--  <my:IFileTreeView ui:field="fileTreeView"></my:IFileTreeView>  -->
 	    <g:HorizontalPanel styleName="{style.padding}">
-		     <g:Button ui:field="createButton" title="Select a parent folder before adding a folder">Add Folder</g:Button>
+		     <g:Button ui:field="createButton" styleName="{style.middle}"  title="Select a parent folder before adding a folder">Add Folder</g:Button>
+		       <g:FlowPanel styleName="{style.leftMargin}">
+		       <g:ListBox visibleItemCount="1" ui:field="formatListBox"/>
+		     </g:FlowPanel>
 		     <g:FlowPanel styleName="{style.leftMargin}">
 	        <!-- set avoidRepeatFiles to false before we can implement error messages for attempting upload the same files into different folders. Setting 
 	        this attribute only have session-wise effect, repeated files can still upload in a new session.-->
@@ -33,30 +41,37 @@
 	           	avoidRepeatFiles="false"
 	           	validExtensions="xml"
 	           	/> 
-		     <g:Button ui:field="addButton" title="Select a parent folder before uploading one or more files">Upload Files</g:Button>
+		     <g:Button ui:field="addButton" styleName="{style.middle}" title="Select a parent folder before uploading one or more files">Upload Files</g:Button>
 		     </g:FlowPanel>
+		   
 		     <g:FlowPanel styleName="{style.leftMargin}">
-		       <g:ListBox visibleItemCount="1" ui:field="formatListBox"/>
-		     </g:FlowPanel>
-		     <g:FlowPanel styleName="{style.leftMargin}">
-		      <g:Button ui:field="renameButton" title="rename a file or a folder">Rename</g:Button>
+		      <g:Button ui:field="renameButton" styleName="{style.middle}" title="rename a file or a folder">Rename</g:Button>
 		      </g:FlowPanel>
 		      <g:FlowPanel styleName="{style.leftMargin}">
-		     <g:Button ui:field="deleteButton" title="delete a file or a folder">Delete</g:Button>
+		     <g:Button ui:field="deleteButton" styleName="{style.middle}" title="delete a file or a folder">Delete</g:Button>
 		     </g:FlowPanel>
 		     <g:FlowPanel styleName="{style.leftMargin}">
-		    <g:Button ui:field="downloadButton" title="download a file or a folder">Download</g:Button>
+		    <g:Button ui:field="downloadButton" styleName="{style.middle}" title="download a file or a folder">Download</g:Button>
+		    </g:FlowPanel>
+		     <g:FlowPanel styleName="{style.leftMargin}">
+		    <g:Label>|</g:Label>
+		    </g:FlowPanel>
+		     <g:FlowPanel styleName="{style.leftMargin}">
+		  <g:Button ui:field="createSemanticMarkupInputButton" styleName="{style.middle}" title="select a parent folder before creating files for the Text Capture tool">Create Input for Text Capture</g:Button>
 		    </g:FlowPanel>
 		</g:HorizontalPanel>
-		<g:HTMLPanel styleName="{style.padding}">
+		<g:InlineLabel>&nbsp;</g:InlineLabel>
+		<!--<g:HTMLPanel styleName="{style.padding}">
 			<hr style="width:100%;" />
     	</g:HTMLPanel>
-    	<g:HorizontalPanel>
+    	  <g:HorizontalPanel>
 			<g:InlineLabel>Want to create valid input files for the Text Capture tool?</g:InlineLabel>
 			<g:HorizontalPanel styleName="{style.leftMargin}">
 			<g:Button ui:field="createSemanticMarkupInputButton" title="select a parent folder before creating files for the Text Capture tool">Create Files</g:Button>
 			</g:HorizontalPanel>
 	    </g:HorizontalPanel>
+	    -->
+	     <my:IFileTreeView ui:field="fileTreeView"></my:IFileTreeView>
 	    <g:SimplePanel addStyleNames="GWTUpld" ui:field="statusWidgetContainer"></g:SimplePanel>
 	</g:VerticalPanel>
 </ui:UiBinder>

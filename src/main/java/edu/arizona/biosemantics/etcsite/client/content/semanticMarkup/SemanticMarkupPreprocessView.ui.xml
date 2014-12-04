@@ -26,7 +26,7 @@
 	<lay:CenteredContentPanel>
 		<g:VerticalPanel>
 		     <g:HorizontalPanel>
-			    <co:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.SemanticMarkupShort.gif" imageWidth="65px" imageHeight="20px" text="" />
+<!-- 			    <co:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.SemanticMarkupShort.gif" imageWidth="65px" imageHeight="20px" text="" /> -->
 			    <my:SubMenu ui:field="subMenu" step="PREPROCESS_TEXT"/>
 			</g:HorizontalPanel>
 			<g:VerticalPanel styleName="{style.padding}">
@@ -50,7 +50,7 @@
 					<g:Button ui:field="nextDescriptionButton">Next Description</g:Button>
 				</g:HorizontalPanel>
 				
-				<g:Button ui:field="nextButton">Next</g:Button>
+				<g:Button ui:field="nextButton">Next Step in Text Capture</g:Button>
 			</g:VerticalPanel>
 		</g:VerticalPanel>
 	</lay:CenteredContentPanel>

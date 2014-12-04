@@ -18,7 +18,10 @@
 			height: 400px;
 			width: 720px;
 		}
-	</ui:style>
+		.right {
+			text-align: right;
+		}
+		</ui:style>
 	<g:TabPanel ui:field="tabPanel" styleName="{style.tabPanel}">
 	    <g:Tab text="Single-File Creation">
 	        <g:ScrollPanel >
@@ -167,8 +170,8 @@
 		            <g:DisclosurePanel>
 		                <g:header>Create Files</g:header>
 		                <g:VerticalPanel>
-		                	<g:TextArea ui:field="batchArea" styleName="{style.batchArea}"></g:TextArea>
-	               	 		<g:Button ui:field="batchButton">Create</g:Button>
+		              		<g:Button ui:field="batchButton" styleName="{style.right}">Create</g:Button>
+		                	<g:TextArea ui:field="batchArea" styleName="{style.batchArea}"></g:TextArea>      	 		
 		            	</g:VerticalPanel>
 		            </g:DisclosurePanel> 
 	            </g:VerticalPanel>

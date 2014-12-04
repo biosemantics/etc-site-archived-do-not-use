@@ -66,7 +66,7 @@
 			    	            <my:SubMenu ui:field="subMenu" step="REVIEW"/>
 			    	        </g:cell>
 			    	      	<g:cell>
-			    	            <g:Button addStyleNames="{style.nextButton}" ui:field="nextButton">Next</g:Button>
+			    	            <g:Button addStyleNames="{style.nextButton}" ui:field="nextButton">Next Step in Matrix Generation</g:Button>
 			    	        </g:cell>
 			    	    </g:HorizontalPanel>
 		    	    </g:SimplePanel>

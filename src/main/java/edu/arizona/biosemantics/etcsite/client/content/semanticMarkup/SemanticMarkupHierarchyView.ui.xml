@@ -18,12 +18,12 @@
 	<lay:CenteredContentPanel>
 		<g:VerticalPanel>
 		    <g:HorizontalPanel>
-			    <my2:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.SemanticMarkupShort.gif" imageWidth="65px" imageHeight="20px" text="" />
+			    <!--  <my2:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.SemanticMarkupShort.gif" imageWidth="65px" imageHeight="20px" text="" />-->
 			    <my:SubMenu ui:field="subMenu" step="HIERARCHY"/>
 			</g:HorizontalPanel>
 			<g:SimplePanel ui:field="container">
 			</g:SimplePanel>
-			<g:Button ui:field="nextButton">Next</g:Button>
+			<g:Button ui:field="nextButton">Next Step in Text Capture</g:Button>
 		</g:VerticalPanel>
 	</lay:CenteredContentPanel>
 	</g:ScrollPanel>

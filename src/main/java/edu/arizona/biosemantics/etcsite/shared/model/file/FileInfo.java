@@ -11,11 +11,12 @@ public class FileInfo implements Serializable {
 	private int ownerUserId;
 	private String displayFilePath;
 	private boolean systemFile = true;
-	private boolean allowsNewChildren = true;
+	private boolean allowsNewFiles = true;
+	private boolean allowsNewFolders = true;
 	
 	public FileInfo() { }
 	
-	public FileInfo(String name, String filePath, String displayFilePath, FileTypeEnum fileType, int ownerUserId, boolean systemFile, boolean allowsNewChildren) {
+	public FileInfo(String name, String filePath, String displayFilePath, FileTypeEnum fileType, int ownerUserId, boolean systemFile, boolean allowsNewFiles, boolean allowsNewFolders) {
 		super();
 		this.name = name;
 		this.filePath = filePath;
@@ -23,11 +24,13 @@ public class FileInfo implements Serializable {
 		this.fileType = fileType;
 		this.ownerUserId = ownerUserId;
 		this.systemFile = systemFile;
-		this.allowsNewChildren = allowsNewChildren;
+		this.allowsNewFiles = allowsNewFiles;
+		this.allowsNewFolders = allowsNewFolders;
+		
 	}
 	
 	public String getName(boolean includeExtension) {
-		if(isAllowsNewChildren())
+		if(isAllowsNewFiles() || isAllowsNewFolders())
 			return name;
 		if(includeExtension)
 			return name;
@@ -86,8 +89,12 @@ public class FileInfo implements Serializable {
 		return result;
 	}
 
-	public boolean isAllowsNewChildren() {
-		return allowsNewChildren;
+	public boolean isAllowsNewFiles() {
+		return allowsNewFiles;
+	}
+	
+	public boolean isAllowsNewFolders() {
+		return this.allowsNewFolders;
 	}
 	
 	

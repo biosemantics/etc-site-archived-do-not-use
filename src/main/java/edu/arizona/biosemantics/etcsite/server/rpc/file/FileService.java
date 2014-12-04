@@ -69,10 +69,10 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		//sql injection..
 		//Tree<FileInfo> result = new Tree<FileInfo>(new FileInfo(authenticationToken.getUsername() + "'s files", FileType.DIRECTORY));
 		
-		Tree<FileInfo> resultTree = new Tree<FileInfo>(new FileInfo("", "Root", "", FileTypeEnum.DIRECTORY, authenticationToken.getUserId(), true, false));
+		Tree<FileInfo> resultTree = new Tree<FileInfo>(new FileInfo("", "Root", "", FileTypeEnum.DIRECTORY, authenticationToken.getUserId(), true, false, false));
 		Tree<FileInfo> ownedFiles = new Tree<FileInfo>(new FileInfo("Owned", Configuration.fileBase + File.separator + authenticationToken.getUserId(),
-				"Owned", FileTypeEnum.DIRECTORY, authenticationToken.getUserId(), true, true));
-		Tree<FileInfo> sharedFiles = new Tree<FileInfo>(new FileInfo("Shared", "Shared", "Shared", FileTypeEnum.DIRECTORY, authenticationToken.getUserId(), true, false));
+				"Owned", FileTypeEnum.DIRECTORY, authenticationToken.getUserId(), true, false, true));
+		Tree<FileInfo> sharedFiles = new Tree<FileInfo>(new FileInfo("Shared", "Shared", "Shared", FileTypeEnum.DIRECTORY, authenticationToken.getUserId(), true, false, false));
 		resultTree.addChild(ownedFiles);
 		resultTree.addChild(sharedFiles);
 		
@@ -89,13 +89,13 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		for(Share share : shares) {
 			int shareOwnerUserId = share.getTask().getUser().getId();
 			Tree<FileInfo> shareTree = new Tree<FileInfo>(new FileInfo(share.getTask().getName(), "Share." + share.getTask().getId(), 
-					share.getTask().getName(), FileTypeEnum.DIRECTORY, shareOwnerUserId, false, false));
+					share.getTask().getName(), FileTypeEnum.DIRECTORY, shareOwnerUserId, false, false, false));
 			sharedFiles.addChild(shareTree);
 			AbstractTaskConfiguration taskConfiguration = share.getTask().getConfiguration();
 			
 			List<String> outputs = daoManager.getTasksOutputFilesDAO().getOutputs(share.getTask());
 			Tree<FileInfo> outputTree = new Tree<FileInfo>(new FileInfo("Output", "Share.Output" + share.getTask().getId(), 
-					"Output", FileTypeEnum.DIRECTORY, shareOwnerUserId, false, false));
+					"Output", FileTypeEnum.DIRECTORY, shareOwnerUserId, false, false, false));
 			shareTree.addChild(outputTree);
 			for(String output : outputs) {
 				File child = new File(output);
@@ -106,7 +106,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 					else {
 						String displayPath = share.getTask().getName() + File.separator + "Output" + File.separator + child.getName();
 						Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(child.getName(), child.getAbsolutePath(), displayPath, 
-								getFileType(authenticationToken, output), shareOwnerUserId, false, false));
+								getFileType(authenticationToken, output), shareOwnerUserId, false, false, false));
 						outputTree.addChild(childTree);
 						if(child.isDirectory()) {
 							decorateOwnedTree(authenticationToken, childTree, fileFilter, child.getAbsolutePath());
@@ -118,7 +118,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			if(taskConfiguration != null) {
 				List<String> inputFiles = taskConfiguration.getInputs();
 				Tree<FileInfo> inputTree = new Tree<FileInfo>(new FileInfo("Input", "Share.Input" + share.getTask().getId(), "Input", 
-						FileTypeEnum.DIRECTORY, shareOwnerUserId, false, false));
+						FileTypeEnum.DIRECTORY, shareOwnerUserId, false, false, false));
 				shareTree.addChild(inputTree);
 				for(String input : inputFiles) {
 					File child = new File(input);
@@ -129,7 +129,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 						else {
 							String displayPath = share.getTask().getName() + File.separator + "Input" + File.separator + child.getName();
 							Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(child.getName(), child.getAbsolutePath(), displayPath, 
-									getFileType(authenticationToken, input), shareOwnerUserId, false, false));
+									getFileType(authenticationToken, input), shareOwnerUserId, false, false, false));
 							inputTree.addChild(childTree);
 							if(child.isDirectory()) {
 								decorateOwnedTree(authenticationToken, childTree, fileFilter, child.getAbsolutePath());
@@ -160,7 +160,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 					if(fileType != null && !filter(fileType, fileFilter)) {
 						String displayPath = childPath.replace(Configuration.fileBase + File.separator + authenticationToken.getUserId(), "");
 						Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(name, child.getAbsolutePath(), displayPath, fileType, 
-								authenticationToken.getUserId(), false, child.isDirectory()));
+								authenticationToken.getUserId(), false, child.isDirectory(), true));
 						fileTree.addChild(childTree);
 						if(child.isDirectory()) {
 							decorateOwnedTree(authenticationToken, childTree, fileFilter, childPath);
@@ -237,14 +237,14 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 				if(!resultDelete)
 					throw new FileDeleteFailedException();
 			} else {
-				throw new FileDeleteFailedException("Can't delete file, it is currently in use.");
+				throw new FileDeleteFailedException("Can't delete file, it "+this.createMessageFileInUse(authenticationToken, filePath)+ ". Delete the tasks using Task Manager, then try again.");
 			}
 		}
 	}
 	
 	private String createMessageFileInUse(AuthenticationToken authenticationToken, String filePath) throws PermissionDeniedException {
 		List<Task> tasks = this.getUsingTasks(authenticationToken, filePath);
-		StringBuilder messageBuilder = new StringBuilder("File is in use by task(s): ");
+		StringBuilder messageBuilder = new StringBuilder("is in use by task(s): ");
 		for(Task task : tasks) 
 			messageBuilder.append(task.getName() + ", ");
 		String message = messageBuilder.toString();
@@ -306,7 +306,8 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		else {
 			boolean inUseResult = this.isInUse(authenticationToken, filePath);
 			if(inUseResult)
-				throw new CreateDirectoryFailedException("Can't create directory. Parent directory is currently in use.");
+				//throw new CreateDirectoryFailedException("Can't create directory. Parent directory is currently in use.");
+				throw new CreateDirectoryFailedException("Can't create directory. Parent directory "+this.createMessageFileInUse(authenticationToken, filePath)+". Delete the tasks using Task Manager, then try again.");
 			else {
 				File file = new File(filePath + File.separator + idealFolderName);
 				boolean resultMkDir = file.mkdir();
@@ -475,10 +476,10 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	}
 
 	@Override
-	public boolean isInUse(AuthenticationToken authenticationToken, String filePath) {		
+	public boolean isInUse(AuthenticationToken authenticationToken, String filePath) {	
 		return daoManager.getFilesInUseDAO().isInUse(filePath);
 	}
-
+	
 	@Override
 	public List<Task> getUsingTasks(AuthenticationToken authenticationToken, String filePath) throws PermissionDeniedException {
 		boolean permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
@@ -523,10 +524,10 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 						//Files.move(file, newFile);
 						return;
 				} else {
-					throw new RenameFileFailedException(createMessageFileInUse(authenticationToken, path));
+					throw new RenameFileFailedException("Can not rename file, it "+createMessageFileInUse(authenticationToken, path)+". Delete the tasks using Task Manager, then try again.");
 				}
 			} else {
-				throw new RenameFileFailedException(createMessageFileInUse(authenticationToken, path));
+				throw new RenameFileFailedException("Can not rename file, it "+createMessageFileInUse(authenticationToken, path)+". Delete the tasks using Task Manager, then try again.");
 			}
 		}
 	}
@@ -559,10 +560,10 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 						throw new MoveFileFailedException(message);
 					}
 				} else {
-					throw new MoveFileFailedException(createMessageFileInUse(authenticationToken, newFilePath));
+					throw new MoveFileFailedException("Can not move file(s), it "+createMessageFileInUse(authenticationToken, newFilePath)+". Delete the tasks using Task Manager, then try again. ");
 				}
 			} else {
-				throw new MoveFileFailedException(createMessageFileInUse(authenticationToken, filePath));
+				throw new MoveFileFailedException("Can not move file(s), it "+createMessageFileInUse(authenticationToken, filePath)+". Delete the tasks using Task Manager, then try again.");
 			}
 		}	
 	}

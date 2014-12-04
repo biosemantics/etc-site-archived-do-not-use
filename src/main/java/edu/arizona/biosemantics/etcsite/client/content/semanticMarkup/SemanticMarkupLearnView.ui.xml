@@ -30,7 +30,7 @@
 	<lay:CenteredContentPanel>
 		<g:VerticalPanel styleName="{style.padding}">
 		    <g:HorizontalPanel>
-			    <my2:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.SemanticMarkupShort.gif" imageWidth="65px" imageHeight="20px" text="" />
+<!-- 			    <my2:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.SemanticMarkupShort.gif" imageWidth="65px" imageHeight="20px" text="" /> -->
 			    <my:SubMenu ui:field="subMenu" step="LEARN_TERMS"/>
 			</g:HorizontalPanel>
 			
@@ -63,7 +63,7 @@
 					</g:HorizontalPanel>
 				</g:VerticalPanel>
 				<g:FlowPanel styleName="{style.padding}">
-				<g:Button ui:field="nextButton" visible="false">Next</g:Button>
+				<g:Button ui:field="nextButton" visible="false">Next Step in Text Capture</g:Button>
 				</g:FlowPanel>
 			</g:VerticalPanel>
 		</g:VerticalPanel>

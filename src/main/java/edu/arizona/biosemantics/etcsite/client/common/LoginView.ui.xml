@@ -4,6 +4,7 @@
 	<ui:style>
 		.clickable {
 			cursor: pointer;
+			color: blue;
 		}
 		.smallerText {
 			font-size: 10px;

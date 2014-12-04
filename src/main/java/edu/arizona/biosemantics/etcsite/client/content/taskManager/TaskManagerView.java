@@ -76,6 +76,10 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 		pager = createPager(taskTable);
 		pager.setDisplay(taskTable);
 		initWidget(uiBinder.createAndBindUi(this));
+		resumeButton.setHeight("20px");
+		rewindButton.setHeight("20px");
+		deleteButton.setHeight("20px");
+		shareButton.setHeight("20px");
 	}
 	
 	private SimplePager createPager(CellTable<TaskData> cellTable) {

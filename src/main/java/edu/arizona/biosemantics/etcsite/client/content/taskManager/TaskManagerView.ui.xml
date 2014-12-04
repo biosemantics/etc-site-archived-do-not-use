@@ -22,6 +22,15 @@
 			padding-top: 10px;
 			padding-bottom: 10px;
 		}
+		
+		.bold {
+			font-weight: bold;
+		}
+		
+		.middle{
+			vertical-align: middle;
+
+		}
 	</ui:style>
 	<g:ScrollPanel>
 	<my:CenteredContentPanel>
@@ -29,29 +38,36 @@
 		    <div class='content900pxCentered'>
 		        <div id='taskManagerContent'>
 		            <g:VerticalPanel>
-		                <g:Label styleName="siteHeading">
-		                    Task Manager
-		                </g:Label>
+		            <g:FlowPanel><g:InlineLabel styleName="{style.bold}">
+		                    Task Manager:&nbsp;</g:InlineLabel>
+		                    <g:InlineLabel>Your analyses are listed below. You can Resume, Rewind, Delete, or Share your analyses.</g:InlineLabel>
+		                    </g:FlowPanel>
+   
+		                <g:InlineLabel>&nbsp;</g:InlineLabel>   
+		                <g:HorizontalPanel>
+						    <g:FlowPanel styleName="{style.leftMargin}">
+						    <g:Button ui:field='resumeButton' styleName="{style.middle}" title="continue with the selected task/analysis">Resume</g:Button>
+						    </g:FlowPanel>
+						    <g:FlowPanel styleName="{style.leftMargin}">
+						    <g:Button ui:field='rewindButton' styleName="{style.middle}" title="go back to the interactive step for the selected task/analysis, e.g, re-categorize the terms for Text Capture, or re-review the matrix for Matrix Generation">Rewind</g:Button>
+						    </g:FlowPanel>
+						    <g:FlowPanel styleName="{style.leftMargin}">
+						    <g:Button ui:field='deleteButton' styleName="{style.middle}" title="remove the selected task/analysis - the task will be removed but related files will not be deleted">Delete</g:Button>
+						    </g:FlowPanel>
+						    <g:FlowPanel styleName="{style.leftMargin}">
+						    <g:Button ui:field='shareButton' styleName="{style.middle}" title="share the selected task/analysis with other users - the task and related files will be added to others' workspace">Share</g:Button>
+						    </g:FlowPanel>
+						</g:HorizontalPanel>
+						
+						 <g:InlineLabel>&nbsp;</g:InlineLabel>   
+						 
+						<c:SimplePager
+			           		ui:field='pager' />
 			          	<c:CellTable styleName="{style.padding}"
 				            addStyleNames='{style.cellTable}'
 				            pageSize='15'
 			           	 	ui:field='taskTable' />
-						<c:SimplePager
-			           		ui:field='pager' />
-						<g:HorizontalPanel>
-						    <g:FlowPanel styleName="{style.leftMargin}">
-						    <g:Button ui:field='resumeButton' title="continue with the selected task">Resume</g:Button>
-						    </g:FlowPanel>
-						    <g:FlowPanel styleName="{style.leftMargin}">
-						    <g:Button ui:field='rewindButton' title="re-categorize the terms for the selected task">Rewind</g:Button>
-						    </g:FlowPanel>
-						    <g:FlowPanel styleName="{style.leftMargin}">
-						    <g:Button ui:field='deleteButton' title="remove the selected task - the task will be removed but related files will not be deleted">Delete</g:Button>
-						    </g:FlowPanel>
-						    <g:FlowPanel styleName="{style.leftMargin}">
-						    <g:Button ui:field='shareButton' title="share the selected task with other users - the task and related files will be added to others' workspace">Share</g:Button>
-						    </g:FlowPanel>
-						</g:HorizontalPanel>
+						
 		            </g:VerticalPanel> 
 		        </div>
 		    </div>

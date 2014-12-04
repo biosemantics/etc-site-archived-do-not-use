@@ -21,9 +21,9 @@ public enum FileTypeEnum {
     	return displayName; 
     }*/
 	
-	TAXON_DESCRIPTION("Text Capture Input", true),
-	MARKED_UP_TAXON_DESCRIPTION("Text Capture Output/Matrix Generation Input", true),
-	MATRIX("Matrix Generation Output", true), 
+	TAXON_DESCRIPTION("Input for Text Capture Tool", true),
+	MARKED_UP_TAXON_DESCRIPTION("Input for Matrix Generation Tool", true),
+	MATRIX("Input for Key Generation Tool", true), 
 	PLAIN_TEXT("Plain Text", true),
 	DIRECTORY("Directory", false);
 	

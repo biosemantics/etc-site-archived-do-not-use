@@ -99,7 +99,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	@Override
 	public void onCreateSemanticMarkupFiles() {
 		final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
-		if(selection != null && selection.getFileInfo().isAllowsNewChildren()) {
+		if(selection != null && selection.getFileInfo().isAllowsNewFiles()) {
 			createSemanticMarkupFilesDialogPresenter.setCloseHandler(new ICloseHandler() {
 				@Override
 				public void onClose(int filesCreated) {
@@ -116,7 +116,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	@Override
 	public void onCreate() {
 		final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
-		if(selection != null && selection.getFileInfo().isAllowsNewChildren()) {
+		if(selection != null && selection.getFileInfo().isAllowsNewFolders()) {
 			int level = getLevel(selection);
 			if(level < Configuration.fileManagerMaxDepth) {
 				 final PromptMessageBox box = new PromptMessageBox("Create folder", "Folder name:");
@@ -365,12 +365,12 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	public void onSelect(FileImageLabelTreeItem selectedItem) {
 		if(selectedItem != null) {
 			setSystemFile(selectedItem.getFileInfo().isSystemFile());
-			setAllowsChildren(selectedItem.getFileInfo().isAllowsNewChildren());
+			setAllowsChildren(selectedItem.getFileInfo().isAllowsNewFiles(), selectedItem.getFileInfo().isAllowsNewFolders());
 		}
 	}
 
 	private void initActions() {
-		setAllowsChildren(false);
+		setAllowsChildren(false, false);
 		setSystemFile(true);
 	}
 	
@@ -395,8 +395,9 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		view.setEnabledDelete(!systemFile);
 	}	
 	
-	private void setAllowsChildren(boolean allowsNewChildren) {
-		view.setEnabledCreateDirectory(allowsNewChildren);
+	private void setAllowsChildren(boolean allowsNewFiles, boolean allowNewFolders) {
+		view.setEnabledCreateDirectory(allowNewFolders);
+		
 		/*if(allowsNewChildren) {
 			display.getUploader().getFileInput().getWidget().getElement().removeAttribute("aria-hidden");
 			display.getAddButton().getElement().removeAttribute("aria-hidden");
@@ -404,8 +405,8 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 			display.getUploader().getFileInput().getWidget().getElement().setAttribute("aria-hidden", "true");
 			display.getAddButton().getElement().setAttribute("aria-hidden", "true");
 		}*/
-		view.setEnabledUpload(allowsNewChildren);
-		view.setEnabledCreateSemanticMarkupFiles(allowsNewChildren);
+		view.setEnabledUpload(allowsNewFiles);
+		view.setEnabledCreateSemanticMarkupFiles(allowsNewFiles);
 	}
 	
 	

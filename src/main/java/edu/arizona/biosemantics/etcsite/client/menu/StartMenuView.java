@@ -21,7 +21,7 @@ public class StartMenuView extends Composite implements IStartMenuView {
 	
 	@UiField
 	Anchor aboutAnchor;
-
+	
 	public StartMenuView() {
 		initWidget(uiBinder.createAndBindUi(this));
 		aboutAnchor.getElement().getStyle().setCursor(Cursor.POINTER);
