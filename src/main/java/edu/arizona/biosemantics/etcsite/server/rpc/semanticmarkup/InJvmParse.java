@@ -44,16 +44,17 @@ public class InJvmParse implements Parse {
 		String workspace = Configuration.charaparser_tempFileBase;
 		String wordnet = Configuration.charaparser_wordnet;
 		String perl = Configuration.charaparser_perl;
-		String otoLiteURL = Configuration.deploymentUrl;
+		String otoLiteURL = Configuration.oto2Url;
 		String debugFile = workspace + File.separator + tablePrefix + File.separator + "debug.log";
 		String errorFile = workspace + File.separator + tablePrefix + File.separator + "error.log";
+		String ontologies = Configuration.charaparser_ontologies;
 		
 		//only temporary until charaparser can deal with the namespaces and they don't need to be pre- and post treated with XmlNamespaceManager
 		//String newInput = workspace + File.separator + tablePrefix + File.separator + "in";
 		
 		String[] args = new String[] { "-a", workspace, "-f", source, "-g", operator, "-j", bioportalUserId, "-k", bioportalAPIKey, "-b", debugFile, "-e", errorFile, "-c", config, "-w", wordnet, "-l", perl,
 				"-n", databaseHost, "-p", databasePort, "-d", databaseName, "-u", databaseUser, 
-				"-s", databasePassword, "-i", input, "-z" , tablePrefix, "-y", "-o", otoLiteURL};
+				"-s", databasePassword, "-i", input, "-z" , tablePrefix, "-y", "-o", otoLiteURL, "-q", ontologies};
 		
 		//System.out.println();
 		//for(String arg : args) {

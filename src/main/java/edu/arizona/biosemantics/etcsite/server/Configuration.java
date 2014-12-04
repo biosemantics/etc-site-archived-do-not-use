@@ -38,6 +38,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 	public static int maxActiveSemanticMarkup;
 	public static String charaparser_xms;
 	public static String charaparser_xmx;
+	public static String charaparser_ontologies;
 	
 	/** Matrix Generation **/
 	public static String matrixGeneration_tempFileBase;
@@ -80,13 +81,16 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 	public static String emailSMTPPort;
 	private static Properties properties;
 	
+	/** OTO 2 **/
+	public static String oto2Url;
+	
 	static {		
 		try {
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
 			properties = new Properties(); 
 			properties.load(loader.getResourceAsStream("edu/arizona/biosemantics/etcsite/config.properties"));
 			
-			deploymentUrl = properties.getProperty("deploymentUrl");
+			oto2Url = properties.getProperty("oto2Url");
 			classpath = properties.getProperty("classpath");
 			
 			targetNamespace = properties.getProperty("targetNamespace");
@@ -108,6 +112,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			maxActiveSemanticMarkup = Integer.parseInt(properties.getProperty("maxActiveSemanticMarkup"));
 			charaparser_xms = properties.getProperty("charaparser_xms");
 			charaparser_xmx = properties.getProperty("charaparser_xmx");
+			charaparser_ontologies = properties.getProperty("charaparser_ontologies");
 			
 			matrixGeneration_tempFileBase = properties.getProperty("matrixGeneration_tempFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			maxActiveMatrixGeneration = Integer.parseInt(properties.getProperty("maxActiveMatrixGeneration"));
