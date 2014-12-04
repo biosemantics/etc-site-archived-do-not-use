@@ -7,4 +7,5 @@ log4j.appender.ROOT.layout.ConversionPattern=[%d] %t %c %-5p - %m%n
 #If Append=false selected, new spinned off JVMs will overwrite the log file of the parent process
 log4j.appender.ROOT.Append=true 
 
+
 log4j.appender.ROOT.File=C:/Users/rodenhausen/etcsite/log/etcsite.og
