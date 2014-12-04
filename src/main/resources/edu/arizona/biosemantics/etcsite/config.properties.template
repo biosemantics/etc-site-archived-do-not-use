@@ -1,6 +1,5 @@
-deploymentUrl=
+oto2Url=
 classpath= #Order matters for log4j properties pickup. Put log4j path first
-
 
 #Files
 targetNamespace=http://www.github.com/biosemantics
