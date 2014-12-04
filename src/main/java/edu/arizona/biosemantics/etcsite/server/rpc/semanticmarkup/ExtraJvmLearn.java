@@ -84,6 +84,7 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 		String otoLiteURL = Configuration.oto2Url;
 		String debugFile = workspace + File.separator + tablePrefix + File.separator + "debug.log";
 		String errorFile = workspace + File.separator + tablePrefix + File.separator + "error.log";
+		String ontologies = Configuration.charaparser_ontologies;
 		
 		fileService.createDirectory(new AdminAuthenticationToken(), workspace, tablePrefix, false);
 
@@ -116,6 +117,7 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 		addArg(argList, "i", input);
 		addArg(argList, "z", tablePrefix);
 		addArg(argList, "o", otoLiteURL);
+		addArg(argList, "q", ontologies);
 
 		String[] args = argList.toArray(new String[argList.size()]);
 		

@@ -39,6 +39,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 	public static int maxActiveSemanticMarkup;
 	public static String charaparser_xms;
 	public static String charaparser_xmx;
+	public static String charaparser_ontologies;
 	
 	/** Matrix Generation **/
 	public static String matrixGeneration_tempFileBase;
@@ -112,6 +113,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			maxActiveSemanticMarkup = Integer.parseInt(properties.getProperty("maxActiveSemanticMarkup"));
 			charaparser_xms = properties.getProperty("charaparser_xms");
 			charaparser_xmx = properties.getProperty("charaparser_xmx");
+			charaparser_ontologies = properties.getProperty("charaparser_ontologies");
 			
 			matrixGeneration_tempFileBase = properties.getProperty("matrixGeneration_tempFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			maxActiveMatrixGeneration = Integer.parseInt(properties.getProperty("maxActiveMatrixGeneration"));

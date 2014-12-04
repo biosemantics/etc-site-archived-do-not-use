@@ -54,6 +54,7 @@ public class InJvmLearn implements Learn {
 		String otoLiteURL = Configuration.oto2Url;
 		String debugFile = workspace + File.separator + tablePrefix + File.separator + "debug.log";
 		String errorFile = workspace + File.separator + tablePrefix + File.separator + "error.log";
+		String ontologies = Configuration.charaparser_ontologies;
 		
 		try {
 			fileService.createDirectory(new AdminAuthenticationToken(), workspace, tablePrefix, false);
@@ -72,7 +73,7 @@ public class InJvmLearn implements Learn {
 		}*/
 		String[] args = new String[] { "-a", workspace, "-f", source, "-g", operator, "-j", bioportalUserId, "-k", bioportalAPIKey, "-b", debugFile, "-e", errorFile, "-c", config, "-w", wordnet, "-l", perl,
 				"-n", databaseHost, "-p", databasePort, "-d", databaseName, "-u", databaseUser, 
-				"-s", databasePassword, "-i", input, "-z" , tablePrefix, "-y", "-o", otoLiteURL};
+				"-s", databasePassword, "-i", input, "-z" , tablePrefix, "-y", "-o", otoLiteURL, "-q", ontologies};
 		try {
 			ETCLearnMain.main(args);
 			DatasetPrefix datasetPrefix = daoManager.getDatasetPrefixDAO().getDatasetPrefix(tablePrefix);

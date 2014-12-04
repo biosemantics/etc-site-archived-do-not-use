@@ -74,6 +74,7 @@ public class ExtraJvmParse extends ExtraJvmCallable<ParseResult> implements Pars
 		String otoLiteURL = Configuration.oto2Url;
 		String debugFile = workspace + File.separator + tablePrefix + File.separator + "debug.log";
 		String errorFile = workspace + File.separator + tablePrefix + File.separator + "error.log";
+		String ontologies = Configuration.charaparser_ontologies;
 		
 		//only temporary until charaparser can deal with the namespaces and they don't need to be pre- and post treated with XmlNamespaceManager
 		//String newInput = workspace + File.separator + tablePrefix + File.separator + "in";
@@ -98,6 +99,7 @@ public class ExtraJvmParse extends ExtraJvmCallable<ParseResult> implements Pars
 		addArg(argList, "z", tablePrefix);
 		argList.add("-y");
 		addArg(argList, "o", otoLiteURL);
+		addArg(argList, "q", ontologies);
 		
 		String[] args = argList.toArray(new String[argList.size()]);
 		
