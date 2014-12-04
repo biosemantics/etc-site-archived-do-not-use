@@ -20,17 +20,17 @@
 			<tr>
 				
 				<td class="{style.clickable} {style.imageLabelPadding}">
-					<my:ImageLabel ui:field="home" imagePath="images/Home.gif" imageWidth="20px" imageHeight="20px" text="Home"></my:ImageLabel>
+					<my:ImageLabel ui:field="home" imagePath="images/Home.gif" imageWidth="20px" imageHeight="20px" text="Home" systemFolder="false"></my:ImageLabel>
 				</td>
 				
 				<!-- About ETC -->
 				<td class="{style.clickable} {style.imageLabelPadding}">
-					<my:ImageLabel ui:field="about" imagePath="images/About.gif" imageWidth="20px" imageHeight="20px" text="About ETC"></my:ImageLabel>  
+					<my:ImageLabel ui:field="about" imagePath="images/About.gif" imageWidth="20px" imageHeight="20px" text="About ETC" systemFolder="false"></my:ImageLabel>  
 				</td>
 				
 				<!-- News -->
 				<td class="{style.clickable} {style.imageLabelPadding}">
-					<my:ImageLabel ui:field="news" imagePath="images/News.gif" imageWidth="20px" imageHeight="20px" text="News"></my:ImageLabel>  
+					<my:ImageLabel ui:field="news" imagePath="images/News.gif" imageWidth="20px" imageHeight="20px" text="News" systemFolder="false"></my:ImageLabel>  
 				</td>	
 				
 				<table align="right">
@@ -44,7 +44,7 @@
 						</td>
 						
 						<td class="{style.clickable} {style.imageLabelPadding}">
-							<my:ImageLabel imagePath="images/Help.gif" imageWidth="20px" imageHeight="20px" text="Getting Started" ui:field="help"></my:ImageLabel>
+							<my:ImageLabel imagePath="images/Help.gif" imageWidth="20px" imageHeight="20px" text="Getting Started" ui:field="help" systemFolder="false"></my:ImageLabel>
 						</td>
 					</tr>
 				</table>

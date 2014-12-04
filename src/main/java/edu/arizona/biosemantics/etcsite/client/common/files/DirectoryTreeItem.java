@@ -8,7 +8,10 @@ public class DirectoryTreeItem extends FileImageLabelTreeItem {
 	
 	public DirectoryTreeItem(String label, FileInfo fileInfo) {
 		super(fileInfo);
-		FileImageLabel fileComposite = new FileImageLabel(this, folderImage, "19px", "20px", label);
+		boolean systemFolder = false;
+		if(fileInfo.getDisplayFilePath().compareTo("")==0 || fileInfo.getDisplayFilePath().compareTo("Owned")==0||fileInfo.getDisplayFilePath().compareTo("Shared")==0)
+			systemFolder = true;
+		FileImageLabel fileComposite = new FileImageLabel(this, folderImage, "19px", "20px", label, systemFolder);
 		super.setFileImageLabel(fileComposite);
 	}
 }

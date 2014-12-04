@@ -118,13 +118,20 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 				if (selection != null) {
 					inputFile = selection.getFileInfo().getFilePath();
 					String shortendPath = filePathShortener.shorten(selection.getFileInfo(), Authentication.getInstance().getUserId());
-					view.setInput(shortendPath);
-					view.setEnabledNext(true);			
-					if(selection.getFileInfo().getOwnerUserId() != Authentication.getInstance().getUserId()) {
-						Alerter.sharedInputForTask();
-						fileManagerDialogPresenter.hide();
-					} else {
-						fileManagerDialogPresenter.hide();
+					if(selection.getFileInfo().isSystemFile()){
+						Alerter.systemFolderNotAllowedInputForTask();
+					}else if(selection.getText().contains(" 0 file")){
+						Alerter.emptyFolder();
+					}else{
+						view.setInput(shortendPath);
+						view.setEnabledNext(true);	
+						
+						if(selection.getFileInfo().getOwnerUserId() != Authentication.getInstance().getUserId()) {
+							Alerter.sharedInputForTask();
+							fileManagerDialogPresenter.hide();
+						} else {
+							fileManagerDialogPresenter.hide();
+						}
 					}
 				}
 			}

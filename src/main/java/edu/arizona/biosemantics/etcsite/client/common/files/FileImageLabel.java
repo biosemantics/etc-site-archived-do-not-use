@@ -8,8 +8,8 @@ public class FileImageLabel extends ImageLabel {
 	private FileImageLabelTreeItem fileTreeItem;
 	
 	public FileImageLabel(FileImageLabelTreeItem fileTreeItem, String imageUri, String width,
-			String height, String label) {
-		super(imageUri, width, height, label);
+			String height, String label, boolean systemFolder) {
+		super(imageUri, width, height, label, systemFolder);
 		this.fileTreeItem = fileTreeItem;
 	}
 
