@@ -18,7 +18,7 @@
 	<lay:CenteredContentPanel>
 		<g:VerticalPanel>
 		    <g:HorizontalPanel>
-			    <my2:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.SemanticMarkupShort.gif" imageWidth="65px" imageHeight="20px" text="" />
+			    <!--  <my2:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.SemanticMarkupShort.gif" imageWidth="65px" imageHeight="20px" text="" />-->
 			    <my:SubMenu ui:field="subMenu" step="HIERARCHY"/>
 			</g:HorizontalPanel>
 			<g:SimplePanel ui:field="container">

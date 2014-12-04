@@ -26,7 +26,7 @@
 	<lay:CenteredContentPanel>
 		<g:VerticalPanel>
 		     <g:HorizontalPanel>
-			    <co:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.SemanticMarkupShort.gif" imageWidth="65px" imageHeight="20px" text="" />
+<!-- 			    <co:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.SemanticMarkupShort.gif" imageWidth="65px" imageHeight="20px" text="" /> -->
 			    <my:SubMenu ui:field="subMenu" step="PREPROCESS_TEXT"/>
 			</g:HorizontalPanel>
 			<g:VerticalPanel styleName="{style.padding}">

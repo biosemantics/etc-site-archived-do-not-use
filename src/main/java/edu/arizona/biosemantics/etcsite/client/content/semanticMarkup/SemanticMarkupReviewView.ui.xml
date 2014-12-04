@@ -5,54 +5,56 @@
 	xmlns:my2="urn:import:edu.arizona.biosemantics.etcsite.client.common"
 	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout">
 	<ui:style>
-		.centered {
-			margin: auto;
-		}
-		.nextButton {
-			margin-top: 4px;
-   			margin-left: 20px;
-		}
-		.subMenuEntry {
-			margin-left: 0px;
-			padding-top: 10px;
-			padding-bottom:10px;
-		}
+	.centered {
+		margin: auto;
+	}
+	
+	.nextButton {
+		margin-top: 4px;
+		margin-left: 20px;
+	}
+	
+	.subMenuEntry {
+		margin-left: 0px;
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
 	</ui:style>
-	
+
 	<g:DockLayoutPanel unit='PX' ui:field='dockLayoutPanel'>
-    	<g:north size='50'>
-    	    <g:SimplePanel> <!-- necessary because element.style information is set which leads ff not to center the menu -->
-	    	    <g:HorizontalPanel styleName="{style.centered}">
-	    	        <g:cell>
-	    	            <my:SubMenu ui:field="subMenu" step="REVIEW_TERMS"/>
-	    	        </g:cell>
-	    	      	<g:cell>
-	    	            <g:Button addStyleNames="{style.nextButton}" ui:field="nextButton">Next Step in Text Capture</g:Button>
-	    	        </g:cell>
-	    	    </g:HorizontalPanel>
-    	    </g:SimplePanel>
-    	</g:north>
-		   <g:center>
-		       <g:SimpleLayoutPanel ui:field="otoPanel"/>
-		   </g:center>
-	 </g:DockLayoutPanel>
-	
-	
-	
-	<!-- <g:ScrollPanel>
-	<lay:CenteredContentPanel>
-		<g:VerticalPanel>
-		    <g:HorizontalPanel>
-			    <my2:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.SemanticMarkupShort.gif" imageWidth="65px" imageHeight="20px" text="" />
-			    <my:SubMenu ui:field="subMenu" step="REVIEW_TERMS"/>
-			</g:HorizontalPanel>
-			<g:Label>Please review the terms learned. Select terms in the left column and drag them into appropriate categories.
-			</g:Label>
-				--><!-- <g:Frame ui:field="frame" styleName="{style.otoFrame}">
-				</g:Frame> -->
-		<!-- 		<g:SimpleLayoutPanel ui:field="otoPanel" styleName="{style.otoPanel}"/>
-			<g:Button ui:field="nextButton">Next</g:Button>
-		</g:VerticalPanel>
-	</lay:CenteredContentPanel>
-	</g:ScrollPanel> -->
+		<g:north size='50'>
+			<g:SimplePanel> <!-- necessary because element.style information is set which leads ff not 
+					to center the menu -->
+				<g:VerticalPanel>
+				   <g:FlowPanel>
+				   		<g:InlineLabel>Please categorize the terms (if any) in the left column and review the existing categorizations, which have been made by other users and the software. See Instructions menu for more help. </g:InlineLabel>
+				   </g:FlowPanel>
+					<g:HorizontalPanel styleName="{style.centered}">
+						<g:cell>
+							<my:SubMenu ui:field="subMenu" step="REVIEW_TERMS" />
+						</g:cell>
+						<g:cell>
+							<g:Button addStyleNames="{style.nextButton}" ui:field="nextButton">Next
+								Step in Text Capture</g:Button>
+						</g:cell>
+					</g:HorizontalPanel>
+				</g:VerticalPanel>
+			</g:SimplePanel>
+		</g:north>
+		<g:center>
+			<g:SimpleLayoutPanel ui:field="otoPanel" />
+		</g:center>
+	</g:DockLayoutPanel>
+
+
+
+	<!-- <g:ScrollPanel> <lay:CenteredContentPanel> <g:VerticalPanel> <g:HorizontalPanel> 
+		<my2:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.SemanticMarkupShort.gif" 
+		imageWidth="65px" imageHeight="20px" text="" /> <my:SubMenu ui:field="subMenu" 
+		step="REVIEW_TERMS"/> </g:HorizontalPanel> <g:Label>Please review the terms 
+		learned. Select terms in the left column and drag them into appropriate categories. 
+		</g:Label> --><!-- <g:Frame ui:field="frame" styleName="{style.otoFrame}"> </g:Frame> -->
+	<!-- <g:SimpleLayoutPanel ui:field="otoPanel" styleName="{style.otoPanel}"/> 
+		<g:Button ui:field="nextButton">Next</g:Button> </g:VerticalPanel> </lay:CenteredContentPanel> 
+		</g:ScrollPanel> -->
 </ui:UiBinder>
