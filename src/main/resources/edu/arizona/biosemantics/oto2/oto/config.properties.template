@@ -5,6 +5,9 @@ databasePassword=
 databaseHost=
 databasePort=
 
+#Temporary Storage
+files = 
+
 #Bioportal
 bioportalUrl=http://data.bioontology.org
 bioportalApiKey=
