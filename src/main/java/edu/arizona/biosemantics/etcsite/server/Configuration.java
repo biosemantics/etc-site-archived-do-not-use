@@ -13,7 +13,8 @@ import edu.arizona.biosemantics.common.log.Logger;
 public class Configuration extends edu.arizona.biosemantics.etcsite.client.common.Configuration {
 
 	private final static Logger logger = Logger.getLogger(Configuration.class);
-	public static String deploymentUrl;
+
+	/** Java Setup **/
 	public static String classpath;
 	
 	/** Files **/
@@ -80,13 +81,16 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 	public static String emailSMTPPort;
 	private static Properties properties;
 	
+	/** OTO 2 **/
+	public static String oto2Url;
+	
 	static {		
 		try {
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
 			properties = new Properties(); 
 			properties.load(loader.getResourceAsStream("edu/arizona/biosemantics/etcsite/config.properties"));
 			
-			deploymentUrl = properties.getProperty("deploymentUrl");
+			oto2Url = properties.getProperty("oto2Url");
 			classpath = properties.getProperty("classpath");
 			
 			targetNamespace = properties.getProperty("targetNamespace");

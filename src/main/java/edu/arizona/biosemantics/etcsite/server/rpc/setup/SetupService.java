@@ -27,7 +27,6 @@ public class SetupService extends RemoteServiceServlet implements ISetupService 
 		setup.setFileBase(Configuration.fileBase);
 		setup.setGoogleClientId(Configuration.googleClientId);
 		setup.setGoogleRedirectURI(Configuration.googleRedirectURI);
-		setup.setDeploymentUrl(Configuration.deploymentUrl);
 		return setup;
 	}
 
