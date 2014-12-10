@@ -85,6 +85,7 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 				@Override
 				public void onFailure(Throwable caught) {
 					Alerter.failedToSaveMatrixGeneration(caught);
+					Alerter.stopLoading();
 				}
 			});
 		}
@@ -112,6 +113,7 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToReview(caught);
+				Alerter.stopLoading();
 			}
 		}); 
 	}
