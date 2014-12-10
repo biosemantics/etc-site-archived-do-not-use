@@ -208,7 +208,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	
 	private void createModelFile() {
 		StringBuilder textBuilder = new StringBuilder();
-		textBuilder.append("author: " + view.getAuthor().trim() + "\n");
+		textBuilder.append("author: " + shortenAuthor(view.getAuthor().trim()) + "\n");
 		textBuilder.append("year: " + view.getYear().trim() + "\n");
 		textBuilder.append("title: " + view.getTitleText().trim() + "\n");
 		textBuilder.append("doi: " + view.getDOI().trim() + "\n");
@@ -255,6 +255,16 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 				Alerter.failedToCreateTaxonDescription(caught);
 			}
 		});
+	}
+
+	/**
+	 * to avoid excessively long file names, shorten author info to the first author name.
+	 * @param trim
+	 * @return
+	 */
+	private String shortenAuthor(String author) {
+		int endIndex = author.indexOf(" ");
+		return endIndex>0? author.substring(0, endIndex) : author;
 	}
 
 	private void createXmlFiles(final List<XmlModelFile> modelFiles, final String destinationFilePath) {
