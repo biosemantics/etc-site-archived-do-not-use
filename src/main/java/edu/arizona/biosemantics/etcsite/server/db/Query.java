@@ -105,8 +105,9 @@ public class Query implements AutoCloseable {
 				resultSet.close();
 			if(preparedStatement != null)
 				preparedStatement.close();
-			if(connection != null)
-				connection.close();
+			//Don't close connection, connection pool reuses connections
+			//if(connection != null)
+			//	connection.close();
 		} catch(Exception e) {
 			throw new QueryException(e.getMessage(), e.getCause());
 		}
