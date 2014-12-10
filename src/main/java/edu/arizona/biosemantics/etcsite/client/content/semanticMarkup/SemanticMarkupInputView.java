@@ -12,14 +12,10 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.arizona.biosemantics.semanticmarkup.know.Glossary;
+import edu.arizona.biosemantics.common.biology.TaxonGroup;
 
 public class SemanticMarkupInputView extends Composite implements ISemanticMarkupInputView {
 
-	private enum Glossary {
-		Algae, Cnidaria, Fossil, Gastropods, Hymenoptera, Plant, Porifera
-	}
-	
 	private static SemanticmarkupInputViewUiBinder uiBinder = GWT
 			.create(SemanticmarkupInputViewUiBinder.class);
 
@@ -46,8 +42,8 @@ public class SemanticMarkupInputView extends Composite implements ISemanticMarku
 	
 	public SemanticMarkupInputView() {
 		initWidget(uiBinder.createAndBindUi(this));
-		for(Glossary glossary : Glossary.values()) {
-			this.glossaryListBox.addItem(glossary.toString());
+		for(TaxonGroup taxonGroup : TaxonGroup.values()) {
+			this.glossaryListBox.addItem(taxonGroup.getDisplayName());
 		}
 	}
 
@@ -104,8 +100,8 @@ public class SemanticMarkupInputView extends Composite implements ISemanticMarku
 	}
 
 	private int getInitialGlossaryIndex() {
-		for(int i=0; i<Glossary.values().length; i++) {
-			if(Glossary.values()[i].equals(Glossary.Plant))
+		for(int i=0; i<TaxonGroup.values().length; i++) {
+			if(TaxonGroup.values()[i].equals(TaxonGroup.PLANT))
 				return i;
 		}
 		return 0;
