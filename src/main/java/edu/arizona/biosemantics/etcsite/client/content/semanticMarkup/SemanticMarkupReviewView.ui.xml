@@ -26,9 +26,6 @@
 			<g:SimplePanel> <!-- necessary because element.style information is set which leads ff not 
 					to center the menu -->
 				<g:VerticalPanel>
-				   <g:FlowPanel>
-				   		<g:InlineLabel>Please categorize the terms (if any) in the left column and review the existing categorizations, which have been made by other users and the software. See Instructions menu for more help. </g:InlineLabel>
-				   </g:FlowPanel>
 					<g:HorizontalPanel styleName="{style.centered}">
 						<g:cell>
 							<my:SubMenu ui:field="subMenu" step="REVIEW_TERMS" />

@@ -4,7 +4,7 @@
 	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.common">
 	<ui:style>
 		.subMenuEntry {
-			margin-left: 20px;
+			margin-left: 40px;
 		}
 		.subMenu {
 			padding-top: 10px;
@@ -12,6 +12,7 @@
 		}
 		.bold {
 			font-weight: bold;
+			margin-left: 40px;
 		}
 
 	</ui:style>

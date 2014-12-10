@@ -93,7 +93,7 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		
 			int colonIndex = line.indexOf(":");
 			if(colonIndex == -1) {
-				modelFile.appendError("Line format invalid. Need a ':' to seperate field name from its text: " + line);
+				modelFile.appendError("Line format invalid. Need a ':' to separate field name from its text: " + line);
 				continue;
 			}
 

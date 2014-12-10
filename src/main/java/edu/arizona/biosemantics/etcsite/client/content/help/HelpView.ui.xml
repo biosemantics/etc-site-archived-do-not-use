@@ -38,7 +38,7 @@
 		    	<g:VerticalPanel styleName="{style.padding}"/>
 		    	<g:Label styleName="{style.bold}">Quick Guide for First-Time Users</g:Label>
 		        <g:InlineLabel>All the tools require input files in a certain format. The general steps of running each of the tools include:</g:InlineLabel>
-		        <g:InlineLabel>1. Click on a 'Begin ...' button on the homepage to start a tool.</g:InlineLabel>
+		        <g:InlineLabel>1. Click on a green "Begin ..." button on the homepage to start a tool.</g:InlineLabel>
 		        <g:InlineLabel>2. Read the INPUT REQUIREMENTS for the tool, and go to File Manager to create or upload input files.</g:InlineLabel> 
 		        <g:InlineLabel>3. Follow the instructions on the screen to complete the neccessary steps. Your progress is shown on the screen. </g:InlineLabel>
 			    <g:InlineLabel>4. The final step informs the user the location of output files if any is generated. Take note of the location, then go to File Manager to retrieve or download the output.</g:InlineLabel>

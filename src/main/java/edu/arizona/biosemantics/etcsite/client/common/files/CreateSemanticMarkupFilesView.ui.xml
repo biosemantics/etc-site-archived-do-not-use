@@ -19,7 +19,7 @@
 			width: 720px;
 		}
 		.right {
-			text-align: right;
+			margin-right: 10%;
 		}
 		</ui:style>
 	<g:TabPanel ui:field="tabPanel" styleName="{style.tabPanel}">
@@ -120,16 +120,16 @@
 		      				The batch creation allows you to upload multiple taxonomic treatments formatted in the same way as the single file creation.
 		      				
 		      				<ul>
-		      					<li>Use an empty line to seperate taxonomic treatments</li>
+		      					<li>Use an empty line to separate taxonomic treatments</li>
 		      					<li>The system will generate one file for each taxonomic treatment given</li>
 		      					<li><ul>
 		      					    <li>You can include following fields in your input text (R denotes a required field, O optional): <br/>
 		      					    <b>author</b>(R), <b>year</b>(R), <b>title</b>(R), <b>doi</b>(O), <b>full citation</b>(O), at least one <b>strain number</b> or one ranked taxon name, in the format of <b><i>rank</i> name</b>, e.g., <b>family name</b>(R),   
 		      					    <b>equivalent strain numbers</b>(O), <b>accession number 16S rRNA</b>(O), and at least one of {<b>morphology</b>, <b>phenology</b>, <b>habitat</b>, <b>distribution</b>}(R).</li>
-		      					    <li>Authority and date may be included in taxon names, use a <b>comma (,)</b> to seperate the date. For example: Homosclerophorida Dendy, 1905</li>
+		      					    <li>Authority and date may be included in taxon names, use a <b>comma (,)</b> to separate the date. For example: Homosclerophorida Dendy, 1905</li>
 		      					    <li>Lower rank taxa should list all ranks on separate lines, starting from the highest rank of interests (see examples 2 and 3)</li> 
 		      					   </ul> </li>
-		      					<li>Use a <b>colon (:)</b> to seperate a field name from its value</li>
+		      					<li>Use a <b>colon (:)</b> to separate a field name from its value</li>
 		      					<li>Use a new line for each field</li>
 		      					<li><b>If you have multiple paragraphs for any of the description fields (morphology, phenology, habitat, distribution), 
 		      				insert an empty line between the paragraphs and enclose all the paragraphs with one pair of number signs (#, see example 3). Do not use # in description content (they can be replaced with 'no.'). </b></li>

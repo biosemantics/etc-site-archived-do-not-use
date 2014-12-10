@@ -206,7 +206,7 @@
 			<div class="{style.matrixGenerationImage} {style.actionImage}"></div>
 			<div class="{style.matrixGenerationText} {style.actionText}"></div>
 			<div class="{style.matrixGenerationDescription} {style.actionDescription}">
-				Generates taxon-character matrices from marked-up descriptions of organisms. The matrices can be used to create specimen identification keys, or be downloaded
+				Generates taxon-character matrices from semantic marked-up descriptions of organisms. The matrices can be used to create specimen identification keys, or be downloaded
 				 and used with other matrix analysis tools. 
 			</div>
 			<div class="{style.matrixGenerationArrow} {style.actionArrow}"></div>

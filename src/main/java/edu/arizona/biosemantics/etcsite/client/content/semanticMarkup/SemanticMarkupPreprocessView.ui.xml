@@ -30,7 +30,7 @@
 			    <my:SubMenu ui:field="subMenu" step="PREPROCESS_TEXT"/>
 			</g:HorizontalPanel>
 			<g:VerticalPanel styleName="{style.padding}">
-				<g:Label>There are unmatched brackets ("(", ")", "[", "]" or "{","}") in the input descriptions. Please correct those.
+				<g:Label>There are unmatched brackets ("(", ")", "[", "]" or "{","}") in the input descriptions. Please correct those in all descriptions, then move to the next step. 
 				</g:Label>
 				
 				<g:HorizontalPanel>

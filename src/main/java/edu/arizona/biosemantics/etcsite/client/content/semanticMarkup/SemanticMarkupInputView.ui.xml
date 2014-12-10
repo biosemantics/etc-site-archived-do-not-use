@@ -104,7 +104,8 @@
 								</g:cell>
 								<g:InlineLabel styleName="{style.note}">
 									Provide a name to
-									identify your task/analysis.
+									identify your task/analysis. This name will be used in Task Manager.</g:InlineLabel>
+								 <g:InlineLabel styleName="{style.note}">Also Task Name + Input Folder Name = Output Folder Name
 								</g:InlineLabel>
 							</g:VerticalPanel>
 							<g:cell verticalAlignment="ALIGN_MIDDLE">
