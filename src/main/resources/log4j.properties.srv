@@ -1,10 +1,21 @@
-log4j.rootLogger=debug, ROOT
-log4j.appender.ROOT=org.apache.log4j.RollingFileAppender
-log4j.appender.ROOT.MaxFileSize=1000KB
-log4j.appender.ROOT.MaxBackupIndex=10
-log4j.appender.ROOT.layout=org.apache.log4j.PatternLayout
-log4j.appender.ROOT.layout.ConversionPattern=[%d] %t %c %-5p - %m%n
-#If Append=false selected, new spinned off JVMs will overwrite the log file of the parent process
-log4j.appender.ROOT.Append=true 
+log4j.rootLogger=DEBUG, A1, A2
 
-log4j.appender.ROOT.File=/var/lib/etcsite/log/etcsite.log
+log4j.appender.A1=org.apache.log4j.RollingFileAppender
+log4j.appender.A1.MaxFileSize=100MB
+log4j.appender.A1.MaxBackupIndex=100
+log4j.appender.A1.layout=org.apache.log4j.PatternLayout
+log4j.appender.A1.layout.ConversionPattern=[%d] %t %c %-5p - %m%n
+#If Append=false selected, new spinned off JVMs will overwrite the log file of the parent process
+log4j.appender.A1.Append=true 
+log4j.appender.A2.Threshold = DEBUG
+log4j.appender.A1.File=/var/lib/etcsite/log/etcsite.debug.log
+
+log4j.appender.A2=org.apache.log4j.RollingFileAppender
+log4j.appender.A2.MaxFileSize=100MB
+log4j.appender.A2.MaxBackupIndex=100
+log4j.appender.A2.layout=org.apache.log4j.PatternLayout
+log4j.appender.A2.layout.ConversionPattern=[%d] %t %c %-5p - %m%n
+#If Append=false selected, new spinned off JVMs will overwrite the log file of the parent process
+log4j.appender.A2.Append=true 
+log4j.appender.A2.Threshold = ERROR
+log4j.appender.A2.File=/var/lib/etcsite/log/etcsite.error.log

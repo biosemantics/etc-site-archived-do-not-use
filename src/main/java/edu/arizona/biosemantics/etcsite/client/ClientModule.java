@@ -398,7 +398,7 @@ public class ClientModule extends AbstractGinModule {
 	public static class CheckResumablesProvider implements Provider<Integer> {
 		@Override
 		public Integer get() {
-			return 3000;
+			return 10000;
 		}
 	}
 }

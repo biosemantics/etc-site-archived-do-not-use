@@ -27,13 +27,15 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements 
 	private String outputFile;
 	private boolean inheritValues;
 	private boolean generateAbsentPresent;
+	private boolean inferCharactersFromOntologies;
 
 	public ExtraJvmMatrixGeneration(String inputDir, String outputFile, boolean inheritValues, 
-			boolean generateAbsentPresent) {
+			boolean generateAbsentPresent, boolean inferCharactersFromOntologies) {
 		this.inputDir = inputDir;
 		this.outputFile = outputFile;
 		this.inheritValues = inheritValues;
 		this.generateAbsentPresent = generateAbsentPresent;
+		this.inferCharactersFromOntologies = inferCharactersFromOntologies;
 		
 		this.setArgs(createArgs());
 		//could be reduced to only libraries relevant to matrixgeneration
@@ -49,11 +51,12 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements 
 	}
 	
 	private String[] createArgs() {
-		String[] args = new String[4];
+		String[] args = new String[5];
 		args[0] = inputDir;
 		args[1] = outputFile;
 		args[2] = Boolean.toString(inheritValues);
 		args[3] = Boolean.toString(generateAbsentPresent);
+		args[4] = Boolean.toString(inferCharactersFromOntologies);
 		return args;
 	}
 
@@ -68,7 +71,8 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements 
 	
 	public static void main(String[] args) throws Exception {
 		//MatrixGeneration mg = new MatrixGeneration("C:/test/users/1070/input_2", "C:/test/temp/matrixGeneration/124/Matrix.mx");
-		ExtraJvmMatrixGeneration mg = new ExtraJvmMatrixGeneration("C:/test/Test_mmm", "C:/test/Test_mmm.mx", true, true);
+		ExtraJvmMatrixGeneration mg = new ExtraJvmMatrixGeneration("C:/test/Test_mmm", "C:/test/Test_mmm.mx", true, 
+				true, true);
 		mg.call();
 		
 	}

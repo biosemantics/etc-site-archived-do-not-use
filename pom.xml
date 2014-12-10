@@ -191,7 +191,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>semantic-markup</artifactId>
-			<version>0.1.75-SNAPSHOT</version>
+			<version>0.1.86-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>app</artifactId>
@@ -202,19 +202,19 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.72-SNAPSHOT</version>
+		  <version>0.0.73-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.72-SNAPSHOT</version>
+		  <version>0.0.73-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.matrixgeneration</groupId>
 			<artifactId>matrix-generation</artifactId>
-			<version>0.1.20-SNAPSHOT</version>
+			<version>0.1.30-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.oto</groupId>
@@ -224,7 +224,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.oto</groupId>
 			<artifactId>oto-common</artifactId>
-			<version>0.0.7-SNAPSHOT</version>
+			<version>0.0.8-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics</groupId>
@@ -321,6 +321,17 @@
 		  <artifactId>cfgproject</artifactId>
 		  <version>0.0.4-SNAPSHOT</version>
 		  <classifier>sources</classifier>
+		</dependency>
+		<dependency>
+		  <groupId>edu.arizona.biosemantics.common</groupId>
+		  <artifactId>biology</artifactId>
+		  <version>0.0.3-SNAPSHOT</version>
+		  <classifier>sources</classifier>
+		</dependency>
+		<dependency>
+		  <groupId>edu.arizona.biosemantics.common</groupId>
+		  <artifactId>biology</artifactId>
+		  <version>0.0.3-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 

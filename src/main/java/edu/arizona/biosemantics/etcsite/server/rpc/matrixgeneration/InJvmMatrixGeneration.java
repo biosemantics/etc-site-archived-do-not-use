@@ -11,15 +11,17 @@ public class InJvmMatrixGeneration implements MatrixGeneration {
 	private String outputFile;	
 	private boolean inheritValues;
 	private boolean generateAbsentPresent;
+	private boolean inferCharactersFromOntologies;
 	
 	private boolean executedSuccessfully = false;
 	
 	public InJvmMatrixGeneration(String inputDir, String outputFile, boolean inheritValues, 
-			boolean generateAbsentPresent) {
+			boolean generateAbsentPresent, boolean inferCharactersFromOntologies) {
 		this.inputDir = inputDir;
 		this.outputFile = outputFile;
 		this.inheritValues = inheritValues;
 		this.generateAbsentPresent = generateAbsentPresent;
+		this.inferCharactersFromOntologies = inferCharactersFromOntologies;
 	}
 	
 	@Override
@@ -27,7 +29,8 @@ public class InJvmMatrixGeneration implements MatrixGeneration {
 		//String[] args = { inputDir, outputFile };
 		try {
 			edu.arizona.biosemantics.matrixgeneration.Main main = 
-					new edu.arizona.biosemantics.matrixgeneration.Main(inputDir, outputFile, inheritValues, generateAbsentPresent);
+					new edu.arizona.biosemantics.matrixgeneration.Main(inputDir, outputFile, inheritValues, 
+							generateAbsentPresent, inferCharactersFromOntologies);
 			main.run();
 			//edu.arizona.biosemantics.matrixgeneration.MatrixGeneration.main(args); 
 			executedSuccessfully = true;
@@ -51,7 +54,7 @@ public class InJvmMatrixGeneration implements MatrixGeneration {
 
 	public static void main(String[] args) throws Exception {
 		//MatrixGeneration mg = new MatrixGeneration("C:/test/users/1070/input_2", "C:/test/temp/matrixGeneration/124/Matrix.mx");
-		InJvmMatrixGeneration mg = new InJvmMatrixGeneration("C:/test/Test_mmm", "C:/test/Test_mmm.mx", true, true);
+		InJvmMatrixGeneration mg = new InJvmMatrixGeneration("C:/test/Test_mmm", "C:/test/Test_mmm.mx", true, true, true);
 		mg.call();
 		
 	}
