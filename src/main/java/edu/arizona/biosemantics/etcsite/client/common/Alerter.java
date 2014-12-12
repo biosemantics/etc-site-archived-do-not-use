@@ -246,10 +246,6 @@ public class Alerter {
 		return showAlert("Complete Matrix Review", "Failed to complete matrix review.", caught);
 	}
 
-	public static MessageBox failedToSaveMatrixGeneration(Throwable caught) {
-		return showAlert("Save Matrix", "Failed to save matrix.", caught);
-	}
-
 	public static MessageBox failedToGenerateMatrix(Throwable caught) {
 		return showAlert("Matrix Generation", "Failed to generate matrix.", caught);
 	}

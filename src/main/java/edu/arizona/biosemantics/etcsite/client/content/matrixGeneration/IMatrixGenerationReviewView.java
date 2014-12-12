@@ -14,6 +14,8 @@ public interface IMatrixGenerationReviewView extends IsWidget {
 		IMatrixGenerationReviewView getView();
 		void setTask(Task task);
 		Model getTaxonMatrix();
+		void onSave();
+		boolean hasUnsavedChanges();
 	}
 	  
 	void setPresenter(Presenter presenter);

@@ -28,5 +28,7 @@ public interface IMatrixGenerationServiceAsync extends IHasTasksServiceAsync {
 	public void isValidInput(AuthenticationToken authenticationToken, String filePath, AsyncCallback<Boolean> callback);
 
 	public void outputMatrix(AuthenticationToken token, Task task, Model model, AsyncCallback<String> callback);
+	
+	public void loadMatrixFromProcessOutput(AuthenticationToken token, Task task, AsyncCallback<Model> callback);
 
 }

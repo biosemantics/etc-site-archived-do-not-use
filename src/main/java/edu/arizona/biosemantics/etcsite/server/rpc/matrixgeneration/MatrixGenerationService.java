@@ -167,7 +167,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 	
 	@Override
-	public Task process(AuthenticationToken authenticationToken, final Task task) throws MatrixGenerationException {
+	public Task process(final AuthenticationToken authenticationToken, final Task task) throws MatrixGenerationException {
 		final MatrixGenerationConfiguration config = getMatrixGenerationConfiguration(task);
 		
 		//browser back button may invoke another "learn"
@@ -210,6 +210,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 									
 									// send an email to the user who owns the task.
 									sendFinishedGeneratingMatrixEmail(task);
+									
+									loadMatrixFromProcessOutput(authenticationToken, task);
 				     			}
 				     		} else {
 				     			task.setFailed(true);
@@ -228,11 +230,10 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		}
 	}
 
-
+	
 	@Override
-	public Model review(AuthenticationToken authenticationToken, Task task) throws MatrixGenerationException {
+	public Model loadMatrixFromProcessOutput(AuthenticationToken token, Task task) throws MatrixGenerationException {
 		final MatrixGenerationConfiguration config = getMatrixGenerationConfiguration(task);
-					
 		String outputFile = getOutputFile(task);
 		TaxonMatrix matrix = null;
 		try {
@@ -241,6 +242,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			log(LogLevel.ERROR, "Couldn't create taxon matrix from generated output", e);
 			throw new MatrixGenerationException(task);
 		}
+		
 		if(matrix == null) 
 			throw new MatrixGenerationException(task);
 		
@@ -253,6 +255,18 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		}
 		
 		return model;
+	}
+
+	@Override
+	public Model review(AuthenticationToken authenticationToken, Task task) throws MatrixGenerationException {
+		try {
+			Model model = unserializeMatrix(Configuration.matrixGeneration_tempFileBase + File.separator + 
+					task.getId() + File.separator + "TaxonMatrix.ser");
+			return model;
+		} catch (ClassNotFoundException | IOException e) {
+			log(LogLevel.ERROR, "Couldn't get CSV from matrix", e);
+			throw new MatrixGenerationException(task);
+		}
 	}
 	
 	@Override
@@ -382,8 +396,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 
 	@Override
 	public void save(AuthenticationToken authenticationToken, Model model, Task task) throws MatrixGenerationException {
-		final MatrixGenerationConfiguration config = getMatrixGenerationConfiguration(task);
-		String outputFile = Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "Matrix.csv";
+		//final MatrixGenerationConfiguration config = getMatrixGenerationConfiguration(task);
+		//String outputFile = Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "Matrix.csv";
 		try {
 			serializeMatrix(model, Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "TaxonMatrix.ser");
 		} catch (IOException e) {

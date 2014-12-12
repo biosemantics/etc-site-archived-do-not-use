@@ -27,6 +27,7 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 	private IMatrixGenerationReviewView.Presenter reviewPresenter;
 	private IMatrixGenerationOutputView.Presenter outputPresenter;
 	private AcceptsOneWidget panel;
+	private TaskStageEnum currentTaskStage;
 
 	@Inject
 	public MatrixGenerationActivity(ITaskServiceAsync taskService, 
@@ -71,7 +72,8 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 						@Override
 						public void onSuccess(Task result) {
 							if(result.getTaskType().getTaskTypeEnum().equals(TaskTypeEnum.MATRIX_GENERATION)) {
-								switch(TaskStageEnum.valueOf(result.getTaskStage().getTaskStage())) {
+								currentTaskStage = TaskStageEnum.valueOf(result.getTaskStage().getTaskStage());
+								switch(currentTaskStage) {
 								case INPUT:
 									panel.setWidget(inputPresenter.getView());
 									break;
@@ -99,6 +101,20 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 							Alerter.failedToGetTask(caught);
 						}
 			});
+	}
+	
+	@Override
+	public String mayStop() {
+		if(currentTaskStage != null) {
+			switch(currentTaskStage) {
+			case REVIEW:
+				if(reviewPresenter.hasUnsavedChanges())
+					return "You have unsaved changes. Do you want to continue without saving?";
+			default:
+				return null;
+			}
+		}
+		return null;
 	}
 
 
