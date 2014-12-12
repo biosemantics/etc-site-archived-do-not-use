@@ -124,7 +124,7 @@
 		      					<li>The system will generate one file for each taxonomic treatment given</li>
 		      					<li><ul>
 		      					    <li>You can include following fields in your input text (R denotes a required field, O optional): <br/>
-		      					    <b>author</b>(R), <b>year</b>(R), <b>title</b>(R), <b>doi</b>(O), <b>full citation</b>(O), at least one <b>strain number</b> or one ranked taxon name, in the format of <b><i>rank</i> name</b>, e.g., <b>family name</b>(R),   
+		      					    <b>author</b>(R, last name of the first author only), <b>year</b>(R), <b>title</b>(R), <b>doi</b>(O), <b>full citation</b>(O), at least one <b>strain number</b> or one ranked taxon name, in the format of <b><i>rank</i> name</b>, e.g., <b>family name</b>(R),   
 		      					    <b>equivalent strain numbers</b>(O), <b>accession number 16S rRNA</b>(O), and at least one of {<b>morphology</b>, <b>phenology</b>, <b>habitat</b>, <b>distribution</b>}(R).</li>
 		      					    <li>Authority and date may be included in taxon names, use a <b>comma (,)</b> to separate the date. For example: Homosclerophorida Dendy, 1905</li>
 		      					    <li>Lower rank taxa should list all ranks on separate lines, starting from the highest rank of interests (see examples 2 and 3)</li> 
@@ -143,28 +143,28 @@
 		            <g:DisclosurePanel>
 						<g:header>Example</g:header>
 		                <g:HTML>
-		                    author: Merritt Lyndon Fernald<br/>
+		                    author: Fernald<br/>
 							year: 1950<br/>
 							title: Gray's Manual of Botany<br/>
 							family name: Rosaceae<br/>
-							morphology: Plants with regular flowers, numerous (rarely few) distinct stamens ...<br/>
+							morphology: Plants with regular flowers, numerous (rarely few) distinct stamens inserted on the calyx, and 1-many carpels, which are quite distinct, or (in the second tribe) united and combined with the calyx-tube.<br/>
 							<br/>
-							author:  Merritt Lyndon Fernald<br/>
+							author:  Fernald<br/>
 							year: 1950<br/>
 							title: Gray's Manual of Botany<br/>
 							family name: Rosaceae<br/>
 							genus name: Rubus Linnaeus<br/>
-							morphology: Calyx 5(3-7)-parted, without bractlets. Petals mostly 5...<br/>
+							morphology: Calyx 5(3-7)-parted, without bractlets. Petals mostly 5, deciduous.<br/>
 							<br/>
-							author:  Merritt Lyndon Fernald<br/>
+							author:  Fernald<br/>
 							year: 1950<br/>
 							title: Gray's Manual of Botany<br/>
 							family name: Rosaceae<br/>
 							genus name: Rubus Linnaeus<br/>
 							species name: Allegheniensis Porter <br/>
-							morphology: #Erect or high arching, mostly 1-3 m. high, armed with scattered broad-based lanceolate to lance-subulate prickles or prickles wanting, the young primocanes often ridged or angled and finely pubescent, the expanding tip often glandular;...<br/>
+							morphology: #Erect or high arching, mostly 1-3 m. high, armed with scattered broad-based lanceolate to lance-subulate prickles or prickles wanting, the young primocanes often ridged or angled and finely pubescent, the expanding tip often glandular;<br/>
 							<br/>
-							Canes up to 1 cm. or more thick at base; terminal primocane-leaflet 0.7-2 dm. long, 3.5-11 cm. broad; lower elongate pedicels often forking...#<br/>
+							Canes up to 1 cm. or more thick at base; terminal primocane-leaflet 0.7-2 dm. long, 3.5-11 cm. broad; lower elongate pedicels often forking.#<br/>
 			                </g:HTML>
 		            </g:DisclosurePanel>
 		            <g:DisclosurePanel>
