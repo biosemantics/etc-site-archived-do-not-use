@@ -424,33 +424,40 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 			List<TaskData> list = this.getSelectedTaskData();
 			if (list.size() == 1){
 				Task task = this.getSelectedTaskData().get(0).getTask();
-				if(task.getUser().getId() != Authentication.getInstance().getUserId()) {
-					this.shareButton.setEnabled(false);
-				} else {
-					this.shareButton.setEnabled(true);
-				}
-				if(task.isComplete()) {
-					switch(task.getTaskType().getTaskTypeEnum()) {
-					case MATRIX_GENERATION:
-						this.rewindButton.setEnabled(true);
-						break;
-					case SEMANTIC_MARKUP:
-						this.rewindButton.setEnabled(true);
-						break;
-					case TAXONOMY_COMPARISON:
-						break;
-					case TREE_GENERATION:
-						this.rewindButton.setEnabled(true);
-						break;
-					case VISUALIZATION:
-						break;
-					default:
-						break;
+				if(!task.isFailed()) {
+					if(task.getUser().getId() != Authentication.getInstance().getUserId()) {
+						this.shareButton.setEnabled(false);
+					} else {
+						this.shareButton.setEnabled(true);
 					}
-					this.resumeButton.setEnabled(false);
+					if(task.isComplete()) {
+						switch(task.getTaskType().getTaskTypeEnum()) {
+						case MATRIX_GENERATION:
+							this.rewindButton.setEnabled(true);
+							break;
+						case SEMANTIC_MARKUP:
+							this.rewindButton.setEnabled(true);
+							break;
+						case TAXONOMY_COMPARISON:
+							break;
+						case TREE_GENERATION:
+							this.rewindButton.setEnabled(true);
+							break;
+						case VISUALIZATION:
+							break;
+						default:
+							break;
+						}
+						this.resumeButton.setEnabled(false);
+					} else {
+						this.rewindButton.setEnabled(false);
+						this.resumeButton.setEnabled(task.isResumable());
+					}
 				} else {
+					this.resumeButton.setEnabled(false);
 					this.rewindButton.setEnabled(false);
-					this.resumeButton.setEnabled(task.isResumable());
+					this.deleteButton.setEnabled(true);
+					this.shareButton.setEnabled(true);
 				}
 			} else {
 				//multiple selections. Only allow delete. 
