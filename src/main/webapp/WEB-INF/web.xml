@@ -243,6 +243,9 @@
 			edu.arizona.biosemantics.oto2.oto.server.OTOServletContextListener
 		</listener-class>
 	</listener>
+	<listener>
+        <listener-class>org.quartz.ee.servlet.QuartzInitializerListener</listener-class>
+    </listener>
 
 	<!-- Default page to serve -->
 	<welcome-file-list>
