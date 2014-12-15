@@ -40,27 +40,32 @@ public class GlossariesDownloadJob  implements Job {
 		oto2Client.open();
 		otoClient.open();
 		for(TaxonGroup taxonGroup : TaxonGroup.values()) {
+			//store a default to have something
+			Download communityDownload = new Download(false, new ArrayList<Decision>(), new ArrayList<Synonym>());
+			storeToLocalCommunityDownload(communityDownload, taxonGroup);
+			
 			Future<Download> futureCommunityDownload = oto2Client.getCommunityDownload(taxonGroup.getDisplayName());
 			try {
-				Download communityDownload = futureCommunityDownload.get();
-				if(communityDownload == null)
-					communityDownload = new Download(false, new ArrayList<Decision>(), new ArrayList<Synonym>());
-				storeToLocalCommunityDownload(communityDownload, taxonGroup);
+				communityDownload = futureCommunityDownload.get();
+				if(communityDownload != null)
+					storeToLocalCommunityDownload(communityDownload, taxonGroup);
 			} catch (InterruptedException | ExecutionException e) {
 				log(LogLevel.ERROR, "Couldn't download glossaryDownload", e);
-				storeToLocalCommunityDownload(new Download(false, new ArrayList<Decision>(), new ArrayList<Synonym>()), taxonGroup);
 			}
+			
+			//store a default to have something
+			GlossaryDownload glossaryDownload = new GlossaryDownload(new ArrayList<TermCategory>(), new ArrayList<TermSynonym>(), "No Glossary Available");
+			storeToLocalGlossaryDownload(new GlossaryDownload(new ArrayList<TermCategory>(), new ArrayList<TermSynonym>(), "No Glossary Available"), 
+					taxonGroup);
 			
 			Future<GlossaryDownload> futureGlossaryDownload = otoClient.getGlossaryDownload(taxonGroup.getDisplayName());
 			try {
-				GlossaryDownload glossaryDownload = futureGlossaryDownload.get();
-				if(glossaryDownload == null)
-					glossaryDownload = new GlossaryDownload(new ArrayList<TermCategory>(), new ArrayList<TermSynonym>(), "No Glossary Available");
-				storeToLocalGlossaryDownload(glossaryDownload, taxonGroup);
+				glossaryDownload = futureGlossaryDownload.get();
+				if(glossaryDownload != null)
+					storeToLocalGlossaryDownload(glossaryDownload, taxonGroup);
 			} catch (InterruptedException | ExecutionException e) {
 				log(LogLevel.ERROR, "Couldn't download glossaryDownload", e);
-				storeToLocalGlossaryDownload(new GlossaryDownload(new ArrayList<TermCategory>(), new ArrayList<TermSynonym>(), "No Glossary Available"), 
-						taxonGroup);
+				
 			}
 		}
 		oto2Client.close();
