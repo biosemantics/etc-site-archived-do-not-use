@@ -75,7 +75,7 @@ public class SubMenu extends Composite {
 			orders.setImage("images/Enumeration_8.gif");
 			break; */
 		case OUTPUT:
-			output.setImage("images/Enumeration_9.gif");
+			output.setImage("images/Enumeration_6.gif");
 			break;
 		default:
 			input.setImage("images/Enumeration_1.gif");

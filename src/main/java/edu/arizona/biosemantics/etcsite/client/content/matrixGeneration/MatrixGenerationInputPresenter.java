@@ -62,7 +62,10 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 						Alerter.systemFolderNotAllowedInputForTask();
 					}else if(selection.getText().contains(" 0 file")){
 						Alerter.emptyFolder();
-					}else{
+					}else if(!selection.getText().matches(".*?\\b0 director.*")){
+						Alerter.containSubFolder();
+					}
+					else{
 						view.setFilePath(shortendPath);
 						view.setEnabledNext(true);			
 						if(selection.getFileInfo().getOwnerUserId() != Authentication.getInstance().getUserId()) {

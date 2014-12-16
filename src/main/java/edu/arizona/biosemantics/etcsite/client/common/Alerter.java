@@ -362,6 +362,11 @@ public class Alerter {
 		return showAlert("Input Directory", "Input directory contains no files. Please select a valid input directory.");
 		
 	}
+	
+	public static MessageBox containSubFolder() {
+		return showAlert("Input Directory", "Input directory can not contain sub-directories. Please select a valid input directory.");
+		
+	}
 	public static MessageBox selectTaskName() {
 		return showAlert("Task Name", "Please enter a name for this task.");
 	}
@@ -426,6 +431,8 @@ public class Alerter {
 		 confirm.show();
          return confirm;
 	}
+
+
 
 
 
