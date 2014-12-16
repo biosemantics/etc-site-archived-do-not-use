@@ -187,7 +187,11 @@ public class Alerter {
 	}
 
 	public static MessageBox failedToOutputMatrix(Throwable caught) {
-		return showAlert("Output Matrix", "Failed to output matrix.", caught);
+		return showAlert("Download Matrix", "Failed to download matrix.", caught);
+	}
+	
+	public static MessageBox failedToSaveMatrix(Throwable caught) {
+		return showAlert("Save Matrix", "Failed to save matrix.", caught);
 	}
 
 	public static MessageBox failedToReview(Throwable caught) {
@@ -240,10 +244,6 @@ public class Alerter {
 
 	public static MessageBox failedToCompleteReview(Throwable caught) {
 		return showAlert("Complete Matrix Review", "Failed to complete matrix review.", caught);
-	}
-
-	public static MessageBox failedToSaveMatrixGeneration(Throwable caught) {
-		return showAlert("Save Matrix", "Failed to save matrix.", caught);
 	}
 
 	public static MessageBox failedToGenerateMatrix(Throwable caught) {
@@ -407,6 +407,10 @@ public class Alerter {
 	public static MessageBox confirmTaskDelete(String name) {
 		return showConfirm("Task Manager", "Are you sure you want to delete task '" + name + "'?");
 	}
+
+	public static MessageBox confirmSaveMatrix() {
+		return showYesNoCancelConfirm("Save Changes?", "Do you want to save your matrix changes before continuing to the next step?");
+	}
 	
 	private static MessageBox showAlert(String title, String message, Throwable caught) {
 		if(caught != null)
@@ -432,14 +436,12 @@ public class Alerter {
          return confirm;
 	}
 
-
-
-
-
-
-		
-
-
-
+	private static MessageBox showYesNoCancelConfirm(String title, String message) {
+		MessageBox box = new MessageBox(title, message);
+        box.setPredefinedButtons(PredefinedButton.YES, PredefinedButton.NO, PredefinedButton.CANCEL);
+        box.setIcon(MessageBox.ICONS.question());
+        box.show();
+        return box;
+	}
 
 }

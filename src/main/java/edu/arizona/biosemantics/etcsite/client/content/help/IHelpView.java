@@ -5,6 +5,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface IHelpView extends IsWidget {
 
 	public interface Presenter {
+
+		void onHome();
 		
 	}
 

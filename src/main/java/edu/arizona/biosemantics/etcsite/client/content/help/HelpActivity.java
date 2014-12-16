@@ -10,6 +10,7 @@ import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
 import edu.arizona.biosemantics.etcsite.client.content.help.IHelpView.Presenter;
+import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 
 public class HelpActivity extends MyAbstractActivity implements Presenter {
@@ -39,5 +40,9 @@ public class HelpActivity extends MyAbstractActivity implements Presenter {
 		
 	}
 
+	@Override
+	public void onHome() {
+		placeController.goTo(new HomePlace());
+	}
 }
 

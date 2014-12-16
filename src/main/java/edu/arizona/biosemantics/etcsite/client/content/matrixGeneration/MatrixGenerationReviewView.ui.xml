@@ -29,6 +29,10 @@
 			margin-top: 4px;
    			margin-left: 20px;
 		}
+		.saveButton {
+			margin-top: 4px;
+   			margin-left: 20px;
+		}
 		.subMenuEntry {
 			margin-left: 0px;
 			padding-top: 10px;
@@ -65,6 +69,9 @@
 			    	        <g:cell>
 			    	            <my:SubMenu ui:field="subMenu" step="REVIEW"/>
 			    	        </g:cell>
+			    	      	<g:cell>
+			    	      		<g:Button addStyleNames="{style.saveButton}" ui:field="saveButton">Save Matrix</g:Button>
+			    	      	</g:cell>
 			    	      	<g:cell>
 			    	            <g:Button addStyleNames="{style.nextButton}" ui:field="nextButton">Next Step in Matrix Generation</g:Button>
 			    	        </g:cell>

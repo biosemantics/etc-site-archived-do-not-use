@@ -39,6 +39,11 @@ public class MatrixGenerationReviewView extends Composite implements IMatrixGene
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
 	}
+	
+	@UiHandler("saveButton")
+	public void onSave(ClickEvent event) {
+		presenter.onSave();
+	}
 
 	@UiHandler("nextButton")
 	public void onNext(ClickEvent event) {

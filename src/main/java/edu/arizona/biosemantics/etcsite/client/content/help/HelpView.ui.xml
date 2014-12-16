@@ -23,6 +23,11 @@
 			font-weight: bold;
 			color: #339900;
 		}
+		
+		.right{
+			postion: absolute
+			right:20px
+		}
 		</ui:style>
 	<g:ScrollPanel>
 	<lay:CenteredContentPanel>
@@ -60,6 +65,11 @@
 		        </object>
 		        </g:HTMLPanel>
 		        
+			    <g:VerticalPanel styleName="{style.padding}"/>
+				<g:Button ui:field="goToTools" styleName="{style.right}">Start Using ETC Tools</g:Button>
+				<g:VerticalPanel styleName="{style.padding}"/>
+				<g:VerticalPanel styleName="{style.padding}"/>
+				<g:VerticalPanel styleName="{style.padding}"/>
 			</g:VerticalPanel>
 		</g:HTMLPanel>
 	</lay:CenteredContentPanel>
