@@ -7,6 +7,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
@@ -18,6 +22,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnu
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkupException;
+import edu.arizona.biosemantics.oto2.oto.client.event.ImportEvent;
 import edu.arizona.biosemantics.oto2.oto.client.event.SaveEvent;
 import edu.arizona.biosemantics.oto2.oto.client.event.TermRenameEvent;
 import edu.arizona.biosemantics.oto2.oto.client.event.SaveEvent.SaveHandler;
@@ -30,38 +35,51 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 	private PlaceController placeController;
 	private ISemanticMarkupServiceAsync semanticMarkupService;
 	private IFileServiceAsync fileService;
-	private SaveHandler otoSaveHandler = new SaveHandler() {
-		@Override
-		public void onSave(SaveEvent event) {
-			Alerter.startLoading();
-			semanticMarkupService.saveOto(Authentication.getInstance().getToken(), 
-					task, new AsyncCallback<String>() {
-				@Override
-				public void onSuccess(String result) {
-					Alerter.stopLoading();
-					Window.open("download.dld?target=" + URL.encodeQueryString(result) + 
-							"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
-							"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()), "_blank", "");
-				}
-
-				@Override
-				public void onFailure(Throwable caught) {
-					Alerter.failedToSaveOto(caught);
-				}
-			});
-		}
-	};
 	private EventBus otoEventBus;
 	
 	@Inject
-	public SemanticMarkupReviewPresenter(ISemanticMarkupReviewView view, 
+	public SemanticMarkupReviewPresenter(final ISemanticMarkupReviewView view, 
 			final ISemanticMarkupServiceAsync semanticMarkupService,
 			IFileServiceAsync fileService,
-			PlaceController placeController) {
+			PlaceController placeController, 
+			final ImportOtoPresenter importOtoPresenter) {
 		this.view = view;
 		view.setPresenter(this);
 		this.otoEventBus = view.getOto().getEventBus();
-		otoEventBus.addHandler(SaveEvent.TYPE, otoSaveHandler);
+		otoEventBus.addHandler(SaveEvent.TYPE, new SaveHandler() {
+			@Override
+			public void onSave(SaveEvent event) {
+				Alerter.startLoading();
+				semanticMarkupService.saveOto(Authentication.getInstance().getToken(), 
+						task, new AsyncCallback<String>() {
+					@Override
+					public void onSuccess(String result) {
+						Alerter.stopLoading();
+						Window.open("download.dld?target=" + URL.encodeQueryString(result) + 
+								"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
+								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()), "_blank", "");
+					}
+					@Override
+					public void onFailure(Throwable caught) {
+						Alerter.failedToSaveOto(caught);
+					}
+				});
+			}
+		});
+		otoEventBus.addHandler(ImportEvent.TYPE, new ImportEvent.ImportHandler() {
+			@Override
+			public void onImport(ImportEvent event) {
+				MessageBox confirm = Alerter.confirmOtoImport();
+				confirm.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
+					@Override
+					public void onSelect(SelectEvent event) {
+						importOtoPresenter.setTask(task);
+						importOtoPresenter.setOto(view.getOto());
+						importOtoPresenter.show();
+					}	
+				});
+			}
+		});
 		otoEventBus.addHandler(TermRenameEvent.TYPE, new TermRenameEvent.RenameTermHandler() {
 			@Override
 			public void onRename(TermRenameEvent event) {

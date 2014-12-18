@@ -43,6 +43,8 @@ public interface ISemanticMarkupService extends RemoteService, IHasTasksService 
 	public String saveOto(AuthenticationToken authenticationToken, Task task) throws SemanticMarkupException;
 	
 	public void renameTerm(AuthenticationToken token, Task task, String term, String newName);
+
+	public void importOto(Task task, String termCategorization, String synonymy) throws SemanticMarkupException;
 	
 	//public RPCResult<Void> prepareOptionalOtoLiteSteps(AuthenticationToken authenticationToken, Task task);
 

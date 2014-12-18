@@ -29,6 +29,10 @@ public class Alerter {
 	public static MessageBox failedToCreateTaxonDescription(Throwable caught) {
 		return showAlert("Create Taxon Description", "Failed to create taxon description.", caught);
 	}
+	
+	public static MessageBox failedToImportOto(Throwable caught) {
+		return showAlert("Import Term Categorizations", "Failed to import term categorizations.", caught);
+	}
 
 	public static MessageBox failedToCreateFile(Throwable caught) {
 		return showAlert("Create File", "Failed to create file.", caught);
@@ -407,6 +411,11 @@ public class Alerter {
 	public static MessageBox confirmTaskDelete(String name) {
 		return showConfirm("Task Manager", "Are you sure you want to delete task '" + name + "'?");
 	}
+	
+	public static MessageBox confirmOtoImport() {
+		return showConfirm("Import Term Categorizations", "An imported term categorization will override the existing "
+				+ "term categorization for that term if there is a conflict. Do you want to continue?");
+	}
 
 	public static MessageBox confirmSaveMatrix() {
 		return showYesNoCancelConfirm("Save Changes?", "Do you want to save your matrix changes before continuing to the next step?");
@@ -443,5 +452,7 @@ public class Alerter {
         box.show();
         return box;
 	}
+
+
 
 }

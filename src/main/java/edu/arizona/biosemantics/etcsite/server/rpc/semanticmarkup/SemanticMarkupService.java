@@ -7,9 +7,11 @@ import java.io.StringReader;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 
@@ -24,6 +26,7 @@ import org.jdom2.output.XMLOutputter;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 
+import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
 
 import com.google.common.util.concurrent.ListenableFuture;
@@ -33,6 +36,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Emailer;
+import edu.arizona.biosemantics.etcsite.server.Zipper;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.auth.AdminAuthenticationToken;
 import edu.arizona.biosemantics.etcsite.server.rpc.auth.AuthenticationService;
@@ -79,6 +83,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarku
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkupException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserNotFoundException;
+import edu.arizona.biosemantics.oto2.oto.server.db.CollectionDAO;
 import edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Collection;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Context;
@@ -451,12 +456,109 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		} catch (Exception e) {
 			log(LogLevel.ERROR, "Couldn't get oto collection", e);
 			throw new SemanticMarkupException(task);
-		}			
-		String path = Configuration.tempFiles + 
-				File.separator + "oto2" + File.separator + authenticationToken.getUserId() +
-				File.separator + "term_categorizations_task-" + task.getName() + ".csv";
+		}
+		
+		String zipSource = Configuration.compressedFileBase + File.separator + authenticationToken.getUserId() + File.separator + "oto2" + 
+				File.separator + task.getId() + File.separator + task.getName() + "_term_review";
+		File file = new File(zipSource);
+		file.mkdirs();
+		createCategorizationFile(task, collection, zipSource);
+		createSynonymFile(task, collection, zipSource);
+		createCategoriesFile(task, collection, zipSource);
+		
+		String zipFilePath = zipSource + ".zip";
+		Zipper zipper = new Zipper();
+		zipFilePath = zipper.zip(zipSource, zipFilePath);
+		if(zipFilePath != null)
+			return zipFilePath;
+		throw new SemanticMarkupException("Saving failed");
+	}
+	
+	@Override
+	public void importOto(Task task, String termCategorization, String synonymy) throws SemanticMarkupException {
+		final SemanticMarkupConfiguration config = getSemanticMarkupConfiguration(task);
+		int uploadId = config.getOtoUploadId();
+		String secret = config.getOtoSecret();
+		
+		Collection collection = otoCollectionService.get(uploadId, secret);
+		Map<String, Term> termsInCollection = new HashMap<String, Term>();
+		for(Term term : collection.getTerms()) {
+			termsInCollection.put(term.getTerm(), term);
+		}
+		Map<String, Label> labelsInCollection = new HashMap<String, Label>();
+		for(Label label : collection.getLabels()) {
+			labelsInCollection.put(label.getName(), label);
+		}
+		
+		createTermCategorization(task, termCategorization, collection, termsInCollection, labelsInCollection);
+		createSynonymy(task, synonymy, collection, termsInCollection, labelsInCollection);
+		
+		otoCollectionService.update(collection);
+	}
+	
+	private void createSynonymy(Task task, String synonymy, Collection collection, Map<String, Term> termsInCollection, Map<String, Label> labelsInCollection) throws SemanticMarkupException {
+		List<String[]> lines = new LinkedList<String[]>();
+		try(CSVReader reader = new CSVReader(new StringReader(synonymy))) {
+			lines = reader.readAll();
+		} catch (IOException e) {
+			log(LogLevel.ERROR, "Could not open or cloes reader", e);
+			throw new SemanticMarkupException(task);
+		}
+		for(String[] line : lines) {
+			String label = line[0].trim();
+			String mainTerm = line[1].trim();
+			String synonymTerm = line[2].trim();
+			
+			if(termsInCollection.containsKey(mainTerm) && termsInCollection.containsKey(synonymTerm) && 
+					labelsInCollection.containsKey(label)) {
+				Label collectionLabel = labelsInCollection.get(label);
+				Term collectionMainTerm = termsInCollection.get(mainTerm);
+				Term collectionSynonymTerm = termsInCollection.get(synonymTerm);
+				collectionLabel.addSynonym(collectionMainTerm, collectionSynonymTerm, false);
+			}
+		}
+	}
+
+	private void createTermCategorization(Task task, String termCategorization, Collection collection, 
+			Map<String, Term> termsInCollection, Map<String, Label> labelsInCollection) throws SemanticMarkupException {
+		List<String[]> lines = new LinkedList<String[]>();
+		try(CSVReader reader = new CSVReader(new StringReader(termCategorization))) {
+			lines = reader.readAll();
+		} catch (IOException e) {
+			log(LogLevel.ERROR, "Could not open or cloes reader", e);
+			throw new SemanticMarkupException(task);
+		}
+		
+		for(String[] line : lines) {
+			String label = line[0].trim();
+			String term = line[1].trim();
+			
+			if(termsInCollection.containsKey(term) && labelsInCollection.containsKey(label)) {
+				Term collectionTerm = termsInCollection.get(term);
+				Label collectionLabel = labelsInCollection.get(label);
+				
+				List<Label> termsLabels = collection.getLabels(collectionTerm);
+				for(Label termLabel : termsLabels) 
+					termLabel.uncategorizeTerm(collectionTerm);
+			}
+		}
+		
+		for(String[] line : lines) {
+			String label = line[0].trim();
+			String term = line[1].trim();
+			
+			if(termsInCollection.containsKey(term) && labelsInCollection.containsKey(label)) {
+				Term collectionTerm = termsInCollection.get(term);
+				Label collectionLabel = labelsInCollection.get(label);
+				
+				collectionLabel.addMainTerm(collectionTerm);
+			}
+		}
+	}
+
+	private void createCategoriesFile(Task task, Collection collection, String destination) throws SemanticMarkupException {
+		String path = destination + File.separator + "category_definition-task-" + task.getName() + ".csv";
 		File file = new File(path);
-		file.getParentFile().mkdirs();
 		try {
 			file.createNewFile();
 		} catch (IOException e) {
@@ -465,15 +567,57 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		}
 		
 		try(CSVWriter csvWriter = new CSVWriter(new FileWriter(file))) {
-			csvWriter.writeNext(new String[] {"term", "category"});
-			for(Label label : collection.getLabels()) {
-				for(Term term : label.getTerms())
-				csvWriter.writeNext(new String[] {term.getTerm(), label.getName() });
-			}
-			csvWriter.writeNext(new String[] { });
 			csvWriter.writeNext(new String[] {"category", "definition"});
 			for(Label label : collection.getLabels()) {
 				csvWriter.writeNext(new String[] {label.getName(), label.getDescription()});
+			}
+		} catch (IOException e) {
+			log(LogLevel.ERROR, "Could not open or cloes writer", e);
+			throw new SemanticMarkupException(task);
+		}
+	}
+
+	private void createSynonymFile(Task task, Collection collection, String destination) throws SemanticMarkupException {
+		String path = destination + File.separator + "category_mainterm_synonymterm-task-" + task.getName() + ".csv";
+		File file = new File(path);
+		try {
+			file.createNewFile();
+		} catch (IOException e) {
+			log(LogLevel.ERROR, "Could not create file", e);
+			throw new SemanticMarkupException(task);
+		}
+		
+		try(CSVWriter csvWriter = new CSVWriter(new FileWriter(file))) {
+			csvWriter.writeNext(new String[] {"category", "term", "synonym"});
+			for(Label label : collection.getLabels()) {
+				for(Term mainTerm : label.getMainTerms()) {
+					List<Term> synonyms = label.getSynonyms(mainTerm);
+					for(Term synonym : synonyms) {
+						csvWriter.writeNext(new String[] { label.getName(), mainTerm.getTerm(), synonym.getTerm() });
+					}
+				}
+			}
+		} catch (IOException e) {
+			log(LogLevel.ERROR, "Could not open or cloes writer", e);
+			throw new SemanticMarkupException(task);
+		}
+	}
+
+	private void createCategorizationFile(Task task, Collection collection, String destination) throws SemanticMarkupException {
+		String path = destination + File.separator + "category_term-task-" + task.getName() + ".csv";
+		File file = new File(path);
+		try {
+			file.createNewFile();
+		} catch (IOException e) {
+			log(LogLevel.ERROR, "Could not create file", e);
+			throw new SemanticMarkupException(task);
+		}
+		
+		try(CSVWriter csvWriter = new CSVWriter(new FileWriter(file))) {
+			csvWriter.writeNext(new String[] {"category", "term"});
+			for(Label label : collection.getLabels()) {
+				for(Term term : label.getTerms())
+					csvWriter.writeNext(new String[] {label.getName(), term.getTerm()});
 			}
 		} catch (IOException e) {
 			log(LogLevel.ERROR, "Could not open or cloes writer", e);
@@ -486,11 +630,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		try (FileWriter fileWriter = new FileWriter(new File(path))) {
 			fileWriter.write(jsonCollection);
 		}*/
-		return path;
 	}
-	
 
-	
 	/*@Override
 	public RPCResult<Void> prepareOptionalOtoLiteSteps(AuthenticationToken authenticationToken, Task task) {
 		try { 
@@ -915,5 +1056,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			}
 		}
 	}
+
+
 
 }
