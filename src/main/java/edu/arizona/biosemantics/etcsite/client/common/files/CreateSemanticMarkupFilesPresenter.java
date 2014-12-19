@@ -312,11 +312,11 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 		final List<String> treatments = xmlModelFileCreator.getTreatmentTexts(normalizedText);
 		
 		//temporarily in place as long as we are not sure about the stability of out of memory issue
-		if(treatments.size() > 50) {
+		/*if(treatments.size() > 50) {
 			Alerter.tooManyFiles();
 			view.hideProgress();
 			return;
-		}
+		}*/
 		
 		final StringBuilder overallError = new StringBuilder();
 		final List<XmlModelFile> overallXmlModelFiles = new LinkedList<XmlModelFile>();		

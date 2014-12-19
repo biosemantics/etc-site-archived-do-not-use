@@ -342,10 +342,10 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 			disableManagement();
 			
 			//temporarily in place as long as we are not sure about the stability of out of memory issue
-			if(uploader.getFileInput().getFilenames().size() > 50) {
+			/*if(uploader.getFileInput().getFilenames().size() > 50) {
 				Alerter.tooManyFiles();
 				uploader.cancel();
-			}
+			}*/
 		}
 	}
 	

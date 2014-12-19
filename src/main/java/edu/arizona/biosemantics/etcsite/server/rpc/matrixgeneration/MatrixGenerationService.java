@@ -112,10 +112,11 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	@Override
 	public Task start(AuthenticationToken authenticationToken, String taskName, String input, boolean inheritValues, boolean generateAbsentPresent) throws MatrixGenerationException {	
 		boolean isShared = filePermissionService.isSharedFilePath(authenticationToken.getUserId(), input);
-		String fileName;
+		String fileName = null;
 		try {
 			fileName = fileService.getFileName(authenticationToken, input);
 		} catch (PermissionDeniedException e) {
+			log(LogLevel.ERROR, "Permission denied to read "+fileName);
 			throw new MatrixGenerationException();
 		}
 		if(isShared) {
@@ -161,6 +162,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		try {
 			fileService.setInUse(authenticationToken, true, input, task);
 		} catch (PermissionDeniedException e) {
+			log(LogLevel.ERROR, "can not set file in use for "+input+ ".");
 			throw new MatrixGenerationException(task);
 		}
 		return task;
@@ -191,8 +193,10 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			boolean inheritValues = config.isInheritValues();
 			boolean generateAbsentPresent = config.isGenerateAbsentPresent();
 			
-			//final MatrixGeneration matrixGeneration = new ExtraJvmMatrixGeneration(input, outputFile, inheritValues, generateAbsentPresent, true);
-			final MatrixGeneration matrixGeneration = new InJvmMatrixGeneration(input, outputFile, inheritValues, generateAbsentPresent, true);
+			
+			final MatrixGeneration matrixGeneration = new ExtraJvmMatrixGeneration(input, outputFile, inheritValues, generateAbsentPresent, true);
+			//run in the same vm as the etc-site
+			//final MatrixGeneration matrixGeneration = new InJvmMatrixGeneration(input, outputFile, inheritValues, generateAbsentPresent, true);
 			activeProcess.put(config.getConfiguration().getId(), matrixGeneration);
 			final ListenableFuture<Void> futureResult = executorService.submit(matrixGeneration);
 			this.activeProcessFutures.put(config.getConfiguration().getId(), futureResult);
@@ -419,7 +423,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 	
 	@Override
-	public boolean isValidInput(AuthenticationToken authenticationToken, String filePath) {
+	public boolean isValidInput(AuthenticationToken authenticationToken, String filePath) {//TODO pass specific error messages to the users 
 		boolean readPermission = filePermissionService.hasReadPermission(authenticationToken, filePath);
 		if(!readPermission)
 			return false;
@@ -446,17 +450,20 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			try {
 				valid = fileFormatService.isValidMarkedupTaxonDescription(authenticationToken, filePath + File.separator + file);
 			} catch (PermissionDeniedException | GetFileContentFailedException e) {
+				log(LogLevel.ERROR, "validation of "+file+ " threw exceptions");
 				return false;
 			}
 
-			if(!valid)
+			if(!valid){
+				log(LogLevel.ERROR, file+ " is not valid");
 				return false;
-			
+			}
 			SAXBuilder saxBuilder = new SAXBuilder();
 			Document document;
 			try {
 				document = saxBuilder.build(new File(filePath + File.separator + file));
 			} catch (JDOMException | IOException e) {
+				log(LogLevel.ERROR, "SAXBuilder cannot build "+(filePath + File.separator + file)+ ".");
 				return false;
 			}
 			XPathFactory xPathFactory = XPathFactory.instance();
@@ -465,6 +472,9 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 							null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics")); 
 			if(!xPathExpression.evaluate(document).isEmpty()) {
 				statementFound = true;
+			}
+			if(!statementFound){
+				log(LogLevel.ERROR, "no statement found in file "+file+ ".");
 			}
 		}
 		return statementFound;
