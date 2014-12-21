@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
@@ -28,11 +29,20 @@ public class MatrixGenerationReviewView extends Composite implements IMatrixGene
 	@UiField
 	SimpleLayoutPanel matrixReviewPanel;
 	
+	/*@UiField
+	Button saveButton;
+	
+	@UiField
+	Button nextButton;*/
+	
 	@Inject
 	public MatrixGenerationReviewView() {
 		super();
+		/*can not do these, the app won't load. saveButton.setWidth("50");
+		nextButton.setWidth("100");*/
 		initWidget(uiBinder.createAndBindUi(this));
 		matrixReviewPanel.add(matrixReviewView.asWidget());
+		
 	}
 
 	@Override

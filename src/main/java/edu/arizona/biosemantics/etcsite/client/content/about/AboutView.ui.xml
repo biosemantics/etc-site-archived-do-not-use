@@ -38,14 +38,14 @@
 		    <g:Label styleName="{style.header}">About ETC Toolkit</g:Label>
 		    <g:Label>&nbsp;</g:Label>
 		    <g:HTMLPanel>
-		    <g:InlineLabel>The ETC toolbox consists of a set of software tools that can be used as a pipeline that takes clean textual morphological descriptions and outputs taxon-character matrices for taxon concept or phylogenetic analysis. The tools may also be used separately if their required input data is available. The tools are produced through a collaborative project (NSF DBI-1147266) between the University of Arizona and University of California at Davis and with collaboration from the project Next Generation Phenomics for the Tree of Life sponsored by NSF’s Assembling, Visualizing and Analysing the Tree of Life program (NSF DEB-1208567). For more information about the project, see </g:InlineLabel>
+		    <g:InlineLabel>The ETC toolbox consists of a set of software tools that can be used as a pipeline that takes clean textual morphological descriptions and outputs taxon-character matrices for taxon concept or phylogenetic analysis. The tools may also be used separately if their required input in the correct format is available. The tools are produced through a collaborative project (NSF DBI-1147266) between the University of Arizona and University of California at Davis and with collaboration from the project Next Generation Phenomics for the Tree of Life sponsored by NSF’s Assembling, Visualizing and Analysing the Tree of Life program (NSF DEB-1208567). For more information about the project, see </g:InlineLabel>
 		    <g:Anchor href="http://taxonconceptexplorer.org/pub/Main_Page" target="_blank">http://taxonconceptexplorer.org/pub/Main_Page.</g:Anchor>
 		    </g:HTMLPanel>
 
 		    <g:VerticalPanel styleName="{style.padding}">
 		    <g:InlineLabel styleName="{style.bold}">What is a taxon concept?</g:InlineLabel>    
 		    <g:Label>&nbsp;</g:Label>
-		    <g:InlineLabel>“A taxonomic [or taxon] concept is the underlying meaning, or referential extension, of a scientific name as stated by a particular author in a particular publication. It represents the author’s view of how the name is supposed to reach out to objects in nature” (Franz, 2008). In a sense, a taxon concept attaches a meaning to a scientific name. The ETC project aims to provide software tools for biologists to explore the relationships among taxon concepts based on the physical characters of the taxa in question. </g:InlineLabel>
+		    <g:InlineLabel>“A taxonomic [or taxon] concept is the underlying meaning, or referential extension, of a scientific name as stated by a particular author in a particular publication. It represents the author’s view of how the name is supposed to reach out to objects in nature” (Franz, 2008). In the simplest form, a taxon concept may be expressed as "taxon_name according to the_author". In a sense, a taxon concept attaches a meaning to a scientific name. The ETC project aims to provide a collection of software tools for biologists to explore the relationships among taxon concepts based on the physical characters of the taxa in question, however, each individual tool may also be used outside of the context of taxon concepts. </g:InlineLabel>
 		    </g:VerticalPanel>
 		    
 		     <g:VerticalPanel styleName="{style.padding}">

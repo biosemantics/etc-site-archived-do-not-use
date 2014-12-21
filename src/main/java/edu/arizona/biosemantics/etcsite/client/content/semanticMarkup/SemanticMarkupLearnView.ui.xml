@@ -37,9 +37,11 @@
 			<g:VerticalPanel styleName="{style.padding}">
 				<g:HorizontalPanel ui:field="resumablePanel" visible="false">
 					<g:Image styleName="{style.playImage}" ui:field="playImage" url="images/play.png"></g:Image>
-					<g:FlowPanel>
-						<g:InlineLabel>The learn step is completed.</g:InlineLabel>
-					</g:FlowPanel>
+					<g:VerticalPanel>
+						<g:InlineLabel>The Learn step is completed.</g:InlineLabel>
+						<g:InlineLabel>In the next step, you will review and categorize the terms learned by the software. </g:InlineLabel>
+						<g:InlineLabel>Please read the Instructions in the Review interface when it loads after clicking on the "Next Step in Text Capture" buttom below.</g:InlineLabel>
+					</g:VerticalPanel>
 				</g:HorizontalPanel>
 				<g:VerticalPanel ui:field="nonResumablePanel">
 					<!-- <g:FlowPanel>

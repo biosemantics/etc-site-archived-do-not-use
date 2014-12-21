@@ -126,11 +126,7 @@
 									<g:Label>Inherit Values:</g:Label>
 								</g:cell>
 								<g:InlineLabel styleName="{style.note}">
-									Inherits characters from
-									upper taxa
-								</g:InlineLabel>
-								<g:InlineLabel styleName="{style.note}">
-									to their lower taxa.
+									Choose this option if you want the characters from upper taxa to be inherited by the lower taxa
 								</g:InlineLabel>
 							</g:VerticalPanel>
 							<g:CheckBox ui:field="inheritValuesBox" value="false"></g:CheckBox>
@@ -140,15 +136,11 @@
 						<g:HorizontalPanel>
 							<g:VerticalPanel styleName="{style.firstColumn}">
 								<g:cell verticalAlignment="ALIGN_TOP">
-									<g:Label>Generate Absent/Present Values:</g:Label>
+									<g:Label>Infer Absent/Present States:</g:Label>
 								</g:cell>
 								<g:InlineLabel styleName="{style.note}">
-									Infers absent/present
-									values from
-								</g:InlineLabel>
-								<g:InlineLabel styleName="{style.note}">
-									determined structural
-									relationships.
+									Choose this option if you want the software to infer presence/absence of organs/parts
+									 , addition to what is said in the text. This option takes time to complete.
 								</g:InlineLabel>
 							</g:VerticalPanel>
 							<g:CheckBox ui:field="generateAbsentPresentBox" value="false"></g:CheckBox>

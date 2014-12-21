@@ -63,7 +63,7 @@
 								href="http://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupInput.xsd"
 								target="_blank" styleName="{style.padding}">format</g:Anchor>
 							<g:InlineLabel>
-			            	, can be created using the 'Create Files' function in the&nbsp;
+			            	, can be created using the 'Create Input for Text Capture' function in the&nbsp;
 							</g:InlineLabel>
 							<g:Anchor ui:field="fileManagerAnchor" styleName="{style.clickable}">File
 								Manager</g:Anchor>
@@ -89,7 +89,7 @@
 							<g:InlineLabel styleName="{style.bold}">2.&nbsp;
 							</g:InlineLabel>
 							<g:InlineLabel>
-								Then provide the information below to start the
+								Then, provide the information below and click on "Next Step in Text Capture" to start the
 								process:
 							</g:InlineLabel>
 						</g:FlowPanel>

@@ -17,6 +17,10 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements 
 			try {
 				edu.arizona.biosemantics.matrixgeneration.Main.main(args);
 			} catch (Throwable t) {
+				System.out.println("ExtraJvmMatrixGeneration failed with throwable "+t.getMessage());
+				System.out.println(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(t));
+				
+				if(t.getCause()!=null) System.out.println("caused by "+org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(t.getCause()));
 				System.exit(-1);
 			}
 		}

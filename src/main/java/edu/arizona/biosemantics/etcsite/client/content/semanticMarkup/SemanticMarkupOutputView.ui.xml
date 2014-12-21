@@ -29,11 +29,11 @@
 			<g:VerticalPanel>
 			    <g:InlineLabel>Text Capture is complete.</g:InlineLabel>
 			    <g:FlowPanel styleName="{style.padding}">
-			    <g:InlineLabel>The output files are saved as&nbsp;</g:InlineLabel>
+			    <g:InlineLabel>A new folder containing the formatted output files are saved as&nbsp;</g:InlineLabel>
 			    <g:InlineLabel ui:field="outputLabel" styleName="{style.important}"></g:InlineLabel>
 			    <g:InlineLabel>&nbsp;in the&nbsp;</g:InlineLabel>
 			    <g:Anchor ui:field="fileManagerAnchor">File Manager</g:Anchor>
-			    <g:InlineLabel>.</g:InlineLabel>	    
+			    <g:InlineLabel>. The folder can be used as the input for the Matrix Generation Tool.</g:InlineLabel>	    
 			    </g:FlowPanel>
 			</g:VerticalPanel>
 		</g:VerticalPanel>	
