@@ -91,6 +91,7 @@ import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGe
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationReviewView;
 import edu.arizona.biosemantics.etcsite.client.content.news.INewsView;
 import edu.arizona.biosemantics.etcsite.client.content.news.NewsView;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.IImportOtoView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupHierarchyView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupInputView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupLearnView;
@@ -100,6 +101,7 @@ import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticM
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupPreprocessView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupReviewView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupToOntologiesView;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ImportOtoView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupHierarchyView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputView;
@@ -260,6 +262,7 @@ public class ClientModule extends AbstractGinModule {
 		bind(ITreeGenerationInputView.Presenter.class).to(TreeGenerationInputPresenter.class);
 		bind(ITreeGenerationViewView.class).to(TreeGenerationViewView.class);
 		bind(ITreeGenerationViewView.Presenter.class).to(TreeGenerationViewPresenter.class);
+		bind(IImportOtoView.class).to(ImportOtoView.class);
 		
 		//activites, places, eventbus
 		bind(EventBus.class).annotatedWith(Names.named("ActivitiesBus")).to(SimpleEventBus.class).in(Singleton.class);

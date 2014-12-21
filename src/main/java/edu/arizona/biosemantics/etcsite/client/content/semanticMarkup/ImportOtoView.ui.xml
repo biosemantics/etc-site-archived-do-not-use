@@ -1,0 +1,61 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:form='urn:import:com.sencha.gxt.widget.core.client.form'>
+	<ui:style>
+	.instruction {
+		padding: 10px;
+	}
+	
+	.tabPanel {
+		height: 100%;
+		width: 100%;
+	}
+	
+	.descriptionArea {
+		height: 60px;
+		width: 720px;
+	}
+	
+	.batchArea {
+		height: 400px;
+		width: 720px;
+	}
+	
+	.right {
+		margin-right: 10%;
+	}
+	</ui:style>
+	<g:ScrollPanel>
+		<g:VerticalPanel>
+			<g:DisclosurePanel open="true">
+				<g:header>Instructions</g:header>
+				<g:HTMLPanel>
+					<p>
+					You can import term categorizations and synonymy. 
+					The data should be in the CSV format with the following columns, excluding the column names.
+					</p>
+					<p>
+					Term Categorization:
+					</p>
+					<p>
+					category,term
+					</p>
+					<p>
+					Synonymy:
+					</p>
+					<p>
+					category,main term, synonym term
+					</p>
+				</g:HTMLPanel>
+			</g:DisclosurePanel>
+			<g:DisclosurePanel>
+				<g:header>Term Categorization</g:header>
+				<g:TextArea ui:field="categorizationTextArea" styleName="{style.batchArea}"></g:TextArea>
+			</g:DisclosurePanel>
+			<g:DisclosurePanel>
+				<g:header>Synonymy</g:header>
+				<g:TextArea ui:field="synonymTextArea" styleName="{style.batchArea}"></g:TextArea>
+			</g:DisclosurePanel>
+		</g:VerticalPanel>
+	</g:ScrollPanel>
+</ui:UiBinder> 
