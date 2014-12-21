@@ -158,7 +158,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		config.setInput(filePath);	
 		config.setGlossary(glossary);
 		config.setNumberOfInputFiles(numberOfInputFiles);
-		config.setOutput(config.getInput() + "_" + taskName);
+		config.setOutput(config.getInput() + "_output_by_TC_task_" + taskName);
 		config = daoManager.getSemanticMarkupConfigurationDAO().addSemanticMarkupConfiguration(config);
 		
 		edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum taskType = edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP;
@@ -230,8 +230,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			}
 			String bioportalUserId = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalUserId();
 			String bioportalAPIKey = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalAPIKey();
-			final Learn learn = new ExtraJvmLearn(authenticationToken, glossary, input, tablePrefix, source, operator, bioportalUserId, bioportalAPIKey);
-			//final Learn learn = new InJvmLearn(authenticationToken, glossary, input, tablePrefix, source, operator, bioportalUserId, bioportalAPIKey);
+			//final Learn learn = new ExtraJvmLearn(authenticationToken, glossary, input, tablePrefix, source, operator, bioportalUserId, bioportalAPIKey);
+			final Learn learn = new InJvmLearn(authenticationToken, glossary, input, tablePrefix, source, operator, bioportalUserId, bioportalAPIKey);
 			activeLearns.put(config.getConfiguration().getId(), learn);
 			final ListenableFuture<LearnResult> futureResult = executorService.submit(learn);
 			activeLearnFutures.put(config.getConfiguration().getId(), futureResult);
@@ -323,8 +323,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			}
 			String bioportalUserId = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalUserId();
 			String bioportalAPIKey = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalAPIKey();
-			final Parse parse = new ExtraJvmParse(authenticationToken, glossary, input, tablePrefix, source, operator, bioportalUserId, bioportalAPIKey);
-			//final Parse parse = new InJvmParse(authenticationToken, glossary, input, tablePrefix, source, operator, bioportalUserId, bioportalAPIKey);
+			//final Parse parse = new ExtraJvmParse(authenticationToken, glossary, input, tablePrefix, source, operator, bioportalUserId, bioportalAPIKey);
+			final Parse parse = new InJvmParse(authenticationToken, glossary, input, tablePrefix, source, operator, bioportalUserId, bioportalAPIKey);
 			activeParses.put(config.getConfiguration().getId(), parse);
 			final ListenableFuture<ParseResult> futureResult = executorService.submit(parse);
 			activeParseFutures.put(config.getConfiguration().getId(), futureResult);
@@ -361,7 +361,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	@Override
 	public Task output(AuthenticationToken authenticationToken, Task task) throws SemanticMarkupException {	
 		final SemanticMarkupConfiguration config = getSemanticMarkupConfiguration(task);
-		config.setOutput(config.getInput() + "_" + task.getName());
+		config.setOutput(config.getInput() + "_output_by_TC_task_" + task.getName());
 		
 		String outputDirectory = config.getOutput();			
 		String outputDirectoryParent;

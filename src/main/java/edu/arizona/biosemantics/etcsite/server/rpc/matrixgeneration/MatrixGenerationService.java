@@ -137,7 +137,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		
 		MatrixGenerationConfiguration config = new MatrixGenerationConfiguration();
 		config.setInput(input);	
-		config.setOutput(config.getInput() + "_" + taskName);
+		config.setOutput(config.getInput() + "_output_by_MG_task_" + taskName);
 		config.setInheritValues(inheritValues);
 		config.setGenerateAbsentPresent(generateAbsentPresent);
 		config = daoManager.getMatrixGenerationConfigurationDAO().addMatrixGenerationConfiguration(config);
@@ -288,7 +288,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	@Override
 	public Task output(AuthenticationToken authenticationToken, Task task) throws MatrixGenerationException {
 		final MatrixGenerationConfiguration config = getMatrixGenerationConfiguration(task);
-		config.setOutput(config.getInput() + "_" + task.getName());
+		config.setOutput(config.getInput() + "_output_by_MG_task_" + task.getName());
 			
 		String outputDirectory = config.getOutput();			
 		String outputDirectoryParentResult;
