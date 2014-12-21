@@ -27,11 +27,15 @@
 
 		.nextButton {
 			margin-top: 4px;
-   			margin-left: 20px;
+   			margin-left: 10px;
+			width: 100px;
+			font-size:10px !important;
 		}
 		.saveButton {
 			margin-top: 4px;
-   			margin-left: 20px;
+   			margin-left: 10px;
+			width: 60px;
+			font-size:10px !important;
 		}
 		.subMenuEntry {
 			margin-left: 0px;
