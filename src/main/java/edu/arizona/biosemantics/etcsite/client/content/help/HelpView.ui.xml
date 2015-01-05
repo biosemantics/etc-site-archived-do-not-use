@@ -37,7 +37,7 @@
 		    	<g:VerticalPanel styleName="{style.padding}"/>
 		   		<g:InlineLabel>The ETC site provides five tools, with a task manager and a file manager supporting their functionalities. This page provides basic information about the site, including a Site Overview, a Quick Guide for First-Time Users, and a brief video demo. A full user manual is under preparation.</g:InlineLabel>
 		   		<g:VerticalPanel styleName="{style.padding}"/>
-		   		<g:Label styleName="{style.bold}">Site Overivew</g:Label>
+		   		<g:Label styleName="{style.bold}">Site Overview</g:Label>
 		    	<g:Image url="images/etc-overview.png" title="etc site overview" altText="etc site overview" width="800px" height="400px"/>
 		    	
 		    	<g:VerticalPanel styleName="{style.padding}"/>
