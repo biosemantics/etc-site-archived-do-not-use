@@ -82,13 +82,13 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.34-SNAPSHOT</version>
+		  <version>0.0.35-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.34-SNAPSHOT</version>
+		  <version>0.0.35-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
@@ -191,7 +191,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>semantic-markup</artifactId>
-			<version>0.1.91-SNAPSHOT</version>
+			<version>0.1.92-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>app</artifactId>
@@ -214,12 +214,12 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.matrixgeneration</groupId>
 			<artifactId>matrix-generation</artifactId>
-			<version>0.1.30.3-SNAPSHOT</version>
+			<version>0.1.30.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.oto</groupId>
 			<artifactId>oto-client</artifactId>
-			<version>0.0.39-SNAPSHOT</version>
+			<version>0.0.41-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.oto</groupId>

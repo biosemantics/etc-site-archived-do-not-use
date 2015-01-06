@@ -63,6 +63,8 @@ public class SemanticMarkupReviewView extends Composite implements ISemanticMark
 		oto.setUser(Authentication.getInstance().getFirstName() + " " + 
 			Authentication.getInstance().getLastName() + " (" + 
 			Authentication.getInstance().getEmail() + ")");
+		
+		//don't want to initialize from history when coming back to the task again -> false
 		oto.loadCollection(collectionId, secret, false);
 	}
 	
