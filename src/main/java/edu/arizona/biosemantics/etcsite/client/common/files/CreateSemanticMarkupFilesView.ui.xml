@@ -59,7 +59,7 @@
 								<g:Grid ui:field="ranksGrid">
 									<g:row>
 										<g:cell>Rank</g:cell>
-										<g:cell>Name</g:cell>
+										<g:cell>Name Authority, Date</g:cell>
 									</g:row> 
 									<g:row>
 										<g:customCell>
@@ -117,7 +117,7 @@
 	                <g:DisclosurePanel>
 						<g:header>Instructions</g:header>
 		                <g:HTMLPanel>
-		      				The batch creation allows you to upload multiple taxonomic treatments formatted in the same way as the single file creation.
+		      				The batch creation function allows you to upload multiple taxonomic treatments formatted in the same way as the single file creation.
 		      				
 		      				<ul>
 		      					<li>Use an empty line to separate taxonomic treatments</li>
@@ -126,7 +126,7 @@
 		      					    <li>You can include following fields in your input text (R denotes a required field, O optional): <br/>
 		      					    <b>author</b>(R, last name of the first author only), <b>year</b>(R), <b>title</b>(R), <b>doi</b>(O), <b>full citation</b>(O), at least one <b>strain number</b> or one ranked taxon name, in the format of <b><i>rank</i> name</b>, e.g., <b>family name</b>(R),   
 		      					    <b>equivalent strain numbers</b>(O), <b>accession number 16S rRNA</b>(O), and at least one of {<b>morphology</b>, <b>phenology</b>, <b>habitat</b>, <b>distribution</b>}(R).</li>
-		      					    <li>Authority and date may be included in taxon names, use a <b>comma (,)</b> to separate the date. For example: Homosclerophorida Dendy, 1905</li>
+		      					    <li>Taxon authority and date should be included in taxon names, use a <b>comma (,)</b> to separate the date. For example: Homosclerophorida Dendy, 1905. Use the token "unspecified" if the authority or the date can not be provided. </li>
 		      					    <li>Lower rank taxa should list all ranks on separate lines, starting from the highest rank of interests (see examples 2 and 3)</li> 
 		      					   </ul> </li>
 		      					<li>Use a <b>colon (:)</b> to separate a field name from its value</li>
@@ -146,22 +146,22 @@
 		                    author: Fernald<br/>
 							year: 1950<br/>
 							title: Gray's Manual of Botany<br/>
-							family name: Rosaceae<br/>
+							family name: Rosaceae unspecified, unspecified<br/>
 							morphology: Plants with regular flowers, numerous (rarely few) distinct stamens inserted on the calyx, and 1-many carpels, which are quite distinct, or (in the second tribe) united and combined with the calyx-tube.<br/>
 							<br/>
 							author:  Fernald<br/>
 							year: 1950<br/>
 							title: Gray's Manual of Botany<br/>
 							family name: Rosaceae<br/>
-							genus name: Rubus Linnaeus<br/>
+							genus name: Rubus Linnaeus, unspecified<br/>
 							morphology: Calyx 5(3-7)-parted, without bractlets. Petals mostly 5, deciduous.<br/>
 							<br/>
 							author:  Fernald<br/>
 							year: 1950<br/>
 							title: Gray's Manual of Botany<br/>
 							family name: Rosaceae<br/>
-							genus name: Rubus Linnaeus<br/>
-							species name: Allegheniensis Porter <br/>
+							genus name: Rubus Linnaeus <br/>
+							species name: Allegheniensis Porter, unspecified <br/>
 							morphology: #Erect or high arching, mostly 1-3 m. high, armed with scattered broad-based lanceolate to lance-subulate prickles or prickles wanting, the young primocanes often ridged or angled and finely pubescent, the expanding tip often glandular;<br/>
 							<br/>
 							Canes up to 1 cm. or more thick at base; terminal primocane-leaflet 0.7-2 dm. long, 3.5-11 cm. broad; lower elongate pedicels often forking.#<br/>

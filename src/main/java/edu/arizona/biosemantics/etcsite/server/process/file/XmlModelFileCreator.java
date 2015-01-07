@@ -6,8 +6,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -57,12 +59,15 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 	public synchronized List<XmlModelFile> createXmlModelFiles(String text, String operator) {
 		showMessage("text:", text);
 		List<XmlModelFile> result = new LinkedList<XmlModelFile>();
+		if(text.isEmpty()) return result;
+		
 		text = normalizeText(text);
 		showMessage("text after normalization: ", text);
 		List<String> treatmentTexts = getTreatmentTexts(text);
 		
+		HashSet<String> names = new HashSet<String> (); //TODO: use taxonNames to check for duplicate taxa, but can't do it given current code structure: only one entry is processed at a time. 
 		for(String treatmentText : treatmentTexts) {
-			XmlModelFile modelFile = createXmlModelFile(treatmentText, operator);
+			XmlModelFile modelFile = createXmlModelFile(treatmentText, operator, names);
 			result.add(modelFile);
 		}
 		
@@ -77,7 +82,8 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		log(LogLevel.TRACE, title + ": " + text);
 	}	
 
-	public XmlModelFile createXmlModelFile(String text, String operator) {
+	//TODO: use taxonNames to check for duplicate taxa, but can't do it given current code structure: only one entry is processed at a time. 
+	public XmlModelFile createXmlModelFile(String text, String operator, HashSet<String> taxonNames) {
 		showMessage("get xml model file for: ", text);
 		XmlModelFile modelFile = new XmlModelFile();
 		nameTypes = new ArrayList<String>();
@@ -126,15 +132,52 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		
 		this.showMessage("data", data.toString());
 		
-		
+		HashSet<String> names = new HashSet<String>();
+		Hashtable<Rank, String> rankedNames = new Hashtable<Rank, String>();
 		for(String key : data.keySet()) {
 			if(!this.allLabels.contains(key)) {
 				modelFile.appendError("Don't know what " +key + " is.");
 			} else {
-				if(key.endsWith(" name"))	 
+				if(key.endsWith(" name")){	
+					rankedNames.put(Rank.valueOf(key.replaceFirst("\\s+name", "").toUpperCase()), data.get(key));
+					//if(!data.get(key).matches(".*?,.*?\\w+.*")) modelFile.appendError("'"+key+":"+data.get(key)+ "' does not have authority/date.");
+					String name = data.get(key).trim();
+					if(name.contains(" ")) name = name.substring(0, data.get(key).indexOf(" "));
+					if(names.contains(name)){
+						 modelFile.appendError("'"+name + "' in '"+data.get(key)+"' is repeated in an entry, did you include genus name in species name/epithet?");
+					}else{
+						names.add(name);
+					}
 					nameTypes.add(key);
+				}
 			}
 		}
+	
+		//sort rankedName by rank from high to low, and find the lowest name and check if it has authority and date
+		//add rankedNames to taxonNames to check for duplicates in the input
+		ArrayList<String> rNames = new ArrayList<String>();
+		for(int i = 0; i<100; i++){
+			rNames.add("");
+		}
+		Enumeration<Rank> ranks = rankedNames.keys();
+		while(ranks.hasMoreElements()){
+			Rank r = ranks.nextElement();
+			rNames.set(r.getId(), rankedNames.get(r));
+		}
+		StringBuffer completeName = new StringBuffer();
+		String lowestName = null;
+		for(String rname: rNames){
+			if(!rname.isEmpty()){
+				completeName.append(rname).append("/");
+				lowestName = rname;
+			}			
+		}
+		if(!lowestName.matches(".*?,.*?\\w+.*")) modelFile.appendError("'"+lowestName+ "' does not have authority/date.");
+		if(taxonNames.contains(completeName.toString()))
+			modelFile.appendError("'"+completeName.toString()+ "' already exists. Duplicate taxa are not allowed");
+		else
+			taxonNames.add(completeName.toString());
+		
 	
 		//check data required to generate error if necessary
 		if(!data.containsKey("author") || data.get("author") == null || data.get("author").trim().isEmpty())
@@ -263,9 +306,9 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 			String authority = null;
 			String ndate = null;
 			if(nameString.contains(" ")){
-				name = nameString.substring(0, nameString.indexOf(" "));
+				name = nameString.substring(0, nameString.indexOf(" ")); //first word
 				String authorityStr = nameString.substring(nameString.indexOf(" ")).trim();
-				if(authorityStr.contains(",")){
+				if(authorityStr.contains(",")){//, separates authority and date
 					authority = authorityStr.substring(0, authorityStr.indexOf(",")).trim();
 					ndate = authorityStr.substring(authorityStr.indexOf(",")+1).trim();
 				}
@@ -274,8 +317,14 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 			taxonIdentification.addContent(element);
 			element.setText(name);
 			element.setAttribute("rank", rank);
-			if(authority!=null) element.setAttribute("authority", authority);
-			if(ndate!=null) element.setAttribute("date", ndate);
+			if(authority!=null){
+				element.setAttribute("authority", authority);
+				if(ndate!=null) element.setAttribute("date", ndate);
+				else element.setAttribute("date", "n.d");
+			}else{
+				element.setAttribute("authority", data.get("author"));
+				element.setAttribute("date", data.get("year"));
+			}
 		}
 
 		if(data.containsKey("strain number") && data.get("strain number") != null && !data.get("strain number").trim().isEmpty()) {

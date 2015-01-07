@@ -37,6 +37,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 		@Override
 		public void onFailure(Throwable caught) {
 			Alerter.failedToCreateTaxonDescription(caught);
+			view.hideProgress();
 		}
 		@Override
 		public void onSuccess(final List<XmlModelFile> xmlModelFiles) {

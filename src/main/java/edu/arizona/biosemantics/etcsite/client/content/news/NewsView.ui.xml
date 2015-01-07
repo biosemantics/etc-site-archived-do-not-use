@@ -39,13 +39,41 @@
 									<!--a new row -->
 									<g:row>
 										<g:cell>
-											
+											Jan 7, 2015
 										</g:cell>
 										<g:cell>&nbsp;</g:cell>
 										<g:customCell>
 											<g:VerticalPanel>
 											    <g:InlineLabel>
-											        
+											        Updated ETC-Beta with the new modules/features.
+											    </g:InlineLabel>
+											</g:VerticalPanel>
+										</g:customCell>
+									</g:row>
+									
+									<g:row>
+										<g:cell>
+											Dec 15, 2014
+										</g:cell>
+										<g:cell>&nbsp;</g:cell>
+										<g:customCell>
+											<g:VerticalPanel>
+											    <g:InlineLabel>
+											        Added download feature in Review step of Text Capture.
+											    </g:InlineLabel>
+											</g:VerticalPanel>
+										</g:customCell>
+									</g:row>
+									
+									<g:row>
+										<g:cell>
+											Dec 1, 2014
+										</g:cell>
+										<g:cell>&nbsp;</g:cell>
+										<g:customCell>
+											<g:VerticalPanel>
+											    <g:InlineLabel>
+											      ETC tools back online.  
 											    </g:InlineLabel>
 											</g:VerticalPanel>
 										</g:customCell>
@@ -74,7 +102,7 @@
 										<g:customCell>
 											<g:VerticalPanel>
 											    <g:InlineLabel>
-											        Beta test of the Key Generation tool.
+											        Beta test of the Key Generation tool start.
 											    </g:InlineLabel>
 											</g:VerticalPanel>
 										</g:customCell>
