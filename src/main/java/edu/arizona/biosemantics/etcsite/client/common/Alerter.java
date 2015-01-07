@@ -343,7 +343,7 @@ public class Alerter {
 	}
 
 	public static MessageBox resumableTask() {
-		MessageBox confirm = showConfirm("Resumable Task", "You have a resumable task of this type.");
+		MessageBox confirm = showConfirm("Resumable Task", "You have a resumable task of this type."); //message box can only have YES and NO buttons.
 		confirm.getButton(PredefinedButton.YES).setText("Resume");
 		confirm.getButton(PredefinedButton.NO).setText("Start New");
 		return confirm;

@@ -293,7 +293,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	public String createDirectory(AuthenticationToken authenticationToken, String filePath, String idealFolderName, boolean force) 
 			throws PermissionDeniedException, CreateDirectoryFailedException { 
 		if(idealFolderName.trim().isEmpty()) 
-			throw new CreateDirectoryFailedException("Directory name may not be empty. The directory was not created.");
+			throw new CreateDirectoryFailedException("Directory name is empty. The directory was not created.");
 		
 		idealFolderName = normalizeFileName(idealFolderName);
 		
@@ -322,8 +322,12 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 						resultMkDir = file.mkdir();
 					}
 				}
-				if(!resultMkDir) 
-					throw new CreateDirectoryFailedException();
+				if(!resultMkDir){ 
+					if(file.isDirectory() && file.exists())
+						throw new CreateDirectoryFailedException("Directory "+file.getName()+" already exists");
+					else
+						throw new CreateDirectoryFailedException("Network or server errors");
+				}
 				else
 					return file.getAbsolutePath();
 			}
