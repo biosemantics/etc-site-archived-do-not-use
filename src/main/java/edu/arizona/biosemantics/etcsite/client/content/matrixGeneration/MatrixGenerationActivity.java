@@ -116,6 +116,13 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 		}
 		return null;
 	}
+	
+	public void onCancel() {
+		reviewPresenter.setUnsavedChanges(false);
+	}
 
+	public void onStop() {
+		reviewPresenter.setUnsavedChanges(false);
+	}
 
 }

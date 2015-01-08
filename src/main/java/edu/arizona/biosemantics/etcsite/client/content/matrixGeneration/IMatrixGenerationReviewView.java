@@ -16,6 +16,7 @@ public interface IMatrixGenerationReviewView extends IsWidget {
 		Model getTaxonMatrix();
 		void onSave();
 		boolean hasUnsavedChanges();
+		void setUnsavedChanges(boolean value);
 	}
 	  
 	void setPresenter(Presenter presenter);

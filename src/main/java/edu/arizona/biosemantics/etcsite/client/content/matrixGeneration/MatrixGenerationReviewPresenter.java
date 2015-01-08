@@ -291,4 +291,9 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 	public boolean hasUnsavedChanges() {
 		return unsavedChanges;
 	}
+
+	@Override
+	public void setUnsavedChanges(boolean value) {
+		this.unsavedChanges = value;
+	}
 }
