@@ -3,7 +3,7 @@ package edu.arizona.biosemantics.etcsite.shared.model;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Glossary implements Serializable {
+public class TaxonGroup implements Serializable {
 
 	/**
 	 * 
@@ -13,9 +13,9 @@ public class Glossary implements Serializable {
 	private String name;
 	private Date created;
 	
-	public Glossary() { }
+	public TaxonGroup() { }
 	
-	public Glossary(int id, String name, Date created) {
+	public TaxonGroup(int id, String name, Date created) {
 		this.id = id;
 		this.name = name;
 		this.created = created;
@@ -57,7 +57,7 @@ public class Glossary implements Serializable {
 		if (getClass() != object.getClass()) {
 	        return false;
 	    }
-		Glossary glossary = (Glossary)object;
+		TaxonGroup glossary = (TaxonGroup)object;
 		if(glossary.getId()==this.id)
 			return true;
 		return false;

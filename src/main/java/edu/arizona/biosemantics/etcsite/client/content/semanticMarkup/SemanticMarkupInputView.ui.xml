@@ -143,17 +143,32 @@
 									<g:Label>Select Taxon Group:</g:Label>
 								</g:cell>
 								<g:InlineLabel styleName="{style.note}">
-									Glossaries/ontologies
-									relevant to the
+									select taxon group relevant 
 								</g:InlineLabel>
 								<g:InlineLabel styleName="{style.note}">
-									taxon group will be used
-									in the process.
+									to your text.
 								</g:InlineLabel>
 							</g:VerticalPanel>
 							<g:cell verticalAlignment="ALIGN_MIDDLE">
 								<g:ListBox ui:field="glossaryListBox"
 									visibleItemCount="1"></g:ListBox>
+							</g:cell>
+						</g:HorizontalPanel>
+					</g:VerticalPanel>
+					<g:VerticalPanel styleName="{style.subMenuEntry}">
+						<g:HorizontalPanel styleName="inputForm">
+							<g:VerticalPanel styleName="{style.firstColumn}">
+								<g:cell verticalAlignment="ALIGN_TOP">
+									<g:Label>Select Taxon Group:</g:Label>
+								</g:cell>
+								<g:InlineLabel styleName="{style.note}">
+									If checked no glossary will be used. 
+									If unchecked the glossary/ontology relevant 
+									to the selected taxon group will be used.
+								</g:InlineLabel>
+							</g:VerticalPanel>
+							<g:cell verticalAlignment="ALIGN_MIDDLE">
+								<g:CheckBox ui:field="emptyGlossaryCheckbox"></g:CheckBox>
 							</g:cell>
 						</g:HorizontalPanel>
 					</g:VerticalPanel>

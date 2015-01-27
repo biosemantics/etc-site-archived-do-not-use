@@ -15,7 +15,7 @@ import edu.arizona.biosemantics.oto2.oto.shared.model.Term;
 
 public interface ISemanticMarkupServiceAsync extends IHasTasksServiceAsync {
 
-	public void start(AuthenticationToken authenticationToken, String taskName, String filePath, String glossaryName, AsyncCallback<Task> callback);
+	public void start(AuthenticationToken authenticationToken, String taskName, String filePath, String taxonGroup, boolean emptyGlossary, AsyncCallback<Task> callback);
 	
 	public void isValidInput(AuthenticationToken authenticationToken, String filePath, AsyncCallback<Boolean> callback);
 	

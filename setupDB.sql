@@ -50,10 +50,10 @@ INSERT INTO `etcsite_filetypes` (`id`, `name`, `created`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `glossaries`
+-- Table structure for table `taxon_group`
 --
 
-CREATE TABLE IF NOT EXISTS `etcsite_glossaries` (
+CREATE TABLE IF NOT EXISTS `etcsite_taxon_group` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -62,17 +62,18 @@ CREATE TABLE IF NOT EXISTS `etcsite_glossaries` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `glossaries`
+-- Dumping data for table `taxon_group`
 --
 
-INSERT INTO `etcsite_glossaries` (`id`, `name`, `created`) VALUES
+INSERT INTO `etcsite_taxon_group` (`id`, `name`, `created`) VALUES
 (1, 'Hymenoptera', '2013-10-22 01:07:24'),
 (2, 'Porifera', '2013-10-22 01:07:24'),
-(3, 'Algea', '2013-10-22 01:07:24'),
+(3, 'Algae', '2013-10-22 01:07:24'),
 (4, 'Fossil', '2013-10-22 01:07:24'),
 (5, 'Plant', '2013-10-22 01:07:24'),
 (6, 'Gastropods', '2013-10-22 01:07:24'),
-(7, 'Cnidaria', '2013-10-22 01:07:24');
+(7, 'Cnidaria', '2013-10-22 01:07:24'),
+(8, 'Empty', '2013-10-22 01:07:24');
 
 -- --------------------------------------------------------
 
@@ -126,12 +127,13 @@ CREATE TABLE IF NOT EXISTS `etcsite_semanticmarkupconfigurations` (
   `configuration` bigint(20) unsigned DEFAULT NULL,
   `input` varchar(200) DEFAULT NULL,
   `numberofinputfiles` int(11) DEFAULT NULL,
-  `glossary` bigint(20) unsigned DEFAULT NULL,
+  `taxon_group` bigint(20) unsigned DEFAULT NULL,
+  `use_empty_glossary` tinyint(1) DEFAULT NULL,
   `oto_uploadid` int(11) DEFAULT NULL,
   `oto_secret` varchar(100) DEFAULT NULL,
   `output` varchar(200) DEFAULT NULL,
   KEY `configurations_semanticmarkupconfigurations_CON` (`configuration`),
-  KEY `glossaries_semanticmarkupconfigurations_CON` (`glossary`)
+  KEY `taxon_group_semanticmarkupconfigurations_CON` (`taxon_group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -396,7 +398,7 @@ ALTER TABLE `etcsite_pipelinestageconfigurations`
 --
 ALTER TABLE `etcsite_semanticmarkupconfigurations`
   ADD CONSTRAINT `configurations_semanticmarkupconfigurations_CON` FOREIGN KEY (`configuration`) REFERENCES `etcsite_configurations` (`id`),
-  ADD CONSTRAINT `glossaries_semanticmarkupconfigurations_CON` FOREIGN KEY (`glossary`) REFERENCES `etcsite_glossaries` (`id`);
+  ADD CONSTRAINT `taxon_group_semanticmarkupconfigurations_CON` FOREIGN KEY (`taxon_group`) REFERENCES `etcsite_taxon_group` (`id`);
 
 --
 -- Constraints for table `shareinvitees`

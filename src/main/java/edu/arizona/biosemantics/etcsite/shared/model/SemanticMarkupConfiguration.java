@@ -9,21 +9,32 @@ public class SemanticMarkupConfiguration extends AbstractTaskConfiguration imple
 	private static final long serialVersionUID = -2317947666906682233L;
 	private String input;
 	private int numberOfInputFiles;
-	private Glossary glossary;
+	private TaxonGroup taxonGroup;
+	private boolean useEmptyGlossary;
 	private int otoUploadId;
 	private String otoSecret;
 	private String output;
 	
 	public SemanticMarkupConfiguration() { }
 	
-	public SemanticMarkupConfiguration(Configuration configuration, String input, int numberOfInputFiles, Glossary glossary, int otoUploadId, String otoSecret, String output) {
+	public SemanticMarkupConfiguration(Configuration configuration, String input, int numberOfInputFiles, TaxonGroup taxonGroup, 
+			boolean useEmptyGlossary, int otoUploadId, String otoSecret, String output) {
 		super(configuration);
 		this.input = input;
 		this.numberOfInputFiles = numberOfInputFiles;
-		this.glossary = glossary;
+		this.taxonGroup = taxonGroup;
+		this.useEmptyGlossary = useEmptyGlossary;
 		this.otoUploadId = otoUploadId;
 		this.otoSecret = otoSecret;
 		this.output = output;
+	}
+
+	public void setUseEmptyGlossary(boolean useEmptyGlossary) {
+		this.useEmptyGlossary = useEmptyGlossary;
+	}
+	
+	public boolean isUseEmptyGlossary() {
+		return useEmptyGlossary;
 	}
 
 	public String getInput() {
@@ -42,12 +53,12 @@ public class SemanticMarkupConfiguration extends AbstractTaskConfiguration imple
 		this.numberOfInputFiles = numberOfInputFiles;
 	}
 
-	public Glossary getGlossary() {
-		return glossary;
+	public TaxonGroup getTaxonGroup() {
+		return taxonGroup;
 	}
-
-	public void setGlossary(Glossary glossary) {
-		this.glossary = glossary;
+	
+	public void setTaxonGroup(TaxonGroup taxonGroup) {
+		this.taxonGroup = taxonGroup;
 	}
 
 	public int getOtoUploadId() {
@@ -86,8 +97,5 @@ public class SemanticMarkupConfiguration extends AbstractTaskConfiguration imple
 		List<String> result = new LinkedList<String>();
 		result.add(this.getOutput());
 		return result;
-	}
-
-
-	
+	}	
 }

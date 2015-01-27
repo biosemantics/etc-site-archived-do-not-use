@@ -1,9 +1,12 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
-import edu.arizona.biosemantics.matrixgeneration.Main;
+import edu.arizona.biosemantics.matrixgeneration.CLIMain;
 
 public class InJvmMatrixGeneration implements MatrixGeneration {
 	
@@ -26,15 +29,28 @@ public class InJvmMatrixGeneration implements MatrixGeneration {
 	
 	@Override
 	public Void call() throws MatrixGenerationException {
-		//String[] args = { inputDir, outputFile };
+		List<String> argList = new LinkedList<String>();
+		addArg(argList, "input", inputDir);
+		addArg(argList, "output", outputFile);
+		if(inheritValues) {
+			addArg(argList, "up_taxonomy_inheritance");
+			addArg(argList, "down_taxonomy_inheritance");
+		}
+		if(generateAbsentPresent) {
+			addArg(argList, "presence_relation");
+			addArg(argList, "presence_entity");
+		}
+		if(inferCharactersFromOntologies) {
+			addArg(argList, "up_ontology_inheritance");
+			addArg(argList, "down_ontology_inheritance");
+		}
+		addArg(argList, "output_format", "serialize");
+		
+		String[] args = argList.toArray(new String[argList.size()]);
 		try {
-			edu.arizona.biosemantics.matrixgeneration.Main main = 
-					new edu.arizona.biosemantics.matrixgeneration.Main(inputDir, outputFile, inheritValues, 
-							generateAbsentPresent, inferCharactersFromOntologies);
-			main.run();
-			//edu.arizona.biosemantics.matrixgeneration.MatrixGeneration.main(args); 
+			CLIMain.main(args);
 			executedSuccessfully = true;
-		} catch(Exception e) {
+		} catch(Throwable e) {
 			log(LogLevel.ERROR, "Matrix generation failed with exception.", e);
 			executedSuccessfully = false;
 		}
@@ -42,6 +58,15 @@ public class InJvmMatrixGeneration implements MatrixGeneration {
 			throw new MatrixGenerationException();
 		}
 		return null;
+	}
+
+	private void addArg(List<String> argList, String arg, String value) {
+		argList.add("-" + arg);
+		argList.add(value);
+	}
+
+	private void addArg(List<String> argList, String arg) {
+		argList.add("-" + arg);
 	}
 
 	@Override

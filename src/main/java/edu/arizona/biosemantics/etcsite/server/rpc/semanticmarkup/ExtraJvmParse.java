@@ -34,9 +34,10 @@ public class ExtraJvmParse extends ExtraJvmCallable<ParseResult> implements Pars
 	private String source;
 	private String operator;
 	private String bioportalUserId;
-	private String bioportalAPIKey;	
+	private String bioportalAPIKey;
+	private boolean useEmptyGlossary;	
 
-	public ExtraJvmParse(AuthenticationToken authenticationToken, String config, String input, String tablePrefix,
+	public ExtraJvmParse(AuthenticationToken authenticationToken, String config, boolean useEmptyGlossary, String input, String tablePrefix,
 			String source, String operator, String bioportalUserId, String bioportalAPIKey) {
 		super();
 		this.authenticationToken = authenticationToken;
@@ -47,6 +48,7 @@ public class ExtraJvmParse extends ExtraJvmCallable<ParseResult> implements Pars
 		this.operator = operator;
 		this.bioportalUserId = bioportalUserId;
 		this.bioportalAPIKey = bioportalAPIKey;
+		this.useEmptyGlossary = useEmptyGlossary;
 		
 		this.setArgs(createArgs());
 		if(!Configuration.charaparser_xms.isEmpty()) 
@@ -100,6 +102,8 @@ public class ExtraJvmParse extends ExtraJvmCallable<ParseResult> implements Pars
 		argList.add("-y");
 		addArg(argList, "o", otoLiteURL);
 		addArg(argList, "q", ontologies);
+		if(useEmptyGlossary)
+			addArg(argList, "x");
 		
 		String[] args = argList.toArray(new String[argList.size()]);
 		
@@ -133,6 +137,10 @@ public class ExtraJvmParse extends ExtraJvmCallable<ParseResult> implements Pars
 		}*/
 	}
 	
+	private void addArg(List<String> argList, String arg) {
+		argList.add("-" + arg);
+	}
+
 	private void addArg(List<String> argList, String arg, String value) {
 		if(value != null && !value.isEmpty()) {
 			argList.add("-" + arg);

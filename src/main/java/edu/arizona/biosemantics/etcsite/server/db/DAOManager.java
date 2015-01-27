@@ -6,7 +6,7 @@ public class DAOManager {
 	private DatasetPrefixDAO datasetPrefixDAO;
 	private FilesInUseDAO filesInUseDAO;
 	private FileTypeDAO fileTypeDAO;
-	private GlossaryDAO glossaryDAO;
+	private TaxonGroupDAO taxonGroupDAO;
 	private MatrixGenerationConfigurationDAO matrixGenerationConfigurationDAO;
 	private PasswordResetRequestDAO passwordResetRequestDAO;
 	private SemanticMarkupConfigurationDAO semanticMarkupConfigurationDAO;
@@ -26,7 +26,7 @@ public class DAOManager {
 		configurationDAO = new ConfigurationDAO();
 		userDAO = new UserDAO();
 		datasetPrefixDAO = new DatasetPrefixDAO();
-		glossaryDAO = new GlossaryDAO();
+		taxonGroupDAO = new TaxonGroupDAO();
 		passwordResetRequestDAO = new PasswordResetRequestDAO();
 		tasksOutputFilesDAO = new TasksOutputFilesDAO();
 		fileTypeDAO = new FileTypeDAO();
@@ -60,7 +60,7 @@ public class DAOManager {
 		filesInUseDAO.setTaskDAO(taskDAO);
 		matrixGenerationConfigurationDAO.setConfigurationDAO(configurationDAO);
 		semanticMarkupConfigurationDAO.setConfigurationDAO(configurationDAO);
-		semanticMarkupConfigurationDAO.setGlossaryDAO(glossaryDAO);
+		semanticMarkupConfigurationDAO.setTaxonGroupDAO(taxonGroupDAO);
 		taskConfigurationDAO.setSemanticMarkupConfigurationDAO(semanticMarkupConfigurationDAO);
 		taskConfigurationDAO.setTaxonomyComparisonConfigurationDAO(taxonomyComparisonConfigurationDAO);
 		taskConfigurationDAO.setTreeGenerationConfigurationDAO(treeGenerationConfigurationDAO);
@@ -86,8 +86,8 @@ public class DAOManager {
 		return fileTypeDAO;
 	}
 
-	public GlossaryDAO getGlossaryDAO() {
-		return glossaryDAO;
+	public TaxonGroupDAO getTaxonGroupDAO() {
+		return taxonGroupDAO;
 	}
 
 	public MatrixGenerationConfigurationDAO getMatrixGenerationConfigurationDAO() {

@@ -1,6 +1,9 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
@@ -28,11 +31,13 @@ public class InJvmLearn implements Learn {
 	private String bioportalAPIKey;
 	private IFileService fileService = new FileService();
 	private boolean executedSuccessfully = false;
+	private boolean useEmptyGlossary;
 
-	public InJvmLearn(AuthenticationToken authenticationToken, String config, String input, String tablePrefix,
+	public InJvmLearn(AuthenticationToken authenticationToken, String config, boolean useEmptyGlossary, String input, String tablePrefix,
 			String source, String operator, String bioportalUserId, String bioportalAPIKey) {
 		this.authenticationToken = authenticationToken;
 		this.config = config;
+		this.useEmptyGlossary = useEmptyGlossary;
 		this.input = input;
 		this.tablePrefix = tablePrefix;
 		this.source = source;
@@ -74,6 +79,12 @@ public class InJvmLearn implements Learn {
 		String[] args = new String[] { "-a", workspace, "-f", source, "-g", operator, "-j", bioportalUserId, "-k", bioportalAPIKey, "-b", debugFile, "-e", errorFile, "-c", config, "-w", wordnet, "-l", perl,
 				"-n", databaseHost, "-p", databasePort, "-d", databaseName, "-u", databaseUser, 
 				"-s", databasePassword, "-i", input, "-z" , tablePrefix, "-y", "-o", otoLiteURL, "-q", ontologies};
+		if(useEmptyGlossary) {
+			List<String> argList = new ArrayList<String>(Arrays.asList(args));
+			argList.add("-x");
+			args = argList.toArray(new String[argList.size()]);
+		}
+		
 		try {
 			ETCLearnMain.main(args);
 			DatasetPrefix datasetPrefix = daoManager.getDatasetPrefixDAO().getDatasetPrefix(tablePrefix);

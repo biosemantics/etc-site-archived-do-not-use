@@ -67,6 +67,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 
 	@Override
 	public Map<Integer, Task> getResumableOrFailedTasks(AuthenticationToken authenticationToken) {		
+		log(LogLevel.DEBUG, "Get Resumable or Failed Tasks");
 		Map<Integer, Task> result = new LinkedHashMap<Integer, Task>();
 		for(Task task : daoManager.getTaskDAO().getResumableTasks(authenticationToken.getUserId()))
 			result.put(task.getId(), task);

@@ -5,7 +5,9 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -13,6 +15,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.biosemantics.common.biology.TaxonGroup;
+import edu.arizona.biosemantics.etcsite.shared.model.Task;
 
 public class SemanticMarkupInputView extends Composite implements ISemanticMarkupInputView {
 
@@ -24,6 +27,9 @@ public class SemanticMarkupInputView extends Composite implements ISemanticMarku
 	}
 
 	private Presenter presenter;
+	
+	@UiField
+	CheckBox emptyGlossaryCheckbox;
 	
 	@UiField
 	Button nextButton;
@@ -105,5 +111,10 @@ public class SemanticMarkupInputView extends Composite implements ISemanticMarku
 				return i;
 		}
 		return 0;
+	}
+
+	@Override
+	public boolean isEmptyGlossarySelected() {
+		return emptyGlossaryCheckbox.getValue();
 	}
 }

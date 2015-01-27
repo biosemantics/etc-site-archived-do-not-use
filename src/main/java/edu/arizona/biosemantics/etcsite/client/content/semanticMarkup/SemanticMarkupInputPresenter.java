@@ -80,7 +80,7 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 					Alerter.stopLoading();
 				} else {
 					semanticMarkupService.start(Authentication.getInstance().getToken(), 
-							view.getTaskName(), inputFile, view.getGlossaryName(), new AsyncCallback<Task>() {
+							view.getTaskName(), inputFile, view.getGlossaryName(), view.isEmptyGlossarySelected(), new AsyncCallback<Task>() {
 								@Override
 								public void onSuccess(Task result) {
 									switch(TaskStageEnum.valueOf(result.getTaskStage().getTaskStage())) {

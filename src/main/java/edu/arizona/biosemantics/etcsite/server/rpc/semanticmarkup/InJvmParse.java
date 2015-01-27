@@ -1,7 +1,10 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.common.log.LogLevel;
@@ -20,8 +23,9 @@ public class InJvmParse implements Parse {
 	private String bioportalUserId;
 	private String bioportalAPIKey;	
 	private boolean executedSuccessfully = false;
+	private boolean useEmptyGlossary;
 
-	public InJvmParse(AuthenticationToken authenticationToken, String config, String input, String tablePrefix,
+	public InJvmParse(AuthenticationToken authenticationToken, String config, boolean useEmptyGlossary, String input, String tablePrefix,
 			String source, String operator, String bioportalUserId, String bioportalAPIKey) {
 		this.authenticationToken = authenticationToken;
 		this.config = config;
@@ -31,6 +35,7 @@ public class InJvmParse implements Parse {
 		this.operator = operator;
 		this.bioportalUserId = bioportalUserId;
 		this.bioportalAPIKey = bioportalAPIKey;
+		this.useEmptyGlossary = useEmptyGlossary;
 	}
 	
 	@Override
@@ -55,6 +60,11 @@ public class InJvmParse implements Parse {
 		String[] args = new String[] { "-a", workspace, "-f", source, "-g", operator, "-j", bioportalUserId, "-k", bioportalAPIKey, "-b", debugFile, "-e", errorFile, "-c", config, "-w", wordnet, "-l", perl,
 				"-n", databaseHost, "-p", databasePort, "-d", databaseName, "-u", databaseUser, 
 				"-s", databasePassword, "-i", input, "-z" , tablePrefix, "-y", "-o", otoLiteURL, "-q", ontologies};
+		if(useEmptyGlossary) {
+			List<String> argList = new ArrayList<String>(Arrays.asList(args));
+			argList.add("-x");
+			args = argList.toArray(new String[argList.size()]);
+		}
 		
 		//System.out.println();
 		//for(String arg : args) {

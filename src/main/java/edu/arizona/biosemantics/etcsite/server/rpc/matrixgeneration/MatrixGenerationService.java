@@ -76,7 +76,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGener
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkupException;
 import edu.arizona.biosemantics.matrixgeneration.model.raw.ColumnHead;
-import edu.arizona.biosemantics.matrixgeneration.model.raw.RawMatrix;
+import edu.arizona.biosemantics.matrixgeneration.model.raw.Matrix;
 import edu.arizona.biosemantics.matrixgeneration.model.raw.RowHead;
 import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.Character;
@@ -195,7 +195,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			
 			
 			final MatrixGeneration matrixGeneration = new ExtraJvmMatrixGeneration(input, outputFile, inheritValues, generateAbsentPresent, true);
-			//run in the same vm as the etc-site
 			//final MatrixGeneration matrixGeneration = new InJvmMatrixGeneration(input, outputFile, inheritValues, generateAbsentPresent, true);
 			activeProcess.put(config.getConfiguration().getId(), matrixGeneration);
 			final ListenableFuture<Void> futureResult = executorService.submit(matrixGeneration);
@@ -242,7 +241,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		String outputFile = getOutputFile(task);
 		TaxonMatrix matrix = null;
 		try {
-			matrix = createTaxonMatrix(config, outputFile);
+			matrix = createTaxonMatrix(outputFile);
 		} catch (IOException | JDOMException | ClassNotFoundException e) {
 			log(LogLevel.ERROR, "Couldn't create taxon matrix from generated output", e);
 			throw new MatrixGenerationException(task);
@@ -546,12 +545,12 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		emailer.sendEmail(email, subject, body);
 	}
 
-	private TaxonMatrix createTaxonMatrix(String inputDirectory, String filePath) throws ClassNotFoundException, IOException, JDOMException {
+	private TaxonMatrix createTaxonMatrix(String filePath) throws ClassNotFoundException, IOException, JDOMException {
 		List<Organ> hierarhicalCharacters = new LinkedList<Organ>();
 		List<Taxon> hierarchyTaxa = new LinkedList<Taxon>();
 		
 	    try(ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(filePath))) {
-	    	RawMatrix rawMatrix = (RawMatrix)objectInputStream.readObject();
+	    	Matrix rawMatrix = (Matrix)objectInputStream.readObject();
 	    	List<Character> charactersInMatrix = new LinkedList<Character>();
 	    	HashMap<String, Organ> organMap = new HashMap<String, Organ>();
 	    	List<ColumnHead> columnHeads = rawMatrix.getColumnHeads();
@@ -560,7 +559,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	    		
 	    		String characterName = columnHead.getSource().getName();
 	    		String connector = columnHead.getSource().getConnector();
-	    		String organName = columnHead.getSource().getStructureIdentifier().getDisplayName();
+	    		edu.arizona.biosemantics.matrixgeneration.model.complete.Character chara = columnHead.getSource();
+	    		String organName = chara.getBearerStructureIdentifier().getDisplayName();
 	    		
 				Organ o;
 				if(!organMap.containsKey(organName)) {
@@ -582,8 +582,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	    		 TaxonIdentification taxonIdentification = 
 	    				 rowHead.getSource().getTaxonIdentification();
 	    		 taxonIdentifications.add(taxonIdentification);
-	    		 String sourceFile = rawMatrix.getCellValues().get(rowHead).get(0).getValue();
-	    		 String description = getMorphologyDescription(new File(inputDirectory, sourceFile));
+	    		 String description = getMorphologyDescription(rowHead.getSource().getSourceFile());
 	    		 Taxon taxon = createPlainTaxon(taxonIdentification, description);
 	    		 rankTaxaMap.put(taxonIdentification.getRankData().getLast(), taxon);
 	    		 taxonRowHeadMap.put(taxon, rowHead);
@@ -616,17 +615,12 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		    	RowHead rowHead = taxonRowHeadMap.get(taxon);
 		    	for(int j=0; j<charactersInMatrix.size(); j++) {
 		    		Character character = charactersInMatrix.get(j);
-		    		String value = rawMatrix.getCellValues().get(rowHead).get(j + 1).getValue();
+		    		String value = rawMatrix.getCellValues().get(rowHead).get(j + 1).getText();
 		    		taxonMatrix.setValue(taxon, character, new Value(value));
 		    	}
 		    }  
 			return taxonMatrix;
 	    }
-	}
-	
-	private TaxonMatrix createTaxonMatrix(MatrixGenerationConfiguration config, String filePath) throws FileNotFoundException, IOException, JDOMException, ClassNotFoundException {
-		String inputDirectory = config.getInput();
-		return createTaxonMatrix(inputDirectory, filePath);
 	}
 
 	private String getMorphologyDescription(File file) throws JDOMException, IOException {
@@ -776,7 +770,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 
 	private String getOutputFile(Task task) {
-		return  Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "Matrix.csv";
+		return  Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "Matrix.ser";
 	}
 	
 	/*private TaxonMatrix createSampleMatrix() {
@@ -858,7 +852,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}*/
 	
 	public static void main(String[] args) throws Exception {
-		MatrixGenerationService service = new MatrixGenerationService();
-		service.createTaxonMatrix("C:/test/Test_mmm", "C:/test/Test_mmm.csv");
+		//MatrixGenerationService service = new MatrixGenerationService();
+		//service.createTaxonMatrix("C:/test/Test_mmm", "C:/test/Test_mmm.csv");
 	}
 }

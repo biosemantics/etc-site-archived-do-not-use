@@ -42,11 +42,13 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 	private String bioportalUserId;
 	private String bioportalAPIKey;
 	private IFileService fileService = new FileService();
+	private boolean useEmptyGlossary;
 
-	public ExtraJvmLearn(AuthenticationToken authenticationToken, String config, String input, String tablePrefix,
+	public ExtraJvmLearn(AuthenticationToken authenticationToken, String config, boolean useEmptyGlossary, String input, String tablePrefix,
 			String source, String operator, String bioportalUserId, String bioportalAPIKey) throws SemanticMarkupException {
 		this.authenticationToken = authenticationToken;
 		this.config = config;
+		this.useEmptyGlossary = useEmptyGlossary;
 		this.input = input;
 		this.tablePrefix = tablePrefix;
 		this.source = source;
@@ -118,6 +120,8 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 		addArg(argList, "z", tablePrefix);
 		addArg(argList, "o", otoLiteURL);
 		addArg(argList, "q", ontologies);
+		if(useEmptyGlossary)
+			addArg(argList, "x");
 
 		String[] args = argList.toArray(new String[argList.size()]);
 		
@@ -129,6 +133,10 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 		return args;
 	}
 	
+
+	private void addArg(List<String> argList, String arg) {
+		argList.add("-" + arg);
+	}
 
 	private void addArg(List<String> argList, String arg, String value) {
 		if(value != null && !value.isEmpty()) {

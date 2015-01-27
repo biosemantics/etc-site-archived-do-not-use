@@ -1,6 +1,8 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
@@ -15,7 +17,7 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements 
 		
 		public static void main(String[] args) {
 			try {
-				edu.arizona.biosemantics.matrixgeneration.Main.main(args);
+				edu.arizona.biosemantics.matrixgeneration.CLIMain.main(args);
 			} catch (Throwable t) {
 				System.out.println("ExtraJvmMatrixGeneration failed with throwable "+t.getMessage());
 				System.out.println(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(t));
@@ -55,15 +57,36 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements 
 	}
 	
 	private String[] createArgs() {
-		String[] args = new String[5];
-		args[0] = inputDir;
-		args[1] = outputFile;
-		args[2] = Boolean.toString(inheritValues);
-		args[3] = Boolean.toString(generateAbsentPresent);
-		args[4] = Boolean.toString(inferCharactersFromOntologies);
+		List<String> argList = new LinkedList<String>();
+		addArg(argList, "input", inputDir);
+		addArg(argList, "output", outputFile);
+		if(inheritValues) {
+			addArg(argList, "up_taxonomy_inheritance");
+			addArg(argList, "down_taxonomy_inheritance");
+		}
+		if(generateAbsentPresent) {
+			addArg(argList, "presence_relation");
+			addArg(argList, "presence_entity");
+		}
+		if(inferCharactersFromOntologies) {
+			addArg(argList, "up_ontology_inheritance");
+			addArg(argList, "down_ontology_inheritance");
+		}
+		addArg(argList, "output_format", "serialize");
+		
+		String[] args = argList.toArray(new String[argList.size()]);
 		return args;
 	}
 
+	private void addArg(List<String> argList, String arg, String value) {
+		argList.add("-" + arg);
+		argList.add(value);
+	}
+
+	private void addArg(List<String> argList, String arg) {
+		argList.add("-" + arg);
+	}
+	
 	@Override
 	public Void createReturn() throws MatrixGenerationException {
 		if(exitStatus != 0) {

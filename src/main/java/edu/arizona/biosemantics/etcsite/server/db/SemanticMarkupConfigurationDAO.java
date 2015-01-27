@@ -6,17 +6,17 @@ import java.sql.SQLException;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.Configuration;
-import edu.arizona.biosemantics.etcsite.shared.model.Glossary;
+import edu.arizona.biosemantics.etcsite.shared.model.TaxonGroup;
 import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupConfiguration;
 
 
 public class SemanticMarkupConfigurationDAO {
 
-	private GlossaryDAO glossaryDAO;
+	private TaxonGroupDAO taxonGroupDAO;
 	private ConfigurationDAO configurationDAO;
 	
-	public void setGlossaryDAO(GlossaryDAO glossaryDAO) {
-		this.glossaryDAO = glossaryDAO;
+	public void setTaxonGroupDAO(TaxonGroupDAO taxonGroupDAO) {
+		this.taxonGroupDAO = taxonGroupDAO;
 	}
 
 	public void setConfigurationDAO(ConfigurationDAO configurationDAO) {
@@ -41,13 +41,14 @@ public class SemanticMarkupConfigurationDAO {
 		int configurationId = result.getInt(1);
 		String input = result.getString(2);
 		int numberOfInputFiles = result.getInt(3);
-		int glossaryId = result.getInt(4);
-		int otoUploadId = result.getInt(5);
-		String otoSecret = result.getString(6);
-		String output = result.getString(7);
+		int taxonGroupId = result.getInt(4);
+		boolean useEmptyGlossary = result.getBoolean(5);
+		int otoUploadId = result.getInt(6);
+		String otoSecret = result.getString(7);
+		String output = result.getString(8);
 		Configuration configuration = configurationDAO.getConfiguration(configurationId);
-		Glossary glossary = glossaryDAO.getGlossary(glossaryId);
-		return new SemanticMarkupConfiguration(configuration, input, numberOfInputFiles, glossary, otoUploadId, otoSecret, output);
+		TaxonGroup taxonGroup = taxonGroupDAO.getTaxonGroup(taxonGroupId);
+		return new SemanticMarkupConfiguration(configuration, input, numberOfInputFiles, taxonGroup, useEmptyGlossary, otoUploadId, otoSecret, output);
 	}
 
 	public SemanticMarkupConfiguration addSemanticMarkupConfiguration(SemanticMarkupConfiguration semanticMarkupConfiguration) {
@@ -58,15 +59,16 @@ public class SemanticMarkupConfigurationDAO {
 			while(generatedKeys.next()) {
 				Configuration configuration = configurationDAO.getConfiguration(generatedKeys.getInt(1));
 				try(Query semanticMarkupQuery = new Query("INSERT INTO `etcsite_semanticmarkupconfigurations` " +
-						"(`configuration`, `input`, `numberofinputfiles`, `glossary`, `oto_uploadid`, `oto_secret`, `output`)" +
-						" VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+						"(`configuration`, `input`, `numberofinputfiles`, `taxon_group`, `use_empty_glossary`,  `oto_uploadid`, `oto_secret`, `output`)" +
+						" VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
 					semanticMarkupQuery.setParameter(1, configuration.getId());
 					semanticMarkupQuery.setParameter(2, semanticMarkupConfiguration.getInput());
 					semanticMarkupQuery.setParameter(3, semanticMarkupConfiguration.getNumberOfInputFiles());
-					semanticMarkupQuery.setParameter(4, semanticMarkupConfiguration.getGlossary().getId());
-					semanticMarkupQuery.setParameter(5, semanticMarkupConfiguration.getOtoUploadId());
-					semanticMarkupQuery.setParameter(6, semanticMarkupConfiguration.getOtoSecret());
-					semanticMarkupQuery.setParameter(7, semanticMarkupConfiguration.getOutput());
+					semanticMarkupQuery.setParameter(4, semanticMarkupConfiguration.getTaxonGroup().getId());
+					semanticMarkupQuery.setParameter(5, semanticMarkupConfiguration.isUseEmptyGlossary());
+					semanticMarkupQuery.setParameter(6, semanticMarkupConfiguration.getOtoUploadId());
+					semanticMarkupQuery.setParameter(7, semanticMarkupConfiguration.getOtoSecret());
+					semanticMarkupQuery.setParameter(8, semanticMarkupConfiguration.getOutput());
 					
 					semanticMarkupQuery.execute();
 				}
@@ -80,21 +82,23 @@ public class SemanticMarkupConfigurationDAO {
 
 	public void updateSemanticMarkupConfiguration(SemanticMarkupConfiguration semanticMarkupConfiguration) {
 		Configuration configuration = semanticMarkupConfiguration.getConfiguration();
-		int glossaryId = semanticMarkupConfiguration.getGlossary().getId();
+		int glossaryId = semanticMarkupConfiguration.getTaxonGroup().getId();
+		boolean useEmptyGlossary = semanticMarkupConfiguration.isUseEmptyGlossary();
 		String input = semanticMarkupConfiguration.getInput();
 		String output = semanticMarkupConfiguration.getOutput();
 		int otoUploadId = semanticMarkupConfiguration.getOtoUploadId();
 		String otoSecret = semanticMarkupConfiguration.getOtoSecret();
 		int numberOfInputFiles = semanticMarkupConfiguration.getNumberOfInputFiles();
-		try (Query query = new Query("UPDATE etcsite_semanticmarkupconfigurations SET input = ?, numberofinputfiles = ?, glossary = ?, " +
+		try (Query query = new Query("UPDATE etcsite_semanticmarkupconfigurations SET input = ?, numberofinputfiles = ?, taxon_group = ?, use_empty_glossary = ?, " +
 				"oto_uploadid = ?, oto_secret = ?, output = ? WHERE configuration = ?")) {
 			query.setParameter(1, input);
 			query.setParameter(2, numberOfInputFiles);
 			query.setParameter(3, glossaryId);
-			query.setParameter(4, otoUploadId);
-			query.setParameter(5, otoSecret);
-			query.setParameter(6, output);
-			query.setParameter(7, configuration.getId());
+			query.setParameter(4, useEmptyGlossary);
+			query.setParameter(5, otoUploadId);
+			query.setParameter(6, otoSecret);
+			query.setParameter(7, output);
+			query.setParameter(8, configuration.getId());
 			query.execute();
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't update semantic markup configuration", e);
