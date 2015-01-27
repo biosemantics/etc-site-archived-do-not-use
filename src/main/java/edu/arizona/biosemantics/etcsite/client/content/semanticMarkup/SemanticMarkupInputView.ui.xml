@@ -159,7 +159,7 @@
 						<g:HorizontalPanel styleName="inputForm">
 							<g:VerticalPanel styleName="{style.firstColumn}">
 								<g:cell verticalAlignment="ALIGN_TOP">
-									<g:Label>Select Taxon Group:</g:Label>
+									<g:Label>Use Empty Glossary:</g:Label>
 								</g:cell>
 								<g:InlineLabel styleName="{style.note}">
 									If checked no glossary will be used. 
