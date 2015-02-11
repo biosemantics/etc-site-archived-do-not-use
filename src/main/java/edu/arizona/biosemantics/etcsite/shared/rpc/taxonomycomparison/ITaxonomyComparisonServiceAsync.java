@@ -8,5 +8,6 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 
 public interface ITaxonomyComparisonServiceAsync extends IHasTasksServiceAsync {
 
-
+	public void start(AuthenticationToken authenticationToken, String taskName, String input, AsyncCallback<Task> callback);
+	
 }

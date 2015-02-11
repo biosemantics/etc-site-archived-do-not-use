@@ -12,6 +12,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.TreeGenerationTaskStage;
+import edu.arizona.biosemantics.etcsite.shared.model.TaxonomyComparisonTaskStage;
 
 public class TaskStageDAO {
 	
@@ -120,6 +121,21 @@ public class TaskStageDAO {
 		TaskStage taskStage = this.getTaskStage(taskStageId);
 		if(taskStage instanceof TreeGenerationTaskStage)
 			return (TreeGenerationTaskStage)taskStage;
+		return null;
+	}
+
+	public TaskStage getTaxonomyComparisonTaskStage(String name) {
+		TaskType taskType = taskTypeDAO.getTaskType(TaskTypeEnum.TAXONOMY_COMPARISON);
+		TaskStage taskStage = this.getTaskStage(taskType, name);
+		if(taskStage instanceof TaxonomyComparisonTaskStage)
+			return (TreeGenerationTaskStage)taskStage;
+		return null;
+	}
+	
+	public TaxonomyComparisonTaskStage getTaxonomyComparisonTaskStage(int taskStageId) {
+		TaskStage taskStage = this.getTaskStage(taskStageId);
+		if(taskStage instanceof TaxonomyComparisonTaskStage)
+			return (TaxonomyComparisonTaskStage)taskStage;
 		return null;
 	}
 	

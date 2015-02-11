@@ -242,7 +242,10 @@ INSERT INTO `etcsite_taskstages` (`id`, `name`, `tasktype`, `created`) VALUES
 (23, 'HIERARCHY', 6, '2014-01-15 22:30:35'),
 (24, 'ORDERS', 6, '2014-01-15 22:30:35'),
 (25, 'INPUT', 8, '2014-01-15 22:30:35'),
-(26, 'VIEW', 8, '2014-01-15 22:30:35');
+(26, 'VIEW', 8, '2014-01-15 22:30:35'), 
+(26, 'INPUT', 9, '2014-01-15 22:30:35'),
+(26, 'PROCESS', 9, '2014-01-15 22:30:35'),
+(26, 'VIEW', 9, '2014-01-15 22:30:35');
 
 -- --------------------------------------------------------
 
@@ -270,7 +273,8 @@ CREATE TABLE IF NOT EXISTS `etcsite_tasktypes` (
 INSERT INTO `etcsite_tasktypes` (`id`, `name`, `inputfiletype`, `inputtype`, `outputfiletype`, `outputtype`, `created`) VALUES
 (6, 'SEMANTIC_MARKUP', 1, 'directory', 2, 'directory', '2013-11-19 22:25:43'),
 (7, 'MATRIX_GENERATION', 2, 'directory', 3, 'file', '2013-11-19 22:26:26'),
-(8, 'TREE_GENERATION', 3, 'directory', 4, 'file', '2013-11-19 22:26:26');
+(8, 'TREE_GENERATION', 3, 'directory', 4, 'file', '2013-11-19 22:26:26'),
+(9, 'TREE_GENERATION', 4, 'file', 4, 'directory', '2013-11-19 22:26:26');
 
 -- --------------------------------------------------------
 
@@ -280,6 +284,8 @@ INSERT INTO `etcsite_tasktypes` (`id`, `name`, `inputfiletype`, `inputtype`, `ou
 
 CREATE TABLE IF NOT EXISTS `etcsite_taxonomycomparisonconfigurations` (
   `configuration` bigint(20) unsigned DEFAULT NULL,
+  `input` varchar(200) DEFAULT NULL,
+  `output` varchar(200) DEFAULT NULL,
   KEY `configurations_taxonomycomparisonconfigurations_CON` (`configuration`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

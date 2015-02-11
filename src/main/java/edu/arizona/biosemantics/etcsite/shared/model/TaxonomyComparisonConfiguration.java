@@ -1,30 +1,52 @@
 package edu.arizona.biosemantics.etcsite.shared.model;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
 public class TaxonomyComparisonConfiguration extends AbstractTaskConfiguration implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -2950268252835989257L;
+	private String input;
+	private String output;
+	
+	public TaxonomyComparisonConfiguration() { }
+	
 
-	public Task getTask() {
-		// TODO Auto-generated method stub
-		return null;
+	public TaxonomyComparisonConfiguration(Configuration configuration,
+			String input, String output) {
+		super(configuration);
+		this.input = input;
+		this.output = output;
 	}
 
 	@Override
 	public List<String> getInputs() {
-		// TODO Auto-generated method stub
-		return null;
+		List<String> result = new LinkedList<String>();
+		result.add(this.getInput());
+		return result;
 	}
 
 	@Override
 	public List<String> getOutputs() {
-		// TODO Auto-generated method stub
-		return null;
+		List<String> result = new LinkedList<String>();
+		result.add(this.getOutput());
+		return result;
+	}
+
+	public String getInput() {
+		return input;
+	}
+
+	public void setInput(String input) {
+		this.input = input;
+	}
+
+	public String getOutput() {
+		return output;
+	}
+
+	public void setOutput(String output) {
+		this.output = output;
 	}
 
 }
