@@ -298,7 +298,7 @@ public class ClientModule extends AbstractGinModule {
 		bind(ISemanticMarkupServiceAsync.class).in(Singleton.class);
 		bind(ISetupServiceAsync.class).in(Singleton.class);
 		bind(ITaskServiceAsync.class).in(Singleton.class);
-		bind(ITaxonomyComparisonServiceAsync.class).in(Singleton.class);
+		bind(IMatrixGenerationServiceAsync.class).in(Singleton.class);
 		bind(ITreeGenerationServiceAsync.class).in(Singleton.class);
 		bind(IUserServiceAsync.class).in(Singleton.class);
 		bind(IVisualizationServiceAsync.class).in(Singleton.class);

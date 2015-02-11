@@ -174,5 +174,16 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		final TaxonomyComparisonConfiguration taxonomyComparisonConfiguration = (TaxonomyComparisonConfiguration)configuration;
 		return taxonomyComparisonConfiguration;
 	}
+
+	@Override
+	public boolean isValidInput(AuthenticationToken token, String inputFile) {
+		
+		return false;
+	}
+
+	@Override
+	public Task process(AuthenticationToken token, Task task) {
+		return task;
+	}
 	
 }

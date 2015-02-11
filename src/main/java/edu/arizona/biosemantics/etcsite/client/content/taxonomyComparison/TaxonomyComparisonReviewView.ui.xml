@@ -1,0 +1,105 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.matrixGeneration"
+	xmlns:my2="urn:import:edu.arizona.biosemantics.etcsite.client.common"
+	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout"
+	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container">
+	<!-- xmlns:ma="urn:import:edu.arizona.biosemantics.matrixreview.client" -->
+	<ui:style>
+		.centered {
+			/* maximize to 900px width, optimized for 1024x768 resolution */
+			/*width: 950px; 
+			min-width:950px; */ 
+			/* center content horizontally */
+			margin: auto;
+			
+			/* maximize to 900px width, optimized for 1024x768 resolution */
+			/*width: 950px; 
+			min-width:950px; */ 
+			/* center content horizontally */
+			/*position:absolute;
+			margin-left: auto;
+			margin-right: auto;
+			left: 50%;
+			margin-left:-475px;*/
+		}
+
+		.nextButton {
+			margin-top: 4px;
+   			margin-left: 10px;
+			width: 100px;
+			font-size:10px !important;
+		}
+		.saveButton {
+			margin-top: 4px;
+   			margin-left: 10px;
+			width: 60px;
+			font-size:10px !important;
+		}
+		.subMenuEntry {
+			margin-left: 0px;
+			padding-top: 10px;
+			padding-bottom:10px;
+		}
+	</ui:style>
+
+	<!--  <lay:CenteredContentPanel> -->
+	<!-- <g:SimplePanel styleName="{style.centered}"> -->
+		
+		
+		<!-- 
+		 <container:VerticalLayoutContainer>
+		     <container:child>
+	          <my:SubMenu ui:field="subMenu" step="REVIEW"/>
+	        </container:child>
+	        <container:child>
+	            <ma:MatrixReviewView ui:field="view"></ma:MatrixReviewView> -->
+	          <!-- <re:IReviewView ui:field="view"/>-->
+	        <!-- </container:child>
+	        <container:child>
+	          <g:Button ui:field="nextButton">Next</g:Button>
+	        </container:child>
+      </container:VerticalLayoutContainer>
+		-->
+		
+		<!--  <ma:MatrixReviewView ui:field="view"></ma:MatrixReviewView> -->
+		
+		 
+		<g:DockLayoutPanel unit='PX' ui:field='dockLayoutPanel'>
+		    	<g:north size='50'>
+		    	    <g:SimplePanel> <!-- necessary because element.style information is set which leads ff not to center the menu -->
+			    	    <g:HorizontalPanel styleName="{style.centered}">
+			    	        <g:cell>
+			    	            <my:SubMenu ui:field="subMenu" step="REVIEW"/>
+			    	        </g:cell>
+			    	      	<g:cell>
+			    	      		<g:Button addStyleNames="{style.saveButton}" ui:field="saveButton">Save Progress</g:Button>
+			    	      	</g:cell>
+			    	      	<g:cell>
+			    	            <g:Button addStyleNames="{style.nextButton}" ui:field="nextButton">Next Step in Matrix Generation</g:Button>
+			    	        </g:cell>
+			    	    </g:HorizontalPanel>
+		    	    </g:SimplePanel>
+		    	</g:north>
+			   <g:center>
+			   	<g:SimpleLayoutPanel ui:field="matrixReviewPanel"/>
+			   </g:center>
+		 </g:DockLayoutPanel>
+	
+		
+		<!-- <g:VerticalPanel>
+			<my:SubMenu ui:field="subMenu" step="REVIEW"/>
+			<g:VerticalPanel>
+				<g:cell> -->
+					<!-- <re:IReviewView ui:field="view"/>-->
+					<!-- <ma:MatrixReviewView ui:field="view"></ma:MatrixReviewView>
+				</g:cell>
+				<g:cell>
+					<g:Button ui:field="nextButton">Next</g:Button>
+				</g:cell>
+			</g:VerticalPanel>
+		</g:VerticalPanel> --> 
+	<!-- </lay:CenteredContentPanel> -->
+	<!-- </g:SimplePanel> -->
+</ui:UiBinder> 

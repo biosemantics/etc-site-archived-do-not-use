@@ -44,7 +44,7 @@ public class HomeActivity extends MyAbstractActivity implements IHomeContentView
 	private ISemanticMarkupServiceAsync semanticMarkupService;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
 	private ResumeTaskPlaceMapper resumeTaskPlaceMapper;
-	private ITaxonomyComparisonServiceAsync taxonomyComparisonService;
+	private IMatrixGenerationServiceAsync taxonomyComparisonService;
 	private ITreeGenerationServiceAsync treeGenerationService;
 	private IVisualizationServiceAsync visualizationService;
 	private IPipelineServiceAsync pipelineService;
@@ -53,7 +53,7 @@ public class HomeActivity extends MyAbstractActivity implements IHomeContentView
 	public HomeActivity(IHomeContentView homeContentView, 
 			ISemanticMarkupServiceAsync semanticMarkupService,
 			IMatrixGenerationServiceAsync matrixGenerationService,
-			ITaxonomyComparisonServiceAsync taxonomyComparisonService,
+			IMatrixGenerationServiceAsync taxonomyComparisonService,
 			ITreeGenerationServiceAsync treeGenerationService,
 			IVisualizationServiceAsync visualizationService,
 			IPipelineServiceAsync pipelineService,

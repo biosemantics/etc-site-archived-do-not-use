@@ -85,7 +85,7 @@ import edu.arizona.biosemantics.matrixreview.shared.model.core.Taxon;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.TaxonMatrix;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.Value;
 
-public class MatrixGenerationService extends RemoteServiceServlet implements IMatrixGenerationService  {
+public class IMatrixGenerationServiceImpl extends RemoteServiceServlet implements IMatrixGenerationService  {
 	
 	private IFileService fileService = new FileService();
 	private IFileFormatService fileFormatService = new FileFormatService();
@@ -97,7 +97,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	private DAOManager daoManager = new DAOManager();
 	private Emailer emailer = new Emailer();
 	
-	public MatrixGenerationService() {
+	public IMatrixGenerationServiceImpl() {
 		executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(Configuration.maxActiveMatrixGeneration));
 	}
 	
