@@ -32,6 +32,7 @@
   <inherits name='edu.arizona.biosemantics.common.log.Log'/>
   <inherits name='edu.arizona.biosemantics.common.taxonomy.Taxonomy'/>
   <inherits name='edu.arizona.biosemantics.common.biology.Biology'/>
+  <inherits name='edu.arizona.biosemantics.euler.Euler_alignmenty'/>
   <inherits name='edu.ucdavis.cs.cfgproject.CfgProject'/>
   
   <!-- Include GWTUpload library -->

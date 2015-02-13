@@ -34,6 +34,10 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.IFilePermissi
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDeniedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.TaxonomyComparisonException;
+import edu.arizona.biosemantics.euler.alignment.shared.model.Model;
+import edu.arizona.biosemantics.euler.alignment.shared.model.Taxonomies;
+import edu.arizona.biosemantics.euler.alignment.shared.model.Taxonomy;
+import edu.arizona.biosemantics.euler.io.FileTaxonomyReader;
 
 public class TaxonomyComparisonService extends RemoteServiceServlet implements ITaxonomyComparisonService {
 	
@@ -178,6 +182,27 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	@Override
 	public boolean isValidInput(AuthenticationToken token, String inputFile) {
 		return true;
+	}
+	
+	@Override
+	public Model getInput(AuthenticationToken token, Task task) throws TaxonomyComparisonException {
+		TaxonomyComparisonConfiguration config = this.getTaxonomyComparisonConfiguration(task);
+		String input = config.getInput();
+		File dir = new File(input);
+		Taxonomies taxonomies = new Taxonomies();
+		for(File file : dir.listFiles()) {
+			FileTaxonomyReader reader = new FileTaxonomyReader(input);
+			Taxonomy taxonomy;
+			try {
+				taxonomy = reader.read();
+			} catch (Exception e) {
+				log(LogLevel.ERROR, "Couldn't read taxonomy in file " + file.getAbsolutePath(), e);
+				throw new TaxonomyComparisonException();
+			}
+			taxonomies.add(taxonomy);
+		}
+		Model model = new Model(taxonomies);
+		return model;
 	}
 
 	@Override

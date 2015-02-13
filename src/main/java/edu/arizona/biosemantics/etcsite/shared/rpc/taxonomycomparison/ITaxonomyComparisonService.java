@@ -6,6 +6,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.euler.alignment.shared.model.Model;
 
 @RemoteServiceRelativePath("taxonomyComparison")
 public interface ITaxonomyComparisonService extends RemoteService, IHasTasksService {
@@ -16,6 +17,8 @@ public interface ITaxonomyComparisonService extends RemoteService, IHasTasksServ
 	public boolean isValidInput(AuthenticationToken token, String inputFile);
 	
 	public Task process(AuthenticationToken token, Task task);
+
+	public Model getInput(AuthenticationToken token, Task task) throws TaxonomyComparisonException;
 	
 	
 
