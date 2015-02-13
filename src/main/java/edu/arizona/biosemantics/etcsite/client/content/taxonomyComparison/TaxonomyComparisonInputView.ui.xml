@@ -46,26 +46,11 @@
 					<g:VerticalPanel styleName="{style.padding}" />
 					<g:VerticalPanel>
 						<g:FlowPanel>
-							<g:InlineLabel styleName="{style.bold}">INPUT
-								REQUIREMENTS:&nbsp;
-							</g:InlineLabel>
-							<g:InlineLabel>Matrix Generation takes a folder output by the
-								Text Capture tool as input, or a folder with the files
-								conforming to this&nbsp;
-							</g:InlineLabel>
-							<g:Anchor
-								href="http://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupOutput.xsd"
-								target="_blank">format.</g:Anchor>
-						</g:FlowPanel>
-						<g:InlineLabel>&nbsp;
-						</g:InlineLabel>
-						<g:FlowPanel>
 							<g:InlineLabel styleName="{style.bold}">1.&nbsp;
 							</g:InlineLabel>
 							<g:InlineLabel>
-								If you do not have the input ready, please run the Text Capture
-								tool first to generate them, or upload files conforming to the
-								above-mentioned format using the&nbsp;
+								If you do not have the input ready, please upload files conforming to the
+								required format using the&nbsp;
 							</g:InlineLabel>
 							<g:Anchor ui:field="fileManagerAnchor">File Manager.</g:Anchor>
 						</g:FlowPanel>
@@ -80,7 +65,6 @@
 							</g:InlineLabel>
 						</g:FlowPanel>
 					</g:VerticalPanel>
-					<!-- <g:VerticalPanel styleName="{style.padding}"> -->
 					<g:VerticalPanel styleName="{style.subMenuEntry}">
 						<g:HorizontalPanel styleName="inputForm">
 							<g:VerticalPanel styleName="{style.firstColumn}">
@@ -105,12 +89,7 @@
 									<g:Label>Select Folder:</g:Label>
 								</g:cell>
 								<g:InlineLabel styleName="{style.note}">
-									Select a folder of taxon
-									descriptions
-								</g:InlineLabel>
-								<g:InlineLabel styleName="{style.note}">
-									conforming to the format
-									requirements.
+									Select a input file.
 								</g:InlineLabel>
 							</g:VerticalPanel>
 							<g:Button ui:field="inputButton">Select Input</g:Button>
@@ -119,35 +98,8 @@
 							</g:cell>
 						</g:HorizontalPanel>
 					</g:VerticalPanel>
-					<g:VerticalPanel styleName="{style.subMenuEntry}">
-						<g:HorizontalPanel>
-							<g:VerticalPanel styleName="{style.firstColumn}">
-								<g:cell verticalAlignment="ALIGN_TOP">
-									<g:Label>Inherit Values:</g:Label>
-								</g:cell>
-								<g:InlineLabel styleName="{style.note}">
-									Choose this option if you want the characters from upper taxa to be inherited by the lower taxa
-								</g:InlineLabel>
-							</g:VerticalPanel>
-							<g:CheckBox ui:field="inheritValuesBox" value="false"></g:CheckBox>
-						</g:HorizontalPanel>
-					</g:VerticalPanel>
-					<g:VerticalPanel styleName="{style.subMenuEntry}">
-						<g:HorizontalPanel>
-							<g:VerticalPanel styleName="{style.firstColumn}">
-								<g:cell verticalAlignment="ALIGN_TOP">
-									<g:Label>Infer Absent/Present States:</g:Label>
-								</g:cell>
-								<g:InlineLabel styleName="{style.note}">
-									Choose this option if you want the software to infer presence/absence of organs/parts
-									 , addition to what is said in the text. This option takes time to complete.
-								</g:InlineLabel>
-							</g:VerticalPanel>
-							<g:CheckBox ui:field="generateAbsentPresentBox" value="false"></g:CheckBox>
-						</g:HorizontalPanel>
-					</g:VerticalPanel>
 					<g:VerticalPanel styleName="{style.padding}">
-						<g:Button ui:field="nextButton">Next Step in Matrix Generation</g:Button>
+						<g:Button ui:field="nextButton">Next Step in Taxonomy Comparison</g:Button>
 					</g:VerticalPanel>
 					<!-- <g:Button styleName="{style.important}" ui:field="button" /> -->
 				</g:VerticalPanel>
