@@ -4,29 +4,29 @@ import com.google.gwt.place.shared.PlaceTokenizer;
 
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 
-public class TaxonomyComparisonReviewPlace extends TaxonomyComparisonPlace {
+public class TaxonomyComparisonViewPlace extends TaxonomyComparisonPlace {
 
-	public TaxonomyComparisonReviewPlace(Task task) {
+	public TaxonomyComparisonViewPlace(Task task) {
 		super(task);
 		// TODO Auto-generated constructor stub
 	}
 	
-	public static class Tokenizer implements PlaceTokenizer<TaxonomyComparisonReviewPlace> {
+	public static class Tokenizer implements PlaceTokenizer<TaxonomyComparisonViewPlace> {
 
 		@Override
-		public TaxonomyComparisonReviewPlace getPlace(String token) {
+		public TaxonomyComparisonViewPlace getPlace(String token) {
 			Task task = new Task();
 			try {
 				int taskId = Integer.parseInt(token.split("task=")[1]);
 				task.setId(taskId);
 			} catch(Exception e) {
-				return new TaxonomyComparisonReviewPlace(null);
+				return new TaxonomyComparisonViewPlace(null);
 			}
-			return new TaxonomyComparisonReviewPlace(task);
+			return new TaxonomyComparisonViewPlace(task);
 		}
 
 		@Override
-		public String getToken(TaxonomyComparisonReviewPlace place) {
+		public String getToken(TaxonomyComparisonViewPlace place) {
 			return "task=" + place.getTask().getId();
 		}
 

@@ -122,6 +122,15 @@ import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsView;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.ITaskManagerView;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerView;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.ITaxonomyComparisonInputView;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.ITaxonomyComparisonProcessView;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.ITaxonomyComparisonViewView;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonInputPresenter;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonInputView;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonProcessPresenter;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonProcessView;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonViewPresenter;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonViewView;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.ITreeGenerationInputView;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.ITreeGenerationViewView;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationInputPresenter;
@@ -264,6 +273,13 @@ public class ClientModule extends AbstractGinModule {
 		bind(ITreeGenerationViewView.Presenter.class).to(TreeGenerationViewPresenter.class);
 		bind(IImportOtoView.class).to(ImportOtoView.class);
 		
+		bind(ITaxonomyComparisonInputView.class).to(TaxonomyComparisonInputView.class);
+		bind(ITaxonomyComparisonInputView.Presenter.class).to(TaxonomyComparisonInputPresenter.class);
+		bind(ITaxonomyComparisonProcessView.class).to(TaxonomyComparisonProcessView.class);
+		bind(ITaxonomyComparisonProcessView.Presenter.class).to(TaxonomyComparisonProcessPresenter.class);
+		bind(ITaxonomyComparisonViewView.class).to(TaxonomyComparisonViewView.class);
+		bind(ITaxonomyComparisonViewView.Presenter.class).to(TaxonomyComparisonViewPresenter.class);
+		
 		//activites, places, eventbus
 		bind(EventBus.class).annotatedWith(Names.named("ActivitiesBus")).to(SimpleEventBus.class).in(Singleton.class);
 		bind(PlaceController.class).toProvider(PlaceControllerProvider.class).in(Singleton.class);
@@ -303,6 +319,7 @@ public class ClientModule extends AbstractGinModule {
 		bind(IUserServiceAsync.class).in(Singleton.class);
 		bind(IVisualizationServiceAsync.class).in(Singleton.class);
 		bind(ITreeGenerationServiceAsync.class).in(Singleton.class);
+		bind(ITaxonomyComparisonServiceAsync.class).in(Singleton.class);
 		
 		//misc
 		bind(FilePathShortener.class).in(Singleton.class);

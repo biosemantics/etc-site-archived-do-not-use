@@ -15,11 +15,11 @@ import com.google.inject.Inject;
 import edu.arizona.biosemantics.matrixreview.client.MatrixReviewView;
 import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 
-public class TaxonomyComparisonReviewView extends Composite implements ITaxonomyComparisonReviewView, RequiresResize {
+public class TaxonomyComparisonViewView extends Composite implements ITaxonomyComparisonViewView, RequiresResize {
 
 	private static TaxonomyComparisonViewUiBinder uiBinder = GWT.create(TaxonomyComparisonViewUiBinder.class);
 
-	interface TaxonomyComparisonViewUiBinder extends UiBinder<Widget, TaxonomyComparisonReviewView> {
+	interface TaxonomyComparisonViewUiBinder extends UiBinder<Widget, TaxonomyComparisonViewView> {
 	}
 
 	private Presenter presenter;
@@ -33,7 +33,7 @@ public class TaxonomyComparisonReviewView extends Composite implements ITaxonomy
 	Button nextButton;*/
 	
 	@Inject
-	public TaxonomyComparisonReviewView() {
+	public TaxonomyComparisonViewView() {
 		super();
 		/*can not do these, the app won't load. saveButton.setWidth("50");
 		nextButton.setWidth("100");*/

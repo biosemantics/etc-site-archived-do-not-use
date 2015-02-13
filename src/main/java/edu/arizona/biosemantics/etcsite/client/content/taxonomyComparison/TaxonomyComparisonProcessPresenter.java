@@ -67,7 +67,7 @@ public class TaxonomyComparisonProcessPresenter implements ITaxonomyComparisonPr
 
 	@Override
 	public void onNext() {
-		placeController.goTo(new TaxonomyComparisonReviewPlace(task));
+		placeController.goTo(new TaxonomyComparisonViewPlace(task));
 	}
 
 	@Override

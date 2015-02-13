@@ -27,6 +27,8 @@ import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsActivity
 import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerActivity;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonActivity;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonPlace;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationActivity;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationPlace;
 import edu.arizona.biosemantics.etcsite.client.top.LoggedOutPlace;
@@ -44,13 +46,15 @@ public class ContentActivityMapper implements MyActivityMapper {
 	private MatrixGenerationActivity matrixGenerationActivity;
 	private AnnotationReviewActivity annotationReviewActivity;
 	private TreeGenerationActivity treeGenerationActivity;
+	private TaxonomyComparisonActivity taxonomyComparisonActivity;
 	
 	private MyActivity currentActivity;
 
 	@Inject
 	public ContentActivityMapper(HelpActivity helpActivity, HomeActivity homeActivity, AboutActivity aboutActivity, NewsActivity newsActivity, SettingsActivity settingsActivity, TaskManagerActivity taskManagerActivity,
 			FileManagerActivity fileManagerActivity, SemanticMarkupActivity semanticMarkupActivity, MatrixGenerationActivity matrixGenerationActivity, 
-			AnnotationReviewActivity annotationReviewActivity, TreeGenerationActivity treeGenerationActivity) {
+			AnnotationReviewActivity annotationReviewActivity, TreeGenerationActivity treeGenerationActivity, 
+			TaxonomyComparisonActivity taxonomyComparisonActivity) {
 		super();
 		this.helpActivity = helpActivity;
 		this.homeActivity = homeActivity;
@@ -63,6 +67,7 @@ public class ContentActivityMapper implements MyActivityMapper {
 		this.matrixGenerationActivity = matrixGenerationActivity;
 		this.annotationReviewActivity = annotationReviewActivity;
 		this.treeGenerationActivity = treeGenerationActivity;
+		this.taxonomyComparisonActivity = taxonomyComparisonActivity;
 	}
 
 	@Override
@@ -94,6 +99,8 @@ public class ContentActivityMapper implements MyActivityMapper {
 			currentActivity = annotationReviewActivity;
 		if(place instanceof TreeGenerationPlace)
 			currentActivity = treeGenerationActivity;
+		if(place instanceof TaxonomyComparisonPlace) 
+			currentActivity = taxonomyComparisonActivity;
 		
 		return currentActivity;
 	}

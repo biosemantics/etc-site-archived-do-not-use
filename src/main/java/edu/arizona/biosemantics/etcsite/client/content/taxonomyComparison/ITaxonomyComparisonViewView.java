@@ -7,11 +7,11 @@ import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.matrixreview.client.MatrixReviewView;
 import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 
-public interface ITaxonomyComparisonReviewView extends IsWidget {
+public interface ITaxonomyComparisonViewView extends IsWidget {
 
 	public interface Presenter {
 		void onNext();
-		ITaxonomyComparisonReviewView getView();
+		ITaxonomyComparisonViewView getView();
 		void setTask(Task task);
 	}
 	  

@@ -9,7 +9,7 @@ import java.util.Set;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
-import edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration.IMatrixGenerationServiceImpl;
+import edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration.MatrixGenerationService;
 import edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup.SemanticMarkupService;
 import edu.arizona.biosemantics.etcsite.server.rpc.treegeneration.TreeGenerationService;
 import edu.arizona.biosemantics.common.log.LogLevel;

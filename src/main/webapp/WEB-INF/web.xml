@@ -32,7 +32,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>matrixGenerationServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration.IMatrixGenerationServiceImpl</servlet-class>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration.MatrixGenerationService</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>fileFormatServlet</servlet-name>

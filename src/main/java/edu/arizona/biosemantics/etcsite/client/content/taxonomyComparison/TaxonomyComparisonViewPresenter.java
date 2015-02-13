@@ -19,15 +19,15 @@ import edu.arizona.biosemantics.matrixreview.client.event.*;
 import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.TaxonMatrix;
 
-public class TaxonomyComparisonReviewPresenter implements ITaxonomyComparisonReviewView.Presenter {
+public class TaxonomyComparisonViewPresenter implements ITaxonomyComparisonViewView.Presenter {
 
 	private Task task;
 	private ITaxonomyComparisonServiceAsync taxonomyComparisonService;
-	private ITaxonomyComparisonReviewView view;
+	private ITaxonomyComparisonViewView view;
 	private PlaceController placeController;
 
 	@Inject
-	public TaxonomyComparisonReviewPresenter(final ITaxonomyComparisonReviewView view, 
+	public TaxonomyComparisonViewPresenter(final ITaxonomyComparisonViewView view, 
 			final ITaxonomyComparisonServiceAsync taxonomyComparisonService,
 			PlaceController placeController) {
 		this.view = view;
@@ -100,7 +100,7 @@ public class TaxonomyComparisonReviewPresenter implements ITaxonomyComparisonRev
 	}
 
 	@Override
-	public ITaxonomyComparisonReviewView getView() {
+	public ITaxonomyComparisonViewView getView() {
 		return view;
 	}
 

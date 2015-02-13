@@ -23,7 +23,7 @@ public class SubMenu extends Composite {
 	ImageLabel process;
 	
 	@UiField
-	ImageLabel review;
+	ImageLabel view;
 
 	public SubMenu() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -38,7 +38,7 @@ public class SubMenu extends Composite {
 			process.setImage("images/Enumeration_2.gif");
 			break;
 		case VIEW:
-			review.setImage("images/Enumeration_3.gif");
+			view.setImage("images/Enumeration_3.gif");
 			break;
 		default:
 			input.setImage("images/Enumeration_1.gif");

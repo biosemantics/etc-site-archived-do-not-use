@@ -177,8 +177,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 
 	@Override
 	public boolean isValidInput(AuthenticationToken token, String inputFile) {
-		
-		return false;
+		return true;
 	}
 
 	@Override
