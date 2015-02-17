@@ -19,6 +19,8 @@ import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
+import edu.arizona.biosemantics.etcsite.shared.model.TaxonomyComparisonConfiguration;
+import edu.arizona.biosemantics.etcsite.shared.model.TaxonomyComparisonTaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TreeGenerationConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.TreeGenerationTaskStage;
 
@@ -32,6 +34,7 @@ public class TaskDAO {
 	private MatrixGenerationConfigurationDAO matrixGenerationConfigurationDAO;
 	private SemanticMarkupConfigurationDAO semanticMarkupConfigurationDAO;
 	private TreeGenerationConfigurationDAO treeGenerationConfigurationDAO;
+	private TaxonomyComparisonConfigurationDAO taxonomyComparisonConfigurationDAO;
 	private UserDAO userDAO;
 	private TaskStageDAO taskStageDAO;
 	private String ownerQuery = "SELECT * FROM etcsite_tasks WHERE user=?";
@@ -62,9 +65,7 @@ public class TaskDAO {
 	public void setMatrixGenerationConfigurationDAO(
 			MatrixGenerationConfigurationDAO matrixGenerationConfigurationDAO) {
 		this.matrixGenerationConfigurationDAO = matrixGenerationConfigurationDAO;
-	}
-	
-	
+	}	
 
 	public void setTreeGenerationConfigurationDAO(
 			TreeGenerationConfigurationDAO treeGenerationConfigurationDAO) {
@@ -74,6 +75,11 @@ public class TaskDAO {
 	public void setSemanticMarkupConfigurationDAO(
 			SemanticMarkupConfigurationDAO semanticMarkupConfigurationDAO) {
 		this.semanticMarkupConfigurationDAO = semanticMarkupConfigurationDAO;
+	}
+	
+	public void setTaxonomyComparisonConfigurationDAO(
+			TaxonomyComparisonConfigurationDAO taxonomyComparisonConfigurationDAO) {
+		this.taxonomyComparisonConfigurationDAO = taxonomyComparisonConfigurationDAO;
 	}
 
 	public void setUserDAO(UserDAO userDAO) {
@@ -269,7 +275,10 @@ public class TaskDAO {
 			return new Task(id, name, taskType, semanticMarkupTaskStage, semanticMarkupConfiguration, user, 
 					resumable, complete, completed, failed, failedTime, created);
 		case TAXONOMY_COMPARISON:
-			break;
+			TaxonomyComparisonTaskStage taxonomyComparisonTaskStage = taskStageDAO.getTaxonomyComparisonTaskStage(taskStageId);
+			TaxonomyComparisonConfiguration taxonomyComparisonConfiguration = taxonomyComparisonConfigurationDAO.getTaxonomyComparisonConfiguration(configurationId);
+			return new Task(id, name, taskType, taxonomyComparisonTaskStage, taxonomyComparisonConfiguration, user, 
+					resumable, complete, completed, failed, failedTime, created);
 		case TREE_GENERATION:
 			TreeGenerationTaskStage treeGenerationTaskStage = taskStageDAO.getTreeGenerationTaskStage(taskStageId);
 			TreeGenerationConfiguration treeGenerationConfiguration = treeGenerationConfigurationDAO.getTreeGenerationConfiguration(configurationId);

@@ -4,7 +4,7 @@ import java.util.concurrent.Callable;
 
 import edu.arizona.biosemantics.etcsite.server.Task;
 
-public interface TaxonomyComparison extends Callable<Void>, Task {
+public interface MIRGeneration extends Callable<Void>, Task {
 
 	public void destroy();
 	

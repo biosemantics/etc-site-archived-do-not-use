@@ -38,8 +38,7 @@
 		<lay:CenteredContentPanel>
 			<g:VerticalPanel>
 				<g:HorizontalPanel>
-					<!-- <my2:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.MatrixGenerationShort.gif" 
-						imageWidth="80px" imageHeight="20px" text="" /> -->
+				    <!-- <my2:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.TaxonomyComparisonShort.gif" imageWidth="80px" imageHeight="20px" text="" /> -->
 					<my:SubMenu ui:field="subMenu" step="INPUT" />
 				</g:HorizontalPanel>
 				<g:VerticalPanel styleName="{style.padding}">

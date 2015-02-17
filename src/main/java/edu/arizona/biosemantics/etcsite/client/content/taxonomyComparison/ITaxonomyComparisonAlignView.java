@@ -1,0 +1,23 @@
+package edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison;
+
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
+
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.ITreeGenerationViewView;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.ITreeGenerationViewView.Presenter;
+import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.euler.alignment.client.EulerAlignmentView;
+import edu.ucdavis.cs.cfgproject.client.KeyView;
+
+public interface ITaxonomyComparisonAlignView extends IsWidget {
+
+	public interface Presenter {
+		ITaxonomyComparisonAlignView getView();
+		void setTask(Task task);
+	}
+	  
+	void setPresenter(Presenter presenter);
+	Widget asWidget();
+	EulerAlignmentView getEulerAlignmentView();
+	
+}

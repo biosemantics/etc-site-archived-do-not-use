@@ -243,9 +243,10 @@ INSERT INTO `etcsite_taskstages` (`id`, `name`, `tasktype`, `created`) VALUES
 (24, 'ORDERS', 6, '2014-01-15 22:30:35'),
 (25, 'INPUT', 8, '2014-01-15 22:30:35'),
 (26, 'VIEW', 8, '2014-01-15 22:30:35'), 
-(26, 'INPUT', 9, '2014-01-15 22:30:35'),
-(26, 'PROCESS', 9, '2014-01-15 22:30:35'),
-(26, 'VIEW', 9, '2014-01-15 22:30:35');
+(27, 'INPUT', 9, '2014-01-15 22:30:35'),
+(28, 'ALIGN', 9, '2014-01-15 22:30:35'),
+(29, 'ANALYZE', 9, '2014-01-15 22:30:35'),
+(30, 'ANALYZE_COMPLETE', 9, '2014-01-15 22:30:35');
 
 -- --------------------------------------------------------
 
@@ -274,7 +275,7 @@ INSERT INTO `etcsite_tasktypes` (`id`, `name`, `inputfiletype`, `inputtype`, `ou
 (6, 'SEMANTIC_MARKUP', 1, 'directory', 2, 'directory', '2013-11-19 22:25:43'),
 (7, 'MATRIX_GENERATION', 2, 'directory', 3, 'file', '2013-11-19 22:26:26'),
 (8, 'TREE_GENERATION', 3, 'directory', 4, 'file', '2013-11-19 22:26:26'),
-(9, 'TREE_GENERATION', 4, 'file', 4, 'directory', '2013-11-19 22:26:26');
+(9, 'TAXONOMY_COMPARISON', 4, 'file', 4, 'directory', '2013-11-19 22:26:26');
 
 -- --------------------------------------------------------
 

@@ -27,7 +27,7 @@ public class FailTask {
 				task = getTask(proceedingJoinPoint);
 			failTask(task);
 			throw e;
-		} catch (Throwable t) {
+ 		} catch (Throwable t) {
 			failTask(getTask(proceedingJoinPoint));
 			log(LogLevel.ERROR, "Unexpected throwable caught in fail task aspect. Check the pointcut/joinpoint interface.", t);
 			return null;

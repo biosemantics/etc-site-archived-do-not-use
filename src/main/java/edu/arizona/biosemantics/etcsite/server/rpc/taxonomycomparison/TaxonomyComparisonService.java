@@ -1,23 +1,31 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Emailer;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
+import edu.arizona.biosemantics.etcsite.server.rpc.auth.AdminAuthenticationToken;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.FileService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.access.FileAccessService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.format.FileFormatService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.permission.FilePermissionService;
+import edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration.ExtraJvmMatrixGeneration;
+import edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration.MatrixGeneration;
 import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
+import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
@@ -32,24 +40,43 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.access.IFileAccessServic
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.format.IFileFormatService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.IFilePermissionService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDeniedException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.TaxonomyComparisonException;
 import edu.arizona.biosemantics.euler.alignment.shared.model.Model;
 import edu.arizona.biosemantics.euler.alignment.shared.model.Taxonomies;
 import edu.arizona.biosemantics.euler.alignment.shared.model.Taxonomy;
-import edu.arizona.biosemantics.euler.io.FileTaxonomyReader;
+import edu.arizona.biosemantics.euler.io.EulerInputFileWriter;
+import edu.arizona.biosemantics.euler.io.TaxonomyFileReader;
 
 public class TaxonomyComparisonService extends RemoteServiceServlet implements ITaxonomyComparisonService {
 	
+	private String tempFilesMirGeneration = Configuration.tempFiles + File.separator + "taxonomyComparison" + File.separator + "mirGeneration";
+	private String tempFilesInputVisualization = Configuration.tempFiles + File.separator + "taxonomyComparison" + File.separator + "inputVisualization";
 	private IFileService fileService = new FileService();
-	private IFileFormatService fileFormatService = new FileFormatService();
-	private IFileAccessService fileAccessService = new FileAccessService();
+	//private IFileFormatService fileFormatService = new FileFormatService();
+	//private IFileAccessService fileAccessService = new FileAccessService();
 	private IFilePermissionService filePermissionService = new FilePermissionService();
 	private ListeningExecutorService executorService;
 	private Map<Integer, ListenableFuture<Void>> activeProcessFutures = new HashMap<Integer, ListenableFuture<Void>>();
-	private Map<Integer, TaxonomyComparison> activeProcess = new HashMap<Integer, TaxonomyComparison>();
+	private Map<Integer, MIRGeneration> activeProcess = new HashMap<Integer, MIRGeneration>();
 	private DAOManager daoManager = new DAOManager();
 	private Emailer emailer = new Emailer();
+	
+	public TaxonomyComparisonService() {
+		executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(Configuration.maxActiveMatrixGeneration));
+		try {
+			fileService.createDirectory(new AdminAuthenticationToken(), Configuration.tempFiles, "taxonomyComparison", false);
+			fileService.createDirectory(new AdminAuthenticationToken(), Configuration.tempFiles + File.separator + "taxonomyComparison", 
+					"mirGeneration", false);
+			fileService.createDirectory(new AdminAuthenticationToken(), Configuration.tempFiles + File.separator + "taxonomyComparison", 
+					"inputVisualization", false);
+			
+			
+		} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
+			log(LogLevel.ERROR, "Couldn't create cache for taxonomy comparison", e);
+		}
+	}
 	
 	@Override
 	protected void doUnexpectedFailure(Throwable t) {
@@ -103,7 +130,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		task.setTaskType(dbTaskType);
 		
 		task = daoManager.getTaskDAO().addTask(task);
-		taskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.PROCESS.toString());
+		taskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.ALIGN.toString());
 		task.setTaskStage(taskStage);
 		daoManager.getTaskDAO().updateTask(task);
 
@@ -114,6 +141,113 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			throw new TaxonomyComparisonException(task);
 		}
 		return task;
+	}
+	
+	
+	@Override
+	public Model getInput(AuthenticationToken token, Task task) throws TaxonomyComparisonException {
+		TaxonomyComparisonConfiguration config = this.getTaxonomyComparisonConfiguration(task);
+		String input = config.getInput();
+		File dir = new File(input);
+		Taxonomies taxonomies = new Taxonomies();
+		for(File file : dir.listFiles()) {
+			TaxonomyFileReader reader = new TaxonomyFileReader(file.getAbsolutePath());
+			Taxonomy taxonomy;
+			try {
+				taxonomy = reader.read();
+			} catch (Exception e) {
+				log(LogLevel.ERROR, "Couldn't read taxonomy in file " + file.getAbsolutePath(), e);
+				throw new TaxonomyComparisonException();
+			}
+			taxonomies.add(taxonomy);
+		}
+		Model model = new Model(taxonomies);
+		return model;
+	}
+
+	@Override
+	public Task runMirGeneration(final AuthenticationToken authenticationToken, final Task task, Model model) throws TaxonomyComparisonException {
+		final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
+		
+		//browser back button may invoke another "learn"
+		if(activeProcessFutures.containsKey(config.getConfiguration().getId())) {
+			return task;
+		} else {
+			final TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.TAXONOMY_COMPARISON);
+			TaskStage taskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.ANALYZE.toString());
+			task.setTaskStage(taskStage);
+			task.setResumable(false);
+			daoManager.getTaskDAO().updateTask(task);
+			
+			String input = config.getInput();			
+			try {
+				fileService.createDirectory(new AdminAuthenticationToken(), tempFilesMirGeneration, String.valueOf(task.getId()), false);
+			} catch (PermissionDeniedException | CreateDirectoryFailedException e1) {
+				throw new TaxonomyComparisonException(task);
+			}
+			
+			final String eulerInputFile = tempFilesMirGeneration + File.separator + task.getId() + "input.txt";
+			try {
+				writeEulerInput(eulerInputFile, model);
+			} catch(IOException e) {
+				log(LogLevel.ERROR, "Couldn't write euler input to file " , e);
+			}
+			final String outputDir = tempFilesMirGeneration + File.separator + task.getId();
+			
+			
+			final MIRGeneration mirGeneration = new InJvmMIRGeneration(input, outputDir);
+			//final MatrixGeneration matrixGeneration = new InJvmMatrixGeneration(input, outputFile, inheritValues, generateAbsentPresent, true);
+			activeProcess.put(config.getConfiguration().getId(), mirGeneration);
+			final ListenableFuture<Void> futureResult = executorService.submit(mirGeneration);
+			this.activeProcessFutures.put(config.getConfiguration().getId(), futureResult);
+			futureResult.addListener(new Runnable() {
+			    	public void run() {	
+			     		try {
+			     			MIRGeneration mirGeneration = activeProcess.remove(config.getConfiguration().getId());
+				    		ListenableFuture<Void> futureResult = activeProcessFutures.remove(config.getConfiguration().getId());
+				     		if(mirGeneration.isExecutedSuccessfully()) {
+				     			if(!futureResult.isCancelled()) {
+									TaskStage newTaskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.ANALYZE_COMPLETE.toString());
+									task.setTaskStage(newTaskStage);
+									task.setResumable(true);
+									daoManager.getTaskDAO().updateTask(task);
+									
+									// send an email to the user who owns the task.
+									sendFinishedGeneratingMatrixEmail(task);
+				     			}
+				     		} else {
+				     			task.setFailed(true);
+								task.setFailedTime(new Date());
+								daoManager.getTaskDAO().updateTask(task);
+				     		}
+			     		} catch(Throwable t) {
+			     			log(LogLevel.ERROR, t.getMessage()+"\n"+org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(t));
+			     			task.setFailed(true);
+							task.setFailedTime(new Date());
+							daoManager.getTaskDAO().updateTask(task);
+			     		}
+			     	}
+
+					
+			     }, executorService);
+			
+			return task;
+		}
+	}
+	
+	private void writeEulerInput(String eulerInputFile, Model model) throws IOException {
+		EulerInputFileWriter eulerInputFileWriter = new EulerInputFileWriter(eulerInputFile);
+		eulerInputFileWriter.write(model);
+	}
+
+	private void sendFinishedGeneratingMatrixEmail(Task task) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getInputVisualization(AuthenticationToken token, Task task, Model model) {
+		return "url";
 	}
 
 	
@@ -154,7 +288,9 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			switch(TaskStageEnum.valueOf(task.getTaskStage().getTaskStage())) {
 			case INPUT:
 				break;
-			case PROCESS:
+			case ALIGN:
+				break;
+			case ANALYZE:
 				if(activeProcessFutures.containsKey(config.getConfiguration().getId())) {
 					ListenableFuture<Void> processFuture = this.activeProcessFutures.get(config.getConfiguration().getId());
 					processFuture.cancel(true);
@@ -162,8 +298,8 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 				if(activeProcess.containsKey(config.getConfiguration().getId())) {
 					activeProcess.get(config.getConfiguration().getId()).destroy();
 				}
-				break;
-			case VIEW:
+				break; 
+			case ANALYZE_COMPLETE:
 				break;
 			default:
 				break;
@@ -182,32 +318,6 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	@Override
 	public boolean isValidInput(AuthenticationToken token, String inputFile) {
 		return true;
-	}
-	
-	@Override
-	public Model getInput(AuthenticationToken token, Task task) throws TaxonomyComparisonException {
-		TaxonomyComparisonConfiguration config = this.getTaxonomyComparisonConfiguration(task);
-		String input = config.getInput();
-		File dir = new File(input);
-		Taxonomies taxonomies = new Taxonomies();
-		for(File file : dir.listFiles()) {
-			FileTaxonomyReader reader = new FileTaxonomyReader(input);
-			Taxonomy taxonomy;
-			try {
-				taxonomy = reader.read();
-			} catch (Exception e) {
-				log(LogLevel.ERROR, "Couldn't read taxonomy in file " + file.getAbsolutePath(), e);
-				throw new TaxonomyComparisonException();
-			}
-			taxonomies.add(taxonomy);
-		}
-		Model model = new Model(taxonomies);
-		return model;
-	}
-
-	@Override
-	public Task process(AuthenticationToken token, Task task) {
-		return task;
 	}
 	
 }

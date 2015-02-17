@@ -4,14 +4,14 @@ import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.TaxonomyComparisonException;
 import edu.arizona.biosemantics.euler.Euler;
 
-public class InJvmTaxonomyComparison implements TaxonomyComparison {
+public class InJvmInputVisualization implements MIRGeneration {
 
 	private String inputFile;
 	private String outputDir;
 	
 	private boolean executedSuccessfully = false;
 	
-	public InJvmTaxonomyComparison(String inputFile, String ouputDir) {
+	public InJvmInputVisualization(String inputFile, String ouputDir) {
 		this.inputFile = inputFile;
 		this.outputDir = ouputDir;
 	}
@@ -22,6 +22,7 @@ public class InJvmTaxonomyComparison implements TaxonomyComparison {
 			Euler euler = new Euler();
 			euler.setInputFile(inputFile);
 			euler.setOutputDir(outputDir);
+			euler.setInputVisualization(true);
 			euler.run();
 			executedSuccessfully = true;
 		} catch(Throwable e) {

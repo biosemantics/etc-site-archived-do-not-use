@@ -123,14 +123,11 @@ import edu.arizona.biosemantics.etcsite.client.content.taskManager.ITaskManagerV
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerView;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.ITaxonomyComparisonInputView;
-import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.ITaxonomyComparisonProcessView;
-import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.ITaxonomyComparisonViewView;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.ITaxonomyComparisonAlignView;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonInputPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonInputView;
-import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonProcessPresenter;
-import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonProcessView;
-import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonViewPresenter;
-import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonViewView;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonAlignPresenter;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonAlignView;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.ITreeGenerationInputView;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.ITreeGenerationViewView;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationInputPresenter;
@@ -275,10 +272,8 @@ public class ClientModule extends AbstractGinModule {
 		
 		bind(ITaxonomyComparisonInputView.class).to(TaxonomyComparisonInputView.class);
 		bind(ITaxonomyComparisonInputView.Presenter.class).to(TaxonomyComparisonInputPresenter.class);
-		bind(ITaxonomyComparisonProcessView.class).to(TaxonomyComparisonProcessView.class);
-		bind(ITaxonomyComparisonProcessView.Presenter.class).to(TaxonomyComparisonProcessPresenter.class);
-		bind(ITaxonomyComparisonViewView.class).to(TaxonomyComparisonViewView.class);
-		bind(ITaxonomyComparisonViewView.Presenter.class).to(TaxonomyComparisonViewPresenter.class);
+		bind(ITaxonomyComparisonAlignView.class).to(TaxonomyComparisonAlignView.class);
+		bind(ITaxonomyComparisonAlignView.Presenter.class).to(TaxonomyComparisonAlignPresenter.class);
 		
 		//activites, places, eventbus
 		bind(EventBus.class).annotatedWith(Names.named("ActivitiesBus")).to(SimpleEventBus.class).in(Singleton.class);

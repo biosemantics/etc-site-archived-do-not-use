@@ -50,6 +50,7 @@ public class DAOManager {
 		taskDAO.setFilesInUseDAO(filesInUseDAO);
 		taskDAO.setMatrixGenerationConfigurationDAO(matrixGenerationConfigurationDAO);
 		taskDAO.setSemanticMarkupConfigurationDAO(semanticMarkupConfigurationDAO);
+		taskDAO.setTaxonomyComparisonConfigurationDAO(taxonomyComparisonConfigurationDAO);
 		taskDAO.setShareDAO(shareDAO);
 		taskDAO.setTasksOutputFilesDAO(tasksOutputFilesDAO);
 		taskDAO.setTaskStageDAO(taskStageDAO);
@@ -68,6 +69,7 @@ public class DAOManager {
 		taskConfigurationDAO.setMatrixGenerationConfigurationDAO(matrixGenerationConfigurationDAO);
 		treeGenerationConfigurationDAO.setConfigurationDAO(configurationDAO);
 		taskDAO.setTreeGenerationConfigurationDAO(treeGenerationConfigurationDAO);
+		taxonomyComparisonConfigurationDAO.setConfigurationDAO(configurationDAO);
 	}
 
 	public ConfigurationDAO getConfigurationDAO() {

@@ -6,7 +6,6 @@ import com.sencha.gxt.widget.core.client.box.AutoProgressMessageBox;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
 
-import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserNotFoundException;
 import edu.arizona.biosemantics.oto2.oto.client.common.Alerter.InfoMessageBox;
 
 public class Alerter {
@@ -205,6 +204,10 @@ public class Alerter {
 	public static MessageBox failedToViewKey(Throwable caught) {
 		return showAlert("View Key", "Failed to view key.", caught);
 	}
+	
+	public static MessageBox failedToLoadTaxonomies(Throwable caught) {
+		return showAlert("View Key", "Failed to load taxonomies.", caught);
+	}
 
 	public static MessageBox failedToGetTask(Throwable caught) {
 		return showAlert("Get Task", "Failed to get task.", caught);
@@ -253,9 +256,25 @@ public class Alerter {
 	public static MessageBox failedToGenerateMatrix(Throwable caught) {
 		return showAlert("Matrix Generation", "Failed to generate matrix.", caught);
 	}
+	
+	public static MessageBox failedToRunTaxonomyComparison(Throwable caught) {
+		return showAlert("Taxonomy Comparison", "Failed to run Taxonomy Comparison.", caught);
+	}
+	
+	public static MessageBox failedToRunMirGeneration(Throwable caught) {
+		return showAlert("Taxonomy Comparison", "Failed to run Mir Generatino.", caught);
+	}
+
+	public static MessageBox failedToRunInputVisualization(Throwable caught) {
+		return showAlert("Taxonomy Comparison", "Failed to run Input Visualization.", caught);
+	}
 
 	public static MessageBox failedToStartMatrixGeneration(Throwable caught) {
 		return showAlert("Start matrix Generation", "Failed to start matrix generation.", caught);
+	}
+	
+	public static MessageBox failedToStartTaxonomyComparison(Throwable caught) {
+		return showAlert("Start Taxonomy Comparison", "Failed to start taxonomy comparison.", caught);
 	}
 	
 	public static MessageBox failedToGetDepth(Throwable caught) {
@@ -452,6 +471,8 @@ public class Alerter {
         box.show();
         return box;
 	}
+
+
 
 
 

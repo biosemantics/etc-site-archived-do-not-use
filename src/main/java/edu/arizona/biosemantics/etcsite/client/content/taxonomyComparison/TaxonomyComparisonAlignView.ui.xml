@@ -1,0 +1,41 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison"
+	xmlns:my2="urn:import:edu.arizona.biosemantics.etcsite.client.common"
+	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout"
+	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container">
+	<!-- xmlns:ma="urn:import:edu.arizona.biosemantics.matrixreview.client" -->
+	<ui:style>
+	.centered {
+		margin: auto;
+	}
+	
+	.nextButton {
+		margin-top: 4px;
+		margin-left: 20px;
+	}
+	
+	.subMenuEntry {
+		margin-left: 0px;
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
+	</ui:style>
+
+	<g:DockLayoutPanel unit='PX' ui:field='dockLayoutPanel'>
+		<g:north size='50'>
+			<g:SimplePanel> <!-- necessary because element.style information is set which leads ff not 
+					to center the menu -->
+				<g:HorizontalPanel styleName="{style.centered}">
+					<g:cell>
+						<my:SubMenu ui:field="subMenu" step="ALIGN" />
+					</g:cell>
+				</g:HorizontalPanel>
+			</g:SimplePanel>
+		</g:north>
+		<g:center>
+			<g:SimpleLayoutPanel ui:field="eulerPanel" />
+		</g:center>
+	</g:DockLayoutPanel>
+</ui:UiBinder> 

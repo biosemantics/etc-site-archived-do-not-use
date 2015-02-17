@@ -15,11 +15,11 @@ public interface ITaxonomyComparisonService extends RemoteService, IHasTasksServ
 			throws TaxonomyComparisonException;
 	
 	public boolean isValidInput(AuthenticationToken token, String inputFile);
-	
-	public Task process(AuthenticationToken token, Task task);
 
 	public Model getInput(AuthenticationToken token, Task task) throws TaxonomyComparisonException;
 	
-	
+	public Task runMirGeneration(AuthenticationToken token, Task task, Model model) throws TaxonomyComparisonException;
+
+	public String getInputVisualization(AuthenticationToken token, Task task, Model model) throws TaxonomyComparisonException;
 
 }

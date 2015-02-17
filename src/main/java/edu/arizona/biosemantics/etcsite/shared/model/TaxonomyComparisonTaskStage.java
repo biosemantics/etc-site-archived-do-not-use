@@ -35,6 +35,10 @@ public class TaxonomyComparisonTaskStage extends TaskStage {
 	public int getMaxTaskStageNumber() {
 		return TaskStageEnum.values().length;
 	}
+	
+	public TaskStageEnum getTaskStageEnum() {
+		return taskStage;
+	}
 
 	@Override
 	public String getTaskStage() {

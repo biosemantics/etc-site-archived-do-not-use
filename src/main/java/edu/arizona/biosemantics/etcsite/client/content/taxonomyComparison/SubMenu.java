@@ -20,11 +20,7 @@ public class SubMenu extends Composite {
 	ImageLabel input;
 	
 	@UiField
-	ImageLabel process;
-	
-	@UiField
-	ImageLabel view;
-
+	ImageLabel run;
 	public SubMenu() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
@@ -34,12 +30,13 @@ public class SubMenu extends Composite {
 		case INPUT:
 			input.setImage("images/Enumeration_1.gif");
 			break;
-		case PROCESS:
-			process.setImage("images/Enumeration_2.gif");
+		case ALIGN:
+			run.setImage("images/Enumeration_2.gif");
 			break;
-		case VIEW:
-			view.setImage("images/Enumeration_3.gif");
-			break;
+		case ANALYZE:
+			run.setImage("images/Enumeration_2.gif");
+		case ANALYZE_COMPLETE:
+			run.setImage("images/Enumeration_2.gif");
 		default:
 			input.setImage("images/Enumeration_1.gif");
 		}

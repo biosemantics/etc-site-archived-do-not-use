@@ -201,7 +201,8 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 				}
 			} else if(file.getName().endsWith(".csv") || file.getName().endsWith(".mx") || file.getName().endsWith(".nxs") || file.getName().endsWith(".nex") || file.getName().endsWith(".sdd")) {
 				return FileTypeEnum.MATRIX;
-			} 
+			} else 
+				return FileTypeEnum.PLAIN_TEXT;
 			/*RPCResult<Boolean> validationResult = fileFormatService.isValidMarkedupTaxonDescription(authenticationToken, filePath);
 			if(validationResult.isSucceeded() && validationResult.getData())
 				return FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION;

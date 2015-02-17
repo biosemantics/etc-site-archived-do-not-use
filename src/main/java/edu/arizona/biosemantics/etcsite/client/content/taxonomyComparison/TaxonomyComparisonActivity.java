@@ -13,7 +13,6 @@ import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
-import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationPlace;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison.TaskStageEnum;
@@ -24,15 +23,13 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 
 	private ITaskServiceAsync taskService;
 	private ITaxonomyComparisonInputView.Presenter inputPresenter;
-	private ITaxonomyComparisonProcessView.Presenter processPresenter;
-	private ITaxonomyComparisonViewView.Presenter viewPresenter;
+	private ITaxonomyComparisonAlignView.Presenter alignPresenter;
 	private AcceptsOneWidget panel;
 
 	@Inject
 	public TaxonomyComparisonActivity(ITaskServiceAsync taskService, 
 			ITaxonomyComparisonInputView.Presenter inputPresenter,
-			ITaxonomyComparisonProcessView.Presenter processPresenter,
-			ITaxonomyComparisonViewView.Presenter viewPresenter,
+			ITaxonomyComparisonAlignView.Presenter alignPresenter,
 			PlaceController placeController, 
 			IAuthenticationServiceAsync authenticationService, 
 			ILoginView.Presenter loginPresenter, 
@@ -41,8 +38,7 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter);
 		this.taskService = taskService;
 		this.inputPresenter = inputPresenter;
-		this.processPresenter = processPresenter;
-		this.viewPresenter = viewPresenter;
+		this.alignPresenter = alignPresenter;
 	}
 	
 	@Override
@@ -59,8 +55,8 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 	private void setStepWidget() {
 		Task task = null;
 		Place place = placeController.getWhere();
-		if(place instanceof TreeGenerationPlace)
-			task = ((TreeGenerationPlace)place).getTask();
+		if(place instanceof TaxonomyComparisonPlace)
+			task = ((TaxonomyComparisonPlace)place).getTask();
 		if(task == null) 
 			panel.setWidget(inputPresenter.getView());
 		else 
@@ -68,16 +64,22 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 					 task, new AsyncCallback<Task>() {
 						@Override
 						public void onSuccess(Task result) {
-							if(result.getTaskType().getTaskTypeEnum().equals(TaskTypeEnum.TREE_GENERATION)) {
+							if(result.getTaskType().getTaskTypeEnum().equals(TaskTypeEnum.TAXONOMY_COMPARISON)) {
 								switch(TaskStageEnum.valueOf(result.getTaskStage().getTaskStage())) {
 								case INPUT:
 									panel.setWidget(inputPresenter.getView());
 									break;
-								case PROCESS:
-									panel.setWidget(processPresenter.getView());
-								case VIEW:
-									viewPresenter.setTask(result);
-									panel.setWidget(viewPresenter.getView());
+								case ALIGN:
+									alignPresenter.setTask(result);
+									panel.setWidget(alignPresenter.getView());
+									break;
+								case ANALYZE:
+									alignPresenter.setTask(result);
+									panel.setWidget(alignPresenter.getView());
+									break;
+								case ANALYZE_COMPLETE:
+									alignPresenter.setTask(result);
+									panel.setWidget(alignPresenter.getView());
 									break;
 								default:
 									panel.setWidget(inputPresenter.getView());

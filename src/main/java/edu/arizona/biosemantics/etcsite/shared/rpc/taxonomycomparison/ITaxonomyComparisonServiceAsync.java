@@ -14,8 +14,11 @@ public interface ITaxonomyComparisonServiceAsync extends IHasTasksServiceAsync {
 	public void isValidInput(AuthenticationToken token, String inputFile,
 			AsyncCallback<Boolean> asyncCallback);
 	
-	public void process(AuthenticationToken token, Task task,
-			AsyncCallback<Task> asyncCallback);
-	
 	public void getInput(AuthenticationToken token, Task task, AsyncCallback<Model> callback);
+
+	public void runMirGeneration(AuthenticationToken token, Task task,
+			Model model, AsyncCallback<Task> asyncCallback);
+
+	public void getInputVisualization(AuthenticationToken token, Task task,
+			Model model, AsyncCallback<String> asyncCallback);
 }

@@ -98,7 +98,7 @@ public class TaskStageDAO {
 		case SEMANTIC_MARKUP:
 			return new SemanticMarkupTaskStage(id, taskType, created, edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum.valueOf(taskStage));
 		case TAXONOMY_COMPARISON:
-			break;
+			return new TaxonomyComparisonTaskStage(id, taskType, created, edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison.TaskStageEnum.valueOf(taskStage));
 		case TREE_GENERATION:
 			return new TreeGenerationTaskStage(id, taskType, created, edu.arizona.biosemantics.etcsite.shared.model.treegeneration.TaskStageEnum.valueOf(taskStage));
 		case VISUALIZATION:
@@ -128,7 +128,7 @@ public class TaskStageDAO {
 		TaskType taskType = taskTypeDAO.getTaskType(TaskTypeEnum.TAXONOMY_COMPARISON);
 		TaskStage taskStage = this.getTaskStage(taskType, name);
 		if(taskStage instanceof TaxonomyComparisonTaskStage)
-			return (TreeGenerationTaskStage)taskStage;
+			return (TaxonomyComparisonTaskStage)taskStage;
 		return null;
 	}
 	
