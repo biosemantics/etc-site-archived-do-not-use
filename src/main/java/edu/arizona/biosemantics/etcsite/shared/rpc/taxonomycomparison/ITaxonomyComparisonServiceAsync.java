@@ -21,4 +21,6 @@ public interface ITaxonomyComparisonServiceAsync extends IHasTasksServiceAsync {
 
 	public void getInputVisualization(AuthenticationToken token, Task task,
 			Model model, AsyncCallback<String> asyncCallback);
+
+	public void getMirGenerationResult(AuthenticationToken token, Task task, AsyncCallback<MIRGenerationResult> asyncCallback);
 }

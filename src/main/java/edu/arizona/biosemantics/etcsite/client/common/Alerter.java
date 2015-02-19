@@ -416,6 +416,10 @@ public class Alerter {
 		return showConfirm("Task Manager", "Are you sure you want to delete these " + count + " tasks?");
 	}
 	
+	public static MessageBox failedToGetTaxonomyComparisonResult(Throwable t) {
+		return showAlert("Taxonomy Comparison failed", "Failed to get Taxonomy Comparison result", t);
+	}
+	
 	public static MessageBox confirmSharedTasksDelete() {
 		return showConfirm("Task Manager", "Some of these tasks have been shared with "
 				+ "other users. If you delete them they will be removed for all users. "
@@ -471,9 +475,9 @@ public class Alerter {
         box.show();
         return box;
 	}
-
-
-
-
+	
+	public static MessageBox alertMIRGenerationConflict() {
+		return showAlert("Input conflict", "The articulation result in a conflict.");
+	}
 
 }

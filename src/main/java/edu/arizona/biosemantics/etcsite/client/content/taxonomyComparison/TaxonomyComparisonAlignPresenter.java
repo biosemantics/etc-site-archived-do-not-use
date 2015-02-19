@@ -1,6 +1,8 @@
 package edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison;
 
+import com.google.gwt.http.client.URL;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -21,6 +23,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.TaxonomyComparisonConfigura
 import edu.arizona.biosemantics.etcsite.shared.model.TaxonomyComparisonTaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.MIRGenerationResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.treegeneration.ITreeGenerationServiceAsync;
 import edu.arizona.biosemantics.euler.alignment.client.event.model.LoadModelEvent;
 import edu.arizona.biosemantics.euler.alignment.client.event.run.EndInputVisualizationEvent;
@@ -83,6 +86,31 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 							break;
 						case ANALYZE_COMPLETE:
 							String resultUrl = "";
+							taxonomyComparisonService.getMirGenerationResult(
+									Authentication.getInstance().getToken(), task, new AsyncCallback<MIRGenerationResult>() {
+										@Override
+										public void onFailure(Throwable t) {
+											Alerter.failedToGetTaxonomyComparisonResult(t);
+										}
+										@Override
+										public void onSuccess(MIRGenerationResult result) {
+											switch(result.getType()) {
+											case CONFLICT:
+												Alerter.alertMIRGenerationConflict();
+												break;
+											case MULTIPLE:
+											case ONE:
+												for(String possibleWorldFile : result.getPossibleWorldFiles()) {
+													Window.open("result.gpdf?target=" + URL.encodeQueryString(possibleWorldFile) + 
+															"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
+															"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()), "_blank", "");
+												}
+												break;
+											}
+										}
+									});
+							//here would be another service call to obtain the results
+							// could also return something that indicates inconsistent input
 							eulerEventBus.fireEvent(new EndMIREvent(resultUrl));
 							break;
 						default:

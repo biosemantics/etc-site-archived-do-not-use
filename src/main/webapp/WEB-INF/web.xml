@@ -169,6 +169,16 @@
 		<servlet-name>KeyGenerationServlet</servlet-name>
 		<url-pattern>/etcsite/keyGeneration</url-pattern>
 	</servlet-mapping>
+	
+		<servlet>
+		<servlet-name>EulerAlignmentServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.euler.alignment.server.EulerAlignmentService</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>EulerAlignmentServlet</servlet-name>
+		<url-pattern>/etcsite/alignment</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>Jersey Web Application</servlet-name>
@@ -188,6 +198,14 @@
 		<url-pattern>/rest/*</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>pdfServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.PDFServlet</servlet-class>
+	</servlet>
+		<servlet-mapping>
+		<servlet-name>pdfServlet</servlet-name>
+		<url-pattern>*.gpdf</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>downloadServlet</servlet-name>

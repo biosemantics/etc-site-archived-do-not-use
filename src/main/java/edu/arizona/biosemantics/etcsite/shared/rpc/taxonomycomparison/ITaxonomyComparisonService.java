@@ -1,5 +1,6 @@
 package edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -22,4 +23,6 @@ public interface ITaxonomyComparisonService extends RemoteService, IHasTasksServ
 
 	public String getInputVisualization(AuthenticationToken token, Task task, Model model) throws TaxonomyComparisonException;
 
+	public MIRGenerationResult getMirGenerationResult(AuthenticationToken token, Task task);
+	
 }

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -19,13 +20,8 @@ import edu.arizona.biosemantics.etcsite.server.Emailer;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.auth.AdminAuthenticationToken;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.FileService;
-import edu.arizona.biosemantics.etcsite.server.rpc.file.access.FileAccessService;
-import edu.arizona.biosemantics.etcsite.server.rpc.file.format.FileFormatService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.permission.FilePermissionService;
-import edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration.ExtraJvmMatrixGeneration;
-import edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration.MatrixGeneration;
 import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
-import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
@@ -36,12 +32,11 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.CopyFilesFailedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.CreateDirectoryFailedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.access.IFileAccessService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.format.IFileFormatService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.IFilePermissionService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDeniedException;
-import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.MIRGenerationResult;
+import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.MIRGenerationResult.Type;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.TaxonomyComparisonException;
 import edu.arizona.biosemantics.euler.alignment.shared.model.Model;
 import edu.arizona.biosemantics.euler.alignment.shared.model.Taxonomies;
@@ -64,7 +59,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	private Emailer emailer = new Emailer();
 	
 	public TaxonomyComparisonService() {
-		executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(Configuration.maxActiveMatrixGeneration));
+		executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(Configuration.maxActiveTaxonomyComparison));
 		try {
 			fileService.createDirectory(new AdminAuthenticationToken(), Configuration.tempFiles, "taxonomyComparison", false);
 			fileService.createDirectory(new AdminAuthenticationToken(), Configuration.tempFiles + File.separator + "taxonomyComparison", 
@@ -186,7 +181,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 				throw new TaxonomyComparisonException(task);
 			}
 			
-			final String eulerInputFile = tempFilesMirGeneration + File.separator + task.getId() + "input.txt";
+			final String eulerInputFile = tempFilesMirGeneration + File.separator + task.getId() + File.separator + "input.txt";
 			try {
 				writeEulerInput(eulerInputFile, model);
 			} catch(IOException e) {
@@ -195,8 +190,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			final String outputDir = tempFilesMirGeneration + File.separator + task.getId();
 			
 			
-			final MIRGeneration mirGeneration = new InJvmMIRGeneration(input, outputDir);
-			//final MatrixGeneration matrixGeneration = new InJvmMatrixGeneration(input, outputFile, inheritValues, generateAbsentPresent, true);
+			final MIRGeneration mirGeneration = new InJvmMIRGeneration(eulerInputFile, outputDir);
 			activeProcess.put(config.getConfiguration().getId(), mirGeneration);
 			final ListenableFuture<Void> futureResult = executorService.submit(mirGeneration);
 			this.activeProcessFutures.put(config.getConfiguration().getId(), futureResult);
@@ -207,13 +201,13 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 				    		ListenableFuture<Void> futureResult = activeProcessFutures.remove(config.getConfiguration().getId());
 				     		if(mirGeneration.isExecutedSuccessfully()) {
 				     			if(!futureResult.isCancelled()) {
-									TaskStage newTaskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.ANALYZE_COMPLETE.toString());
+									TaskStage newTaskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.ANALYZE_COMPLETE.toString());
 									task.setTaskStage(newTaskStage);
 									task.setResumable(true);
 									daoManager.getTaskDAO().updateTask(task);
 									
 									// send an email to the user who owns the task.
-									sendFinishedGeneratingMatrixEmail(task);
+									sendFinishedTaxonomyComparisonEmail(task);
 				     			}
 				     		} else {
 				     			task.setFailed(true);
@@ -240,7 +234,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		eulerInputFileWriter.write(model);
 	}
 
-	private void sendFinishedGeneratingMatrixEmail(Task task) {
+	private void sendFinishedTaxonomyComparisonEmail(Task task) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -318,6 +312,28 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	@Override
 	public boolean isValidInput(AuthenticationToken token, String inputFile) {
 		return true;
+	}
+
+	@Override
+	public MIRGenerationResult getMirGenerationResult(AuthenticationToken token, Task task) {
+		//final AbstractTaskConfiguration configuration = task.getConfiguration();
+		TaskStage newTaskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.ANALYZE.toString());
+		task.setTaskStage(newTaskStage);
+		task.setResumable(true);
+		daoManager.getTaskDAO().updateTask(task);
+		
+		File outputDir = new File(tempFilesMirGeneration + File.separator + task.getId() + File.separator + "6-PWs-pdf");
+		List<String> possibleWorldFiles = new LinkedList<String>();
+		for(File file : outputDir.listFiles()) {
+			if(file.isFile()) {
+				possibleWorldFiles.add(file.getAbsolutePath());
+			}
+		}	
+		if(possibleWorldFiles.size() == 1)
+			return new MIRGenerationResult(Type.ONE, possibleWorldFiles);
+		if(possibleWorldFiles.size() > 1)
+			return new MIRGenerationResult(Type.MULTIPLE, possibleWorldFiles);
+		return new MIRGenerationResult(Type.CONFLICT);
 	}
 	
 }

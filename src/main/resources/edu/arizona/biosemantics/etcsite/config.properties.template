@@ -31,6 +31,9 @@ maxActiveMatrixGeneration=4
 matrixgeneration_xms=
 matrixgeneration_xmx=2048m
 
+#Taxonomy Comparison
+maxActiveTaxonomyComparison=4
+
 #Captcha
 captcha_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/captcha
 

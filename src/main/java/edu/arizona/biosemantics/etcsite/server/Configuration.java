@@ -47,6 +47,9 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 	public static String matrixgeneration_xms;
 	public static String matrixgeneration_xmx;
 	
+	/** Taxonomy Comparison **/
+	public static int maxActiveTaxonomyComparison;
+	
 	/** File Management **/
 	public static String fileBase;
 	public static String compressedFileBase;
@@ -119,6 +122,8 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			maxActiveMatrixGeneration = Integer.parseInt(properties.getProperty("maxActiveMatrixGeneration"));
 			matrixgeneration_xms = properties.getProperty("matrixgeneration_xms");
 			matrixgeneration_xmx = properties.getProperty("matrixgeneration_xmx");
+			
+			maxActiveTaxonomyComparison = Integer.parseInt(properties.getProperty("maxActiveTaxonomyComparison"));
 			
 			fileBase = properties.getProperty("fileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			compressedFileBase = properties.getProperty("compressedFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
