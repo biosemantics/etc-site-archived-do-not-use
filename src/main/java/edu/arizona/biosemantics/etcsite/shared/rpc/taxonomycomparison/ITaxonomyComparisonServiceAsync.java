@@ -31,4 +31,6 @@ public interface ITaxonomyComparisonServiceAsync extends IHasTasksServiceAsync {
 	public void getModel(AuthenticationToken token, Task task, AsyncCallback<Model> callback);
 
 	public void saveModel(AuthenticationToken token, Task task, Model model, AsyncCallback<Void> callback);
+
+	public void exportArticulations(AuthenticationToken token, Task task, Model model, AsyncCallback<String> callback);
 }

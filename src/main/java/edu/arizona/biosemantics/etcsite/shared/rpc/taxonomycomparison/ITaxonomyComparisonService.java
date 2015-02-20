@@ -33,4 +33,7 @@ public interface ITaxonomyComparisonService extends RemoteService, IHasTasksServ
 	public void saveModel(AuthenticationToken token, Task task, Model model)
 			throws TaxonomyComparisonException;
 	
+	public String exportArticulations(AuthenticationToken token, Task task, Model model) 
+			throws TaxonomyComparisonException;
+	
 }

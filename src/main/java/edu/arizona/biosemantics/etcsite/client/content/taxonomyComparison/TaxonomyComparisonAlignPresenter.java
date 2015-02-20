@@ -2,6 +2,7 @@ package edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison;
 
 import com.google.gwt.http.client.URL;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -23,6 +24,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaxonomyComparisonTaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonServiceAsync;
+import edu.arizona.biosemantics.euler.alignment.client.event.DownloadEvent;
 import edu.arizona.biosemantics.euler.alignment.client.event.SaveEvent;
 import edu.arizona.biosemantics.euler.alignment.client.event.model.AddArticulationsEvent;
 import edu.arizona.biosemantics.euler.alignment.client.event.model.ImportArticulationsEvent;
@@ -274,6 +276,27 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 					public void onSuccess(Void result) { 
 						Alerter.stopLoading();
 						unsavedChanges = false;
+					}
+				});
+			}
+		});
+		eulerEventBus.addHandler(DownloadEvent.TYPE, new DownloadEvent.DownloadHandler() {
+			@Override
+			public void onDownload(DownloadEvent event) {
+				Alerter.startLoading();
+				taxonomyComparisonService.exportArticulations(Authentication.getInstance().getToken(), 
+						task, event.getModel(), new AsyncCallback<String>() {
+					@Override
+					public void onSuccess(String result) {
+						Alerter.stopLoading();
+						Window.open("download.dld?target=" + URL.encodeQueryString(result) + 
+								"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
+								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()), "_blank", "");
+					}
+					@Override
+					public void onFailure(Throwable caught) {
+						Alerter.failedToOutputMatrix(caught);
+						Alerter.stopLoading();
 					}
 				});
 			}
