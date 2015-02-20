@@ -11,6 +11,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration.MatrixGenerationService;
 import edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup.SemanticMarkupService;
+import edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison.TaxonomyComparisonService;
 import edu.arizona.biosemantics.etcsite.server.rpc.treegeneration.TreeGenerationService;
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.Share;
@@ -21,6 +22,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGener
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.treegeneration.ITreeGenerationService;
 
 public class TaskService extends RemoteServiceServlet implements ITaskService {
@@ -29,6 +31,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	private IMatrixGenerationService matrixGenerationService = new MatrixGenerationService();
 	private ISemanticMarkupService semanticMarkupService = new SemanticMarkupService();
 	private ITreeGenerationService treeGenerationService = new TreeGenerationService();
+	private ITaxonomyComparisonService taxonomyComparisonService = new TaxonomyComparisonService();
 	
 	private DAOManager daoManager = new DAOManager();
 	
@@ -151,6 +154,7 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 			semanticMarkupService.cancel(authenticationToken, task);
 			break;
 		case TAXONOMY_COMPARISON:
+			taxonomyComparisonService.cancel(authenticationToken, task);
 			break;
 		case TREE_GENERATION:
 			treeGenerationService.cancel(authenticationToken, task);

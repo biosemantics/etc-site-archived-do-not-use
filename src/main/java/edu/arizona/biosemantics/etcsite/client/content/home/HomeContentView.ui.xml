@@ -235,7 +235,7 @@
 			</div>
 			<div class="{style.taxonomyComparisonArrow} {style.actionArrow}"></div>
 			<g:HTML ui:field="taxonomyComparisonButton">
-				<div class="{style.taxonomyComparisonButton} {style.actionButton} {style.clickable}"><img src="images/ButtonGray.gif" width="200px" height="50px"/></div>
+				<div class="{style.taxonomyComparisonButton} {style.actionButton} {style.clickable}"><img src="images/ButtonGreen.gif" width="200px" height="50px"/></div>
 				<div class="{style.taxonomyComparisonButtonText}">Begin Taxonomy Comparison</div>
 			</g:HTML>
 			

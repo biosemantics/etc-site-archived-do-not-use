@@ -32,6 +32,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.treegeneration.ITreeGenerationServiceAsync;
 
 public class TaskManagerPresenter implements ITaskManagerView.Presenter {
@@ -43,6 +44,7 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 	private ITaskManagerView view;
 	private ISemanticMarkupServiceAsync semanticMarkupService;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
+	private ITaxonomyComparisonServiceAsync taxonomyComparisonService;
 	private PlaceController placeController;
 	private EventBus eventBus;
 	private ResumeTaskPlaceMapper resumeTaskPlaceMapper;
@@ -55,6 +57,7 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 			ISemanticMarkupServiceAsync semanticMarkupService,
 			IMatrixGenerationServiceAsync matrixGenerationService, 
 			ITreeGenerationServiceAsync treeGenerationService,
+			ITaxonomyComparisonServiceAsync taxonomyComparisonService,
 			ResumeTaskPlaceMapper resumeTaskPlaceMapper, 
 			IUserSelectView.Presenter userSelectPresenter, IUsersView.Presenter usersPresenter) {
 		this.view = view;
@@ -67,6 +70,7 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 		this.semanticMarkupService = semanticMarkupService;
 		this.matrixGenerationService = matrixGenerationService;
 		this.treeGenerationService = treeGenerationService;
+		this.taxonomyComparisonService = taxonomyComparisonService;
 		this.resumeTaskPlaceMapper = resumeTaskPlaceMapper;
 		
 		eventBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEvent.ResumableTasksEventHandler() {
@@ -291,8 +295,21 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 				}
 			});
 			break;
+		case TAXONOMY_COMPARISON:
+			taxonomyComparisonService.goToTaskStage(Authentication.getInstance().getToken(), taskData.getTask(), 
+					edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison.TaskStageEnum.ALIGN ,new AsyncCallback<Task>() {
+				@Override
+				public void onSuccess(Task result) {
+					placeController.goTo(new edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonAlignPlace(result));
+				}
+	
+				@Override
+				public void onFailure(Throwable caught) {
+					Alerter.failedToGoToTaskStage(caught);
+				}
+			});
+		break;
 		}
-			
 	}
 
 	@Override

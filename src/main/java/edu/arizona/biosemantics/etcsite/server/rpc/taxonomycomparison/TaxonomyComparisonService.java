@@ -1,7 +1,16 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -35,10 +44,11 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.IFilePermissionService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDeniedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.MIRGenerationResult;
-import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.MIRGenerationResult.Type;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.TaxonomyComparisonException;
 import edu.arizona.biosemantics.euler.alignment.shared.model.Model;
+import edu.arizona.biosemantics.euler.alignment.shared.model.PossibleWorld;
+import edu.arizona.biosemantics.euler.alignment.shared.model.RunOutput;
+import edu.arizona.biosemantics.euler.alignment.shared.model.RunOutputType;
 import edu.arizona.biosemantics.euler.alignment.shared.model.Taxonomies;
 import edu.arizona.biosemantics.euler.alignment.shared.model.Taxonomy;
 import edu.arizona.biosemantics.euler.io.EulerInputFileWriter;
@@ -46,8 +56,7 @@ import edu.arizona.biosemantics.euler.io.TaxonomyFileReader;
 
 public class TaxonomyComparisonService extends RemoteServiceServlet implements ITaxonomyComparisonService {
 	
-	private String tempFilesMirGeneration = Configuration.tempFiles + File.separator + "taxonomyComparison" + File.separator + "mirGeneration";
-	private String tempFilesInputVisualization = Configuration.tempFiles + File.separator + "taxonomyComparison" + File.separator + "inputVisualization";
+	private String tempFiles = Configuration.tempFiles + File.separator + "taxonomyComparison";
 	private IFileService fileService = new FileService();
 	//private IFileFormatService fileFormatService = new FileFormatService();
 	//private IFileAccessService fileAccessService = new FileAccessService();
@@ -61,13 +70,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	public TaxonomyComparisonService() {
 		executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(Configuration.maxActiveTaxonomyComparison));
 		try {
-			fileService.createDirectory(new AdminAuthenticationToken(), Configuration.tempFiles, "taxonomyComparison", false);
-			fileService.createDirectory(new AdminAuthenticationToken(), Configuration.tempFiles + File.separator + "taxonomyComparison", 
-					"mirGeneration", false);
-			fileService.createDirectory(new AdminAuthenticationToken(), Configuration.tempFiles + File.separator + "taxonomyComparison", 
-					"inputVisualization", false);
-			
-			
+			fileService.createDirectory(new AdminAuthenticationToken(), Configuration.tempFiles, "taxonomyComparison", false);			
 		} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
 			log(LogLevel.ERROR, "Couldn't create cache for taxonomy comparison", e);
 		}
@@ -128,7 +131,16 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		taskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.ALIGN.toString());
 		task.setTaskStage(taskStage);
 		daoManager.getTaskDAO().updateTask(task);
+		
 
+		try {
+			fileService.createDirectory(new AdminAuthenticationToken(), tempFiles, String.valueOf(task.getId()), false);
+		} catch(PermissionDeniedException | CreateDirectoryFailedException e) {
+			log(LogLevel.ERROR, "can not create cache directory.");
+			throw new TaxonomyComparisonException(task);
+		}
+		createModelFromInput(authenticationToken, task);
+			
 		try {
 			fileService.setInUse(authenticationToken, true, input, task);
 		} catch (PermissionDeniedException e) {
@@ -138,9 +150,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		return task;
 	}
 	
-	
-	@Override
-	public Model getInput(AuthenticationToken token, Task task) throws TaxonomyComparisonException {
+	private Model createModelFromInput(AuthenticationToken token, Task task) throws TaxonomyComparisonException {
 		TaxonomyComparisonConfiguration config = this.getTaxonomyComparisonConfiguration(task);
 		String input = config.getInput();
 		File dir = new File(input);
@@ -157,8 +167,45 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			taxonomies.add(taxonomy);
 		}
 		Model model = new Model(taxonomies);
+		saveModel(token, task, model);
 		return model;
 	}
+	
+	@Override
+	public Model getModel(AuthenticationToken token, Task task) throws TaxonomyComparisonException {
+		try {
+			Model model = unserializeModel(this.tempFiles + File.separator + task.getId() + File.separator + "Model.ser");
+			return model;
+		} catch (ClassNotFoundException | IOException e) {
+			log(LogLevel.ERROR, "Couldn't get model", e);
+			throw new TaxonomyComparisonException(task);
+		}
+		
+	}
+	
+	@Override 
+	public void saveModel(AuthenticationToken token, Task task, Model model) throws TaxonomyComparisonException {
+		try {
+			serializeModel(model, this.tempFiles + File.separator + task.getId() + File.separator + "Model.ser");
+		} catch (IOException e) {
+			log(LogLevel.ERROR, "Couldn't serialize model to disk", e);
+			throw new TaxonomyComparisonException(task);
+		}
+	}
+	
+	private void serializeModel(Model model, String file) throws IOException {
+		try(ObjectOutput output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
+			output.writeObject(model);
+		}
+	}
+	
+	private Model unserializeModel(String file) throws FileNotFoundException, IOException, ClassNotFoundException {
+		try(ObjectInput input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
+			Model model = (Model)input.readObject();
+			return model;
+		}
+	}
+	
 
 	@Override
 	public Task runMirGeneration(final AuthenticationToken authenticationToken, final Task task, Model model) throws TaxonomyComparisonException {
@@ -174,23 +221,24 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			task.setResumable(false);
 			daoManager.getTaskDAO().updateTask(task);
 			
-			String input = config.getInput();			
-			try {
-				fileService.createDirectory(new AdminAuthenticationToken(), tempFilesMirGeneration, String.valueOf(task.getId()), false);
-			} catch (PermissionDeniedException | CreateDirectoryFailedException e1) {
-				throw new TaxonomyComparisonException(task);
-			}
-			
-			final String eulerInputFile = tempFilesMirGeneration + File.separator + task.getId() + File.separator + "input.txt";
+			final String eulerInputFile = tempFiles + File.separator + task.getId() + File.separator + "input.txt";
 			try {
 				writeEulerInput(eulerInputFile, model);
 			} catch(IOException e) {
 				log(LogLevel.ERROR, "Couldn't write euler input to file " , e);
 			}
-			final String outputDir = tempFilesMirGeneration + File.separator + task.getId();
 			
-			
-			final MIRGeneration mirGeneration = new InJvmMIRGeneration(eulerInputFile, outputDir);
+			final String outputDir = tempFiles + File.separator + task.getId() + File.separator + "output";
+			try {
+				fileService.deleteFile(new AdminAuthenticationToken(), outputDir);
+				fileService.createDirectory(new AdminAuthenticationToken(), tempFiles + File.separator + task.getId(), "output", false);
+			} catch(Exception e) {
+				log(LogLevel.ERROR, "Couldn't set up output directory", e);
+				throw new TaxonomyComparisonException(task);
+			}
+				
+			//final MIRGeneration mirGeneration = new InJvmMIRGeneration(eulerInputFile, outputDir);
+			final MIRGeneration mirGeneration = new DummyMIRGeneration(eulerInputFile, outputDir);
 			activeProcess.put(config.getConfiguration().getId(), mirGeneration);
 			final ListenableFuture<Void> futureResult = executorService.submit(mirGeneration);
 			this.activeProcessFutures.put(config.getConfiguration().getId(), futureResult);
@@ -315,25 +363,46 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	}
 
 	@Override
-	public MIRGenerationResult getMirGenerationResult(AuthenticationToken token, Task task) {
+	public RunOutput getMirGenerationResult(AuthenticationToken token, Task task) {
 		//final AbstractTaskConfiguration configuration = task.getConfiguration();
 		TaskStage newTaskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.ANALYZE.toString());
 		task.setTaskStage(newTaskStage);
 		task.setResumable(true);
 		daoManager.getTaskDAO().updateTask(task);
 		
-		File outputDir = new File(tempFilesMirGeneration + File.separator + task.getId() + File.separator + "6-PWs-pdf");
-		List<String> possibleWorldFiles = new LinkedList<String>();
+		File outputDir = new File(tempFiles + File.separator + task.getId() + File.separator + "output" + File.separator + "6-PWs-pdf");
+		List<PossibleWorld> possibleWorldFiles = new LinkedList<PossibleWorld>();
 		for(File file : outputDir.listFiles()) {
 			if(file.isFile()) {
-				possibleWorldFiles.add(file.getAbsolutePath());
+				possibleWorldFiles.add(new PossibleWorld(file.getAbsolutePath(), file.getName()));
 			}
 		}	
 		if(possibleWorldFiles.size() == 1)
-			return new MIRGenerationResult(Type.ONE, possibleWorldFiles);
+			return new RunOutput(RunOutputType.ONE, possibleWorldFiles);
 		if(possibleWorldFiles.size() > 1)
-			return new MIRGenerationResult(Type.MULTIPLE, possibleWorldFiles);
-		return new MIRGenerationResult(Type.CONFLICT);
+			return new RunOutput(RunOutputType.MULTIPLE, possibleWorldFiles);
+		return new RunOutput(RunOutputType.CONFLICT);
 	}
 	
+
+
+	@Override
+	public Task goToTaskStage(AuthenticationToken token, Task task, TaskStageEnum taskStageEnum) {
+		TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.TAXONOMY_COMPARISON);
+		TaskStage taskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(taskStageEnum.toString());
+		task.setTaskStage(taskStage);
+		task.setResumable(true);
+		task.setComplete(false);
+		task.setCompleted(null);
+		daoManager.getTaskDAO().updateTask(task);
+		return task;
+	}
+	
+	
+	public static void main(String[] args) throws FileNotFoundException, IOException {
+		TaxonomyComparisonException exc = new TaxonomyComparisonException();
+		try(ObjectOutput output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File("test"))))) {
+			output.writeObject(exc);
+		}
+	}
 }

@@ -1,6 +1,8 @@
 package edu.arizona.biosemantics.etcsite.shared.model;
 
-public enum TaskTypeEnum {
+import java.io.Serializable;
+
+public enum TaskTypeEnum implements Serializable {
 	SEMANTIC_MARKUP("Text Capture"),
 	MATRIX_GENERATION("Matrix Generation"),
 	TREE_GENERATION("Key Generation"),
@@ -9,6 +11,8 @@ public enum TaskTypeEnum {
 	
 	private String displayName;
 
+	TaskTypeEnum() { }
+	
 	TaskTypeEnum(String displayName) {
         this.displayName = displayName;
     }

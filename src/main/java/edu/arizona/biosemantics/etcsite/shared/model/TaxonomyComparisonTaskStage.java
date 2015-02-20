@@ -1,10 +1,11 @@
 package edu.arizona.biosemantics.etcsite.shared.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison.TaskStageEnum;
 
-public class TaxonomyComparisonTaskStage extends TaskStage {
+public class TaxonomyComparisonTaskStage extends TaskStage implements Serializable {
 
 	private TaskStageEnum taskStage;
 

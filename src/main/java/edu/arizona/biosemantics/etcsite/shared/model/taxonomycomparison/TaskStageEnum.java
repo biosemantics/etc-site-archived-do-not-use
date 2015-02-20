@@ -1,6 +1,8 @@
 package edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison;
 
-public enum TaskStageEnum {
+import java.io.Serializable;
+
+public enum TaskStageEnum implements Serializable {
 	
     INPUT("Input"),
     ALIGN("Align"), 
@@ -9,6 +11,8 @@ public enum TaskStageEnum {
 
     private String displayName;
 
+    private TaskStageEnum() { }
+    
     private TaskStageEnum(String displayName) {
         this.displayName = displayName;
     }

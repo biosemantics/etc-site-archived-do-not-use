@@ -196,6 +196,10 @@ public class Alerter {
 	public static MessageBox failedToSaveMatrix(Throwable caught) {
 		return showAlert("Save Matrix", "Failed to save matrix.", caught);
 	}
+	
+	public static MessageBox failedToSaveTaxonomyComparisonModel(Throwable caught) {
+		return showAlert("Save Taxonomy Comparison", "Failed to save taxonomy comparison.", caught);
+	}
 
 	public static MessageBox failedToReview(Throwable caught) {
 		return showAlert("Review Matrix", "Failed to review matrix.", caught);
@@ -475,9 +479,7 @@ public class Alerter {
         box.show();
         return box;
 	}
-	
-	public static MessageBox alertMIRGenerationConflict() {
-		return showAlert("Input conflict", "The articulation result in a conflict.");
-	}
 
+	
+	
 }

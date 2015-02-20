@@ -122,8 +122,11 @@ import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsView;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.ITaskManagerView;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerView;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.IProcessingView;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.ITaxonomyComparisonInputView;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.ITaxonomyComparisonAlignView;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.ProcessingPresenter;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.ProcessingView;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonInputPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonInputView;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonAlignPresenter;
@@ -274,6 +277,8 @@ public class ClientModule extends AbstractGinModule {
 		bind(ITaxonomyComparisonInputView.Presenter.class).to(TaxonomyComparisonInputPresenter.class);
 		bind(ITaxonomyComparisonAlignView.class).to(TaxonomyComparisonAlignView.class);
 		bind(ITaxonomyComparisonAlignView.Presenter.class).to(TaxonomyComparisonAlignPresenter.class);
+		bind(IProcessingView.class).to(ProcessingView.class);
+		bind(IProcessingView.Presenter.class).to(ProcessingPresenter.class);
 		
 		//activites, places, eventbus
 		bind(EventBus.class).annotatedWith(Names.named("ActivitiesBus")).to(SimpleEventBus.class).in(Singleton.class);

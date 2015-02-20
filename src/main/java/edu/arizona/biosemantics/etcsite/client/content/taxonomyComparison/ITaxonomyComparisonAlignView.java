@@ -14,6 +14,8 @@ public interface ITaxonomyComparisonAlignView extends IsWidget {
 	public interface Presenter {
 		ITaxonomyComparisonAlignView getView();
 		void setTask(Task task);
+		boolean hasUnsavedChanges();
+		void setUnsavedChanges(boolean value);
 	}
 	  
 	void setPresenter(Presenter presenter);

@@ -14,6 +14,8 @@ import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMa
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupPreprocessPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupReviewPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupToOntologiesPlace;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonAlignPlace;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonPlace;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationPlace;
@@ -68,6 +70,18 @@ public class ResumeTaskPlaceMapper {
 			}
 			return new TreeGenerationInputPlace();
 		case TAXONOMY_COMPARISON:
+			switch(edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison.TaskStageEnum.valueOf(task.getTaskStage().getTaskStage())) {
+			case INPUT:
+				return new TaxonomyComparisonInputPlace();
+			case ALIGN:
+				return new TaxonomyComparisonAlignPlace(task);
+			case ANALYZE:
+				return new TaxonomyComparisonAlignPlace(task);
+			case ANALYZE_COMPLETE:
+				return new TaxonomyComparisonAlignPlace(task);
+			default:
+				break;
+		}
 			return new TaxonomyComparisonPlace();
 		case VISUALIZATION:
 			return new VisualizationPlace();

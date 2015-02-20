@@ -17,20 +17,27 @@ import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
+import edu.arizona.biosemantics.matrixreview.client.event.LoadModelEvent;
+import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 
 public class MatrixGenerationActivity extends MyAbstractActivity {
 
 	private ITaskServiceAsync taskService;
+	private IMatrixGenerationServiceAsync matrixGenerationService;
 	private IMatrixGenerationInputView.Presenter inputPresenter;
 	private IMatrixGenerationProcessView.Presenter processPresenter;
 	private IMatrixGenerationReviewView.Presenter reviewPresenter;
 	private IMatrixGenerationOutputView.Presenter outputPresenter;
 	private AcceptsOneWidget panel;
 	private TaskStageEnum currentTaskStage;
+	private Model currentModel;
+	private Task currentTask;
 
 	@Inject
 	public MatrixGenerationActivity(ITaskServiceAsync taskService, 
+			IMatrixGenerationServiceAsync matrixGenerationService,
 			IMatrixGenerationInputView.Presenter inputPresenter, 
 			IMatrixGenerationProcessView.Presenter processPresenter,
 			IMatrixGenerationReviewView.Presenter reviewPresenter,
@@ -42,9 +49,16 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 			IResetPasswordView.Presenter resetPasswordPresenter) {
 		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter);
 		this.taskService = taskService;
+		this.matrixGenerationService = matrixGenerationService;
 		this.inputPresenter = inputPresenter;
 		this.processPresenter = processPresenter;
 		this.reviewPresenter = reviewPresenter;
+		reviewPresenter.getView().getMatrixReviewView().getFullModelBus().addHandler(LoadModelEvent.TYPE, new LoadModelEvent.LoadModelEventHandler() {
+			@Override
+			public void onLoad(LoadModelEvent event) {
+				currentModel = event.getModel();
+			}
+		});
 		this.outputPresenter = outputPresenter;
 	}
 	
@@ -60,15 +74,14 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 	}
 
 	private void setStepWidget() {
-		Task task = null;
 		Place place = placeController.getWhere();
 		if(place instanceof MatrixGenerationPlace)
-			task = ((MatrixGenerationPlace)place).getTask();
-		if(task == null) 
+			currentTask = ((MatrixGenerationPlace)place).getTask();
+		if(currentTask == null) 
 			panel.setWidget(inputPresenter.getView());
 		else 
 			this.taskService.getTask(Authentication.getInstance().getToken(),
-					 task, new AsyncCallback<Task>() {
+					currentTask, new AsyncCallback<Task>() {
 						@Override
 						public void onSuccess(Task result) {
 							if(result.getTaskType().getTaskTypeEnum().equals(TaskTypeEnum.MATRIX_GENERATION)) {
@@ -121,8 +134,16 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 		reviewPresenter.setUnsavedChanges(false);
 	}
 
-	public void onStop() {
-		reviewPresenter.setUnsavedChanges(false);
+	public void onStop() {			
+		matrixGenerationService.save(Authentication.getInstance().getToken(), currentModel, currentTask, new AsyncCallback<Void>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToSaveMatrix(caught);
+			}
+			@Override
+			public void onSuccess(Void result) {
+				reviewPresenter.setUnsavedChanges(false); }
+		});
 	}
 
 }
