@@ -51,7 +51,7 @@ public class PDFServlet extends HttpServlet implements Servlet {
 		File pdfFile = new File(target);
 
 		response.setContentType("application/pdf");
-		response.addHeader("Content-Disposition", "attachment; filename=" + pdfFile.getName());
+		response.addHeader("Content-Disposition", "inline; filename=" + pdfFile.getName());
 		response.setContentLength((int) pdfFile.length());
 
 		FileInputStream fileInputStream = new FileInputStream(pdfFile);

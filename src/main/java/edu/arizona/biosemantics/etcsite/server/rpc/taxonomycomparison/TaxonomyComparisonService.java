@@ -54,6 +54,8 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDen
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.TaxonomyComparisonException;
+import edu.arizona.biosemantics.euler.Euler;
+import edu.arizona.biosemantics.euler.EulerException;
 import edu.arizona.biosemantics.euler.alignment.shared.model.Model;
 import edu.arizona.biosemantics.euler.alignment.shared.model.PossibleWorld;
 import edu.arizona.biosemantics.euler.alignment.shared.model.RunOutput;
@@ -144,15 +146,16 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		task.setTaskStage(taskStage);
 		daoManager.getTaskDAO().updateTask(task);
 		
-
 		try {
 			fileService.createDirectory(new AdminAuthenticationToken(), tempFiles, String.valueOf(task.getId()), false);
+			fileService.createDirectory(new AdminAuthenticationToken(), tempFiles + File.separator + task.getId(), "run", false);
+			fileService.createDirectory(new AdminAuthenticationToken(), tempFiles + File.separator + task.getId(), "inputVisualization", false);
 		} catch(PermissionDeniedException | CreateDirectoryFailedException e) {
 			log(LogLevel.ERROR, "can not create cache directory.");
 			throw new TaxonomyComparisonException(task);
 		}
 		createModelFromInput(authenticationToken, task);
-			
+		
 		try {
 			fileService.setInUse(authenticationToken, true, input, task);
 		} catch (PermissionDeniedException e) {
@@ -240,10 +243,16 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 				log(LogLevel.ERROR, "Couldn't write euler input to file " , e);
 			}
 			
-			final String outputDir = tempFiles + File.separator + task.getId() + File.separator + "output";
+			String runId = String.valueOf(model.getRunHistory().size());
+			final String outputDir = tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + File.separator + runId;
 			try {
 				fileService.deleteFile(new AdminAuthenticationToken(), outputDir);
-				fileService.createDirectory(new AdminAuthenticationToken(), tempFiles + File.separator + task.getId(), "output", false);
+			} catch(Exception e) {
+				log(LogLevel.ERROR, "Couldn't delete output directory", e);
+				throw new TaxonomyComparisonException(task);
+			}
+			try {
+				fileService.createDirectory(new AdminAuthenticationToken(), tempFiles + File.separator + task.getId() + File.separator + "run", runId, false);
 			} catch(Exception e) {
 				log(LogLevel.ERROR, "Couldn't set up output directory", e);
 				throw new TaxonomyComparisonException(task);
@@ -300,8 +309,41 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	}
 
 	@Override
-	public String getInputVisualization(AuthenticationToken token, Task task, Model model) {
-		return "url";
+	public String getInputVisualization(AuthenticationToken token, Task task, Model model) throws TaxonomyComparisonException {
+		final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
+		
+		
+		final String eulerInputFile = tempFiles + File.separator + task.getId() + File.separator + "input.txt";
+		try {
+			writeEulerInput(eulerInputFile, model);
+		} catch(IOException e) {
+			log(LogLevel.ERROR, "Couldn't write euler input to file " , e);
+		}
+		
+		final String outputDir = tempFiles + File.separator + task.getId() + File.separator + "inputVisualization";
+		try {
+			fileService.deleteFile(new AdminAuthenticationToken(), outputDir);
+		} catch(Exception e) {
+			log(LogLevel.ERROR, "Couldn't delete output directory", e);
+			throw new TaxonomyComparisonException(task);
+		}
+		try {
+			fileService.createDirectory(new AdminAuthenticationToken(), tempFiles + File.separator + task.getId(), "inputVisualization", false);
+		} catch(Exception e) {
+			log(LogLevel.ERROR, "Couldn't set up output directory", e);
+			throw new TaxonomyComparisonException(task);
+		}
+		
+		InputVisualization inputVisualization = new DummyInputVisualization(eulerInputFile, outputDir);
+		try {
+			inputVisualization.call();
+		} catch(Exception e) {
+			log(LogLevel.ERROR, "Couldn't run input visualization", e);
+			throw new TaxonomyComparisonException(task);
+		}
+			
+		File output = new File(tempFiles + File.separator + task.getId() + File.separator + "inputVisualization" + File.separator + "0-input" + File.separator + "input.pdf");
+		return output.getAbsolutePath();
 	}
 
 	
@@ -382,7 +424,9 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		task.setResumable(true);
 		daoManager.getTaskDAO().updateTask(task);
 		
-		File outputDir = new File(tempFiles + File.separator + task.getId() + File.separator + "output" + File.separator + "6-PWs-pdf");
+		File runFile = new File(tempFiles + File.separator + task.getId() + File.separator + "run");
+		int runs = runFile.listFiles().length;
+		File outputDir = new File(tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + String.valueOf(runs) + File.separator + "6-PWs-pdf");
 		List<PossibleWorld> possibleWorldFiles = new LinkedList<PossibleWorld>();
 		for(File file : outputDir.listFiles()) {
 			if(file.isFile()) {

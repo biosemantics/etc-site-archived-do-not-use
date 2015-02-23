@@ -164,19 +164,6 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 	}
 
 	private void bindEulerEvents() {
-		eulerEventBus.addHandler(StartMIREvent.TYPE, new StartMIREvent.StartMIREventHandler() {
-			@Override
-			public void onShow(StartMIREvent event) {
-				unsavedChanges = true;
-			}
-		});
-		eulerEventBus.addHandler(EndMIREvent.TYPE, new EndMIREvent.EndMIREventHandler() {
-			
-			@Override
-			public void onEnd(EndMIREvent event) {
-				unsavedChanges = true;
-			}
-		});
 		eulerEventBus.addHandler(AddArticulationsEvent.TYPE, new AddArticulationsEvent.AddArticulationEventHandler() {
 			@Override
 			public void onAdd(AddArticulationsEvent event) {
@@ -231,10 +218,17 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 				unsavedChanges = true;
 			}
 		});
-		
+		eulerEventBus.addHandler(EndMIREvent.TYPE, new EndMIREvent.EndMIREventHandler() {
+			
+			@Override
+			public void onEnd(EndMIREvent event) {
+				unsavedChanges = true;
+			}
+		});
 		eulerEventBus.addHandler(StartMIREvent.TYPE, new StartMIREvent.StartMIREventHandler() {
 			@Override
 			public void onShow(StartMIREvent event) {
+				unsavedChanges = true;
 				taxonomyComparisonService.runMirGeneration(Authentication.getInstance().getToken(), task, model, new AsyncCallback<Task>() {
 					@Override
 					public void onFailure(Throwable caught) {
@@ -257,6 +251,9 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 					}
 					@Override
 					public void onSuccess(String result) {
+						result = "result.gpdf?target=" + URL.encodeQueryString(result) + 
+								"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
+								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId());
 						eulerEventBus.fireEvent(new EndInputVisualizationEvent(result));
 					}
 				});
