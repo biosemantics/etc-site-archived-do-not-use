@@ -31,11 +31,9 @@ import edu.arizona.biosemantics.euler.alignment.client.event.model.ImportArticul
 import edu.arizona.biosemantics.euler.alignment.client.event.model.LoadModelEvent;
 import edu.arizona.biosemantics.euler.alignment.client.event.model.ModifyArticulationEvent;
 import edu.arizona.biosemantics.euler.alignment.client.event.model.RemoveArticulationsEvent;
-import edu.arizona.biosemantics.euler.alignment.client.event.model.SetArticulationColorEvent;
-import edu.arizona.biosemantics.euler.alignment.client.event.model.SetArticulationCommentEvent;
+import edu.arizona.biosemantics.euler.alignment.client.event.model.SetColorEvent;
 import edu.arizona.biosemantics.euler.alignment.client.event.model.SetColorsEvent;
-import edu.arizona.biosemantics.euler.alignment.client.event.model.SetTaxonColorEvent;
-import edu.arizona.biosemantics.euler.alignment.client.event.model.SetTaxonCommentEvent;
+import edu.arizona.biosemantics.euler.alignment.client.event.model.SetCommentEvent;
 import edu.arizona.biosemantics.euler.alignment.client.event.run.EndInputVisualizationEvent;
 import edu.arizona.biosemantics.euler.alignment.client.event.run.EndMIREvent;
 import edu.arizona.biosemantics.euler.alignment.client.event.run.StartInputVisualizationEvent;
@@ -59,7 +57,11 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 			setMinHeight(0);
 		    setResizable(true);
 		    setShadow(true);
-			setHideOnButtonClick(true);
+		    
+		    // can't make modal, otherwise user wno't be able to go to task/file/manager and the like
+		    //this.setModal(true);
+		    //this.setBlinkModal(true);
+		    
 			setPredefinedButtons();
 			add(processingView.asWidget());
 		}
@@ -130,12 +132,13 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 											processingDialog.hide();
 											for(PossibleWorld possibleWorld : result.getPossibleWorlds()) {
 												String oldUrl = possibleWorld.getUrl();
-												possibleWorld.setUrl("result.gpdf?target=" + URL.encodeQueryString(oldUrl) + 
-														"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
-														"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()));
+												possibleWorld.setUrl(getAuthenticatedGetPDFUrl(possibleWorld.getUrl()));
 											}
-											eulerEventBus.fireEvent(new EndMIREvent(result));
+											RunOutput output = new RunOutput(result.getType(), result.getPossibleWorlds(), getAuthenticatedGetPDFUrl(result.getAggregateUrl()), 
+													getAuthenticatedGetPDFUrl(result.getDiagnosisUrl()));
+											eulerEventBus.fireEvent(new EndMIREvent(output));
 										}
+	
 									});
 							break;
 						default:
@@ -162,6 +165,12 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 			}
 		});
 	}
+	
+	private String getAuthenticatedGetPDFUrl(String url) {
+		return "result.gpdf?target=" + URL.encodeQueryString(url) + 
+			"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
+			"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId());
+	}
 
 	private void bindEulerEvents() {
 		eulerEventBus.addHandler(AddArticulationsEvent.TYPE, new AddArticulationsEvent.AddArticulationEventHandler() {
@@ -176,27 +185,16 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 				unsavedChanges = true;
 			}
 		});
-		eulerEventBus.addHandler(SetArticulationColorEvent.TYPE, new SetArticulationColorEvent.SetArticulationColorEventHandler() {
+		eulerEventBus.addHandler(SetColorEvent.TYPE, new SetColorEvent.SetColorEventHandler() {
 			@Override
-			public void onSet(SetArticulationColorEvent event) {
+			public void onSet(SetColorEvent event) {
 				unsavedChanges = true;
 			}
 		});
-		eulerEventBus.addHandler(SetArticulationCommentEvent.TYPE, new SetArticulationCommentEvent.SetArticulationCommentEventHandler() {
+		eulerEventBus.addHandler(SetCommentEvent.TYPE, new SetCommentEvent.SetCommentEventHandler() {
+			
 			@Override
-			public void onSet(SetArticulationCommentEvent event) {
-				unsavedChanges = true;
-			}
-		});
-		eulerEventBus.addHandler(SetTaxonCommentEvent.TYPE, new SetTaxonCommentEvent.SetTaxonCommentEventHandler() {
-			@Override
-			public void onSet(SetTaxonCommentEvent event) {
-				unsavedChanges = true;
-			}
-		});
-		eulerEventBus.addHandler(SetTaxonColorEvent.TYPE, new SetTaxonColorEvent.SetTaxonColorEventHandler() {
-			@Override
-			public void onSet(SetTaxonColorEvent event) {
+			public void onSet(SetCommentEvent event) {
 				unsavedChanges = true;
 			}
 		});

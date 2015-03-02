@@ -433,11 +433,24 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 				possibleWorldFiles.add(new PossibleWorld(file.getAbsolutePath(), file.getName()));
 			}
 		}	
+		
+		String aggregateUrl = tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + String.valueOf(runs) + File.separator + "7-PWs-aggregate" + File.separator + "input_all.pdf";
+		String diagnosisUrl = tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + String.valueOf(runs) + File.separator + "XYZ-diagnosis" + File.separator + "input_fulllat.pdf";
+		
+		//TODO subclass RunOutput for conflict vs. pw available scenario; use instead of type
+		/*
 		if(possibleWorldFiles.size() == 1)
-			return new RunOutput(RunOutputType.ONE, possibleWorldFiles);
+			return new RunOutput(RunOutputType.ONE, possibleWorldFiles, aggregateUrl, diagnosisUrl);
 		if(possibleWorldFiles.size() > 1)
-			return new RunOutput(RunOutputType.MULTIPLE, possibleWorldFiles);
-		return new RunOutput(RunOutputType.CONFLICT);
+			return new RunOutput(RunOutputType.MULTIPLE, possibleWorldFiles, aggregateUrl, diagnosisUrl);
+		return new RunOutput(RunOutputType.CONFLICT, possibleWorldFiles, "", diagnosisUrl); 
+		*/
+		
+		//temporary for dummy use
+		if(Math.random() < 0.5) {
+			return new RunOutput(RunOutputType.CONFLICT, possibleWorldFiles, "", diagnosisUrl); 
+		}
+		return new RunOutput(RunOutputType.MULTIPLE, possibleWorldFiles, aggregateUrl, diagnosisUrl);
 	}
 	
 
