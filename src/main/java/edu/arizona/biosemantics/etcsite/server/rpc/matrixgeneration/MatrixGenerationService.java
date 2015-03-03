@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -21,7 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 
 import org.jdom2.Document;
@@ -33,7 +31,6 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 
-import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
 
 import com.google.common.util.concurrent.ListenableFuture;
@@ -41,6 +38,10 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.common.taxonomy.Rank;
+import edu.arizona.biosemantics.common.taxonomy.RankData;
+import edu.arizona.biosemantics.common.taxonomy.TaxonIdentification;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Emailer;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
@@ -49,11 +50,6 @@ import edu.arizona.biosemantics.etcsite.server.rpc.file.FileService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.access.FileAccessService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.format.FileFormatService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.permission.FilePermissionService;
-import edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup.ParseResult;
-import edu.arizona.biosemantics.common.log.LogLevel;
-import edu.arizona.biosemantics.common.taxonomy.Rank;
-import edu.arizona.biosemantics.common.taxonomy.RankData;
-import edu.arizona.biosemantics.common.taxonomy.TaxonIdentification;
 import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
@@ -74,7 +70,6 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.IFilePermissi
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDeniedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkupException;
 import edu.arizona.biosemantics.matrixgeneration.model.raw.ColumnHead;
 import edu.arizona.biosemantics.matrixgeneration.model.raw.Matrix;
 import edu.arizona.biosemantics.matrixgeneration.model.raw.RowHead;

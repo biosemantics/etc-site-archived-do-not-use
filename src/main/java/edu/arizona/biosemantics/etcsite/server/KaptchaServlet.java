@@ -1,7 +1,6 @@
 package edu.arizona.biosemantics.etcsite.server;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -13,8 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 
 
 @SuppressWarnings("serial")

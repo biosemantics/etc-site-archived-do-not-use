@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
 import edu.arizona.biosemantics.matrixgeneration.CLIMain;
 

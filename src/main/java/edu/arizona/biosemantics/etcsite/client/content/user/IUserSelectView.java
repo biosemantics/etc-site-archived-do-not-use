@@ -4,7 +4,6 @@ import java.util.Set;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
 
 import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectPresenter.ISelectListener;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;

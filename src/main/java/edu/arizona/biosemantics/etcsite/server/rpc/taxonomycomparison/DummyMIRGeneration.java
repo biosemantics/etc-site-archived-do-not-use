@@ -1,8 +1,6 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 
 import org.apache.commons.io.FileUtils;
 

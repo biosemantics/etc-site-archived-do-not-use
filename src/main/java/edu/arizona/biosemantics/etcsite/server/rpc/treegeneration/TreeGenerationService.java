@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 
 import au.com.bytecode.opencsv.CSVParser;
-import au.com.bytecode.opencsv.CSVWriter;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -18,7 +17,6 @@ import edu.arizona.biosemantics.etcsite.server.rpc.file.access.FileAccessService
 import edu.arizona.biosemantics.etcsite.server.rpc.file.format.FileFormatService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.permission.FilePermissionService;
 import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
-import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;

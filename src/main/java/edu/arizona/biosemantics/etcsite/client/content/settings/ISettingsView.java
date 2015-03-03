@@ -4,7 +4,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
-import edu.arizona.biosemantics.etcsite.shared.model.User;
 
 public interface ISettingsView extends IsWidget {
 

@@ -1,11 +1,7 @@
 package edu.arizona.biosemantics.etcsite.client.content.fileManager;
 
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 import com.sencha.gxt.widget.core.client.Dialog;
-import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
-import com.sencha.gxt.widget.core.client.event.HideEvent;
-import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 
 import edu.arizona.biosemantics.etcsite.client.common.files.IManagableFileTreeView;
 

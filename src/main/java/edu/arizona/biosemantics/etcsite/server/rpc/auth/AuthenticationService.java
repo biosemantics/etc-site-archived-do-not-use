@@ -11,34 +11,32 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.Random;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.xml.bind.DatatypeConverter;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Emailer;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
-import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.Captcha;
 import edu.arizona.biosemantics.etcsite.shared.model.PasswordResetRequest;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.User;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.CaptchaException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IncorrectCaptchaSolutionException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.InvalidPasswordResetException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.NoSuchUserException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.OpenPasswordResetRequestException;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.RegistrationFailedException;
 
 /**
  * The server side implementation of the RPC service.

@@ -6,14 +6,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import edu.arizona.biosemantics.etcsite.server.rpc.auth.AuthenticationService;
 import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.etcsite.server.rpc.auth.AuthenticationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationService;

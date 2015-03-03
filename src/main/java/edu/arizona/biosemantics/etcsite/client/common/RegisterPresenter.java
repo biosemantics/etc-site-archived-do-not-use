@@ -6,9 +6,7 @@ import com.google.inject.Inject;
 import com.sencha.gxt.widget.core.client.Dialog;
 
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView.IRegisterListener;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.CaptchaException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.RegistrationFailedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
 
 public class RegisterPresenter implements IRegisterView.Presenter {

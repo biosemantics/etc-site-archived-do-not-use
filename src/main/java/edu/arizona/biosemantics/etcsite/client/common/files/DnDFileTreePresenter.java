@@ -3,7 +3,6 @@ package edu.arizona.biosemantics.etcsite.client.common.files;
 import java.util.Map;
 
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 import edu.arizona.biosemantics.etcsite.client.common.files.FileDragDropHandler.IFileMoveListener;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;

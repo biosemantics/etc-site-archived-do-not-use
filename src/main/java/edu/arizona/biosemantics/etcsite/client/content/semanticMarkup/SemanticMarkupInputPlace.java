@@ -2,9 +2,10 @@ package edu.arizona.biosemantics.etcsite.client.content.semanticMarkup;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 
+import edu.arizona.biosemantics.etcsite.client.help.HelpSemanticMarkupPlace;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 
-public class SemanticMarkupInputPlace extends SemanticMarkupPlace {
+public class SemanticMarkupInputPlace extends SemanticMarkupPlace implements HelpSemanticMarkupPlace {
 	
 	public SemanticMarkupInputPlace() {
 		super(null);

@@ -7,7 +7,6 @@ import edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageE
 import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.matrixreview.shared.model.Model;
-import edu.arizona.biosemantics.matrixreview.shared.model.core.TaxonMatrix;
 
 public interface IMatrixGenerationServiceAsync extends IHasTasksServiceAsync {
 

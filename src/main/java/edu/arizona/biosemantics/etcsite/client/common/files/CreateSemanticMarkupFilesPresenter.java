@@ -8,10 +8,9 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
+import edu.arizona.biosemantics.common.taxonomy.Rank;
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.common.log.LogLevel;
-import edu.arizona.biosemantics.common.taxonomy.Rank;
 import edu.arizona.biosemantics.etcsite.shared.model.file.TaxonIdentificationEntry;
 import edu.arizona.biosemantics.etcsite.shared.model.file.XmlModelFile;
 import edu.arizona.biosemantics.etcsite.shared.model.process.file.XmlModelFileCreator;

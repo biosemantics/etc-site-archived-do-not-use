@@ -1,8 +1,5 @@
 package edu.arizona.biosemantics.etcsite.server.db;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.Configuration;
 

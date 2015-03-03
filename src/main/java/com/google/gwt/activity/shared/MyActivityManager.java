@@ -15,8 +15,9 @@
  */
 package com.google.gwt.activity.shared;
 
-import com.google.gwt.activity.shared.ActivityManager;
-import com.google.gwt.activity.shared.ActivityMapper;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import com.google.gwt.event.shared.ResettableEventBus;
 import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.place.shared.PlaceChangeEvent;
@@ -25,9 +26,6 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
  * Manages {@link Activity} objects that should be kicked off in response to

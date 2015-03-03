@@ -1,6 +1,5 @@
 package edu.arizona.biosemantics.etcsite.client.content.annotationReview;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -9,7 +8,6 @@ import com.google.web.bindery.event.shared.EventBus;
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.access.IFileAccessServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.format.IFileFormatServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.search.IFileSearchServiceAsync;

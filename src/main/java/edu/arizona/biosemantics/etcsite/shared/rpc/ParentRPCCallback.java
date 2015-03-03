@@ -1,6 +1,5 @@
 package edu.arizona.biosemantics.etcsite.shared.rpc;
 
-import java.util.Collection;
 import java.util.List;
 
 public abstract class ParentRPCCallback {

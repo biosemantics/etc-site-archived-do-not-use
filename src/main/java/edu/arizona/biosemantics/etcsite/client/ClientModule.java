@@ -13,7 +13,6 @@ import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
@@ -44,12 +43,9 @@ import edu.arizona.biosemantics.etcsite.client.common.files.ICreateSemanticMarku
 import edu.arizona.biosemantics.etcsite.client.common.files.IFileContentView;
 import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.common.files.IManagableFileTreeView;
-import edu.arizona.biosemantics.etcsite.client.common.files.ISavableFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.common.files.ManagableFileTreePresenter;
 import edu.arizona.biosemantics.etcsite.client.common.files.ManagableFileTreeView;
-import edu.arizona.biosemantics.etcsite.client.common.files.SavableFileTreePresenter;
-import edu.arizona.biosemantics.etcsite.client.common.files.SavableFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePresenter;
 import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.content.about.AboutView;
@@ -71,11 +67,11 @@ import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerDi
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerView;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
-import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView.Presenter;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerView;
 import edu.arizona.biosemantics.etcsite.client.content.help.HelpView;
 import edu.arizona.biosemantics.etcsite.client.content.help.IHelpView;
 import edu.arizona.biosemantics.etcsite.client.content.home.HomeContentView;
+import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
 import edu.arizona.biosemantics.etcsite.client.content.home.IHomeContentView;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.IMatrixGenerationInputView;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.IMatrixGenerationOutputView;
@@ -92,22 +88,17 @@ import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGe
 import edu.arizona.biosemantics.etcsite.client.content.news.INewsView;
 import edu.arizona.biosemantics.etcsite.client.content.news.NewsView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.IImportOtoView;
-import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupHierarchyView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupInputView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupLearnView;
-import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupOrdersView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupOutputView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupParseView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupPreprocessView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupReviewView;
-import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupToOntologiesView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ImportOtoView;
-import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupHierarchyView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupLearnPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupLearnView;
-import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupOrdersView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupOutputPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupOutputView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupParsePresenter;
@@ -116,21 +107,20 @@ import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMa
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupPreprocessView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupReviewPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupReviewView;
-import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupToOntologiesView;
 import edu.arizona.biosemantics.etcsite.client.content.settings.ISettingsView;
 import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsView;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.ITaskManagerView;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerView;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.IProcessingView;
-import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.ITaxonomyComparisonInputView;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.ITaxonomyComparisonAlignView;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.ITaxonomyComparisonInputView;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.ProcessingPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.ProcessingView;
-import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonInputPresenter;
-import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonInputView;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonAlignPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonAlignView;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonInputPresenter;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonInputView;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.ITreeGenerationInputView;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.ITreeGenerationViewView;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationInputPresenter;
@@ -143,27 +133,20 @@ import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectView;
 import edu.arizona.biosemantics.etcsite.client.content.user.UsersPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.user.UsersView;
+import edu.arizona.biosemantics.etcsite.client.help.HelpHomeView;
+import edu.arizona.biosemantics.etcsite.client.help.HelpSemanticMarkupView;
+import edu.arizona.biosemantics.etcsite.client.help.IHelpHomeView;
+import edu.arizona.biosemantics.etcsite.client.help.IHelpSemanticMarkupView;
 import edu.arizona.biosemantics.etcsite.client.layout.ContentActivityManagerProvider;
 import edu.arizona.biosemantics.etcsite.client.layout.ContentActivityMapper;
 import edu.arizona.biosemantics.etcsite.client.layout.EtcSitePresenter;
 import edu.arizona.biosemantics.etcsite.client.layout.EtcSiteView;
+import edu.arizona.biosemantics.etcsite.client.layout.HelpActivityManagerProvider;
+import edu.arizona.biosemantics.etcsite.client.layout.HelpActivityMapper;
 import edu.arizona.biosemantics.etcsite.client.layout.IEtcSiteView;
-import edu.arizona.biosemantics.etcsite.client.layout.MenuActivityManagerProvider;
-import edu.arizona.biosemantics.etcsite.client.layout.MenuActivityMapper;
 import edu.arizona.biosemantics.etcsite.client.layout.MyPlaceHistoryMapper;
 import edu.arizona.biosemantics.etcsite.client.layout.PlaceControllerProvider;
 import edu.arizona.biosemantics.etcsite.client.layout.PlaceHistoryHandlerProvider;
-import edu.arizona.biosemantics.etcsite.client.layout.TopActivityManagerProvider;
-import edu.arizona.biosemantics.etcsite.client.layout.TopActivityMapper;
-import edu.arizona.biosemantics.etcsite.client.menu.IMenuView;
-import edu.arizona.biosemantics.etcsite.client.menu.IStartMenuView;
-import edu.arizona.biosemantics.etcsite.client.menu.MenuView;
-import edu.arizona.biosemantics.etcsite.client.menu.StartMenuView;
-import edu.arizona.biosemantics.etcsite.client.top.ILoginTopView;
-import edu.arizona.biosemantics.etcsite.client.top.ITopView;
-import edu.arizona.biosemantics.etcsite.client.top.LoggedOutPlace;
-import edu.arizona.biosemantics.etcsite.client.top.LoginTopView;
-import edu.arizona.biosemantics.etcsite.client.top.TopView;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.access.IFileAccessServiceAsync;
@@ -192,10 +175,6 @@ public class ClientModule extends AbstractGinModule {
 		//views, presenter
 		bind(IEtcSiteView.class).to(EtcSiteView.class);
 		bind(IEtcSiteView.Presenter.class).to(EtcSitePresenter.class).in(Singleton.class);
-		bind(ITopView.class).to(TopView.class);
-		bind(ILoginTopView.class).to(LoginTopView.class);
-		bind(IMenuView.class).to(MenuView.class);
-		bind(IStartMenuView.class).to(StartMenuView.class);
 		bind(IHomeContentView.class).to(HomeContentView.class);
 		bind(IAboutView.class).to(AboutView.class);
 		bind(INewsView.class).to(NewsView.class);
@@ -280,24 +259,24 @@ public class ClientModule extends AbstractGinModule {
 		bind(IProcessingView.class).to(ProcessingView.class);
 		bind(IProcessingView.Presenter.class).to(ProcessingPresenter.class);
 		
+		bind(IHelpSemanticMarkupView.class).to(HelpSemanticMarkupView.class);
+		bind(IHelpHomeView.class).to(HelpHomeView.class);
+		
 		//activites, places, eventbus
 		bind(EventBus.class).annotatedWith(Names.named("ActivitiesBus")).to(SimpleEventBus.class).in(Singleton.class);
 		bind(PlaceController.class).toProvider(PlaceControllerProvider.class).in(Singleton.class);
-		bind(ActivityMapper.class).annotatedWith(Names.named("Top")).
-			to(TopActivityMapper.class).in(Singleton.class);
-		bind(ActivityMapper.class).annotatedWith(Names.named("Menu")).
-			to(MenuActivityMapper.class).in(Singleton.class);
 		bind(MyActivityMapper.class).annotatedWith(Names.named("Content")).
 			to(ContentActivityMapper.class).in(Singleton.class);
-		bind(ActivityManager.class).annotatedWith(Names.named("Top")).
-			toProvider(TopActivityManagerProvider.class).in(Singleton.class);
-		bind(ActivityManager.class).annotatedWith(Names.named("Menu")).
-			toProvider(MenuActivityManagerProvider.class).in(Singleton.class);
 		bind(MyActivityManager.class).annotatedWith(Names.named("Content")).
 			toProvider(ContentActivityManagerProvider.class).in(Singleton.class);
+		bind(ActivityManager.class).annotatedWith(Names.named("Help")).
+			toProvider(HelpActivityManagerProvider.class).in(Singleton.class);
+		bind(ActivityMapper.class).annotatedWith(Names.named("Help")).
+			to(HelpActivityMapper.class).in(Singleton.class);
+		bind(Place.class).annotatedWith(Names.named("DefaultPlace")).to(HomePlace.class);
+		
 		bind(PlaceHistoryMapper.class).to(MyPlaceHistoryMapper.class).in(Singleton.class);
 		bind(PlaceHistoryHandler.class).toProvider(PlaceHistoryHandlerProvider.class).in(Singleton.class);
-		bind(Place.class).annotatedWith(Names.named("DefaultPlace")).to(LoggedOutPlace.class);
 		
 		bind(EventBus.class).annotatedWith(Names.named("Tasks")).to(SimpleEventBus.class).in(Singleton.class);
 		bind(EventBus.class).annotatedWith(Names.named("AnnotationReview")).to(SimpleEventBus.class).in(Singleton.class);

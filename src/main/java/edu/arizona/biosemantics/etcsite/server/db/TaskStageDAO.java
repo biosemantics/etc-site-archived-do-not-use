@@ -1,8 +1,6 @@
 package edu.arizona.biosemantics.etcsite.server.db;
 
-import java.io.IOException;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Date;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
@@ -11,8 +9,8 @@ import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupTaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum;
-import edu.arizona.biosemantics.etcsite.shared.model.TreeGenerationTaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaxonomyComparisonTaskStage;
+import edu.arizona.biosemantics.etcsite.shared.model.TreeGenerationTaskStage;
 
 public class TaskStageDAO {
 	

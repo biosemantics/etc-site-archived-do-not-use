@@ -5,8 +5,8 @@ import java.util.Map;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.client.event.FailedTasksEvent.FailedTasksEventHandler;
+import edu.arizona.biosemantics.etcsite.shared.model.Task;
 
 public class FailedTasksEvent extends GwtEvent<FailedTasksEventHandler> {
 

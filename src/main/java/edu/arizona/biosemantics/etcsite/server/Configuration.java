@@ -7,7 +7,6 @@ import java.util.regex.Matcher;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 
-import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.common.log.Logger;
 
 public class Configuration extends edu.arizona.biosemantics.etcsite.client.common.Configuration {

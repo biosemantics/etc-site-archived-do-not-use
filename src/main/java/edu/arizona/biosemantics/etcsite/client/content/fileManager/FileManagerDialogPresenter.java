@@ -1,7 +1,6 @@
 package edu.arizona.biosemantics.etcsite.client.content.fileManager;
 
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 import edu.arizona.biosemantics.etcsite.client.common.files.IManagableFileTreeView;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;

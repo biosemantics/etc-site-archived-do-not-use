@@ -11,8 +11,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerView;
-
 public class ProcessingView extends Composite implements IProcessingView {
 	
 	private static ProcessingViewwUiBinder uiBinder = GWT.create(ProcessingViewwUiBinder.class);

@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.process.file.CSVValidator;
 import edu.arizona.biosemantics.etcsite.server.process.file.XMLValidator;
@@ -16,7 +17,6 @@ import edu.arizona.biosemantics.etcsite.server.process.file.XmlModelFileCreator;
 import edu.arizona.biosemantics.etcsite.server.process.file.XmlNamespaceManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.access.FileAccessService;
 import edu.arizona.biosemantics.etcsite.server.rpc.user.UserService;
-import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.file.XmlModelFile;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;

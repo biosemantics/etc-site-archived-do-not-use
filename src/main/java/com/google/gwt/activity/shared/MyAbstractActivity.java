@@ -6,13 +6,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
-import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
-import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView.ILoginListener;
+import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView.IRegisterListener;
+import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView.IResetPasswordListener;
-import edu.arizona.biosemantics.etcsite.client.top.LoggedInPlace;
-import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 
@@ -149,7 +147,7 @@ public abstract class MyAbstractActivity implements MyActivity {
 		loginPresenter.show(new ILoginListener() {
 			@Override
 			public void onLogin() {
-				placeController.goTo(new LoggedInPlace());
+				//placeController.goTo(new LoggedInPlace());
 				listener.onLoggedIn(); //let the caller 'go to' a different place. 
 			}
 			@Override

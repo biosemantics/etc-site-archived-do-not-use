@@ -15,7 +15,6 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.auth;
 
 import java.io.UnsupportedEncodingException;
-
 import java.security.SecureRandom;
 
 /**

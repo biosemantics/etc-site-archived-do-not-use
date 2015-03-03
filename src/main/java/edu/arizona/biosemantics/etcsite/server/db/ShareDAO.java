@@ -1,8 +1,6 @@
 package edu.arizona.biosemantics.etcsite.server.db;
 
-import java.io.IOException;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;

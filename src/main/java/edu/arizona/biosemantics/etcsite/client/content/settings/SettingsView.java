@@ -14,7 +14,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
-import edu.arizona.biosemantics.etcsite.shared.model.User;
 
 public class SettingsView extends Composite implements ISettingsView {
 

@@ -9,10 +9,6 @@ import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView.IResetPasswordListener;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IncorrectCaptchaSolutionException;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.InvalidPasswordResetException;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.NoSuchUserException;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.OpenPasswordResetRequestException;
 
 public class ResetPasswordPresenter implements IResetPasswordView.Presenter {
 

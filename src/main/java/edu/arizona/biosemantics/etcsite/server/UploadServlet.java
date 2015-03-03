@@ -1,16 +1,15 @@
 package edu.arizona.biosemantics.etcsite.server;
 
+import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.process.file.ContentValidatorProvider;
 import edu.arizona.biosemantics.etcsite.server.process.file.IContentValidator;
 import edu.arizona.biosemantics.etcsite.server.process.file.XmlNamespaceManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.auth.AuthenticationService;
-import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationService;
 import gwtupload.server.UploadAction;
-import gwtupload.server.exceptions.UploadActionException;
 import gwtupload.shared.UConsts;
 
 import java.io.File;
@@ -25,7 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
-import org.jdom2.JDOMException;
 
 /**
  * This is an example of how to use UploadAction class.

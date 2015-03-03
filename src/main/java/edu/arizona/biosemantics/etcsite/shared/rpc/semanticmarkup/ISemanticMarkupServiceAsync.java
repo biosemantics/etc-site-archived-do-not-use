@@ -11,7 +11,6 @@ import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.Preprocessed
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
-import edu.arizona.biosemantics.oto2.oto.shared.model.Term;
 
 public interface ISemanticMarkupServiceAsync extends IHasTasksServiceAsync {
 

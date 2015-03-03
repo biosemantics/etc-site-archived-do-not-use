@@ -2,9 +2,7 @@ package edu.arizona.biosemantics.etcsite.client.common.files;
 
 import com.google.inject.Inject;
 import com.sencha.gxt.widget.core.client.Dialog;
-import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 
-import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView.Presenter;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
 
 public class SelectableFileTreePresenter implements ISelectableFileTreeView.Presenter {

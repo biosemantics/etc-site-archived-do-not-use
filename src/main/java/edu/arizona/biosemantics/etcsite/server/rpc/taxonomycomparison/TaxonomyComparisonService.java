@@ -7,23 +7,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
-
-import au.com.bytecode.opencsv.CSVWriter;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
@@ -38,7 +33,6 @@ import edu.arizona.biosemantics.etcsite.server.rpc.auth.AdminAuthenticationToken
 import edu.arizona.biosemantics.etcsite.server.rpc.file.FileService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.permission.FilePermissionService;
 import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
-import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
@@ -51,11 +45,8 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.CreateDirectoryFailedExc
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.IFilePermissionService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDeniedException;
-import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.TaxonomyComparisonException;
-import edu.arizona.biosemantics.euler.Euler;
-import edu.arizona.biosemantics.euler.EulerException;
 import edu.arizona.biosemantics.euler.alignment.shared.model.Model;
 import edu.arizona.biosemantics.euler.alignment.shared.model.PossibleWorld;
 import edu.arizona.biosemantics.euler.alignment.shared.model.RunOutput;
@@ -65,8 +56,6 @@ import edu.arizona.biosemantics.euler.alignment.shared.model.Taxonomy;
 import edu.arizona.biosemantics.euler.io.ArticulationsWriter;
 import edu.arizona.biosemantics.euler.io.EulerInputFileWriter;
 import edu.arizona.biosemantics.euler.io.TaxonomyFileReader;
-import edu.arizona.biosemantics.matrixreview.shared.model.core.Character;
-import edu.arizona.biosemantics.matrixreview.shared.model.core.Taxon;
 
 public class TaxonomyComparisonService extends RemoteServiceServlet implements ITaxonomyComparisonService {
 	

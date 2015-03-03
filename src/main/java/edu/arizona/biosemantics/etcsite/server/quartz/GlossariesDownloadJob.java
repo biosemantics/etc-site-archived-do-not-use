@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -14,7 +13,6 @@ import org.quartz.JobExecutionException;
 
 import edu.arizona.biosemantics.common.biology.TaxonGroup;
 import edu.arizona.biosemantics.common.log.LogLevel;
-import edu.arizona.biosemantics.oto.client.lite.OTOLiteClient;
 import edu.arizona.biosemantics.oto.client.oto.OTOClient;
 import edu.arizona.biosemantics.oto.client.oto2.Client;
 import edu.arizona.biosemantics.oto.common.model.GlossaryDownload;

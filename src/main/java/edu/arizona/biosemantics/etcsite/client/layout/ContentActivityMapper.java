@@ -1,7 +1,5 @@
 package edu.arizona.biosemantics.etcsite.client.layout;
 
-import com.google.gwt.activity.shared.Activity;
-import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.activity.shared.MyActivity;
 import com.google.gwt.activity.shared.MyActivityMapper;
 import com.google.gwt.place.shared.Place;
@@ -31,7 +29,6 @@ import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.Taxono
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonPlace;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationActivity;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationPlace;
-import edu.arizona.biosemantics.etcsite.client.top.LoggedOutPlace;
 
 public class ContentActivityMapper implements MyActivityMapper {
 
@@ -85,8 +82,6 @@ public class ContentActivityMapper implements MyActivityMapper {
 			currentActivity = aboutActivity;
 		if(place instanceof NewsPlace)
 			currentActivity = newsActivity;
-		if(place instanceof LoggedOutPlace)
-			currentActivity = homeActivity;
 		if(place instanceof TaskManagerPlace)
 			currentActivity = taskManagerActivity;
 		if(place instanceof FileManagerPlace)

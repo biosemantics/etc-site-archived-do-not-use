@@ -6,8 +6,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.CaptchaException;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.RegistrationFailedException;
 
 public interface IUserServiceAsync {
 

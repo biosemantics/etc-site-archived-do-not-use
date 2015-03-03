@@ -15,9 +15,9 @@ import org.apache.commons.io.FileUtils;
 import com.google.code.kaptcha.Producer;
 import com.google.code.kaptcha.util.Config;
 
+import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.db.Query.QueryException;
-import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.Captcha;
 
 public class CaptchaDAO {

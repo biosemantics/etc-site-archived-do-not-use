@@ -7,11 +7,9 @@ import java.io.StringReader;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 
@@ -34,41 +32,32 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.common.taxonomy.Rank;
+import edu.arizona.biosemantics.common.taxonomy.RankData;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Emailer;
 import edu.arizona.biosemantics.etcsite.server.Zipper;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.auth.AdminAuthenticationToken;
-import edu.arizona.biosemantics.etcsite.server.rpc.auth.AuthenticationService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.FileService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.access.FileAccessService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.format.FileFormatService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.permission.FilePermissionService;
-import edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration.MatrixGeneration;
 import edu.arizona.biosemantics.etcsite.server.rpc.user.UserService;
-import edu.arizona.biosemantics.common.log.LogLevel;
-import edu.arizona.biosemantics.common.taxonomy.Rank;
-import edu.arizona.biosemantics.common.taxonomy.RankData;
 import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
-import edu.arizona.biosemantics.etcsite.shared.model.TaxonGroup;
-import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
+import edu.arizona.biosemantics.etcsite.shared.model.TaxonGroup;
 import edu.arizona.biosemantics.etcsite.shared.model.process.semanticmarkup.BracketValidator;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.Description;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.LearnInvocation;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.PreprocessedDescription;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
-/*import edu.arizona.biosemantics.etcsite.shared.db.otolite.OrderCategoriesDAO;
-import edu.arizona.biosemantics.etcsite.shared.db.otolite.StructuresDAO;
-import edu.arizona.biosemantics.etcsite.shared.db.otolite.SynonymsDAO;
-import edu.arizona.biosemantics.etcsite.shared.db.otolite.TermCategoryPairDAO;
-import edu.arizona.biosemantics.etcsite.shared.db.otolite.TermsInOrderCategoryDAO;*/
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.CopyFilesFailedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.CreateDirectoryFailedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.FileDeleteFailedException;
@@ -83,13 +72,17 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarku
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkupException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserNotFoundException;
-import edu.arizona.biosemantics.oto2.oto.server.db.CollectionDAO;
 import edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Collection;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Context;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Label;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Term;
 import edu.arizona.biosemantics.oto2.oto.shared.rpc.ICollectionService;
+/*import edu.arizona.biosemantics.etcsite.shared.db.otolite.OrderCategoriesDAO;
+import edu.arizona.biosemantics.etcsite.shared.db.otolite.StructuresDAO;
+import edu.arizona.biosemantics.etcsite.shared.db.otolite.SynonymsDAO;
+import edu.arizona.biosemantics.etcsite.shared.db.otolite.TermCategoryPairDAO;
+import edu.arizona.biosemantics.etcsite.shared.db.otolite.TermsInOrderCategoryDAO;*/
 
 public class SemanticMarkupService extends RemoteServiceServlet implements ISemanticMarkupService  {
 

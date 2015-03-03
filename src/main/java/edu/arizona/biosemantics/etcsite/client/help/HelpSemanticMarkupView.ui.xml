@@ -1,0 +1,43 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.common">
+	
+	<ui:style>
+		.clickable {
+			cursor:pointer;
+		}		
+	</ui:style>
+	<g:HTMLPanel>	
+	Lorem ipsum dolor sit amet, ea noster postulant accommodare vim, cum an erat persequeris neglegentur, brute fabellas tincidunt cu qui. Dolor utamur salutatus cum eu, tale torquatos voluptatibus cu quo. Ea duo volumus deterruisset. Mei at affert detraxit democritum, legere alterum definitiones usu id. Wisi affert nam id, te pri nostro conclusionemque. Te ullum iisque sit, quo ullum facete ei.
+
+Dicam tempor eu usu. Suas hinc petentium ius an, sumo alienum appetere ex ius. Unum intellegat ex cum, cetero dolorem ne sed, indoctum principes dissentiunt id sea. Eu his tantas nonumy phaedrum, nec tale augue ei. Ad est movet noster blandit. Cum no atqui essent doctus.
+
+Ei amet stet vix, ius ei decore consetetur. Pro et omnes ignota. Te aliquando quaerendum efficiantur his, nulla posidonium vis ex. Aeque voluptatum vituperatoribus sit an, eu sonet eripuit facilisis vim. Id equidem delenit sed. Pro at sumo libris vulputate, at esse graecis consequat pro.
+
+No vis abhorreant expetendis accommodare, nec debitis delicatissimi signiferumque ex. Nam ad feugiat disputationi. Vix vivendo lobortis et. Ea ius diam delectus adipiscing, nec at dicant consequat, nibh omnis ius an. Et mel alii molestiae, quem nihil integre at sit.
+
+Deserunt intellegat eum ei, in liber altera epicuri vel. Eius oportere liberavisse at duo. In omnis comprehensam nec, sed ad tantas utamur, pro no solum quando cotidieque. Vis ad inani causae mandamus, pri etiam atomorum cotidieque in. Mel ei nisl eligendi, his dicant ornatus at.	
+	
+	Lorem ipsum dolor sit amet, ea noster postulant accommodare vim, cum an erat persequeris neglegentur, brute fabellas tincidunt cu qui. Dolor utamur salutatus cum eu, tale torquatos voluptatibus cu quo. Ea duo volumus deterruisset. Mei at affert detraxit democritum, legere alterum definitiones usu id. Wisi affert nam id, te pri nostro conclusionemque. Te ullum iisque sit, quo ullum facete ei.
+
+Dicam tempor eu usu. Suas hinc petentium ius an, sumo alienum appetere ex ius. Unum intellegat ex cum, cetero dolorem ne sed, indoctum principes dissentiunt id sea. Eu his tantas nonumy phaedrum, nec tale augue ei. Ad est movet noster blandit. Cum no atqui essent doctus.
+
+Ei amet stet vix, ius ei decore consetetur. Pro et omnes ignota. Te aliquando quaerendum efficiantur his, nulla posidonium vis ex. Aeque voluptatum vituperatoribus sit an, eu sonet eripuit facilisis vim. Id equidem delenit sed. Pro at sumo libris vulputate, at esse graecis consequat pro.
+
+No vis abhorreant expetendis accommodare, nec debitis delicatissimi signiferumque ex. Nam ad feugiat disputationi. Vix vivendo lobortis et. Ea ius diam delectus adipiscing, nec at dicant consequat, nibh omnis ius an. Et mel alii molestiae, quem nihil integre at sit.
+
+Deserunt intellegat eum ei, in liber altera epicuri vel. Eius oportere liberavisse at duo. In omnis comprehensam nec, sed ad tantas utamur, pro no solum quando cotidieque. Vis ad inani causae mandamus, pri etiam atomorum cotidieque in. Mel ei nisl eligendi, his dicant ornatus at.
+Lorem ipsum dolor sit amet, ea noster postulant accommodare vim, cum an erat persequeris neglegentur, brute fabellas tincidunt cu qui. Dolor utamur salutatus cum eu, tale torquatos voluptatibus cu quo. Ea duo volumus deterruisset. Mei at affert detraxit democritum, legere alterum definitiones usu id. Wisi affert nam id, te pri nostro conclusionemque. Te ullum iisque sit, quo ullum facete ei.
+
+Dicam tempor eu usu. Suas hinc petentium ius an, sumo alienum appetere ex ius. Unum intellegat ex cum, cetero dolorem ne sed, indoctum principes dissentiunt id sea. Eu his tantas nonumy phaedrum, nec tale augue ei. Ad est movet noster blandit. Cum no atqui essent doctus.
+
+Ei amet stet vix, ius ei decore consetetur. Pro et omnes ignota. Te aliquando quaerendum efficiantur his, nulla posidonium vis ex. Aeque voluptatum vituperatoribus sit an, eu sonet eripuit facilisis vim. Id equidem delenit sed. Pro at sumo libris vulputate, at esse graecis consequat pro.
+
+No vis abhorreant expetendis accommodare, nec debitis delicatissimi signiferumque ex. Nam ad feugiat disputationi. Vix vivendo lobortis et. Ea ius diam delectus adipiscing, nec at dicant consequat, nibh omnis ius an. Et mel alii molestiae, quem nihil integre at sit.
+
+Deserunt intellegat eum ei, in liber altera epicuri vel. Eius oportere liberavisse at duo. In omnis comprehensam nec, sed ad tantas utamur, pro no solum quando cotidieque. Vis ad inani causae mandamus, pri etiam atomorum cotidieque in. Mel ei nisl eligendi, his dicant ornatus at.
+
+	</g:HTMLPanel>
+</ui:UiBinder> 
+	

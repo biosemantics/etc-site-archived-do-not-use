@@ -7,13 +7,13 @@ import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class TopActivityManagerProvider implements Provider<ActivityManager> {
+public class HelpActivityManagerProvider implements Provider<ActivityManager> {
 
 	private EventBus eventBus;
 	private ActivityMapper activityMapper;
 
 	@Inject
-	public TopActivityManagerProvider(@Named("Top")ActivityMapper activityMapper,
+	public HelpActivityManagerProvider(@Named("Help")ActivityMapper activityMapper,
 			@Named("ActivitiesBus")EventBus eventBus) {
 		this.eventBus = eventBus;
 		this.activityMapper = activityMapper;

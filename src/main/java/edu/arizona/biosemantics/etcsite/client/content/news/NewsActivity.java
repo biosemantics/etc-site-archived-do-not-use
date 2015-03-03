@@ -1,6 +1,5 @@
 package edu.arizona.biosemantics.etcsite.client.content.news;
 
-import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.activity.shared.MyAbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
@@ -10,7 +9,6 @@ import com.google.inject.Inject;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
-import edu.arizona.biosemantics.etcsite.client.content.news.INewsView;
 import edu.arizona.biosemantics.etcsite.client.content.news.INewsView.Presenter;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 

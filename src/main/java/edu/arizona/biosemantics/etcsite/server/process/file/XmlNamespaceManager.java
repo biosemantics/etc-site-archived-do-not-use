@@ -1,7 +1,6 @@
 package edu.arizona.biosemantics.etcsite.server.process.file;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
@@ -17,8 +16,8 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
-import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 
 public class XmlNamespaceManager {

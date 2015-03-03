@@ -1,15 +1,12 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
+import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.ExtraJvmCallable;
-import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkupException;
 
 public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements MatrixGeneration {
 

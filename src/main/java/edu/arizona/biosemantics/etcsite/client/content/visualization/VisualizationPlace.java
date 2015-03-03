@@ -1,13 +1,11 @@
 package edu.arizona.biosemantics.etcsite.client.content.visualization;
 
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 
 import edu.arizona.biosemantics.etcsite.client.common.HasTaskPlace;
-import edu.arizona.biosemantics.etcsite.client.menu.MenuPlace;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 
-public class VisualizationPlace extends HasTaskPlace implements MenuPlace {
+public class VisualizationPlace extends HasTaskPlace  {
 
 	public VisualizationPlace() {
 		super(null);

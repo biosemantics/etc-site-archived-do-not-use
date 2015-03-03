@@ -12,29 +12,25 @@ import edu.arizona.biosemantics.etcsite.client.layout.IEtcSiteView;
 public class RootLayoutPanelDecorator {
 
 	private IEtcSiteView etcSiteView;
-	private ActivityManager menuActivityManager;
 	private MyActivityManager contentActivityManager;
 	private PlaceHistoryHandler placeHistoryHandler;
-	private ActivityManager topActivityManager;
+	private ActivityManager helpActivityManager;
 
 	@Inject
 	public RootLayoutPanelDecorator(IEtcSiteView.Presenter etcSitePresenter, 
-			@Named("Top")ActivityManager topActivityManager,
-			@Named("Menu")ActivityManager menuActivityManager,
 			@Named("Content")MyActivityManager contentActivityManager,
+			@Named("Help")ActivityManager helpActivityManager,
 			PlaceHistoryHandler placeHistoryHandler) {
 		this.etcSiteView = etcSitePresenter.getView(); 
-		this.topActivityManager = topActivityManager;
-		this.menuActivityManager = menuActivityManager;
+		this.helpActivityManager = helpActivityManager;
 		this.contentActivityManager = contentActivityManager;
 		this.placeHistoryHandler = placeHistoryHandler;
 	}
 	
 	public void decorate(RootLayoutPanel rootLayoutPanel) {
 		rootLayoutPanel.add(etcSiteView);
-		topActivityManager.setDisplay(etcSiteView.getTopContainer());
-		menuActivityManager.setDisplay(etcSiteView.getMenuContainer());
 		contentActivityManager.setDisplay(etcSiteView.getContentContainer());
+		helpActivityManager.setDisplay(etcSiteView.getHelpContainer());
 		placeHistoryHandler.handleCurrentHistory();
 	}
 	

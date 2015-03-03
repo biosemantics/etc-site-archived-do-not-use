@@ -3,8 +3,6 @@ package edu.arizona.biosemantics.etcsite.client.content.home;
 import com.google.gwt.activity.shared.MyAbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
@@ -25,9 +23,7 @@ import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMa
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.ResumeTaskPlaceMapper;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonPlace;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationInputPlace;
-import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationPlace;
 import edu.arizona.biosemantics.etcsite.client.content.visualization.VisualizationPlace;
-import edu.arizona.biosemantics.etcsite.client.top.LoggedInPlace;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
@@ -115,7 +111,7 @@ public class HomeActivity extends MyAbstractActivity implements IHomeContentView
 			@Override
 			public void onLoggedIn() {
 				//when the user is logged in, go to the task place. 
-				placeController.goTo(new LoggedInPlace());
+				//placeController.goTo(new LoggedInPlace());
 				HomeActivity.this.doGotoPlace(gotoPlace, tasksService);
 			}
 

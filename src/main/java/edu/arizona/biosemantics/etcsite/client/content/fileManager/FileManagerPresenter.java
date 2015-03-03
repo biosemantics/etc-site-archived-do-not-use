@@ -3,7 +3,6 @@ package edu.arizona.biosemantics.etcsite.client.content.fileManager;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 import edu.arizona.biosemantics.etcsite.client.common.files.IManagableFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.content.annotationReview.AnnotationReviewPlace;

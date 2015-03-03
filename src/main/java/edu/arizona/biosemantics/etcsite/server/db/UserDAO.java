@@ -1,17 +1,14 @@
 package edu.arizona.biosemantics.etcsite.server.db;
 
 import java.io.File;
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.eclipse.persistence.exceptions.QueryException;
-
-import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.User;
 

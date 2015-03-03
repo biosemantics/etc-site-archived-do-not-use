@@ -6,8 +6,6 @@ import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.treegeneration.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
-import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
-import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 import edu.ucdavis.cs.cfgproject.shared.model.TaxonMatrix;
 
 public interface ITreeGenerationServiceAsync extends IHasTasksServiceAsync {

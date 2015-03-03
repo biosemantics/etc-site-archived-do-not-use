@@ -7,7 +7,6 @@ import org.aspectj.lang.annotation.Before;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.common.log.ObjectStringifier;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 
 @Aspect
 public class TraceInjection {

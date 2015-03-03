@@ -1,17 +1,13 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.file;
 
 import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Zipper;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
-import edu.arizona.biosemantics.etcsite.server.rpc.auth.AdminAuthenticationToken;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.permission.FilePermissionService;
 import edu.arizona.biosemantics.etcsite.server.rpc.task.TaskService;
-import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.CopyFilesFailedException;

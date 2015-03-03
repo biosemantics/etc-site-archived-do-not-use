@@ -4,7 +4,6 @@ import com.google.gwt.activity.shared.MyAbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.HasTaskPlace;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
