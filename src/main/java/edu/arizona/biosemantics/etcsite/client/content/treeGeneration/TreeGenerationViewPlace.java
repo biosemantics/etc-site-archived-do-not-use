@@ -27,7 +27,9 @@ public class TreeGenerationViewPlace extends TreeGenerationPlace {
 
 		@Override
 		public String getToken(TreeGenerationViewPlace place) {
-			return "task=" + place.getTask().getId();
+			if(place.hasTask())
+				return "task=" + place.getTask().getId();
+			return "";
 		}
 
 	}

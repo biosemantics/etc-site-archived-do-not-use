@@ -4,18 +4,24 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.Composite;
+
+import edu.arizona.biosemantics.etcsite.client.common.ImageLabel;
 
 public class EtcSiteView extends Composite implements IEtcSiteView {
 
@@ -23,6 +29,9 @@ public class EtcSiteView extends Composite implements IEtcSiteView {
 
 	interface EtcSiteUiBinder extends UiBinder<Widget, EtcSiteView> {
 	}
+	
+	@UiField
+	VerticalPanel eastPanel;
 	
 	@UiField
 	ScrollPanel helpPanel;
@@ -35,6 +44,9 @@ public class EtcSiteView extends Composite implements IEtcSiteView {
 
 	@UiField
 	DockLayoutPanel dockLayoutPanel;
+	
+	@UiField
+	ImageLabel loginLogout;
 		
 	private Presenter presenter;
 	
@@ -66,15 +78,15 @@ public class EtcSiteView extends Composite implements IEtcSiteView {
 		//dockLayoutPanel.forceLayout(); //makes fast mouse movement not to collapse the menu without animation (for some reason)
 		dockLayoutPanel.setWidgetSize(navigationPanel, size);
 		if(animated)
-			dockLayoutPanel.animate(500);
+			dockLayoutPanel.animate(300);
 	}
 	
 	@Override
 	public void setHelpSize(int size, boolean animated) {
 		//dockLayoutPanel.forceLayout(); //makes fast mouse movement not to collapse the menu without animation (for some reason)
-		dockLayoutPanel.setWidgetSize(helpPanel, size);
+		dockLayoutPanel.setWidgetSize(eastPanel, size);
 		if(animated)
-			dockLayoutPanel.animate(500);
+			dockLayoutPanel.animate(300);
 	}
 	
 	
@@ -88,6 +100,11 @@ public class EtcSiteView extends Composite implements IEtcSiteView {
 		else
 			setNavigationSize(200, true);
 	}*/
+	
+	@UiHandler("loginLogout")
+	public void onLoginLogout(ClickEvent e) {
+		presenter.onLoginLogout();
+	}
 	
 	@UiHandler("navigationPanel") 
 	public void onMouseOverMenu(MouseOverEvent event) { 
@@ -111,7 +128,7 @@ public class EtcSiteView extends Composite implements IEtcSiteView {
 	
 	@UiHandler("help")
 	void onHelpClick(ClickEvent e) {
-		Double size = dockLayoutPanel.getWidgetSize(helpPanel);
+		Double size = dockLayoutPanel.getWidgetSize(eastPanel);
 		if(size == 400) 
 			setHelpSize(0, true);
 		else
@@ -171,6 +188,33 @@ public class EtcSiteView extends Composite implements IEtcSiteView {
 	@UiHandler("visualization")
 	void onVisualizationClick(ClickEvent e) {
 		presenter.onVisualization();
+	}
+	
+	@UiHandler("helpButton") 
+	void onHelpButtonClick(ClickEvent e) {
+		presenter.onOpenHelpInNewWindow();
+	}
+
+	@Override
+	public void setLogin() {
+		loginLogout.setImage("images/login.gif");
+	}
+
+	@Override
+	public void setLogout() {
+		loginLogout.setImage("images/logout.gif");
+	}
+
+	@Override
+	public boolean isLogin() {
+		System.out.println(loginLogout.getImage());
+		return loginLogout.getImage().endsWith("images/login.gif");
+	}
+
+	@Override
+	public boolean isLogout() {
+		System.out.println(loginLogout.getImage());
+		return loginLogout.getImage().endsWith("images/logout.gif");
 	}
 	
 }

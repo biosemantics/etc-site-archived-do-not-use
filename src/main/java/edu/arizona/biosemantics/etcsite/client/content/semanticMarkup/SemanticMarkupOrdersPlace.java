@@ -30,7 +30,9 @@ public class SemanticMarkupOrdersPlace extends SemanticMarkupPlace {
 
 		@Override
 		public String getToken(SemanticMarkupOrdersPlace place) {
-			return "task=" + place.getTask().getId();
+			if(place.hasTask())
+				return "task=" + place.getTask().getId();
+			return "";
 		}
 
 	}

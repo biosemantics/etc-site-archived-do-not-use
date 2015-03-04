@@ -32,7 +32,9 @@ public class TreeGenerationInputPlace extends TreeGenerationPlace {
 
 		@Override
 		public String getToken(TreeGenerationInputPlace place) {
-			return "task=" + place.getTask().getId();
+			if(place.hasTask())
+				return "task=" + place.getTask().getId();
+			return "";
 		}
 
 	}

@@ -34,6 +34,12 @@ public interface IEtcSiteView extends IsWidget {
 
 		void onVisualization();
 
+		void onOpenHelpInNewWindow();
+
+		void onLoginLogout();
+
+		void updateAuthentication();
+
 	}
 	
 	void setContent(IsWidget content);
@@ -42,5 +48,9 @@ public interface IEtcSiteView extends IsWidget {
 	void setNavigationSize(int size, boolean animated);
 	void setHelpSize(int size, boolean animated);
 	AcceptsOneWidget getHelpContainer();
+	void setLogin();
+	void setLogout();
+	boolean isLogin();
+	boolean isLogout();
 	
 }

@@ -26,7 +26,9 @@ public class MatrixGenerationOutputPlace extends MatrixGenerationPlace {
 
 		@Override
 		public String getToken(MatrixGenerationOutputPlace place) {
-			return "task=" + place.getTask().getId();
+			if(place.hasTask())
+				return "task=" + place.getTask().getId();
+			return "";
 		}
 
 	}

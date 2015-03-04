@@ -1,5 +1,8 @@
 package edu.arizona.biosemantics.etcsite.client.content.home;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+
 import com.google.gwt.activity.shared.MyAbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
@@ -13,16 +16,22 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.client.common.AuthenticationPresenter;
+import edu.arizona.biosemantics.etcsite.client.common.AuthenticationToPlaceGoer;
 import edu.arizona.biosemantics.etcsite.client.common.HasTaskPlace;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
+import edu.arizona.biosemantics.etcsite.client.common.ResumeTaskToPlaceGoer;
+import edu.arizona.biosemantics.etcsite.client.common.ToPlaceGoer;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.pipeline.PipelinePlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.ResumeTaskPlaceMapper;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonPlace;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationInputPlace;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationPlace;
 import edu.arizona.biosemantics.etcsite.client.content.visualization.VisualizationPlace;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksServiceAsync;
@@ -39,11 +48,12 @@ public class HomeActivity extends MyAbstractActivity implements IHomeContentView
 	private IHomeContentView homeContentView;
 	private ISemanticMarkupServiceAsync semanticMarkupService;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
-	private ResumeTaskPlaceMapper resumeTaskPlaceMapper;
 	private ITaxonomyComparisonServiceAsync taxonomyComparisonService;
 	private ITreeGenerationServiceAsync treeGenerationService;
 	private IVisualizationServiceAsync visualizationService;
 	private IPipelineServiceAsync pipelineService;
+	private AuthenticationToPlaceGoer authenticationToPlaceGoer;
+	private ResumeTaskToPlaceGoer resumeTaskToPlaceGoer;
 
 	@Inject
 	public HomeActivity(IHomeContentView homeContentView, 
@@ -53,12 +63,13 @@ public class HomeActivity extends MyAbstractActivity implements IHomeContentView
 			ITreeGenerationServiceAsync treeGenerationService,
 			IVisualizationServiceAsync visualizationService,
 			IPipelineServiceAsync pipelineService,
-			ResumeTaskPlaceMapper resumeTaskPlaceMapper, 
 			PlaceController placeController,
 			IAuthenticationServiceAsync authenticationService, 
 			ILoginView.Presenter loginPresenter, 
 			IRegisterView.Presenter registerPresenter, 
-			IResetPasswordView.Presenter resetPasswordPresenter) {
+			IResetPasswordView.Presenter resetPasswordPresenter, 
+			AuthenticationToPlaceGoer authenticationToPlaceGoer, 
+			ResumeTaskToPlaceGoer resumeTaskToPlaceGoer) {
 		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter);
 		this.homeContentView = homeContentView;
 		this.semanticMarkupService = semanticMarkupService;
@@ -66,8 +77,9 @@ public class HomeActivity extends MyAbstractActivity implements IHomeContentView
 		this.taxonomyComparisonService = taxonomyComparisonService;
 		this.treeGenerationService = treeGenerationService;
 		this.visualizationService = visualizationService;
-		this.resumeTaskPlaceMapper = resumeTaskPlaceMapper;
 		this.pipelineService = pipelineService;
+		this.authenticationToPlaceGoer = authenticationToPlaceGoer;
+		this.resumeTaskToPlaceGoer = resumeTaskToPlaceGoer;
     }
 
 	@Override
@@ -78,83 +90,34 @@ public class HomeActivity extends MyAbstractActivity implements IHomeContentView
 
 	@Override
 	public void onMatrixGeneration() {		
-		tryGotoPlace(new MatrixGenerationInputPlace(), matrixGenerationService);
+		this.authenticationToPlaceGoer.goTo(new MatrixGenerationInputPlace(), new LinkedList<ToPlaceGoer>(Arrays.asList(this.resumeTaskToPlaceGoer)));
 	}
 
 	@Override
 	public void onSemanticMarkup() {
-		tryGotoPlace(new SemanticMarkupInputPlace(), semanticMarkupService);
+		this.authenticationToPlaceGoer.goTo(new SemanticMarkupInputPlace(), new LinkedList<ToPlaceGoer>(Arrays.asList(this.resumeTaskToPlaceGoer)));
 	}
 
 	@Override
 	public void onTaxonomyComparison() {
-		tryGotoPlace(new TaxonomyComparisonPlace(), taxonomyComparisonService);
+		this.authenticationToPlaceGoer.goTo(new TaxonomyComparisonInputPlace(), new LinkedList<ToPlaceGoer>(Arrays.asList(this.resumeTaskToPlaceGoer)));
 	}
 
 	@Override
 	public void onVisualization() {
-		tryGotoPlace(new VisualizationPlace(), visualizationService);
+		placeController.goTo(new VisualizationPlace());
 	}
 
 	@Override
 	public void onPipeline() {
-		tryGotoPlace(new PipelinePlace(), pipelineService);
+		placeController.goTo(new PipelinePlace());
 	}
 
 	@Override
 	public void onTreeGeneration() {
-		tryGotoPlace(new TreeGenerationInputPlace(), treeGenerationService);
+		this.authenticationToPlaceGoer.goTo(new TreeGenerationInputPlace(), new LinkedList<ToPlaceGoer>(Arrays.asList(this.resumeTaskToPlaceGoer)));
 	}
 	
-	private void tryGotoPlace(final HasTaskPlace gotoPlace, final IHasTasksServiceAsync tasksService) {
-		requireLogin(new LoggedInListener() {
-			@Override
-			public void onLoggedIn() {
-				//when the user is logged in, go to the task place. 
-				//placeController.goTo(new LoggedInPlace());
-				HomeActivity.this.doGotoPlace(gotoPlace, tasksService);
-			}
-
-			@Override
-			public void onCancel() {
-				//if the user cancels login, do nothing. 
-			}
-
-		});
-	}
-	
-	private void doGotoPlace(final HasTaskPlace gotoPlace, IHasTasksServiceAsync tasksService) {
-		tasksService.getLatestResumable(Authentication.getInstance().getToken(),
-				new AsyncCallback<Task>() {
-			@Override
-			public void onSuccess(final Task task) {
-				if(task != null) {
-					MessageBox resumable = Alerter.resumableTask();
-					resumable.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
-						@Override
-						public void onSelect(SelectEvent event) {
-							gotoPlace.setTask(task);
-							placeController.goTo(gotoPlace);
-						}
-					});
-					resumable.getButton(PredefinedButton.NO).addSelectHandler(new SelectHandler() {
-						@Override
-						public void onSelect(SelectEvent event) {
-							placeController.goTo(gotoPlace);
-						}
-					});
-				}
-				else {
-					placeController.goTo(gotoPlace);
-				}
-			}
-			@Override
-			public void onFailure(Throwable caught) {
-				Alerter.failedToGetLatestResumable(caught);
-			}
-		});
-	}
-
 	@Override
 	public void update() {
 		// TODO Auto-generated method stub

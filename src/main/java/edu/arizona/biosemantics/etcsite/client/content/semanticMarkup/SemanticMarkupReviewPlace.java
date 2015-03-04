@@ -26,7 +26,9 @@ public class SemanticMarkupReviewPlace extends SemanticMarkupPlace {
 
 		@Override
 		public String getToken(SemanticMarkupReviewPlace place) {
-			return "task=" + place.getTask().getId();
+			if(place.hasTask())
+				return "task=" + place.getTask().getId();
+			return "";
 		}
 	}
 	

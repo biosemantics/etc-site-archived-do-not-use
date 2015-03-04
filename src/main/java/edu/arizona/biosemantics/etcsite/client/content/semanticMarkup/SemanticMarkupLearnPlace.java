@@ -26,7 +26,9 @@ public class SemanticMarkupLearnPlace extends SemanticMarkupPlace {
 
 		@Override
 		public String getToken(SemanticMarkupLearnPlace place) {
-			return "task=" + place.getTask().getId();
+			if(place.hasTask())
+				return "task=" + place.getTask().getId();
+			return "";
 		}
 
 	}

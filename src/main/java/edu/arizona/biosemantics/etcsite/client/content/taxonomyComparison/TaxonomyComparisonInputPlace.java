@@ -32,7 +32,9 @@ public class TaxonomyComparisonInputPlace extends TaxonomyComparisonPlace {
 
 		@Override
 		public String getToken(TaxonomyComparisonInputPlace place) {
-			return "task=" + place.getTask().getId();
+			if(place.hasTask())
+				return "task=" + place.getTask().getId();
+			return "";
 		}
 
 	}

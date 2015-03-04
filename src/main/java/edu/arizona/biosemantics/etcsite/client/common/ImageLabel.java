@@ -79,5 +79,9 @@ public class ImageLabel extends Composite implements IImageLabel, HasClickHandle
 		return addDomHandler(handler, MouseOverEvent.getType());
 	}
 
+	public String getImage() {
+		return image.getUrl();
+	}
+
 	
 }

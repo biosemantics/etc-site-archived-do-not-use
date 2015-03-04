@@ -29,6 +29,7 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.client.layout.IEtcSiteView.Presenter;
 
 /**
  * Monitors {@link PlaceChangeEvent}s and
@@ -91,6 +92,8 @@ public class MyPlaceHistoryHandler extends PlaceHistoryHandler {
 
   private Place defaultPlace = Place.NOWHERE;
 
+private Presenter etcSitePresenter;
+
   /**
    * Create a new PlaceHistoryHandler with a {@link DefaultHistorian}. The
    * DefaultHistorian is created via a call to GWT.create(), so an alternative
@@ -99,8 +102,8 @@ public class MyPlaceHistoryHandler extends PlaceHistoryHandler {
    * 
    * @param mapper a {@link PlaceHistoryMapper} instance
    */
-  public MyPlaceHistoryHandler(PlaceHistoryMapper mapper) {
-    this(mapper, (Historian) GWT.create(DefaultHistorian.class));
+  public MyPlaceHistoryHandler(PlaceHistoryMapper mapper, IEtcSiteView.Presenter etcSitePresenter) {
+    this(mapper, (Historian) GWT.create(DefaultHistorian.class), etcSitePresenter);
   }
 
   /**
@@ -108,11 +111,13 @@ public class MyPlaceHistoryHandler extends PlaceHistoryHandler {
    * 
    * @param mapper a {@link PlaceHistoryMapper} instance
    * @param historian a {@link Historian} instance
+ * @param etcSitePresenter 
    */
-  public MyPlaceHistoryHandler(PlaceHistoryMapper mapper, Historian historian) {
+  public MyPlaceHistoryHandler(PlaceHistoryMapper mapper, Historian historian, Presenter etcSitePresenter) {
 	  super(mapper);
     this.mapper = mapper;
     this.historian = historian;
+    this.etcSitePresenter = etcSitePresenter;
   }
 
   /**
@@ -175,6 +180,7 @@ public class MyPlaceHistoryHandler extends PlaceHistoryHandler {
 	  if (token.startsWith("access_token=")){
 		  String accessToken = token.substring(token.indexOf("access_token=")+13, token.indexOf("&"));
 		  Authentication.getInstance().setExternalAccessToken(accessToken);
+		  etcSitePresenter.updateAuthentication();
 	  }
     Place newPlace = null;
 

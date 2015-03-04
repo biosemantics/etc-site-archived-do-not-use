@@ -26,7 +26,9 @@ public class TaxonomyComparisonAlignPlace extends TaxonomyComparisonPlace {
 
 		@Override
 		public String getToken(TaxonomyComparisonAlignPlace place) {
-			return "task=" + place.getTask().getId();
+			if(place.hasTask())
+				return "task=" + place.getTask().getId();
+			return "";
 		}
 
 	}

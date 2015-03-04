@@ -32,7 +32,9 @@ public class MatrixGenerationInputPlace extends MatrixGenerationPlace {
 
 		@Override
 		public String getToken(MatrixGenerationInputPlace place) {
-			return "task=" + place.getTask().getId();
+			if(place.hasTask())
+				return "task=" + place.getTask().getId();
+			return "";
 		}
 
 	}

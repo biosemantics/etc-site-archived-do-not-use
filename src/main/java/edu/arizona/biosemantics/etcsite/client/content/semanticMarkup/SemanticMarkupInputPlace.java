@@ -31,7 +31,9 @@ public class SemanticMarkupInputPlace extends SemanticMarkupPlace implements Hel
 
 		@Override
 		public String getToken(SemanticMarkupInputPlace place) {
-			return "task=" + place.getTask().getId();
+			if(place.hasTask())
+				return "task=" + place.getTask().getId();
+			return "";
 		}
 
 	}
