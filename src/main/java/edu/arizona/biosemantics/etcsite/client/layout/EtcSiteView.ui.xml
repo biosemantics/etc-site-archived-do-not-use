@@ -86,8 +86,6 @@
 			padding-bottom:20px
 		}
 		.navigationPanel {
-			padding-top:20px;
-			padding-left:20px
 		}
 		.navEntry {
 			padding-top:20px;
@@ -128,39 +126,43 @@
 			<g:FocusPanel ui:field="navigationPanel" styleName="{style.navigationPanel}">
 				<!-- HTMLPanel for multiple child widgets html-like layed out -->
 				<g:HTMLPanel>
-					<div>
-						<my:ImageLabel styleName="{style.navEntry}" ui:field="homeMenu" imagePath="images/Home.gif" imageWidth="20px" imageHeight="20px" text="Home" systemFolder="false"></my:ImageLabel>
+					<div style="">
+						<div>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="homeMenu" imagePath="images/Home.gif" imageWidth="20px" imageHeight="20px" text="Home" systemFolder="false"></my:ImageLabel>
+						</div>
+						<div>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="about" imagePath="images/About.gif" imageWidth="20px" imageHeight="20px" text="About" systemFolder="false"></my:ImageLabel>
+						</div>
+						<div>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="news" imagePath="images/News.gif" imageWidth="20px" imageHeight="20px" text="News" systemFolder="false"></my:ImageLabel>
+						</div>					
+						<div>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="taskManager" imagePath="images/TaskManager.gif" imageWidth="20px" imageHeight="20px" text="Task Manager" systemFolder="false"></my:ImageLabel>
+						</div>
+						<div>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="fileManager" imagePath="images/FileManager.gif" imageWidth="20px" imageHeight="20px" text="File Manager" systemFolder="false"></my:ImageLabel>
+						</div>
+						<div>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="account" imagePath="images/Settings.gif" imageWidth="20px" imageHeight="20px" text="My Account" systemFolder="false"></my:ImageLabel>
+						</div>
 					</div>
-					<div>
-						<my:ImageLabel styleName="{style.navEntry}" ui:field="about" imagePath="images/About.gif" imageWidth="20px" imageHeight="20px" text="About" systemFolder="false"></my:ImageLabel>
-					</div>
-					<div>
-						<my:ImageLabel styleName="{style.navEntry}" ui:field="news" imagePath="images/News.gif" imageWidth="20px" imageHeight="20px" text="News" systemFolder="false"></my:ImageLabel>
-					</div>					
-					<div>
-						<my:ImageLabel styleName="{style.navEntry}" ui:field="taskManager" imagePath="images/TaskManager.gif" imageWidth="20px" imageHeight="20px" text="Task Manager" systemFolder="false"></my:ImageLabel>
-					</div>
-					<div>
-						<my:ImageLabel styleName="{style.navEntry}" ui:field="fileManager" imagePath="images/FileManager.gif" imageWidth="20px" imageHeight="20px" text="File Manager" systemFolder="false"></my:ImageLabel>
-					</div>
-					<div>
-						<my:ImageLabel styleName="{style.navEntry}" ui:field="account" imagePath="images/Settings.gif" imageWidth="20px" imageHeight="20px" text="My Account" systemFolder="false"></my:ImageLabel>
-					</div>
-					<hr></hr>
-					<div>
-						<my:ImageLabel styleName="{style.navEntry}" ui:field="textCapture" imagePath="images/SemanticMarkup.gif" imageWidth="20px" imageHeight="20px" text="Text Capture" systemFolder="false"></my:ImageLabel>
-					</div>
-					<div>
-						<my:ImageLabel styleName="{style.navEntry}" ui:field="matrixGeneration" imagePath="images/MatrixGeneration.gif" imageWidth="20px" imageHeight="20px" text="Matrix Generation" systemFolder="false"></my:ImageLabel>
-					</div>
-					<div>
-						<my:ImageLabel styleName="{style.navEntry}" ui:field="treeGeneration" imagePath="images/TreeGeneration.gif" imageWidth="20px" imageHeight="20px" text="Tree Generation" systemFolder="false"></my:ImageLabel>
-					</div>
-					<div>
-						<my:ImageLabel styleName="{style.navEntry}" ui:field="taxonomyComparison" imagePath="images/TaxonomyComparison.gif" imageWidth="20px" imageHeight="20px" text="Taxonomy Comparison" systemFolder="false"></my:ImageLabel>
-					</div>
-					<div>
-						<my:ImageLabel styleName="{style.navEntry}" ui:field="visualization" imagePath="images/Visualization.gif" imageWidth="20px" imageHeight="20px" text="Visualization" systemFolder="false"></my:ImageLabel>
+					<hr style="height:1px; border:none; color:#dddddd; background-color:#dddddd;" width="100%" noshade="noshade"></hr>
+					<div style="">
+						<div>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="textCapture" imagePath="images/SemanticMarkup.gif" imageWidth="20px" imageHeight="20px" text="Text Capture" systemFolder="false"></my:ImageLabel>
+						</div>
+						<div>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="matrixGeneration" imagePath="images/MatrixGeneration.gif" imageWidth="20px" imageHeight="20px" text="Matrix Generation" systemFolder="false"></my:ImageLabel>
+						</div>
+						<div>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="treeGeneration" imagePath="images/TreeGeneration.gif" imageWidth="20px" imageHeight="20px" text="Tree Generation" systemFolder="false"></my:ImageLabel>
+						</div>
+						<div>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="taxonomyComparison" imagePath="images/TaxonomyComparison.gif" imageWidth="20px" imageHeight="20px" text="Taxonomy Comparison" systemFolder="false"></my:ImageLabel>
+						</div>
+						<div>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="visualization" imagePath="images/Visualization.gif" imageWidth="20px" imageHeight="20px" text="Visualization" systemFolder="false"></my:ImageLabel>
+						</div>
 					</div>
 				</g:HTMLPanel>
 			</g:FocusPanel>

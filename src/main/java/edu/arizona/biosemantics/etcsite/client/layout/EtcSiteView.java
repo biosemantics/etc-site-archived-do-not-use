@@ -47,6 +47,9 @@ public class EtcSiteView extends Composite implements IEtcSiteView {
 	
 	@UiField
 	ImageLabel loginLogout;
+	
+	@UiField
+	ImageLabel taskManager;
 		
 	private Presenter presenter;
 	
@@ -207,14 +210,20 @@ public class EtcSiteView extends Composite implements IEtcSiteView {
 
 	@Override
 	public boolean isLogin() {
-		System.out.println(loginLogout.getImage());
 		return loginLogout.getImage().endsWith("images/login.gif");
 	}
 
 	@Override
 	public boolean isLogout() {
-		System.out.println(loginLogout.getImage());
 		return loginLogout.getImage().endsWith("images/logout.gif");
+	}
+
+	@Override
+	public void setResumableTasks(boolean value) {
+		if(value)
+			taskManager.setImage("images/TaskManager_notification.gif");
+		else
+			taskManager.setImage("images/TaskManager.gif");
 	}
 	
 }

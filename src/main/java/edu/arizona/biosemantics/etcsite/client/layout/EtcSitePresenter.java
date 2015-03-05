@@ -7,6 +7,9 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
+import com.google.web.bindery.event.shared.EventBus;
+import com.google.web.bindery.event.shared.HandlerRegistration;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
@@ -26,6 +29,7 @@ import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPl
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonPlace;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.visualization.VisualizationPlace;
+import edu.arizona.biosemantics.etcsite.client.event.ResumableTasksEvent;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
@@ -39,6 +43,9 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 	private AuthenticationToPlaceGoer authenticationToPlaceGoer;
 	private ResumeTaskToPlaceGoer resumeTaskToPlaceGoer;
 	private PlaceController placeController;
+	private ResumableTaskFinder resumableTaskFinder;
+	private EventBus tasksBus;
+	private HandlerRegistration resumableTasksRegistration;
 
 	@Inject
 	public EtcSitePresenter(IEtcSiteView view,
@@ -47,7 +54,9 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 			AuthenticationPresenter authenticationPresenter, 
 			AuthenticationToPlaceGoer authenticationToPlaceGoer, 
 			ResumeTaskToPlaceGoer resumeTaskToPlaceGoer, 
-			PlaceController placeController) {
+			PlaceController placeController, 
+			ResumableTaskFinder resumableTaskFinder, 
+			@Named("Tasks") final EventBus tasksBus) {
 		this.view = view;
 		view.setPresenter(this);
 		this.authenticationPresenter = authenticationPresenter;
@@ -56,7 +65,8 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 		this.authenticationToPlaceGoer = authenticationToPlaceGoer;
 		this.resumeTaskToPlaceGoer = resumeTaskToPlaceGoer;
 		this.placeController = placeController;
-		
+		this.resumableTaskFinder = resumableTaskFinder;
+		this.tasksBus = tasksBus;
 		updateAuthentication();
 	}
 
@@ -69,10 +79,10 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 				@Override
 				public void onSuccess(AuthenticationResult result) {
 					if(result.getResult()) {
-						view.setLogout();
+						setLoggedIn();
 					} else {
 						Authentication.getInstance().destroy();
-						setLogin();
+						setLoggedOut();
 					}
 				}
 				@Override
@@ -94,10 +104,10 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 						auth.setFirstName(result.getUser().getFirstName());
 						auth.setLastName(result.getUser().getLastName());
 						auth.setAffiliation(result.getUser().getAffiliation());
-						view.setLogout();
+						setLoggedIn();
 					} else {
 						Alerter.failedToLoginWithgGoogle(null);
-						setLogin();
+						setLoggedOut();
 					}
 				}
 
@@ -107,7 +117,7 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 				}
 			});
 		} else {
-			setLogin();
+			setLoggedOut();
 		}
 	}
 
@@ -181,13 +191,29 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 	@Override
 	public void onLoginLogout() {
 		if(view.isLogout()) {
-			setLogin();
+			setLoggedOut();
 			Authentication.getInstance().destroy();
 		} else if(view.isLogin())
 			authenticationPresenter.showLoginWindow();
 	}
 
-	private void setLogin() {
+	private void setLoggedIn() {
+		resumableTaskFinder.start();
+		view.setLogout();
+		
+		resumableTasksRegistration = tasksBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEvent.ResumableTasksEventHandler() {
+			@Override
+			public void onResumableTaskEvent(ResumableTasksEvent resumableTasksEvent) {
+				view.setResumableTasks(!resumableTasksEvent.getTasks().isEmpty());
+			}
+		});
+	}
+	
+	private void setLoggedOut() {
+		resumableTaskFinder.stop();
+		if(resumableTasksRegistration != null)
+			resumableTasksRegistration.removeHandler();
+		
 		view.setLogin();
 		if(placeController.getWhere() instanceof RequiresAuthenticationPlace) {
 			placeController.goTo(new HomePlace());
