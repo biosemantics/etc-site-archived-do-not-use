@@ -12,6 +12,7 @@ import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.AuthenticationPresenter;
 import edu.arizona.biosemantics.etcsite.client.common.AuthenticationToPlaceGoer;
+import edu.arizona.biosemantics.etcsite.client.common.RequiresAuthenticationPlace;
 import edu.arizona.biosemantics.etcsite.client.common.ResumeTaskToPlaceGoer;
 import edu.arizona.biosemantics.etcsite.client.common.ToPlaceGoer;
 import edu.arizona.biosemantics.etcsite.client.content.about.AboutPlace;
@@ -71,7 +72,7 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 						view.setLogout();
 					} else {
 						Authentication.getInstance().destroy();
-						view.setLogin();
+						setLogin();
 					}
 				}
 				@Override
@@ -96,7 +97,7 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 						view.setLogout();
 					} else {
 						Alerter.failedToLoginWithgGoogle(null);
-						view.setLogin();
+						setLogin();
 					}
 				}
 
@@ -106,7 +107,7 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 				}
 			});
 		} else {
-			view.setLogin();
+			setLogin();
 		}
 	}
 
@@ -180,9 +181,16 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 	@Override
 	public void onLoginLogout() {
 		if(view.isLogout()) {
-			view.setLogin();
+			setLogin();
 			Authentication.getInstance().destroy();
 		} else if(view.isLogin())
 			authenticationPresenter.showLoginWindow();
+	}
+
+	private void setLogin() {
+		view.setLogin();
+		if(placeController.getWhere() instanceof RequiresAuthenticationPlace) {
+			placeController.goTo(new HomePlace());
+		}
 	}
 }
