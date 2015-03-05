@@ -10,11 +10,13 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.Random;
+import java.util.concurrent.Future;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import javax.ws.rs.client.InvocationCallback;
 import javax.xml.bind.DatatypeConverter;
 
 import org.json.JSONException;
@@ -26,17 +28,23 @@ import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Emailer;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
+import edu.arizona.biosemantics.etcsite.server.rpc.user.UserService;
 import edu.arizona.biosemantics.etcsite.shared.model.Captcha;
 import edu.arizona.biosemantics.etcsite.shared.model.PasswordResetRequest;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.User;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.CaptchaException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IncorrectCaptchaSolutionException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.InvalidPasswordResetException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.NoSuchUserException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.OpenPasswordResetRequestException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.RegistrationFailedException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserAddException;
+import edu.arizona.biosemantics.oto.client.oto.OTOClient;
 
 /**
  * The server side implementation of the RPC service.
@@ -51,6 +59,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	private Cipher decryptCipher;
 	private DAOManager daoManager = new DAOManager();
 	private Emailer emailer = new Emailer();
+	private IUserService userService = new UserService();
 	
 	public AuthenticationService() {
 		try {
@@ -87,7 +96,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	}
 	
 	@Override
-	public AuthenticationResult loginWithGoogle(String accessToken) {
+	public AuthenticationResult loginOrSignupWithGoogle(String accessToken) throws RegistrationFailedException {
 		URL url;
 		HttpURLConnection connection = null;
 		try {
@@ -127,14 +136,9 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 				if(firstName != null && lastName != null && openIdProviderId != null) {
 					//create an account for this user if they do not have one yet.	
 					String dummyPassword = firstName + lastName;
-					String encryptedDummyPassword = BCrypt.hashpw(dummyPassword, BCrypt.gensalt()); //encrypt password
 					
-					User user = daoManager.getUserDAO().getUser(openIdProviderId);
-					if (user == null) { 
-						user = daoManager.getUserDAO().insert(
-								new User(openIdProviderId, "google", encryptedDummyPassword, firstName, lastName, "", "", ""));
-					}
-
+					
+					User user = addUser(firstName, lastName, openIdProviderId, dummyPassword, "google");		
 					String sessionId = generateSessionId(user);
 					return new AuthenticationResult(true, sessionId, new ShortUser(user));
 				}
@@ -234,5 +238,57 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 		}
 		
 		return code;
+	}
+
+	private User addUser(String firstName, String lastName, String email, String password, String openId) throws RegistrationFailedException {
+		if(openId == null) {
+			try {
+				userService.add(firstName, lastName, email, password);
+			} catch (UserAddException e) {
+				throw new RegistrationFailedException(e.getMessage());
+			}
+		} else {
+			try {
+				userService.add(email, "google", firstName, lastName, password);
+			} catch (UserAddException e) {
+				throw new RegistrationFailedException(e.getMessage());
+			}	
+		}
+		User user = daoManager.getUserDAO().getUser(email);
+		
+		try (OTOClient otoClient = new OTOClient("http://localhost:8080/otoOld/")) {
+			otoClient.open();
+			
+			edu.arizona.biosemantics.oto.common.model.User otoUser = new edu.arizona.biosemantics.oto.common.model.User();
+			otoUser.setUserEmail(user.getEmail());
+			otoUser.setPassword(user.getPassword());
+			otoUser.setAffiliation(user.getAffiliation());
+			otoUser.setFirstName(user.getFirstName());
+			otoUser.setLastName(user.getLastName());
+			otoUser.setBioportalUserId(user.getBioportalUserId());
+			otoUser.setBioportalApiKey(user.getBioportalAPIKey());
+			
+			otoClient.postUser(otoUser, new InvocationCallback<String>() {
+				@Override
+				public void completed(String response) {
+					log(LogLevel.DEBUG, "OTO post user response " + response);
+				}
+				@Override
+				public void failed(Throwable throwable) {
+					log(LogLevel.ERROR, "Couldn't post user to OTO", throwable);
+				}
+			});
+		} 
+		
+		return user;
+	}
+
+	@Override
+	public void signupUser(int captchaId, String captchaSolution,
+			String firstName, String lastName, String email, String password) throws CaptchaException, RegistrationFailedException {
+		if (!daoManager.getCaptchaDAO().isValidSolution(captchaId, captchaSolution)){
+			throw new CaptchaException();
+		}
+		addUser(firstName, lastName, email, password, null);
 	}
 }

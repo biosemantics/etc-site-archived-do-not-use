@@ -14,6 +14,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.auth.CaptchaException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.RegistrationFailedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.InvalidPasswordException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserAddException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserNotFoundException;
 
 public class UserService extends RemoteServiceServlet implements IUserService {
@@ -50,27 +51,36 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 	}
 	
 	@Override
-	public void add(
-			int captchaId, String captchaSolution, String firstName, String lastName, String email, String password) 
-			throws CaptchaException, RegistrationFailedException {
-		if (!daoManager.getCaptchaDAO().isValidSolution(captchaId, captchaSolution)){
-			throw new CaptchaException();
-		}
+	public ShortUser add(String firstName, String lastName, String email, String password) throws UserAddException {
 		String encryptedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 		
-		User emailUser = daoManager.getUserDAO().getUser(email);
-		if(emailUser == null) {
+		if(daoManager.getUserDAO().hasUser(email)) {
 			User user = daoManager.getUserDAO().insert(new User(encryptedPassword, firstName, lastName, email, "", "", ""));
 			if(user == null) {
-				throw new RegistrationFailedException("Registration Failed");
+				throw new UserAddException("Adding user failed");
 			}
-			return;
+			return new ShortUser(user);
 		} else 
-			throw new RegistrationFailedException("Email already exists");
+			throw new UserAddException("Email already exists");
 	}
 	
 	@Override
-	public void update(AuthenticationToken authenticationToken, String oldPassword, String newPassword, 
+	public ShortUser add(String openIdProviderId, String string, String firstName,
+			String lastName, String password) throws UserAddException {
+		String encryptedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+		
+		if(daoManager.getUserDAO().hasUser(openIdProviderId)) {
+			User user = daoManager.getUserDAO().insert(new User(openIdProviderId, "google", password, firstName, lastName, "", "", ""));
+			if(user == null) {
+				throw new UserAddException("Adding user failed");
+			}
+			return new ShortUser(user);
+		} else 
+			throw new UserAddException("Email already exists");
+	}
+	
+	@Override
+	public ShortUser update(AuthenticationToken authenticationToken, String oldPassword, String newPassword, 
 			ShortUser shortUser) throws UserNotFoundException, InvalidPasswordException {
 		User user = daoManager.getUserDAO().getUser(shortUser.getId());
 		if(user == null)
@@ -90,6 +100,13 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		user.setPassword(encryptedPassword);
 		
 		daoManager.getUserDAO().update(user);
+		return daoManager.getUserDAO().getShortUser(shortUser.getId());
+	}
+
+
+	@Override
+	public boolean existsUser(String email) {
+		return daoManager.getUserDAO().hasUser(email);
 	}
 	
 }

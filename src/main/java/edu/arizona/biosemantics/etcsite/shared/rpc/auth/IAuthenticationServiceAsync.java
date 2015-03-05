@@ -9,7 +9,7 @@ public interface IAuthenticationServiceAsync {
 	public void login(String user, String password,
 			AsyncCallback<AuthenticationResult> callback);
 	
-	public void loginWithGoogle(String googleAuthCode,
+	public void loginOrSignupWithGoogle(String googleAuthCode,
 			AsyncCallback<AuthenticationResult> callback);
 
 	public void isValidSession(AuthenticationToken authentication,
@@ -22,5 +22,9 @@ public interface IAuthenticationServiceAsync {
 			String newPassword, AsyncCallback<Void> callback);
 
 	public void createCaptcha(AsyncCallback<Captcha> callback);
+
+	public void signupUser(int captchaId, String captchaSolution,
+			String firstName, String lastName, String email, String password,
+			AsyncCallback<Void> callback);
 
 }

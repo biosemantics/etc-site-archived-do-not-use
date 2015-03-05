@@ -1,5 +1,6 @@
 package edu.arizona.biosemantics.etcsite.shared.rpc.auth;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -10,7 +11,7 @@ public interface IAuthenticationService extends RemoteService {
 
 	public AuthenticationResult login(String user, String password);
 
-	public AuthenticationResult loginWithGoogle(String googleAuthCode);
+	public AuthenticationResult loginOrSignupWithGoogle(String googleAuthCode) throws RegistrationFailedException;
 
 	public AuthenticationResult isValidSession(
 			AuthenticationToken authenticationToken);
@@ -22,5 +23,8 @@ public interface IAuthenticationService extends RemoteService {
 			String newPassword) throws NoSuchUserException, InvalidPasswordResetException;
 
 	public Captcha createCaptcha();
+	
+	public void signupUser(int captchaId, String captchaSolution,
+			String firstName, String lastName, String email, String password) throws CaptchaException, RegistrationFailedException;
 
 }

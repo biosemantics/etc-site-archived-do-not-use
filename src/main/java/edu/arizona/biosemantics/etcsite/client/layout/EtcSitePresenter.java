@@ -93,7 +93,7 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 		} else if (authentication.getExternalAccessToken() != null){ //check to see if this is a redirect from Google
 			String accessToken = authentication.getExternalAccessToken();
 			authentication.setExternalAccessToken(null); //don't need this anymore. 
-			authenticationService.loginWithGoogle(accessToken, new AsyncCallback<AuthenticationResult>(){
+			authenticationService.loginOrSignupWithGoogle(accessToken, new AsyncCallback<AuthenticationResult>(){
 				@Override
 				public void onSuccess(AuthenticationResult result) {
 					if(result.getResult()) {

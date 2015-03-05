@@ -81,7 +81,7 @@ public class RegisterPresenter implements IRegisterView.Presenter {
 		}
 		
 		view.setErrorMessage("");
-		userService.add(captchaId, captchaSolution, firstName, lastName, email, password, 
+		authenticationService.signupUser(captchaId, captchaSolution, firstName, lastName, email, password, 
 				new AsyncCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {

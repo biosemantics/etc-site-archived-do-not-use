@@ -13,12 +13,14 @@ public interface IUserServiceAsync {
 	
 	public void getUser(AuthenticationToken authenticationToken, AsyncCallback<ShortUser> callback);
 	
-	public void add(int captchaId, String captchaSolution, String firstName,
-			String lastName, String email, String password, AsyncCallback<Void> callback);
+	public void add(String firstName, String lastName, String email, String password, AsyncCallback<ShortUser> callback);
 	
 	public void update(
 			AuthenticationToken authenticationToken, String oldPassword,
-			String newPassword, ShortUser user, AsyncCallback<Void> callback);
+			String newPassword, ShortUser user, AsyncCallback<ShortUser> callback);
 	
-	
+	public void existsUser(String openIdProviderId, AsyncCallback<Boolean> callback);
+
+	public void add(String openIdProviderId, String string, String firstName,
+			String lastName, String encryptedDummyPassword, AsyncCallback<ShortUser> callback);
 }

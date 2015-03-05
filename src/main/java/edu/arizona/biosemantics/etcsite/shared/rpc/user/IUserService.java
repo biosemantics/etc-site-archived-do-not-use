@@ -6,6 +6,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
+import edu.arizona.biosemantics.etcsite.shared.model.User;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.CaptchaException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.RegistrationFailedException;
@@ -17,12 +18,17 @@ public interface IUserService extends RemoteService {
 	
 	public ShortUser getUser(AuthenticationToken authenticationToken) throws UserNotFoundException;
 	
-	public void add(int captchaId, String captchaSolution, String firstName,
-			String lastName, String email, String password)
-			throws CaptchaException, RegistrationFailedException;
+	public ShortUser add(String firstName, 
+			String lastName, String email, String password) throws UserAddException;
 	
-	public void update(
+	public ShortUser update(
 			AuthenticationToken authenticationToken, String oldPassword,
 			String newPasswort, ShortUser user) throws UserNotFoundException, InvalidPasswordException;
+
+	public boolean existsUser(String openIdProviderId);
+
+	public ShortUser add(String openIdProviderId, String string, String firstName,
+			String lastName, String encryptedDummyPassword) throws UserAddException;
+
 	
 }

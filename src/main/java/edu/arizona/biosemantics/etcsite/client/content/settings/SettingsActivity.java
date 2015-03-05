@@ -101,9 +101,9 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 		ShortUser newUser = new ShortUser(-1, email, firstName, lastName, affiliation, 
 				openIdProvider, "", bioportalUserId, bioportalAPIKey);
 		userService.update(Authentication.getInstance().getToken(), oldPassword, 
-				password, newUser, new AsyncCallback<Void>() {
+				password, newUser, new AsyncCallback<ShortUser>() {
 			@Override
-			public void onSuccess(Void result) {
+			public void onSuccess(ShortUser result) {
 				settingsView.clearPasswords();					
 				Alerter.savedSettingsSuccesfully();
 			}
