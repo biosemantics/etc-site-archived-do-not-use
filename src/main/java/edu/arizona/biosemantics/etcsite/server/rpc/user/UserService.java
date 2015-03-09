@@ -54,7 +54,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 	public ShortUser add(String firstName, String lastName, String email, String password) throws UserAddException {
 		String encryptedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 		
-		if(daoManager.getUserDAO().hasUser(email)) {
+		if(!daoManager.getUserDAO().hasUser(email)) {
 			User user = daoManager.getUserDAO().insert(new User(encryptedPassword, firstName, lastName, email, "", "", ""));
 			if(user == null) {
 				throw new UserAddException("Adding user failed");
