@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
+import edu.arizona.biosemantics.etcsite.shared.model.User;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 
 public interface IUserServiceAsync {
@@ -16,11 +17,13 @@ public interface IUserServiceAsync {
 	public void add(String firstName, String lastName, String email, String password, AsyncCallback<ShortUser> callback);
 	
 	public void update(
-			AuthenticationToken authenticationToken, String oldPassword,
-			String newPassword, ShortUser user, AsyncCallback<ShortUser> callback);
+			AuthenticationToken authenticationToken, String oldPassword,String newPassword, 
+			ShortUser user, AsyncCallback<ShortUser> callback );
 	
 	public void existsUser(String openIdProviderId, AsyncCallback<Boolean> callback);
 
 	public void add(String openIdProviderId, String string, String firstName,
 			String lastName, String encryptedDummyPassword, AsyncCallback<ShortUser> callback);
+	
+	
 }

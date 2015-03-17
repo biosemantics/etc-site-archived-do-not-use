@@ -28,4 +28,10 @@ public interface ISettingsView extends IsWidget {
 	void setData(ShortUser user);
 	void setErrorMessage(String str);
 	void clearPasswords();
+	
+	boolean isMatrixGenerationEmailChecked();
+	boolean isTreeGenerationEmailChecked();
+	boolean isTextCaptureEmailChecked();
+	boolean isTaxonomyComparisonEmailChecked();
+	
 }

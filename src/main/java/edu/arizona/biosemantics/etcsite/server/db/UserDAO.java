@@ -1,6 +1,15 @@
 package edu.arizona.biosemantics.etcsite.server.db;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
@@ -22,7 +31,8 @@ public class UserDAO {
 	private ShortUser createShortUser(User user) {
 		return new ShortUser(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), 
 				user.getAffiliation(), user.getOpenIdProvider(), user.getOpenIdProviderId(), 
-				user.getBioportalUserId(), user.getBioportalAPIKey());
+				user.getBioportalUserId(), user.getBioportalAPIKey(),user.getMatrixGenerationEmailChk(),user.getTreeGenerationEmailChk(),
+				user.getTextCaptureEmailChk(),user.getTaxonomyComparisonEmailChk());
 	}
 
 	public User getUser(int id) {
@@ -32,6 +42,22 @@ public class UserDAO {
 			ResultSet result = query.execute();
 			while (result.next()) {
 				user = createUser(result);
+			}
+			User usr= null;
+			usr=getEmailPreference(id);
+			if(usr==null )
+			{
+			user.setMatrixGenerationEmailChk(true);
+			user.setTaxonomyComparisonEmailChk(true);
+			user.setTextCaptureEmailChk(true);
+			user.setTreeGenerationEmailChk(true);	
+			}
+			else
+			{
+			user.setMatrixGenerationEmailChk(usr.getMatrixGenerationEmailChk());
+			user.setTaxonomyComparisonEmailChk(usr.getTaxonomyComparisonEmailChk());
+			user.setTextCaptureEmailChk(usr.getTextCaptureEmailChk());
+			user.setTreeGenerationEmailChk(usr.getTreeGenerationEmailChk());
 			}
 		}catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't get user", e);
@@ -126,9 +152,40 @@ public class UserDAO {
 			query.setParameter(9, user.getBioportalAPIKey());
 			query.setParameter(10, user.getId());
 			query.execute();
+			serializeEmailPreference(user);
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't update matrix generation configuration", e);
 		}
+	}
+	private void serializeEmailPreference( User user )
+	{
+		String fileName = user.getId()+".ser";
+		//User usr= new User(Name,LastName,email,matrixGenerationEmail,textCaptureEmail,treeGenerationEmail,taxonomyComparisonEmail);
+		String file= Configuration.etcFiles + File.separator + "profiles" + File.separator +  fileName;
+		try(ObjectOutput output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
+			output.writeObject(user);
+		}
+		catch(Exception ex){
+			log(LogLevel.ERROR, ex.getMessage(), ex);
+			 //super.doUnexpectedFailure(ex);
+			 
+		}
+	}
+	public User getEmailPreference(int userId ) {
+		User usr = null;  
+		try {
+			String fileName = userId+".ser";
+			String file= Configuration.etcFiles + File.separator + "profiles" + File.separator +  fileName;
+			ObjectInput input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
+			 usr = (User)input.readObject();
+			return usr;
+			} 
+		catch(ClassNotFoundException | IOException e) {
+			log(LogLevel.ERROR, e.getMessage(), e);
+			// super.doUnexpectedFailure(e);
+			 return usr;
+		}
+			
 	}
 	
 	public List<ShortUser> getUsers() {
@@ -159,7 +216,11 @@ public class UserDAO {
 	}
 
 	public boolean hasUser(String email) {
-		return this.getUser(email) != null;
+		User user = this.getUser(email);
+//		return this.getUser(email) != null;
+		if (user !=null)
+			return true;
+		else return false;
 	}
 
 }

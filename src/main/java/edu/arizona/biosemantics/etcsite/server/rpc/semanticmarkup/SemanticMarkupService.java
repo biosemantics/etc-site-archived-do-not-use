@@ -52,6 +52,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
 import edu.arizona.biosemantics.etcsite.shared.model.TaxonGroup;
+import edu.arizona.biosemantics.etcsite.shared.model.User;
 import edu.arizona.biosemantics.etcsite.shared.model.process.semanticmarkup.BracketValidator;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.Description;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.LearnInvocation;
@@ -180,6 +181,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		} catch (PermissionDeniedException e) {
 			throw new SemanticMarkupException(task);
 		}
+		
+		
 		return task;
 	}
 
@@ -338,6 +341,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 								task.setTaskStage(newTaskStage);
 								daoManager.getTaskDAO().updateTask(task);
 								sendFinishedParsingEmail(task);
+								
 							}
 						} else {
 							task.setFailed(true);
@@ -890,16 +894,30 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	
 	private void sendFinishedLearningTermsEmail(Task task){
 		String email = daoManager.getUserDAO().getUser(task.getUser().getId()).getEmail();
+		
+		User usr= null;
+		usr=daoManager.getUserDAO().getEmailPreference(task.getUser().getId());
+		//usr=daoManager.getUserDAO().getEmailPreference(daoManager.getUserDAO().getUser(task.getUser().getId()).getId());
+		if (usr==null || usr.getTextCaptureEmailChk())
+		{
 		String subject = Configuration.finishedSemanticMarkupLearnSubject.replace("<taskname>", task.getName());
 		String body = Configuration.finishedSemanticMarkupLearnBody.replace("<taskname>", task.getName());
 		emailer.sendEmail(email, subject, body);
+		}
+		
 	}
 	
 	private void sendFinishedParsingEmail(Task task){
 		String email = daoManager.getUserDAO().getUser(task.getUser().getId()).getEmail();
+		
+		User usr= null;
+		usr=daoManager.getUserDAO().getEmailPreference(daoManager.getUserDAO().getUser(task.getUser().getId()).getId());
+		if (usr==null || usr.getTextCaptureEmailChk())
+		{
 		String subject = Configuration.finishedSemanticMarkupParseSubject.replace("<taskname>", task.getName());
 		String body = Configuration.finishedSemanticMarkupParseBody.replace("<taskname>", task.getName());
 		emailer.sendEmail(email, subject, body);
+		}
 	}
 
 	private String getNumberOfSentences() {

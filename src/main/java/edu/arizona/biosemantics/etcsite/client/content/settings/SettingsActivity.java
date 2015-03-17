@@ -51,6 +51,8 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 				Alerter.failedToGetUsers(caught);
 			}
 		});
+
+		
 	}
 
 	@Override
@@ -63,7 +65,15 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 		final String affiliation = settingsView.getAffiliation();
 		final String bioportalUserId = settingsView.getBioportalUserId();
 		final String bioportalAPIKey = settingsView.getBioportalAPIKey();
+		
 		final String oldPassword;
+		
+		final boolean matrixGenerationEmail = settingsView.isMatrixGenerationEmailChecked();
+		final boolean textCaptureEmail = settingsView.isTextCaptureEmailChecked();
+		final boolean treeGenerationEmail = settingsView.isTreeGenerationEmailChecked();
+		final boolean taxonomyComparisonEmail = settingsView.isTaxonomyComparisonEmailChecked() ;
+		
+		
 		if (openIdProvider.equals("none"))
 			oldPassword = settingsView.getOldPassword();
 		else
@@ -98,8 +108,9 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 		}
 		
 		final String password= newPassword.length() > 0 ? newPassword : oldPassword;
-		ShortUser newUser = new ShortUser(-1, email, firstName, lastName, affiliation, 
-				openIdProvider, "", bioportalUserId, bioportalAPIKey);
+		ShortUser newUser = new ShortUser(Authentication.getInstance().getToken().getUserId(), email, firstName, lastName, affiliation, 
+				openIdProvider, "", bioportalUserId, bioportalAPIKey,matrixGenerationEmail,textCaptureEmail,treeGenerationEmail,taxonomyComparisonEmail);
+		
 		userService.update(Authentication.getInstance().getToken(), oldPassword, 
 				password, newUser, new AsyncCallback<ShortUser>() {
 			@Override

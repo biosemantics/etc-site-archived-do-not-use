@@ -15,6 +15,11 @@ public class ShortUser implements Serializable {
 	private String bioportalUserId = "";
 	private String bioportalApiKey = "";
 	
+	private boolean matrixGenerationEmailChk;
+	private boolean treeGenerationEmailChk;
+	private boolean textCaptureEmailChk;
+	private boolean taxonomyComparisonEmailChk;
+	
 	public ShortUser() { }
 	
 	public ShortUser(int id, String email, String firstName, String lastName, String affiliation, 
@@ -29,6 +34,25 @@ public class ShortUser implements Serializable {
 		this.bioportalUserId = bioportalUserId;
 		this.bioportalApiKey = bioportalApiKey;
 	}
+	
+	public ShortUser(int id, String email, String firstName, String lastName, String affiliation, 
+			String openIdProvider, String openIdProivderId, String bioportalUserId, String bioportalApiKey,
+			boolean matrixGenerationEmailChk,boolean treeGenerationEmailChk,boolean textCaptureEmailChk,
+			boolean taxonomyComparisonEmailChk) {
+		this.id = id;
+		this.email = email;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.affiliation = affiliation;
+		this.openIdProvider = openIdProvider;
+		this.openIdProviderId = openIdProivderId;
+		this.bioportalUserId = bioportalUserId;
+		this.bioportalApiKey = bioportalApiKey;
+		this.matrixGenerationEmailChk=matrixGenerationEmailChk;
+		this.treeGenerationEmailChk=treeGenerationEmailChk;
+		this.textCaptureEmailChk=textCaptureEmailChk;
+		this.taxonomyComparisonEmailChk=taxonomyComparisonEmailChk;
+	}
 
 	public ShortUser(User user) {
 		this.id = user.getId();
@@ -40,6 +64,10 @@ public class ShortUser implements Serializable {
 		this.openIdProviderId = user.getOpenIdProviderId();
 		this.bioportalUserId = user.getBioportalUserId();
 		this.bioportalApiKey = user.getBioportalAPIKey();
+		this.matrixGenerationEmailChk=user.getMatrixGenerationEmailChk();
+		this.treeGenerationEmailChk=user.getTreeGenerationEmailChk();
+		this.textCaptureEmailChk=user.getTextCaptureEmailChk();
+		this.taxonomyComparisonEmailChk=user.getTaxonomyComparisonEmailChk();
 	}
 
 	public int getId() {
@@ -127,6 +155,39 @@ public class ShortUser implements Serializable {
 			return getFullNameEmail();
 		return getFullNameEmail() + " at " + affiliation;
 	}
+	
+	public boolean getMatrixGenerationEmailChk() {
+		return matrixGenerationEmailChk;
+	}
+
+	public void setMatrixGenerationEmailChk(boolean matrixGenerationEmailChk) {
+		this.matrixGenerationEmailChk = matrixGenerationEmailChk;
+	}
+	
+	public boolean getTreeGenerationEmailChk() {
+		return treeGenerationEmailChk;
+	}
+
+	public void setTreeGenerationEmailChk(boolean treeGenerationEmailChk) {
+		this.treeGenerationEmailChk = treeGenerationEmailChk;
+	}
+
+	public boolean getTextCaptureEmailChk() {
+		return textCaptureEmailChk;
+	}
+
+	public void setTextCaptureEmailChk(boolean textCaptureEmailChk) {
+		this.textCaptureEmailChk = textCaptureEmailChk;
+	}
+
+	public boolean getTaxonomyComparisonEmailChk() {
+		return taxonomyComparisonEmailChk;
+	}
+
+	public void setTaxonomyComparisonEmailChk(boolean taxonomyComparisonEmailChk) {
+		this.taxonomyComparisonEmailChk = taxonomyComparisonEmailChk;
+	}
+
 
 	@Override
 	public int hashCode() {

@@ -19,6 +19,11 @@ public class User implements Serializable {
 	private String bioportalAPIKey = "";
 	private Date created;
 	
+	private boolean matrixGenerationEmailChk;
+	private boolean treeGenerationEmailChk;
+	private boolean textCaptureEmailChk;
+	private boolean taxonomyComparisonEmailChk;
+	
 	public User() { }
 	
 	public User(int id, String openIdProviderId, String openIdProvider, String password, String firstName, String lastName, String email, String affiliation, String bioportalUserId, String bioportalAPIKey, Date created) {
@@ -58,6 +63,18 @@ public class User implements Serializable {
 		this.affiliation = affiliation;
 		this.bioportalUserId = bioportalUserId;
 		this.bioportalAPIKey = bioportalAPIKey;
+	}
+	
+	public User(String firstName, String lastName, String email, boolean matrixGenerationEmailChk,
+	boolean treeGenerationEmailChk,boolean textCaptureEmailChk,boolean taxonomyComparisonEmailChk)
+	 {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.matrixGenerationEmailChk = matrixGenerationEmailChk;
+		this.treeGenerationEmailChk = treeGenerationEmailChk;
+		this.textCaptureEmailChk = textCaptureEmailChk;
+		this.taxonomyComparisonEmailChk = taxonomyComparisonEmailChk;
 	}
 	
 	@Override
@@ -176,5 +193,38 @@ public class User implements Serializable {
 				+ "\n\tBioportal User ID: " + bioportalUserId
 				+ "\n\tCreated: " + created;
 	}
+	
+	public boolean getMatrixGenerationEmailChk() {
+		return matrixGenerationEmailChk;
+	}
 
+	public void setMatrixGenerationEmailChk(boolean matrixGenerationEmailChk) {
+		this.matrixGenerationEmailChk = matrixGenerationEmailChk;
+	}
+	
+	public boolean getTreeGenerationEmailChk() {
+		return treeGenerationEmailChk;
+	}
+
+	public void setTreeGenerationEmailChk(boolean treeGenerationEmailChk) {
+		this.treeGenerationEmailChk = treeGenerationEmailChk;
+	}
+
+	public boolean getTextCaptureEmailChk() {
+		return textCaptureEmailChk;
+	}
+
+	public void setTextCaptureEmailChk(boolean textCaptureEmailChk) {
+		this.textCaptureEmailChk = textCaptureEmailChk;
+	}
+
+	public boolean getTaxonomyComparisonEmailChk() {
+		return taxonomyComparisonEmailChk;
+	}
+
+	public void setTaxonomyComparisonEmailChk(boolean taxonomyComparisonEmailChk) {
+		this.taxonomyComparisonEmailChk = taxonomyComparisonEmailChk;
+	}
+
+	
 }

@@ -2,6 +2,7 @@ package edu.arizona.biosemantics.etcsite.shared.rpc.user;
 
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -22,13 +23,12 @@ public interface IUserService extends RemoteService {
 			String lastName, String email, String password) throws UserAddException;
 	
 	public ShortUser update(
-			AuthenticationToken authenticationToken, String oldPassword,
-			String newPasswort, ShortUser user) throws UserNotFoundException, InvalidPasswordException;
+			AuthenticationToken authenticationToken, String oldPassword,String newPasswort,
+			ShortUser user) throws UserNotFoundException, InvalidPasswordException;
 
 	public boolean existsUser(String openIdProviderId);
 
 	public ShortUser add(String openIdProviderId, String string, String firstName,
 			String lastName, String encryptedDummyPassword) throws UserAddException;
-
 	
 }

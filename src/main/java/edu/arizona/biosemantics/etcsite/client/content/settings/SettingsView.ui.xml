@@ -13,18 +13,19 @@
 		}
 		.panel {
 			position: absolute;
-			left: 0px;
-			width: 350px;
+			align: center;
+			
+			width: 950px;
 		}
 		.errorLabel {
 			color:red;
 		}
 	</ui:style>
 	<g:ScrollPanel>
-	<lay:CenteredContentPanel>
-		<g:HTMLPanel styleName="{style.panel}">
+	<lay:CenteredContentPanel >
+		<g:HTMLPanel styleName="{style.panel}" >
 	
-			<div align="left" style="padding:7px"> 
+			<div align="center" style="padding:7px"> 
 				<g:Label>&nbsp;&nbsp;&nbsp;&nbsp;My Account</g:Label>
 			</div>
 			<hr width="300px" noshade="noshade"></hr>
@@ -77,6 +78,25 @@
 					<td align="right"><g:Label>Confirm New Password: </g:Label></td>
 					<td><g:PasswordTextBox ui:field="confirmNewPasswordBox" ></g:PasswordTextBox></td>
 				</tr>
+				<tr>
+					<td align="right"><g:Label>Receive Email for Matrix Generation </g:Label></td>
+					<td><g:CheckBox ui:field="matrixGenerationEmailCheckBox" value="false"></g:CheckBox></td>
+				</tr><tr>
+					<td align="right"><g:Label>Receive Email for Tree Generation </g:Label></td>
+					<td><g:CheckBox ui:field="treeGenerationEmailCheckBox" value="false"></g:CheckBox></td>
+				</tr>
+				<tr>
+					<td align="right"> <g:Label>Receive Email for Text Capture</g:Label> </td>
+					<td><g:CheckBox ui:field="textCaptureEmailCheckBox" value="false"></g:CheckBox></td>
+				</tr>
+				<tr>
+				<td align="right">
+				<g:Label>Receive Email for Taxonomy Comparison</g:Label></td> <td>
+					<g:CheckBox ui:field="taxonomyComparisonEmailCheckBox" value="false"></g:CheckBox></td>
+					</tr>
+				
+				
+				
 			</table>
 			
 			<div align="center" style="padding:7px"> 
@@ -87,7 +107,7 @@
 			 
 			<div style="margin:10px">
 				
-				<div align="right" style="padding:5px">
+				<div align="center " style="padding:5px">
 					<g:Button ui:field="submitButton">Submit Changes</g:Button>
 				</div>
 			</div>

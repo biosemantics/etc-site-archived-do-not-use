@@ -7,23 +7,31 @@
 	.bold {
 		font-weight: bold;
 	}
+	.descriptionFont{
+	font-size: 14px;	
+    }
 	</ui:style>
 	<g:ScrollPanel>
 		<lay:CenteredContentPanel>
 			<g:VerticalPanel>
 				<g:FlowPanel>
-					<g:InlineLabel styleName="{style.bold}">File Manager:&nbsp;</g:InlineLabel>
-					<g:InlineLabel>Files you own and shared with you are listed here,
+					<g:InlineLabel styleName="{style.bold} {style.descriptionFont}">File Manager:&nbsp;</g:InlineLabel>
+					<g:InlineLabel styleName="{style.descriptionFont}">Files you own and shared with you are listed here,
 						including the files used as input to different tasks/analyses and
 						the files output by the software.</g:InlineLabel>
 				</g:FlowPanel>
-				<g:InlineLabel>* Select a folder to activate usable buttons. </g:InlineLabel>
-				<g:InlineLabel>* Do not upload files directly to Owned folder. Instead, open the 
+			<g:InlineLabel>&nbsp;</g:InlineLabel>
+				<g:InlineLabel styleName="{style.descriptionFont}">* Select a folder to activate usable buttons. </g:InlineLabel>
+				<g:InlineLabel>&nbsp;</g:InlineLabel>
+				<g:InlineLabel styleName="{style.descriptionFont}">* Do not upload files directly to Owned folder. Instead, open the 
 				    Owned folder and create sub-folders in Owned to hold your files for each project.</g:InlineLabel>
-				<g:InlineLabel>* Within a sub-folder, you can either upload files by first selecting 
+				    <g:InlineLabel>&nbsp;</g:InlineLabel>
+				<g:InlineLabel styleName="{style.descriptionFont}">* Within a sub-folder, you can either upload files by first selecting 
 				    the type of file to be uploaded, or you can create new files for Text Capture by clicking on Create Input for Text Capture button </g:InlineLabel>
-				<g:InlineLabel>* Each project should have a folder, do not mix files and sub-folders in one folder.</g:InlineLabel>
-				<g:InlineLabel>* To start a tool, mouse over the greenish horizontal line above these instructions to expand it, then select the tool there, or, go to Home, then select a tool.</g:InlineLabel>
+				<g:InlineLabel>&nbsp;</g:InlineLabel>
+				<g:InlineLabel styleName="{style.descriptionFont}">* Each project should have a folder, do not mix files and sub-folders in one folder.</g:InlineLabel>
+				<g:InlineLabel>&nbsp;</g:InlineLabel>
+				<g:InlineLabel styleName="{style.descriptionFont}">* To start a tool, mouse over the greenish horizontal line above these instructions to expand it, then select the tool there, or, go to Home, then select a tool.</g:InlineLabel>
 				<my:IManagableFileTreeView ui:field="managableFileTreeView"></my:IManagableFileTreeView>
 
 				<!-- <g:cell> <g:InlineLabel styleName="{style.bold}">File Manager: </g:InlineLabel> 

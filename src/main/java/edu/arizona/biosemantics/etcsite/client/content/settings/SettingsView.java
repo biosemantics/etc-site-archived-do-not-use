@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.CheckBox;
 
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 
@@ -58,6 +59,19 @@ public class SettingsView extends Composite implements ISettingsView {
 	@UiField
 	Label errorLabel;
 	
+	@UiField
+	CheckBox matrixGenerationEmailCheckBox;
+
+	@UiField
+	CheckBox treeGenerationEmailCheckBox;
+
+	@UiField
+	CheckBox textCaptureEmailCheckBox;
+
+	@UiField
+	CheckBox taxonomyComparisonEmailCheckBox;
+	
+	
 	private Presenter presenter;
 	private final int FIELD_WIDTH = 180;
 	
@@ -87,6 +101,7 @@ public class SettingsView extends Composite implements ISettingsView {
 		this.presenter = presenter;
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void setData(ShortUser user){
 		firstNameBox.setText(user.getFirstName());
@@ -99,6 +114,12 @@ public class SettingsView extends Composite implements ISettingsView {
 		oldPasswordBox.setText("");
 		newPasswordBox.setText("");
 		confirmNewPasswordBox.setText("");
+		
+		matrixGenerationEmailCheckBox.setValue(user.getMatrixGenerationEmailChk());
+		treeGenerationEmailCheckBox.setValue(user.getTreeGenerationEmailChk());
+		textCaptureEmailCheckBox.setValue(user.getTextCaptureEmailChk());
+		taxonomyComparisonEmailCheckBox.setValue(user.getTaxonomyComparisonEmailChk());
+		
 		
 		firstNameBox.setEnabled(true);
 		lastNameBox.setEnabled(true);
@@ -189,4 +210,21 @@ public class SettingsView extends Composite implements ISettingsView {
 	public String getOpenIdProvider() {
 		return user.getOpenIdProvider();
 	}	
+	
+	public boolean isMatrixGenerationEmailChecked() {
+		return matrixGenerationEmailCheckBox.getValue();
+	}
+	
+	public boolean isTreeGenerationEmailChecked() {
+		return treeGenerationEmailCheckBox.getValue();
+	}
+
+	public boolean isTextCaptureEmailChecked() {
+		return textCaptureEmailCheckBox.getValue();
+	}
+	
+	public boolean isTaxonomyComparisonEmailChecked() {
+		return taxonomyComparisonEmailCheckBox.getValue();
+	}
+	
 }

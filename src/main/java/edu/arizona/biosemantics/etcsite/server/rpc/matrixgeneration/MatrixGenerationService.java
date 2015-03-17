@@ -56,6 +56,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
+import edu.arizona.biosemantics.etcsite.shared.model.User;
 import edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.CopyFilesFailedException;
@@ -533,11 +534,16 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 	
 	private void sendFinishedGeneratingMatrixEmail(Task task){
-		String email = daoManager.getUserDAO().getUser(task.getUser().getId()).getEmail();
-		String subject = Configuration.finishedMatrixgenerationGenerateSubject.replace("<taskname>", task.getName());
-		String body = Configuration.finishedMatrixgenerationGenerateBody.replace("<taskname>", task.getName());
-		
-		emailer.sendEmail(email, subject, body);
+		User usr= null;
+		usr=daoManager.getUserDAO().getEmailPreference(task.getUser().getId());
+		if (usr==null || usr.getMatrixGenerationEmailChk())
+		{
+			String email = daoManager.getUserDAO().getUser(task.getUser().getId()).getEmail();
+			String subject = Configuration.finishedMatrixgenerationGenerateSubject.replace("<taskname>", task.getName());
+			String body = Configuration.finishedMatrixgenerationGenerateBody.replace("<taskname>", task.getName());
+			
+			emailer.sendEmail(email, subject, body);
+		}
 	}
 
 	private TaxonMatrix createTaxonMatrix(String filePath) throws ClassNotFoundException, IOException, JDOMException {

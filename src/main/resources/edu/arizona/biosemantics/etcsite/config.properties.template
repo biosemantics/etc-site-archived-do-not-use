@@ -41,6 +41,7 @@ captcha_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/captcha
 fileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/users
 compressedFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/compressedFiles
 tempFiles=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp
+etcFiles=
 
 #XPath Object Model
 xPathObjectModel=http://saxon.sf.net/jaxp/xpath/om

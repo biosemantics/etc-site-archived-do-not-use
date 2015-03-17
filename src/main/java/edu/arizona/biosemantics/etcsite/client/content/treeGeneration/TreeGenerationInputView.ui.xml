@@ -22,7 +22,7 @@
 	}
 	
 	.note {
-		font-size: 10px;
+		font-size: 14px;
 		color: #555555;
 	}
 	
@@ -33,6 +33,9 @@
 	.bold {
 		font-weight: bold;
 	}
+	
+	.DescriptionFont {font-size: 14px;}
+	
 	</ui:style>
 	<g:ScrollPanel>
 		<lay:CenteredContentPanel>
@@ -50,7 +53,7 @@
 							<g:InlineLabel styleName="{style.bold}">INPUT
 								REQUIREMENTS:&nbsp;
 							</g:InlineLabel>
-							<g:InlineLabel>
+							<g:InlineLabel styleName="{style.DescriptionFont}">
 								Key Generation takes as input either a folder output by the Matrix
 								Generation tool or a folder containing a taxon-by-character
 								matrix file in .csv (comma separated values) format.
@@ -59,22 +62,26 @@
 						<g:InlineLabel>&nbsp;
 						</g:InlineLabel>
 						<g:FlowPanel>
-							<g:InlineLabel styleName="{style.bold}">1.&nbsp;
+							<g:InlineLabel styleName="{style.bold} {style.DescriptionFont}">1.&nbsp;
 							</g:InlineLabel>
-							<g:InlineLabel>
+							<g:InlineLabel styleName="{style.DescriptionFont}">
 								If you do not have the input ready, please run the Matrix Generation
 								tool first to generate it, or upload a folder using the &nbsp;
 							</g:InlineLabel>
-							<g:Anchor ui:field="fileManagerAnchor">File Manager</g:Anchor>
-							<g:InlineLabel>
+							<g:Anchor ui:field="fileManagerAnchor" styleName="{style.DescriptionFont}">File Manager</g:Anchor>
+							<g:InlineLabel styleName="{style.DescriptionFont}">
 								. The upload folder should contain only a single valid
 								taxon-by-character matrix file in .csv format.
 							</g:InlineLabel>
 						</g:FlowPanel>
 						<g:FlowPanel>
-							<g:InlineLabel styleName="{style.bold}">2.&nbsp;
+						<g:InlineLabel>&nbsp;
+						</g:InlineLabel>
+						</g:FlowPanel>
+						<g:FlowPanel>
+							<g:InlineLabel styleName="{style.bold} {style.DescriptionFont}">2.&nbsp;
 							</g:InlineLabel>
-							<g:InlineLabel>
+							<g:InlineLabel styleName="{style.DescriptionFont}">
 								Then provide the information below to start the process:
 							</g:InlineLabel>
 						</g:FlowPanel>
@@ -86,16 +93,23 @@
 								<g:cell verticalAlignment="ALIGN_TOP">
 									<g:Label>Task Name:</g:Label>
 								</g:cell>
-								<g:InlineLabel styleName="{style.note}">
+								<!-- <g:InlineLabel styleName="{style.note}">
 									Provide a name to
 									identify your task/analysis. This name will be used in Task Manager.</g:InlineLabel>
 								 <g:InlineLabel styleName="{style.note}">Also Task Name + Input Folder Name = Output Folder Name
-								</g:InlineLabel>
+								</g:InlineLabel> -->
+								
 							</g:VerticalPanel>
 							<g:cell verticalAlignment="ALIGN_MIDDLE">
 								<g:TextBox ui:field="taskNameTextBox"></g:TextBox>
 							</g:cell>
 						</g:HorizontalPanel>
+						<g:HorizontalPanel>
+								<g:InlineLabel styleName="{style.note}">
+								Provide a name to identify your task/analysis. This name will be used in Task Manager.
+								Also Task Name + Input Folder Name = Output Folder Name
+								</g:InlineLabel>
+								</g:HorizontalPanel>
 					</g:VerticalPanel>
 					<g:VerticalPanel styleName="{style.subMenuEntry}">
 						<g:HorizontalPanel>
@@ -103,14 +117,19 @@
 								<g:cell verticalAlignment="ALIGN_TOP">
 									<g:Label>Select Folder:</g:Label>
 								</g:cell>
-								<g:InlineLabel styleName="{style.note}">
+								<!-- <g:InlineLabel styleName="{style.note}">
 									Select a valid folder containing a csv matrix file
-								</g:InlineLabel>
+								</g:InlineLabel> -->
 							</g:VerticalPanel>
 							<g:Button ui:field="inputButton">Select Input</g:Button>
 							<g:cell verticalAlignment="ALIGN_TOP">
 								<g:Label ui:field="inputLabel" styleName="{style.important}"></g:Label>
 							</g:cell>
+						</g:HorizontalPanel>
+						<g:HorizontalPanel>
+						<g:InlineLabel styleName="{style.note}">
+									Select a valid folder containing a csv matrix file
+						</g:InlineLabel>
 						</g:HorizontalPanel>
 					</g:VerticalPanel>
 					<g:VerticalPanel styleName="{style.padding}">

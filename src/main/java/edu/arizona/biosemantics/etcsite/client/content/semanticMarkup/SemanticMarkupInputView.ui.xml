@@ -22,7 +22,7 @@
 	}
 	
 	.note {
-		font-size: 10px;
+		font-size: 14px;
 		color: #555555;
 	}
 	
@@ -54,7 +54,7 @@
 							<g:InlineLabel styleName="{style.bold}">INPUT
 								REQUIREMENTS:&nbsp;
 							</g:InlineLabel>
-							<g:InlineLabel>
+							<g:InlineLabel styleName="DescriptionFont">
 								Text Capture takes textual morphological descriptions of one or
 								more taxa as input. The input files, which must be in English and
 								conform to this&nbsp;
@@ -62,7 +62,7 @@
 							<g:Anchor
 								href="http://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupInput.xsd"
 								target="_blank" styleName="{style.padding}">format</g:Anchor>
-							<g:InlineLabel>
+							<g:InlineLabel styleName="DescriptionFont">
 			            	, can be created using the 'Create Input for Text Capture' function in the&nbsp;
 							</g:InlineLabel>
 							<g:Anchor ui:field="fileManagerAnchor" styleName="{style.clickable}">File
@@ -78,17 +78,18 @@
 						<g:FlowPanel>
 							<g:InlineLabel styleName="{style.bold}">1.&nbsp;
 							</g:InlineLabel>
-							<g:InlineLabel>
+							<g:InlineLabel styleName="DescriptionFont">
 								If you have not done so, please upload or create input taxon
 								descriptions using the&nbsp;
 							</g:InlineLabel>
 							<g:Anchor ui:field="fileManagerAnchor2" styleName="{style.clickable}">File
 								Manager</g:Anchor>
 						</g:FlowPanel>
+						<g:InlineLabel>&nbsp;</g:InlineLabel>
 						<g:FlowPanel>
 							<g:InlineLabel styleName="{style.bold}">2.&nbsp;
 							</g:InlineLabel>
-							<g:InlineLabel>
+							<g:InlineLabel styleName="DescriptionFont">
 								Then, provide the information below and click on "Next Step in Text Capture" to start the
 								process:
 							</g:InlineLabel>
@@ -102,15 +103,22 @@
 								<g:cell verticalAlignment="ALIGN_TOP">
 									<g:Label>Task Name:</g:Label>
 								</g:cell>
-								<g:InlineLabel styleName="{style.note}">
+						<!-- 	<g:InlineLabel styleName="{style.note} DescriptionFont">
 									Provide a name to
-									identify your task/analysis. This name will be used in Task Manager.</g:InlineLabel>
-								 <g:InlineLabel styleName="{style.note}">Also Task Name + Input Folder Name = Output Folder Name
-								</g:InlineLabel>
+									identify your task/analysis. This name will be used in Task Manager.</g:InlineLabel> 
+								 <g:InlineLabel styleName="{style.note} DescriptionFont">Also Task Name + Input Folder Name = Output Folder Name
+								</g:InlineLabel>-->
 							</g:VerticalPanel>
 							<g:cell verticalAlignment="ALIGN_MIDDLE">
 								<g:TextBox ui:field="taskNameTextBox"></g:TextBox>
 							</g:cell>
+						</g:HorizontalPanel>
+						<g:HorizontalPanel styleName="inputForm">
+						<g:InlineLabel styleName="{style.note} DescriptionFont">
+							Provide a name to identify your task/analysis. This name will be used in Task Manager.
+							Task Name + Input Folder Name = Output Folder Name
+						</g:InlineLabel>
+								
 						</g:HorizontalPanel>
 					</g:VerticalPanel>
 					<g:VerticalPanel styleName="{style.subMenuEntry}">
@@ -119,14 +127,14 @@
 								<g:cell verticalAlignment="ALIGN_TOP">
 									<g:Label>Select Folder:</g:Label>
 								</g:cell>
-								<g:InlineLabel styleName="{style.note}">
-									Select a folder of taxon
-									descriptions
-								</g:InlineLabel>
+<!-- 								<g:InlineLabel styleName="{style.note}"> -->
+<!-- 									Select a folder of taxon -->
+<!-- 									descriptions -->
+<!-- 								</g:InlineLabel> 
 								<g:InlineLabel styleName="{style.note}">
 									conforming to the format
 									requirements.
-								</g:InlineLabel>
+								</g:InlineLabel>-->
 							</g:VerticalPanel>
 							<g:cell verticalAlignment="ALIGN_MIDDLE">
 								<g:Button ui:field="inputButton">Select Folder</g:Button>
@@ -135,6 +143,12 @@
 								<g:Label ui:field="inputLabel" styleName="{style.important}"></g:Label>
 							</g:cell>
 						</g:HorizontalPanel>
+						<g:HorizontalPanel styleName="inputForm">
+						<g:InlineLabel styleName="{style.note} DescriptionFont">
+						Select a folder of taxon descriptions conforming to the format requirements.
+						</g:InlineLabel>
+								
+						</g:HorizontalPanel>
 					</g:VerticalPanel>
 					<g:VerticalPanel styleName="{style.subMenuEntry}">
 						<g:HorizontalPanel styleName="inputForm">
@@ -142,17 +156,23 @@
 								<g:cell verticalAlignment="ALIGN_TOP">
 									<g:Label>Select Taxon Group:</g:Label>
 								</g:cell>
-								<g:InlineLabel styleName="{style.note}">
-									select taxon group relevant 
-								</g:InlineLabel>
-								<g:InlineLabel styleName="{style.note}">
-									to your text.
-								</g:InlineLabel>
+<!-- 								<g:InlineLabel styleName="{style.note}"> 
+ 									select taxon group relevant 
+ 								</g:InlineLabel> 
+ 								<g:InlineLabel styleName="{style.note}"> 
+ 									to your text. 
+ 								</g:InlineLabel> -->
 							</g:VerticalPanel>
 							<g:cell verticalAlignment="ALIGN_MIDDLE">
 								<g:ListBox ui:field="glossaryListBox"
 									visibleItemCount="1"></g:ListBox>
 							</g:cell>
+						</g:HorizontalPanel>
+						<g:HorizontalPanel styleName="inputForm">
+						<g:InlineLabel styleName="{style.note} DescriptionFont">
+						Select taxon group relevant to your text.
+						</g:InlineLabel>
+								
 						</g:HorizontalPanel>
 					</g:VerticalPanel>
 					<g:VerticalPanel styleName="{style.subMenuEntry}">
@@ -161,15 +181,21 @@
 								<g:cell verticalAlignment="ALIGN_TOP">
 									<g:Label>Use Empty Glossary:</g:Label>
 								</g:cell>
-								<g:InlineLabel styleName="{style.note}">
+							<!-- <g:InlineLabel styleName="{style.note}">
 									If checked no glossary will be used. 
 									If unchecked the glossary/ontology relevant 
 									to the selected taxon group will be used.
-								</g:InlineLabel>
+								</g:InlineLabel> -->	
 							</g:VerticalPanel>
 							<g:cell verticalAlignment="ALIGN_MIDDLE">
 								<g:CheckBox ui:field="emptyGlossaryCheckbox"></g:CheckBox>
 							</g:cell>
+						</g:HorizontalPanel>
+						<g:HorizontalPanel>
+						<g:InlineLabel styleName="{style.note}">
+						If checked no glossary will be used. If unchecked the glossary/ontology relevant 
+						to the selected taxon group will be used.
+						</g:InlineLabel>
 						</g:HorizontalPanel>
 					</g:VerticalPanel>
 					<g:FlowPanel styleName="{style.padding}">
