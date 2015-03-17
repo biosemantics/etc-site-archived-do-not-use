@@ -25,10 +25,15 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
+import com.google.inject.name.Named;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsPlace;
+import edu.arizona.biosemantics.etcsite.client.event.AuthenticationEvent;
+import edu.arizona.biosemantics.etcsite.client.event.AuthenticationEvent.AuthenticationEventType;
 import edu.arizona.biosemantics.etcsite.client.layout.IEtcSiteView.Presenter;
 
 /**
@@ -92,7 +97,8 @@ public class MyPlaceHistoryHandler extends PlaceHistoryHandler {
 
   private Place defaultPlace = Place.NOWHERE;
 
-private Presenter etcSitePresenter;
+private EventBus eventBus;
+
 
   /**
    * Create a new PlaceHistoryHandler with a {@link DefaultHistorian}. The
@@ -102,8 +108,8 @@ private Presenter etcSitePresenter;
    * 
    * @param mapper a {@link PlaceHistoryMapper} instance
    */
-  public MyPlaceHistoryHandler(PlaceHistoryMapper mapper, IEtcSiteView.Presenter etcSitePresenter) {
-    this(mapper, (Historian) GWT.create(DefaultHistorian.class), etcSitePresenter);
+  public MyPlaceHistoryHandler(PlaceHistoryMapper mapper, @Named("EtcSite") EventBus eventBus) {
+    this(mapper, (Historian) GWT.create(DefaultHistorian.class), eventBus);
   }
 
   /**
@@ -113,11 +119,11 @@ private Presenter etcSitePresenter;
    * @param historian a {@link Historian} instance
  * @param etcSitePresenter 
    */
-  public MyPlaceHistoryHandler(PlaceHistoryMapper mapper, Historian historian, Presenter etcSitePresenter) {
+  public MyPlaceHistoryHandler(PlaceHistoryMapper mapper, Historian historian, EventBus eventBus) {
 	  super(mapper);
     this.mapper = mapper;
     this.historian = historian;
-    this.etcSitePresenter = etcSitePresenter;
+    this.eventBus = eventBus;
   }
 
   /**
@@ -176,18 +182,20 @@ private Presenter etcSitePresenter;
   }
 
   private void handleHistoryToken(String token) {
-
+	  Place newPlace = null;
+	  
+	  if ("".equals(token)) {
+        newPlace = defaultPlace;
+      }
+	  
+	  //Google OAuth landing here //TODO: Use OAuth2 for Web Server Applications https://developers.google.com/accounts/docs/OAuth2WebServer 
 	  if (token.startsWith("access_token=")){
 		  String accessToken = token.substring(token.indexOf("access_token=")+13, token.indexOf("&"));
 		  Authentication.getInstance().setExternalAccessToken(accessToken);
-		  etcSitePresenter.updateAuthentication();
+		  eventBus.fireEvent(new AuthenticationEvent(AuthenticationEventType.TO_BE_DETERMINED));
 	  }
-    Place newPlace = null;
-
-    if ("".equals(token)) {
-      newPlace = defaultPlace;
-    }
-
+	  
+    
     if (newPlace == null) {
       newPlace = mapper.getPlace(token);
     }

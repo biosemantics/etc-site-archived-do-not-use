@@ -197,6 +197,10 @@
 					<artifactId>app</artifactId>
 					<groupId>org.eclipse.equinox</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>oto-client</artifactId>
+					<groupId>edu.arizona.biosemantics.oto</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -204,6 +208,12 @@
 		  <artifactId>oto</artifactId>
 		  <version>0.0.81-SNAPSHOT</version>
 		  <classifier>sources</classifier>
+		  <exclusions>
+		  	<exclusion>
+		  		<artifactId>oto-client</artifactId>
+		  		<groupId>edu.arizona.biosemantics.oto</groupId>
+		  	</exclusion>
+		  </exclusions>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
@@ -216,16 +226,6 @@
 			<artifactId>matrix-generation</artifactId>
 			<version>0.1.38-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>edu.arizona.biosemantics.oto</groupId>
-			<artifactId>oto-client</artifactId>
-			<version>0.0.43-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>edu.arizona.biosemantics.oto</groupId>
-			<artifactId>oto-common</artifactId>
-			<version>0.0.14-SNAPSHOT</version>
-		</dependency> 
 		<dependency>
 			<groupId>edu.arizona.biosemantics</groupId>
 			<artifactId>bioportal-client</artifactId>
@@ -354,6 +354,27 @@
 		  <artifactId>alignment</artifactId>
 		  <version>0.0.35-SNAPSHOT</version>
 		  <classifier>classes</classifier>
+		</dependency>
+		<dependency>
+		<groupId>edu.arizona.biosemantics.oto</groupId>
+		<artifactId>oto-client</artifactId>
+		<version>0.0.46-SNAPSHOT</version>
+			</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.3.6</version>
+		</dependency>
+		<dependency>
+			<groupId>edu.arizona.biosemantics.oto</groupId>
+			<artifactId>oto-common</artifactId>
+			<version>0.0.17-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+		  <groupId>edu.arizona.biosemantics.oto</groupId>
+		  <artifactId>oto-common</artifactId>
+		  <version>0.0.17-SNAPSHOT</version>
+		  <classifier>sources</classifier>
 		</dependency>
 	</dependencies>
 

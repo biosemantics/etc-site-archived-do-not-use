@@ -3,7 +3,9 @@ package edu.arizona.biosemantics.etcsite.client.content.settings;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 
-public class SettingsPlace extends Place  {
+import edu.arizona.biosemantics.etcsite.client.common.RequiresAuthenticationPlace;
+
+public class SettingsPlace extends Place implements RequiresAuthenticationPlace  {
 
 	public static class Tokenizer implements PlaceTokenizer<SettingsPlace>{
 

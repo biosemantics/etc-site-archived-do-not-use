@@ -14,6 +14,7 @@ public class ShortUser implements Serializable {
 	private String openIdProviderId = "";
 	private String bioportalUserId = "";
 	private String bioportalApiKey = "";
+	private String otoAccountEmail = "";
 	
 	private boolean matrixGenerationEmailChk;
 	private boolean treeGenerationEmailChk;
@@ -23,21 +24,8 @@ public class ShortUser implements Serializable {
 	public ShortUser() { }
 	
 	public ShortUser(int id, String email, String firstName, String lastName, String affiliation, 
-			String openIdProvider, String openIdProivderId, String bioportalUserId, String bioportalApiKey) {
-		this.id = id;
-		this.email = email;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.affiliation = affiliation;
-		this.openIdProvider = openIdProvider;
-		this.openIdProviderId = openIdProivderId;
-		this.bioportalUserId = bioportalUserId;
-		this.bioportalApiKey = bioportalApiKey;
-	}
-	
-	public ShortUser(int id, String email, String firstName, String lastName, String affiliation, 
-			String openIdProvider, String openIdProivderId, String bioportalUserId, String bioportalApiKey,
-			boolean matrixGenerationEmailChk,boolean treeGenerationEmailChk,boolean textCaptureEmailChk,
+			String openIdProvider, String openIdProivderId, String bioportalUserId, 
+			String bioportalApiKey, String otoAccountEmail,boolean matrixGenerationEmailChk,boolean treeGenerationEmailChk,boolean textCaptureEmailChk,
 			boolean taxonomyComparisonEmailChk) {
 		this.id = id;
 		this.email = email;
@@ -48,6 +36,8 @@ public class ShortUser implements Serializable {
 		this.openIdProviderId = openIdProivderId;
 		this.bioportalUserId = bioportalUserId;
 		this.bioportalApiKey = bioportalApiKey;
+		this.otoAccountEmail = otoAccountEmail;
+
 		this.matrixGenerationEmailChk=matrixGenerationEmailChk;
 		this.treeGenerationEmailChk=treeGenerationEmailChk;
 		this.textCaptureEmailChk=textCaptureEmailChk;
@@ -68,6 +58,7 @@ public class ShortUser implements Serializable {
 		this.treeGenerationEmailChk=user.getTreeGenerationEmailChk();
 		this.textCaptureEmailChk=user.getTextCaptureEmailChk();
 		this.taxonomyComparisonEmailChk=user.getTaxonomyComparisonEmailChk();
+		this.otoAccountEmail = user.getOtoAccountEmail();
 	}
 
 	public int getId() {
@@ -140,6 +131,14 @@ public class ShortUser implements Serializable {
 
 	public void setBioportalApiKey(String bioportalApiKey) {
 		this.bioportalApiKey = bioportalApiKey;
+	}
+
+	public String getOtoAccountEmail() {
+		return otoAccountEmail;
+	}
+
+	public void setOtoAccountEmail(String otoAccountEmail) {
+		this.otoAccountEmail = otoAccountEmail;
 	}
 
 	public String getFullName() {

@@ -45,6 +45,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.auth.RegistrationFailedExcept
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserAddException;
 import edu.arizona.biosemantics.oto.client.oto.OTOClient;
+import edu.arizona.biosemantics.oto.common.model.CreateUserResult;
 
 /**
  * The server side implementation of the RPC service.
@@ -132,13 +133,15 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 				} catch(JSONException e) {
 					log(LogLevel.ERROR, "Couldn't parse JSON", e);
 				}
-				
+							
 				if(firstName != null && lastName != null && openIdProviderId != null) {
 					//create an account for this user if they do not have one yet.	
 					String dummyPassword = firstName + lastName;
 					
-					
-					User user = addUser(firstName, lastName, openIdProviderId, dummyPassword, "google");		
+					User user = daoManager.getUserDAO().getUser(openIdProviderId);
+					if (user == null) {
+						user = addUser(firstName, lastName, openIdProviderId, dummyPassword, "google");
+					}		
 					String sessionId = generateSessionId(user);
 					return new AuthenticationResult(true, sessionId, new ShortUser(user));
 				}
@@ -255,40 +258,16 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 			}	
 		}
 		User user = daoManager.getUserDAO().getUser(email);
-		
-		try (OTOClient otoClient = new OTOClient("http://localhost:8080/otoOld/")) {
-			otoClient.open();
-			
-			edu.arizona.biosemantics.oto.common.model.User otoUser = new edu.arizona.biosemantics.oto.common.model.User();
-			otoUser.setUserEmail(user.getEmail());
-			otoUser.setPassword(user.getPassword());
-			otoUser.setAffiliation(user.getAffiliation());
-			otoUser.setFirstName(user.getFirstName());
-			otoUser.setLastName(user.getLastName());
-			otoUser.setBioportalUserId(user.getBioportalUserId());
-			otoUser.setBioportalApiKey(user.getBioportalAPIKey());
-			
-			otoClient.postUser(otoUser, new InvocationCallback<String>() {
-				@Override
-				public void completed(String response) {
-					log(LogLevel.DEBUG, "OTO post user response " + response);
-				}
-				@Override
-				public void failed(Throwable throwable) {
-					log(LogLevel.ERROR, "Couldn't post user to OTO", throwable);
-				}
-			});
-		} 
-		
 		return user;
 	}
 
 	@Override
-	public void signupUser(int captchaId, String captchaSolution,
+	public AuthenticationResult signupUser(int captchaId, String captchaSolution,
 			String firstName, String lastName, String email, String password) throws CaptchaException, RegistrationFailedException {
 		if (!daoManager.getCaptchaDAO().isValidSolution(captchaId, captchaSolution)){
 			throw new CaptchaException();
 		}
 		addUser(firstName, lastName, email, password, null);
+		return this.login(email, password);
 	}
 }

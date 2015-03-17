@@ -3,9 +3,14 @@ package edu.arizona.biosemantics.etcsite.client.common;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
+import com.google.web.bindery.event.shared.EventBus;
 import com.sencha.gxt.widget.core.client.Dialog;
 
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView.ILoginListener;
+import edu.arizona.biosemantics.etcsite.client.event.AuthenticationEvent;
+import edu.arizona.biosemantics.etcsite.client.event.AuthenticationEvent.AuthenticationEventType;
+import edu.arizona.biosemantics.etcsite.client.layout.IEtcSiteView.Presenter;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 
@@ -15,12 +20,14 @@ public class LoginPresenter implements ILoginView.Presenter {
 	private ILoginView loginView;
 	private ILoginListener currentListener;
 	private Dialog dialog;
+	private EventBus eventBus;
 
 	@Inject
-	public LoginPresenter(ILoginView loginView, IAuthenticationServiceAsync authenticationService) {
+	public LoginPresenter(ILoginView loginView, IAuthenticationServiceAsync authenticationService, @Named("EtcSite")EventBus eventBus) {
 		this.loginView = loginView;
 		loginView.setPresenter(this);
 		this.authenticationService = authenticationService;
+		this.eventBus = eventBus;
 		
 		dialog = new Dialog();
 		dialog.setBodyBorder(false);
@@ -54,6 +61,8 @@ public class LoginPresenter implements ILoginView.Presenter {
 					dialog.hide();
 					if(currentListener != null)
 						currentListener.onLogin();
+					
+					eventBus.fireEvent(new AuthenticationEvent(AuthenticationEventType.LOGGEDIN));
 				} else {
 					if(currentListener != null)
 						currentListener.onLoginFailure();

@@ -108,8 +108,7 @@ public class AuthenticationPresenter {
 		loginPresenter.show(new ILoginListener() {
 			@Override
 			public void onLogin() {
-				//placeController.goTo(new LoggedInPlace());
-				listener.onLoggedIn(); //let the caller 'go to' a different place. 
+				listener.onLoggedIn(); 
 			}
 			@Override
 			public void onLoginFailure() {
@@ -142,7 +141,7 @@ public class AuthenticationPresenter {
 	}
 	
 	public void showRegisterWindow(final LoggedInListener listener){
-		registerPresenter.show(new IRegisterListener() {
+		registerPresenter.show();/*new IRegisterListener() {
 			@Override
 			public void onRegister() {
 				loginPresenter.setMessage("Your account has been registered!");
@@ -156,7 +155,7 @@ public class AuthenticationPresenter {
 			public void onRegisterFailure() {
 				Alerter.failedToRegister(null);
 			}
-		});
+		});*/
 	}
 	
 	public void showResetPasswordWindow(final LoggedInListener listener){

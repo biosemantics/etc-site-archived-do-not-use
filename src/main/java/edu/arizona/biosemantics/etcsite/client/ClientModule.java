@@ -278,7 +278,7 @@ public class ClientModule extends AbstractGinModule {
 		bind(PlaceHistoryMapper.class).to(MyPlaceHistoryMapper.class).in(Singleton.class);
 		bind(PlaceHistoryHandler.class).toProvider(PlaceHistoryHandlerProvider.class).in(Singleton.class);
 		
-		bind(EventBus.class).annotatedWith(Names.named("Tasks")).to(SimpleEventBus.class).in(Singleton.class);
+		bind(EventBus.class).annotatedWith(Names.named("EtcSite")).to(SimpleEventBus.class).in(Singleton.class);
 		bind(EventBus.class).annotatedWith(Names.named("AnnotationReview")).to(SimpleEventBus.class).in(Singleton.class);
 		//bind(HandlerManager.class).annotatedWith(Names.named("OTOLite")).toProvider(HandlerManagerProvider.class).in(Singleton.class);
 		

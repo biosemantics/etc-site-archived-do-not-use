@@ -18,22 +18,23 @@ public class PlaceHistoryHandlerProvider implements Provider<PlaceHistoryHandler
 	private EventBus eventBus;
 	private Place defaultPlace;
 	private Presenter etcSitePresenter;
+	private EventBus etcSiteEventBus;
 
 	@Inject
 	public PlaceHistoryHandlerProvider(PlaceHistoryMapper placeHistoryMapper, 
 			PlaceController placeController, @Named("ActivitiesBus")EventBus eventBus, 
-			@Named("DefaultPlace")Place defaultPlace, 
-			IEtcSiteView.Presenter etcSitePresenter) {
+			@Named("DefaultPlace")Place defaultPlace,
+			@Named("EtcSite")EventBus etcSiteEventBus) {
 		this.placeHistoryMapper = placeHistoryMapper;
 		this.placeController = placeController;
 		this.eventBus = eventBus;
 		this.defaultPlace = defaultPlace;
-		this.etcSitePresenter = etcSitePresenter;
+		this.etcSiteEventBus = etcSiteEventBus;
 	}
 	
 	@Override
 	public PlaceHistoryHandler get() {
-		MyPlaceHistoryHandler placeHistoryHandler = new MyPlaceHistoryHandler(placeHistoryMapper, etcSitePresenter);
+		MyPlaceHistoryHandler placeHistoryHandler = new MyPlaceHistoryHandler(placeHistoryMapper, etcSiteEventBus);
 		placeHistoryHandler.register(placeController, eventBus, defaultPlace);
 		return placeHistoryHandler;
 	}

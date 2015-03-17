@@ -10,12 +10,12 @@ public interface IRegisterView extends IsWidget {
 		void onCancel();
 		
 		void onCreate();
-
-		void show(IRegisterListener listener);
 		
 		String getEmail();
 		
 		void clearAllBoxes();
+
+		void show();
 	}
 	
 	public interface IRegisterListener {

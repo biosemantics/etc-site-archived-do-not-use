@@ -34,6 +34,7 @@
   <inherits name='edu.arizona.biosemantics.common.biology.Biology'/>
   <inherits name='edu.arizona.biosemantics.euler.alignment.Euler_alignment'/>
   <inherits name='edu.ucdavis.cs.cfgproject.CfgProject'/>
+  <inherits name='edu.arizona.biosemantics.oto.common.Common'/>
   
   <!-- Include GWTUpload library -->
   <inherits name="gwtupload.GWTUpload"/>

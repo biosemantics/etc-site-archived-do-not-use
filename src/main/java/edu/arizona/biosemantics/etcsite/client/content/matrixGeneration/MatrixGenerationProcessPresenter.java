@@ -29,14 +29,14 @@ public class MatrixGenerationProcessPresenter implements IMatrixGenerationProces
 	public MatrixGenerationProcessPresenter(final IMatrixGenerationProcessView view, 
 			IMatrixGenerationServiceAsync matrixGenerationService, 
 			final PlaceController placeController, 
-			@Named("Tasks") final EventBus tasksBus) {
+			@Named("EtcSite") final EventBus eventBus) {
 		super();
 		this.view = view;
 		view.setPresenter(this);
 		this.matrixGenerationService = matrixGenerationService;
 		this.placeController = placeController;
 		
-		tasksBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEvent.ResumableTasksEventHandler() {	
+		eventBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEvent.ResumableTasksEventHandler() {	
 			@Override
 			public void onResumableTaskEvent(ResumableTasksEvent resumableTasksEvent) {
 				if(task != null && resumableTasksEvent.getTasks().containsKey(task.getId())) {
@@ -46,7 +46,7 @@ public class MatrixGenerationProcessPresenter implements IMatrixGenerationProces
 				}
 			}
 		});
-		tasksBus.addHandler(FailedTasksEvent.TYPE, new FailedTasksEvent.FailedTasksEventHandler() {
+		eventBus.addHandler(FailedTasksEvent.TYPE, new FailedTasksEvent.FailedTasksEventHandler() {
 			@Override
 			public void onFailedTasksEvent(FailedTasksEvent failedTasksEvent) {
 				if(task != null && failedTasksEvent.getTasks().containsKey(task.getId())) {

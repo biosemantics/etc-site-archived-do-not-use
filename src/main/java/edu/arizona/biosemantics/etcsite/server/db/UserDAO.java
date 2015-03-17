@@ -31,7 +31,8 @@ public class UserDAO {
 	private ShortUser createShortUser(User user) {
 		return new ShortUser(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), 
 				user.getAffiliation(), user.getOpenIdProvider(), user.getOpenIdProviderId(), 
-				user.getBioportalUserId(), user.getBioportalAPIKey(),user.getMatrixGenerationEmailChk(),user.getTreeGenerationEmailChk(),
+				user.getBioportalUserId(), user.getBioportalAPIKey(), user.getOtoAccountEmail(),
+				user.getMatrixGenerationEmailChk(),user.getTreeGenerationEmailChk(),
 				user.getTextCaptureEmailChk(),user.getTaxonomyComparisonEmailChk());
 	}
 
@@ -76,11 +77,13 @@ public class UserDAO {
 		String affiliation = result.getString(8);
 		String bioportalUserId = result.getString(9);
 		String bioportalAPIKey = result.getString(10);
-		Date created = result.getTimestamp(11);
+		String otoAccountEmail = result.getString(11);
+		String otoAuthenticationToken = result.getString(12);
+		Date created = result.getTimestamp(13);
 
 		return new User(id, openIdProviderId, openIdProvider, password,
 				firstName, lastName, email, affiliation, bioportalUserId,
-				bioportalAPIKey, created);
+				bioportalAPIKey, otoAccountEmail, otoAuthenticationToken, created);
 	}
 
 	public User getUser(String email) {
@@ -110,8 +113,8 @@ public class UserDAO {
 		User result = null;
 		try(Query query = new Query(
 			"INSERT INTO `etcsite_users`(`openIdProviderId`, `openidprovider`, `password`, `firstname`, `lastname`, " +
-			"`email`, `affiliation`, `bioportaluserid`, `bioportalapikey`) VALUES" +
-			" (?, ?, ?, ?, ?, ?, ?, ?, ?)");) {
+			"`email`, `affiliation`, `bioportaluserid`, `bioportalapikey`, `otoaccountemail`, `otoauthenticationtoken`) VALUES" +
+			" (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");) {
 			query.setParameter(1, user.getOpenIdProviderId());
 			query.setParameter(2, user.getOpenIdProvider());
 			query.setParameter(3, user.getPassword());
@@ -121,6 +124,8 @@ public class UserDAO {
 			query.setParameter(7, user.getAffiliation());
 			query.setParameter(8, user.getBioportalUserId());
 			query.setParameter(9, user.getBioportalAPIKey());
+			query.setParameter(10, user.getOtoAccountEmail());
+			query.setParameter(11, user.getOtoAuthenticationToken());
 			query.execute();
 			ResultSet generatedKeys = query.getGeneratedKeys();
 			if(generatedKeys.next()) {
@@ -140,7 +145,7 @@ public class UserDAO {
 	
 	public void update(User user) {
 		try (Query query = new Query("UPDATE etcsite_users SET openidproviderid = ?, openidprovider = ?, password = ?, "
-				+ "firstname = ?, lastname = ?, email = ?, affiliation = ?, bioportaluserid = ?, bioportalapikey = ? WHERE id = ?")) {
+				+ "firstname = ?, lastname = ?, email = ?, affiliation = ?, bioportaluserid = ?, bioportalapikey = ?, otoaccountemail = ?, otoauthenticationtoken = ? WHERE id = ?")) {
 			query.setParameter(1, user.getOpenIdProviderId());
 			query.setParameter(2, user.getOpenIdProvider());
 			query.setParameter(3, user.getPassword());
@@ -150,7 +155,9 @@ public class UserDAO {
 			query.setParameter(7, user.getAffiliation());
 			query.setParameter(8, user.getBioportalUserId());
 			query.setParameter(9, user.getBioportalAPIKey());
-			query.setParameter(10, user.getId());
+			query.setParameter(10, user.getOtoAccountEmail());
+			query.setParameter(11, user.getOtoAuthenticationToken());
+			query.setParameter(12, user.getId());
 			query.execute();
 			serializeEmailPreference(user);
 		} catch(Exception e) {

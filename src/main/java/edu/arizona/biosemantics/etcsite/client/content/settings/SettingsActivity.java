@@ -2,8 +2,11 @@ package edu.arizona.biosemantics.etcsite.client.content.settings;
 
 import com.google.gwt.activity.shared.MyAbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.regexp.shared.RegExp;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
@@ -13,14 +16,16 @@ import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
+import edu.arizona.biosemantics.etcsite.client.common.ServerSetup;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.user.InvalidOTOAccountException;
 
 public class SettingsActivity extends MyAbstractActivity implements ISettingsView.Presenter {
 
 	private IUserServiceAsync userService;
-	private ISettingsView settingsView;
+	private ISettingsView view;
 
 	@Inject
 	public SettingsActivity(ISettingsView settingsView, 
@@ -31,24 +36,53 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 			IResetPasswordView.Presenter resetPasswordPresenter, 
 			IUserServiceAsync userService) {
 		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter);
-		this.settingsView = settingsView;
+		this.view = settingsView;
 		this.userService = userService;
 	}
 	
 	@Override
 	public void start(AcceptsOneWidget panel, EventBus eventBus) {
-		settingsView.setPresenter(this);
-		panel.setWidget(settingsView.asWidget());
+		view.setPresenter(this);
+		panel.setWidget(view.asWidget());
 		
+		//there will be a code when user decided to create OTO Account using Google from Google's redirect upon initial request
+		String value = Window.Location.getParameter("code");	
+		if(value != null) {
+			Alerter.startLoading();
+			userService.createOTOAccount(Authentication.getInstance().getToken(), value, new AsyncCallback<edu.arizona.biosemantics.oto.common.model.User>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					Alerter.stopLoading();
+					Alerter.failedToCreateOTOAccount(caught);
+					populateUserData();
+				}
+				@Override
+				public void onSuccess(edu.arizona.biosemantics.oto.common.model.User result) {
+					view.setOTOAccount(result.getUserEmail(), result.getPassword());
+					view.setLinkedOTOAccount(result.getUserEmail());
+					//populateUserData();
+					Alerter.stopLoading();
+					Alerter.successfullyCreatedOTOAccount();
+				}
+			});
+		} else {
+			populateUserData();
+		}
+	}
+	
+	@Override
+	public void update() {}
+
+	private void populateUserData() {
 		userService.getUser(Authentication.getInstance().getToken(), new AsyncCallback<ShortUser>() {
 			@Override
 			public void onSuccess(ShortUser user) {
-				settingsView.setData(user);
+				view.setData(user);
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
-				Alerter.failedToGetUsers(caught);
+				Alerter.failedToGetUser(caught);
 			}
 		});
 
@@ -56,10 +90,20 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 	}
 
 	@Override
-	public void onSubmit() {
-		final String openIdProvider = settingsView.getOpenIdProvider();
+	public void onSave() {
+		ShortUser user = view.getData();
+		userService.update(Authentication.getInstance().getToken(), user, new AsyncCallback<ShortUser>() {
+			@Override
+			public void onSuccess(ShortUser result) {
+				Alerter.savedSettingsSuccesfully();
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToUpdateUser(caught);
+			}
+		});
 		
-		final String firstName = settingsView.getFirstName();
+		/*final String firstName = settingsView.getFirstName();
 		final String lastName = settingsView.getLastName();
 		final String email = settingsView.getEmail();
 		final String affiliation = settingsView.getAffiliation();
@@ -123,10 +167,72 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 			public void onFailure(Throwable caught) {
 				Alerter.failedToUpdateUser(caught);
 			}
+		});*/
+	}
+
+	@Override
+	public void onPasswordSave() {
+		userService.update(Authentication.getInstance().getToken(), view.getCurrentPassword(), view.getNewPassword(), new AsyncCallback<ShortUser>() {
+			@Override
+			public void onSuccess(ShortUser result) {
+				Alerter.savedSettingsSuccesfully();
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToUpdateUser(caught);
+			}
 		});
 	}
 
 	@Override
-	public void update() {}
+	public void onNewOTOGoogleAccount() {
+		String url = "https://accounts.google.com/o/oauth2/auth?scope=https://www.googleapis.com/auth/userinfo.profile%20https://www.googleapis.com/auth/userinfo.email"
+				+ "&client_id=" + ServerSetup.getInstance().getSetup().getGoogleClientId() 
+				+ "&response_type=code"
+				+ "&redirect_uri=" + ServerSetup.getInstance().getSetup().getGoogleRedirectURI() + "#" + SettingsPlace.class.getSimpleName() + ":"; 
+		Location.replace(url);
+	}
+
+	@Override
+	public void onNewOTOAccount(final String email, final String password) {
+		Alerter.startLoading();
+		userService.createOTOAccount(Authentication.getInstance().getToken(), email, password, new AsyncCallback<edu.arizona.biosemantics.oto.common.model.User>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.stopLoading();
+				Alerter.failedToCreateOTOAccount(caught);
+			}
+			@Override
+			public void onSuccess(edu.arizona.biosemantics.oto.common.model.User result) {
+				view.setOTOAccount(result.getUserEmail(), result.getPassword());
+				view.setLinkedOTOAccount(email);
+				//populateUserData();
+				Alerter.stopLoading();
+				Alerter.successfullyCreatedOTOAccount();
+			}
+		});
+	}
+
+	@Override
+	public void onSaveOTOAccount(final boolean share, final String email, final String password) {
+		Alerter.startLoading();
+		userService.saveOTOAccount(Authentication.getInstance().getToken(), share, email, password, new AsyncCallback<Void>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.stopLoading();
+				if(caught instanceof InvalidOTOAccountException) {
+					Alerter.invalidOTOAccount(caught);
+				} else {
+					Alerter.failedToSaveOTOAccount(caught);
+				}
+			}
+			@Override
+			public void onSuccess(Void result) {
+				if(share)
+					view.setLinkedOTOAccount(email);
+				Alerter.stopLoading();
+			} 
+		});
+	}
 
 }

@@ -24,7 +24,7 @@ public interface IAuthenticationService extends RemoteService {
 
 	public Captcha createCaptcha();
 	
-	public void signupUser(int captchaId, String captchaSolution,
+	public AuthenticationResult signupUser(int captchaId, String captchaSolution,
 			String firstName, String lastName, String email, String password) throws CaptchaException, RegistrationFailedException;
 
 }
