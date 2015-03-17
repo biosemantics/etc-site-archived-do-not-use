@@ -30,7 +30,7 @@ public class SemanticMarkupParsePresenter implements ISemanticMarkupParseView.Pr
 	public SemanticMarkupParsePresenter(final ISemanticMarkupParseView view, 
 			ISemanticMarkupServiceAsync semanticMarkupService, 
 			final PlaceController placeController, 
-			@Named("Tasks") final EventBus tasksBus) {
+			@Named("EtcSite") final EventBus eventBus) {
 		super();
 		this.view = view;
 		view.setPresenter(this);
@@ -38,7 +38,7 @@ public class SemanticMarkupParsePresenter implements ISemanticMarkupParseView.Pr
 		this.placeController = placeController;
 		
 		view.setNonResumable();
-		tasksBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEvent.ResumableTasksEventHandler() {	
+		eventBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEvent.ResumableTasksEventHandler() {	
 			@Override
 			public void onResumableTaskEvent(ResumableTasksEvent resumableTasksEvent) {
 				if(task != null && resumableTasksEvent.getTasks().containsKey(task.getId())) {
@@ -48,7 +48,7 @@ public class SemanticMarkupParsePresenter implements ISemanticMarkupParseView.Pr
 				}
 			}
 		});
-		tasksBus.addHandler(FailedTasksEvent.TYPE, new FailedTasksEvent.FailedTasksEventHandler() {
+		eventBus.addHandler(FailedTasksEvent.TYPE, new FailedTasksEvent.FailedTasksEventHandler() {
 			@Override
 			public void onFailedTasksEvent(FailedTasksEvent failedTasksEvent) {
 				if(task != null && failedTasksEvent.getTasks().containsKey(task.getId())) {

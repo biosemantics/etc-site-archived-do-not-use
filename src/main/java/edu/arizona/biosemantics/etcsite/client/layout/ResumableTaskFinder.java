@@ -20,13 +20,13 @@ public class ResumableTaskFinder {
 
 	private Timer resumableTasksTimer;
 	private ITaskServiceAsync taskService;
-	private EventBus tasksBus;
+	private EventBus eventBus;
 	private int resumableTasksTime;
 
 	@Inject
-	public ResumableTaskFinder(final ITaskServiceAsync taskService, @Named("Tasks") final EventBus tasksBus, @Named("CheckResumables")int resumableTasksTime) {
+	public ResumableTaskFinder(final ITaskServiceAsync taskService, @Named("EtcSite") final EventBus eventBus, @Named("CheckResumables")int resumableTasksTime) {
 		this.taskService = taskService;
-		this.tasksBus = tasksBus;
+		this.eventBus = eventBus;
 		this.resumableTasksTimer = new Timer() {
 	        public void run() {
 	        	if(Authentication.getInstance().isSet()) {
@@ -43,8 +43,8 @@ public class ResumableTaskFinder {
 									failedTasks.put(id, task);
 							}
 							
-							tasksBus.fireEvent(new ResumableTasksEvent(resumableTasks));
-							tasksBus.fireEvent(new FailedTasksEvent(failedTasks));
+							eventBus.fireEvent(new ResumableTasksEvent(resumableTasks));
+							eventBus.fireEvent(new FailedTasksEvent(failedTasks));
 						}
 						@Override
 						public void onFailure(Throwable caught) {

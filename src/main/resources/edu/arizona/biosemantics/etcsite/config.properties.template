@@ -1,4 +1,5 @@
 oto2Url=
+otoUrl=http://biosemantics.arizona.edu:8080/OTO
 classpath= #Order matters for log4j properties pickup. Put log4j path first
 
 #Files
@@ -52,6 +53,7 @@ compressCommand=/var/lib/etcsite/bin/zip.sh [sourceParent] [source] [destination
 #Sign in with Google
 google_redirect_URI=
 google_client_id=
+google_secret=
 
 #Email address (used to send email to users):
 email_smtp_server=

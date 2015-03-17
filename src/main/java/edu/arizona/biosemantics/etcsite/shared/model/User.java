@@ -18,10 +18,14 @@ public class User implements Serializable {
 	private String bioportalUserId = "";
 	private String bioportalAPIKey = "";
 	private Date created;
+
+	private String otoAuthenticationToken;
+	private String otoAccountEmail;
 	
 	public User() { }
 	
-	public User(int id, String openIdProviderId, String openIdProvider, String password, String firstName, String lastName, String email, String affiliation, String bioportalUserId, String bioportalAPIKey, Date created) {
+	public User(int id, String openIdProviderId, String openIdProvider, String password, String firstName, String lastName, String email, String affiliation, String bioportalUserId, 
+			String bioportalAPIKey, String otoAccountEmail, String otoAuthenticationToken, Date created) {
 		this.id = id;
 		this.openIdProviderId = openIdProviderId;
 		this.openIdProvider = openIdProvider;
@@ -32,11 +36,13 @@ public class User implements Serializable {
 		this.affiliation = affiliation;
 		this.bioportalUserId = bioportalUserId;
 		this.bioportalAPIKey = bioportalAPIKey;
+		this.otoAccountEmail = otoAccountEmail;
+		this.otoAuthenticationToken = otoAuthenticationToken;
 		this.created = created;
 	}
 	
 	public User(String openIdProviderId, String openIdProvider, String password, String firstName, String lastName, 
-			String affiliation, String bioportalUserId, String bioportalAPIKey) {
+			String affiliation, String bioportalUserId, String bioportalAPIKey, String otoAccountEmail, String otoAuthenticationToken) {
 		this.openIdProviderId = openIdProviderId;
 		this.openIdProvider = openIdProvider;
 		this.password = password;
@@ -46,10 +52,12 @@ public class User implements Serializable {
 		this.affiliation = affiliation;
 		this.bioportalUserId = bioportalUserId;
 		this.bioportalAPIKey = bioportalAPIKey;
+		this.otoAccountEmail = otoAccountEmail;
+		this.otoAuthenticationToken = otoAuthenticationToken;
 	}
 	
 	public User(String password, String firstName, String lastName, 
-			String email, String affiliation, String bioportalUserId, String bioportalAPIKey) {
+			String email, String affiliation, String bioportalUserId, String bioportalAPIKey, String otoAccountEmail, String otoAuthenticationToken) {
 		this.openIdProvider = "none";
 		this.password = password;
 		this.firstName = firstName;
@@ -58,6 +66,8 @@ public class User implements Serializable {
 		this.affiliation = affiliation;
 		this.bioportalUserId = bioportalUserId;
 		this.bioportalAPIKey = bioportalAPIKey;
+		this.otoAccountEmail = otoAccountEmail;
+		this.otoAuthenticationToken = otoAuthenticationToken;
 	}
 	
 	@Override
@@ -147,6 +157,23 @@ public class User implements Serializable {
 
 	public void setCreated(Date created) {
 		this.created = created;
+	}
+	
+	
+	public void setOtoAccountEmail(String otoAccountEmail) {
+		this.otoAccountEmail = otoAccountEmail;
+	}
+	
+	public String getOtoAuthenticationToken() {
+		return otoAuthenticationToken;
+	}
+
+	public void setOtoAuthenticationToken(String otoAuthenticationToken) {
+		this.otoAuthenticationToken = otoAuthenticationToken;
+	}
+
+	public String getOtoAccountEmail() {
+		return otoAccountEmail;
 	}
 
 	@Override

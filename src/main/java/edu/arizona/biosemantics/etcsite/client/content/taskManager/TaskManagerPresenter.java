@@ -50,7 +50,7 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 	
 	@Inject 
 	public TaskManagerPresenter(final ITaskManagerView view, PlaceController placeController, 
-			@Named("Tasks")EventBus eventBus,
+			@Named("EtcSite")EventBus eventBus,
 			final ITaskServiceAsync taskService, 
 			ISemanticMarkupServiceAsync semanticMarkupService,
 			IMatrixGenerationServiceAsync matrixGenerationService, 

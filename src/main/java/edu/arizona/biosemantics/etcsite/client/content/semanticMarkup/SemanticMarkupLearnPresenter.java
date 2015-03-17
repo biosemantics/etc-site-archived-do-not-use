@@ -25,21 +25,21 @@ public class SemanticMarkupLearnPresenter implements ISemanticMarkupLearnView.Pr
 	private ISemanticMarkupServiceAsync semanticMarkupService;
 	private Task task;
 	private PlaceController placeController;
-	private EventBus tasksBus;
+	private EventBus eventBus;
 	
 	@Inject
 	public SemanticMarkupLearnPresenter(final ISemanticMarkupLearnView view, 
 			ISemanticMarkupServiceAsync semanticMarkupService, 
 			final PlaceController placeController, 
-			@Named("Tasks") final EventBus tasksBus) {
+			@Named("EtcSite") final EventBus eventBus) {
 		super();
 		this.view = view;
 		view.setPresenter(this);
 		this.semanticMarkupService = semanticMarkupService;
 		this.placeController = placeController;
-		this.tasksBus = tasksBus;
+		this.eventBus = eventBus;
 		view.setNonResumable();
-		tasksBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEvent.ResumableTasksEventHandler() {	
+		eventBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEvent.ResumableTasksEventHandler() {	
 			@Override
 			public void onResumableTaskEvent(ResumableTasksEvent resumableTasksEvent) {
 				if(task != null && resumableTasksEvent.getTasks().containsKey(task.getId())) {
@@ -49,7 +49,7 @@ public class SemanticMarkupLearnPresenter implements ISemanticMarkupLearnView.Pr
 				}
 			}
 		});
-		tasksBus.addHandler(FailedTasksEvent.TYPE, new FailedTasksEvent.FailedTasksEventHandler() {
+		eventBus.addHandler(FailedTasksEvent.TYPE, new FailedTasksEvent.FailedTasksEventHandler() {
 			@Override
 			public void onFailedTasksEvent(FailedTasksEvent failedTasksEvent) {
 				if(task != null && failedTasksEvent.getTasks().containsKey(task.getId())) {

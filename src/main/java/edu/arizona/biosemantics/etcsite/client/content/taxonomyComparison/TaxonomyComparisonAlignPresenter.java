@@ -88,7 +88,7 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 	public TaxonomyComparisonAlignPresenter(ITaxonomyComparisonAlignView view, 
 			ITaxonomyComparisonServiceAsync taxonomyComparisonService,
 			PlaceController placeController, 
-			@Named("Tasks") final EventBus tasksEventBus, 
+			@Named("EtcSite") final EventBus tasksEventBus, 
 			IProcessingView.Presenter processingPresenter
 			) {
 		this.view = view;

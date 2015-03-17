@@ -29,6 +29,22 @@ public class Alerter {
 		return showAlert("Create Taxon Description", "Failed to create taxon description.", caught);
 	}
 	
+	public static MessageBox invalidOTOAccount(Throwable caught) {
+		return showAlert("Invalid OTO Account", "Invalid OTO account credentials.", caught);
+	}
+	
+	public static MessageBox failedToCreateOTOAccount(Throwable caught) {
+		return showAlert("Failed to Create", "Failed to create OTO Account.", caught);
+	}
+	
+	public static MessageBox failedToSaveOTOAccount(Throwable caught) {
+		return showAlert("Failed to Save", "Failed to save OTO Account.", caught);
+	}
+	
+	public static void successfullyCreatedOTOAccount() {
+		showInfo("Created Account successfully", "Successfully created OTO Account.");
+	}
+	
 	public static MessageBox failedToImportOto(Throwable caught) {
 		return showAlert("Import Term Categorizations", "Failed to import term categorizations.", caught);
 	}
@@ -155,6 +171,10 @@ public class Alerter {
 
 	public static MessageBox failedToGetUsers(Throwable caught) {
 		return showAlert("Get Users", "Failed to get users.", caught);
+	}
+	
+	public static MessageBox failedToGetUser(Throwable caught) {
+		return showAlert("Get User", "Failed to get user.", caught);
 	}
 
 	public static MessageBox failedToAddOrUpdateShare(Throwable caught) {
@@ -480,6 +500,10 @@ public class Alerter {
         return box;
 	}
 
+
+
 	
+
+
 	
 }

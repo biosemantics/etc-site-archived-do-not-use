@@ -29,6 +29,8 @@ import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPl
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonPlace;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.visualization.VisualizationPlace;
+import edu.arizona.biosemantics.etcsite.client.event.AuthenticationEvent;
+import edu.arizona.biosemantics.etcsite.client.event.AuthenticationEvent.AuthenticationEventType;
 import edu.arizona.biosemantics.etcsite.client.event.ResumableTasksEvent;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
@@ -44,7 +46,7 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 	private ResumeTaskToPlaceGoer resumeTaskToPlaceGoer;
 	private PlaceController placeController;
 	private ResumableTaskFinder resumableTaskFinder;
-	private EventBus tasksBus;
+	private EventBus eventBus;
 	private HandlerRegistration resumableTasksRegistration;
 
 	@Inject
@@ -56,7 +58,7 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 			ResumeTaskToPlaceGoer resumeTaskToPlaceGoer, 
 			PlaceController placeController, 
 			ResumableTaskFinder resumableTaskFinder, 
-			@Named("Tasks") final EventBus tasksBus) {
+			@Named("EtcSite") final EventBus eventBus) {
 		this.view = view;
 		view.setPresenter(this);
 		this.authenticationPresenter = authenticationPresenter;
@@ -66,8 +68,31 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 		this.resumeTaskToPlaceGoer = resumeTaskToPlaceGoer;
 		this.placeController = placeController;
 		this.resumableTaskFinder = resumableTaskFinder;
-		this.tasksBus = tasksBus;
+		this.eventBus = eventBus;
 		updateAuthentication();
+		
+		bindEvents();
+	}
+
+	private void bindEvents() {
+		eventBus.addHandler(AuthenticationEvent.TYPE, new AuthenticationEvent.AuthenticationEventHandler() {
+			@Override
+			public void onAuthentication(AuthenticationEvent event) {
+				switch(event.getType()) {
+				case LOGGEDIN:
+					setLoggedIn();
+					break;
+				case LOGGEDOUT:
+					setLoggedOut();
+					break;
+				case TO_BE_DETERMINED:
+					updateAuthentication();
+					break;
+				default:
+					break;				
+				}
+			}
+		});
 	}
 
 	@Override
@@ -79,10 +104,10 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 				@Override
 				public void onSuccess(AuthenticationResult result) {
 					if(result.getResult()) {
-						setLoggedIn();
+						eventBus.fireEvent(new AuthenticationEvent(AuthenticationEventType.LOGGEDIN));
 					} else {
 						Authentication.getInstance().destroy();
-						setLoggedOut();
+						eventBus.fireEvent(new AuthenticationEvent(AuthenticationEventType.LOGGEDOUT));
 					}
 				}
 				@Override
@@ -104,10 +129,11 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 						auth.setFirstName(result.getUser().getFirstName());
 						auth.setLastName(result.getUser().getLastName());
 						auth.setAffiliation(result.getUser().getAffiliation());
-						setLoggedIn();
+						eventBus.fireEvent(new AuthenticationEvent(AuthenticationEventType.LOGGEDIN));
+						placeController.goTo(new SettingsPlace());
 					} else {
 						Alerter.failedToLoginWithgGoogle(null);
-						setLoggedOut();
+						eventBus.fireEvent(new AuthenticationEvent(AuthenticationEventType.LOGGEDOUT));
 					}
 				}
 
@@ -117,7 +143,7 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 				}
 			});
 		} else {
-			setLoggedOut();
+			eventBus.fireEvent(new AuthenticationEvent(AuthenticationEventType.LOGGEDOUT));
 		}
 	}
 
@@ -191,7 +217,7 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 	@Override
 	public void onLoginLogout() {
 		if(view.isLogout()) {
-			setLoggedOut();
+			eventBus.fireEvent(new AuthenticationEvent(AuthenticationEventType.LOGGEDOUT));
 			Authentication.getInstance().destroy();
 		} else if(view.isLogin())
 			authenticationPresenter.showLoginWindow();
@@ -201,7 +227,7 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 		resumableTaskFinder.start();
 		view.setLogout();
 		
-		resumableTasksRegistration = tasksBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEvent.ResumableTasksEventHandler() {
+		resumableTasksRegistration = eventBus.addHandler(ResumableTasksEvent.TYPE, new ResumableTasksEvent.ResumableTasksEventHandler() {
 			@Override
 			public void onResumableTaskEvent(ResumableTasksEvent resumableTasksEvent) {
 				view.setResumableTasks(!resumableTasksEvent.getTasks().isEmpty());

@@ -12,86 +12,25 @@
 			padding-right: 5px;
 		}
 		.panel {
-			position: absolute;
-			left: 0px;
-			width: 350px;
+			margin: auto;
+			width:950px
 		}
 		.errorLabel {
 			color:red;
 		}
+		.header{
+			padding-top:20px;
+			font-size: 24px;
+			font-weight: bold;
+			color: #339900;
+		}
 	</ui:style>
 	<g:ScrollPanel>
 	<lay:CenteredContentPanel>
-		<g:HTMLPanel styleName="{style.panel}">
-	
-			<div align="left" style="padding:7px"> 
-				<g:Label>&nbsp;&nbsp;&nbsp;&nbsp;My Account</g:Label>
-			</div>
-			<hr width="300px" noshade="noshade"></hr>
-			
-			<table style="padding:15px; width:100%">
-				<tr>
-					<td align="right"><g:Label>First Name:&nbsp;</g:Label></td>
-					<td><g:TextBox ui:field="firstNameBox" ></g:TextBox></td>
-				</tr>
-				<tr>
-					<td align="right"><g:Label>Last Name: </g:Label></td>
-					<td><g:TextBox ui:field="lastNameBox" ></g:TextBox></td>
-				</tr>
-				
-				<tr><td><g:Label>&nbsp;</g:Label></td></tr>
-			
-				<tr>
-					<td align="right"><g:Label>Email ID: </g:Label></td>
-					<td><g:Label ui:field="idLabel" ></g:Label></td>
-				</tr>
-				<tr>
-					<td align="right"><g:Label>Alternate Email Address: </g:Label></td>
-					<td><g:TextBox ui:field="emailBox" ></g:TextBox></td>
-				</tr>
-				<tr>
-					<td align="right"><g:Label>Affiliation: </g:Label></td>
-					<td><g:TextBox ui:field="affiliationBox" ></g:TextBox></td>
-				</tr>
-				<tr>
-					<td align="right"><g:Label>BioPortal User ID: </g:Label></td>
-					<td><g:TextBox ui:field="bioportalUserIdBox" ></g:TextBox></td>
-				</tr>
-				<tr>
-					<td align="right"><g:Label>BioPortal API Key: </g:Label></td>
-					<td><g:TextBox ui:field="bioportalAPIKeyBox" ></g:TextBox></td>
-				</tr>
-				
-				<tr><td><g:Label>&nbsp;</g:Label></td></tr>
-				
-				<tr>
-					<td align="right"><g:Label>**Current Password: </g:Label></td>
-					<td><g:PasswordTextBox ui:field="oldPasswordBox" ></g:PasswordTextBox></td>
-				</tr>
-				
-				<tr>
-					<td align="right"><g:Label>New Password: </g:Label></td>
-					<td><g:PasswordTextBox ui:field="newPasswordBox" ></g:PasswordTextBox></td>
-				</tr>
-				<tr>
-					<td align="right"><g:Label>Confirm New Password: </g:Label></td>
-					<td><g:PasswordTextBox ui:field="confirmNewPasswordBox" ></g:PasswordTextBox></td>
-				</tr>
-			</table>
-			
-			<div align="center" style="padding:7px"> 
-				<g:Label ui:field="errorLabel" styleName="{style.errorLabel}"></g:Label>
-			</div>
-			
-			<hr width="300px" noshade="noshade"></hr>
-			 
-			<div style="margin:10px">
-				
-				<div align="right" style="padding:5px">
-					<g:Button ui:field="submitButton">Submit Changes</g:Button>
-				</div>
-			</div>
-		</g:HTMLPanel>
+		<g:VerticalPanel>
+		    <g:Label styleName="{style.header}">Account Information</g:Label>
+		    <g:SimplePanel ui:field="panel" styleName="{style.panel}"/>
+		</g:VerticalPanel>
 	</lay:CenteredContentPanel>
 	</g:ScrollPanel>
 </ui:UiBinder> 

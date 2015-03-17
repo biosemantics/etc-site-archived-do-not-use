@@ -81,11 +81,14 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 	/** Sign in with Google **/
 	public static String googleRedirectURI;
 	public static String googleClientId;
+	public static String googleSecret;
 	public static String emailSMTPPort;
 	private static Properties properties;
 	
 	/** OTO 2 **/
 	public static String oto2Url;
+
+	public static String otoUrl;
 	
 	static {		
 		try {
@@ -94,6 +97,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			properties.load(loader.getResourceAsStream("edu/arizona/biosemantics/etcsite/config.properties"));
 			
 			oto2Url = properties.getProperty("oto2Url");
+			otoUrl = properties.getProperty("otoUrl");
 			classpath = properties.getProperty("classpath");
 			
 			targetNamespace = properties.getProperty("targetNamespace");
@@ -150,7 +154,8 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			
 			googleRedirectURI = properties.getProperty("google_redirect_URI");
 			googleClientId = properties.getProperty("google_client_id");
-
+			googleSecret = properties.getProperty("google_secret");
+				
 		} catch(Exception e) {
 			logger.error("Couldn't read configuration", e);
 		}

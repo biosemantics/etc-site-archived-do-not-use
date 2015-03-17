@@ -8,24 +8,25 @@ import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 public interface ISettingsView extends IsWidget {
 
 	public interface Presenter {
-		void onSubmit();
+		void onSave();
+
+		void onPasswordSave();
+		
+		void onNewOTOGoogleAccount();
+
+		void onNewOTOAccount(String text, String text2);
+
+		void onSaveOTOAccount(boolean share, String text, String text2);
 	}
 	  
 	void setPresenter(Presenter presenter);
 	Widget asWidget();
-	String getFirstName();
-	String getLastName();
-	String getOpenIdProviderId();
-	String getEmail();
-	String getAffiliation();
-	String getBioportalUserId();
-	String getBioportalAPIKey();
-	String getOldPassword();
-	String getNewPassword();
-	String getConfirmNewPassword();
-	String getOpenIdProvider();
 	
 	void setData(ShortUser user);
-	void setErrorMessage(String str);
-	void clearPasswords();
+	ShortUser getData();
+	String getCurrentPassword();
+	String getNewPassword();
+	String getConfirmPassword();
+	void setOTOAccount(String email, String password);
+	void setLinkedOTOAccount(String email);
 }

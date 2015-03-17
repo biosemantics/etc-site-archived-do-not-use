@@ -25,6 +25,6 @@ public interface IAuthenticationServiceAsync {
 
 	public void signupUser(int captchaId, String captchaSolution,
 			String firstName, String lastName, String email, String password,
-			AsyncCallback<Void> callback);
+			AsyncCallback<AuthenticationResult> callback);
 
 }

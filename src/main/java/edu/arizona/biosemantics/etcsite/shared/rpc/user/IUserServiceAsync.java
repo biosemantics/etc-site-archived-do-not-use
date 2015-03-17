@@ -15,12 +15,20 @@ public interface IUserServiceAsync {
 	
 	public void add(String firstName, String lastName, String email, String password, AsyncCallback<ShortUser> callback);
 	
-	public void update(
-			AuthenticationToken authenticationToken, String oldPassword,
-			String newPassword, ShortUser user, AsyncCallback<ShortUser> callback);
+	public void update(AuthenticationToken authenticationToken, ShortUser user, AsyncCallback<ShortUser> callback);
+	
+	public void update(AuthenticationToken authenticationToken, String oldPassword,	String newPassword, AsyncCallback<ShortUser> callback);
 	
 	public void existsUser(String openIdProviderId, AsyncCallback<Boolean> callback);
 
 	public void add(String openIdProviderId, String string, String firstName,
 			String lastName, String encryptedDummyPassword, AsyncCallback<ShortUser> callback);
+
+	public void createOTOAccount(AuthenticationToken authenticationToken, String email, String password,
+			AsyncCallback<edu.arizona.biosemantics.oto.common.model.User> asyncCallback);
+
+	public void saveOTOAccount(AuthenticationToken authenticationToken, boolean share, String email, String password,
+			AsyncCallback<Void> asyncCallback);
+
+	public void createOTOAccount(AuthenticationToken token, String googleCode, AsyncCallback<edu.arizona.biosemantics.oto.common.model.User> asyncCallback);
 }

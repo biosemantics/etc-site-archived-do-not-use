@@ -14,11 +14,12 @@ public class ShortUser implements Serializable {
 	private String openIdProviderId = "";
 	private String bioportalUserId = "";
 	private String bioportalApiKey = "";
+	private String otoAccountEmail = "";
 	
 	public ShortUser() { }
 	
 	public ShortUser(int id, String email, String firstName, String lastName, String affiliation, 
-			String openIdProvider, String openIdProivderId, String bioportalUserId, String bioportalApiKey) {
+			String openIdProvider, String openIdProivderId, String bioportalUserId, String bioportalApiKey, String otoAccountEmail) {
 		this.id = id;
 		this.email = email;
 		this.firstName = firstName;
@@ -28,6 +29,7 @@ public class ShortUser implements Serializable {
 		this.openIdProviderId = openIdProivderId;
 		this.bioportalUserId = bioportalUserId;
 		this.bioportalApiKey = bioportalApiKey;
+		this.otoAccountEmail = otoAccountEmail;
 	}
 
 	public ShortUser(User user) {
@@ -40,6 +42,7 @@ public class ShortUser implements Serializable {
 		this.openIdProviderId = user.getOpenIdProviderId();
 		this.bioportalUserId = user.getBioportalUserId();
 		this.bioportalApiKey = user.getBioportalAPIKey();
+		this.otoAccountEmail = user.getOtoAccountEmail();
 	}
 
 	public int getId() {
@@ -112,6 +115,14 @@ public class ShortUser implements Serializable {
 
 	public void setBioportalApiKey(String bioportalApiKey) {
 		this.bioportalApiKey = bioportalApiKey;
+	}
+
+	public String getOtoAccountEmail() {
+		return otoAccountEmail;
+	}
+
+	public void setOtoAccountEmail(String otoAccountEmail) {
+		this.otoAccountEmail = otoAccountEmail;
 	}
 
 	public String getFullName() {

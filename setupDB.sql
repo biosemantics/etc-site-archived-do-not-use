@@ -343,6 +343,8 @@ CREATE TABLE IF NOT EXISTS `etcsite_users` (
   `affiliation` varchar(50) NOT NULL,
   `bioportaluserid` varchar(50) NOT NULL,
   `bioportalapikey` varchar(50) NOT NULL,
+  `otoaccountemail` varchar(50) NOT NULL,
+  `otoauthenticationtoken` varchar(50) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
