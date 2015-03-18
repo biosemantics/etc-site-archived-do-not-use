@@ -24,25 +24,41 @@ public class Alerter {
 		box.hide();
 		box = null;
 	}
+	
+	public static MessageBox passwordLengthNotMet() {
+		return showAlert("Password not sufficient", "Passwords must be at least 6 characters long.");
+	}
+	
+	public static MessageBox firstNameRequired() {
+		return showAlert("Required fields", "First name is required.");
+	}
+
+	public static MessageBox lastNameRequired() {
+		return showAlert("Required fields", "Last name is required.");
+	}
+	
+	public static MessageBox passwordsDontMatch() {
+		return showAlert("Passwords do not match", "Passwords do not match.");
+	}
 
 	public static MessageBox failedToCreateTaxonDescription(Throwable caught) {
 		return showAlert("Create Taxon Description", "Failed to create taxon description.", caught);
 	}
 	
 	public static MessageBox invalidOTOAccount(Throwable caught) {
-		return showAlert("Invalid OTO Account", "Invalid OTO account credentials.", caught);
+		return showAlert("Invalid OTO Account", "Invalid OTO account credentials. Visit <a href=\"http://biosemantics.arizona.edu:8080/OTO/\" target=\"_blank\">OTO</a> to verify your credentials.", caught);
 	}
 	
 	public static MessageBox failedToCreateOTOAccount(Throwable caught) {
-		return showAlert("Failed to Create", "Failed to create OTO Account.", caught);
+		return showAlert("Failed to Create", "Failed to create OTO Account. " + caught.getMessage(), caught);
 	}
 	
 	public static MessageBox failedToSaveOTOAccount(Throwable caught) {
 		return showAlert("Failed to Save", "Failed to save OTO Account.", caught);
 	}
 	
-	public static void successfullyCreatedOTOAccount() {
-		showInfo("Created Account successfully", "Successfully created OTO Account.");
+	public static MessageBox successfullyCreatedOTOAccount() {
+		return showInfo("Created Account successfully", "Successfully created OTO Account.");
 	}
 	
 	public static MessageBox failedToImportOto(Throwable caught) {
@@ -500,10 +516,6 @@ public class Alerter {
         return box;
 	}
 
-
-
 	
-
-
 	
 }

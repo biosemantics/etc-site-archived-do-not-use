@@ -36,4 +36,6 @@ public interface IUserService extends RemoteService {
 	public void saveOTOAccount(AuthenticationToken authenticationToken, boolean share, String email, String password) throws InvalidOTOAccountException; 
 	
 	public edu.arizona.biosemantics.oto.common.model.User createOTOAccount(AuthenticationToken token, String googleCode) throws CreateOTOAccountException;
+	
+	public edu.arizona.biosemantics.oto.common.model.User saveOTOAccount(AuthenticationToken token, String googleCode) throws UserNotFoundException, InvalidOTOAccountException;
 }

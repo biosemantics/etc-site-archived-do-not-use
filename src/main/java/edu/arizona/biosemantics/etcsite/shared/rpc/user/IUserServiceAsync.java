@@ -32,5 +32,8 @@ public interface IUserServiceAsync {
 	public void saveOTOAccount(AuthenticationToken authenticationToken, boolean share, String email, String password,
 			AsyncCallback<Void> asyncCallback);
 
-	public void createOTOAccount(AuthenticationToken token, String googleCode, AsyncCallback<edu.arizona.biosemantics.oto.common.model.User> asyncCallback);
+	public void createOTOAccount(AuthenticationToken token, String googleCode, AsyncCallback<edu.arizona.biosemantics.oto.common.model.User> callback);
+
+	public void saveOTOAccount(AuthenticationToken token, String googleCode, AsyncCallback<edu.arizona.biosemantics.oto.common.model.User> callback);
+	
 }

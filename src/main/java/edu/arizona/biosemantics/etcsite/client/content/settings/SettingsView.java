@@ -100,16 +100,20 @@ public class SettingsView extends Composite implements ISettingsView {
 	private FieldSet newOTOAccountFieldSet = new FieldSet();
 	private TextField otoNewEmail = new TextField();
 	private FieldLabel otoNewEmailFieldLabel = new FieldLabel(otoNewEmail, "OTO Email");
-	private TextField otoNewPassword = new TextField();
+	private PasswordField otoNewPassword = new PasswordField();
 	private FieldLabel otoNewPasswordFieldLabel = new FieldLabel(otoNewPassword, "OTO Password");
+	private PasswordField otoNewPasswordConfirm = new PasswordField();
+	private FieldLabel otoNewPasswordConfirmFieldLabel = new FieldLabel(otoNewPasswordConfirm, "OTO Password");
 	private TextButton otoNewCreateButton = new TextButton("Create");
 	private TextButton otoNewAccountGoogleButton = new TextButton("Create OTO Account using Google");
 	
 	private FieldSet existingOTOAccountFieldSet = new FieldSet();
 	private TextField otoExistingEmail = new TextField();
 	private FieldLabel otoExistingEmailFieldLabel = new FieldLabel(otoExistingEmail, "OTO Email");
-	private TextField otoExistingPassword = new TextField();
+	private PasswordField otoExistingPassword = new PasswordField();
 	private FieldLabel otoExistingPasswordFieldLabel = new FieldLabel(otoExistingPassword, "OTO Password");
+	private TextButton otoExistingLinkButton = new TextButton("Link");
+	private TextButton otoExistingAccountGoogleButton = new TextButton("Link OTO Account using Google");
 	
 
 	private CheckBox semanticMarkupEmail = new CheckBox();
@@ -132,11 +136,11 @@ public class SettingsView extends Composite implements ISettingsView {
 	    userInfoFieldSet.add(userInfoVertical);
 	    firstName.setAllowBlank(false);
 	    lastName.setAllowBlank(false);
-	    FieldLabel firstNameFieldLabel = new FieldLabel(firstName, "First Name");
+	    FieldLabel firstNameFieldLabel = new FieldLabel(firstName, "First Name *");
 	    firstNameFieldLabel.setLabelWidth(200);
 	    userInfoVertical.add(firstNameFieldLabel, new VerticalLayoutData(1, -1));
 	    
-	    FieldLabel lastNameFieldLabel = new FieldLabel(lastName, "Last Name");
+	    FieldLabel lastNameFieldLabel = new FieldLabel(lastName, "Last Name *");
 	    lastNameFieldLabel.setLabelWidth(200);
 	    userInfoVertical.add(lastNameFieldLabel, new VerticalLayoutData(1, -1));
 		email.setEnabled(false);
@@ -170,6 +174,7 @@ public class SettingsView extends Composite implements ISettingsView {
 	    taxonomyComparisonFieldLabel.setLabelWidth(200);
 	    taxonomyComparisonEmail.setBoxLabel("");
 	    userInfoVertical.add(taxonomyComparisonFieldLabel, new VerticalLayoutData(1, -1));
+	    userInfoVertical.add(new Label("* denotes required fields"));
 	    userInfoVertical.add(saveButton, new VerticalLayoutData(1, -1));
 	    userInfoVertical.forceLayout();
 	    	    
@@ -192,10 +197,10 @@ public class SettingsView extends Composite implements ISettingsView {
 	    FieldLabel currentPasswordFieldLabel =  new FieldLabel(currentPassword, "Current Password");
 	    currentPasswordFieldLabel.setLabelWidth(200);
 	    passwordVertical.add(currentPasswordFieldLabel, new VerticalLayoutData(1, -1));
-	    FieldLabel newPasswordFieldLabel =  new FieldLabel(newPassword, "Current Password");
+	    FieldLabel newPasswordFieldLabel =  new FieldLabel(newPassword, "New Password");
 	    newPasswordFieldLabel.setLabelWidth(200);
 	    passwordVertical.add(newPasswordFieldLabel, new VerticalLayoutData(1, -1));
-	    FieldLabel confirmPasswordFieldLabel =  new FieldLabel(confirmPassword, "Current Password");
+	    FieldLabel confirmPasswordFieldLabel =  new FieldLabel(confirmPassword, "Confirm Password");
 	    confirmPasswordFieldLabel.setLabelWidth(200);
 	    passwordVertical.add(confirmPasswordFieldLabel, new VerticalLayoutData(1, -1));
 	    passwordFieldSet.add(passwordVertical);	  
@@ -230,16 +235,6 @@ public class SettingsView extends Composite implements ISettingsView {
 	    hasOtoAccountFieldLabel.setLabelWidth(200);
 	    
 	    existingOTOAccountFieldSet.setHeadingHtml("OTO Account Login");
-	    VerticalLayoutContainer existingOTOAccountContainer = new VerticalLayoutContainer();
-	    existingOTOAccountFieldSet.add(existingOTOAccountContainer);
-	    existingOTOAccountContainer.add(otoExistingEmailFieldLabel);
-	    existingOTOAccountContainer.add(otoExistingPasswordFieldLabel);
-	    otoExistingEmailFieldLabel.setLabelWidth(200);
-	    otoExistingPasswordFieldLabel.setLabelWidth(200);
-	    otoAccountEmailFieldLabel.setLabelWidth(200);
-	    otoAccountEmail.setEnabled(false);
-	    
-	    newOTOAccountFieldSet.setHeadingHtml("Create OTO Account");
 	    HtmlLayoutContainer choiceContatiner = new HtmlLayoutContainer("<table width=100% cellpadding=0 cellspacing=0>"
 	    		+ "<tr>"
 	    		+ "<td class=email width=50%></td>"
@@ -257,10 +252,45 @@ public class SettingsView extends Composite implements ISettingsView {
 	    		+ "<td></td>"
 	    		+ "</tr>"
 	    		+ "</table>");
+	    otoExistingEmailFieldLabel.setLabelWidth(200);
+	    otoExistingPasswordFieldLabel.setLabelWidth(200);
+	    otoAccountEmailFieldLabel.setLabelWidth(200);
+	    choiceContatiner.add(otoExistingEmailFieldLabel, new HtmlData(".email"));
+	    choiceContatiner.add(otoExistingPasswordFieldLabel, new HtmlData(".password"));
+	    choiceContatiner.add(otoExistingLinkButton, new HtmlData(".create"));
+	    choiceContatiner.add(otoExistingAccountGoogleButton, new HtmlData(".google"));
+	    existingOTOAccountFieldSet.add(choiceContatiner);
+	    otoAccountEmail.setEnabled(false);
+	    
+	    newOTOAccountFieldSet.setHeadingHtml("Create OTO Account");
+	    choiceContatiner = new HtmlLayoutContainer("<table width=100% cellpadding=0 cellspacing=0>"
+	    		+ "<tr>"
+	    		+ "<td class=email width=50%></td>"
+	    		+ "<td width=20%>or</td>"
+	    		+ "<td class=google width=50%></td>"
+	    		+ "</tr>"
+	    		+ "<tr>"
+	    		+ "<td class=password></td>"
+	    		+ "<td></td>"
+	    		+ "<td></td>"
+	    		+ "</tr>"
+	    		+ "<tr>"
+	    		+ "<td class=passwordConfirm></td>"
+	    		+ "<td></td>"
+	    		+ "<td></td>"
+	    		+ "</tr>"
+	    		+ "<tr>"
+	    		+ "<td class=create></td>"
+	    		+ "<td></td>"
+	    		+ "<td></td>"
+	    		+ "</tr>"
+	    		+ "</table>");
 	    otoNewEmailFieldLabel.setLabelWidth(200);
 	    otoNewPasswordFieldLabel.setLabelWidth(200);
+	    otoNewPasswordConfirmFieldLabel.setLabelWidth(200);
 	    choiceContatiner.add(otoNewEmailFieldLabel, new HtmlData(".email"));
 	    choiceContatiner.add(otoNewPasswordFieldLabel, new HtmlData(".password"));
+	    choiceContatiner.add(otoNewPasswordConfirmFieldLabel, new HtmlData(".passwordConfirm"));
 	    choiceContatiner.add(otoNewCreateButton, new HtmlData(".create"));
 	    choiceContatiner.add(otoNewAccountGoogleButton, new HtmlData(".google"));
 	    newOTOAccountFieldSet.add(choiceContatiner);
@@ -281,12 +311,7 @@ public class SettingsView extends Composite implements ISettingsView {
 					if(share) {		
 						otoVerticalInner.add(hasOtoAccountFieldLabel, new VerticalLayoutData(1, -1));
 					} else {
-						otoVerticalInner.remove(otoAccountEmailFieldLabel);
-						otoVerticalInner.remove(hasOtoAccountFieldLabel);
-						otoVerticalInner.remove(existingOTOAccountFieldSet);
-						otoVerticalInner.remove(newOTOAccountFieldSet);
-						hasOTOAccount.clear();
-						hasNoOTOAccount.clear();
+						resetShareOTO();
 					}
 				}
 			}
@@ -349,7 +374,19 @@ public class SettingsView extends Composite implements ISettingsView {
 		this.otoNewCreateButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				presenter.onNewOTOAccount(otoNewEmail.getText(), otoNewPassword.getText());
+				presenter.onNewOTOAccount(otoNewEmail.getText(), otoNewPassword.getText(), otoNewPasswordConfirm.getText());
+			}
+		});
+		this.otoExistingLinkButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				presenter.onLinkAccount(otoShareCheckBox.getValue(), otoExistingEmail.getText(), otoExistingPassword.getText());
+			}
+		});
+		this.otoExistingAccountGoogleButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				presenter.onExistingOTOGoogleAccount();
 			}
 		});
 		this.otoSaveButton.addClickHandler(new ClickHandler() {
@@ -384,6 +421,8 @@ public class SettingsView extends Composite implements ISettingsView {
 		
 		if(user.getOtoAccountEmail() != null && !user.getOtoAccountEmail().isEmpty()) {
 			setLinkedOTOAccount(user.getOtoAccountEmail());
+		} else {
+			resetShareOTO();
 		}
 		
 		firstName.setEnabled(true);
@@ -406,6 +445,16 @@ public class SettingsView extends Composite implements ISettingsView {
 		}
 	}
 	
+	private void resetShareOTO() {
+		otoVerticalInner.remove(otoAccountEmailFieldLabel);
+		otoVerticalInner.remove(hasOtoAccountFieldLabel);
+		otoVerticalInner.remove(existingOTOAccountFieldSet);
+		otoVerticalInner.remove(newOTOAccountFieldSet);
+		hasOTOAccount.clear();
+		hasNoOTOAccount.clear();
+		otoShareCheckBox.setValue(false);
+	}
+
 	@Override
 	public ShortUser getData() {
 		ShortUser user = new ShortUser();
