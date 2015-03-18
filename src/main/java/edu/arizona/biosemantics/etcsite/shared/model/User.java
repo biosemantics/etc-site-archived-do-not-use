@@ -2,9 +2,19 @@ package edu.arizona.biosemantics.etcsite.shared.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class User implements Serializable {
 
+	public static enum EmailPreferences {
+		SemanticMarkup, MatrixGeneration, TreeGeneration, TaxonomyComparison, Visualization;
+		
+		public String getKey() {
+			return this.getClass() + "_" + this.name();
+		}
+	}
+	
 	private int id;
 	
 	private String openIdProviderId = ""; //the realm-unique value provided by the openID provider, or the user's email address if a local account. 
@@ -22,10 +32,7 @@ public class User implements Serializable {
 	private String otoAuthenticationToken;
 	private String otoAccountEmail;
 	
-	private boolean matrixGenerationEmail;
-	private boolean treeGenerationEmail;
-	private boolean textCaptureEmail;
-	private boolean taxonomyComparisonEmail;
+	private Map<String , Boolean> profile = new HashMap<String, Boolean>();
 	
 	public User() { }
 	
@@ -44,10 +51,10 @@ public class User implements Serializable {
 		this.bioportalAPIKey = bioportalAPIKey;
 		this.otoAccountEmail = otoAccountEmail;
 		this.otoAuthenticationToken = otoAuthenticationToken;
-		this.matrixGenerationEmail = matrixGenerationEmail;
+		/*this.matrixGenerationEmail = matrixGenerationEmail;
 		this.treeGenerationEmail = treeGenerationEmail;
 		this.textCaptureEmail = textCaptureEmail;
-		this.taxonomyComparisonEmail = taxonomyComparisonEmail;
+		this.taxonomyComparisonEmail = taxonomyComparisonEmail;*/
 		this.created = created;
 	}
 	
@@ -65,10 +72,11 @@ public class User implements Serializable {
 		this.bioportalAPIKey = bioportalAPIKey;
 		this.otoAccountEmail = otoAccountEmail;
 		this.otoAuthenticationToken = otoAuthenticationToken;
-		this.matrixGenerationEmail = matrixGenerationEmail;
+		
+		/*this.matrixGenerationEmail = matrixGenerationEmail;
 		this.treeGenerationEmail = treeGenerationEmail;
 		this.textCaptureEmail = textCaptureEmail;
-		this.taxonomyComparisonEmail = taxonomyComparisonEmail;
+		this.taxonomyComparisonEmail = taxonomyComparisonEmail;*/
 	}
 	
 	public User(String password, String firstName, String lastName, 
@@ -82,10 +90,11 @@ public class User implements Serializable {
 		this.affiliation = affiliation;
 		this.bioportalUserId = bioportalUserId;
 		this.bioportalAPIKey = bioportalAPIKey;
-		this.matrixGenerationEmail = matrixGenerationEmail;
+		
+		/*this.matrixGenerationEmail = matrixGenerationEmail;
 		this.treeGenerationEmail = treeGenerationEmail;
 		this.textCaptureEmail = textCaptureEmail;
-		this.taxonomyComparisonEmail = taxonomyComparisonEmail;
+		this.taxonomyComparisonEmail = taxonomyComparisonEmail; */
 	}
 	
 	@Override
@@ -222,39 +231,20 @@ public class User implements Serializable {
 				+ "\n\tCreated: " + created;
 	}
 
-	public boolean isMatrixGenerationEmail() {
-		return matrixGenerationEmail;
+	public boolean getProfileValue(String key) {
+		return profile.get(key);
 	}
 
-	public void setMatrixGenerationEmail(boolean matrixGenerationEmail) {
-		this.matrixGenerationEmail = matrixGenerationEmail;
+	public void setProfileValue(String key, boolean value) {
+		this.profile.put(key, value);
 	}
-
-	public boolean isTreeGenerationEmail() {
-		return treeGenerationEmail;
-	}
-
-	public void setTreeGenerationEmail(boolean treeGenerationEmail) {
-		this.treeGenerationEmail = treeGenerationEmail;
-	}
-
-	public boolean isTextCaptureEmail() {
-		return textCaptureEmail;
-	}
-
-	public void setTextCaptureEmail(boolean textCaptureEmail) {
-		this.textCaptureEmail = textCaptureEmail;
-	}
-
-	public boolean isTaxonomyComparisonEmail() {
-		return taxonomyComparisonEmail;
-	}
-
-	public void setTaxonomyComparisonEmail(boolean taxonomyComparisonEmail) {
-		this.taxonomyComparisonEmail = taxonomyComparisonEmail;
-	}
-
-
 	
+	public Map<String, Boolean> getProfile() {
+		return profile;
+	}
+	
+	public void setProfile(Map<String, Boolean> profile) {
+		this.profile = profile;
+	}
 	
 }
