@@ -4,15 +4,23 @@ package edu.arizona.biosemantics.etcsite.client.common.files;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TreeItem;
+import com.google.gwt.user.client.ui.UIObject;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.box.PromptMessageBox;
+import com.sencha.gxt.widget.core.client.event.HideEvent;
+import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
@@ -21,10 +29,13 @@ import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.Configuration;
 import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkupFilesDialogPresenter.ICloseHandler;
 import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView.IFileTreeSelectionListener;
+import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
 import gwtupload.client.BaseUploadStatus;
+import gwtupload.client.IFileInput;
+import gwtupload.client.IFileInput.BrowserFileInput;
 import gwtupload.client.IFileInput.ButtonFileInput;
 import gwtupload.client.IUploadStatus;
 import gwtupload.client.IUploadStatus.Status;
@@ -115,37 +126,20 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 				 box.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
 					@Override
 					public void onSelect(SelectEvent event) {
-						final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
-						final String selectionPath = selection.getFileInfo().getFilePath();
-						fileService.isDirectory(Authentication.getInstance().getToken(), selectionPath, new AsyncCallback<Boolean>() {
-							@Override
-							public void onSuccess(Boolean result) {
-								String newDirectoryParent = selectionPath;
-								if(!result)
-									newDirectoryParent = getParent(selection);
-								if(newDirectoryParent != null) {
-									fileService.createDirectory(Authentication.getInstance().getToken(), newDirectoryParent, box.getValue(), false,
-											new AsyncCallback<String>() {
-												@Override
-												public void onSuccess(String result) {
-													fileTreePresenter.refresh(fileFilter);
-												}
-
-												@Override
-												public void onFailure(Throwable caught) {
-													Alerter.failedToCreateDirectory(caught);
-												}
-									});
-								}
-							}
-							@Override
-							public void onFailure(Throwable caught) {
-								Alerter.failedToIsDirectory(caught);
-							}
-						});
+						createDirectory(box.getValue());
 					}
 				 });
-		         box.show();
+				 box.getTextField().addKeyPressHandler(new KeyPressHandler() {
+					
+					@Override
+					public void onKeyPress(KeyPressEvent event) {
+						if(event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER){
+							createDirectory(box.getValue());
+							box.hide();
+						}
+					}
+				});
+				 box.show();
 			} else {
 				Alerter.maxDepthReached();
 			}
@@ -162,50 +156,92 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		}
 		return result;
 	}
+	
+	private void createDirectory(final String folderName){
+		final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
+		final String selectionPath = selection.getFileInfo().getFilePath();
+		fileService.isDirectory(Authentication.getInstance().getToken(), selectionPath, new AsyncCallback<Boolean>() {
+			@Override
+			public void onSuccess(Boolean result) {
+				String newDirectoryParent = selectionPath;
+				if(!result)
+					newDirectoryParent = getParent(selection);
+				if(newDirectoryParent != null) {
+					fileService.createDirectory(Authentication.getInstance().getToken(), newDirectoryParent, folderName, false,
+							new AsyncCallback<String>() {
+								@Override
+								public void onSuccess(String result) {
+									fileTreePresenter.refresh(fileFilter);
+								}
+
+								@Override
+								public void onFailure(Throwable caught) {
+									Alerter.failedToCreateDirectory(caught);
+								}
+					});
+				}
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToIsDirectory(caught);
+			}
+		});
+	}
+	
+	private void renameFile(final FileImageLabelTreeItem selection, final String newName){
+		if(selection.getFileImageLabel().getFileInfo().getFileType().equals(FileTypeEnum.DIRECTORY)) {
+			fileService.renameFile(Authentication.getInstance().getToken(), selection.getFileInfo().getFilePath(), 
+				newName, new AsyncCallback<Void>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						Alerter.failedToRenameFile(caught);
+					}
+					@Override
+					public void onSuccess(Void result) {
+						fileTreePresenter.refresh(fileFilter);
+						selection.getFileInfo().setName(newName);
+					}
+			});
+		} else {
+			final String newFileName = selection.getFileInfo().getExtension().isEmpty() ? 
+					newName : newName + "." + selection.getFileInfo().getExtension();
+			fileService.renameFile(Authentication.getInstance().getToken(), selection.getFileInfo().getFilePath(), 
+					newFileName, new AsyncCallback<Void>() {
+				@Override
+				public void onSuccess(Void result) {
+					fileTreePresenter.refresh(fileFilter);
+					selection.getFileInfo().setName(newFileName);
+				}
+				@Override
+				public void onFailure(Throwable caught) {
+					Alerter.failedToRenameFile(caught);
+				}
+			});
+		}
+	}
 
 	@Override
 	public void onRename() {
-		FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
+		final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
 		//don't allow rename of root node
 		if(selection != null && !selection.getFileInfo().isSystemFile()) {
 			final PromptMessageBox box = new PromptMessageBox("Rename", "New name:");
 			box.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
 				@Override
 				public void onSelect(SelectEvent event) {
-					final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
-					if(selection != null && !selection.getFileInfo().isSystemFile()) {
-						if(selection.getFileImageLabel().getFileInfo().getFileType().equals(FileTypeEnum.DIRECTORY)) {
-							fileService.renameFile(Authentication.getInstance().getToken(), selection.getFileInfo().getFilePath(), 
-								box.getValue(), new AsyncCallback<Void>() {
-									@Override
-									public void onFailure(Throwable caught) {
-										Alerter.failedToRenameFile(caught);
-									}
-									@Override
-									public void onSuccess(Void result) {
-										fileTreePresenter.refresh(fileFilter);
-										selection.getFileInfo().setName(box.getValue());
-									}
-							});
-						} else {
-							final String newFileName = selection.getFileInfo().getExtension().isEmpty() ? 
-									box.getValue() : box.getValue() + "." + selection.getFileInfo().getExtension();
-							fileService.renameFile(Authentication.getInstance().getToken(), selection.getFileInfo().getFilePath(), 
-									newFileName, new AsyncCallback<Void>() {
-								@Override
-								public void onSuccess(Void result) {
-									fileTreePresenter.refresh(fileFilter);
-									selection.getFileInfo().setName(newFileName);
-								}
-								@Override
-								public void onFailure(Throwable caught) {
-									Alerter.failedToRenameFile(caught);
-								}
-							});
-						}
-					}
+					renameFile(selection, box.getValue());
 				}
 			 });
+			box.getTextField().addKeyPressHandler(new KeyPressHandler() {
+				
+				@Override
+				public void onKeyPress(KeyPressEvent event) {
+					if(event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER){
+						renameFile(selection,box.getValue());
+						box.hide();
+					}
+				}
+			});
 			 box.getTextField().setValue(selection.getFileInfo().getName(false));
 			 box.show();
 		} else {

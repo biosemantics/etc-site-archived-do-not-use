@@ -59,4 +59,34 @@ public class XmlModelFileCreator {
 		return result;
 	}
 
+	public String copyAuthorityAndDate(String normalizedText) {
+		String result = "";
+		String authorityDate = "unspecified, unspecified";
+		for(String line : normalizedText.split("\n")) {
+			line = line.trim();
+			if(line.contains("name:") || line.contains("name :")){
+				String newAuthorityDate = getAuthorityDate(line);
+				if(newAuthorityDate!=null){
+					authorityDate = newAuthorityDate;
+				}else{
+					line = line.concat(" "+authorityDate);
+				}
+			}
+			result = result.concat(line+"\n");
+		}
+		return result;
+	}
+
+	private String getAuthorityDate(String line) {
+		String colonSplits[] = line.split(":");
+		if(colonSplits.length>1){
+			colonSplits[1] = colonSplits[1].trim();
+			String names[] = colonSplits[1].split(" ", 2);
+			if(names.length>1){
+				return names[1];
+			}
+		}
+		return null;
+	}
+
 }
