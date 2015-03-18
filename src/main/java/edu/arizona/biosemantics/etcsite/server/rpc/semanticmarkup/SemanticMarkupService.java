@@ -892,31 +892,26 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		client.close();
 	}
 	
-	private void sendFinishedLearningTermsEmail(Task task){
+	private void sendFinishedLearningTermsEmail(Task task) {
 		String email = daoManager.getUserDAO().getUser(task.getUser().getId()).getEmail();
-		
-		User usr= null;
-		usr=daoManager.getUserDAO().getEmailPreference(task.getUser().getId());
-		//usr=daoManager.getUserDAO().getEmailPreference(daoManager.getUserDAO().getUser(task.getUser().getId()).getId());
-		if (usr==null || usr.getTextCaptureEmailChk())
-		{
-		String subject = Configuration.finishedSemanticMarkupLearnSubject.replace("<taskname>", task.getName());
-		String body = Configuration.finishedSemanticMarkupLearnBody.replace("<taskname>", task.getName());
-		emailer.sendEmail(email, subject, body);
+		User usr = daoManager.getUserDAO().getSerializedUser(task.getUser().getId());
+		if (usr == null || usr.isTextCaptureEmail()) {
+			String subject = Configuration.finishedSemanticMarkupLearnSubject.replace("<taskname>", task.getName());
+			String body = Configuration.finishedSemanticMarkupLearnBody.replace("<taskname>", task.getName());
+			emailer.sendEmail(email, subject, body);
 		}
-		
 	}
 	
-	private void sendFinishedParsingEmail(Task task){
+	private void sendFinishedParsingEmail(Task task) {
 		String email = daoManager.getUserDAO().getUser(task.getUser().getId()).getEmail();
-		
-		User usr= null;
-		usr=daoManager.getUserDAO().getEmailPreference(daoManager.getUserDAO().getUser(task.getUser().getId()).getId());
-		if (usr==null || usr.getTextCaptureEmailChk())
-		{
-		String subject = Configuration.finishedSemanticMarkupParseSubject.replace("<taskname>", task.getName());
-		String body = Configuration.finishedSemanticMarkupParseBody.replace("<taskname>", task.getName());
-		emailer.sendEmail(email, subject, body);
+
+		User usr =  daoManager.getUserDAO().getSerializedUser(daoManager.getUserDAO().getUser(task.getUser().getId()).getId());
+		if (usr == null || usr.isTextCaptureEmail()) {
+			String subject = Configuration.finishedSemanticMarkupParseSubject
+					.replace("<taskname>", task.getName());
+			String body = Configuration.finishedSemanticMarkupParseBody
+					.replace("<taskname>", task.getName());
+			emailer.sendEmail(email, subject, body);
 		}
 	}
 

@@ -16,17 +16,18 @@ public class ShortUser implements Serializable {
 	private String bioportalApiKey = "";
 	private String otoAccountEmail = "";
 	
-	private boolean matrixGenerationEmailChk;
-	private boolean treeGenerationEmailChk;
-	private boolean textCaptureEmailChk;
-	private boolean taxonomyComparisonEmailChk;
+	private boolean matrixGenerationEmail;
+	private boolean treeGenerationEmail;
+	private boolean textCaptureEmail;
+	private boolean taxonomyComparisonEmail;
 	
 	public ShortUser() { }
 	
 	public ShortUser(int id, String email, String firstName, String lastName, String affiliation, 
 			String openIdProvider, String openIdProivderId, String bioportalUserId, 
-			String bioportalApiKey, String otoAccountEmail,boolean matrixGenerationEmailChk,boolean treeGenerationEmailChk,boolean textCaptureEmailChk,
-			boolean taxonomyComparisonEmailChk) {
+			String bioportalApiKey, String otoAccountEmail, 
+			boolean textCaptureEmail, boolean matrixGenerationEmail, boolean treeGenerationEmail,
+			boolean taxonomyComparisonEmail) {
 		this.id = id;
 		this.email = email;
 		this.firstName = firstName;
@@ -37,11 +38,11 @@ public class ShortUser implements Serializable {
 		this.bioportalUserId = bioportalUserId;
 		this.bioportalApiKey = bioportalApiKey;
 		this.otoAccountEmail = otoAccountEmail;
-
-		this.matrixGenerationEmailChk=matrixGenerationEmailChk;
-		this.treeGenerationEmailChk=treeGenerationEmailChk;
-		this.textCaptureEmailChk=textCaptureEmailChk;
-		this.taxonomyComparisonEmailChk=taxonomyComparisonEmailChk;
+		
+		this.textCaptureEmail = textCaptureEmail;
+		this.matrixGenerationEmail = matrixGenerationEmail;
+		this.treeGenerationEmail = treeGenerationEmail;
+		this.taxonomyComparisonEmail = taxonomyComparisonEmail;
 	}
 
 	public ShortUser(User user) {
@@ -54,10 +55,10 @@ public class ShortUser implements Serializable {
 		this.openIdProviderId = user.getOpenIdProviderId();
 		this.bioportalUserId = user.getBioportalUserId();
 		this.bioportalApiKey = user.getBioportalAPIKey();
-		this.matrixGenerationEmailChk=user.getMatrixGenerationEmailChk();
-		this.treeGenerationEmailChk=user.getTreeGenerationEmailChk();
-		this.textCaptureEmailChk=user.getTextCaptureEmailChk();
-		this.taxonomyComparisonEmailChk=user.getTaxonomyComparisonEmailChk();
+		this.matrixGenerationEmail = user.isMatrixGenerationEmail();
+		this.treeGenerationEmail = user.isTreeGenerationEmail();
+		this.textCaptureEmail = user.isTextCaptureEmail();
+		this.taxonomyComparisonEmail = user.isTaxonomyComparisonEmail();
 		this.otoAccountEmail = user.getOtoAccountEmail();
 	}
 
@@ -155,38 +156,38 @@ public class ShortUser implements Serializable {
 		return getFullNameEmail() + " at " + affiliation;
 	}
 	
-	public boolean getMatrixGenerationEmailChk() {
-		return matrixGenerationEmailChk;
+
+	public boolean isMatrixGenerationEmail() {
+		return matrixGenerationEmail;
 	}
 
-	public void setMatrixGenerationEmailChk(boolean matrixGenerationEmailChk) {
-		this.matrixGenerationEmailChk = matrixGenerationEmailChk;
-	}
-	
-	public boolean getTreeGenerationEmailChk() {
-		return treeGenerationEmailChk;
+	public void setMatrixGenerationEmail(boolean matrixGenerationEmail) {
+		this.matrixGenerationEmail = matrixGenerationEmail;
 	}
 
-	public void setTreeGenerationEmailChk(boolean treeGenerationEmailChk) {
-		this.treeGenerationEmailChk = treeGenerationEmailChk;
+	public boolean isTreeGenerationEmail() {
+		return treeGenerationEmail;
 	}
 
-	public boolean getTextCaptureEmailChk() {
-		return textCaptureEmailChk;
+	public void setTreeGenerationEmail(boolean treeGenerationEmail) {
+		this.treeGenerationEmail = treeGenerationEmail;
 	}
 
-	public void setTextCaptureEmailChk(boolean textCaptureEmailChk) {
-		this.textCaptureEmailChk = textCaptureEmailChk;
+	public boolean isTextCaptureEmail() {
+		return textCaptureEmail;
 	}
 
-	public boolean getTaxonomyComparisonEmailChk() {
-		return taxonomyComparisonEmailChk;
+	public void setTextCaptureEmail(boolean textCaptureEmail) {
+		this.textCaptureEmail = textCaptureEmail;
 	}
 
-	public void setTaxonomyComparisonEmailChk(boolean taxonomyComparisonEmailChk) {
-		this.taxonomyComparisonEmailChk = taxonomyComparisonEmailChk;
+	public boolean isTaxonomyComparisonEmail() {
+		return taxonomyComparisonEmail;
 	}
 
+	public void setTaxonomyComparisonEmail(boolean taxonomyComparisonEmail) {
+		this.taxonomyComparisonEmail = taxonomyComparisonEmail;
+	}
 
 	@Override
 	public int hashCode() {

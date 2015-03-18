@@ -235,4 +235,5 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 		});
 	}
 
+
 }

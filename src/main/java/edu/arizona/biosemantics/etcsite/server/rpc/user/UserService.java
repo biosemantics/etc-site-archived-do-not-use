@@ -98,7 +98,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		String encryptedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 		
 		if(!daoManager.getUserDAO().hasUser(email)) {
-			User user = daoManager.getUserDAO().insert(new User(encryptedPassword, firstName, lastName, email, "", "", "", "", ""));
+			User user = daoManager.getUserDAO().insert(new User(encryptedPassword, firstName, lastName, email, "", "", "", "", "", true, true, true, true));
 			if(user == null) {
 				throw new UserAddException("Adding user failed");
 			}
@@ -113,7 +113,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		String encryptedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 		
 		if(!daoManager.getUserDAO().hasUser(openIdProviderId)) {
-			User user = daoManager.getUserDAO().insert(new User(openIdProviderId, "google", password, firstName, lastName, "", "", "", "", ""));
+			User user = daoManager.getUserDAO().insert(new User(openIdProviderId, "google", password, firstName, lastName, "", "", "", "", "", true, true, true, true));
 			if(user == null) {
 				throw new UserAddException("Adding user failed");
 			}
@@ -290,6 +290,10 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		user.setEmail(shortUser.getEmail());
 		user.setFirstName(shortUser.getFirstName());
 		user.setLastName(shortUser.getLastName());
+		user.setTextCaptureEmail(shortUser.isTextCaptureEmail());
+		user.setMatrixGenerationEmail(shortUser.isMatrixGenerationEmail());
+		user.setTreeGenerationEmail(shortUser.isTreeGenerationEmail());
+		user.setTaxonomyComparisonEmail(shortUser.isTaxonomyComparisonEmail());
 		
 		daoManager.getUserDAO().update(user);
 		return daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());

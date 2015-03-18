@@ -15,6 +15,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -76,11 +77,6 @@ public class SettingsView extends Composite implements ISettingsView {
 	private TextField lastName = new TextField();
 	private TextField firstName = new TextField();
 	private TextButton saveButton = new TextButton("Save");
-	private CheckBox semanticMarkupEmail = new CheckBox();
-	private CheckBox matrixGenerationEmail = new CheckBox();
-	private CheckBox treeGenerationEmail = new CheckBox();
-	private CheckBox taxonomyComparisonEmail = new CheckBox();
-	
 
 	private PasswordField confirmPassword = new PasswordField();
 	private PasswordField newPassword = new PasswordField();
@@ -107,13 +103,20 @@ public class SettingsView extends Composite implements ISettingsView {
 	private TextField otoNewPassword = new TextField();
 	private FieldLabel otoNewPasswordFieldLabel = new FieldLabel(otoNewPassword, "OTO Password");
 	private TextButton otoNewCreateButton = new TextButton("Create");
-	private Button otoNewAccountGoogleButton = new Button("Create OTO Account using Google");
+	private TextButton otoNewAccountGoogleButton = new TextButton("Create OTO Account using Google");
 	
 	private FieldSet existingOTOAccountFieldSet = new FieldSet();
 	private TextField otoExistingEmail = new TextField();
 	private FieldLabel otoExistingEmailFieldLabel = new FieldLabel(otoExistingEmail, "OTO Email");
 	private TextField otoExistingPassword = new TextField();
 	private FieldLabel otoExistingPasswordFieldLabel = new FieldLabel(otoExistingPassword, "OTO Password");
+	
+
+	private CheckBox semanticMarkupEmail = new CheckBox();
+	private CheckBox matrixGenerationEmail = new CheckBox();
+	private CheckBox treeGenerationEmail = new CheckBox();
+	private CheckBox taxonomyComparisonEmail = new CheckBox();
+	//private TextButton saveEmailPreferencesButton = new TextButton("Save");
 
 	private VerticalLayoutContainer otoVerticalInner;
 	
@@ -129,23 +132,72 @@ public class SettingsView extends Composite implements ISettingsView {
 	    userInfoFieldSet.add(userInfoVertical);
 	    firstName.setAllowBlank(false);
 	    lastName.setAllowBlank(false);
-	    userInfoVertical.add(new FieldLabel(firstName, "First Name"), new VerticalLayoutData(1, -1));
-	    userInfoVertical.add(new FieldLabel(lastName, "Last Name"), new VerticalLayoutData(1, -1));
+	    FieldLabel firstNameFieldLabel = new FieldLabel(firstName, "First Name");
+	    firstNameFieldLabel.setLabelWidth(200);
+	    userInfoVertical.add(firstNameFieldLabel, new VerticalLayoutData(1, -1));
+	    
+	    FieldLabel lastNameFieldLabel = new FieldLabel(lastName, "Last Name");
+	    lastNameFieldLabel.setLabelWidth(200);
+	    userInfoVertical.add(lastNameFieldLabel, new VerticalLayoutData(1, -1));
 		email.setEnabled(false);
 	    email.setAllowBlank(false);
-	    userInfoVertical.add(new FieldLabel(email, "Email"), new VerticalLayoutData(1, -1));
-	    userInfoVertical.add(new FieldLabel(affiliation, "Affiliation"), new VerticalLayoutData(1, -1));
-	    userInfoVertical.add(new FieldLabel(bioportalUserId, "Bioportal User Id"), new VerticalLayoutData(1, -1));
-	    userInfoVertical.add(new FieldLabel(bioportalApiKey, "Bioportal API Key"), new VerticalLayoutData(1, -1));
+	    
+	    FieldLabel emailFieldLabel = new FieldLabel(email, "Email");
+	    emailFieldLabel.setLabelWidth(200);
+	    userInfoVertical.add(emailFieldLabel, new VerticalLayoutData(1, -1));
+	    FieldLabel affiliationFieldLabel = new FieldLabel(affiliation, "Affiliation");
+	    affiliationFieldLabel.setLabelWidth(200);
+	    userInfoVertical.add(affiliationFieldLabel, new VerticalLayoutData(1, -1));
+	    FieldLabel bioportalFieldLabel = new FieldLabel(bioportalUserId, "Bioportal User Id");
+	    bioportalFieldLabel.setLabelWidth(200);
+	    userInfoVertical.add(bioportalFieldLabel, new VerticalLayoutData(1, -1));
+	    FieldLabel bioportalApiKeyFieldLabel = new FieldLabel(bioportalApiKey, "Bioportal API Key");
+	    bioportalApiKeyFieldLabel.setLabelWidth(200);
+	    userInfoVertical.add(bioportalApiKeyFieldLabel, new VerticalLayoutData(1, -1));
+	    FieldLabel textCaptureFieldLabel = new FieldLabel(this.semanticMarkupEmail, "Text Capture Task");
+	    textCaptureFieldLabel.setLabelWidth(200);
+	    semanticMarkupEmail.setBoxLabel("");
+	    userInfoVertical.add(textCaptureFieldLabel, new VerticalLayoutData(1, -1));
+	    FieldLabel matrixGenerationFieldLabel = new FieldLabel(this.matrixGenerationEmail, "Matrix Generation Task");
+	    matrixGenerationFieldLabel.setLabelWidth(200);
+	    matrixGenerationEmail.setBoxLabel("");
+	    userInfoVertical.add(matrixGenerationFieldLabel, new VerticalLayoutData(1, -1));
+	    FieldLabel treeGenerationFieldLabel = new FieldLabel(this.treeGenerationEmail, "Tree Generation Task");
+	    userInfoVertical.add(treeGenerationFieldLabel, new VerticalLayoutData(1, -1));
+	    treeGenerationFieldLabel.setLabelWidth(200);
+	    treeGenerationEmail.setBoxLabel("");
+	    FieldLabel taxonomyComparisonFieldLabel = new FieldLabel(this.taxonomyComparisonEmail, "Taxonomy Comparison Task");
+	    taxonomyComparisonFieldLabel.setLabelWidth(200);
+	    taxonomyComparisonEmail.setBoxLabel("");
+	    userInfoVertical.add(taxonomyComparisonFieldLabel, new VerticalLayoutData(1, -1));
 	    userInfoVertical.add(saveButton, new VerticalLayoutData(1, -1));
+	    userInfoVertical.forceLayout();
+	    	    
+	    /*FieldSet emailPreferencesFieldSet = new FieldSet();
+	    emailPreferencesFieldSet.setHeadingText("Email Notification");
+	    emailPreferencesFieldSet.setCollapsible(true); 
+	    VerticalLayoutContainer emailPreferencesVertical = new VerticalLayoutContainer();
+	    emailPreferencesFieldSet.add(emailPreferencesVertical);
+	    emailPreferencesVertical.add(new FieldLabel(this.matrixGenerationEmail, "Text Capture Task"), new VerticalLayoutData(1, -1));
+	    emailPreferencesVertical.add(new FieldLabel(this.matrixGenerationEmail, "Matrix Generation Task"), new VerticalLayoutData(1, -1));
+	    emailPreferencesVertical.add(new FieldLabel(this.treeGenerationEmail, "Tree Generation Task"), new VerticalLayoutData(1, -1));
+	    emailPreferencesVertical.add(new FieldLabel(this.taxonomyComparisonEmail, "Taxonomy Comparison Task"), new VerticalLayoutData(1, -1));
+	    emailPreferencesVertical.add(saveEmailPreferencesButton, new VerticalLayoutData(1, -1));
+	    */
 	    
 	    FieldSet passwordFieldSet = new FieldSet();
 	    passwordFieldSet.setHeadingText("Change Password");
 	    passwordFieldSet.setCollapsible(true);
 	    VerticalLayoutContainer passwordVertical = new VerticalLayoutContainer();
-	    passwordVertical.add(new FieldLabel(currentPassword, "Current Password"), new VerticalLayoutData(1, -1));
-	    passwordVertical.add(new FieldLabel(newPassword, "New Password"), new VerticalLayoutData(1, -1));
-	    passwordVertical.add(new FieldLabel(confirmPassword, "Confirm Password"), new VerticalLayoutData(1, -1));
+	    FieldLabel currentPasswordFieldLabel =  new FieldLabel(currentPassword, "Current Password");
+	    currentPasswordFieldLabel.setLabelWidth(200);
+	    passwordVertical.add(currentPasswordFieldLabel, new VerticalLayoutData(1, -1));
+	    FieldLabel newPasswordFieldLabel =  new FieldLabel(newPassword, "Current Password");
+	    newPasswordFieldLabel.setLabelWidth(200);
+	    passwordVertical.add(newPasswordFieldLabel, new VerticalLayoutData(1, -1));
+	    FieldLabel confirmPasswordFieldLabel =  new FieldLabel(confirmPassword, "Current Password");
+	    confirmPasswordFieldLabel.setLabelWidth(200);
+	    passwordVertical.add(confirmPasswordFieldLabel, new VerticalLayoutData(1, -1));
 	    passwordFieldSet.add(passwordVertical);	  
 	    passwordVertical.add(changePasswordButton, new VerticalLayoutData(1, -1));
 	    
@@ -166,6 +218,7 @@ public class SettingsView extends Composite implements ISettingsView {
 	    vertical.add(userInfoFieldSet, layoutData);
 	    vertical.add(passwordFieldSet, layoutData);
 	    vertical.add(otoFieldSet, layoutData);
+	    //vertical.add(emailPreferencesFieldSet, layoutData);
 	    panel.add(vertical);
 
 	    hasOTOAccount.setBoxLabel("Yes");
@@ -273,6 +326,12 @@ public class SettingsView extends Composite implements ISettingsView {
 				presenter.onSave();
 			}
 		});
+		/*saveEmailPreferencesButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				presenter.onSaveEmailPreferences();
+			}
+		});*/
 		
 		changePasswordButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -318,10 +377,10 @@ public class SettingsView extends Composite implements ISettingsView {
 		currentPassword.setValue("");
 		newPassword.setValue("");
 		confirmPassword.setValue("");
-		matrixGenerationEmail.setValue(user.getMatrixGenerationEmailChk());
-		treeGenerationEmail.setValue(user.getTreeGenerationEmailChk());
-		semanticMarkupEmail.setValue(user.getTextCaptureEmailChk());
-		taxonomyComparisonEmail.setValue(user.getTaxonomyComparisonEmailChk());
+		matrixGenerationEmail.setValue(user.isMatrixGenerationEmail());
+		treeGenerationEmail.setValue(user.isTreeGenerationEmail());
+		semanticMarkupEmail.setValue(user.isTextCaptureEmail());
+		taxonomyComparisonEmail.setValue(user.isTaxonomyComparisonEmail());
 		
 		if(user.getOtoAccountEmail() != null && !user.getOtoAccountEmail().isEmpty()) {
 			setLinkedOTOAccount(user.getOtoAccountEmail());
@@ -356,6 +415,10 @@ public class SettingsView extends Composite implements ISettingsView {
 		user.setEmail(email.getText());
 		user.setFirstName(firstName.getText());
 		user.setLastName(lastName.getText());
+		user.setMatrixGenerationEmail(matrixGenerationEmail.getValue());
+		user.setTextCaptureEmail(semanticMarkupEmail.getValue());
+		user.setTaxonomyComparisonEmail(taxonomyComparisonEmail.getValue());
+		user.setTreeGenerationEmail(treeGenerationEmail.getValue());
 		return user;
 	}
 	

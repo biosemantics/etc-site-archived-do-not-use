@@ -533,15 +533,12 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		super.destroy();
 	}
 	
-	private void sendFinishedGeneratingMatrixEmail(Task task){
-		User usr= null;
-		usr=daoManager.getUserDAO().getEmailPreference(task.getUser().getId());
-		if (usr==null || usr.getMatrixGenerationEmailChk())
-		{
+	private void sendFinishedGeneratingMatrixEmail(Task task) {
+		User usr = daoManager.getUserDAO().getSerializedUser(task.getUser().getId());
+		if (usr == null || usr.isMatrixGenerationEmail()) {
 			String email = daoManager.getUserDAO().getUser(task.getUser().getId()).getEmail();
 			String subject = Configuration.finishedMatrixgenerationGenerateSubject.replace("<taskname>", task.getName());
 			String body = Configuration.finishedMatrixgenerationGenerateBody.replace("<taskname>", task.getName());
-			
 			emailer.sendEmail(email, subject, body);
 		}
 	}

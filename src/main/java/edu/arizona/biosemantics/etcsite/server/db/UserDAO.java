@@ -22,6 +22,11 @@ import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.User;
 
 public class UserDAO {
+	
+	public UserDAO() {
+		File profilesDir = new File(Configuration.etcFiles + File.separator + "profiles");
+		profilesDir.mkdir();
+	}
 
 	public ShortUser getShortUser(int userId) {
 		User user = this.getUser(userId);
@@ -32,35 +37,19 @@ public class UserDAO {
 		return new ShortUser(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), 
 				user.getAffiliation(), user.getOpenIdProvider(), user.getOpenIdProviderId(), 
 				user.getBioportalUserId(), user.getBioportalAPIKey(), user.getOtoAccountEmail(),
-				user.getMatrixGenerationEmailChk(),user.getTreeGenerationEmailChk(),
-				user.getTextCaptureEmailChk(),user.getTaxonomyComparisonEmailChk());
+				user.isTextCaptureEmail(), user.isMatrixGenerationEmail(), 
+				user.isTreeGenerationEmail(), user.isTaxonomyComparisonEmail());
 	}
 
 	public User getUser(int id) {
 		User user = null;
-		try(Query query = new Query("SELECT * FROM etcsite_users WHERE id = ?")) {
+		try (Query query = new Query("SELECT * FROM etcsite_users WHERE id = ?")) {
 			query.setParameter(1, id);
 			ResultSet result = query.execute();
 			while (result.next()) {
 				user = createUser(result);
 			}
-			User usr= null;
-			usr=getEmailPreference(id);
-			if(usr==null )
-			{
-			user.setMatrixGenerationEmailChk(true);
-			user.setTaxonomyComparisonEmailChk(true);
-			user.setTextCaptureEmailChk(true);
-			user.setTreeGenerationEmailChk(true);	
-			}
-			else
-			{
-			user.setMatrixGenerationEmailChk(usr.getMatrixGenerationEmailChk());
-			user.setTaxonomyComparisonEmailChk(usr.getTaxonomyComparisonEmailChk());
-			user.setTextCaptureEmailChk(usr.getTextCaptureEmailChk());
-			user.setTreeGenerationEmailChk(usr.getTreeGenerationEmailChk());
-			}
-		}catch(Exception e) {
+		} catch (Exception e) {
 			log(LogLevel.ERROR, "Couldn't get user", e);
 		}
 		return user;
@@ -81,9 +70,21 @@ public class UserDAO {
 		String otoAuthenticationToken = result.getString(12);
 		Date created = result.getTimestamp(13);
 
+		User user = getSerializedUser(id);
+		boolean textCaptureEmail = true;
+		boolean matrixGenerationEmail = true;
+		boolean treeGenerationEmail = true;
+		boolean taxonomyComparisonEmail = true;
+		if(user != null) {
+			textCaptureEmail = user.isTextCaptureEmail();
+			matrixGenerationEmail = user.isMatrixGenerationEmail();
+			treeGenerationEmail = user.isTreeGenerationEmail();
+			taxonomyComparisonEmail = user.isTaxonomyComparisonEmail();
+		}
 		return new User(id, openIdProviderId, openIdProvider, password,
-				firstName, lastName, email, affiliation, bioportalUserId,
-				bioportalAPIKey, otoAccountEmail, otoAuthenticationToken, created);
+					firstName, lastName, email, affiliation, bioportalUserId,
+					bioportalAPIKey, otoAccountEmail, otoAuthenticationToken, textCaptureEmail, 
+					matrixGenerationEmail, treeGenerationEmail, taxonomyComparisonEmail, created);
 	}
 
 	public User getUser(String email) {
@@ -131,6 +132,7 @@ public class UserDAO {
 			if(generatedKeys.next()) {
 				result = this.getUser(generatedKeys.getInt(1));
 			}
+			storeUserSerialized(user);
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't add user", e);
 		}
@@ -159,40 +161,31 @@ public class UserDAO {
 			query.setParameter(11, user.getOtoAuthenticationToken());
 			query.setParameter(12, user.getId());
 			query.execute();
-			serializeEmailPreference(user);
+			storeUserSerialized(user);
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't update matrix generation configuration", e);
 		}
 	}
-	private void serializeEmailPreference( User user )
-	{
-		String fileName = user.getId()+".ser";
-		//User usr= new User(Name,LastName,email,matrixGenerationEmail,textCaptureEmail,treeGenerationEmail,taxonomyComparisonEmail);
-		String file= Configuration.etcFiles + File.separator + "profiles" + File.separator +  fileName;
-		try(ObjectOutput output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
+
+	private void storeUserSerialized(User user) {
+		String file = Configuration.etcFiles + File.separator + "profiles"
+				+ File.separator + user.getId() + ".ser";
+		try (ObjectOutput output = new ObjectOutputStream(
+				new BufferedOutputStream(new FileOutputStream(file)))) {
 			output.writeObject(user);
-		}
-		catch(Exception ex){
-			log(LogLevel.ERROR, ex.getMessage(), ex);
-			 //super.doUnexpectedFailure(ex);
-			 
+		} catch (Exception e) {
+			log(LogLevel.ERROR, "Serialization of user failed", e);
 		}
 	}
-	public User getEmailPreference(int userId ) {
-		User usr = null;  
-		try {
-			String fileName = userId+".ser";
-			String file= Configuration.etcFiles + File.separator + "profiles" + File.separator +  fileName;
-			ObjectInput input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
-			 usr = (User)input.readObject();
-			return usr;
-			} 
-		catch(ClassNotFoundException | IOException e) {
-			log(LogLevel.ERROR, e.getMessage(), e);
-			// super.doUnexpectedFailure(e);
-			 return usr;
+	
+	public User getSerializedUser(int userId) {
+		String file = Configuration.etcFiles + File.separator + "profiles" + File.separator + userId + ".ser";
+		try(ObjectInput input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
+			return (User) input.readObject();
+		} catch (ClassNotFoundException | IOException e) {
+			log(LogLevel.ERROR, "Deserialization of user failed", e);
 		}
-			
+		return null;
 	}
 	
 	public List<ShortUser> getUsers() {
@@ -223,11 +216,7 @@ public class UserDAO {
 	}
 
 	public boolean hasUser(String email) {
-		User user = this.getUser(email);
-//		return this.getUser(email) != null;
-		if (user !=null)
-			return true;
-		else return false;
+		return this.getUser(email) != null;
 	}
 
 }
