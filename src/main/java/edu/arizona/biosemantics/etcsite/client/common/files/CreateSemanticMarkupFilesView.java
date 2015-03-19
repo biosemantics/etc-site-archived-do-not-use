@@ -443,12 +443,12 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	
 	@Override
 	public void resetDescriptions() {
+		descriptionCombo.setValue(Description.MORPHOLOGY);
+		descriptionArea.setText("");
+		descriptionGrid.setWidget(1, 0, descriptionCombo);
 		while(descriptionGrid.getRowCount() > 3) {
 			descriptionGrid.removeRow(descriptionGrid.getRowCount() - 2);
 		}
-		descriptionCombo.setValue(Description.MORPHOLOGY);
-		descriptionArea.setText("");
-		ranksGrid.setWidget(1, 0, descriptionCombo);
 	}
 	
 	/*================= Progress Methods =================*/
