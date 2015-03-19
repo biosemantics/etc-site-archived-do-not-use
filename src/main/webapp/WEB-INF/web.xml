@@ -216,6 +216,16 @@
 		<servlet-name>downloadServlet</servlet-name>
 		<url-pattern>*.dld</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>helpServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.HelpServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>helpServlet</servlet-name>
+		<url-pattern>/help</url-pattern>
+	</servlet-mapping>
 
 
 	<context-param>

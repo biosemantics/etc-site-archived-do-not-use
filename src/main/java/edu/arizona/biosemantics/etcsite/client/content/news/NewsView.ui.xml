@@ -39,6 +39,20 @@
 									<!--a new row -->
 									<g:row>
 										<g:cell>
+											March 19, 2015
+										</g:cell>
+										<g:cell>&nbsp;</g:cell>
+										<g:customCell>
+											<g:VerticalPanel>
+											    <g:InlineLabel>
+											        Updated ETC-Beta with renewed layout, OTO account linking/creation, Euler interface, Input Creation, updated Text Capture.
+											    </g:InlineLabel>
+											</g:VerticalPanel>
+										</g:customCell>
+									</g:row>
+									
+									<g:row>
+										<g:cell>
 											Jan 7, 2015
 										</g:cell>
 										<g:cell>&nbsp;</g:cell>

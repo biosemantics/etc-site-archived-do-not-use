@@ -214,7 +214,7 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 		
 		//TODO redirect to a help servlet, that creates a "help html" page depending on the paramaeter that determines *which* help;
 		//Help will be created from a static html string not from that help.html file, otherwise it can't be used easily in client side gwt code
-		Window.open("help.html", "_blank", "");
+		Window.open("help?place=" + placeController.getWhere().getClass().getSimpleName(), "_blank", "");
 	}
 	
 	@Override

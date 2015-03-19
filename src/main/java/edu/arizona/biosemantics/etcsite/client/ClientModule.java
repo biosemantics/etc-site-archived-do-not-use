@@ -133,10 +133,6 @@ import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectView;
 import edu.arizona.biosemantics.etcsite.client.content.user.UsersPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.user.UsersView;
-import edu.arizona.biosemantics.etcsite.client.help.HelpHomeView;
-import edu.arizona.biosemantics.etcsite.client.help.HelpSemanticMarkupView;
-import edu.arizona.biosemantics.etcsite.client.help.IHelpHomeView;
-import edu.arizona.biosemantics.etcsite.client.help.IHelpSemanticMarkupView;
 import edu.arizona.biosemantics.etcsite.client.layout.ContentActivityManagerProvider;
 import edu.arizona.biosemantics.etcsite.client.layout.ContentActivityMapper;
 import edu.arizona.biosemantics.etcsite.client.layout.EtcSitePresenter;
@@ -259,8 +255,7 @@ public class ClientModule extends AbstractGinModule {
 		bind(IProcessingView.class).to(ProcessingView.class);
 		bind(IProcessingView.Presenter.class).to(ProcessingPresenter.class);
 		
-		bind(IHelpSemanticMarkupView.class).to(HelpSemanticMarkupView.class);
-		bind(IHelpHomeView.class).to(HelpHomeView.class);
+		bind(edu.arizona.biosemantics.etcsite.client.help.IHelpView.class).to(edu.arizona.biosemantics.etcsite.client.help.HelpView2.class);
 		
 		//activites, places, eventbus
 		bind(EventBus.class).annotatedWith(Names.named("ActivitiesBus")).to(SimpleEventBus.class).in(Singleton.class);
