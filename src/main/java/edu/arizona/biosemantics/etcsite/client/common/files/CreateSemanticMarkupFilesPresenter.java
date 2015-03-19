@@ -254,12 +254,14 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 				}else {
 					error += "Did not create any files";
 					Alerter.inputError(error.replaceAll("\n", "</br>"));
+					view.hideProgress();
 				}
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToCreateTaxonDescription(caught);
+				view.hideProgress();
 			}
 		});
 	}

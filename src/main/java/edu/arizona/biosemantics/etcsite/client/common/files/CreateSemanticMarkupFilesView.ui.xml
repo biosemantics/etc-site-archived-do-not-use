@@ -251,8 +251,9 @@
 										<g:HTMLPanel>
 			      							The batch creation function allows you to upload multiple taxonomic treatments formatted in the same way as the single file creation.<br/>
 			      							<ol style="list-style:disc;padding:10px;">
-			      							    <li>Fill the Source Document Information (* denotes required fields).</li>
+			      							    <li>Fill the Source Document Information in the form below.</li>
 			      							    <li>The source document information is applicable to all taxon names included in the taxon names and description area.</li>
+			      							    <li>Add only taxon names and descriptions in the names and descriptions area(Source Document Information should not be added in this area).</li>
 		    	  								<li>Use an empty line to separate taxonomic treatments</li>
 		      									<li>The system will generate one file for each taxonomic treatment given</li>
 		      									<li>Use a <b>colon (:)</b> to separate a field name from its value</li>
@@ -267,6 +268,7 @@
 										    The following are the required and optional fields that can be included in the Taxon names and Descriptions Area(R denotes a required field, O optional).<br/>
 										    <br/>
 										    <ol>
+										        <li>(*) denotes the required fields in the Source Document Information form</li>s 
 									    	    <li>at least one <b>strain number</b> or one ranked taxon name, in the format of <b><i>rank</i> name</b>, e.g., <b>family name</b>(R)</li>   
 		      					    			<li><b>equivalent strain numbers</b>(O)</li> 
 			      					    		<li><b>accession number 16S rRNA</b>(O)</li>
