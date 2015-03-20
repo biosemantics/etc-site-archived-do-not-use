@@ -122,11 +122,13 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 				}
 				//System.out.println("Got the result: \n" + response.toString());
 				
+				String id = null;
 				String firstName = null;
 				String lastName = null;
 				String openIdProviderId = null;
 				try {
 					JSONObject elements = new JSONObject(response.toString());
+					id = elements.getString("id");
 					firstName = elements.getString("given_name");
 					lastName = elements.getString("family_name");
 					openIdProviderId = elements.getString("email");
@@ -134,9 +136,9 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 					log(LogLevel.ERROR, "Couldn't parse JSON", e);
 				}
 							
-				if(firstName != null && lastName != null && openIdProviderId != null) {
+				if(id != null && firstName != null && lastName != null && openIdProviderId != null) {
 					//create an account for this user if they do not have one yet.	
-					String dummyPassword = Configuration.secret + ":" + openIdProviderId;
+					String dummyPassword = Configuration.secret + ":" + id;
 					
 					User user = daoManager.getUserDAO().getUser(openIdProviderId);
 					if (user == null) {

@@ -111,7 +111,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		String encryptedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 		
 		if(!daoManager.getUserDAO().hasUser(openIdProviderId)) {
-			User user = daoManager.getUserDAO().insert(new User(openIdProviderId, "google", password, firstName, lastName, "", "", "", "", "", true, true, true, true));
+			User user = daoManager.getUserDAO().insert(new User(openIdProviderId, "google", encryptedPassword, firstName, lastName, "", "", "", "", "", true, true, true, true));
 			if(user == null) {
 				throw new UserAddException("Adding user failed");
 			}
