@@ -131,11 +131,12 @@ public class EtcSiteView extends Composite implements IEtcSiteView {
 	
 	@UiHandler("help")
 	void onHelpClick(ClickEvent e) {
+		/* Disabled for now
 		Double size = dockLayoutPanel.getWidgetSize(eastPanel);
 		if(size == 400) 
 			setHelpSize(0, true);
 		else
-			setHelpSize(400, true);
+			setHelpSize(400, true);*/
 	}
 	
 	@UiHandler("homeMenu")

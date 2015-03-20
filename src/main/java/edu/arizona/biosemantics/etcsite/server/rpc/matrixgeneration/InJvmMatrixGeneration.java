@@ -32,7 +32,7 @@ public class InJvmMatrixGeneration implements MatrixGeneration {
 		addArg(argList, "input", inputDir);
 		addArg(argList, "output", outputFile);
 		if(inheritValues) {
-			addArg(argList, "up_taxonomy_inheritance");
+			//addArg(argList, "up_taxonomy_inheritance");
 			addArg(argList, "down_taxonomy_inheritance");
 		}
 		if(generateAbsentPresent) {

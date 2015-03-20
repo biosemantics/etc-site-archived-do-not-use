@@ -39,8 +39,8 @@
 	           	type="BUTTON"
 	           	autoSubmit="true"
 	           	avoidRepeatFiles="false"
-	           	validExtensions="xml"
-	           	/> 
+	           	
+	           	/> <!-- validExtensions="xml" -->
 		     <g:Button ui:field="addButton" styleName="{style.middle}" title="Select a parent folder before uploading one or more files">Upload Files</g:Button>
 		     </g:FlowPanel>
 		   

@@ -95,7 +95,7 @@ public class UploadServlet extends UploadAction {
 							String fileContent;
 							try {
 								fileContent = item.getString("UTF-8");
-								boolean valid = false;
+								boolean valid = true;
 								IContentValidator validator = contentValidatorProvider.getValidator(fileTypeEnum);
 								if(validator != null)
 									valid = validator.validate(fileContent);
