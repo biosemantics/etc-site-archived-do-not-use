@@ -2,14 +2,22 @@ package edu.arizona.biosemantics.etcsite.server.rpc.user;
 
 public class GoogleUser {
 
+	private String id;
 	private String firstName;
 	private String lastName;
 	private String email;
-	public GoogleUser(String firstName, String lastName, String email) {
+	public GoogleUser(String id, String firstName, String lastName, String email) {
 		super();
+		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
 	}
 	public String getFirstName() {
 		return firstName;

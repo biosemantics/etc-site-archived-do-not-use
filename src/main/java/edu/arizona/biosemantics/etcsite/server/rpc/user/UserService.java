@@ -176,9 +176,9 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 			log(LogLevel.ERROR, "Couldn't get google user", e);
 			throw new UserNotFoundException(e);
 		}
-		saveOTOAccount(token, share, googleUser.getEmail(), googleUser.getFirstName() + googleUser.getLastName());
+		String dummyPassword = Configuration.otoSecret + ":" + googleUser.getId();
+		saveOTOAccount(token, share, googleUser.getEmail(), dummyPassword);
 		edu.arizona.biosemantics.oto.common.model.User otoUser = new edu.arizona.biosemantics.oto.common.model.User();
-		String dummyPassword = Configuration.otoSecret + ":" + googleUser.getEmail();
 		otoUser.setUserEmail(googleUser.getEmail());
 		otoUser.setFirstName(googleUser.getFirstName());
 		otoUser.setLastName(googleUser.getLastName());
@@ -272,7 +272,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		}
 		
 		edu.arizona.biosemantics.oto.common.model.User otoUser = new edu.arizona.biosemantics.oto.common.model.User();
-		String dummyPassword = Configuration.otoSecret + googleUser.getEmail();
+		String dummyPassword = Configuration.otoSecret + googleUser.getId();
 		otoUser.setUserEmail(googleUser.getEmail());
 		otoUser.setFirstName(googleUser.getFirstName());
 		otoUser.setLastName(googleUser.getLastName());
@@ -333,16 +333,18 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		if(accessToken != null) {
 			HttpGet httpget = new HttpGet("https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=" + accessToken);
 			response = httpclient.execute(httpget);
+			String id = null;
 			String firstName = null;
 			String lastName = null;
 			String email = null;
 			try {
 				JSONObject elements = new JSONObject(EntityUtils.toString(response.getEntity(), "UTF-8"));
+				id = elements.getString("id");
 				firstName = elements.getString("given_name");
 				lastName = elements.getString("family_name");
 				email = elements.getString("email"); 
 				if(email != null && firstName != null && lastName != null)
-					return new GoogleUser(firstName, lastName, email);
+					return new GoogleUser(id, firstName, lastName, email);
 			} catch(JSONException e) {
 				log(LogLevel.ERROR, "Couldn't parse JSON", e);
 			}
