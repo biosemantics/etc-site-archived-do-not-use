@@ -136,7 +136,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 							
 				if(firstName != null && lastName != null && openIdProviderId != null) {
 					//create an account for this user if they do not have one yet.	
-					String dummyPassword = firstName + lastName;
+					String dummyPassword = Configuration.secret + ":" + openIdProviderId;
 					
 					User user = daoManager.getUserDAO().getUser(openIdProviderId);
 					if (user == null) {

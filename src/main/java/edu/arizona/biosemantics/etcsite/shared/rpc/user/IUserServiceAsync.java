@@ -24,7 +24,7 @@ public interface IUserServiceAsync {
 	public void existsUser(String openIdProviderId, AsyncCallback<Boolean> callback);
 
 	public void add(String openIdProviderId, String string, String firstName,
-			String lastName, String encryptedDummyPassword, AsyncCallback<ShortUser> callback);
+			String lastName, String password, AsyncCallback<ShortUser> callback);
 
 	public void createOTOAccount(AuthenticationToken authenticationToken, String email, String password,
 			AsyncCallback<edu.arizona.biosemantics.oto.common.model.User> asyncCallback);

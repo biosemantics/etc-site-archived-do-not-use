@@ -29,7 +29,7 @@ public interface IUserService extends RemoteService {
 	public boolean existsUser(String openIdProviderId);
 
 	public ShortUser add(String openIdProviderId, String string, String firstName,
-			String lastName, String encryptedDummyPassword) throws UserAddException;
+			String lastName, String password) throws UserAddException;
 	
 	public edu.arizona.biosemantics.oto.common.model.User createOTOAccount(AuthenticationToken authenticationToken, String email, String password) throws CreateOTOAccountException;
 	

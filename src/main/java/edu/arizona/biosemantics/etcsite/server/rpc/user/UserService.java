@@ -178,7 +178,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		}
 		saveOTOAccount(token, share, googleUser.getEmail(), googleUser.getFirstName() + googleUser.getLastName());
 		edu.arizona.biosemantics.oto.common.model.User otoUser = new edu.arizona.biosemantics.oto.common.model.User();
-		String dummyPassword = googleUser.getFirstName() + googleUser.getLastName();
+		String dummyPassword = Configuration.otoSecret + ":" + googleUser.getEmail();
 		otoUser.setUserEmail(googleUser.getEmail());
 		otoUser.setFirstName(googleUser.getFirstName());
 		otoUser.setLastName(googleUser.getLastName());
@@ -272,7 +272,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		}
 		
 		edu.arizona.biosemantics.oto.common.model.User otoUser = new edu.arizona.biosemantics.oto.common.model.User();
-		String dummyPassword = googleUser.getFirstName() + googleUser.getLastName();
+		String dummyPassword = Configuration.otoSecret + googleUser.getEmail();
 		otoUser.setUserEmail(googleUser.getEmail());
 		otoUser.setFirstName(googleUser.getFirstName());
 		otoUser.setLastName(googleUser.getLastName());

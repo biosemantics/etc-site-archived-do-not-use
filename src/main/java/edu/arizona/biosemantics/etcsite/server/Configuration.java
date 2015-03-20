@@ -90,6 +90,8 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 	public static String oto2Url;
 
 	public static String otoUrl;
+	public static String otoSecret;
+	public static String secret;
 	
 	static {		
 		try {
@@ -99,6 +101,8 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			
 			oto2Url = properties.getProperty("oto2Url");
 			otoUrl = properties.getProperty("otoUrl");
+			otoSecret = properties.getProperty("otoSecret");
+			secret = properties.getProperty("secret");
 			classpath = properties.getProperty("classpath");
 			
 			targetNamespace = properties.getProperty("targetNamespace");
@@ -173,4 +177,5 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			return null;
 		}
 	}
+
 }
