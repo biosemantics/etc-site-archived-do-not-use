@@ -54,6 +54,7 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.net.URL;
 
 import edu.arizona.biosemantics.oto.client.oto.OTOClient;
 import edu.arizona.biosemantics.oto.common.model.CreateUserResult;
@@ -171,7 +172,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		boolean share = true;
 		GoogleUser googleUser;
 		try {
-			googleUser = getGoogleUser(googleCode);
+			googleUser = this.getGoogleUserFromAccessToken(googleCode);
 		} catch (Exception e) {
 			log(LogLevel.ERROR, "Couldn't get google user", e);
 			throw new UserNotFoundException(e);
@@ -259,7 +260,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 	public edu.arizona.biosemantics.oto.common.model.User createOTOAccount(AuthenticationToken token, String googleCode) throws CreateOTOAccountException {
 		GoogleUser googleUser;
 		try {
-			googleUser = getGoogleUser(googleCode);
+			googleUser = getGoogleUserFromAccessToken(googleCode);
 		} catch (Exception e) {
 			throw new CreateOTOAccountException(e);
 		}
@@ -300,6 +301,45 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 			log(LogLevel.ERROR, "Problem creating OTO Account", e);
 			throw new CreateOTOAccountException(e);
 		}
+	}
+	
+	private GoogleUser getGoogleUserFromAccessToken(String accessToken) throws Exception {		
+		HttpClient httpclient = HttpClients.createDefault();
+		HttpGet httpGet = new HttpGet("https://www.googleapis.com/oauth2/v1/userinfo?access_token=" + accessToken);
+		HttpResponse response = httpclient.execute(httpGet);
+		
+		String tokenType = null;
+		String expiresIn = null;
+		String idToken = null;
+		try {
+			JSONObject elements = new JSONObject(EntityUtils.toString(response.getEntity(), "UTF-8"));
+			accessToken = elements.getString("access_token");
+			tokenType = elements.getString("token_type");
+			expiresIn = elements.getString("expires_in");
+			idToken = elements.getString("id_token"); 
+		} catch(JSONException e) {
+			log(LogLevel.ERROR, "Couldn't parse JSON", e);
+		}
+		if(accessToken != null) {
+			HttpGet httpget = new HttpGet("https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=" + accessToken);
+			response = httpclient.execute(httpget);
+			String id = null;
+			String firstName = null;
+			String lastName = null;
+			String email = null;
+			try {
+				JSONObject elements = new JSONObject(EntityUtils.toString(response.getEntity(), "UTF-8"));
+				id = elements.getString("id");
+				firstName = elements.getString("given_name");
+				lastName = elements.getString("family_name");
+				email = elements.getString("email"); 
+				if(email != null && firstName != null && lastName != null)
+					return new GoogleUser(id, firstName, lastName, email);
+			} catch(JSONException e) {
+				log(LogLevel.ERROR, "Couldn't parse JSON", e);
+			}
+		}
+		return null;
 	}
 	
 	private GoogleUser getGoogleUser(String googleCode) throws Exception {

@@ -15,10 +15,14 @@ package edu.arizona.biosemantics.etcsite.client.layout;
  * the License.
  */
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.LegacyHandlerWrapper;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
@@ -181,6 +185,18 @@ private EventBus eventBus;
     };
   }
 
+  private Map<String, String> getParameters(String queryString) {
+	  Map<String, String> parameters = new HashMap<String, String>();
+	  String[] keyValues = queryString.split("&");
+	  for(String keyValue : keyValues) {
+		  int firstEquals = keyValue.indexOf("=");
+		  String key = keyValue.substring(0, firstEquals);
+		  String value = keyValue.substring(firstEquals + 1, keyValue.length());
+		  parameters.put(key, value);
+	  }
+	  return parameters;
+  }
+  
   private void handleHistoryToken(String token) {
 	  Place newPlace = null;
 	  
@@ -189,10 +205,26 @@ private EventBus eventBus;
       }
 	  
 	  //Google OAuth landing here //TODO: Use OAuth2 for Web Server Applications https://developers.google.com/accounts/docs/OAuth2WebServer 
-	  if (token.startsWith("access_token=")){
-		  String accessToken = token.substring(token.indexOf("access_token=")+13, token.indexOf("&"));
-		  Authentication.getInstance().setExternalAccessToken(accessToken);
-		  eventBus.fireEvent(new AuthenticationEvent(AuthenticationEventType.TO_BE_DETERMINED));
+	  if(token.startsWith("state=")) {
+		  token = URL.decodeQueryString(token);
+		  Map<String, String> parameters = getParameters(token);		  
+		  String accessToken = parameters.get("access_token");
+		  String place = parameters.get("state");
+		  String action = parameters.get("action");
+		  if(place != null && action != null) {
+			  switch(action) {
+			  case "login":
+				  if(accessToken != null) {
+					  Authentication.getInstance().setExternalAccessToken(accessToken);
+					  eventBus.fireEvent(new AuthenticationEvent(AuthenticationEventType.TO_BE_DETERMINED));
+				  }
+				  break;
+			  case "settings_save_oto":
+				  Authentication.getInstance().setExternalAccessToken(accessToken);
+				  newPlace = new SettingsPlace(action, accessToken);
+				  break;
+			  }
+		  }
 	  }
 	  
     

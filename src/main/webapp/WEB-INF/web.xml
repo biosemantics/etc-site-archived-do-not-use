@@ -199,6 +199,16 @@
 	</servlet-mapping>
 
 	<servlet>
+		<servlet-name>googleServlet</servlet-name>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.GoogleAuthenticationServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>googleServlet</servlet-name>
+		<url-pattern>/googleauth</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<servlet-name>pdfServlet</servlet-name>
 		<servlet-class>edu.arizona.biosemantics.etcsite.server.PDFServlet</servlet-class>
 	</servlet>
