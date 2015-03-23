@@ -219,8 +219,12 @@ private EventBus eventBus;
 					  eventBus.fireEvent(new AuthenticationEvent(AuthenticationEventType.TO_BE_DETERMINED));
 				  }
 				  break;
+				  
 			  case "settings_save_oto":
-				  Authentication.getInstance().setExternalAccessToken(accessToken);
+				  newPlace = new SettingsPlace(action, accessToken);
+				  break;
+
+			  case "settings_create_oto":
 				  newPlace = new SettingsPlace(action, accessToken);
 				  break;
 			  }
