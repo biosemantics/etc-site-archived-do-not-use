@@ -24,6 +24,7 @@ import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
 import edu.arizona.biosemantics.etcsite.client.common.ResumeTaskToPlaceGoer;
 import edu.arizona.biosemantics.etcsite.client.common.ToPlaceGoer;
+import edu.arizona.biosemantics.etcsite.client.content.about.AboutPlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.pipeline.PipelinePlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPlace;
@@ -43,9 +44,9 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyC
 import edu.arizona.biosemantics.etcsite.shared.rpc.treegeneration.ITreeGenerationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.visualization.IVisualizationServiceAsync;
 
-public class HomeActivity extends MyAbstractActivity implements IHomeContentView.Presenter {
+public class HomeActivity extends MyAbstractActivity implements IHomeView.Presenter {
 
-	private IHomeContentView homeContentView;
+	private IHomeView homeContentView;
 	private ISemanticMarkupServiceAsync semanticMarkupService;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
 	private ITaxonomyComparisonServiceAsync taxonomyComparisonService;
@@ -56,7 +57,7 @@ public class HomeActivity extends MyAbstractActivity implements IHomeContentView
 	private ResumeTaskToPlaceGoer resumeTaskToPlaceGoer;
 
 	@Inject
-	public HomeActivity(IHomeContentView homeContentView, 
+	public HomeActivity(IHomeView homeContentView, 
 			ISemanticMarkupServiceAsync semanticMarkupService,
 			IMatrixGenerationServiceAsync matrixGenerationService,
 			ITaxonomyComparisonServiceAsync taxonomyComparisonService,
@@ -119,8 +120,12 @@ public class HomeActivity extends MyAbstractActivity implements IHomeContentView
 	}
 	
 	@Override
+	public void onAbout() {
+		placeController.goTo(new AboutPlace());
+	}
+
+	@Override
 	public void update() {
-		// TODO Auto-generated method stub
 		
 	}
 }

@@ -70,9 +70,13 @@ import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerD
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerView;
 import edu.arizona.biosemantics.etcsite.client.content.help.HelpView;
 import edu.arizona.biosemantics.etcsite.client.content.help.IHelpView;
-import edu.arizona.biosemantics.etcsite.client.content.home.HomeContentView;
+import edu.arizona.biosemantics.etcsite.client.content.home.HomeHeaderView;
+import edu.arizona.biosemantics.etcsite.client.content.home.HomeMainView;
 import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
-import edu.arizona.biosemantics.etcsite.client.content.home.IHomeContentView;
+import edu.arizona.biosemantics.etcsite.client.content.home.HomeView;
+import edu.arizona.biosemantics.etcsite.client.content.home.IHomeHeaderView;
+import edu.arizona.biosemantics.etcsite.client.content.home.IHomeMainView;
+import edu.arizona.biosemantics.etcsite.client.content.home.IHomeView;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.IMatrixGenerationInputView;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.IMatrixGenerationOutputView;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.IMatrixGenerationProcessView;
@@ -171,7 +175,9 @@ public class ClientModule extends AbstractGinModule {
 		//views, presenter
 		bind(IEtcSiteView.class).to(EtcSiteView.class);
 		bind(IEtcSiteView.Presenter.class).to(EtcSitePresenter.class).in(Singleton.class);
-		bind(IHomeContentView.class).to(HomeContentView.class);
+		bind(IHomeMainView.class).to(HomeMainView.class);
+		bind(IHomeHeaderView.class).to(HomeHeaderView.class);
+		bind(IHomeView.class).to(HomeView.class);
 		bind(IAboutView.class).to(AboutView.class);
 		bind(INewsView.class).to(NewsView.class);
 		bind(IHelpView.class).to(HelpView.class);

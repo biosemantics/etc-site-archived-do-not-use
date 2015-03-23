@@ -130,6 +130,7 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 						auth.setLastName(result.getUser().getLastName());
 						auth.setAffiliation(result.getUser().getAffiliation());
 						eventBus.fireEvent(new AuthenticationEvent(AuthenticationEventType.LOGGEDIN));
+						Alerter.firstLoginCheckAccountInfo();
 						placeController.goTo(new SettingsPlace());
 					} else {
 						Alerter.failedToLoginWithgGoogle(null);

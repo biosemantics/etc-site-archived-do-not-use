@@ -7,16 +7,16 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
-public class HomeContentView extends Composite implements IHomeContentView {
+public class HomeMainView extends Composite implements IHomeMainView {
 
-	private static StartContentViewUiBinder uiBinder = GWT.create(StartContentViewUiBinder.class);
+	private static HomeMainViewUiBinder uiBinder = GWT.create(HomeMainViewUiBinder.class);
 
-	interface StartContentViewUiBinder extends UiBinder<Widget, HomeContentView> {
+	interface HomeMainViewUiBinder extends UiBinder<Widget, HomeMainView> {
 	}
 
 	private Presenter presenter;
 	
-	public HomeContentView() {
+	public HomeMainView() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 	
@@ -48,8 +48,8 @@ public class HomeContentView extends Composite implements IHomeContentView {
 	@UiHandler("pipelineButton")
 	public void onPipeline(ClickEvent event) {
 		presenter.onPipeline();
-	}
-
+	} 
+	
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;

@@ -134,6 +134,8 @@ public class SettingsView extends Composite implements ISettingsView {
 	    userInfoFieldSet.setCollapsible(true);
 	    VerticalLayoutContainer userInfoVertical = new VerticalLayoutContainer();
 	    userInfoFieldSet.add(userInfoVertical);
+	    userInfoVertical.add(new Label("* denotes required fields"));
+	    
 	    firstName.setAllowBlank(false);
 	    lastName.setAllowBlank(false);
 	    FieldLabel firstNameFieldLabel = new FieldLabel(firstName, "First Name *");
@@ -158,23 +160,29 @@ public class SettingsView extends Composite implements ISettingsView {
 	    FieldLabel bioportalApiKeyFieldLabel = new FieldLabel(bioportalApiKey, "Bioportal API Key");
 	    bioportalApiKeyFieldLabel.setLabelWidth(200);
 	    userInfoVertical.add(bioportalApiKeyFieldLabel, new VerticalLayoutData(1, -1));
+	    
+	    FieldSet emailNotificationFieldSet = new FieldSet();
+	    emailNotificationFieldSet.setHeadingText("Email Notification");
+	    VerticalLayoutContainer emailNotificationVertical = new VerticalLayoutContainer();
+	    emailNotificationFieldSet.add(emailNotificationVertical);
 	    FieldLabel textCaptureFieldLabel = new FieldLabel(this.semanticMarkupEmail, "Text Capture Task");
 	    textCaptureFieldLabel.setLabelWidth(200);
 	    semanticMarkupEmail.setBoxLabel("");
-	    userInfoVertical.add(textCaptureFieldLabel, new VerticalLayoutData(1, -1));
+	    emailNotificationVertical.add(textCaptureFieldLabel, new VerticalLayoutData(1, -1));
 	    FieldLabel matrixGenerationFieldLabel = new FieldLabel(this.matrixGenerationEmail, "Matrix Generation Task");
 	    matrixGenerationFieldLabel.setLabelWidth(200);
 	    matrixGenerationEmail.setBoxLabel("");
-	    userInfoVertical.add(matrixGenerationFieldLabel, new VerticalLayoutData(1, -1));
+	    emailNotificationVertical.add(matrixGenerationFieldLabel, new VerticalLayoutData(1, -1));
 	    FieldLabel treeGenerationFieldLabel = new FieldLabel(this.treeGenerationEmail, "Tree Generation Task");
-	    userInfoVertical.add(treeGenerationFieldLabel, new VerticalLayoutData(1, -1));
+	    emailNotificationVertical.add(treeGenerationFieldLabel, new VerticalLayoutData(1, -1));
 	    treeGenerationFieldLabel.setLabelWidth(200);
 	    treeGenerationEmail.setBoxLabel("");
 	    FieldLabel taxonomyComparisonFieldLabel = new FieldLabel(this.taxonomyComparisonEmail, "Taxonomy Comparison Task");
 	    taxonomyComparisonFieldLabel.setLabelWidth(200);
 	    taxonomyComparisonEmail.setBoxLabel("");
-	    userInfoVertical.add(taxonomyComparisonFieldLabel, new VerticalLayoutData(1, -1));
-	    userInfoVertical.add(new Label("* denotes required fields"));
+	    emailNotificationVertical.add(taxonomyComparisonFieldLabel, new VerticalLayoutData(1, -1));
+	    userInfoVertical.add(emailNotificationFieldSet, new VerticalLayoutData(1, -1));
+	    
 	    userInfoVertical.add(saveButton, new VerticalLayoutData(1, -1));
 	    userInfoVertical.forceLayout();
 	    	    

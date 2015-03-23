@@ -1,0 +1,27 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:home="urn:import:edu.arizona.biosemantics.etcsite.client.content.home"
+	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.layout">
+	<ui:style>	
+		.container{
+		}		
+		.header {
+	
+		}
+		.main {
+			position: absolute;
+		    top: 170px;
+		}
+	</ui:style>
+	<!-- <ui:style field="ETCcss" src="~/src/main/webapp/etcsite.css"></ui:style> -->
+	 
+	<g:ScrollPanel>
+	<my:CenteredContentPanel>
+		<g:VerticalPanel styleName="{style.container}">
+			<home:HomeHeaderView ui:field="header" styleName="{style.header}"></home:HomeHeaderView>
+			<home:HomeMainView ui:field="main" styleName="{style.main}"></home:HomeMainView>
+		</g:VerticalPanel>
+	</my:CenteredContentPanel>
+	</g:ScrollPanel>
+</ui:UiBinder> 

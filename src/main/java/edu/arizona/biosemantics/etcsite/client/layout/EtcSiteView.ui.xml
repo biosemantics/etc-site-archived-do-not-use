@@ -90,7 +90,8 @@
 		}
 		.navEntry {
 			padding-top:20px;
-			padding-left:20px
+			padding-left:20px;
+			cursor:pointer;
 		}
 	</ui:style>
 
@@ -162,7 +163,7 @@
 							<my:ImageLabel styleName="{style.navEntry}" ui:field="taxonomyComparison" imagePath="images/TaxonomyComparison.gif" imageWidth="20px" imageHeight="20px" text="Taxonomy Comparison" systemFolder="false"></my:ImageLabel>
 						</div>
 						<div>
-							<my:ImageLabel styleName="{style.navEntry}" ui:field="visualization" imagePath="images/Visualization.gif" imageWidth="20px" imageHeight="20px" text="Visualization" systemFolder="false"></my:ImageLabel>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="visualization" imagePath="images/Visualization_unselected.gif" imageWidth="20px" imageHeight="20px" text="Visualization" systemFolder="false"></my:ImageLabel>
 						</div>
 					</div>
 				</g:HTMLPanel>

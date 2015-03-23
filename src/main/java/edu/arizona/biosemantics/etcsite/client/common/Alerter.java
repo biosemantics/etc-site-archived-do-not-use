@@ -24,6 +24,14 @@ public class Alerter {
 		box.hide();
 		box = null;
 	}
+
+	public static MessageBox firstLoginCheckAccountInfo() {
+		return showInfo("Account Information", "You have successfully registered. </br></br></br>"
+				+ ""
+				+ "(1) First, please set your account settings.</br>"
+				+ "(2) Then hover <img src=\"images/Menu.gif\" height=\"20px\" width=\"20px\"/> in the top left corner to continue."
+				+ "");
+	}
 	
 	public static MessageBox passwordLengthNotMet() {
 		return showAlert("Password not sufficient", "Passwords must be at least 6 characters long.");
@@ -516,6 +524,5 @@ public class Alerter {
         return box;
 	}
 
-	
 	
 }
