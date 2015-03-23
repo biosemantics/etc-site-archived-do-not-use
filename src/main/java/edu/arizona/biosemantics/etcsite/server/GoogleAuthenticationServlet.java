@@ -26,6 +26,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.CreateOTOAccountException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.InvalidOTOAccountException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.user.OTOException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserNotFoundException;
 
 public class GoogleAuthenticationServlet extends HttpServlet {
@@ -57,7 +58,7 @@ public class GoogleAuthenticationServlet extends HttpServlet {
 					try {
 						userService.saveOTOAccount(Authentication.getInstance().getToken(), code);
 						response.sendRedirect(response.encodeRedirectURL(Configuration.googleRedirectURI + "?#" + SettingsPlace.class.getSimpleName() + ":"));
-					} catch (UserNotFoundException | InvalidOTOAccountException e) {
+					} catch (UserNotFoundException | InvalidOTOAccountException | OTOException e) {
 						log(LogLevel.ERROR, "Problem saving oto account", e);
 						response.sendRedirect(response.encodeRedirectURL(Configuration.googleRedirectURI + "#" + SettingsPlace.class.getSimpleName() + ":"));
 					}
@@ -66,7 +67,7 @@ public class GoogleAuthenticationServlet extends HttpServlet {
 					try {
 						userService.createOTOAccount(Authentication.getInstance().getToken(), code);
 						response.sendRedirect(response.encodeRedirectURL(Configuration.googleRedirectURI + "#" + SettingsPlace.class.getSimpleName() + ":"));
-					} catch (CreateOTOAccountException e) {
+					} catch (CreateOTOAccountException | OTOException e) {
 						log(LogLevel.ERROR, "Problem creating oto account", e);
 						response.sendRedirect(response.encodeRedirectURL(Configuration.googleRedirectURI + "#" + SettingsPlace.class.getSimpleName() + ":"));
 					}

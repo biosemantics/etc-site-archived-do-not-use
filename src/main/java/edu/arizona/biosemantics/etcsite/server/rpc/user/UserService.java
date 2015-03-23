@@ -39,6 +39,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.user.CreateOTOAccountExceptio
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.InvalidOTOAccountException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.InvalidPasswordException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.user.OTOException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserAddException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserNotFoundException;
 import edu.arizona.biosemantics.matrixreview.shared.model.Model;
@@ -167,7 +168,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 
 
 	@Override
-	public edu.arizona.biosemantics.oto.common.model.User saveOTOAccount(AuthenticationToken token, String googleCode) throws UserNotFoundException, InvalidOTOAccountException {
+	public edu.arizona.biosemantics.oto.common.model.User saveOTOAccount(AuthenticationToken token, String googleCode) throws UserNotFoundException, InvalidOTOAccountException, OTOException {
 		ShortUser shortUser = this.getUser(token);
 		boolean share = true;
 		GoogleUser googleUser;
@@ -193,7 +194,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 	}	
 
 	@Override
-	public void saveOTOAccount(AuthenticationToken authenticationToken, boolean share, String email, String password) throws InvalidOTOAccountException {
+	public void saveOTOAccount(AuthenticationToken authenticationToken, boolean share, String email, String password) throws InvalidOTOAccountException, OTOException {
 		User user = daoManager.getUserDAO().getUser(authenticationToken.getUserId());
 		
 		if(share) {
@@ -216,6 +217,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 				}
 			} catch (InterruptedException | ExecutionException e) {
 				log(LogLevel.ERROR, "Problem saving OTO Account", e);
+				throw new OTOException(e);
 			}
 		} else {
 			user.setOtoAccountEmail("");
@@ -257,7 +259,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 	
 	//TODO: use https://code.google.com/p/google-api-java-client/w/list
 	@Override
-	public edu.arizona.biosemantics.oto.common.model.User createOTOAccount(AuthenticationToken token, String googleCode) throws CreateOTOAccountException {
+	public edu.arizona.biosemantics.oto.common.model.User createOTOAccount(AuthenticationToken token, String googleCode) throws CreateOTOAccountException, OTOException {
 		GoogleUser googleUser;
 		try {
 			googleUser = getGoogleUserFromAccessToken(googleCode);

@@ -524,5 +524,9 @@ public class Alerter {
         return box;
 	}
 
+	public static MessageBox otoConnectionFailed(Throwable caught) {
+		return showAlert("Failed to connect", "Failed to connect to OTO. Try again later." + caught.getMessage(), caught);
+	}
+
 	
 }

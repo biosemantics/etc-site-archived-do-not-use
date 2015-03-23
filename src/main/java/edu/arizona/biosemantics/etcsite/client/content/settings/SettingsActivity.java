@@ -21,8 +21,6 @@ import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
 import edu.arizona.biosemantics.etcsite.client.common.ServerSetup;
-import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
-import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationPlace;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
