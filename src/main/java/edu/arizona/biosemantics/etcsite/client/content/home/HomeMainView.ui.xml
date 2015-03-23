@@ -51,7 +51,7 @@
 		    width: 35px;
 		    height: 94px;
 		    position: absolute;
-		    left: 715px;
+		    left: 710px;
 		    padding-left: 20px;
 		}
 		.semanticMarkupArrow {
@@ -66,7 +66,7 @@
 		    width: 200px;
 		    height: 50px;
 		    position: absolute;
-		    left: 760px;
+		    left: 750px;
 		}
 		.semanticMarkupButton {
 		    top: 22px;
@@ -130,7 +130,7 @@
 		    width: 240px;
 		    position: absolute;
 		    top: 340px;
-		    left: 771px;
+		    left: 767px;
 		}
 		.visualizationImage {
 		    background-image: url('images/Visualization_unselected.gif');
