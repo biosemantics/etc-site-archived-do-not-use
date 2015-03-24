@@ -37,6 +37,7 @@ import com.sencha.gxt.widget.core.client.form.TextField;
 
 import edu.arizona.biosemantics.common.taxonomy.Description;
 import edu.arizona.biosemantics.common.taxonomy.Rank;
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.shared.model.file.DescriptionEntry;
 import edu.arizona.biosemantics.etcsite.shared.model.file.TaxonIdentificationEntry;
 
@@ -267,9 +268,10 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		Widget valueWidget = ranksGrid.getWidget(ranksGrid.getRowCount()-2, 1);
 		TextField tf = (TextField)valueWidget;
 		String tfValue = tf.getText();
+		tfValue = tfValue.trim();
 		String splits[] = tfValue.split(" ", 2);
 		if(splits.length>1){
-			authorityDate = splits[1];
+			authorityDate = splits[1].trim();
 		}
 		
 		int newRow = ranksGrid.insertRow(ranksGrid.getRowCount() - 1);
@@ -300,9 +302,14 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		Widget valueWidget = ranksGrid.getWidget(ranksGrid.getRowCount()-2, 1);
 		TextField tf = (TextField)valueWidget;
 		String tfValue = tf.getText();
-		tf.setText(tfValue+" "+authorityDate);
+		tfValue = tfValue.trim();
+		if(!hasAuthorityDate(tfValue)){
+			tf.setText(tfValue+" "+authorityDate);
+		}else{
+			Alerter.inputError("Taxon Name already contains Authority and Date.");
+		}
 	}
-	
+
 	@UiHandler("createButton") 
 	public void onCreate(ClickEvent event) {
 		
@@ -481,5 +488,13 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		strainRanks.add(Rank.TYPESTRAIN);
 		strainRanks.add(Rank.SUBTYPESTRAIN);
 		return strainRanks.contains(rank);
+	}
+	
+	private boolean hasAuthorityDate(String tfValue) {
+		String splits[] = tfValue.split(" ", 2);
+		if(splits.length>1){
+			return true;
+		}
+		return false;
 	}
 }
