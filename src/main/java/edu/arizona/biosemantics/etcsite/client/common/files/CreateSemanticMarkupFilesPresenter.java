@@ -164,6 +164,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 															} else {
 																view.updateProgress(1.0);
 																view.hideProgress();
+																view.clearBatchText();
 																int count =  modelFiles.size();
 																Alerter.fileCreationSuccessful(count, messageBuilder.toString().replace("\n", "<br>"));
 																filesCreated += count;
@@ -334,7 +335,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 			fileFormatService.createTaxonDescriptionFile(Authentication.getInstance().getToken(), treatments.get(i), 
 					new TaxonDescriptionCreateRPCCallback(treatments, i, overallError, overallXmlModelFiles));
 		} else
-			view.hideProgress();	
+		view.hideProgress();	
 	}
 	
 	@Override
