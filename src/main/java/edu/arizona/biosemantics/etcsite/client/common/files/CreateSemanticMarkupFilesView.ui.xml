@@ -43,6 +43,10 @@
 		.li-padding{
 			padding: 5px;
 		}
+		.toolTip{
+			font-style: italic;
+			color: DimGray;
+		}
 		</ui:style>
 		<ui:with type="com.sencha.gxt.core.client.util.Margins" field="margins5">
     		<ui:attributes top="5" right="5" bottom="5" left="5" />
@@ -69,7 +73,7 @@
 						<g:HTML styleName="{style.instruction}">You can create 
 					   	the input file for one taxonomic treatment to input into the Text Capture tool. 
 					   	Create multiple files by repeatedly submitting the form, or use 
-					   	the "Batch Creation" tab. The file name will be composed of the author, year and taxon names. 
+					   	the "Batch Creation" tab. The file created will have the name consisting of the last name of the first author, year, and taxon name. 
 						<br/>
 						(*) marks required fields.</g:HTML>
 					</g:VerticalPanel>
@@ -86,6 +90,9 @@
 										</g:customCell>
 										<g:customCell>
 											<g:TextBox ui:field="author"></g:TextBox>
+										</g:customCell>
+										<g:customCell>
+										    <g:Label styleName="{style.toolTip}	">Last Name of the first Author</g:Label>
 										</g:customCell>
 									</g:row>
 									<g:row>
@@ -126,8 +133,8 @@
 								<g:Label styleName="{style.sub-heading}">Taxon Name Information * (Ranks must be in the order of high to low)</g:Label>
 								<g:Grid ui:field="ranksGrid">
 									<g:row>
-										<g:cell>Rank</g:cell>
-										<g:cell>Name Authority, Date</g:cell>
+										<g:cell>Rank*</g:cell>
+										<g:cell>Name* Authority*, Date*</g:cell>
 									</g:row> 
 									<g:row>
 										<g:customCell>
@@ -220,9 +227,9 @@
 	    <g:Tab text="Batch Creation">
 	        <g:ScrollPanel>
 	            <g:VerticalPanel>
-	                <g:HorizontalPanel ui:field="buttonPanel">
-	                    <g:Button ui:field="showInstructions" styleName="{style.right}">Show Instructions</g:Button>
-	                    <g:Button ui:field="showExamples" styleName="{style.right}">Show Examples</g:Button>
+	                <g:HorizontalPanel spacing = "3" ui:field="buttonPanel">
+	                    <g:Button ui:field="showInstructions">Show Instructions</g:Button>
+	                    <g:Button ui:field="showExamples">Show Examples</g:Button>
 	                </g:HorizontalPanel>
 	                <container:CardLayoutContainer ui:field="cardContainer">
 						<gxt:ContentPanel pixelSize="720, 250" bodyBorder="false" headerVisible="false">
@@ -248,56 +255,64 @@
 								<container:center layoutData="{centerData}">
 									<container:CardLayoutContainer ui:field="layout">
 										<!-- Basic Instructions -->
-										<g:HTMLPanel>
-			      							The batch creation function allows you to upload multiple taxonomic treatments formatted in the same way as the single file creation.<br/>
-			      							<ol style="list-style:disc;padding:10px;">
-			      							    <li>Fill the Source Document Information in the form below.</li>
-			      							    <li>The source document information is applicable to all taxon names included in the taxon names and description area.</li>
-			      							    <li>Add only taxon names and descriptions in the names and descriptions area(Source Document Information should not be added in this area).</li>
-		    	  								<li>Use an empty line to separate taxonomic treatments</li>
-		      									<li>The system will generate one file for each taxonomic treatment given</li>
-		      									<li>Use a <b>colon (:)</b> to separate a field name from its value</li>
-		      									<li>Use a new line for each field</li>
-		      									<li>If you copy/paste from another source, check word by word (especially special symbols) that the content is copied correctly</li>
-												<li>Do not include any HTML or XML tag in the text.</li>
-											</ol>
-										</g:HTMLPanel>
-									
+										<g:ScrollPanel>
+											<g:HTMLPanel>
+			      								The batch creation function allows you to upload multiple taxonomic treatments formatted in the same way as the single file creation.<br/>
+			      								<ol style="list-style:disc;padding: 5px 20px;">
+			      							    	<li>Fill the Source Document Information in the form below.</li>
+				      							    <li>The source document information is applicable to all taxon names included in the taxon names and description area.</li>
+				      							    <li>Add only taxon names and descriptions in the names and descriptions area(Source Document Information should not be added in this area).</li>
+			    	  								<li>Use an empty line to separate taxonomic treatments</li>
+		    	  									<li>The system will generate one file for each taxonomic treatment given</li>
+		      										<li>Use a <b>colon (:)</b> to separate a field name from its value</li>
+		      										<li>Use a new line for each field</li>
+		      										<li>If you copy/paste from another source, check word by word (especially special symbols) that the content is copied correctly</li>
+													<li>Do not include any HTML or XML tag in the text.</li>
+												</ol>
+											</g:HTMLPanel>
+										</g:ScrollPanel>
+										
 										<!-- Required/Optional Fields -->
-										<g:HTMLPanel>
-										    The following are the required and optional fields that can be included in the Taxon names and Descriptions Area(R denotes a required field, O optional).<br/>
-										    <br/>
-										    <ol>
-										        <li>(*) denotes the required fields in the Source Document Information form</li>s 
-									    	    <li>at least one <b>strain number</b> or one ranked taxon name, in the format of <b><i>rank</i> name</b>, e.g., <b>family name</b>(R)</li>   
-		      					    			<li><b>equivalent strain numbers</b>(O)</li> 
-			      					    		<li><b>accession number 16S rRNA</b>(O)</li>
-			      					    		<li>at least one of {<b>morphology</b>, <b>phenology</b>, <b>habitat</b>, <b>distribution</b>}(R)</li>
-			      					    	</ol>
-		      						    </g:HTMLPanel>
-		    	  					    
+										<g:ScrollPanel>
+											<g:HTMLPanel>
+											    (*) denotes the required fields in the Source Document Information form.<br/>
+											    The following are the required and optional fields that can be included in the Taxon names and Descriptions Area(R denotes a required field, O optional).<br/>
+											    <br/>
+											    <ol> 
+										    	    <li>at least one <b>strain number</b> or one ranked taxon name, in the format of <b><i>rank</i> name</b>, e.g., <b>family name</b>(R)</li>   
+		      						    			<li><b>equivalent strain numbers</b>(O)</li> 
+			      						    		<li><b>accession number 16S rRNA</b>(O)</li>
+			      						    		<li>at least one of {<b>morphology</b>, <b>phenology</b>, <b>habitat</b>, <b>distribution</b>}(R)</li>
+			      						    	</ol>
+		      							    </g:HTMLPanel>
+		    	  					    </g:ScrollPanel>
+										
 										<!-- Specifying Taxon Names -->
-										<g:HTMLPanel>
-										    Follow the following instructions to include Taxon names.<br/>
-										    <br/>
-										    <ol style="list-style:disc;padding:10px;">
-		      					    			<li>Taxon authority and date should be included in taxon names, use a <b>comma (,)</b> to separate the date. For example: Homosclerophorida Dendy, 1905. Use the token "unspecified" if the authority or the date can not be provided. </li>
-		      					    			<li>Alternatively, the Copy Authority and Date Checkbox can be checked to copy the last included Authority and Date to the taxon names that does not have any Authority and Date specified. (see example)</li>
-		      					    			<li>Lower rank taxa should list all ranks on separate lines, starting from the highest rank of interests (see examples 2 and 3)</li>
-											</ol>
-										</g:HTMLPanel>
+										<g:ScrollPanel>
+											<g:HTMLPanel>
+											    Follow the following instructions to include Taxon names.<br/>
+											    <br/>
+											    <ol style="list-style:disc;padding: 5px 20px;">
+		      						    			<li>Taxon authority and date should be included in taxon names, use a <b>comma (,)</b> to separate the date. For example: Homosclerophorida Dendy, 1905. Use the token "unspecified" if the authority or the date can not be provided. </li>
+		      						    			<li>Alternatively, the Copy Authority and Date Checkbox can be checked to copy the last included Authority and Date to the taxon names that does not have any Authority and Date specified. (see example)</li>
+		      						    			<li>Lower rank taxa should list all ranks on separate lines, starting from the highest rank of interests (see examples 2 and 3)</li>
+												</ol>
+											</g:HTMLPanel>
+										</g:ScrollPanel>
 									
 										<!-- Specifying Description -->
-										<g:HTMLPanel>
-											Strictly Follow the following instructions to specify Taxon descriptions.<br/>
-											<br/>
-											<ol style="list-style:disc;padding:10px;">
-												<li>If you have multiple paragraphs for any of the description fields (morphology, phenology, habitat, distribution), 
-		      									insert an empty line between the paragraphs and enclose all the paragraphs with one pair of number signs (#, see example 3). Do not use # in description content (they can be replaced with 'no.'). </li>
-												<li>A paragraph is a string without any line break</li>
-												<li>Superscripts (e.g. "squared") should be typed as a regular character, for example cm2 for square centimeter.</li>		    
-											</ol>	    
-										</g:HTMLPanel>
+										<g:ScrollPanel>
+											<g:HTMLPanel>
+												Strictly Follow the following instructions to specify Taxon descriptions.<br/>
+												<br/>
+												<ol style="list-style:disc;padding: 5px 20px;">
+													<li>If you have multiple paragraphs for any of the description fields (morphology, phenology, habitat, distribution), 
+		      										insert an empty line between the paragraphs and enclose all the paragraphs with one pair of number signs (#, see example 3). Do not use # in description content (they can be replaced with 'no.'). </li>
+													<li>A paragraph is a string without any line break</li>
+													<li>Superscripts (e.g. "squared") should be typed as a regular character, for example cm2 for square centimeter.</li>		    
+												</ol>	    
+											</g:HTMLPanel>
+										</g:ScrollPanel>
 									</container:CardLayoutContainer>
 								</container:center>
 							</container:BorderLayoutContainer>
@@ -388,16 +403,16 @@
 		                        </g:cell>
 			                </g:HorizontalPanel>
 			               	<g:TextArea ui:field="batchArea" styleName="{style.batchArea}"></g:TextArea>
-		    	           	<g:HorizontalPanel>
-		        	       	    <g:Button ui:field="previewButton" styleName="{style.right}">Preview Input Text</g:Button>
+		    	           	<g:HorizontalPanel spacing = "3">
+		        	       	    <g:Button ui:field="previewButton">Preview Input Text</g:Button>
 		            	   	</g:HorizontalPanel>
 			            </g:VerticalPanel>
 			            <g:VerticalPanel ui:field="previewPanel">
 			                <g:Label styleName="{style.heading}">PREVIEW</g:Label>
 		    	            <g:TextArea ui:field="previewArea" styleName="{style.batchArea}" enabled="false"></g:TextArea>
-		        	        <g:HorizontalPanel>
-		            	        <g:Button ui:field="batchButton" styleName="{style.right}">Accept &amp; Create</g:Button>
-		                	    <g:Button ui:field="returnButton" styleName="{style.right}">Return to Original</g:Button>
+		        	        <g:HorizontalPanel spacing="3">
+		            	        <g:Button ui:field="batchButton">Accept &amp; Create</g:Button>
+		                	    <g:Button ui:field="returnButton">Return to Original</g:Button>
 			                </g:HorizontalPanel>
 			            </g:VerticalPanel>
 		            </container:CardLayoutContainer> 
