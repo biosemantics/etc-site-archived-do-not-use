@@ -15,7 +15,7 @@
 		}
 		.matrixGenerationImage {
 		    background-image: url('images/MatrixGeneration.gif');
-		    top: 100px;
+		    top: 115px;
 		}
 		.actionText {
 		    background-size: 100% 100%;
@@ -24,16 +24,16 @@
 		    position: absolute;
 		    left: 60px;
 		}
-		.semanticMarkupText {ction
+		.semanticMarkupText {
 		    background-image: url('images/Text.SemanticMarkup.gif');
 		    top: 0px;
 		}
 		.matrixGenerationText {
 		    background-image: url('images/Text.MatrixGeneration.gif');
-		    top: 100px;
+		    top: 115px;
 		}
 		.actionDescription {
-			width: 650px;
+			width: 600px;
 		    position: absolute;
 		    left: 60px;
 		    font-size: 14.3px;
@@ -43,7 +43,7 @@
 		    top: 35px;
 		}
 		.matrixGenerationDescription {
-		    top: 135px;
+		    top: 150px;
 		}
 		.actionArrow {
 		    background-image: url('images/Arrow.gif');
@@ -51,14 +51,14 @@
 		    width: 35px;
 		    height: 94px;
 		    position: absolute;
-		    left: 707px;
+		    left: 680px;
 		    padding-left: 20px;
 		}
 		.semanticMarkupArrow {
 		    top: 0px;
 		}
 		.matrixGenerationArrow {
-		    top: 100px;
+		    top: 115px;
 		}
 		.actionButton  {
 		    /*background-image: url('images/ButtonGreen.gif'); */
@@ -66,7 +66,7 @@
 		    width: 200px;
 		    height: 50px;
 		    position: absolute;
-		    left: 750px;
+		    left: 730px;
 		}
 		.semanticMarkupButton {
 		    top: 22px;
@@ -75,87 +75,87 @@
 		    width: 240px;
 		    position: absolute;
 		    top: 40px;
-		    left: 794px;
+		    left: 774px;
 		}
 		.matrixGenerationButton {
-		    top: 122px;
+		    top: 137px;
 		}
 		.matrixGenerationButtonText {
 		    width: 240px;
 		    position: absolute;
-		    top: 140px;
-		    left: 785px;
+		    top: 155px;
+		    left: 765px;
 		}
 		.treeGenerationImage {
 		    background-image: url('images/TreeGeneration.gif');
-		    top: 200px;
+		    top: 230px;
 		}
 		.treeGenerationText {
 		    background-image: url('images/Text.TreeGeneration.gif');
-		    top: 200px;
+		    top: 230px;
 		}
 		.treeGenerationDescription {
-		    top: 235px;
+		    top: 265px;
 		}
 		.treeGenerationArrow {
-		    top: 200px;
+		    top: 230px;
 		}
 		.treeGenerationButton {
-		    top: 222px;
+		    top: 252px;
 		}
 		.treeGenerationButtonText {
 		    width: 240px;
 		    position: absolute;
-		    top: 240px;
-		    left: 790px;
+		    top: 270px;
+		    left: 770px;
 		}
 		.taxonomyComparisonImage {
 		    background-image: url('images/TaxonomyComparison.gif');
-		    top: 300px;
+		    top: 345px;
 		}
 		.taxonomyComparisonText {
 		    background-image: url('images/Text.TaxonomyComparison.gif');
-		    top: 300px;
+		    top: 345px;
 		}
 		.taxonomyComparisonDescription {
-		    top: 335px;
+		    top: 380px;
 		}
 		.taxonomyComparisonArrow {
-		    top: 300px;
+		    top: 345px;
 		}
 		.taxonomyComparisonButton {
-		    top: 322px;
+		    top: 367px;
 		}
 		.taxonomyComparisonButtonText {
 		    width: 240px;
 		    position: absolute;
-		    top: 340px;
-		    left: 767px;
+		    top: 385px;
+		    left: 747px;
 		}
 		.visualizationImage {
 		    background-image: url('images/Visualization_unselected.gif');
-		    top: 400px;
+		    top: 460px;
 		}
 		.visualizationText {
 		    background-image: url('images/Text.Visualization.gif');
 		    /*width: 191px;
 		    height: 24px;*/
-		    top: 400px;
+		    top: 460px;
 		}
 		.visualizationDescription {
-		    top: 435px;
+		    top: 495px;
 		}
 		.visualizationArrow {
-		    top: 400px;
+		    top: 460px;
 		}
 		.visualizationButton {
-		    top: 422px;
+		    top: 482px;
 		}
 		.visualizationButtonText {
 		    width: 240px;
 		    position: absolute;
-		    top: 440px;
-		    left: 795px;
+		    top: 500px;
+		    left: 775px;
 		}
 		.orText {
 		    background-image: url('images/Text.Or.gif');
@@ -163,8 +163,8 @@
 		    width: 50px;
 		    height: 39px;
 		    position: absolute;
-		    top: 530px;
-		    left: 690px;
+		    top: 605px;
+		    left: 670px;
 		}
 		.pipelineButton {
 		    background-image: url('images/ButtonGray.gif');
@@ -172,14 +172,14 @@
 		    width: 200px;
 		    height: 50px;
 		    position: absolute;
-		    top: 522px;
-		    left: 750px;
+		    top: 597px;
+		    left: 730px;
 		}
 		.pipelineButtonText {
 		    width: 240px;
 		    position: absolute;
-		    top: 540px;
-		    left: 795px;
+		    top: 615px;
+		    left: 775px;
 		}
 		.clickable {
 			cursor: pointer;
