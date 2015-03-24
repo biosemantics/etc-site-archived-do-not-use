@@ -35,7 +35,7 @@
 
 		.contentPanel {
 			padding-top:20px;
-			border: #dddddd solid 1px;
+			/*border: #dddddd solid 1px; removed menu from content border upon Hongs request */
 		}
 
 		.footerPanel {
