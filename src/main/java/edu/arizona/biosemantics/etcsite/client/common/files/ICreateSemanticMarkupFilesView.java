@@ -64,5 +64,7 @@ public interface ICreateSemanticMarkupFilesView extends IsWidget {
 	void setPreviewText(String text);
 
 	String getBatchSourceDocumentInfo();
+
+	void clearBatchText();
 	
 }

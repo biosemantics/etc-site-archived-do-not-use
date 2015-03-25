@@ -312,7 +312,6 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 
 	@UiHandler("createButton") 
 	public void onCreate(ClickEvent event) {
-		
 		presenter.onCreate();
 	}
 
@@ -458,6 +457,13 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		}
 	}
 	
+	@Override
+	public void clearBatchText() {
+		previewArea.setText("");
+		batchArea.setText("");
+		batchCreateCards.setActiveWidget(batchPanel);		
+	}
+	
 	/*================= Progress Methods =================*/
 	@Override
 	public void updateProgress(final double value) {
@@ -497,4 +503,5 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		}
 		return false;
 	}
+
 }
