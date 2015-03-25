@@ -3,6 +3,7 @@ package edu.arizona.biosemantics.etcsite.server;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -95,13 +96,14 @@ public class ETCSiteServletContextListener implements ServletContextListener {
 		log(LogLevel.INFO, "Java System Properties");
 		for(String variable : variables)
 			log(LogLevel.INFO, variable + ": " + System.getProperty("variable"));
+				
 		
-		com.sun.security.auth.module.UnixSystem sys = new com.sun.security.auth.module.UnixSystem();
+		/*com.sun.security.auth.module.UnixSystem sys = new com.sun.security.auth.module.UnixSystem();
 		log(LogLevel.INFO, "System username: " + sys.getUsername());
 		log(LogLevel.INFO, "System uid: " + sys.getUid());
 		log(LogLevel.INFO, "System gid: " + sys.getGid());
 		for(long gid : sys.getGroups())
-			log(LogLevel.INFO, "System long gids: " + gid);
+			log(LogLevel.INFO, "System long gids: " + gid);*/
 	}
 
 }

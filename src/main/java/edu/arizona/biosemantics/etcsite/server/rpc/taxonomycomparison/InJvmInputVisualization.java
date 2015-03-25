@@ -19,6 +19,7 @@ public class InJvmInputVisualization implements InputVisualization {
 	@Override
 	public Void call() throws TaxonomyComparisonException {
 		try {
+			log(LogLevel.DEBUG, "Running euler input viz: input " + inputFile + " ; output " + outputDir);
 			Euler euler = new Euler();
 			euler.setInputFile(inputFile);
 			euler.setOutputDir(outputDir);
