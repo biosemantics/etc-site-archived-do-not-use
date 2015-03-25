@@ -247,8 +247,8 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 				throw new TaxonomyComparisonException(task);
 			}
 				
-			//final MIRGeneration mirGeneration = new InJvmMIRGeneration(eulerInputFile, outputDir);
-			final MIRGeneration mirGeneration = new DummyMIRGeneration(eulerInputFile, outputDir);
+			final MIRGeneration mirGeneration = new InJvmMIRGeneration(eulerInputFile, outputDir);
+			//final MIRGeneration mirGeneration = new DummyMIRGeneration(eulerInputFile, outputDir);
 			activeProcess.put(config.getConfiguration().getId(), mirGeneration);
 			final ListenableFuture<Void> futureResult = executorService.submit(mirGeneration);
 			this.activeProcessFutures.put(config.getConfiguration().getId(), futureResult);
@@ -323,7 +323,8 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			throw new TaxonomyComparisonException(task);
 		}
 		
-		InputVisualization inputVisualization = new DummyInputVisualization(eulerInputFile, outputDir);
+		InputVisualization inputVisualization = new InJvmInputVisualization(eulerInputFile, outputDir);
+		//InputVisualization inputVisualization = new DummyInputVisualization(eulerInputFile, outputDir);
 		try {
 			inputVisualization.call();
 		} catch(Exception e) {

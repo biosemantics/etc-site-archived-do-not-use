@@ -2,6 +2,7 @@ package edu.arizona.biosemantics.etcsite.server;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Map;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -31,6 +32,9 @@ public class ETCSiteServletContextListener implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
+		logSystemProperties();
+		logEnvironmentVariables();
+		
 		log(LogLevel.INFO, "Initializing etcsite context at context path: " + event.getServletContext().getContextPath());
 		log(LogLevel.INFO, "Configuration used " + Configuration.asString());
 		
@@ -60,6 +64,37 @@ public class ETCSiteServletContextListener implements ServletContextListener {
 		
 		//set XPath objectmodel for XPath 2 supoprt (saxon)
 		System.setProperty("javax.xml.xpath.XPathFactory:" + Configuration.xPathObjectModel, "net.sf.saxon.xpath.XPathFactoryImpl");
+	}
+
+	private void logEnvironmentVariables() {
+		Map<String, String> variables = System.getenv();
+		log(LogLevel.INFO, "Environment variables:");
+        for (String key : variables.keySet()) {
+            log(LogLevel.INFO, key + " " + variables.get(key));
+        }
+	}
+
+	private void logSystemProperties() {
+		String[] variables = {
+				"user.name", 
+				"user.home",
+				"user.dir",
+				"java.home",
+				"java.vendor",
+				"java.vendor.url",
+				"java.version",
+				"java.class.path",
+				"os.arch",
+				"os.name",
+				"os.version",
+				"file.separator", 
+				"path.separator",
+				"line.separator",
+		};
+		
+		log(LogLevel.INFO, "Java System Properties");
+		for(String variable : variables)
+			log(LogLevel.INFO, variable + ": " + System.getProperty("variable"));
 	}
 
 }

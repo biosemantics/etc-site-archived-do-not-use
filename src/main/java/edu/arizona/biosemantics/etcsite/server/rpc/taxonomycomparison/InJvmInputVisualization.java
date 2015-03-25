@@ -4,7 +4,7 @@ import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.TaxonomyComparisonException;
 import edu.arizona.biosemantics.euler.Euler;
 
-public class InJvmInputVisualization implements MIRGeneration {
+public class InJvmInputVisualization implements InputVisualization {
 
 	private String inputFile;
 	private String outputDir;
