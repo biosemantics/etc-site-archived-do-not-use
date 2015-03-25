@@ -233,7 +233,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			}
 			
 			String runId = String.valueOf(model.getRunHistory().size());
-			final String outputDir = tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + File.separator + runId;
+			final String outputDir = tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + runId;
 			try {
 				fileService.deleteFile(new AdminAuthenticationToken(), outputDir);
 			} catch(Exception e) {
