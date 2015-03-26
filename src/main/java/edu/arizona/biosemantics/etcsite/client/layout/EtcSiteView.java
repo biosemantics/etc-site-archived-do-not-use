@@ -201,11 +201,13 @@ public class EtcSiteView extends Composite implements IEtcSiteView {
 
 	@Override
 	public void setLogin() {
+		loginLogout.setText("Login");
 		loginLogout.setImage("images/login.gif");
 	}
 
 	@Override
 	public void setLogout() {
+		loginLogout.setText("Logout");
 		loginLogout.setImage("images/logout.gif");
 	}
 
