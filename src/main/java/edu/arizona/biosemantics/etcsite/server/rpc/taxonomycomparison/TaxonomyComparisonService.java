@@ -233,21 +233,23 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			}
 			
 			String runId = String.valueOf(model.getRunHistory().size());
-			final String outputDir = tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + runId;
+			final String workingDir = tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + runId;
+			final String outputDir = workingDir + File.separator + "out";
 			try {
-				fileService.deleteFile(new AdminAuthenticationToken(), outputDir);
+				fileService.deleteFile(new AdminAuthenticationToken(), workingDir);
 			} catch(Exception e) {
 				log(LogLevel.ERROR, "Couldn't delete output directory", e);
 				throw new TaxonomyComparisonException(task);
 			}
 			try {
 				fileService.createDirectory(new AdminAuthenticationToken(), tempFiles + File.separator + task.getId() + File.separator + "run", runId, false);
+				fileService.createDirectory(new AdminAuthenticationToken(), workingDir, "out", false);
 			} catch(Exception e) {
 				log(LogLevel.ERROR, "Couldn't set up output directory", e);
 				throw new TaxonomyComparisonException(task);
 			}
 				
-			final MIRGeneration mirGeneration = new InJvmMIRGeneration(eulerInputFile, outputDir);
+			final MIRGeneration mirGeneration = new InJvmMIRGeneration(eulerInputFile, workingDir, outputDir);
 			//final MIRGeneration mirGeneration = new DummyMIRGeneration(eulerInputFile, outputDir);
 			activeProcess.put(config.getConfiguration().getId(), mirGeneration);
 			final ListenableFuture<Void> futureResult = executorService.submit(mirGeneration);
@@ -309,21 +311,23 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			log(LogLevel.ERROR, "Couldn't write euler input to file " , e);
 		}
 		
-		final String outputDir = tempFiles + File.separator + task.getId() + File.separator + "inputVisualization";
+		final String workingDir = tempFiles + File.separator + task.getId() + File.separator + "inputVisualization";
+		final String outputDir = workingDir + File.separator + "out";
 		try {
-			fileService.deleteFile(new AdminAuthenticationToken(), outputDir);
+			fileService.deleteFile(new AdminAuthenticationToken(), workingDir);
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't delete output directory", e);
 			throw new TaxonomyComparisonException(task);
 		}
 		try {
 			fileService.createDirectory(new AdminAuthenticationToken(), tempFiles + File.separator + task.getId(), "inputVisualization", false);
+			fileService.createDirectory(new AdminAuthenticationToken(), workingDir, "out", false);
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't set up output directory", e);
 			throw new TaxonomyComparisonException(task);
 		}
 		
-		InputVisualization inputVisualization = new InJvmInputVisualization(eulerInputFile, outputDir);
+		InputVisualization inputVisualization = new InJvmInputVisualization(eulerInputFile, workingDir, outputDir);
 		//InputVisualization inputVisualization = new DummyInputVisualization(eulerInputFile, outputDir);
 		try {
 			inputVisualization.call();

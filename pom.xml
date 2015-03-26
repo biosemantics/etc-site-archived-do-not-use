@@ -336,7 +336,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.euler</groupId>
 			<artifactId>euler</artifactId>
-			<version>0.0.4-SNAPSHOT</version>
+			<version>0.0.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.euler</groupId>
