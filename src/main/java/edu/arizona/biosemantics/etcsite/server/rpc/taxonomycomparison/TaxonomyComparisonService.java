@@ -420,7 +420,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		
 		File runFile = new File(tempFiles + File.separator + task.getId() + File.separator + "run");
 		int runs = runFile.listFiles().length;
-		File outputDir = new File(tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + String.valueOf(runs) + File.separator + "out" + 
+		File outputDir = new File(tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + String.valueOf(runs) + File.separator + "out" + File.separator + 
 				"6-PWs-pdf");
 		List<PossibleWorld> possibleWorldFiles = new LinkedList<PossibleWorld>();
 		for(File file : outputDir.listFiles()) {
