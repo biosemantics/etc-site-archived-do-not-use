@@ -336,7 +336,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			throw new TaxonomyComparisonException(task);
 		}
 			
-		File output = new File(tempFiles + File.separator + task.getId() + File.separator + "inputVisualization" + File.separator + "0-input" + File.separator + "input.pdf");
+		File output = new File(tempFiles + File.separator + task.getId() + File.separator + "inputVisualization" + File.separator + "out" + File.separator + "0-input" + File.separator + "input.pdf");
 		return output.getAbsolutePath();
 	}
 
@@ -420,7 +420,8 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		
 		File runFile = new File(tempFiles + File.separator + task.getId() + File.separator + "run");
 		int runs = runFile.listFiles().length;
-		File outputDir = new File(tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + String.valueOf(runs) + File.separator + "6-PWs-pdf");
+		File outputDir = new File(tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + String.valueOf(runs) + File.separator + "out" + 
+				"6-PWs-pdf");
 		List<PossibleWorld> possibleWorldFiles = new LinkedList<PossibleWorld>();
 		for(File file : outputDir.listFiles()) {
 			if(file.isFile()) {
@@ -428,23 +429,23 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			}
 		}	
 		
-		String aggregateUrl = tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + String.valueOf(runs) + File.separator + "7-PWs-aggregate" + File.separator + "input_all.pdf";
-		String diagnosisUrl = tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + String.valueOf(runs) + File.separator + "XYZ-diagnosis" + File.separator + "input_fulllat.pdf";
+		String aggregateUrl = tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + String.valueOf(runs) + File.separator + "out" 
+				+ File.separator + "7-PWs-aggregate" + File.separator + "input_all.pdf";
+		String diagnosisUrl = tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + String.valueOf(runs) + File.separator + "out" 
+				+ File.separator + "XYZ-diagnosis" + File.separator + "input_fulllat.pdf";
 		
 		//TODO subclass RunOutput for conflict vs. pw available scenario; use instead of type
-		/*
 		if(possibleWorldFiles.size() == 1)
 			return new RunOutput(RunOutputType.ONE, possibleWorldFiles, aggregateUrl, diagnosisUrl);
 		if(possibleWorldFiles.size() > 1)
 			return new RunOutput(RunOutputType.MULTIPLE, possibleWorldFiles, aggregateUrl, diagnosisUrl);
 		return new RunOutput(RunOutputType.CONFLICT, possibleWorldFiles, "", diagnosisUrl); 
-		*/
 		
 		//temporary for dummy use
-		if(Math.random() < 0.5) {
-			return new RunOutput(RunOutputType.CONFLICT, possibleWorldFiles, "", diagnosisUrl); 
-		}
-		return new RunOutput(RunOutputType.MULTIPLE, possibleWorldFiles, aggregateUrl, diagnosisUrl);
+		//if(Math.random() < 0.5) {
+		//	return new RunOutput(RunOutputType.CONFLICT, possibleWorldFiles, "", diagnosisUrl); 
+		//}
+		//return new RunOutput(RunOutputType.MULTIPLE, possibleWorldFiles, aggregateUrl, diagnosisUrl);
 	}
 	
 
