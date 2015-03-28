@@ -13,6 +13,7 @@ public interface ITaxonomyComparisonAlignView extends IsWidget {
 		void setTask(Task task);
 		boolean hasUnsavedChanges();
 		void setUnsavedChanges(boolean value);
+		void clearDialogs();
 	}
 	  
 	void setPresenter(Presenter presenter);

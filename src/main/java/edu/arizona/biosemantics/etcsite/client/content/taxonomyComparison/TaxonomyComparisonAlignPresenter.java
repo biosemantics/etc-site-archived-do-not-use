@@ -313,6 +313,13 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 			public void onSuccess(Model model) {
 				TaxonomyComparisonAlignPresenter.this.model = model;
 				eulerEventBus.fireEvent(new LoadModelEvent(model));
+				TaskStageEnum currentTaskStage = TaskStageEnum.valueOf(task.getTaskStage().getTaskStage());
+				switch(currentTaskStage) {
+				case ALIGN:
+				case ANALYZE:
+					processingDialog.show();
+				case ANALYZE_COMPLETE:	
+				}
 				Alerter.stopLoading();
 			}
 			@Override
@@ -331,5 +338,11 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 	@Override
 	public void setUnsavedChanges(boolean value) {
 		this.unsavedChanges = value;
+	}
+
+	@Override
+	public void clearDialogs() {
+		processingDialog.hide();
+		//TODO others inside align, e.g. comments, colors, results
 	}
 }
