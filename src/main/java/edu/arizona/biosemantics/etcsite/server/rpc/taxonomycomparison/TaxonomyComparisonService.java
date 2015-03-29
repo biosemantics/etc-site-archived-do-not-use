@@ -413,7 +413,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	@Override
 	public RunOutput getMirGenerationResult(AuthenticationToken token, Task task) {
 		//final AbstractTaskConfiguration configuration = task.getConfiguration();
-		TaskStage newTaskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.ANALYZE.toString());
+		TaskStage newTaskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.ALIGN.toString());
 		task.setTaskStage(newTaskStage);
 		task.setResumable(true);
 		daoManager.getTaskDAO().updateTask(task);
