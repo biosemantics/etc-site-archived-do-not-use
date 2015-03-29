@@ -307,6 +307,7 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 	public void setTask(final Task task) {
 		this.task = task;
 		Alerter.startLoading();
+		view.getEulerAlignmentView().setShowDialogs(true);
 		taxonomyComparisonService.getModel(Authentication.getInstance().getToken(), 
 				task, new AsyncCallback<Model>() {
 			@Override
@@ -316,9 +317,12 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 				TaskStageEnum currentTaskStage = TaskStageEnum.valueOf(task.getTaskStage().getTaskStage());
 				switch(currentTaskStage) {
 				case ALIGN:
+					break;
 				case ANALYZE:
 					processingDialog.show();
+					break;
 				case ANALYZE_COMPLETE:	
+					break;
 				}
 				Alerter.stopLoading();
 			}
@@ -343,6 +347,7 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 	@Override
 	public void clearDialogs() {
 		processingDialog.hide();
+		view.getEulerAlignmentView().setShowDialogs(false);
 		//TODO others inside align, e.g. comments, colors, results
 	}
 }
