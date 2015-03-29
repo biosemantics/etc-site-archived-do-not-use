@@ -217,10 +217,19 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 			}
 		});
 		eulerEventBus.addHandler(EndMIREvent.TYPE, new EndMIREvent.EndMIREventHandler() {
-			
 			@Override
 			public void onEnd(EndMIREvent event) {
 				unsavedChanges = true;
+				taxonomyComparisonService.saveModel(Authentication.getInstance().getToken(), task, model, new AsyncCallback<Void>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						Alerter.failedToSaveTaxonomyComparisonModel(caught);
+					}
+					@Override
+					public void onSuccess(Void result) { 
+						unsavedChanges = false;
+					}
+				});
 			}
 		});
 		eulerEventBus.addHandler(StartMIREvent.TYPE, new StartMIREvent.StartMIREventHandler() {

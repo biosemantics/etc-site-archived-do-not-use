@@ -13,6 +13,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -26,6 +28,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Emailer;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
@@ -212,7 +215,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	
 
 	@Override
-	public Task runMirGeneration(final AuthenticationToken authenticationToken, final Task task, Model model) throws TaxonomyComparisonException {
+	public Task runMirGeneration(final AuthenticationToken authenticationToken, final Task task, final Model model) throws TaxonomyComparisonException {
 		final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
 		
 		//browser back button may invoke another "learn"
@@ -269,6 +272,8 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 									// send an email to the user who owns the task.
 									sendFinishedTaxonomyComparisonEmail(task);
 				     			}
+				     			
+				     			save(authenticationToken, task, model);
 				     		} else {
 				     			task.setFailed(true);
 								task.setFailedTime(new Date());
@@ -289,6 +294,32 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		}
 	}
 	
+	protected void save(AuthenticationToken token, Task task, Model model) throws TaxonomyComparisonException {
+		try {
+			RunOutput output = this.getRunOutput(task);
+			for(PossibleWorld possibleWorld : output.getPossibleWorlds()) {
+				String oldUrl = possibleWorld.getUrl();
+				possibleWorld.setUrl(getAuthenticatedGetPDFUrl(token, possibleWorld.getUrl()));
+			}
+			output = new RunOutput(output.getType(), output.getPossibleWorlds(), getAuthenticatedGetPDFUrl(token, output.getAggregateUrl()), 
+					getAuthenticatedGetPDFUrl(token, output.getDiagnosisUrl()));
+			
+			if(!model.getRunHistory().isEmpty())
+				model.getRunHistory().getLast().setOutput(output);
+			
+			this.saveModel(token, task, model);
+		}catch(Exception e) {
+			log(LogLevel.ERROR, "Couldn't save model", e);
+			throw new TaxonomyComparisonException();
+		}
+	}
+	
+	private String getAuthenticatedGetPDFUrl(AuthenticationToken token, String url) throws UnsupportedEncodingException {
+		return "result.gpdf?target=" + URLEncoder.encode(url, "UTF-8") + 
+			"&userID=" + URLEncoder.encode(String.valueOf(token.getUserId()), "UTF-8") + "&" + 
+			"sessionID=" + URLEncoder.encode(token.getSessionID(), "UTF-8");
+	}
+
 	private void writeEulerInput(String eulerInputFile, Model model) throws IOException {
 		EulerInputFileWriter eulerInputFileWriter = new EulerInputFileWriter(eulerInputFile);
 		eulerInputFileWriter.write(model);
@@ -418,16 +449,26 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		task.setResumable(true);
 		daoManager.getTaskDAO().updateTask(task);
 		
+		return getRunOutput(task);
+		
+		//temporary for dummy use
+		//if(Math.random() < 0.5) {
+		//	return new RunOutput(RunOutputType.CONFLICT, possibleWorldFiles, "", diagnosisUrl); 
+		//}
+		//return new RunOutput(RunOutputType.MULTIPLE, possibleWorldFiles, aggregateUrl, diagnosisUrl);
+	}
+	
+
+
+	private RunOutput getRunOutput(Task task) {
 		File runFile = new File(tempFiles + File.separator + task.getId() + File.separator + "run");
 		int runs = runFile.listFiles().length;
 		File outputDir = new File(tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + String.valueOf(runs) + File.separator + "out" + File.separator + 
 				"6-PWs-pdf");
 		List<PossibleWorld> possibleWorldFiles = new LinkedList<PossibleWorld>();
-		for(File file : outputDir.listFiles()) {
-			if(file.isFile()) {
+		for(File file : outputDir.listFiles()) 
+			if(file.isFile()) 
 				possibleWorldFiles.add(new PossibleWorld(file.getAbsolutePath(), file.getName()));
-			}
-		}	
 		
 		String aggregateUrl = tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + String.valueOf(runs) + File.separator + "out" 
 				+ File.separator + "7-PWs-aggregate" + File.separator + "input_all.pdf";
@@ -440,15 +481,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		if(possibleWorldFiles.size() > 1)
 			return new RunOutput(RunOutputType.MULTIPLE, possibleWorldFiles, aggregateUrl, diagnosisUrl);
 		return new RunOutput(RunOutputType.CONFLICT, possibleWorldFiles, "", diagnosisUrl); 
-		
-		//temporary for dummy use
-		//if(Math.random() < 0.5) {
-		//	return new RunOutput(RunOutputType.CONFLICT, possibleWorldFiles, "", diagnosisUrl); 
-		//}
-		//return new RunOutput(RunOutputType.MULTIPLE, possibleWorldFiles, aggregateUrl, diagnosisUrl);
 	}
-	
-
 
 	@Override
 	public Task goToTaskStage(AuthenticationToken token, Task task, TaskStageEnum taskStageEnum) {
