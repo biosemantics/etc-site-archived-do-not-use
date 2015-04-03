@@ -34,6 +34,7 @@ import edu.arizona.biosemantics.etcsite.client.event.AuthenticationEvent.Authent
 import edu.arizona.biosemantics.etcsite.client.event.ResumableTasksEvent;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.LoginGoogleResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
 
 public class EtcSitePresenter implements IEtcSiteView.Presenter {
@@ -118,10 +119,11 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 		} else if (authentication.getExternalAccessToken() != null){ //check to see if this is a redirect from Google
 			String accessToken = authentication.getExternalAccessToken();
 			authentication.setExternalAccessToken(null); //don't need this anymore. 
-			authenticationService.loginOrSignupWithGoogle(accessToken, new AsyncCallback<AuthenticationResult>(){
+			authenticationService.loginOrSignupWithGoogle(accessToken, new AsyncCallback<LoginGoogleResult>(){
 				@Override
-				public void onSuccess(AuthenticationResult result) {
-					if(result.getResult()) {
+				public void onSuccess(LoginGoogleResult loginGoogleResult) {
+					if(loginGoogleResult.getAuthenticationResult().getResult()) {
+						AuthenticationResult result = loginGoogleResult.getAuthenticationResult();
 						Authentication auth = Authentication.getInstance();
 						auth.setUserId(result.getUser().getId());
 						auth.setSessionID(result.getSessionID());
@@ -130,8 +132,11 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 						auth.setLastName(result.getUser().getLastName());
 						auth.setAffiliation(result.getUser().getAffiliation());
 						eventBus.fireEvent(new AuthenticationEvent(AuthenticationEventType.LOGGEDIN));
-						Alerter.firstLoginCheckAccountInfo();
-						placeController.goTo(new SettingsPlace());
+						
+						if(loginGoogleResult.isNewlyRegistered()) {
+							Alerter.firstLoginCheckAccountInfo();
+							placeController.goTo(new SettingsPlace());
+						}
 					} else {
 						Alerter.failedToLoginWithgGoogle(null);
 						eventBus.fireEvent(new AuthenticationEvent(AuthenticationEventType.LOGGEDOUT));

@@ -82,21 +82,13 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 							if(result.getTaskType().getTaskTypeEnum().equals(TaskTypeEnum.TAXONOMY_COMPARISON)) {
 								currentTaskStage = TaskStageEnum.valueOf(result.getTaskStage().getTaskStage());
 								switch(currentTaskStage) {
-								case INPUT:
-									panel.setWidget(inputPresenter.getView());
-									break;
 								case ALIGN:
-									alignPresenter.setTask(result);
-									panel.setWidget(alignPresenter.getView());
-									break;
 								case ANALYZE:
-									alignPresenter.setTask(result);
-									panel.setWidget(alignPresenter.getView());
-									break;
 								case ANALYZE_COMPLETE:
 									alignPresenter.setTask(result);
 									panel.setWidget(alignPresenter.getView());
 									break;
+								case INPUT:
 								default:
 									panel.setWidget(inputPresenter.getView());
 									break;
@@ -130,9 +122,11 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 	
 	public void onCancel() {
 		alignPresenter.setUnsavedChanges(false);
+		alignPresenter.clearDialogs();
 	}
 
 	public void onStop() {
+		alignPresenter.clearDialogs();
 		taxonomyComparisonService.saveModel(Authentication.getInstance().getToken(), currentTask, currentModel, new AsyncCallback<Void>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -140,7 +134,8 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 			}
 			@Override
 			public void onSuccess(Void result) {
-				alignPresenter.setUnsavedChanges(false); }
+				alignPresenter.setUnsavedChanges(false); 
+			}
 		});
 	}
 	

@@ -217,10 +217,19 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 			}
 		});
 		eulerEventBus.addHandler(EndMIREvent.TYPE, new EndMIREvent.EndMIREventHandler() {
-			
 			@Override
 			public void onEnd(EndMIREvent event) {
 				unsavedChanges = true;
+				taxonomyComparisonService.saveModel(Authentication.getInstance().getToken(), task, model, new AsyncCallback<Void>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						Alerter.failedToSaveTaxonomyComparisonModel(caught);
+					}
+					@Override
+					public void onSuccess(Void result) { 
+						unsavedChanges = false;
+					}
+				});
 			}
 		});
 		eulerEventBus.addHandler(StartMIREvent.TYPE, new StartMIREvent.StartMIREventHandler() {
@@ -307,12 +316,23 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 	public void setTask(final Task task) {
 		this.task = task;
 		Alerter.startLoading();
+		view.getEulerAlignmentView().setShowDialogs(true);
 		taxonomyComparisonService.getModel(Authentication.getInstance().getToken(), 
 				task, new AsyncCallback<Model>() {
 			@Override
 			public void onSuccess(Model model) {
 				TaxonomyComparisonAlignPresenter.this.model = model;
 				eulerEventBus.fireEvent(new LoadModelEvent(model));
+				TaskStageEnum currentTaskStage = TaskStageEnum.valueOf(task.getTaskStage().getTaskStage());
+				switch(currentTaskStage) {
+				case ALIGN:
+					break;
+				case ANALYZE:
+					processingDialog.show();
+					break;
+				case ANALYZE_COMPLETE:	
+					break;
+				}
 				Alerter.stopLoading();
 			}
 			@Override
@@ -331,5 +351,12 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 	@Override
 	public void setUnsavedChanges(boolean value) {
 		this.unsavedChanges = value;
+	}
+
+	@Override
+	public void clearDialogs() {
+		processingDialog.hide();
+		view.getEulerAlignmentView().setShowDialogs(false);
+		//TODO others inside align, e.g. comments, colors, results
 	}
 }

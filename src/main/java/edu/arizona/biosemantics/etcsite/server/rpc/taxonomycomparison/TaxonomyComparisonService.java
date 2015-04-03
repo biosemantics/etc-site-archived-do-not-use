@@ -13,6 +13,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -26,6 +28,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Emailer;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
@@ -212,7 +215,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	
 
 	@Override
-	public Task runMirGeneration(final AuthenticationToken authenticationToken, final Task task, Model model) throws TaxonomyComparisonException {
+	public Task runMirGeneration(final AuthenticationToken authenticationToken, final Task task, final Model model) throws TaxonomyComparisonException {
 		final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
 		
 		//browser back button may invoke another "learn"
@@ -233,22 +236,24 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			}
 			
 			String runId = String.valueOf(model.getRunHistory().size());
-			final String outputDir = tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + File.separator + runId;
+			final String workingDir = tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + runId;
+			final String outputDir = workingDir + File.separator + "out";
 			try {
-				fileService.deleteFile(new AdminAuthenticationToken(), outputDir);
+				fileService.deleteFile(new AdminAuthenticationToken(), workingDir);
 			} catch(Exception e) {
 				log(LogLevel.ERROR, "Couldn't delete output directory", e);
 				throw new TaxonomyComparisonException(task);
 			}
 			try {
 				fileService.createDirectory(new AdminAuthenticationToken(), tempFiles + File.separator + task.getId() + File.separator + "run", runId, false);
+				fileService.createDirectory(new AdminAuthenticationToken(), workingDir, "out", false);
 			} catch(Exception e) {
 				log(LogLevel.ERROR, "Couldn't set up output directory", e);
 				throw new TaxonomyComparisonException(task);
 			}
 				
-			//final MIRGeneration mirGeneration = new InJvmMIRGeneration(eulerInputFile, outputDir);
-			final MIRGeneration mirGeneration = new DummyMIRGeneration(eulerInputFile, outputDir);
+			final MIRGeneration mirGeneration = new InJvmMIRGeneration(eulerInputFile, workingDir, outputDir);
+			//final MIRGeneration mirGeneration = new DummyMIRGeneration(eulerInputFile, outputDir);
 			activeProcess.put(config.getConfiguration().getId(), mirGeneration);
 			final ListenableFuture<Void> futureResult = executorService.submit(mirGeneration);
 			this.activeProcessFutures.put(config.getConfiguration().getId(), futureResult);
@@ -267,6 +272,8 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 									// send an email to the user who owns the task.
 									sendFinishedTaxonomyComparisonEmail(task);
 				     			}
+				     			
+				     			save(authenticationToken, task, model);
 				     		} else {
 				     			task.setFailed(true);
 								task.setFailedTime(new Date());
@@ -287,6 +294,32 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		}
 	}
 	
+	protected void save(AuthenticationToken token, Task task, Model model) throws TaxonomyComparisonException {
+		try {
+			RunOutput output = this.getRunOutput(task);
+			for(PossibleWorld possibleWorld : output.getPossibleWorlds()) {
+				String oldUrl = possibleWorld.getUrl();
+				possibleWorld.setUrl(getAuthenticatedGetPDFUrl(token, possibleWorld.getUrl()));
+			}
+			output = new RunOutput(output.getType(), output.getPossibleWorlds(), getAuthenticatedGetPDFUrl(token, output.getAggregateUrl()), 
+					getAuthenticatedGetPDFUrl(token, output.getDiagnosisUrl()));
+			
+			if(!model.getRunHistory().isEmpty())
+				model.getRunHistory().getLast().setOutput(output);
+			
+			this.saveModel(token, task, model);
+		}catch(Exception e) {
+			log(LogLevel.ERROR, "Couldn't save model", e);
+			throw new TaxonomyComparisonException();
+		}
+	}
+	
+	private String getAuthenticatedGetPDFUrl(AuthenticationToken token, String url) throws UnsupportedEncodingException {
+		return "result.gpdf?target=" + URLEncoder.encode(url, "UTF-8") + 
+			"&userID=" + URLEncoder.encode(String.valueOf(token.getUserId()), "UTF-8") + "&" + 
+			"sessionID=" + URLEncoder.encode(token.getSessionID(), "UTF-8");
+	}
+
 	private void writeEulerInput(String eulerInputFile, Model model) throws IOException {
 		EulerInputFileWriter eulerInputFileWriter = new EulerInputFileWriter(eulerInputFile);
 		eulerInputFileWriter.write(model);
@@ -309,21 +342,24 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			log(LogLevel.ERROR, "Couldn't write euler input to file " , e);
 		}
 		
-		final String outputDir = tempFiles + File.separator + task.getId() + File.separator + "inputVisualization";
+		final String workingDir = tempFiles + File.separator + task.getId() + File.separator + "inputVisualization";
+		final String outputDir = workingDir + File.separator + "out";
 		try {
-			fileService.deleteFile(new AdminAuthenticationToken(), outputDir);
+			fileService.deleteFile(new AdminAuthenticationToken(), workingDir);
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't delete output directory", e);
 			throw new TaxonomyComparisonException(task);
 		}
 		try {
 			fileService.createDirectory(new AdminAuthenticationToken(), tempFiles + File.separator + task.getId(), "inputVisualization", false);
+			fileService.createDirectory(new AdminAuthenticationToken(), workingDir, "out", false);
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't set up output directory", e);
 			throw new TaxonomyComparisonException(task);
 		}
 		
-		InputVisualization inputVisualization = new DummyInputVisualization(eulerInputFile, outputDir);
+		InputVisualization inputVisualization = new InJvmInputVisualization(eulerInputFile, workingDir, outputDir);
+		//InputVisualization inputVisualization = new DummyInputVisualization(eulerInputFile, outputDir);
 		try {
 			inputVisualization.call();
 		} catch(Exception e) {
@@ -331,7 +367,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			throw new TaxonomyComparisonException(task);
 		}
 			
-		File output = new File(tempFiles + File.separator + task.getId() + File.separator + "inputVisualization" + File.separator + "0-input" + File.separator + "input.pdf");
+		File output = new File(tempFiles + File.separator + task.getId() + File.separator + "inputVisualization" + File.separator + "out" + File.separator + "0-input" + File.separator + "input.pdf");
 		return output.getAbsolutePath();
 	}
 
@@ -408,41 +444,44 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	@Override
 	public RunOutput getMirGenerationResult(AuthenticationToken token, Task task) {
 		//final AbstractTaskConfiguration configuration = task.getConfiguration();
-		TaskStage newTaskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.ANALYZE.toString());
+		TaskStage newTaskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.ALIGN.toString());
 		task.setTaskStage(newTaskStage);
 		task.setResumable(true);
 		daoManager.getTaskDAO().updateTask(task);
 		
+		return getRunOutput(task);
+		
+		//temporary for dummy use
+		//if(Math.random() < 0.5) {
+		//	return new RunOutput(RunOutputType.CONFLICT, possibleWorldFiles, "", diagnosisUrl); 
+		//}
+		//return new RunOutput(RunOutputType.MULTIPLE, possibleWorldFiles, aggregateUrl, diagnosisUrl);
+	}
+	
+
+
+	private RunOutput getRunOutput(Task task) {
 		File runFile = new File(tempFiles + File.separator + task.getId() + File.separator + "run");
 		int runs = runFile.listFiles().length;
-		File outputDir = new File(tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + String.valueOf(runs) + File.separator + "6-PWs-pdf");
+		File outputDir = new File(tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + String.valueOf(runs) + File.separator + "out" + File.separator + 
+				"6-PWs-pdf");
 		List<PossibleWorld> possibleWorldFiles = new LinkedList<PossibleWorld>();
-		for(File file : outputDir.listFiles()) {
-			if(file.isFile()) {
+		for(File file : outputDir.listFiles()) 
+			if(file.isFile()) 
 				possibleWorldFiles.add(new PossibleWorld(file.getAbsolutePath(), file.getName()));
-			}
-		}	
 		
-		String aggregateUrl = tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + String.valueOf(runs) + File.separator + "7-PWs-aggregate" + File.separator + "input_all.pdf";
-		String diagnosisUrl = tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + String.valueOf(runs) + File.separator + "XYZ-diagnosis" + File.separator + "input_fulllat.pdf";
+		String aggregateUrl = tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + String.valueOf(runs) + File.separator + "out" 
+				+ File.separator + "7-PWs-aggregate" + File.separator + "input_all.pdf";
+		String diagnosisUrl = tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + String.valueOf(runs) + File.separator + "out" 
+				+ File.separator + "XYZ-diagnosis" + File.separator + "input_fulllat.pdf";
 		
 		//TODO subclass RunOutput for conflict vs. pw available scenario; use instead of type
-		/*
 		if(possibleWorldFiles.size() == 1)
 			return new RunOutput(RunOutputType.ONE, possibleWorldFiles, aggregateUrl, diagnosisUrl);
 		if(possibleWorldFiles.size() > 1)
 			return new RunOutput(RunOutputType.MULTIPLE, possibleWorldFiles, aggregateUrl, diagnosisUrl);
 		return new RunOutput(RunOutputType.CONFLICT, possibleWorldFiles, "", diagnosisUrl); 
-		*/
-		
-		//temporary for dummy use
-		if(Math.random() < 0.5) {
-			return new RunOutput(RunOutputType.CONFLICT, possibleWorldFiles, "", diagnosisUrl); 
-		}
-		return new RunOutput(RunOutputType.MULTIPLE, possibleWorldFiles, aggregateUrl, diagnosisUrl);
 	}
-	
-
 
 	@Override
 	public Task goToTaskStage(AuthenticationToken token, Task task, TaskStageEnum taskStageEnum) {

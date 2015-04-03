@@ -10,17 +10,21 @@ public class InJvmMIRGeneration implements MIRGeneration {
 	private String outputDir;
 	
 	private boolean executedSuccessfully = false;
+	private String workingDir;
 	
-	public InJvmMIRGeneration(String inputFile, String ouputDir) {
+	public InJvmMIRGeneration(String inputFile, String workingDir, String ouputDir) {
 		this.inputFile = inputFile;
+		this.workingDir = workingDir;
 		this.outputDir = ouputDir;
 	}
 	
 	@Override
 	public Void call() throws TaxonomyComparisonException {
 		try {
+			log(LogLevel.DEBUG, "Running euler: input " + inputFile + " ; workingDir " + workingDir + " ; outputDir " + outputDir);
 			Euler euler = new Euler();
 			euler.setInputFile(inputFile);
+			euler.setWorkingDir(workingDir);
 			euler.setOutputDir(outputDir);
 			euler.run();
 			executedSuccessfully = true;

@@ -39,6 +39,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.auth.CaptchaException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IncorrectCaptchaSolutionException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.InvalidPasswordResetException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.LoginGoogleResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.NoSuchUserException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.OpenPasswordResetRequestException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.RegistrationFailedException;
@@ -97,7 +98,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	}
 	
 	@Override
-	public AuthenticationResult loginOrSignupWithGoogle(String accessToken) throws RegistrationFailedException {
+	public LoginGoogleResult loginOrSignupWithGoogle(String accessToken) throws RegistrationFailedException {
 		URL url;
 		HttpURLConnection connection = null;
 		try {
@@ -141,17 +142,18 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 					String dummyPassword = Configuration.secret + ":" + id;
 					
 					User user = daoManager.getUserDAO().getUser(openIdProviderId);
-					if (user == null) {
+					boolean registerNew = user == null;
+					if (registerNew) {
 						user = addUser(firstName, lastName, openIdProviderId, dummyPassword, "google");
-					}		
+					}
 					String sessionId = generateSessionId(user);
-					return new AuthenticationResult(true, sessionId, new ShortUser(user));
+					return new LoginGoogleResult(new AuthenticationResult(true, sessionId, new ShortUser(user)), registerNew);
 				}
 			} catch (IOException e) {
 				log(LogLevel.ERROR, "Couldn't open or close reader", e);
 			}
 		}
-		return new AuthenticationResult(false, null, null); 
+		return new LoginGoogleResult(new AuthenticationResult(false, null, null), false); 
 	}
 	
 	@Override

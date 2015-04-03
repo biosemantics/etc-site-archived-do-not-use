@@ -27,6 +27,12 @@ public class DummyMIRGeneration implements MIRGeneration {
 		FileUtils.copyDirectory(new File(Configuration.etcFiles + File.separator + "eulerdummyPWs"), pwDir);
 		FileUtils.copyDirectory(new File(Configuration.etcFiles + File.separator + "eulerdummyAggregate"), aggregateDir);
 		FileUtils.copyDirectory(new File(Configuration.etcFiles + File.separator + "eulerdummyDiagnosis"), diagnosisDir);
+		
+		try {
+		    Thread.sleep(10000);
+		} catch(InterruptedException ex) {
+		    Thread.currentThread().interrupt();
+		}
 		return null;
 	}
 

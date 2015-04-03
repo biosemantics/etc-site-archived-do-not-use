@@ -132,7 +132,7 @@ public class UserDAO {
 			if(generatedKeys.next()) {
 				result = this.getUser(generatedKeys.getInt(1));
 			}
-			storeUserSerialized(user);
+			storeUserSerialized(result);
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't add user", e);
 		}
