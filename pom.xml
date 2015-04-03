@@ -191,7 +191,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>semantic-markup</artifactId>
-			<version>0.1.112-SNAPSHOT</version>
+			<version>0.1.118-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>app</artifactId>
@@ -341,18 +341,18 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.euler</groupId>
 			<artifactId>io</artifactId>
-			<version>0.0.7-SNAPSHOT</version>
+			<version>0.0.8-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.euler</groupId>
 		  <artifactId>alignment</artifactId>
-		  <version>0.0.41-SNAPSHOT</version>
+		  <version>0.0.44-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.euler</groupId>
 		  <artifactId>alignment</artifactId>
-		  <version>0.0.41-SNAPSHOT</version>
+		  <version>0.0.44-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
