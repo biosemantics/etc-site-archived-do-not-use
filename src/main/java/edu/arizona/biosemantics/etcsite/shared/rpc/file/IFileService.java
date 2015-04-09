@@ -1,6 +1,9 @@
 package edu.arizona.biosemantics.etcsite.shared.rpc.file;
 
+import java.util.HashMap;
 import java.util.List;
+
+import org.apache.commons.io.FileExistsException;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -60,5 +63,7 @@ public interface IFileService extends RemoteService {
 	
 	public String getDownloadPath(AuthenticationToken authenticationToken, String filePath) throws PermissionDeniedException, 
 		ZipDirectoryFailedException;
+	
+	public HashMap<String,String> validateKeys(AuthenticationToken authenticationToken, String directory);
 	
 }

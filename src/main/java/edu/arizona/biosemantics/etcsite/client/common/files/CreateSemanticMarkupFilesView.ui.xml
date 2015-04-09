@@ -247,7 +247,7 @@
 	              							<button:ToggleButton ui:field="tNames" allowDepress="false" text="Specifying Taxon Names" />
     	        						</container:child>
         	    						<container:child layoutData="{buttonBoxLayoutData}">
-            	  							<button:ToggleButton ui:field="descInstructions" allowDepress="false" text="Specifying Taxon Name Descriptions" />
+            	  							<button:ToggleButton ui:field="descInstructions" allowDepress="false" text="Specifying Taxon Descriptions" />
             							</container:child>
           							</container:VBoxLayoutContainer>
         						</container:west>
@@ -333,14 +333,12 @@
 								genus name: Rubus Linnaeus, 1735<br/>
 								morphology: Calyx 5(3-7)-parted, without bractlets. Petals mostly 5, deciduous.<br/>
 								<br/>
-								Selecting the Copy Authority and Date Checkbox for the following example will copy "Linnaeus, 1735" from
-								family name to genus name field also.<br/>
 								<br/>
 								author:  Fernald<br/>
 								year: 1950<br/>
 								title: Gray's Manual of Botany<br/>
 								family name: Rosaceae Linnaeus, 1735<br/>
-								genus name: Rubus<br/>
+								genus name: Rubus Linnaeus, 1735<br/>
 								species name: Allegheniensis Porter, unspecified <br/>
 								morphology: #Erect or high arching, mostly 1-3 m. high, armed with scattered broad-based lanceolate to lance-subulate prickles or prickles wanting, the young primocanes often ridged or angled and finely pubescent, the expanding tip often glandular;<br/>
 								<br/>

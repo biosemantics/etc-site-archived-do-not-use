@@ -1,5 +1,6 @@
 package edu.arizona.biosemantics.etcsite.shared.rpc.file;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -7,6 +8,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.file.Tree;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 
@@ -47,4 +49,8 @@ public interface IFileServiceAsync {
 	public void copyFiles(AuthenticationToken authenticationToken, String source, String destination, AsyncCallback<Void> callback);
 	
 	public void getDownloadPath(AuthenticationToken authenticationToken, String filePath, AsyncCallback<String> callback);
+
+	void validateKeys(AuthenticationToken authenticationToken,
+			String directory, AsyncCallback<HashMap<String, String>> callback);
+
 }

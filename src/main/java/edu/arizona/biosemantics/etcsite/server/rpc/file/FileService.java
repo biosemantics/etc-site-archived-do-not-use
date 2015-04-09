@@ -5,14 +5,19 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.collections15.map.HashedMap;
+import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FileUtils;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.common.validation.key.KeyElementValidator;
+import edu.arizona.biosemantics.common.validation.key.KeyValidationException;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.process.file.XmlNamespaceManager;
@@ -637,6 +642,30 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		} else {
 			return filePath;
 		}
+	}
+
+
+	@Override
+	public HashMap<String, String> validateKeys(AuthenticationToken authenticationToken, String filePath) {
+		HashMap<String,String> resultList = new HashMap<String, String>();
+		KeyElementValidator validator = new KeyElementValidator();
+		File file = new File(filePath);
+		File[] childFiles = file.listFiles();
+		for(File child : childFiles){
+			if(child.isFile()){
+				try {
+					validator.validate(child.getAbsolutePath());
+				} catch (KeyValidationException e) {
+					String allErrors = "";
+					allErrors+="Errors in "+child.getName()+":\n";
+					for(String error: e.getAllErrors()){
+						allErrors+=error+"\n";
+					}
+					resultList.put(child.getAbsolutePath(), allErrors);
+				}
+			}				
+		}	
+		return resultList;
 	}
 
 }

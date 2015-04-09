@@ -1,26 +1,23 @@
 
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.http.client.URL;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TreeItem;
-import com.google.gwt.user.client.ui.UIObject;
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.box.PromptMessageBox;
-import com.sencha.gxt.widget.core.client.event.HideEvent;
-import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
@@ -29,13 +26,10 @@ import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.Configuration;
 import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkupFilesDialogPresenter.ICloseHandler;
 import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView.IFileTreeSelectionListener;
-import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
 import gwtupload.client.BaseUploadStatus;
-import gwtupload.client.IFileInput;
-import gwtupload.client.IFileInput.BrowserFileInput;
 import gwtupload.client.IFileInput.ButtonFileInput;
 import gwtupload.client.IUploadStatus;
 import gwtupload.client.IUploadStatus.Status;
@@ -50,6 +44,8 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	private IFileTreeView.Presenter fileTreePresenter;
 	private FileFilter fileFilter;
 	private String defaultServletPath;
+	private String tempUploadDirectory;
+	private String targetUploadDirectory;
 	private ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter;
 	
 	@Inject
@@ -322,25 +318,107 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	public class OnFinishUploadHandler implements OnFinishUploaderHandler {
 		@Override
 		public void onFinish(IUploader uploader) {	
-			
 			String serverResponse = uploader.getServerInfo().message;
 			if(serverResponse != null && !serverResponse.isEmpty()) {
 				serverResponse = serverResponse.replaceAll("\n", "<br>");
+				if(serverResponse.contains("#")){ //# is used in response only when there are errors
+					String responseStrings[] = serverResponse.split("#");
+					responseStrings[1] = responseStrings[1].trim();
+					String xmlErrorFiles[] = responseStrings[1].split("\\|");
+					responseStrings[2] = responseStrings[2].trim();
+					String existingFiles[] = responseStrings[2].split("\\|");
+					serverResponse = responseStrings[0]+"<br>";
+					if(xmlErrorFiles.length>0 && !responseStrings[1].isEmpty()){
+						serverResponse += "Following files have xml format errors<br>";
+					}
+					int i;
+					for(i=0;i<20 && i<xmlErrorFiles.length-1;i++){
+						serverResponse += xmlErrorFiles[i] + "<br>";
+					}
+					int j=0;
+					if(i<20){
+						if(existingFiles.length>0 && !responseStrings[2].isEmpty()){
+							serverResponse += "<br>Following files already exist in the folder<br>";
+						}
+						for(;i<20 && j<existingFiles.length; i++, j++){
+							serverResponse += existingFiles[j] + "<br>";
+						}
+					}
+					if(j<existingFiles.length-1 | i<xmlErrorFiles.length-1){
+						serverResponse += "and so on.<br>";
+					}
+				}
 				Alerter.fileManagerMessage(serverResponse);
 			}
 			
 			if (uploader.getStatus() == Status.SUCCESS) {
 				List<String> fileNames = new LinkedList<String>();
-				fileNames.add("Done uploading.");
+				fileNames.add("Done uploading. Validating keys");
 				uploader.getStatusWidget().setFileNames(fileNames);
-				//uploader.getStatusWidget().setFileName("Done uploading.");
 				fileTreePresenter.refresh(fileFilter);
+				fileService.validateKeys(Authentication.getInstance().getToken(), targetUploadDirectory, new AsyncCallback<HashMap<String,String>>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Alerter.inputError("Key Validation Failed.");
+					}
+
+					@Override
+					public void onSuccess(final HashMap<String, String> result) {
+						if(!result.isEmpty()){
+							String infoMessage = "Key Validation Result:<br>The following files have key errors and will not be parsed.";
+							String errorMessage = infoMessage.replace("<br>", "\n") + "\n\n";
+							for(String filename: result.keySet()){
+								String errorsInFile = result.get(filename);
+								//errorMessage += "File "+ filename +"has following errors:\n";
+								errorMessage += errorsInFile+"\n";
+							}
+							MessageBox box = Alerter.showKeyValidationResult(infoMessage, errorMessage);
+							box.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
+							
+								@Override
+								public void onSelect(SelectEvent event) {
+									fileTreePresenter.refresh(fileFilter);
+								}
+							});
+							box.getButton(PredefinedButton.NO).addSelectHandler(new SelectHandler() {
+								
+								@Override
+								public void onSelect(SelectEvent event) {
+									// TODO Auto-generated method stub
+									for(String filename: result.keySet()){
+										fileService.deleteFile(Authentication.getInstance().getToken(), filename, new AsyncCallback<Void>() {
+
+											@Override
+											public void onFailure(
+													Throwable caught) {
+												// TODO Auto-generated method stub
+												Alerter.inputError("Could not delete files.");
+											}
+
+											@Override
+											public void onSuccess(Void result) {
+												// TODO Auto-generated method stub
+												//fileTreePresenter.refresh(fileFilter);
+											}
+										});
+									}
+									fileTreePresenter.refresh(fileFilter);
+								}
+							});
+							box.show();
+						}
+					}
+				});
 			}
-						
+			//targetUploadDirectory = "";			
 			uploader.setServletPath(defaultServletPath);
 			enableManagement();
-		}
+			
+		}		
 	}
+	
+	
 
 	public class OnStartUploadHandler implements OnStartUploaderHandler {
 		@Override
@@ -354,9 +432,11 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 			uploader.getStatusWidget().setFileNames(fileNames);
 			final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
 			if(selection.getFileInfo().getFileType().equals(FileTypeEnum.DIRECTORY)) {
+				targetUploadDirectory = selection.getFileInfo().getFilePath();
 				uploader.setServletPath(uploader.getServletPath() + "&target=" + URL.encodeQueryString(selection.getFileInfo().getFilePath()));
 			} else {
 				String newFilePath = getParent(selection);
+				targetUploadDirectory = newFilePath;
 				uploader.setServletPath(uploader.getServletPath() + "&target=" + URL.encodeQueryString(newFilePath));
 			}
 			
@@ -368,12 +448,6 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 			
 			// for now, just disable all of the others:
 			disableManagement();
-			
-			//temporarily in place as long as we are not sure about the stability of out of memory issue
-			/*if(uploader.getFileInput().getFilenames().size() > 50) {
-				Alerter.tooManyFiles();
-				uploader.cancel();
-			}*/
 		}
 	}
 	

@@ -1,5 +1,7 @@
 package edu.arizona.biosemantics.etcsite.client.common;
 
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.TextArea;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 import com.sencha.gxt.widget.core.client.box.AutoProgressMessageBox;
@@ -528,5 +530,19 @@ public class Alerter {
 		return showAlert("Failed to connect", "Failed to connect to OTO. Try again later." + caught.getMessage(), caught);
 	}
 
-	
+	public static MessageBox showKeyValidationResult(String infoMessage, String errorList){
+		MessageBox box = new ConfirmMessageBox("Error", infoMessage);
+		box.setHeight("500");
+		box.setWidth("600");
+		TextArea tArea = new TextArea();
+		tArea.setEnabled(false);
+		tArea.setHeight("200");
+		tArea.setText(errorList);
+		box.add(tArea);
+		tArea.setWidth(""+box.getOffsetWidth());
+		box.setIcon(MessageBox.ICONS.info());
+		box.getButton(PredefinedButton.YES).setText("Keep Files");
+		box.getButton(PredefinedButton.NO).setText("Delete Files with errors");
+		return box;
+	}
 }
