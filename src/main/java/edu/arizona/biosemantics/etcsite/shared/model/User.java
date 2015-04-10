@@ -17,9 +17,9 @@ public class User implements Serializable {
 	
 	private int id;
 	
-	private String openIdProviderId = ""; //the realm-unique value provided by the openID provider, or the user's email address if a local account. 
-	private String openIdProvider = ""; //e.g. "Google", "Yahoo".  "none" if local account. 
-	private String password = ""; //only used if local account. Otherwise, openID provider handles authentication. 
+	private String openIdProviderId = ""; 
+	private String openIdProvider = ""; 
+	private String password = "";  
 	
 	private String firstName = "";
 	private String lastName = "";
@@ -37,8 +37,9 @@ public class User implements Serializable {
 	public User() { }
 	
 	public User(int id, String openIdProviderId, String openIdProvider, String password, String firstName, String lastName, String email, String affiliation, String bioportalUserId, 
-			String bioportalAPIKey, String otoAccountEmail, String otoAuthenticationToken,  boolean textCaptureEmail, boolean matrixGenerationEmail, boolean treeGenerationEmail, boolean taxonomyComparisonEmail, 
-			Date created) {
+			String bioportalAPIKey, String otoAccountEmail, String otoAuthenticationToken,  
+			//boolean textCaptureEmail, boolean matrixGenerationEmail, boolean treeGenerationEmail, boolean taxonomyComparisonEmail, 
+			Map<String , Boolean> profile,Date created) {
 		this.id = id;
 		this.openIdProviderId = openIdProviderId;
 		this.openIdProvider = openIdProvider;
@@ -51,10 +52,7 @@ public class User implements Serializable {
 		this.bioportalAPIKey = bioportalAPIKey;
 		this.otoAccountEmail = otoAccountEmail;
 		this.otoAuthenticationToken = otoAuthenticationToken;
-		/*this.matrixGenerationEmail = matrixGenerationEmail;
-		this.treeGenerationEmail = treeGenerationEmail;
-		this.textCaptureEmail = textCaptureEmail;
-		this.taxonomyComparisonEmail = taxonomyComparisonEmail;*/
+		this.profile=profile;
 		this.created = created;
 	}
 	
@@ -73,15 +71,12 @@ public class User implements Serializable {
 		this.otoAccountEmail = otoAccountEmail;
 		this.otoAuthenticationToken = otoAuthenticationToken;
 		
-		/*this.matrixGenerationEmail = matrixGenerationEmail;
-		this.treeGenerationEmail = treeGenerationEmail;
-		this.textCaptureEmail = textCaptureEmail;
-		this.taxonomyComparisonEmail = taxonomyComparisonEmail;*/
-	}
+		}
 	
 	public User(String password, String firstName, String lastName, 
 			String email, String affiliation, String bioportalUserId, String bioportalAPIKey, String otoAccountEmail, String otoAuthenticationToken,
-			boolean textCaptureEmail, boolean matrixGenerationEmail,	boolean treeGenerationEmail, boolean taxonomyComparisonEmail) {
+			//boolean textCaptureEmail, boolean matrixGenerationEmail,	boolean treeGenerationEmail, boolean taxonomyComparisonEmail
+			Map<String , Boolean> profile) {
 		this.openIdProvider = "none";
 		this.password = password;
 		this.firstName = firstName;
@@ -90,12 +85,8 @@ public class User implements Serializable {
 		this.affiliation = affiliation;
 		this.bioportalUserId = bioportalUserId;
 		this.bioportalAPIKey = bioportalAPIKey;
-		
-		/*this.matrixGenerationEmail = matrixGenerationEmail;
-		this.treeGenerationEmail = treeGenerationEmail;
-		this.textCaptureEmail = textCaptureEmail;
-		this.taxonomyComparisonEmail = taxonomyComparisonEmail; */
-	}
+		this.profile=profile;
+		}
 	
 	@Override
 	public int hashCode() {
@@ -232,7 +223,13 @@ public class User implements Serializable {
 	}
 
 	public boolean getProfileValue(String key) {
-		return profile.get(key);
+		boolean ProfileValue=false;
+		if(profile.get(key)!=null)
+		{
+			ProfileValue =profile.get(key);
+		}
+		
+		return ProfileValue;
 	}
 
 	public void setProfileValue(String key, boolean value) {

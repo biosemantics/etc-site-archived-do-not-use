@@ -6,7 +6,8 @@ import java.util.Map;
 public class Help {
 
 	public static enum Type {
-		SemanticMarkupInput, SemanticMarkupProcess, MatrixGenerationInput; //...
+		WELCOME,
+		SemanticMarkupInput, SemanticMarkupProcess, MatrixGenerationInput,Home; //...
 		
 		public String getKey() {
 			return this.getClass() + "_" + this.name();
@@ -27,6 +28,9 @@ public class Help {
 		
 		//..
 	}
+	public static String getHelp(Type type) {
+		return helps.get(type);
+		}
 	
 	
 }

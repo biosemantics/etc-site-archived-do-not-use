@@ -13,13 +13,16 @@ import java.io.ObjectOutputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.User;
+import edu.arizona.biosemantics.etcsite.shared.model.User.EmailPreferences;
 
 public class UserDAO {
 	
@@ -37,8 +40,8 @@ public class UserDAO {
 		return new ShortUser(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), 
 				user.getAffiliation(), user.getOpenIdProvider(), user.getOpenIdProviderId(), 
 				user.getBioportalUserId(), user.getBioportalAPIKey(), user.getOtoAccountEmail(),
-				user.isTextCaptureEmail(), user.isMatrixGenerationEmail(), 
-				user.isTreeGenerationEmail(), user.isTaxonomyComparisonEmail());
+			user.getProfile());
+		
 	}
 
 	public User getUser(int id) {
@@ -70,21 +73,14 @@ public class UserDAO {
 		String otoAuthenticationToken = result.getString(12);
 		Date created = result.getTimestamp(13);
 
-		User user = getSerializedUser(id);
-		boolean textCaptureEmail = true;
-		boolean matrixGenerationEmail = true;
-		boolean treeGenerationEmail = true;
-		boolean taxonomyComparisonEmail = true;
-		if(user != null) {
-			textCaptureEmail = user.isTextCaptureEmail();
-			matrixGenerationEmail = user.isMatrixGenerationEmail();
-			treeGenerationEmail = user.isTreeGenerationEmail();
-			taxonomyComparisonEmail = user.isTaxonomyComparisonEmail();
-		}
+		Map<String , Boolean> profile=null;
+		profile = getSerializedUser(id);
+
 		return new User(id, openIdProviderId, openIdProvider, password,
 					firstName, lastName, email, affiliation, bioportalUserId,
-					bioportalAPIKey, otoAccountEmail, otoAuthenticationToken, textCaptureEmail, 
-					matrixGenerationEmail, treeGenerationEmail, taxonomyComparisonEmail, created);
+					bioportalAPIKey, otoAccountEmail, otoAuthenticationToken, 
+					//textCaptureEmail,matrixGenerationEmail, treeGenerationEmail, taxonomyComparisonEmail, 
+					profile,created);
 	}
 
 	public User getUser(String email) {
@@ -172,16 +168,16 @@ public class UserDAO {
 				+ File.separator + user.getId() + ".ser";
 		try (ObjectOutput output = new ObjectOutputStream(
 				new BufferedOutputStream(new FileOutputStream(file)))) {
-			output.writeObject(user);
+			output.writeObject(user.getProfile());
 		} catch (Exception e) {
 			log(LogLevel.ERROR, "Serialization of user failed", e);
 		}
 	}
 	
-	public User getSerializedUser(int userId) {
+	public HashMap<String, Boolean> getSerializedUser(int userId) {
 		String file = Configuration.etcFiles + File.separator + "profiles" + File.separator + userId + ".ser";
 		try(ObjectInput input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
-			return (User) input.readObject();
+			return (HashMap<String, Boolean>) input.readObject();
 		} catch (ClassNotFoundException | IOException e) {
 			log(LogLevel.ERROR, "Deserialization of user failed", e);
 		}

@@ -894,8 +894,12 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	
 	private void sendFinishedLearningTermsEmail(Task task) {
 		String email = daoManager.getUserDAO().getUser(task.getUser().getId()).getEmail();
-		User usr = daoManager.getUserDAO().getSerializedUser(task.getUser().getId());
-		if (usr == null || usr.isTextCaptureEmail()) {
+		
+		Map<String , Boolean> userProfile =null;
+		userProfile=daoManager.getUserDAO().getSerializedUser(task.getUser().getId());
+		
+		if (userProfile == null || userProfile.get(User.EmailPreferences.SemanticMarkup.getKey())) 
+		{
 			String subject = Configuration.finishedSemanticMarkupLearnSubject.replace("<taskname>", task.getName());
 			String body = Configuration.finishedSemanticMarkupLearnBody.replace("<taskname>", task.getName());
 			emailer.sendEmail(email, subject, body);
@@ -904,9 +908,10 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	
 	private void sendFinishedParsingEmail(Task task) {
 		String email = daoManager.getUserDAO().getUser(task.getUser().getId()).getEmail();
-
-		User usr =  daoManager.getUserDAO().getSerializedUser(daoManager.getUserDAO().getUser(task.getUser().getId()).getId());
-		if (usr == null || usr.isTextCaptureEmail()) {
+		Map<String , Boolean> userProfile =null;
+		userProfile=daoManager.getUserDAO().getSerializedUser(task.getUser().getId());
+		
+		if (userProfile == null || userProfile.get(User.EmailPreferences.SemanticMarkup.getKey())){
 			String subject = Configuration.finishedSemanticMarkupParseSubject
 					.replace("<taskname>", task.getName());
 			String body = Configuration.finishedSemanticMarkupParseBody

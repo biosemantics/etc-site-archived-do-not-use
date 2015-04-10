@@ -6,6 +6,8 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.help.IHelpHomeView.Presenter;
+import edu.arizona.biosemantics.etcsite.shared.help.Help;
+import edu.arizona.biosemantics.etcsite.shared.help.Help.Type;
 
 public class HelpHomeActivity extends AbstractActivity implements Presenter {
 
@@ -20,7 +22,9 @@ public class HelpHomeActivity extends AbstractActivity implements Presenter {
 	
 	@Override
 	public void start(AcceptsOneWidget panel, com.google.gwt.event.shared.EventBus eventBus) {
+		
 		helpView.setPresenter(this);
+		helpView.setContent(Help.getHelp(Type.Home));
 		panel.setWidget(helpView.asWidget());
 	}
 }

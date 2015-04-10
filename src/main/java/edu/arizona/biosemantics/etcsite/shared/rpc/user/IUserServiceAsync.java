@@ -33,4 +33,7 @@ public interface IUserServiceAsync {
 			AsyncCallback<Void> asyncCallback);
 
 	public void createOTOAccount(AuthenticationToken token, String googleCode, AsyncCallback<edu.arizona.biosemantics.oto.common.model.User> asyncCallback);
+
+	public void isProfile(AuthenticationToken token,String type, AsyncCallback<Boolean> callback);
+	public void setPopupPreference(AuthenticationToken token,String type,boolean dontShowPopup,AsyncCallback<Void> callback);
 }

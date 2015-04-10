@@ -2,7 +2,9 @@ package edu.arizona.biosemantics.etcsite.server.rpc.user;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -35,14 +37,12 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.CaptchaException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.RegistrationFailedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
-
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.CreateOTOAccountException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.InvalidOTOAccountException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.InvalidPasswordException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserAddException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserNotFoundException;
-
 import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 
 import java.io.BufferedInputStream;
@@ -98,7 +98,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		String encryptedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 		
 		if(!daoManager.getUserDAO().hasUser(email)) {
-			User user = daoManager.getUserDAO().insert(new User(encryptedPassword, firstName, lastName, email, "", "", "", "", "", true, true, true, true));
+			User user = daoManager.getUserDAO().insert(new User(encryptedPassword, firstName, lastName, email, "", "", "", "", "",null));// true, true, true, true));
 			if(user == null) {
 				throw new UserAddException("Adding user failed");
 			}
@@ -290,11 +290,11 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		user.setEmail(shortUser.getEmail());
 		user.setFirstName(shortUser.getFirstName());
 		user.setLastName(shortUser.getLastName());
-		user.setTextCaptureEmail(shortUser.isTextCaptureEmail());
+		/*user.setTextCaptureEmail(shortUser.isTextCaptureEmail());
 		user.setMatrixGenerationEmail(shortUser.isMatrixGenerationEmail());
 		user.setTreeGenerationEmail(shortUser.isTreeGenerationEmail());
 		user.setTaxonomyComparisonEmail(shortUser.isTaxonomyComparisonEmail());
-		
+		*/
 		daoManager.getUserDAO().update(user);
 		return daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
 	}
@@ -315,6 +315,52 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		daoManager.getUserDAO().update(user);
 		return daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
 	}
+	
+	public void setPopupPreference(AuthenticationToken token,String type,boolean dontShowPopup)
+	{
+		User user = daoManager.getUserDAO().getUser(token.getUserId());
+		
+		if(user.getProfile()==null)
+		{
+			Map<String, Boolean> UserProfile= new HashMap<String, Boolean>(); 
+			user.setProfile(UserProfile);
+		}
+		user.setProfileValue(type, dontShowPopup);
+		daoManager.getUserDAO().update(user);
+	
+	}
+
+//	@Override
+//	public void log(LogLevel arg0, String arg1) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public void log(LogLevel arg0, String arg1, Throwable arg2) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+
+	@Override
+	public boolean isProfile(AuthenticationToken token, String type) {
+		
+		boolean isProfileSet=false;
+		
+		User user = daoManager.getUserDAO().getUser(token.getUserId());
+		if(user.getProfile()!=null)
+		{
+			isProfileSet= user.getProfileValue(type);
+			
+		}
+		
+		return isProfileSet;
+	}
+
+//	@Override
+//	public Boolean isProfile(String type) {
+//		daoManager.getUserDAO().g
+//	}
 
 
 	

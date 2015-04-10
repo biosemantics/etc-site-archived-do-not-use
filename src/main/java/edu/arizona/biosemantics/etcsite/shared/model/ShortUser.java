@@ -1,6 +1,7 @@
 package edu.arizona.biosemantics.etcsite.shared.model;
 
 import java.io.Serializable;
+import java.util.Map;
 
 public class ShortUser implements Serializable {
 	
@@ -16,18 +17,16 @@ public class ShortUser implements Serializable {
 	private String bioportalApiKey = "";
 	private String otoAccountEmail = "";
 	
-	private boolean matrixGenerationEmail;
-	private boolean treeGenerationEmail;
-	private boolean textCaptureEmail;
-	private boolean taxonomyComparisonEmail;
 	
+	Map<String , Boolean> profile;
+//	
 	public ShortUser() { }
 	
 	public ShortUser(int id, String email, String firstName, String lastName, String affiliation, 
 			String openIdProvider, String openIdProivderId, String bioportalUserId, 
 			String bioportalApiKey, String otoAccountEmail, 
-			boolean textCaptureEmail, boolean matrixGenerationEmail, boolean treeGenerationEmail,
-			boolean taxonomyComparisonEmail) {
+			
+			Map<String , Boolean> profile) {
 		this.id = id;
 		this.email = email;
 		this.firstName = firstName;
@@ -38,11 +37,9 @@ public class ShortUser implements Serializable {
 		this.bioportalUserId = bioportalUserId;
 		this.bioportalApiKey = bioportalApiKey;
 		this.otoAccountEmail = otoAccountEmail;
-		
-		this.textCaptureEmail = textCaptureEmail;
-		this.matrixGenerationEmail = matrixGenerationEmail;
-		this.treeGenerationEmail = treeGenerationEmail;
-		this.taxonomyComparisonEmail = taxonomyComparisonEmail;
+//		
+
+		this.profile=profile;
 	}
 
 	public ShortUser(User user) {
@@ -55,10 +52,8 @@ public class ShortUser implements Serializable {
 		this.openIdProviderId = user.getOpenIdProviderId();
 		this.bioportalUserId = user.getBioportalUserId();
 		this.bioportalApiKey = user.getBioportalAPIKey();
-		this.matrixGenerationEmail = user.isMatrixGenerationEmail();
-		this.treeGenerationEmail = user.isTreeGenerationEmail();
-		this.textCaptureEmail = user.isTextCaptureEmail();
-		this.taxonomyComparisonEmail = user.isTaxonomyComparisonEmail();
+//		
+		this.profile=user.getProfile();
 		this.otoAccountEmail = user.getOtoAccountEmail();
 	}
 
@@ -156,39 +151,22 @@ public class ShortUser implements Serializable {
 		return getFullNameEmail() + " at " + affiliation;
 	}
 	
-
-	public boolean isMatrixGenerationEmail() {
-		return matrixGenerationEmail;
+	public boolean getProfileValue(String key) {
+		return profile.get(key);
 	}
 
-	public void setMatrixGenerationEmail(boolean matrixGenerationEmail) {
-		this.matrixGenerationEmail = matrixGenerationEmail;
+	public void setProfileValue(String key, boolean value) {
+		this.profile.put(key, value);
 	}
-
-	public boolean isTreeGenerationEmail() {
-		return treeGenerationEmail;
+	
+	public Map<String, Boolean> getProfile() {
+		return profile;
 	}
-
-	public void setTreeGenerationEmail(boolean treeGenerationEmail) {
-		this.treeGenerationEmail = treeGenerationEmail;
+	
+	public void setProfile(Map<String, Boolean> profile) {
+		this.profile = profile;
 	}
-
-	public boolean isTextCaptureEmail() {
-		return textCaptureEmail;
-	}
-
-	public void setTextCaptureEmail(boolean textCaptureEmail) {
-		this.textCaptureEmail = textCaptureEmail;
-	}
-
-	public boolean isTaxonomyComparisonEmail() {
-		return taxonomyComparisonEmail;
-	}
-
-	public void setTaxonomyComparisonEmail(boolean taxonomyComparisonEmail) {
-		this.taxonomyComparisonEmail = taxonomyComparisonEmail;
-	}
-
+	
 	@Override
 	public int hashCode() {
 		return id;

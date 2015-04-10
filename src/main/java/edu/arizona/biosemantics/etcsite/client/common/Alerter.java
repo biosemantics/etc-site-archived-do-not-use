@@ -1,16 +1,40 @@
-package edu.arizona.biosemantics.etcsite.client.common;
+ package edu.arizona.biosemantics.etcsite.client.common;
 
+import com.sencha.gxt.widget.core.client.ContentPanel.ContentPanelMessages;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 import com.sencha.gxt.widget.core.client.box.AutoProgressMessageBox;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
+import com.sencha.gxt.widget.core.client.Dialog;
+import com.sencha.gxt.widget.core.client.form.CheckBox;
 
+import edu.arizona.biosemantics.etcsite.client.HelpDialog;
+import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
+import edu.arizona.biosemantics.etcsite.server.rpc.user.UserService;
+import edu.arizona.biosemantics.etcsite.shared.help.Help;
+import edu.arizona.biosemantics.etcsite.shared.model.User;
+import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
 import edu.arizona.biosemantics.oto2.oto.client.common.Alerter.InfoMessageBox;
+
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
+import com.sencha.gxt.core.client.util.Margins;
+import com.sencha.gxt.widget.core.client.container.MarginData;
+import com.google.gwt.user.client.ui.Label;
+import com.sencha.gxt.widget.core.client.FramedPanel;
 
 public class Alerter {
 	
 	private static AutoProgressMessageBox box;
+	
 	
 	public static MessageBox startLoading() {
 		box = new AutoProgressMessageBox("Loading", "Loading your data, please wait...");
@@ -482,8 +506,27 @@ public class Alerter {
 
 	private static MessageBox showInfo(String title, String message) {
 		InfoMessageBox info = new InfoMessageBox(title, message);
+		
 		info.show();
 		return info;
+	}
+	
+	public static InfoMessageBox showInfo(String title, String message, String abc) {
+		InfoMessageBox info = new InfoMessageBox(title, message);
+		
+		Dialog dia= new Dialog();
+		
+		dia.setHeadingText(title);
+		dia.setDialogMessages(info.getDialogMessages());
+		
+		info.setMaximizable(true);
+						
+		CheckBox chk= new CheckBox();
+		chk.setBoxLabel("Don't show again");
+		info.add(chk);
+	    info.show();
+		return info;
+				
 	}
 	
 	private static MessageBox showConfirm(String title, String message) {
@@ -498,6 +541,57 @@ public class Alerter {
         box.setIcon(MessageBox.ICONS.question());
         box.show();
         return box;
+	}
+
+	public void showInstructinos(String type, String title) {
+		IUserServiceAsync userService = GWT.create(IUserService.class);
+		//IUserServiceAsync userService = GWT.create(IUserServiceAsync.class);
+		//IUserServiceAsync userService = GWT.create(UserService.class);
+		final String msg="<HTML><Body>"
+	     +"<h4><B> For Instructions Click on</h4><Br> &"
+	     + "nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src = 'images/Help.gif' height = '40px' width = '40px' align='middle'/>"
+	     + "<Br> &nbsp;<h4><B> at Top right corner</Br></Br></Br></Br></BODY></HTML>";
+				//+ "<img src = 'images/HelpPopup.png' height = '200px' width = '200px' />"
+		//+"<h4><B> at Top right corner</BODY></HTML>";
+		 //height = '200px' width = '200px'
+		final String popupTitle=title;  
+		   userService.isProfile(Authentication.getInstance().getToken(), type, new AsyncCallback<Boolean>() {
+				@Override
+				public void onSuccess(Boolean result) {
+					// TODO Auto-generated method stub
+					if(!result)
+					{
+						HelpDialog d = new HelpDialog( Help.Type.WELCOME.getKey(),  popupTitle,  msg);
+					}
+					
+				}
+				@Override
+				public void onFailure(Throwable caught) {
+					Alerter.failedToSaveMatrix(caught);
+				}
+			});
+		
+   /*    boolean isDontShowPopup=false;
+        
+		//User user = daoManager.getUserDAO().getUser(Authentication.getInstance().getToken().getUserId());
+		if(user.getProfile()!=null)
+		{
+			isDontShowPopup= user.getProfileValue(type);
+			
+		}
+		
+		   
+			if(! isDontShowPopup)
+			{
+				    	HelpDialog d = new HelpDialog( type,  title,  message);       
+					    boolean dontShowPopup=d.dontShowPopup;
+			    }*/
+			
+			 //d.setPredefinedButtons(PredefinedButton.YES, PredefinedButton.NO, PredefinedButton.CANCEL);
+			
+			
+	
+		 
 	}
 
 

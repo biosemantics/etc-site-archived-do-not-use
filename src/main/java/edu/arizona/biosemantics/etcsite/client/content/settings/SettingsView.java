@@ -52,6 +52,7 @@ import com.sencha.gxt.widget.core.client.info.Info;
 
 import edu.arizona.biosemantics.etcsite.client.layout.CenteredContentPanel;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
+import edu.arizona.biosemantics.etcsite.shared.model.User.EmailPreferences;
 
 import com.sencha.gxt.widget.core.client.container.AbstractHtmlLayoutContainer.HtmlData;
 
@@ -377,10 +378,10 @@ public class SettingsView extends Composite implements ISettingsView {
 		currentPassword.setValue("");
 		newPassword.setValue("");
 		confirmPassword.setValue("");
-		matrixGenerationEmail.setValue(user.isMatrixGenerationEmail());
-		treeGenerationEmail.setValue(user.isTreeGenerationEmail());
-		semanticMarkupEmail.setValue(user.isTextCaptureEmail());
-		taxonomyComparisonEmail.setValue(user.isTaxonomyComparisonEmail());
+		matrixGenerationEmail.setValue(user.getProfileValue(EmailPreferences.MatrixGeneration.getKey()));
+		treeGenerationEmail.setValue(user.getProfileValue(EmailPreferences.TreeGeneration.getKey()));
+		semanticMarkupEmail.setValue(user.getProfileValue(EmailPreferences.SemanticMarkup.getKey()));
+		taxonomyComparisonEmail.setValue(user.getProfileValue(EmailPreferences.TaxonomyComparison.getKey()));
 		
 		if(user.getOtoAccountEmail() != null && !user.getOtoAccountEmail().isEmpty()) {
 			setLinkedOTOAccount(user.getOtoAccountEmail());
@@ -415,10 +416,12 @@ public class SettingsView extends Composite implements ISettingsView {
 		user.setEmail(email.getText());
 		user.setFirstName(firstName.getText());
 		user.setLastName(lastName.getText());
-		user.setMatrixGenerationEmail(matrixGenerationEmail.getValue());
-		user.setTextCaptureEmail(semanticMarkupEmail.getValue());
-		user.setTaxonomyComparisonEmail(taxonomyComparisonEmail.getValue());
-		user.setTreeGenerationEmail(treeGenerationEmail.getValue());
+		user.setProfileValue(EmailPreferences.MatrixGeneration.getKey().toString(),matrixGenerationEmail.getValue());
+		
+		user.setProfileValue(EmailPreferences.SemanticMarkup.getKey().toString() ,semanticMarkupEmail.getValue());
+		user.setProfileValue(EmailPreferences.TaxonomyComparison.getKey().toString() ,taxonomyComparisonEmail.getValue());
+		user.setProfileValue(EmailPreferences.TreeGeneration.getKey().toString()  ,treeGenerationEmail.getValue());
+		//user.setTreeGenerationEmail(treeGenerationEmail.getValue());
 		return user;
 	}
 	
