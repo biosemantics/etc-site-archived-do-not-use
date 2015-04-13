@@ -125,7 +125,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.27</version>
+			<version>5.1.35</version>
 		</dependency>
 		<dependency>
 			<groupId>org.aspectj</groupId>
@@ -191,7 +191,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>semantic-markup</artifactId>
-			<version>0.1.118-SNAPSHOT</version>
+			<version>0.1.126-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>app</artifactId>
@@ -325,12 +325,12 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>validation</artifactId>
-			<version>0.0.3.4-SNAPSHOT</version>
+			<version>0.0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>validation</artifactId>
-			<version>0.0.3.4-SNAPSHOT</version>
+			<version>0.0.4-SNAPSHOT</version>
 			<classifier>sources</classifier>
 		</dependency>
 		<dependency>
