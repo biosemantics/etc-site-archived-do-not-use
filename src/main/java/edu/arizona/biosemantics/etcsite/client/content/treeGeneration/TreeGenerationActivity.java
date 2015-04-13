@@ -46,8 +46,7 @@ public class TreeGenerationActivity extends MyAbstractActivity {
 	public void start(final AcceptsOneWidget panel, EventBus eventBus) {
 		this.panel = panel;
 		this.setStepWidget();
-		Alerter  alerter= new Alerter();
-		alerter.showInstructinos(Help.Type.WELCOME.getKey(),"Tree Generation");
+		Alerter.showInstructions(Help.Type.WELCOME.getKey(),"Tree Generation");
 	}
 
 	@Override

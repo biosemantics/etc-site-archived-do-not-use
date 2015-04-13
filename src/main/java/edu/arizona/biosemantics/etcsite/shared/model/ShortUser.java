@@ -1,6 +1,7 @@
 package edu.arizona.biosemantics.etcsite.shared.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ShortUser implements Serializable {
@@ -17,16 +18,14 @@ public class ShortUser implements Serializable {
 	private String bioportalApiKey = "";
 	private String otoAccountEmail = "";
 	
+	private Map<String , Boolean> profile = new HashMap<String, Boolean>();
 	
-	Map<String , Boolean> profile;
-//	
 	public ShortUser() { }
 	
 	public ShortUser(int id, String email, String firstName, String lastName, String affiliation, 
 			String openIdProvider, String openIdProivderId, String bioportalUserId, 
 			String bioportalApiKey, String otoAccountEmail, 
-			
-			Map<String , Boolean> profile) {
+			Map<String, Boolean> profile) {
 		this.id = id;
 		this.email = email;
 		this.firstName = firstName;
@@ -37,9 +36,7 @@ public class ShortUser implements Serializable {
 		this.bioportalUserId = bioportalUserId;
 		this.bioportalApiKey = bioportalApiKey;
 		this.otoAccountEmail = otoAccountEmail;
-//		
-
-		this.profile=profile;
+		this.profile = profile;
 	}
 
 	public ShortUser(User user) {
@@ -52,8 +49,6 @@ public class ShortUser implements Serializable {
 		this.openIdProviderId = user.getOpenIdProviderId();
 		this.bioportalUserId = user.getBioportalUserId();
 		this.bioportalApiKey = user.getBioportalAPIKey();
-//		
-		this.profile=user.getProfile();
 		this.otoAccountEmail = user.getOtoAccountEmail();
 	}
 
@@ -151,22 +146,6 @@ public class ShortUser implements Serializable {
 		return getFullNameEmail() + " at " + affiliation;
 	}
 	
-	public boolean getProfileValue(String key) {
-		return profile.get(key);
-	}
-
-	public void setProfileValue(String key, boolean value) {
-		this.profile.put(key, value);
-	}
-	
-	public Map<String, Boolean> getProfile() {
-		return profile;
-	}
-	
-	public void setProfile(Map<String, Boolean> profile) {
-		this.profile = profile;
-	}
-	
 	@Override
 	public int hashCode() {
 		return id;
@@ -184,7 +163,27 @@ public class ShortUser implements Serializable {
 			return true;
 		return false;
 	}
+	
+	public boolean getProfileValue(String key) {
+		boolean ProfileValue=false;
+		if(profile.get(key)!=null)
+		{
+			ProfileValue =profile.get(key);
+		}
+		
+		return ProfileValue;
+	}
 
-
+	public void setProfileValue(String key, boolean value) {
+		this.profile.put(key, value);
+	}
+	
+	public Map<String, Boolean> getProfile() {
+		return profile;
+	}
+	
+	public void setProfile(Map<String, Boolean> profile) {
+		this.profile = profile;
+	}
+	
 }
-

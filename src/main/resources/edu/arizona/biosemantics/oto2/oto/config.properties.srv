@@ -1,0 +1,16 @@
+#Database
+databaseName=etcsite_oto
+databaseUser=termsuser
+databasePassword=termspassword
+databaseHost=localhost
+databasePort=3306
+
+#Temporary Storage
+files = /var/lib/etcsite/oto2
+
+#Bioportal
+bioportalUrl=http://data.bioontology.org
+bioportalApiKey=7ae4743f-edb1-4308-9221-c879d3bd55c7
+
+#OTO
+otoClientUrl=http://biosemantics.arizona.edu:8080/OTO/

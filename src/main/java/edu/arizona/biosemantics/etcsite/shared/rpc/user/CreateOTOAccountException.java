@@ -9,5 +9,9 @@ public class CreateOTOAccountException extends Exception {
 	public CreateOTOAccountException() {
 		// TODO Auto-generated constructor stub
 	}
+	
+	public CreateOTOAccountException(String message) {
+		super(message);
+	}
 
 }

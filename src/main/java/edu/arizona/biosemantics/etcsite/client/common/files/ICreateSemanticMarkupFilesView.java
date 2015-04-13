@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
+import edu.arizona.biosemantics.etcsite.shared.model.file.DescriptionEntry;
 import edu.arizona.biosemantics.etcsite.shared.model.file.TaxonIdentificationEntry;
 
 public interface ICreateSemanticMarkupFilesView extends IsWidget {
@@ -22,6 +23,8 @@ public interface ICreateSemanticMarkupFilesView extends IsWidget {
 
 		void onBatch(String text);
 
+		void setPreviewText(String batchSourceDocumentInfo, String text);
+
 	}
 
 	void setPresenter(ICreateSemanticMarkupFilesView.Presenter presenter);
@@ -33,20 +36,14 @@ public interface ICreateSemanticMarkupFilesView extends IsWidget {
 	String getTitleText();
 
 	List<TaxonIdentificationEntry> getTaxonIdentificationEntries();
+	
+	List<DescriptionEntry> getDescriptionsList();
 
 	String getStrainNumber(); 
 	
 	String getEqStrainNumbers(); 
 
 	String getStrainAccession(); 
-
-	String getMorphologicalDescription();
-
-	String getPhenologyDescription();
-
-	String getHabitatDescription();
-
-	String getDistributionDescription();
 
 	void removeAddtionalTaxonRanks();
 
@@ -59,5 +56,15 @@ public interface ICreateSemanticMarkupFilesView extends IsWidget {
 	void hideProgress();
 
 	void showProgress();
+
+	boolean isCopyCheckBox();
+
+	void resetDescriptions();
+
+	void setPreviewText(String text);
+
+	String getBatchSourceDocumentInfo();
+
+	void clearBatchText();
 	
 }

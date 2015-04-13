@@ -1,40 +1,25 @@
- package edu.arizona.biosemantics.etcsite.client.common;
+package edu.arizona.biosemantics.etcsite.client.common;
 
-import com.sencha.gxt.widget.core.client.ContentPanel.ContentPanelMessages;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.TextArea;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 import com.sencha.gxt.widget.core.client.box.AutoProgressMessageBox;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
-import com.sencha.gxt.widget.core.client.Dialog;
-import com.sencha.gxt.widget.core.client.form.CheckBox;
 
 import edu.arizona.biosemantics.etcsite.client.HelpDialog;
-import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
-import edu.arizona.biosemantics.etcsite.server.rpc.user.UserService;
 import edu.arizona.biosemantics.etcsite.shared.help.Help;
-import edu.arizona.biosemantics.etcsite.shared.model.User;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
 import edu.arizona.biosemantics.oto2.oto.client.common.Alerter.InfoMessageBox;
 
-import com.google.gwt.core.shared.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
-import com.sencha.gxt.core.client.util.Margins;
-import com.sencha.gxt.widget.core.client.container.MarginData;
-import com.google.gwt.user.client.ui.Label;
-import com.sencha.gxt.widget.core.client.FramedPanel;
-
 public class Alerter {
 	
+	private static IUserServiceAsync userService = GWT.create(IUserService.class);
 	private static AutoProgressMessageBox box;
-	
 	
 	public static MessageBox startLoading() {
 		box = new AutoProgressMessageBox("Loading", "Loading your data, please wait...");
@@ -49,24 +34,48 @@ public class Alerter {
 		box = null;
 	}
 
+	public static MessageBox firstLoginCheckAccountInfo() {
+		return showInfo("Account Information", "You have successfully registered. </br></br></br>"
+				+ ""
+				+ "(1) First, please set your account settings.</br>"
+				+ "(2) Then hover <img src=\"images/Menu.gif\" height=\"20px\" width=\"20px\"/> in the top left corner to continue."
+				+ "");
+	}
+	
+	public static MessageBox passwordLengthNotMet() {
+		return showAlert("Password not sufficient", "Passwords must be at least 6 characters long.");
+	}
+	
+	public static MessageBox firstNameRequired() {
+		return showAlert("Required fields", "First name is required.");
+	}
+
+	public static MessageBox lastNameRequired() {
+		return showAlert("Required fields", "Last name is required.");
+	}
+	
+	public static MessageBox passwordsDontMatch() {
+		return showAlert("Passwords do not match", "Passwords do not match.");
+	}
+
 	public static MessageBox failedToCreateTaxonDescription(Throwable caught) {
 		return showAlert("Create Taxon Description", "Failed to create taxon description.", caught);
 	}
 	
 	public static MessageBox invalidOTOAccount(Throwable caught) {
-		return showAlert("Invalid OTO Account", "Invalid OTO account credentials.", caught);
+		return showAlert("Invalid OTO Account", "Invalid OTO account credentials. Visit <a href=\"http://biosemantics.arizona.edu:8080/OTO/\" target=\"_blank\">OTO</a> to verify your credentials.", caught);
 	}
 	
 	public static MessageBox failedToCreateOTOAccount(Throwable caught) {
-		return showAlert("Failed to Create", "Failed to create OTO Account.", caught);
+		return showAlert("Failed to Create", "Failed to create OTO Account. " + caught.getMessage(), caught);
 	}
 	
 	public static MessageBox failedToSaveOTOAccount(Throwable caught) {
 		return showAlert("Failed to Save", "Failed to save OTO Account.", caught);
 	}
 	
-	public static void successfullyCreatedOTOAccount() {
-		showInfo("Created Account successfully", "Successfully created OTO Account.");
+	public static MessageBox successfullyCreatedOTOAccount() {
+		return showInfo("Created Account successfully", "Successfully created OTO Account.");
 	}
 	
 	public static MessageBox failedToImportOto(Throwable caught) {
@@ -506,27 +515,8 @@ public class Alerter {
 
 	private static MessageBox showInfo(String title, String message) {
 		InfoMessageBox info = new InfoMessageBox(title, message);
-		
 		info.show();
 		return info;
-	}
-	
-	public static InfoMessageBox showInfo(String title, String message, String abc) {
-		InfoMessageBox info = new InfoMessageBox(title, message);
-		
-		Dialog dia= new Dialog();
-		
-		dia.setHeadingText(title);
-		dia.setDialogMessages(info.getDialogMessages());
-		
-		info.setMaximizable(true);
-						
-		CheckBox chk= new CheckBox();
-		chk.setBoxLabel("Don't show again");
-		info.add(chk);
-	    info.show();
-		return info;
-				
 	}
 	
 	private static MessageBox showConfirm(String title, String message) {
@@ -543,61 +533,46 @@ public class Alerter {
         return box;
 	}
 
-	public void showInstructinos(String type, String title) {
-		IUserServiceAsync userService = GWT.create(IUserService.class);
-		//IUserServiceAsync userService = GWT.create(IUserServiceAsync.class);
-		//IUserServiceAsync userService = GWT.create(UserService.class);
-		final String msg="<HTML><Body>"
-	     +"<h4><B> For Instructions Click on</h4><Br> &"
-	     + "nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src = 'images/Help.gif' height = '40px' width = '40px' align='middle'/>"
-	     + "<Br> &nbsp;<h4><B> at Top right corner</Br></Br></Br></Br></BODY></HTML>";
-				//+ "<img src = 'images/HelpPopup.png' height = '200px' width = '200px' />"
-		//+"<h4><B> at Top right corner</BODY></HTML>";
-		 //height = '200px' width = '200px'
-		final String popupTitle=title;  
-		   userService.isProfile(Authentication.getInstance().getToken(), type, new AsyncCallback<Boolean>() {
-				@Override
-				public void onSuccess(Boolean result) {
-					// TODO Auto-generated method stub
-					if(!result)
-					{
-						HelpDialog d = new HelpDialog( Help.Type.WELCOME.getKey(),  popupTitle,  msg);
-					}
-					
-				}
-				@Override
-				public void onFailure(Throwable caught) {
-					Alerter.failedToSaveMatrix(caught);
-				}
-			});
-		
-   /*    boolean isDontShowPopup=false;
-        
-		//User user = daoManager.getUserDAO().getUser(Authentication.getInstance().getToken().getUserId());
-		if(user.getProfile()!=null)
-		{
-			isDontShowPopup= user.getProfileValue(type);
-			
-		}
-		
-		   
-			if(! isDontShowPopup)
-			{
-				    	HelpDialog d = new HelpDialog( type,  title,  message);       
-					    boolean dontShowPopup=d.dontShowPopup;
-			    }*/
-			
-			 //d.setPredefinedButtons(PredefinedButton.YES, PredefinedButton.NO, PredefinedButton.CANCEL);
-			
-			
-	
-		 
+	public static MessageBox otoConnectionFailed(Throwable caught) {
+		return showAlert("Failed to connect", "Failed to connect to OTO. Try again later." + caught.getMessage(), caught);
 	}
 
-
-
+	public static MessageBox showKeyValidationResult(String infoMessage, String errorList){
+		MessageBox box = new ConfirmMessageBox("Error", infoMessage);
+		box.setHeight("500");
+		box.setWidth("600");
+		TextArea tArea = new TextArea();
+		tArea.setEnabled(false);
+		tArea.setHeight("200");
+		tArea.setText(errorList);
+		box.add(tArea);
+		tArea.setWidth(""+box.getOffsetWidth());
+		box.setIcon(MessageBox.ICONS.info());
+		box.getButton(PredefinedButton.YES).setText("Keep Files");
+		box.getButton(PredefinedButton.NO).setText("Delete Files with errors");
+		return box;
+	}
 	
+	public static void showInstructions(String type, String title) {
+		final String msg = "<HTML><Body>"
+				+ "<h4><B> For Instructions Click On</h4><Br> &"
+				+ "nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src = 'images/Help.gif' height = '35px' width = '35px' align='middle'/>"
+				+ "<Br> &nbsp;<h4><B> at Top Right Corner</Br></Br></BODY></HTML>";
+		final String popupTitle = title;
+		userService.isProfile(Authentication.getInstance().getToken(), type,
+				new AsyncCallback<Boolean>() {
+					@Override
+					public void onSuccess(Boolean result) {
+						if (!result) {
+							HelpDialog d = new HelpDialog(Help.Type.WELCOME
+									.getKey(), popupTitle, msg);
+						}
+					}
 
-
-	
+					@Override
+					public void onFailure(Throwable caught) {
+						Alerter.failedToSaveMatrix(caught);
+					}
+				});
+	}
 }

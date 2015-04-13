@@ -10,7 +10,7 @@ public interface IAuthenticationServiceAsync {
 			AsyncCallback<AuthenticationResult> callback);
 	
 	public void loginOrSignupWithGoogle(String googleAuthCode,
-			AsyncCallback<AuthenticationResult> callback);
+			AsyncCallback<LoginGoogleResult> callback);
 
 	public void isValidSession(AuthenticationToken authentication,
 			AsyncCallback<AuthenticationResult> callback);

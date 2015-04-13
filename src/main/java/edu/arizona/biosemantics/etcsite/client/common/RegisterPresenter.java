@@ -104,6 +104,7 @@ public class RegisterPresenter implements IRegisterView.Presenter {
 				captchaPresenter.requestNewCaptcha();
 				dialog.hide();
 				eventBus.fireEvent(new AuthenticationEvent(AuthenticationEventType.LOGGEDIN));
+				Alerter.firstLoginCheckAccountInfo();
 				placeController.goTo(new SettingsPlace());
 			}
 			@Override

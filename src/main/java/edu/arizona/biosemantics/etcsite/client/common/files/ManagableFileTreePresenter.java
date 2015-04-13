@@ -1,9 +1,14 @@
 
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -39,6 +44,8 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	private IFileTreeView.Presenter fileTreePresenter;
 	private FileFilter fileFilter;
 	private String defaultServletPath;
+	private String tempUploadDirectory;
+	private String targetUploadDirectory;
 	private ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter;
 	
 	@Inject
@@ -115,37 +122,20 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 				 box.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
 					@Override
 					public void onSelect(SelectEvent event) {
-						final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
-						final String selectionPath = selection.getFileInfo().getFilePath();
-						fileService.isDirectory(Authentication.getInstance().getToken(), selectionPath, new AsyncCallback<Boolean>() {
-							@Override
-							public void onSuccess(Boolean result) {
-								String newDirectoryParent = selectionPath;
-								if(!result)
-									newDirectoryParent = getParent(selection);
-								if(newDirectoryParent != null) {
-									fileService.createDirectory(Authentication.getInstance().getToken(), newDirectoryParent, box.getValue(), false,
-											new AsyncCallback<String>() {
-												@Override
-												public void onSuccess(String result) {
-													fileTreePresenter.refresh(fileFilter);
-												}
-
-												@Override
-												public void onFailure(Throwable caught) {
-													Alerter.failedToCreateDirectory(caught);
-												}
-									});
-								}
-							}
-							@Override
-							public void onFailure(Throwable caught) {
-								Alerter.failedToIsDirectory(caught);
-							}
-						});
+						createDirectory(box.getValue());
 					}
 				 });
-		         box.show();
+				 box.getTextField().addKeyPressHandler(new KeyPressHandler() {
+					
+					@Override
+					public void onKeyPress(KeyPressEvent event) {
+						if(event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER){
+							createDirectory(box.getValue());
+							box.hide();
+						}
+					}
+				});
+				 box.show();
 			} else {
 				Alerter.maxDepthReached();
 			}
@@ -162,50 +152,92 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		}
 		return result;
 	}
+	
+	private void createDirectory(final String folderName){
+		final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
+		final String selectionPath = selection.getFileInfo().getFilePath();
+		fileService.isDirectory(Authentication.getInstance().getToken(), selectionPath, new AsyncCallback<Boolean>() {
+			@Override
+			public void onSuccess(Boolean result) {
+				String newDirectoryParent = selectionPath;
+				if(!result)
+					newDirectoryParent = getParent(selection);
+				if(newDirectoryParent != null) {
+					fileService.createDirectory(Authentication.getInstance().getToken(), newDirectoryParent, folderName, false,
+							new AsyncCallback<String>() {
+								@Override
+								public void onSuccess(String result) {
+									fileTreePresenter.refresh(fileFilter);
+								}
+
+								@Override
+								public void onFailure(Throwable caught) {
+									Alerter.failedToCreateDirectory(caught);
+								}
+					});
+				}
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToIsDirectory(caught);
+			}
+		});
+	}
+	
+	private void renameFile(final FileImageLabelTreeItem selection, final String newName){
+		if(selection.getFileImageLabel().getFileInfo().getFileType().equals(FileTypeEnum.DIRECTORY)) {
+			fileService.renameFile(Authentication.getInstance().getToken(), selection.getFileInfo().getFilePath(), 
+				newName, new AsyncCallback<Void>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						Alerter.failedToRenameFile(caught);
+					}
+					@Override
+					public void onSuccess(Void result) {
+						fileTreePresenter.refresh(fileFilter);
+						selection.getFileInfo().setName(newName);
+					}
+			});
+		} else {
+			final String newFileName = selection.getFileInfo().getExtension().isEmpty() ? 
+					newName : newName + "." + selection.getFileInfo().getExtension();
+			fileService.renameFile(Authentication.getInstance().getToken(), selection.getFileInfo().getFilePath(), 
+					newFileName, new AsyncCallback<Void>() {
+				@Override
+				public void onSuccess(Void result) {
+					fileTreePresenter.refresh(fileFilter);
+					selection.getFileInfo().setName(newFileName);
+				}
+				@Override
+				public void onFailure(Throwable caught) {
+					Alerter.failedToRenameFile(caught);
+				}
+			});
+		}
+	}
 
 	@Override
 	public void onRename() {
-		FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
+		final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
 		//don't allow rename of root node
 		if(selection != null && !selection.getFileInfo().isSystemFile()) {
 			final PromptMessageBox box = new PromptMessageBox("Rename", "New name:");
 			box.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
 				@Override
 				public void onSelect(SelectEvent event) {
-					final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
-					if(selection != null && !selection.getFileInfo().isSystemFile()) {
-						if(selection.getFileImageLabel().getFileInfo().getFileType().equals(FileTypeEnum.DIRECTORY)) {
-							fileService.renameFile(Authentication.getInstance().getToken(), selection.getFileInfo().getFilePath(), 
-								box.getValue(), new AsyncCallback<Void>() {
-									@Override
-									public void onFailure(Throwable caught) {
-										Alerter.failedToRenameFile(caught);
-									}
-									@Override
-									public void onSuccess(Void result) {
-										fileTreePresenter.refresh(fileFilter);
-										selection.getFileInfo().setName(box.getValue());
-									}
-							});
-						} else {
-							final String newFileName = selection.getFileInfo().getExtension().isEmpty() ? 
-									box.getValue() : box.getValue() + "." + selection.getFileInfo().getExtension();
-							fileService.renameFile(Authentication.getInstance().getToken(), selection.getFileInfo().getFilePath(), 
-									newFileName, new AsyncCallback<Void>() {
-								@Override
-								public void onSuccess(Void result) {
-									fileTreePresenter.refresh(fileFilter);
-									selection.getFileInfo().setName(newFileName);
-								}
-								@Override
-								public void onFailure(Throwable caught) {
-									Alerter.failedToRenameFile(caught);
-								}
-							});
-						}
-					}
+					renameFile(selection, box.getValue());
 				}
 			 });
+			box.getTextField().addKeyPressHandler(new KeyPressHandler() {
+				
+				@Override
+				public void onKeyPress(KeyPressEvent event) {
+					if(event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER){
+						renameFile(selection,box.getValue());
+						box.hide();
+					}
+				}
+			});
 			 box.getTextField().setValue(selection.getFileInfo().getName(false));
 			 box.show();
 		} else {
@@ -286,25 +318,107 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	public class OnFinishUploadHandler implements OnFinishUploaderHandler {
 		@Override
 		public void onFinish(IUploader uploader) {	
-			
 			String serverResponse = uploader.getServerInfo().message;
 			if(serverResponse != null && !serverResponse.isEmpty()) {
 				serverResponse = serverResponse.replaceAll("\n", "<br>");
+				if(serverResponse.contains("#")){ //# is used in response only when there are errors
+					String responseStrings[] = serverResponse.split("#");
+					responseStrings[1] = responseStrings[1].trim();
+					String xmlErrorFiles[] = responseStrings[1].split("\\|");
+					responseStrings[2] = responseStrings[2].trim();
+					String existingFiles[] = responseStrings[2].split("\\|");
+					serverResponse = responseStrings[0]+"<br>";
+					if(xmlErrorFiles.length>0 && !responseStrings[1].isEmpty()){
+						serverResponse += "Following files have xml format errors<br>";
+					}
+					int i;
+					for(i=0;i<20 && i<xmlErrorFiles.length-1;i++){
+						serverResponse += xmlErrorFiles[i] + "<br>";
+					}
+					int j=0;
+					if(i<20){
+						if(existingFiles.length>0 && !responseStrings[2].isEmpty()){
+							serverResponse += "<br>Following files already exist in the folder<br>";
+						}
+						for(;i<20 && j<existingFiles.length; i++, j++){
+							serverResponse += existingFiles[j] + "<br>";
+						}
+					}
+					if(j<existingFiles.length-1 | i<xmlErrorFiles.length-1){
+						serverResponse += "and so on.<br>";
+					}
+				}
 				Alerter.fileManagerMessage(serverResponse);
 			}
 			
 			if (uploader.getStatus() == Status.SUCCESS) {
 				List<String> fileNames = new LinkedList<String>();
-				fileNames.add("Done uploading.");
+				fileNames.add("Done uploading. Validating keys");
 				uploader.getStatusWidget().setFileNames(fileNames);
-				//uploader.getStatusWidget().setFileName("Done uploading.");
 				fileTreePresenter.refresh(fileFilter);
+				fileService.validateKeys(Authentication.getInstance().getToken(), targetUploadDirectory, new AsyncCallback<HashMap<String,String>>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Alerter.inputError("Key Validation Failed.");
+					}
+
+					@Override
+					public void onSuccess(final HashMap<String, String> result) {
+						if(!result.isEmpty()){
+							String infoMessage = "Key Validation Result:<br>The following files have key errors and will not be parsed.";
+							String errorMessage = infoMessage.replace("<br>", "\n") + "\n\n";
+							for(String filename: result.keySet()){
+								String errorsInFile = result.get(filename);
+								//errorMessage += "File "+ filename +"has following errors:\n";
+								errorMessage += errorsInFile+"\n";
+							}
+							MessageBox box = Alerter.showKeyValidationResult(infoMessage, errorMessage);
+							box.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
+							
+								@Override
+								public void onSelect(SelectEvent event) {
+									fileTreePresenter.refresh(fileFilter);
+								}
+							});
+							box.getButton(PredefinedButton.NO).addSelectHandler(new SelectHandler() {
+								
+								@Override
+								public void onSelect(SelectEvent event) {
+									// TODO Auto-generated method stub
+									for(String filename: result.keySet()){
+										fileService.deleteFile(Authentication.getInstance().getToken(), filename, new AsyncCallback<Void>() {
+
+											@Override
+											public void onFailure(
+													Throwable caught) {
+												// TODO Auto-generated method stub
+												Alerter.inputError("Could not delete files.");
+											}
+
+											@Override
+											public void onSuccess(Void result) {
+												// TODO Auto-generated method stub
+												//fileTreePresenter.refresh(fileFilter);
+											}
+										});
+									}
+									fileTreePresenter.refresh(fileFilter);
+								}
+							});
+							box.show();
+						}
+					}
+				});
 			}
-						
+			//targetUploadDirectory = "";			
 			uploader.setServletPath(defaultServletPath);
 			enableManagement();
-		}
+			
+		}		
 	}
+	
+	
 
 	public class OnStartUploadHandler implements OnStartUploaderHandler {
 		@Override
@@ -318,9 +432,11 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 			uploader.getStatusWidget().setFileNames(fileNames);
 			final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
 			if(selection.getFileInfo().getFileType().equals(FileTypeEnum.DIRECTORY)) {
+				targetUploadDirectory = selection.getFileInfo().getFilePath();
 				uploader.setServletPath(uploader.getServletPath() + "&target=" + URL.encodeQueryString(selection.getFileInfo().getFilePath()));
 			} else {
 				String newFilePath = getParent(selection);
+				targetUploadDirectory = newFilePath;
 				uploader.setServletPath(uploader.getServletPath() + "&target=" + URL.encodeQueryString(newFilePath));
 			}
 			
@@ -332,12 +448,6 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 			
 			// for now, just disable all of the others:
 			disableManagement();
-			
-			//temporarily in place as long as we are not sure about the stability of out of memory issue
-			/*if(uploader.getFileInput().getFilenames().size() > 50) {
-				Alerter.tooManyFiles();
-				uploader.cancel();
-			}*/
 		}
 	}
 	

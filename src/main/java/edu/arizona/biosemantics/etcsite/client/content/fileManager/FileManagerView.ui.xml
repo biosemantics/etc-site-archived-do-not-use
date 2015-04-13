@@ -34,9 +34,6 @@
 				<g:InlineLabel styleName="{style.descriptionFont}">* To start a tool, mouse over the menu icon at left top corner of the page to expand it, then select the tool there, or, go to Home, then select a tool</g:InlineLabel>
 				<my:IManagableFileTreeView ui:field="managableFileTreeView"></my:IManagableFileTreeView>
 
-<!-- <g:InlineLabel>* To start a tool, mouse over the greenish horizontal line above these instructions to expand it, then select the tool there, or, go to Home, then select a tool.</g:InlineLabel> -->
-<!-- <a:Image url="images/Menu.gif" ></a:Image> -->
-
 				<!-- <g:cell> <g:InlineLabel styleName="{style.bold}">File Manager: </g:InlineLabel> 
 					<g:InlineLabel>Files you own and shared with you are listed here, including 
 					the files used as input to different tasks/analyses and the files output 

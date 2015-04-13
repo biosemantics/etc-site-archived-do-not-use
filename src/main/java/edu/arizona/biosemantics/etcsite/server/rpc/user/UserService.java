@@ -41,6 +41,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.user.CreateOTOAccountExceptio
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.InvalidOTOAccountException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.InvalidPasswordException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.user.OTOException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserAddException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserNotFoundException;
 import edu.arizona.biosemantics.matrixreview.shared.model.Model;
@@ -56,6 +57,7 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.net.URL;
 
 import edu.arizona.biosemantics.oto.client.oto.OTOClient;
 import edu.arizona.biosemantics.oto.common.model.CreateUserResult;
@@ -98,7 +100,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		String encryptedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 		
 		if(!daoManager.getUserDAO().hasUser(email)) {
-			User user = daoManager.getUserDAO().insert(new User(encryptedPassword, firstName, lastName, email, "", "", "", "", "",null));// true, true, true, true));
+			User user = daoManager.getUserDAO().insert(new User(encryptedPassword, firstName, lastName, email, "", "", "", "", ""));
 			if(user == null) {
 				throw new UserAddException("Adding user failed");
 			}
@@ -113,7 +115,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		String encryptedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 		
 		if(!daoManager.getUserDAO().hasUser(openIdProviderId)) {
-			User user = daoManager.getUserDAO().insert(new User(openIdProviderId, "google", password, firstName, lastName, "", "", "", "", "", true, true, true, true));
+			User user = daoManager.getUserDAO().insert(new User(openIdProviderId, "google", encryptedPassword, firstName, lastName, "", "", "", "", ""));
 			if(user == null) {
 				throw new UserAddException("Adding user failed");
 			}
@@ -125,6 +127,102 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 	@Override
 	public boolean existsUser(String email) {
 		return daoManager.getUserDAO().hasUser(email);
+	}
+	
+
+	@Override
+	public ShortUser update(AuthenticationToken authenticationToken, ShortUser shortUser) throws UserNotFoundException {
+		User user = daoManager.getUserDAO().getUser(authenticationToken.getUserId());
+		if(user == null)
+			throw new UserNotFoundException();			
+		
+		user.setAffiliation(shortUser.getAffiliation());
+		user.setBioportalAPIKey(shortUser.getBioportalApiKey());
+		user.setBioportalUserId(shortUser.getBioportalUserId());
+		user.setEmail(shortUser.getEmail());
+		user.setFirstName(shortUser.getFirstName());
+		user.setLastName(shortUser.getLastName());
+		user.setProfile(shortUser.getProfile());
+		
+		daoManager.getUserDAO().update(user);
+		return daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
+	}
+
+	@Override
+	public ShortUser update(AuthenticationToken authenticationToken, String oldPassword, String newPassword) throws UserNotFoundException, InvalidPasswordException { 
+		User user = daoManager.getUserDAO().getUser(authenticationToken.getUserId());
+		if(user == null)
+			throw new UserNotFoundException();			
+		
+		if(!BCrypt.checkpw(oldPassword, user.getPassword())) {
+			throw new InvalidPasswordException();
+		}
+		
+		String encryptedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+		user.setPassword(encryptedPassword);
+		
+		daoManager.getUserDAO().update(user);
+		return daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
+	}
+
+
+	@Override
+	public edu.arizona.biosemantics.oto.common.model.User saveOTOAccount(AuthenticationToken token, String googleCode) throws UserNotFoundException, InvalidOTOAccountException, OTOException {
+		ShortUser shortUser = this.getUser(token);
+		boolean share = true;
+		GoogleUser googleUser;
+		try {
+			googleUser = this.getGoogleUserFromAccessToken(googleCode);
+		} catch (Exception e) {
+			log(LogLevel.ERROR, "Couldn't get google user", e);
+			throw new UserNotFoundException(e);
+		}
+		String dummyPassword = Configuration.otoSecret + ":" + googleUser.getId();
+		saveOTOAccount(token, share, googleUser.getEmail(), dummyPassword);
+		edu.arizona.biosemantics.oto.common.model.User otoUser = new edu.arizona.biosemantics.oto.common.model.User();
+		otoUser.setUserEmail(googleUser.getEmail());
+		otoUser.setFirstName(googleUser.getFirstName());
+		otoUser.setLastName(googleUser.getLastName());
+		otoUser.setPassword(dummyPassword);
+		otoUser.setAffiliation(shortUser.getAffiliation());
+		otoUser.setFirstName(shortUser.getFirstName());
+		otoUser.setLastName(shortUser.getLastName());
+		otoUser.setBioportalUserId(shortUser.getBioportalUserId());
+		otoUser.setBioportalApiKey(shortUser.getBioportalApiKey());
+		return otoUser;
+	}	
+
+	@Override
+	public void saveOTOAccount(AuthenticationToken authenticationToken, boolean share, String email, String password) throws InvalidOTOAccountException, OTOException {
+		User user = daoManager.getUserDAO().getUser(authenticationToken.getUserId());
+		
+		if(share) {
+			try (OTOClient otoClient = new OTOClient(Configuration.otoUrl)) {
+				otoClient.open();
+				edu.arizona.biosemantics.oto.common.model.User otoUser = new edu.arizona.biosemantics.oto.common.model.User();
+				otoUser.setUserEmail(email);
+				otoUser.setPassword(password);
+				Future<String> tokenResult = otoClient.getUserAuthenticationToken(otoUser);
+				String token = tokenResult.get();
+				if(token != null && !token.isEmpty()) {
+					user.setOtoAccountEmail(otoUser.getUserEmail());
+					user.setOtoAuthenticationToken(token);
+					daoManager.getUserDAO().update(user);
+				} else {
+					user.setOtoAccountEmail("");
+					user.setOtoAuthenticationToken("");
+					daoManager.getUserDAO().update(user);
+					throw new InvalidOTOAccountException();
+				}
+			} catch (InterruptedException | ExecutionException e) {
+				log(LogLevel.ERROR, "Problem saving OTO Account", e);
+				throw new OTOException(e);
+			}
+		} else {
+			user.setOtoAccountEmail("");
+			user.setOtoAuthenticationToken("");
+			daoManager.getUserDAO().update(user);
+		}
 	}
 	
 	@Override
@@ -149,11 +247,10 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 			Future<CreateUserResult> createResult = otoClient.postUser(otoUser);
 			CreateUserResult result = createResult.get();
 			if(!result.isResult())
-				throw new CreateOTOAccountException();
-			
+				throw new CreateOTOAccountException(result.getMessage());
 			
 			return otoUser;
-		}  catch (InterruptedException | ExecutionException e) {
+		}  catch (InterruptedException | ExecutionException e) { 
 			log(LogLevel.ERROR, "Problem creating OTO Account", e);
 			throw new CreateOTOAccountException(e);
 		}
@@ -161,159 +258,139 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 	
 	//TODO: use https://code.google.com/p/google-api-java-client/w/list
 	@Override
-	public edu.arizona.biosemantics.oto.common.model.User createOTOAccount(AuthenticationToken token, String googleCode) throws CreateOTOAccountException {
+	public edu.arizona.biosemantics.oto.common.model.User createOTOAccount(AuthenticationToken token, String googleCode) throws CreateOTOAccountException, OTOException {
+		GoogleUser googleUser;
 		try {
-			HttpClient httpclient = HttpClients.createDefault();
-											//https://accounts.google.com/o/oauth2/auth
-			HttpPost httppost = new HttpPost("https://accounts.google.com/o/oauth2/token");
+			googleUser = getGoogleUserFromAccessToken(googleCode);
+		} catch (Exception e) {
+			throw new CreateOTOAccountException(e);
+		}
+		
+		ShortUser shortUser;
+		try {
+			shortUser = this.getUser(token);
+		} catch (UserNotFoundException e) {
+			throw new CreateOTOAccountException(e);
+		}
+		
+		edu.arizona.biosemantics.oto.common.model.User otoUser = new edu.arizona.biosemantics.oto.common.model.User();
+		String dummyPassword = Configuration.otoSecret + googleUser.getId();
+		otoUser.setUserEmail(googleUser.getEmail());
+		otoUser.setFirstName(googleUser.getFirstName());
+		otoUser.setLastName(googleUser.getLastName());
+		otoUser.setPassword(dummyPassword);
+		otoUser.setAffiliation(shortUser.getAffiliation());
+		otoUser.setFirstName(shortUser.getFirstName());
+		otoUser.setLastName(shortUser.getLastName());
+		otoUser.setBioportalUserId(shortUser.getBioportalUserId());
+		otoUser.setBioportalApiKey(shortUser.getBioportalApiKey());
+		
+		try (OTOClient otoClient = new OTOClient(Configuration.otoUrl)) {
+			otoClient.open();
+			Future<CreateUserResult> createResult = otoClient.postUser(otoUser);
+			CreateUserResult result = createResult.get();
+			if(!result.isResult())
+				throw new CreateOTOAccountException(result.getMessage());
+			try {
+				saveOTOAccount(token, true, googleUser.getEmail(), dummyPassword);
+			} catch (InvalidOTOAccountException e) {
+				log(LogLevel.ERROR, "Problem saving OTO Account", e);
+				throw new CreateOTOAccountException(e);
+			}
+			return otoUser;
+		}  catch (InterruptedException | ExecutionException e) {
+			log(LogLevel.ERROR, "Problem creating OTO Account", e);
+			throw new CreateOTOAccountException(e);
+		}
+	}
 	
-			List<NameValuePair> params = new ArrayList<NameValuePair>(2);
-			params.add(new BasicNameValuePair("code", googleCode));
-			params.add(new BasicNameValuePair("client_id", Configuration.googleClientId));
-			params.add(new BasicNameValuePair("client_secret", Configuration.googleSecret));
-			params.add(new BasicNameValuePair("redirect_uri", Configuration.googleRedirectURI));
-			params.add(new BasicNameValuePair("grant_type", "authorization_code"));
-			UrlEncodedFormEntity w = new UrlEncodedFormEntity(params);
-			System.out.println(w.getContentType().getName() +  " " + w.getContentType().getValue());
-			httppost.setEntity(new UrlEncodedFormEntity(params));
-			
-			HttpResponse response = httpclient.execute(httppost);
-			
-			String accessToken = null;
-			String tokenType = null;
-			String expiresIn = null;
-			String idToken = null;
+	private GoogleUser getGoogleUserFromAccessToken(String accessToken) throws Exception {		
+		HttpClient httpclient = HttpClients.createDefault();
+		HttpGet httpGet = new HttpGet("https://www.googleapis.com/oauth2/v1/userinfo?access_token=" + accessToken);
+		HttpResponse response = httpclient.execute(httpGet);
+		
+		String tokenType = null;
+		String expiresIn = null;
+		String idToken = null;
+		try {
+			JSONObject elements = new JSONObject(EntityUtils.toString(response.getEntity(), "UTF-8"));
+			accessToken = elements.getString("access_token");
+			tokenType = elements.getString("token_type");
+			expiresIn = elements.getString("expires_in");
+			idToken = elements.getString("id_token"); 
+		} catch(JSONException e) {
+			log(LogLevel.ERROR, "Couldn't parse JSON", e);
+		}
+		if(accessToken != null) {
+			HttpGet httpget = new HttpGet("https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=" + accessToken);
+			response = httpclient.execute(httpget);
+			String id = null;
+			String firstName = null;
+			String lastName = null;
+			String email = null;
 			try {
 				JSONObject elements = new JSONObject(EntityUtils.toString(response.getEntity(), "UTF-8"));
-				accessToken = elements.getString("access_token");
-				tokenType = elements.getString("token_type");
-				expiresIn = elements.getString("expires_in");
-				idToken = elements.getString("id_token"); 
+				id = elements.getString("id");
+				firstName = elements.getString("given_name");
+				lastName = elements.getString("family_name");
+				email = elements.getString("email"); 
+				if(email != null && firstName != null && lastName != null)
+					return new GoogleUser(id, firstName, lastName, email);
 			} catch(JSONException e) {
 				log(LogLevel.ERROR, "Couldn't parse JSON", e);
 			}
-			if(accessToken != null) {
-				HttpGet httpget = new HttpGet("https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=" + accessToken);
-				response = httpclient.execute(httpget);
-				String firstName = null;
-				String lastName = null;
-				String email = null;
-				try {
-					JSONObject elements = new JSONObject(EntityUtils.toString(response.getEntity(), "UTF-8"));
-					firstName = elements.getString("given_name");
-					lastName = elements.getString("family_name");
-					email = elements.getString("email"); 
-				} catch(JSONException e) {
-					log(LogLevel.ERROR, "Couldn't parse JSON", e);
-				}
-				if(email != null && firstName != null && lastName != null) {
-					ShortUser shortUser;
-					try {
-						shortUser = this.getUser(token);
-					} catch (UserNotFoundException e) {
-						throw new CreateOTOAccountException(e);
-					}
-					
-					edu.arizona.biosemantics.oto.common.model.User otoUser = new edu.arizona.biosemantics.oto.common.model.User();
-					String dummyPassword = firstName + lastName;
-					otoUser.setUserEmail(email);
-					otoUser.setFirstName(firstName);
-					otoUser.setLastName(lastName);
-					otoUser.setPassword(dummyPassword);
-					otoUser.setAffiliation(shortUser.getAffiliation());
-					otoUser.setFirstName(shortUser.getFirstName());
-					otoUser.setLastName(shortUser.getLastName());
-					otoUser.setBioportalUserId(shortUser.getBioportalUserId());
-					otoUser.setBioportalApiKey(shortUser.getBioportalApiKey());
-					
-					try (OTOClient otoClient = new OTOClient(Configuration.otoUrl)) {
-						otoClient.open();
-						Future<CreateUserResult> createResult = otoClient.postUser(otoUser);
-						CreateUserResult result = createResult.get();
-						if(!result.isResult())
-							throw new CreateOTOAccountException();
-						return otoUser;
-					}  catch (InterruptedException | ExecutionException e) {
-						log(LogLevel.ERROR, "Problem creating OTO Account", e);
-						throw new CreateOTOAccountException(e);
-					}
-				}
-			} 
-		}catch(Exception e) {
-			log(LogLevel.ERROR, "Couldn't create OTO Account using Google", e);
-			throw new CreateOTOAccountException(e);
 		}
-		throw new CreateOTOAccountException();
+		return null;
 	}
+	
+	private GoogleUser getGoogleUser(String googleCode) throws Exception {
+		HttpClient httpclient = HttpClients.createDefault();
+		HttpPost httppost = new HttpPost("https://accounts.google.com/o/oauth2/token");
 
-	@Override
-	public void saveOTOAccount(AuthenticationToken authenticationToken, boolean share, String email, String password) throws InvalidOTOAccountException {
-		User user = daoManager.getUserDAO().getUser(authenticationToken.getUserId());
-				
-		if(share) {
-			try (OTOClient otoClient = new OTOClient(Configuration.otoUrl)) {
-				otoClient.open();
-				edu.arizona.biosemantics.oto.common.model.User otoUser = new edu.arizona.biosemantics.oto.common.model.User();
-				otoUser.setUserEmail(email);
-				otoUser.setPassword(password);
-				Future<String> tokenResult = otoClient.getUserAuthenticationToken(otoUser);
-				String token = tokenResult.get();
-				if(token != null && !token.isEmpty()) {
-					user.setOtoAccountEmail(otoUser.getUserEmail());
-					user.setOtoAuthenticationToken(token);
-					daoManager.getUserDAO().update(user);
-				} else {
-					user.setOtoAccountEmail("");
-					user.setOtoAuthenticationToken("");
-					daoManager.getUserDAO().update(user);
-					throw new InvalidOTOAccountException();
-				}
-			} catch (InterruptedException | ExecutionException e) {
-				log(LogLevel.ERROR, "Problem saving OTO Account", e);
+		List<NameValuePair> params = new ArrayList<NameValuePair>(2);
+		params.add(new BasicNameValuePair("code", googleCode));
+		params.add(new BasicNameValuePair("client_id", Configuration.googleClientId));
+		params.add(new BasicNameValuePair("client_secret", Configuration.googleSecret));
+		params.add(new BasicNameValuePair("redirect_uri", Configuration.googleRedirectURI));
+		params.add(new BasicNameValuePair("grant_type", "authorization_code"));
+		UrlEncodedFormEntity w = new UrlEncodedFormEntity(params);
+		httppost.setEntity(new UrlEncodedFormEntity(params));
+		
+		HttpResponse response = httpclient.execute(httppost);
+		
+		String accessToken = null;
+		String tokenType = null;
+		String expiresIn = null;
+		String idToken = null;
+		try {
+			JSONObject elements = new JSONObject(EntityUtils.toString(response.getEntity(), "UTF-8"));
+			accessToken = elements.getString("access_token");
+			tokenType = elements.getString("token_type");
+			expiresIn = elements.getString("expires_in");
+			idToken = elements.getString("id_token"); 
+		} catch(JSONException e) {
+			log(LogLevel.ERROR, "Couldn't parse JSON", e);
+		}
+		if(accessToken != null) {
+			HttpGet httpget = new HttpGet("https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=" + accessToken);
+			response = httpclient.execute(httpget);
+			String id = null;
+			String firstName = null;
+			String lastName = null;
+			String email = null;
+			try {
+				JSONObject elements = new JSONObject(EntityUtils.toString(response.getEntity(), "UTF-8"));
+				id = elements.getString("id");
+				firstName = elements.getString("given_name");
+				lastName = elements.getString("family_name");
+				email = elements.getString("email"); 
+				if(email != null && firstName != null && lastName != null)
+					return new GoogleUser(id, firstName, lastName, email);
+			} catch(JSONException e) {
+				log(LogLevel.ERROR, "Couldn't parse JSON", e);
 			}
-		} else {
-			user.setOtoAccountEmail("");
-			user.setOtoAuthenticationToken("");
-			daoManager.getUserDAO().update(user);
 		}
-	}
-
-	@Override
-	public ShortUser update(AuthenticationToken authenticationToken, ShortUser shortUser) throws UserNotFoundException {
-		User user = daoManager.getUserDAO().getUser(authenticationToken.getUserId());
-		if(user == null)
-			throw new UserNotFoundException();			
-		
-		user.setAffiliation(shortUser.getAffiliation());
-		user.setBioportalAPIKey(shortUser.getBioportalApiKey());
-		user.setBioportalUserId(shortUser.getBioportalUserId());
-		user.setEmail(shortUser.getEmail());
-		user.setFirstName(shortUser.getFirstName());
-		user.setLastName(shortUser.getLastName());
-		/*user.setTextCaptureEmail(shortUser.isTextCaptureEmail());
-		user.setMatrixGenerationEmail(shortUser.isMatrixGenerationEmail());
-		user.setTreeGenerationEmail(shortUser.isTreeGenerationEmail());
-		user.setTaxonomyComparisonEmail(shortUser.isTaxonomyComparisonEmail());
-		*/
-		daoManager.getUserDAO().update(user);
-		return daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
-	}
-
-	@Override
-	public ShortUser update(AuthenticationToken authenticationToken, String oldPassword, String newPassword) throws UserNotFoundException, InvalidPasswordException { 
-		User user = daoManager.getUserDAO().getUser(authenticationToken.getUserId());
-		if(user == null)
-			throw new UserNotFoundException();			
-		
-		if(!BCrypt.checkpw(oldPassword, user.getPassword())) {
-			throw new InvalidPasswordException();
-		}
-		
-		String encryptedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
-		user.setPassword(encryptedPassword);
-		
-		daoManager.getUserDAO().update(user);
-		return daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
+		return null;
 	}
 	
 	public void setPopupPreference(AuthenticationToken token,String type,boolean dontShowPopup)
@@ -330,18 +407,6 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 	
 	}
 
-//	@Override
-//	public void log(LogLevel arg0, String arg1) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-//	public void log(LogLevel arg0, String arg1, Throwable arg2) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-
 	@Override
 	public boolean isProfile(AuthenticationToken token, String type) {
 		
@@ -356,12 +421,4 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		
 		return isProfileSet;
 	}
-
-//	@Override
-//	public Boolean isProfile(String type) {
-//		daoManager.getUserDAO().g
-//	}
-
-
-	
 }

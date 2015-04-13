@@ -1,0 +1,258 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.actionImage {
+			background-size: 100% 100%;
+		    width: 40px;
+		    height: 40px;
+		    position: absolute;
+			left: 0px;
+		}
+		.semanticMarkupImage {
+		    background-image: url('images/SemanticMarkup.gif');
+		    top: 0px;
+		}
+		.matrixGenerationImage {
+		    background-image: url('images/MatrixGeneration.gif');
+		    top: 115px;
+		}
+		.actionText {
+		    background-size: 100% 100%;
+			width: 175px;
+		    height: 24px;
+		    position: absolute;
+		    left: 60px;
+		}
+		.semanticMarkupText {
+		    background-image: url('images/Text.SemanticMarkup.gif');
+		    top: 0px;
+		}
+		.matrixGenerationText {
+		    background-image: url('images/Text.MatrixGeneration.gif');
+		    top: 115px;
+		}
+		.actionDescription {
+			width: 600px;
+		    position: absolute;
+		    left: 60px;
+		    font-size: 14.3px;
+		    
+		}
+		.semanticMarkupDescription {
+		    top: 35px;
+		}
+		.matrixGenerationDescription {
+		    top: 150px;
+		}
+		.actionArrow {
+		    background-image: url('images/Arrow.gif');
+		    background-size: 100% 100%;
+		    width: 35px;
+		    height: 94px;
+		    position: absolute;
+		    left: 680px;
+		    padding-left: 20px;
+		}
+		.semanticMarkupArrow {
+		    top: 0px;
+		}
+		.matrixGenerationArrow {
+		    top: 115px;
+		}
+		.actionButton  {
+		    /*background-image: url('images/ButtonGreen.gif'); */
+		    background-size: 100% 100%;
+		    width: 200px;
+		    height: 50px;
+		    position: absolute;
+		    left: 730px;
+		}
+		.semanticMarkupButton {
+		    top: 22px;
+		}
+		.semanticMarkupButtonText {
+		    width: 240px;
+		    position: absolute;
+		    top: 40px;
+		    left: 774px;
+		}
+		.matrixGenerationButton {
+		    top: 137px;
+		}
+		.matrixGenerationButtonText {
+		    width: 240px;
+		    position: absolute;
+		    top: 155px;
+		    left: 765px;
+		}
+		.treeGenerationImage {
+		    background-image: url('images/TreeGeneration.gif');
+		    top: 230px;
+		}
+		.treeGenerationText {
+		    background-image: url('images/Text.TreeGeneration.gif');
+		    top: 230px;
+		}
+		.treeGenerationDescription {
+		    top: 265px;
+		}
+		.treeGenerationArrow {
+		    top: 230px;
+		}
+		.treeGenerationButton {
+		    top: 252px;
+		}
+		.treeGenerationButtonText {
+		    width: 240px;
+		    position: absolute;
+		    top: 270px;
+		    left: 770px;
+		}
+		.taxonomyComparisonImage {
+		    background-image: url('images/TaxonomyComparison.gif');
+		    top: 345px;
+		}
+		.taxonomyComparisonText {
+		    background-image: url('images/Text.TaxonomyComparison.gif');
+		    top: 345px;
+		}
+		.taxonomyComparisonDescription {
+		    top: 380px;
+		}
+		.taxonomyComparisonArrow {
+		    top: 345px;
+		}
+		.taxonomyComparisonButton {
+		    top: 367px;
+		}
+		.taxonomyComparisonButtonText {
+		    width: 240px;
+		    position: absolute;
+		    top: 385px;
+		    left: 747px;
+		}
+		.visualizationImage {
+		    background-image: url('images/Visualization_unselected.gif');
+		    top: 460px;
+		}
+		.visualizationText {
+		    background-image: url('images/Text.Visualization.gif');
+		    /*width: 191px;
+		    height: 24px;*/
+		    top: 460px;
+		}
+		.visualizationDescription {
+		    top: 495px;
+		}
+		.visualizationArrow {
+		    top: 460px;
+		}
+		.visualizationButton {
+		    top: 482px;
+		}
+		.visualizationButtonText {
+		    width: 240px;
+		    position: absolute;
+		    top: 500px;
+		    left: 775px;
+		}
+		.orText {
+		    background-image: url('images/Text.Or.gif');
+		    background-size: 100% 100%;
+		    width: 50px;
+		    height: 39px;
+		    position: absolute;
+		    top: 605px;
+		    left: 670px;
+		}
+		.pipelineButton {
+		    background-image: url('images/ButtonGray.gif');
+		    background-size: 100% 100%;
+		    width: 200px;
+		    height: 50px;
+		    position: absolute;
+		    top: 597px;
+		    left: 730px;
+		}
+		.pipelineButtonText {
+		    width: 240px;
+		    position: absolute;
+		    top: 615px;
+		    left: 775px;
+		}
+		.clickable {
+			cursor: pointer;
+		}
+		.absolutePositioned {
+			position: absolute;
+		}
+	</ui:style>
+	<g:HTMLPanel styleName="{style.absolutePositioned} font">
+		<div class="{style.semanticMarkupImage} {style.actionImage}"></div>
+		<div class="{style.semanticMarkupText} {style.actionText}"></div>
+		<div class="{style.semanticMarkupDescription} {style.actionDescription} ">
+		    Captures characters from taxonomic descriptions by performing a process called “semantic markup”. It generates marked-up files that can then 
+		    be used to create a taxon-character matrix automatically. This tool is powered by CharaParser. 
+		</div>
+		<div class="{style.semanticMarkupArrow} {style.actionArrow}"></div>
+		<g:HTML ui:field="semanticMarkupButton">
+			<div class="{style.semanticMarkupButton} {style.actionButton} {style.clickable}"><img src="images/ButtonGreen.gif" width="200px" height="50px"/></div>
+			<div class="{style.semanticMarkupButtonText} {style.clickable}">Begin Text Capture</div> 
+		</g:HTML>
+		
+		<div class="{style.matrixGenerationImage} {style.actionImage}"></div>
+		<div class="{style.matrixGenerationText} {style.actionText}"></div>
+		<div class="{style.matrixGenerationDescription} {style.actionDescription} ">
+			Generates taxon-character matrices from semantic marked-up descriptions of organisms. The matrices can be used to create specimen identification keys, or be downloaded
+			 and used with other matrix analysis tools. 
+		</div>
+		<div class="{style.matrixGenerationArrow} {style.actionArrow}"></div>
+		<g:HTML ui:field="matrixGenerationButton">
+			<div class="{style.matrixGenerationButton} {style.actionButton} {style.clickable}"><img src="images/ButtonGreen.gif" width="200px" height="50px"/></div>
+			<div class="{style.matrixGenerationButtonText} {style.clickable}">Begin Matrix Generation</div>
+		</g:HTML>
+		
+		<div class="{style.treeGenerationImage} {style.actionImage}"></div>
+		<div class="{style.treeGenerationText} {style.actionText}"></div>
+		<div class="{style.treeGenerationDescription} {style.actionDescription}">
+			Generates interactive identification keys from taxon-character matrices, using an information entropy based method which treats character polymorphisms gracefully.  
+
+		</div>
+		<div class="{style.treeGenerationArrow} {style.actionArrow}"></div>
+		<g:HTML ui:field="treeGenerationButton">
+			<div class="{style.treeGenerationButton} {style.actionButton} {style.clickable}"><img src="images/ButtonGreen.gif" width="200px" height="50px"/></div>
+			<div class="{style.treeGenerationButtonText} {style.clickable}">Begin Key Generation</div>
+		</g:HTML>
+		
+		<div class="{style.taxonomyComparisonImage} {style.actionImage}"></div>
+		<div class="{style.taxonomyComparisonText} {style.actionText}"></div>
+		<div class="{style.taxonomyComparisonDescription} {style.actionDescription} {}">
+			How do two given taxonomies differ? The taxonomy comparison tool takes user-provided relationships between taxa (e.g. =, >) and optionally 
+			a result from Key Generation, and performs logic reasoning to identify conflicts and/or ambiguity and finally align two taxonomies.
+		</div>
+		<div class="{style.taxonomyComparisonArrow} {style.actionArrow}"></div>
+		<g:HTML ui:field="taxonomyComparisonButton">
+			<div class="{style.taxonomyComparisonButton} {style.actionButton} {style.clickable}"><img src="images/ButtonGreen.gif" width="200px" height="50px"/></div>
+			<div class="{style.taxonomyComparisonButtonText}">Begin Taxonomy Comparison</div>
+		</g:HTML>
+		
+		<div class="{style.visualizationImage} {style.actionImage}"></div>
+		<div class="{style.visualizationText} {style.actionText}"></div>
+		<div class="{style.visualizationDescription} {style.actionDescription}">Integrates
+			relationships among taxa and relationships between character and taxa in a visual way to facilitate taxon concept comparison and analysis.
+		</div>
+		<div class="{style.visualizationArrow} {style.actionArrow}"></div>
+		<g:HTML ui:field="visualizationButton">
+			<div class="{style.visualizationButton} {style.actionButton} {style.clickable}"><img src="images/ButtonGray.gif" width="200px" height="50px"/></div>
+			<div class="{style.visualizationButtonText}">Begin Visualization</div>
+		</g:HTML>
+		
+		<div class="{style.orText}"></div>
+		<g:HTML ui:field="pipelineButton">
+			<div class="{style.pipelineButton}"><img src="images/ButtonGray.gif" width="200px" height="50px"/></div>
+			<div class="{style.pipelineButtonText}">Begin New Pipeline</div>
+		</g:HTML>
+
+	</g:HTMLPanel>
+</ui:UiBinder> 

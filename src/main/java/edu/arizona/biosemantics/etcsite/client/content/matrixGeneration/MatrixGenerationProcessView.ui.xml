@@ -47,7 +47,6 @@
 					<g:Image styleName="{style.waitImage}" ui:field="waitImage" url='images/loader3.gif'/>	
 					<g:InlineLabel>A taxon-character matrix is being generated. </g:InlineLabel>
 					</g:HorizontalPanel>
-<!-- 					<g:InlineLabel>You will be notified by an email when the process is complete.</g:InlineLabel> -->
 					<g:InlineLabel>If you didn't set up email preference, you will receive an email after completion of process.</g:InlineLabel>
 					<g:FlowPanel>
 					    <g:InlineLabel>You can come back to this task at any time via the&nbsp;</g:InlineLabel>

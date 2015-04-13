@@ -1,5 +1,6 @@
 package edu.arizona.biosemantics.etcsite.client.common;
 
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -8,6 +9,8 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.sencha.gxt.widget.core.client.Dialog;
 
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView.ILoginListener;
+import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
+import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsPlace;
 import edu.arizona.biosemantics.etcsite.client.event.AuthenticationEvent;
 import edu.arizona.biosemantics.etcsite.client.event.AuthenticationEvent.AuthenticationEventType;
 import edu.arizona.biosemantics.etcsite.client.layout.IEtcSiteView.Presenter;
@@ -115,7 +118,12 @@ public class LoginPresenter implements ILoginView.Presenter {
 	@Override
 	public void onSignInWithGoogle() {
 		dialog.hide();
-		String url = "https://accounts.google.com/o/oauth2/auth?scope=https://www.googleapis.com/auth/userinfo.profile%20https://www.googleapis.com/auth/userinfo.email&client_id=" + ServerSetup.getInstance().getSetup().getGoogleClientId() + "&redirect_uri=" + ServerSetup.getInstance().getSetup().getGoogleRedirectURI() + "&response_type=token";
+		String url = "https://accounts.google.com/o/oauth2/auth"
+				+ "?scope=https://www.googleapis.com/auth/userinfo.profile%20https://www.googleapis.com/auth/userinfo.email"
+				+ "&client_id=" + ServerSetup.getInstance().getSetup().getGoogleClientId()
+				+ "&redirect_uri=" + ServerSetup.getInstance().getSetup().getGoogleRedirectURI() 
+				+ "&state=" + URL.encodeQueryString(HomePlace.class.getSimpleName() + "&action=login")
+				+ "&response_type=token";
 		Location.replace(url);
 	}
 

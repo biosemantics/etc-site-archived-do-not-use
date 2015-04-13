@@ -919,7 +919,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			emailer.sendEmail(email, subject, body);
 		}
 	}
-
+	
 	private String getNumberOfSentences() {
 		return "XXXXX";
 		//return 5423;
@@ -1070,7 +1070,4 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			}
 		}
 	}
-
-
-
 }

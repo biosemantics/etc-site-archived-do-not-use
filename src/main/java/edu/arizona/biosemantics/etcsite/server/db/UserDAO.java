@@ -79,8 +79,7 @@ public class UserDAO {
 		return new User(id, openIdProviderId, openIdProvider, password,
 					firstName, lastName, email, affiliation, bioportalUserId,
 					bioportalAPIKey, otoAccountEmail, otoAuthenticationToken, 
-					//textCaptureEmail,matrixGenerationEmail, treeGenerationEmail, taxonomyComparisonEmail, 
-					profile,created);
+					profile, created);
 	}
 
 	public User getUser(String email) {
@@ -128,7 +127,7 @@ public class UserDAO {
 			if(generatedKeys.next()) {
 				result = this.getUser(generatedKeys.getInt(1));
 			}
-			storeUserSerialized(user);
+			storeUserSerialized(result);
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't add user", e);
 		}

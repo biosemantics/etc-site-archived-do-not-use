@@ -24,7 +24,7 @@ public interface IUserServiceAsync {
 	public void existsUser(String openIdProviderId, AsyncCallback<Boolean> callback);
 
 	public void add(String openIdProviderId, String string, String firstName,
-			String lastName, String encryptedDummyPassword, AsyncCallback<ShortUser> callback);
+			String lastName, String password, AsyncCallback<ShortUser> callback);
 
 	public void createOTOAccount(AuthenticationToken authenticationToken, String email, String password,
 			AsyncCallback<edu.arizona.biosemantics.oto.common.model.User> asyncCallback);
@@ -32,8 +32,11 @@ public interface IUserServiceAsync {
 	public void saveOTOAccount(AuthenticationToken authenticationToken, boolean share, String email, String password,
 			AsyncCallback<Void> asyncCallback);
 
-	public void createOTOAccount(AuthenticationToken token, String googleCode, AsyncCallback<edu.arizona.biosemantics.oto.common.model.User> asyncCallback);
+	public void createOTOAccount(AuthenticationToken token, String googleCode, AsyncCallback<edu.arizona.biosemantics.oto.common.model.User> callback);
+
+	public void saveOTOAccount(AuthenticationToken token, String googleCode, AsyncCallback<edu.arizona.biosemantics.oto.common.model.User> callback);
 
 	public void isProfile(AuthenticationToken token,String type, AsyncCallback<Boolean> callback);
 	public void setPopupPreference(AuthenticationToken token,String type,boolean dontShowPopup,AsyncCallback<Void> callback);
+
 }

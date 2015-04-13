@@ -1,6 +1,8 @@
 oto2Url=
 otoUrl=http://biosemantics.arizona.edu:8080/OTO
 classpath= #Order matters for log4j properties pickup. Put log4j path first
+otoSecret=
+secret=
 
 #Files
 targetNamespace=http://www.github.com/biosemantics

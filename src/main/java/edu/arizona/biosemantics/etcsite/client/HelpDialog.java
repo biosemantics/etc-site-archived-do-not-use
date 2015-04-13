@@ -58,7 +58,7 @@ public class HelpDialog extends Dialog {
 			panel.setHeadingText("Instructions");
 
 			panel.setCollapsible(true);
-			panel.setLayoutData(new MarginData(10));
+			panel.setLayoutData(new MarginData(5));
 			panel.setWidget(vLC);
 		 
 			setHeadingText(title);

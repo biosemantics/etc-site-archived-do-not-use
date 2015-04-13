@@ -7,6 +7,29 @@ import edu.arizona.biosemantics.etcsite.client.common.RequiresAuthenticationPlac
 
 public class SettingsPlace extends Place implements RequiresAuthenticationPlace  {
 
+	private String action;
+	private String accessToken;
+
+	public SettingsPlace() {
+	}
+	
+	public SettingsPlace(String action, String accessToken) {
+		this.action = action;
+		this.accessToken = accessToken;
+	}
+	
+	
+
+	public String getAction() {
+		return action;
+	}
+
+	public String getAccessToken() {
+		return accessToken;
+	}
+
+
+
 	public static class Tokenizer implements PlaceTokenizer<SettingsPlace>{
 
 		@Override

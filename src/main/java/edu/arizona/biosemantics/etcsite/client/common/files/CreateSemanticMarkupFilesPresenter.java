@@ -8,9 +8,11 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
+import edu.arizona.biosemantics.common.taxonomy.Description;
 import edu.arizona.biosemantics.common.taxonomy.Rank;
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.shared.model.file.DescriptionEntry;
 import edu.arizona.biosemantics.etcsite.shared.model.file.TaxonIdentificationEntry;
 import edu.arizona.biosemantics.etcsite.shared.model.file.XmlModelFile;
 import edu.arizona.biosemantics.etcsite.shared.model.process.file.XmlModelFileCreator;
@@ -162,6 +164,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 															} else {
 																view.updateProgress(1.0);
 																view.hideProgress();
+																view.clearBatchText();
 																int count =  modelFiles.size();
 																Alerter.fileCreationSuccessful(count, messageBuilder.toString().replace("\n", "<br>"));
 																filesCreated += count;
@@ -225,10 +228,14 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 		textBuilder.append("equivalent strain numbers: " + view.getEqStrainNumbers().trim() + "\n");
 		textBuilder.append("accession number 16s rrna: " + view.getStrainAccession().trim() + "\n");
 		
-		textBuilder.append("morphology: #" + view.getMorphologicalDescription().trim() + "#\n");
-		textBuilder.append("habitat: #" + view.getHabitatDescription().trim() + "#\n");
-		textBuilder.append("distribution: #" + view.getDistributionDescription().trim() + "#\n");
-		textBuilder.append("phenology: #" + view.getPhenologyDescription().trim() + "#\n");		
+		List<DescriptionEntry> descriptions  = view.getDescriptionsList();
+		for(DescriptionEntry entry: descriptions){
+			Description type = entry.getType();
+			String desc = entry.getDescription();
+			if(type!=null && !desc.isEmpty()){
+				textBuilder.append(type + ": #" + desc + "#\n");
+			}
+		}		
 		
 		fileFormatService.createTaxonDescriptionFile(Authentication.getInstance().getToken(), textBuilder.toString(), 
 				new AsyncCallback<List<XmlModelFile>>() {
@@ -242,17 +249,20 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 				}
 				
 				String error = overallError.toString();
-				if(error.isEmpty())
+				if(error.isEmpty()){
 					createXmlFiles(modelFiles, destinationFilePath);
-				else {
+					view.resetDescriptions();
+				}else {
 					error += "Did not create any files";
 					Alerter.inputError(error.replaceAll("\n", "</br>"));
+					view.hideProgress();
 				}
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToCreateTaxonDescription(caught);
+				view.hideProgress();
 			}
 		});
 	}
@@ -307,7 +317,6 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	public void onBatch(final String text) {
 		//TODO: Move all subsequent server calls into a single call for faster processing of huge batch text
 		view.showProgress();
-		
 		String normalizedText = xmlModelFileCreator.normalizeText(text);
 		final List<String> treatments = xmlModelFileCreator.getTreatmentTexts(normalizedText);
 		
@@ -326,6 +335,24 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 			fileFormatService.createTaxonDescriptionFile(Authentication.getInstance().getToken(), treatments.get(i), 
 					new TaxonDescriptionCreateRPCCallback(treatments, i, overallError, overallXmlModelFiles));
 		} else
-			view.hideProgress();	
+		view.hideProgress();	
 	}
+	
+	@Override
+	public void setPreviewText(String batchSourceDocumentInfo, String text) {
+		String returnString = "";
+		
+		String normalizedText = xmlModelFileCreator.normalizeText(text);
+		if(view.isCopyCheckBox()){
+			normalizedText = xmlModelFileCreator.copyAuthorityAndDate(normalizedText);
+		}
+		final List<String> treatments = xmlModelFileCreator.getTreatmentTexts(normalizedText);
+		
+		for(String treatment: treatments){
+			returnString += batchSourceDocumentInfo+treatment+"\n";
+		}
+		
+		view.setPreviewText(returnString);
+	}
+
 }

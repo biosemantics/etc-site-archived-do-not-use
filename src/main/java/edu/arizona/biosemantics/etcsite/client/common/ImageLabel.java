@@ -82,6 +82,10 @@ public class ImageLabel extends Composite implements IImageLabel, HasClickHandle
 	public String getImage() {
 		return image.getUrl();
 	}
+	
+	public void setText(String text) {
+		label.setText(text);
+	}
 
 	
 }

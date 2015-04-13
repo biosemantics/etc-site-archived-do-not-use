@@ -14,7 +14,7 @@ public class ContentValidatorProvider {
 	public ContentValidatorProvider() {
 		fileTypeValidatorMap.put(FileTypeEnum.TAXON_DESCRIPTION, new XMLValidator(new File(Configuration.taxonDescriptionSchemaFile)));
 		fileTypeValidatorMap.put(FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION, new XMLValidator(new File(Configuration.markedUpTaxonDescriptionSchemaFile)));
-
+		fileTypeValidatorMap.put(FileTypeEnum.PLAIN_TEXT, null);
 	}
 	
 	public IContentValidator getValidator(FileTypeEnum fileTypeEnum) {

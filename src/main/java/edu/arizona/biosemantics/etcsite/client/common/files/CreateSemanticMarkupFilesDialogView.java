@@ -38,9 +38,10 @@ public class CreateSemanticMarkupFilesDialogView implements
 		dialog.setPixelSize(-1, -1);
 		dialog.setMinWidth(0);
 		dialog.setMinHeight(0);
-	    dialog.setResizable(false);
+	    dialog.setResizable(true);
 	    dialog.setShadow(true);
 		dialog.setHideOnButtonClick(true);
+		dialog.setMaximizable(true);
 		dialog.getButton(PredefinedButton.OK).setText("Close");
 
 		dialog.add(scrollPanelView);

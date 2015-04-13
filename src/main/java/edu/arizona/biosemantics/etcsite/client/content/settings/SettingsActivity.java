@@ -3,6 +3,7 @@ package edu.arizona.biosemantics.etcsite.client.content.settings;
 import com.google.gwt.activity.shared.MyAbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Window;
@@ -10,6 +11,9 @@ import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
+import com.sencha.gxt.widget.core.client.event.HideEvent;
+import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
@@ -42,32 +46,81 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 	
 	@Override
 	public void start(AcceptsOneWidget panel, EventBus eventBus) {
+		Place place = placeController.getWhere();
+		if(place instanceof SettingsPlace) {
+			SettingsPlace settingsPlace = ((SettingsPlace)place);
+			
+			//there will be a code when user decided to create OTO Account using Google from Google's redirect upon initial request
+			String action = settingsPlace.getAction();
+			String accessToken = settingsPlace.getAccessToken();
+			if(accessToken != null && accessToken != null) {
+				switch(action) {
+					case "settings_save_oto":
+						Alerter.startLoading();
+						userService.saveOTOAccount(Authentication.getInstance().getToken(), accessToken, new AsyncCallback<edu.arizona.biosemantics.oto.common.model.User>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								Alerter.stopLoading();
+								MessageBox box;
+								if(caught instanceof InvalidOTOAccountException) {
+									box = Alerter.invalidOTOAccount(caught);
+								} else {
+									box = Alerter.failedToSaveOTOAccount(caught);
+								}
+								box.addHideHandler(new HideHandler() {
+									@Override
+									public void onHide(HideEvent event) {
+										Window.Location.replace(ServerSetup.getInstance().getSetup().getGoogleRedirectURI() + "#" + SettingsPlace.class.getSimpleName() + ":");
+									}
+								});
+							}
+							@Override
+							public void onSuccess(edu.arizona.biosemantics.oto.common.model.User result) {
+								view.setLinkedOTOAccount(result.getUserEmail());
+								Alerter.stopLoading();
+								Window.Location.replace(ServerSetup.getInstance().getSetup().getGoogleRedirectURI() + "#" + SettingsPlace.class.getSimpleName() + ":");
+							} 
+						});
+						break;
+					case "settings_create_oto":
+						Alerter.startLoading();
+						userService.createOTOAccount(Authentication.getInstance().getToken(), accessToken, new AsyncCallback<edu.arizona.biosemantics.oto.common.model.User>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								Alerter.stopLoading();
+								MessageBox box = Alerter.failedToCreateOTOAccount(caught);
+								box.addHideHandler(new HideHandler() {
+									@Override
+									public void onHide(HideEvent event) {
+										Window.Location.replace(ServerSetup.getInstance().getSetup().getGoogleRedirectURI() + "#" + SettingsPlace.class.getSimpleName() + ":");
+									}
+								});
+							}
+							@Override
+							public void onSuccess(edu.arizona.biosemantics.oto.common.model.User result) {
+								view.setOTOAccount(result.getUserEmail(), result.getPassword());
+								view.setLinkedOTOAccount(result.getUserEmail());
+								//populateUserData();
+								Alerter.stopLoading();
+								MessageBox box = Alerter.successfullyCreatedOTOAccount();
+								box.addHideHandler(new HideHandler() {
+									@Override
+									public void onHide(HideEvent event) {
+										Window.Location.replace(ServerSetup.getInstance().getSetup().getGoogleRedirectURI() + "#" + SettingsPlace.class.getSimpleName() + ":");
+									}
+								});
+							}
+						});
+						break;
+					default:
+						populateUserData();
+				}
+			}
+		}
+		
+		populateUserData();
 		view.setPresenter(this);
 		panel.setWidget(view.asWidget());
-		
-		//there will be a code when user decided to create OTO Account using Google from Google's redirect upon initial request
-		String value = Window.Location.getParameter("code");	
-		if(value != null) {
-			Alerter.startLoading();
-			userService.createOTOAccount(Authentication.getInstance().getToken(), value, new AsyncCallback<edu.arizona.biosemantics.oto.common.model.User>() {
-				@Override
-				public void onFailure(Throwable caught) {
-					Alerter.stopLoading();
-					Alerter.failedToCreateOTOAccount(caught);
-					populateUserData();
-				}
-				@Override
-				public void onSuccess(edu.arizona.biosemantics.oto.common.model.User result) {
-					view.setOTOAccount(result.getUserEmail(), result.getPassword());
-					view.setLinkedOTOAccount(result.getUserEmail());
-					//populateUserData();
-					Alerter.stopLoading();
-					Alerter.successfullyCreatedOTOAccount();
-				}
-			});
-		} else {
-			populateUserData();
-		}
 	}
 	
 	@Override
@@ -79,99 +132,49 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 			public void onSuccess(ShortUser user) {
 				view.setData(user);
 			}
-
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToGetUser(caught);
 			}
 		});
-
-		
 	}
 
 	@Override
 	public void onSave() {
 		ShortUser user = view.getData();
+		
+		if(user.getFirstName().trim().isEmpty()) {
+			Alerter.firstNameRequired();
+			return;
+		}
+		
+		if(user.getLastName().trim().isEmpty()) {
+			Alerter.lastNameRequired();
+			return;
+		}
+		
 		userService.update(Authentication.getInstance().getToken(), user, new AsyncCallback<ShortUser>() {
-			@Override
-			public void onSuccess(ShortUser result) {
-				Alerter.savedSettingsSuccesfully();
-			}
-			@Override
-			public void onFailure(Throwable caught) {
-				Alerter.failedToUpdateUser(caught);
-			}
+				@Override
+				public void onSuccess(ShortUser result) {
+					Alerter.savedSettingsSuccesfully();
+				}
+				@Override
+				public void onFailure(Throwable caught) {
+					Alerter.failedToUpdateUser(caught);
+				}
 		});
-		
-		/*final String firstName = settingsView.getFirstName();
-		final String lastName = settingsView.getLastName();
-		final String email = settingsView.getEmail();
-		final String affiliation = settingsView.getAffiliation();
-		final String bioportalUserId = settingsView.getBioportalUserId();
-		final String bioportalAPIKey = settingsView.getBioportalAPIKey();
-		
-		final String oldPassword;
-		
-		final boolean matrixGenerationEmail = settingsView.isMatrixGenerationEmailChecked();
-		final boolean textCaptureEmail = settingsView.isTextCaptureEmailChecked();
-		final boolean treeGenerationEmail = settingsView.isTreeGenerationEmailChecked();
-		final boolean taxonomyComparisonEmail = settingsView.isTaxonomyComparisonEmailChecked() ;
-		
-		
-		if (openIdProvider.equals("none"))
-			oldPassword = settingsView.getOldPassword();
-		else
-			oldPassword = firstName+lastName;
-		final String newPassword = settingsView.getNewPassword();
-		final String confirmNewPassword = settingsView.getConfirmNewPassword();
-		
-		
-		//error checking. 
-		settingsView.setErrorMessage("");
-		if (firstName.length() == 0){
-			settingsView.setErrorMessage("First Name is a required field."); 
-			return;
-		} else if (lastName.length() == 0){
-			settingsView.setErrorMessage("Last Name is a required field."); 
-			return;
-		} else if (!RegExp.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$").test(email)){
-			settingsView.setErrorMessage("Email address must be valid.");
-			return;
-		}
-		if (openIdProvider.equals("none")){ //only require password if this is a local user. 
-			if (!newPassword.equals(confirmNewPassword)){
-				settingsView.setErrorMessage("Passwords do not match.");
-				return;
-			} else if (newPassword.length() > 0 && newPassword.length() < 6){
-				settingsView.setErrorMessage("Password must be at least 6 characters.");
-				return;
-			} else if (oldPassword.length() == 0){
-				settingsView.setErrorMessage("You must enter your password in order to submit changes.");
-				return;
-			}
-		}
-		
-		final String password= newPassword.length() > 0 ? newPassword : oldPassword;
-		ShortUser newUser = new ShortUser(Authentication.getInstance().getToken().getUserId(), email, firstName, lastName, affiliation, 
-				openIdProvider, "", bioportalUserId, bioportalAPIKey,matrixGenerationEmail,textCaptureEmail,treeGenerationEmail,taxonomyComparisonEmail);
-		
-		userService.update(Authentication.getInstance().getToken(), oldPassword, 
-				password, newUser, new AsyncCallback<ShortUser>() {
-			@Override
-			public void onSuccess(ShortUser result) {
-				settingsView.clearPasswords();					
-				Alerter.savedSettingsSuccesfully();
-			}
-
-			@Override
-			public void onFailure(Throwable caught) {
-				Alerter.failedToUpdateUser(caught);
-			}
-		});*/
 	}
 
 	@Override
 	public void onPasswordSave() {
+		if(view.getNewPassword().equals(view.getConfirmPassword())) {
+			Alerter.passwordsDontMatch();
+			return;
+		}
+		if (view.getNewPassword().length() < 6){
+			Alerter.passwordLengthNotMet();
+			return;
+		} 
 		userService.update(Authentication.getInstance().getToken(), view.getCurrentPassword(), view.getNewPassword(), new AsyncCallback<ShortUser>() {
 			@Override
 			public void onSuccess(ShortUser result) {
@@ -186,31 +189,42 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 
 	@Override
 	public void onNewOTOGoogleAccount() {
-		String url = "https://accounts.google.com/o/oauth2/auth?scope=https://www.googleapis.com/auth/userinfo.profile%20https://www.googleapis.com/auth/userinfo.email"
+		String url = "https://accounts.google.com/o/oauth2/auth"
+				+ "?scope=https://www.googleapis.com/auth/userinfo.profile%20https://www.googleapis.com/auth/userinfo.email"
+				+ "&client_id=" + ServerSetup.getInstance().getSetup().getGoogleClientId()
+				+ "&redirect_uri=" + ServerSetup.getInstance().getSetup().getGoogleRedirectURI() 
+				+ "&state=" + URL.encodeQueryString(SettingsPlace.class.getSimpleName() + "&action=settings_create_oto")
+				+ "&response_type=token";
+		
+		/*String url = "https://accounts.google.com/o/oauth2/auth?scope=https://www.googleapis.com/auth/userinfo.profile%20https://www.googleapis.com/auth/userinfo.email"
 				+ "&client_id=" + ServerSetup.getInstance().getSetup().getGoogleClientId() 
 				+ "&response_type=code"
-				+ "&redirect_uri=" + ServerSetup.getInstance().getSetup().getGoogleRedirectURI() + "#" + SettingsPlace.class.getSimpleName() + ":"; 
+				+ "&redirect_uri=" + ServerSetup.getInstance().getSetup().getGoogleRedirectURI() + "#" + SettingsPlace.class.getSimpleName() + ":"; */
 		Location.replace(url);
 	}
 
 	@Override
-	public void onNewOTOAccount(final String email, final String password) {
-		Alerter.startLoading();
-		userService.createOTOAccount(Authentication.getInstance().getToken(), email, password, new AsyncCallback<edu.arizona.biosemantics.oto.common.model.User>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				Alerter.stopLoading();
-				Alerter.failedToCreateOTOAccount(caught);
-			}
-			@Override
-			public void onSuccess(edu.arizona.biosemantics.oto.common.model.User result) {
-				view.setOTOAccount(result.getUserEmail(), result.getPassword());
-				view.setLinkedOTOAccount(email);
-				//populateUserData();
-				Alerter.stopLoading();
-				Alerter.successfullyCreatedOTOAccount();
-			}
-		});
+	public void onNewOTOAccount(final String email, final String password, final String passwordConfirm) {
+		if(!password.equals(passwordConfirm)) {
+			Alerter.passwordsDontMatch();
+		} else {
+			Alerter.startLoading();
+			userService.createOTOAccount(Authentication.getInstance().getToken(), email, password, new AsyncCallback<edu.arizona.biosemantics.oto.common.model.User>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					Alerter.stopLoading();
+					Alerter.failedToCreateOTOAccount(caught);
+				}
+				@Override
+				public void onSuccess(edu.arizona.biosemantics.oto.common.model.User result) {
+					view.setOTOAccount(result.getUserEmail(), result.getPassword());
+					view.setLinkedOTOAccount(email);
+					//populateUserData();
+					Alerter.stopLoading();
+					Alerter.successfullyCreatedOTOAccount();
+				}
+			});
+		}
 	}
 
 	@Override
@@ -231,9 +245,50 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 				if(share)
 					view.setLinkedOTOAccount(email);
 				Alerter.stopLoading();
+				Alerter.savedSuccessfully();
 			} 
 		});
 	}
 
+	@Override
+	public void onLinkAccount(final Boolean share, final String email, final String password) {
+		Alerter.startLoading();
+		userService.saveOTOAccount(Authentication.getInstance().getToken(), share, email, password, new AsyncCallback<Void>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.stopLoading();
+				if(caught instanceof InvalidOTOAccountException) {
+					Alerter.invalidOTOAccount(caught);
+				} else {
+					Alerter.failedToSaveOTOAccount(caught);
+				}
+			}
+			@Override
+			public void onSuccess(Void result) {
+				if(share)
+					view.setLinkedOTOAccount(email);
+				Alerter.stopLoading();
+			}
+		});
+	}
+
+	@Override
+	public void onExistingOTOGoogleAccount() {
+		String url = "https://accounts.google.com/o/oauth2/auth"
+				+ "?scope=https://www.googleapis.com/auth/userinfo.profile%20https://www.googleapis.com/auth/userinfo.email"
+				+ "&client_id=" + ServerSetup.getInstance().getSetup().getGoogleClientId()
+				+ "&redirect_uri=" + ServerSetup.getInstance().getSetup().getGoogleRedirectURI() 
+				+ "&state=" + URL.encodeQueryString(SettingsPlace.class.getSimpleName() + "&action=settings_save_oto")
+				+ "&response_type=token";
+		
+		Location.replace(url);
+		
+		/*String url = "https://accounts.google.com/o/oauth2/auth?scope=https://www.googleapis.com/auth/userinfo.profile%20https://www.googleapis.com/auth/userinfo.email"
+				+ "&client_id=" + ServerSetup.getInstance().getSetup().getGoogleClientId() 
+				+ "&state=link"
+				+ "&response_type=code"
+				+ "&redirect_uri=" + ServerSetup.getInstance().getSetup().getGoogleRedirectURI() + "#" + SettingsPlace.class.getSimpleName() + ":";
+		Location.replace(url);*/
+	}
 
 }

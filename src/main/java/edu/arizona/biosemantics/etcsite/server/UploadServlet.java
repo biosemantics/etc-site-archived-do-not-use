@@ -1,6 +1,9 @@
 package edu.arizona.biosemantics.etcsite.server;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.common.validation.key.KeyElementValidator;
+import edu.arizona.biosemantics.common.validation.key.KeyValidationException;
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.server.process.file.ContentValidatorProvider;
 import edu.arizona.biosemantics.etcsite.server.process.file.IContentValidator;
 import edu.arizona.biosemantics.etcsite.server.process.file.XmlNamespaceManager;
@@ -17,13 +20,21 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang3.StringUtils;
+
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
  * This is an example of how to use UploadAction class.
@@ -70,6 +81,8 @@ public class UploadServlet extends UploadAction {
 				authenticationService.isValidSession(new AuthenticationToken(userID, sessionID));
 		
 		int numberNotAdded = 0;
+		List<String> fileNames = new LinkedList<String>();
+		List<String> fileAlreadyExists = new LinkedList<String>();
 		if(authenticationResult.getResult()) {
 			int cont = 0;
 			for (FileItem item : sessionFiles) {
@@ -95,7 +108,7 @@ public class UploadServlet extends UploadAction {
 							String fileContent;
 							try {
 								fileContent = item.getString("UTF-8");
-								boolean valid = false;
+								boolean valid = true;
 								IContentValidator validator = contentValidatorProvider.getValidator(fileTypeEnum);
 								if(validator != null)
 									valid = validator.validate(fileContent);
@@ -122,6 +135,7 @@ public class UploadServlet extends UploadAction {
 											log(LogLevel.ERROR, message, e);
 											file.delete();
 											numberNotAdded++;
+											fileNames.add(item.getName());
 										}
 										
 									} catch(IOException e) {
@@ -129,14 +143,17 @@ public class UploadServlet extends UploadAction {
 										log(message, e);
 										log(LogLevel.ERROR, message, e);
 										numberNotAdded++;
+										fileNames.add(item.getName());
 									} catch(Exception e) {
 										String message = "Couldn't write item to file";
 										log(message, e);
 										log(LogLevel.ERROR, message, e);
 										numberNotAdded++;
+										fileNames.add(item.getName());
 									}
 								} else {
 									numberNotAdded++;
+									fileNames.add(item.getName());
 									//error message would when too long (because many files are not valid) freeze the web page
 									//response += "File " + item.getName() + " was not added. Invalid file format.\n";
 								}
@@ -147,6 +164,7 @@ public class UploadServlet extends UploadAction {
 							}
 						} else {
 							numberNotAdded++;
+							fileAlreadyExists.add(item.getName());
 							//response += "File " + item.getName() + " was not added. File with same name exists in directory.\n";
 						}
 				}
@@ -157,14 +175,25 @@ public class UploadServlet extends UploadAction {
 			response += numberNotAdded + " file was not added due to invalid file format and or name collisions";
 		if(numberNotAdded > 1)
 			response += numberNotAdded + " files were not added due to invalid file format and or name collisions";
-
+		String allFiles = " "; //Do not remove this space - used in client side processing of server response
+		String allExistingFiles = " "; //Do not remove this space - used in client side processing of server response
+		if(fileNames.size()>0){
+			allFiles = StringUtils.join(fileNames, '|');
+		}
+		if(fileAlreadyExists.size() > 0){
+			allExistingFiles = StringUtils.join(fileAlreadyExists, '|');
+		}
+		if(fileNames.size() > 0 || fileAlreadyExists.size()>0){
+			response += "#"+allFiles+"#"+allExistingFiles+"#";
+		}
 		// / Remove files from session because we have a copy of them
 		removeSessionFileItems(request);
-
+		
 		// / Send your customized message to the client. <- this is where i specify which files were not valid
 		return response;
 	}
 
+	
 	/**
 	 * Get the content of an uploaded file.
 	 */

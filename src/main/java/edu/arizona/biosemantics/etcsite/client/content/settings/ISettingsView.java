@@ -14,9 +14,13 @@ public interface ISettingsView extends IsWidget {
 		
 		void onNewOTOGoogleAccount();
 
-		void onNewOTOAccount(String text, String text2);
+		void onNewOTOAccount(String email, String password, String passwordConfirm);
 
-		void onSaveOTOAccount(boolean share, String text, String text2);
+		void onSaveOTOAccount(boolean share, String email, String password);
+
+		void onLinkAccount(Boolean share, String email, String password);
+
+		void onExistingOTOGoogleAccount();
 	}
 	  
 	void setPresenter(Presenter presenter);

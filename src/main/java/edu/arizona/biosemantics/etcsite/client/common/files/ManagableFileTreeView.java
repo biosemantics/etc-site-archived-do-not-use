@@ -66,6 +66,7 @@ public class ManagableFileTreeView extends Composite implements IManagableFileTr
 		formatListBox.addItem("Upload Files - Select File Type First:");
 		formatListBox.addItem(FileTypeEnum.TAXON_DESCRIPTION.displayName());
 		formatListBox.addItem(FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION.displayName());
+		formatListBox.addItem(FileTypeEnum.PLAIN_TEXT.displayName());
 		initWidget(uiBinder.createAndBindUi(this));
 		/*UIObject fileInput = (UIObject)uploader.getFileInput();
 		Element fileInputElement = fileInput.getElement();

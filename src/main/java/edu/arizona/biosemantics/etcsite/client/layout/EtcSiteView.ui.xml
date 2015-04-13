@@ -35,7 +35,7 @@
 
 		.contentPanel {
 			padding-top:20px;
-			border: #dddddd solid 1px;
+			/*border: #dddddd solid 1px; removed menu from content border upon Hongs request */
 		}
 
 		.footerPanel {
@@ -83,13 +83,15 @@
 			padding-top:20px;
 			padding-right:20px;
 			padding-left:20px;
-			padding-bottom:20px
+			padding-bottom:20px;
+			width: 100%;
 		}
 		.navigationPanel {
 		}
 		.navEntry {
 			padding-top:20px;
-			padding-left:20px
+			padding-left:20px;
+			cursor:pointer;
 		}
 		.helpButton{
 	width:100px;
@@ -101,15 +103,15 @@
 		<g:north size='30'>
 			<g:HTMLPanel>
 				<div style="padding-left: 20px; padding-top: 5px; float: left">
-					<my:ImageLabel ui:field="menu" imagePath="images/Menu.gif" imageWidth="20px" imageHeight="20px" text="" systemFolder="false"></my:ImageLabel>
+					<my:ImageLabel ui:field="menu" imagePath="images/Menu.gif" imageWidth="20px" imageHeight="20px" text="Menu" systemFolder="false"></my:ImageLabel>
 				</div>
 				
 				<div style="padding-right: 10px; padding-top: 5px; float: right">
-					<my:ImageLabel ui:field="help" imagePath="images/Help.gif" imageWidth="20px" imageHeight="20px" text="" systemFolder="false"></my:ImageLabel>
+					<my:ImageLabel ui:field="help" imagePath="images/Help.gif" imageWidth="20px" imageHeight="20px" text="Help" systemFolder="false"></my:ImageLabel>
 				</div>
 				
-				<div style="padding-right: 10px; padding-top: 5px; float: right" >
-					<my:ImageLabel ui:field="loginLogout" imagePath="images/login.gif" imageWidth="20px" imageHeight="20px" text="" systemFolder="false"></my:ImageLabel>
+				<div style="padding-right: 10px; padding-top: 5px; float: right">
+					<my:ImageLabel ui:field="loginLogout" imagePath="images/login.gif" imageWidth="20px" imageHeight="20px" text="Login" systemFolder="false"></my:ImageLabel>
 				</div>
 			</g:HTMLPanel>
 		</g:north>
@@ -176,7 +178,7 @@
 							<my:ImageLabel styleName="{style.navEntry}" ui:field="taxonomyComparison" imagePath="images/TaxonomyComparison.gif" imageWidth="20px" imageHeight="20px" text="Taxonomy Comparison" systemFolder="false"></my:ImageLabel>
 						</div>
 						<div>
-							<my:ImageLabel styleName="{style.navEntry}" ui:field="visualization" imagePath="images/Visualization.gif" imageWidth="20px" imageHeight="20px" text="Visualization" systemFolder="false"></my:ImageLabel>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="visualization" imagePath="images/Visualization_unselected.gif" imageWidth="20px" imageHeight="20px" text="Visualization" systemFolder="false"></my:ImageLabel>
 						</div>
 					</div>
 				</g:HTMLPanel>

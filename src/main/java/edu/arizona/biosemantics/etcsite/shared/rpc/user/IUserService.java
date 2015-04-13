@@ -29,15 +29,16 @@ public interface IUserService extends RemoteService {
 	public boolean existsUser(String openIdProviderId);
 
 	public ShortUser add(String openIdProviderId, String string, String firstName,
-			String lastName, String encryptedDummyPassword) throws UserAddException;
+			String lastName, String password) throws UserAddException;
 	
 	public edu.arizona.biosemantics.oto.common.model.User createOTOAccount(AuthenticationToken authenticationToken, String email, String password) throws CreateOTOAccountException;
 	
-	public void saveOTOAccount(AuthenticationToken authenticationToken, boolean share, String email, String password) throws InvalidOTOAccountException; 
+	public void saveOTOAccount(AuthenticationToken authenticationToken, boolean share, String email, String password) throws InvalidOTOAccountException, OTOException; 
 	
-	public edu.arizona.biosemantics.oto.common.model.User createOTOAccount(AuthenticationToken token, String googleCode) throws CreateOTOAccountException;
-
-// 	public Boolean isProfile(String type);
+	public edu.arizona.biosemantics.oto.common.model.User createOTOAccount(AuthenticationToken token, String googleCode) throws CreateOTOAccountException, OTOException;
+	
+	public edu.arizona.biosemantics.oto.common.model.User saveOTOAccount(AuthenticationToken token, String googleCode) throws UserNotFoundException, InvalidOTOAccountException, OTOException;
+	
 	public void setPopupPreference(AuthenticationToken token,String type,boolean dontShowPopup);
 
 	public boolean isProfile(AuthenticationToken token, String type);

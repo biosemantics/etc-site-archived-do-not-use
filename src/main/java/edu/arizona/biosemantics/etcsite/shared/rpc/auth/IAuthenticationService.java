@@ -11,7 +11,7 @@ public interface IAuthenticationService extends RemoteService {
 
 	public AuthenticationResult login(String user, String password);
 
-	public AuthenticationResult loginOrSignupWithGoogle(String googleAuthCode) throws RegistrationFailedException;
+	public LoginGoogleResult loginOrSignupWithGoogle(String googleAuthCode) throws RegistrationFailedException;
 
 	public AuthenticationResult isValidSession(
 			AuthenticationToken authenticationToken);
