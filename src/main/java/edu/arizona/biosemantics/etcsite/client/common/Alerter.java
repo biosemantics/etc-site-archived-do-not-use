@@ -10,7 +10,6 @@ import com.sencha.gxt.widget.core.client.box.AutoProgressMessageBox;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
 
-import edu.arizona.biosemantics.etcsite.client.HelpDialog;
 import edu.arizona.biosemantics.etcsite.shared.help.Help;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
@@ -60,6 +59,10 @@ public class Alerter {
 
 	public static MessageBox failedToCreateTaxonDescription(Throwable caught) {
 		return showAlert("Create Taxon Description", "Failed to create taxon description.", caught);
+	}
+	
+	public static MessageBox failedToSetProfile(Throwable caught) {
+		return showAlert("Save Profile", "Failed to set profile value", caught);
 	}
 	
 	public static MessageBox invalidOTOAccount(Throwable caught) {
@@ -551,28 +554,5 @@ public class Alerter {
 		box.getButton(PredefinedButton.YES).setText("Keep Files");
 		box.getButton(PredefinedButton.NO).setText("Delete Files with errors");
 		return box;
-	}
-	
-	public static void showInstructions(String type, String title) {
-		final String msg = "<HTML><Body>"
-				+ "<h4><B> For Instructions Click On</h4><Br> &"
-				+ "nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src = 'images/Help.gif' height = '35px' width = '35px' align='middle'/>"
-				+ "<Br> &nbsp;<h4><B> at Top Right Corner</Br></Br></BODY></HTML>";
-		final String popupTitle = title;
-		userService.isProfile(Authentication.getInstance().getToken(), type,
-				new AsyncCallback<Boolean>() {
-					@Override
-					public void onSuccess(Boolean result) {
-						if (!result) {
-							HelpDialog d = new HelpDialog(Help.Type.WELCOME
-									.getKey(), popupTitle, msg);
-						}
-					}
-
-					@Override
-					public void onFailure(Throwable caught) {
-						Alerter.failedToSaveMatrix(caught);
-					}
-				});
 	}
 }

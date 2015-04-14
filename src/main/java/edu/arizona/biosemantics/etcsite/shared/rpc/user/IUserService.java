@@ -39,7 +39,7 @@ public interface IUserService extends RemoteService {
 	
 	public edu.arizona.biosemantics.oto.common.model.User saveOTOAccount(AuthenticationToken token, String googleCode) throws UserNotFoundException, InvalidOTOAccountException, OTOException;
 	
-	public void setPopupPreference(AuthenticationToken token,String type,boolean dontShowPopup);
+	public void setProfile(AuthenticationToken token,String type,boolean dontShowPopup);
 
 	public boolean isProfile(AuthenticationToken token, String type);
 }

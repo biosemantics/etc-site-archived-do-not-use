@@ -393,32 +393,14 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		return null;
 	}
 	
-	public void setPopupPreference(AuthenticationToken token,String type,boolean dontShowPopup)
-	{
+	public void setProfile(AuthenticationToken token, String key, boolean value) {
 		User user = daoManager.getUserDAO().getUser(token.getUserId());
-		
-		if(user.getProfile()==null)
-		{
-			Map<String, Boolean> UserProfile= new HashMap<String, Boolean>(); 
-			user.setProfile(UserProfile);
-		}
-		user.setProfileValue(type, dontShowPopup);
+		user.setProfileValue(key, value);
 		daoManager.getUserDAO().update(user);
-	
 	}
 
 	@Override
 	public boolean isProfile(AuthenticationToken token, String type) {
-		
-		boolean isProfileSet=false;
-		
-		User user = daoManager.getUserDAO().getUser(token.getUserId());
-		if(user.getProfile()!=null)
-		{
-			isProfileSet= user.getProfileValue(type);
-			
-		}
-		
-		return isProfileSet;
+		return daoManager.getUserDAO().getUser(token.getUserId()).getProfileValue(type);
 	}
 }

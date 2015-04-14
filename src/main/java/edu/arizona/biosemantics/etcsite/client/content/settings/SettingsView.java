@@ -1,60 +1,34 @@
 package edu.arizona.biosemantics.etcsite.client.content.settings;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PasswordTextBox;
-import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.widget.client.TextButton;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.core.client.util.ToggleGroup;
-import com.sencha.gxt.widget.core.client.ContentPanel;
-import com.sencha.gxt.widget.core.client.FramedPanel;
-import com.sencha.gxt.widget.core.client.Slider;
-import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.AbstractHtmlLayoutContainer.HtmlData;
 import com.sencha.gxt.widget.core.client.container.HtmlLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
-import com.sencha.gxt.widget.core.client.event.ParseErrorEvent;
-import com.sencha.gxt.widget.core.client.event.ParseErrorEvent.ParseErrorHandler;
 import com.sencha.gxt.widget.core.client.form.CheckBox;
-import com.sencha.gxt.widget.core.client.form.DoubleSpinnerField;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.FieldSet;
-import com.sencha.gxt.widget.core.client.form.IntegerField;
 import com.sencha.gxt.widget.core.client.form.PasswordField;
 import com.sencha.gxt.widget.core.client.form.Radio;
-import com.sencha.gxt.widget.core.client.form.TextArea;
 import com.sencha.gxt.widget.core.client.form.TextField;
-import com.sencha.gxt.widget.core.client.form.ValueBaseField;
-import com.sencha.gxt.widget.core.client.form.validator.MinLengthValidator;
-import com.sencha.gxt.widget.core.client.info.Info;
 
-import edu.arizona.biosemantics.etcsite.client.layout.CenteredContentPanel;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.User.EmailPreferences;
-
-import com.sencha.gxt.widget.core.client.container.AbstractHtmlLayoutContainer.HtmlData;
 
 public class SettingsView extends Composite implements ISettingsView {
 
@@ -424,22 +398,20 @@ public class SettingsView extends Composite implements ISettingsView {
 		newPassword.setValue("");
 		confirmPassword.setValue("");
 		
-		if ((user.getProfile())==null || (user.getProfile()).isEmpty())
-		{
+		if ((user.getProfile()) == null || (user.getProfile()).isEmpty()) {
 			matrixGenerationEmail.setValue(true);
 			treeGenerationEmail.setValue(true);
 			semanticMarkupEmail.setValue(true);
 			taxonomyComparisonEmail.setValue(true);
+		} else {
+			matrixGenerationEmail.setValue(user.getProfileValue(EmailPreferences.MATRIX_GENERATION.getKey()));
+			treeGenerationEmail.setValue(user.getProfileValue(EmailPreferences.TREE_GENERATION.getKey()));
+			semanticMarkupEmail.setValue(user.getProfileValue(EmailPreferences.TEXT_CAPTURE.getKey()));
+			taxonomyComparisonEmail.setValue(user.getProfileValue(EmailPreferences.TAXONOMY_COMPARISON.getKey()));
 		}
-		else
-		{
-		matrixGenerationEmail.setValue(user.getProfileValue(EmailPreferences.MatrixGeneration.getKey()));
-		treeGenerationEmail.setValue(user.getProfileValue(EmailPreferences.TreeGeneration.getKey()));
-		semanticMarkupEmail.setValue(user.getProfileValue(EmailPreferences.SemanticMarkup.getKey()));
-		taxonomyComparisonEmail.setValue(user.getProfileValue(EmailPreferences.TaxonomyComparison.getKey()));
-		}
-		
-		if(user.getOtoAccountEmail() != null && !user.getOtoAccountEmail().isEmpty()) {
+
+		if (user.getOtoAccountEmail() != null
+				&& !user.getOtoAccountEmail().isEmpty()) {
 			setLinkedOTOAccount(user.getOtoAccountEmail());
 		} else {
 			resetShareOTO();
@@ -483,18 +455,15 @@ public class SettingsView extends Composite implements ISettingsView {
 		user.setBioportalUserId(bioportalUserId.getText());
 		user.setEmail(email.getText());
 		user.setFirstName(firstName.getText());
-		user.setLastName(lastName.getText());
-//		matrixGenerationEmail.setValue(user.getProfileValue(EmailPreferences.MatrixGeneration.getKey()));
-//		treeGenerationEmail.setValue(user.getProfileValue(EmailPreferences.TreeGeneration.getKey()));
-//		semanticMarkupEmail.setValue(user.getProfileValue(EmailPreferences.SemanticMarkup.getKey()));
-//		taxonomyComparisonEmail.setValue(user.getProfileValue(EmailPreferences.TaxonomyComparison.getKey()));
-		
-		
-		user.setProfileValue(EmailPreferences.MatrixGeneration.getKey().toString(),matrixGenerationEmail.getValue());
-		
-		user.setProfileValue(EmailPreferences.SemanticMarkup.getKey().toString() ,semanticMarkupEmail.getValue());
-		user.setProfileValue(EmailPreferences.TaxonomyComparison.getKey().toString() ,taxonomyComparisonEmail.getValue());
-		user.setProfileValue(EmailPreferences.TreeGeneration.getKey().toString()  ,treeGenerationEmail.getValue());
+		user.setLastName(lastName.getText());		
+		user.setProfileValue(EmailPreferences.MATRIX_GENERATION.getKey()
+				.toString(), matrixGenerationEmail.getValue());
+		user.setProfileValue(EmailPreferences.TEXT_CAPTURE.getKey().toString(),
+				semanticMarkupEmail.getValue());
+		user.setProfileValue(EmailPreferences.TAXONOMY_COMPARISON.getKey()
+				.toString(), taxonomyComparisonEmail.getValue());
+		user.setProfileValue(EmailPreferences.TREE_GENERATION.getKey()
+				.toString(), treeGenerationEmail.getValue());
 		return user;
 	}
 	

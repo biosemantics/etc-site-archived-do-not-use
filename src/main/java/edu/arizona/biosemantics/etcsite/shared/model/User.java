@@ -8,7 +8,7 @@ import java.util.Map;
 public class User implements Serializable {
 
 	public static enum EmailPreferences {
-		SemanticMarkup, MatrixGeneration, TreeGeneration, TaxonomyComparison, Visualization;
+		TEXT_CAPTURE, MATRIX_GENERATION, TREE_GENERATION, TAXONOMY_COMPARISON, VISUALIZATION, PIPELINE;
 
 		public String getKey() {
 			return this.getClass() + "_" + this.name();
@@ -216,13 +216,11 @@ public class User implements Serializable {
 	}
 
 	public boolean getProfileValue(String key) {
-		boolean ProfileValue=false;
-		if(profile.get(key)!=null)
-		{
-			ProfileValue =profile.get(key);
+		boolean profileValue = false;
+		if (profile.get(key) != null) {
+			profileValue = profile.get(key);
 		}
-		
-		return ProfileValue;
+		return profileValue;
 	}
 
 	public void setProfileValue(String key, boolean value) {

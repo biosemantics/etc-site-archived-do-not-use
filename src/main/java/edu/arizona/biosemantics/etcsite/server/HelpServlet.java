@@ -19,10 +19,10 @@ public class HelpServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		switch(request.getParameter("place")) {
 		case "HomePlace":
-			out.write(Help.getHelp(Help.Type.Home));
+			out.write(Help.getHelp(Help.Type.HOME));
 			break;
 		case "SemanticMarkupPlace":
-			out.write(Help.getHelp(Help.Type.SemanticMarkupInput));
+			out.write(Help.getHelp(Help.Type.TEXT_CAPTURE_INPUT));
 			break;
 		//...
 		};

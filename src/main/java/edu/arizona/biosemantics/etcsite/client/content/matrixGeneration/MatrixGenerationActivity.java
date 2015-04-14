@@ -10,6 +10,7 @@ import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.client.common.HelpDialog;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
@@ -35,6 +36,7 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 	private TaskStageEnum currentTaskStage;
 	private Model currentModel;
 	private Task currentTask;
+	private HelpDialog helpDialog = new HelpDialog(Help.Type.WELCOME.getKey(), "Matrix Generation");
 
 	@Inject
 	public MatrixGenerationActivity(ITaskServiceAsync taskService, 
@@ -67,7 +69,7 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 	public void start(final AcceptsOneWidget panel, EventBus eventBus) {
 		this.panel = panel;
 		this.setStepWidget();
-		Alerter.showInstructions(Help.Type.WELCOME.getKey(),"Matrix Generation");
+		//helpDialog.showIfDesired();
 	}
 
 	@Override

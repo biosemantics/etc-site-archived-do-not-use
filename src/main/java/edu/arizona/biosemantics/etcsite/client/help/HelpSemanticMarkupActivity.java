@@ -32,7 +32,7 @@ public class HelpSemanticMarkupActivity extends MyAbstractActivity implements Pr
 	@Override
 	public void start(final AcceptsOneWidget panel, EventBus eventBus) {
 		view.setPresenter(this);
-		view.setContent(Help.getHelp(Type.SemanticMarkupInput));
+		view.setContent(Help.getHelp(Type.TEXT_CAPTURE_INPUT));
 		panel.setWidget(view.asWidget());
 	}
 

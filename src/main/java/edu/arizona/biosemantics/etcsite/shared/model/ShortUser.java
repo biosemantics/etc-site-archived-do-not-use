@@ -165,23 +165,22 @@ public class ShortUser implements Serializable {
 	}
 	
 	public boolean getProfileValue(String key) {
-		boolean ProfileValue=false;
-		if(profile.get(key)!=null)
-		{
-			ProfileValue =profile.get(key);
+		boolean value = false;
+		if (profile.get(key) != null) {
+			value = profile.get(key);
 		}
-		
-		return ProfileValue;
+
+		return value;
 	}
 
 	public void setProfileValue(String key, boolean value) {
 		this.profile.put(key, value);
 	}
-	
+
 	public Map<String, Boolean> getProfile() {
 		return profile;
 	}
-	
+
 	public void setProfile(Map<String, Boolean> profile) {
 		this.profile = profile;
 	}

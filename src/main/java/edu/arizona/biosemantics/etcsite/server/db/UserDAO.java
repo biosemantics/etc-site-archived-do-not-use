@@ -74,7 +74,7 @@ public class UserDAO {
 		Date created = result.getTimestamp(13);
 
 		Map<String , Boolean> profile=null;
-		profile = getSerializedUser(id);
+		profile = getSerializedProfile(id);
 
 		return new User(id, openIdProviderId, openIdProvider, password,
 					firstName, lastName, email, affiliation, bioportalUserId,
@@ -127,7 +127,7 @@ public class UserDAO {
 			if(generatedKeys.next()) {
 				result = this.getUser(generatedKeys.getInt(1));
 			}
-			storeUserSerialized(result);
+			storeSerializedProfile(result);
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't add user", e);
 		}
@@ -156,13 +156,13 @@ public class UserDAO {
 			query.setParameter(11, user.getOtoAuthenticationToken());
 			query.setParameter(12, user.getId());
 			query.execute();
-			storeUserSerialized(user);
+			storeSerializedProfile(user);
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't update matrix generation configuration", e);
 		}
 	}
 
-	private void storeUserSerialized(User user) {
+	private void storeSerializedProfile(User user) {
 		String file = Configuration.etcFiles + File.separator + "profiles"
 				+ File.separator + user.getId() + ".ser";
 		try (ObjectOutput output = new ObjectOutputStream(
@@ -173,14 +173,14 @@ public class UserDAO {
 		}
 	}
 	
-	public HashMap<String, Boolean> getSerializedUser(int userId) {
+	private HashMap<String, Boolean> getSerializedProfile(int userId) {
 		String file = Configuration.etcFiles + File.separator + "profiles" + File.separator + userId + ".ser";
 		try(ObjectInput input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
 			return (HashMap<String, Boolean>) input.readObject();
 		} catch (ClassNotFoundException | IOException e) {
 			log(LogLevel.ERROR, "Deserialization of user failed", e);
 		}
-		return null;
+		return new HashMap<String, Boolean>();
 	}
 	
 	public List<ShortUser> getUsers() {

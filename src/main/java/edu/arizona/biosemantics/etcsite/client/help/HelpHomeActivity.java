@@ -23,7 +23,7 @@ public class HelpHomeActivity extends AbstractActivity implements Presenter {
 	@Override
 	public void start(AcceptsOneWidget panel, com.google.gwt.event.shared.EventBus eventBus) {
 		helpView.setPresenter(this);
-		helpView.setContent(Help.getHelp(Type.Home));
+		helpView.setContent(Help.getHelp(Type.HOME));
 		panel.setWidget(helpView.asWidget());
 	}
 }
