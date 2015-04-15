@@ -6,7 +6,7 @@ import com.google.gwt.place.shared.WithTokenizers;
 import edu.arizona.biosemantics.etcsite.client.content.about.AboutPlace;
 import edu.arizona.biosemantics.etcsite.client.content.annotationReview.AnnotationReviewPlace;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerPlace;
-import edu.arizona.biosemantics.etcsite.client.content.help.HelpPlace;
+import edu.arizona.biosemantics.etcsite.client.content.gettingstarted.GettingStartedPlace;
 import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationOutputPlace;
@@ -28,7 +28,7 @@ import edu.arizona.biosemantics.etcsite.client.content.visualization.Visualizati
 	HomePlace.Tokenizer.class, 
 	AboutPlace.Tokenizer.class,
 	NewsPlace.Tokenizer.class,
-	HelpPlace.Tokenizer.class,
+	GettingStartedPlace.Tokenizer.class,
 	FileManagerPlace.Tokenizer.class, 
 	TaskManagerPlace.Tokenizer.class,
 	SettingsPlace.Tokenizer.class,

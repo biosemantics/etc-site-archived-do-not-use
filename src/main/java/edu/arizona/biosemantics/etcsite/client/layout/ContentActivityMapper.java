@@ -11,8 +11,8 @@ import edu.arizona.biosemantics.etcsite.client.content.annotationReview.Annotati
 import edu.arizona.biosemantics.etcsite.client.content.annotationReview.AnnotationReviewPlace;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerActivity;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerPlace;
-import edu.arizona.biosemantics.etcsite.client.content.help.HelpActivity;
-import edu.arizona.biosemantics.etcsite.client.content.help.HelpPlace;
+import edu.arizona.biosemantics.etcsite.client.content.gettingstarted.GettingStartedActivity;
+import edu.arizona.biosemantics.etcsite.client.content.gettingstarted.GettingStartedPlace;
 import edu.arizona.biosemantics.etcsite.client.content.home.HomeActivity;
 import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationActivity;
@@ -32,7 +32,7 @@ import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenera
 
 public class ContentActivityMapper implements MyActivityMapper {
 
-	private HelpActivity helpActivity;
+	private GettingStartedActivity helpActivity;
 	private HomeActivity homeActivity;
 	private NewsActivity newsActivity;
 	private AboutActivity aboutActivity;
@@ -48,7 +48,7 @@ public class ContentActivityMapper implements MyActivityMapper {
 	private MyActivity currentActivity;
 
 	@Inject
-	public ContentActivityMapper(HelpActivity helpActivity, HomeActivity homeActivity, AboutActivity aboutActivity, NewsActivity newsActivity, SettingsActivity settingsActivity, TaskManagerActivity taskManagerActivity,
+	public ContentActivityMapper(GettingStartedActivity helpActivity, HomeActivity homeActivity, AboutActivity aboutActivity, NewsActivity newsActivity, SettingsActivity settingsActivity, TaskManagerActivity taskManagerActivity,
 			FileManagerActivity fileManagerActivity, SemanticMarkupActivity semanticMarkupActivity, MatrixGenerationActivity matrixGenerationActivity, 
 			AnnotationReviewActivity annotationReviewActivity, TreeGenerationActivity treeGenerationActivity, 
 			TaxonomyComparisonActivity taxonomyComparisonActivity) {
@@ -76,7 +76,7 @@ public class ContentActivityMapper implements MyActivityMapper {
 			currentActivity = homeActivity;
 		if(place instanceof SettingsPlace)
 			currentActivity = settingsActivity;
-		if(place instanceof HelpPlace)
+		if(place instanceof GettingStartedPlace)
 			currentActivity = helpActivity;
 		if(place instanceof AboutPlace)
 			currentActivity = aboutActivity;

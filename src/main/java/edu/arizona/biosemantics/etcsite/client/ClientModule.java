@@ -68,8 +68,8 @@ import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerPr
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerView;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerView;
-import edu.arizona.biosemantics.etcsite.client.content.help.HelpView;
-import edu.arizona.biosemantics.etcsite.client.content.help.IHelpView;
+import edu.arizona.biosemantics.etcsite.client.content.gettingstarted.GettingStartedView;
+import edu.arizona.biosemantics.etcsite.client.content.gettingstarted.IGettingStartedView;
 import edu.arizona.biosemantics.etcsite.client.content.home.HomeHeaderView;
 import edu.arizona.biosemantics.etcsite.client.content.home.HomeMainView;
 import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
@@ -180,7 +180,7 @@ public class ClientModule extends AbstractGinModule {
 		bind(IHomeView.class).to(HomeView.class);
 		bind(IAboutView.class).to(AboutView.class);
 		bind(INewsView.class).to(NewsView.class);
-		bind(IHelpView.class).to(HelpView.class);
+		bind(IGettingStartedView.class).to(GettingStartedView.class);
 		bind(ISettingsView.class).to(SettingsView.class);
 		bind(ITaskManagerView.class).to(TaskManagerView.class);
 		bind(ITaskManagerView.Presenter.class).to(TaskManagerPresenter.class);

@@ -1,0 +1,112 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout">
+	<ui:style>
+		.siteHeading {
+			font-weight: bold;
+			font-size: 12px;
+			text-align: center;
+			padding-bottom: 10px;
+		}
+		
+		.bold {
+			font-weight: bold;
+		}
+		
+		.padding {
+			padding-top: 10px;
+			padding-bottom: 10px;
+		}
+		.header{
+			font-size: 24px;
+			font-weight: bold;
+			color: #339900;
+		}
+		
+		.right{
+			postion:absolute;
+			right:20px;
+		}
+		</ui:style>
+	<g:ScrollPanel>
+	<lay:CenteredContentPanel>
+		<g:HTMLPanel>
+		    <g:VerticalPanel>
+		    	<g:Label styleName="{style.header}">Getting Started Using ETC Tools</g:Label>
+		    	<g:VerticalPanel styleName="{style.padding}"/>
+		   		<g:InlineLabel>The ETC site provides five tools, with a task manager and a file manager supporting their functionalities. This page provides basic information about the site, including a Site Overview, a Quick Guide for First-Time Users, and a brief video demo. A full user manual is under preparation.</g:InlineLabel>
+		   		<g:VerticalPanel styleName="{style.padding}"/>
+		   		<g:Label styleName="{style.bold}">Site Overview</g:Label>
+		    	<g:Image url="images/etc-overview.png" title="etc site overview" altText="etc site overview" width="800px" height="400px"/>
+		    	
+		    	<g:VerticalPanel styleName="{style.padding}"/>
+		    	<g:Label styleName="{style.bold}">Quick Guide for First-Time Users</g:Label>
+		        <g:InlineLabel>All the tools require input files in a certain format. The general steps for running each of the tools include:</g:InlineLabel>
+		        <g:InlineLabel>1. Click on a green "Begin ..." button on the homepage to start a tool.</g:InlineLabel>
+		        <g:InlineLabel>2. Read the INPUT REQUIREMENTS for the tool, and go to File Manager to create or upload input files.</g:InlineLabel> 
+		        <g:InlineLabel>3. Follow the instructions on the screen to complete the necessary steps. Your progress is shown on the screen. </g:InlineLabel>
+			    <g:InlineLabel>4. The final step informs the user the location of output files if any is generated. Take note of the location, then go to File Manager to retrieve or download the output.</g:InlineLabel>
+			    <g:VerticalPanel styleName="{style.padding}"/>
+			    <g:Label>The user can leave the website at any time and come back to resume an analysis (also called a "task"). Go to Task Manager to check the status of a task or share the task with other registered users.</g:Label>
+			    
+			    <g:VerticalPanel styleName="{style.padding}"/>
+			    
+			    <g:HTMLPanel>
+				    <div style="font-weight: bold">Brief video tutorials (Please wait a moment for the video to load)</div>
+			    	<div style="font-weight: bold">Introduction</div>
+				    <object ui:field="objectElement1">
+			            <param ui:field="movieParamElement1" name="movie"/>
+			            <param ui:field="qualityParamElement1" name="quality"/>
+			            <param ui:field="bgColorParamElement1" name="bgcolor"/>
+			            <param ui:field="flashVarsParamElement1" name="flashVars"/>
+			            <param ui:field="allowFullScreenParamElement1" name="allowFullScreen"/>
+			            <param ui:field="scaleParamElement1" name="scale"/>
+			            <param ui:field="allowScriptAccessParamElement1" name="allowScriptAccess"/>
+			            <param ui:field="baseParamElement1" name="base"/>
+			        </object> 
+			        <div style="font-weight: bold">Text Capture + Matrix Generation (1)</div>
+			        <object ui:field="objectElement2">
+			            <param ui:field="movieParamElement2" name="movie"/>
+			            <param ui:field="qualityParamElement2" name="quality"/>
+			            <param ui:field="bgColorParamElement2" name="bgcolor"/>
+			            <param ui:field="flashVarsParamElement2" name="flashVars"/>
+			            <param ui:field="allowFullScreenParamElement2" name="allowFullScreen"/>
+			            <param ui:field="scaleParamElement2" name="scale"/>
+			            <param ui:field="allowScriptAccessParamElement2" name="allowScriptAccess"/>
+			            <param ui:field="baseParamElement2" name="base"/>
+			        </object> 
+			        <div style="font-weight: bold">Text Capture + Matrix Generation (2)</div>
+			        <object ui:field="objectElement3">
+			            <param ui:field="movieParamElement3" name="movie"/>
+			            <param ui:field="qualityParamElement3" name="quality"/>
+			            <param ui:field="bgColorParamElement3" name="bgcolor"/>
+			            <param ui:field="flashVarsParamElement3" name="flashVars"/>
+			            <param ui:field="allowFullScreenParamElement3" name="allowFullScreen"/>
+			            <param ui:field="scaleParamElement3" name="scale"/>
+			            <param ui:field="allowScriptAccessParamElement3" name="allowScriptAccess"/>
+			            <param ui:field="baseParamElement3" name="base"/>
+			        </object> 
+			        <div style="font-weight: bold">Taxonomy Comparison</div>
+			        <object ui:field="objectElement4">
+			            <param ui:field="movieParamElement4" name="movie"/>
+			            <param ui:field="qualityParamElement4" name="quality"/>
+			            <param ui:field="bgColorParamElement4" name="bgcolor"/>
+			            <param ui:field="flashVarsParamElement4" name="flashVars"/>
+			            <param ui:field="allowFullScreenParamElement4" name="allowFullScreen"/>
+			            <param ui:field="scaleParamElement4" name="scale"/>
+			            <param ui:field="allowScriptAccessParamElement4" name="allowScriptAccess"/>
+			            <param ui:field="baseParamElement4" name="base"/>
+			        </object> 
+		        </g:HTMLPanel>
+		        
+			    <g:VerticalPanel styleName="{style.padding}"/>
+				<g:Anchor ui:field="goToTools" styleName="{style.right}">Start Now Using ETC Tools</g:Anchor>
+				<g:VerticalPanel styleName="{style.padding}"/>
+				<g:VerticalPanel styleName="{style.padding}"/>
+				<g:VerticalPanel styleName="{style.padding}"/>
+			</g:VerticalPanel>
+		</g:HTMLPanel>
+	</lay:CenteredContentPanel>
+	</g:ScrollPanel>
+</ui:UiBinder> 
