@@ -9,8 +9,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.collections15.map.HashedMap;
-import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FileUtils;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -646,13 +644,13 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 
 
 	@Override
-	public HashMap<String, String> validateKeys(AuthenticationToken authenticationToken, String filePath) {
+	public HashMap<String, String> validateKeys(AuthenticationToken authenticationToken, String filePath, List<String> uploadedFiles) {
 		HashMap<String,String> resultList = new HashMap<String, String>();
 		KeyElementValidator validator = new KeyElementValidator();
 		File file = new File(filePath);
 		File[] childFiles = file.listFiles();
 		for(File child : childFiles){
-			if(child.isFile()){
+			if(child.isFile() && uploadedFiles.contains(child.getName())){
 				try {
 					validator.validate(child.getAbsolutePath());
 				} catch (KeyValidationException e) {
@@ -666,6 +664,18 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			}				
 		}	
 		return resultList;
+	}
+	
+	@Override
+	public void deleteUploadedFiles(AuthenticationToken token, String uploadedDirectory, List<String> uploadedFiles) throws PermissionDeniedException, FileDeleteFailedException {
+		// TODO Auto-generated method stub
+		File file = new File(uploadedDirectory);
+		File[] childFiles = file.listFiles();
+		for(File child : childFiles){
+			if(child.isFile() && uploadedFiles.contains(child.getName())){
+				deleteFile(token, child.getAbsolutePath());
+			}
+		}	
 	}
 
 }

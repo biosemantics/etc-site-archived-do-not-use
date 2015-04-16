@@ -8,7 +8,6 @@ import java.util.List;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -44,10 +43,10 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	private IFileTreeView.Presenter fileTreePresenter;
 	private FileFilter fileFilter;
 	private String defaultServletPath;
-	private String tempUploadDirectory;
 	private String targetUploadDirectory;
 	private ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter;
 	
+	@SuppressWarnings("deprecation")
 	@Inject
 	public ManagableFileTreePresenter(IManagableFileTreeView view, 
 			IFileTreeView.Presenter fileTreePresenter, 
@@ -316,9 +315,14 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	 *
 	 */
 	public class OnFinishUploadHandler implements OnFinishUploaderHandler {
+		
+		String serverResponse = null;
+		List<String> uploadedFiles = null;
+		@SuppressWarnings("deprecation")
 		@Override
 		public void onFinish(IUploader uploader) {	
-			String serverResponse = uploader.getServerInfo().message;
+			serverResponse = uploader.getServerInfo().message;
+			uploadedFiles = uploader.getFileInput().getFilenames();
 			if(serverResponse != null && !serverResponse.isEmpty()) {
 				serverResponse = serverResponse.replaceAll("\n", "<br>");
 				if(serverResponse.contains("#")){ //# is used in response only when there are errors
@@ -332,7 +336,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 						serverResponse += "Following files have xml format errors<br>";
 					}
 					int i;
-					for(i=0;i<20 && i<xmlErrorFiles.length-1;i++){
+					for(i=0;i<20 && i<xmlErrorFiles.length;i++){
 						serverResponse += xmlErrorFiles[i] + "<br>";
 					}
 					int j=0;
@@ -347,16 +351,19 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 					if(j<existingFiles.length-1 | i<xmlErrorFiles.length-1){
 						serverResponse += "and so on.<br>";
 					}
+					for(i=0; i<xmlErrorFiles.length; i++){
+						uploadedFiles.remove(xmlErrorFiles[i]);
+					}
+					for(i=0;i<existingFiles.length;i++){
+						uploadedFiles.remove(existingFiles[i]);
+					}
 				}
-				Alerter.fileManagerMessage(serverResponse);
+				
 			}
 			
 			if (uploader.getStatus() == Status.SUCCESS) {
-				List<String> fileNames = new LinkedList<String>();
-				fileNames.add("Done uploading. Validating keys");
-				uploader.getStatusWidget().setFileNames(fileNames);
 				fileTreePresenter.refresh(fileFilter);
-				fileService.validateKeys(Authentication.getInstance().getToken(), targetUploadDirectory, new AsyncCallback<HashMap<String,String>>() {
+				fileService.validateKeys(Authentication.getInstance().getToken(), targetUploadDirectory, uploadedFiles, new AsyncCallback<HashMap<String,String>>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
@@ -366,18 +373,24 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 					@Override
 					public void onSuccess(final HashMap<String, String> result) {
 						if(!result.isEmpty()){
-							String infoMessage = "Key Validation Result:<br>The following files have key errors and will not be parsed.";
-							String errorMessage = infoMessage.replace("<br>", "\n") + "\n\n";
+							String infoMessage = "The following files have key errors and will not be parsed.<br><br>";
+							String errorMessage = "";
+							int allowedErrorCounts = 2;
 							for(String filename: result.keySet()){
+								if (allowedErrorCounts <= 0 ){
+									errorMessage += "and so on.<br>";
+									break;
+								}
 								String errorsInFile = result.get(filename);
-								//errorMessage += "File "+ filename +"has following errors:\n";
-								errorMessage += errorsInFile+"\n";
+								errorMessage += errorsInFile.replace("\n", "<br>")+"<br>";
+								allowedErrorCounts--;
 							}
 							MessageBox box = Alerter.showKeyValidationResult(infoMessage, errorMessage);
 							box.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
 							
 								@Override
 								public void onSelect(SelectEvent event) {
+									Alerter.fileManagerMessage(serverResponse);
 									fileTreePresenter.refresh(fileFilter);
 								}
 							});
@@ -386,23 +399,21 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 								@Override
 								public void onSelect(SelectEvent event) {
 									// TODO Auto-generated method stub
-									for(String filename: result.keySet()){
-										fileService.deleteFile(Authentication.getInstance().getToken(), filename, new AsyncCallback<Void>() {
+									fileService.deleteUploadedFiles(Authentication.getInstance().getToken(), targetUploadDirectory, uploadedFiles, new AsyncCallback<Void>() {
 
-											@Override
-											public void onFailure(
+										@Override
+										public void onFailure(
 													Throwable caught) {
-												// TODO Auto-generated method stub
-												Alerter.inputError("Could not delete files.");
-											}
+											// TODO Auto-generated method stub
+											Alerter.inputError("Could not delete files.");
+										}
 
-											@Override
-											public void onSuccess(Void result) {
+										@Override
+										public void onSuccess(Void result) {
 												// TODO Auto-generated method stub
 												//fileTreePresenter.refresh(fileFilter);
-											}
-										});
-									}
+										}
+									});
 									fileTreePresenter.refresh(fileFilter);
 								}
 							});
