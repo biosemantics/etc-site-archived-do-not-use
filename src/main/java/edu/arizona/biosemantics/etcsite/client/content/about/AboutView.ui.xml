@@ -66,7 +66,7 @@
 			    <td valign="top" style="width:50%">
 			    	<g:HTMLPanel>
 				   		<g:Label styleName="{style.header}" text="&nbsp;Developer Team"/>
-					
+				   		
 						<hr noshade="noshade" width="110%"/>
 						<table style="padding:5px">
 							<tr>
@@ -97,6 +97,23 @@
 							</tr>
 							<tr>
 								<td> 
+									<g:Image url="images/staffshizhuo.jpg" styleName="{style.image}"/>
+								</td>
+								<td valign="top" style="padding-left:20px; padding-top:10px">
+									<table>
+										<tr><g:Label styleName="{style.bioName}" text="Shizhuo Yu"/></tr>
+										<tr><g:Label styleName="{style.bioPosition}" text="Assistant Developer"/></tr>
+										<tr><g:Label styleName="{style.bioPosition}" text="PhD Student, University of California, Davis"/></tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+						
+						<g:Label styleName="{style.header}" text="&nbsp;Developer Team (Past)"/>
+						<hr noshade="noshade" width="110%"/>
+						<table style="padding:5px">
+							<tr>
+								<td> 
 									<g:Image url="images/staffelvis.jpg" styleName="{style.image}"/>
 								</td>
 								<td valign="top" style="padding-left:20px; padding-top:10px">
@@ -105,18 +122,6 @@
 										<tr><g:Label styleName="{style.bioPosition}" text="Assistant Developer"/></tr>
 										<!-- <tr>&nbsp;</tr>
 										<tr><g:Label text="Bio goes here!"/></tr> -->
-									</table>
-								</td>
-							</tr>
-							<tr>
-								<td> 
-									<g:Image url="images/staffshizhuo.jpg" styleName="{style.image}"/>
-								</td>
-								<td valign="top" style="padding-left:20px; padding-top:10px">
-									<table>
-										<tr><g:Label styleName="{style.bioName}" text="Shizhuo Yu"/></tr>
-										<tr><g:Label styleName="{style.bioPosition}" text="Assistant Developer"/></tr>
-										<tr><g:Label styleName="{style.bioPosition}" text="PhD Student, University of California, Davis"/></tr>
 									</table>
 								</td>
 							</tr>
