@@ -1,16 +1,12 @@
 package edu.arizona.biosemantics.etcsite.client.common;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.TextArea;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 import com.sencha.gxt.widget.core.client.box.AutoProgressMessageBox;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
 
-import edu.arizona.biosemantics.etcsite.shared.help.Help;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
 import edu.arizona.biosemantics.oto2.oto.client.common.Alerter.InfoMessageBox;
@@ -541,18 +537,11 @@ public class Alerter {
 	}
 
 	public static MessageBox showKeyValidationResult(String infoMessage, String errorList){
-		MessageBox box = new ConfirmMessageBox("Error", infoMessage);
-		box.setHeight("500");
-		box.setWidth("600");
-		TextArea tArea = new TextArea();
-		tArea.setEnabled(false);
-		tArea.setHeight("200");
-		tArea.setText(errorList);
-		box.add(tArea);
-		tArea.setWidth(""+box.getOffsetWidth());
+		MessageBox box = new ConfirmMessageBox("Error", infoMessage+errorList);
+		box.setWidth(600);
 		box.setIcon(MessageBox.ICONS.info());
 		box.getButton(PredefinedButton.YES).setText("Keep Files");
-		box.getButton(PredefinedButton.NO).setText("Delete Files with errors");
+		box.getButton(PredefinedButton.NO).setText("Abort Upload");
 		return box;
 	}
 }
