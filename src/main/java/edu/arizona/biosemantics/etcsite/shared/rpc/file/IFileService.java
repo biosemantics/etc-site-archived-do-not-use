@@ -65,5 +65,6 @@ public interface IFileService extends RemoteService {
 	public HashMap<String,String> validateKeys(AuthenticationToken authenticationToken, String directory, List<String> uploadedFiles);
 
 	public void deleteUploadedFiles(AuthenticationToken token, String uploadedDirectory, List<String> uploadedFiles) throws PermissionDeniedException, FileDeleteFailedException;
-	
+
+	public List<FileInfo> getAllOwnedFolders(AuthenticationToken authrnticationToken);
 }

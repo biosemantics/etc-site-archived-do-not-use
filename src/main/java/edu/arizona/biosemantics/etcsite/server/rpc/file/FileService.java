@@ -678,5 +678,19 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		}	
 	}
 
+	@Override
+	public List<FileInfo> getAllOwnedFolders(AuthenticationToken authenticationToken) {
+		List<FileInfo> allOwnedFolders = new LinkedList<FileInfo>();
+		File ownedFolder = new File(Configuration.fileBase + File.separator + authenticationToken.getUserId());
+		File[] childFiles = ownedFolder.listFiles();
+		for(File child : childFiles){
+			String fileAbsolutePath = child.getAbsolutePath();
+			String displayPath = fileAbsolutePath.replace(Configuration.fileBase + File.separator + authenticationToken.getUserId(), "");
+			allOwnedFolders.add(new FileInfo(child.getName(), fileAbsolutePath, displayPath, getFileType(authenticationToken, fileAbsolutePath), 
+					authenticationToken.getUserId(), false, child.isDirectory(), true));
+		}
+		return allOwnedFolders;
+	}
+
 }
 

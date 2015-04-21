@@ -25,6 +25,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
 public class SemanticMarkupActivity extends MyAbstractActivity {
 
 	private ITaskServiceAsync taskService;
+	private ISemanticMarkupCreateView.Presenter createPresenter;
 	private ISemanticMarkupInputView.Presenter inputPresenter;
 	private ISemanticMarkupPreprocessView.Presenter preprocessPresenter;
 	private ISemanticMarkupLearnView.Presenter learnPresenter;
@@ -41,6 +42,7 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 	public SemanticMarkupActivity(
 			ITaskServiceAsync taskService,
 			Presenter inputPresenter,
+			ISemanticMarkupCreateView.Presenter createPresenter,
 			ISemanticMarkupPreprocessView.Presenter preprocessPresenter,
 			ISemanticMarkupLearnView.Presenter learnPresenter,
 			ISemanticMarkupReviewView.Presenter reviewPresenter,
@@ -56,6 +58,7 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 			IResetPasswordView.Presenter resetPasswordPresenter) {
 		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter);
 		this.taskService = taskService;
+		this.createPresenter = createPresenter;
 		this.inputPresenter = inputPresenter;
 		this.preprocessPresenter = preprocessPresenter;
 		this.learnPresenter = learnPresenter;
@@ -85,7 +88,7 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 		if(place instanceof SemanticMarkupPlace)
 			task = ((SemanticMarkupPlace)place).getTask();
 		if(task == null) 
-			panel.setWidget(inputPresenter.getView());
+			panel.setWidget(createPresenter.getView());
 		else 
 			this.taskService.getTask(Authentication.getInstance().getToken(),
 					 task, new AsyncCallback<Task>() {
@@ -93,6 +96,9 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 						public void onSuccess(Task result) {
 							if(result.getTaskType().getTaskTypeEnum().equals(TaskTypeEnum.SEMANTIC_MARKUP)) {
 								switch(TaskStageEnum.valueOf(result.getTaskStage().getTaskStage())) {
+								case CREATE_INPUT:
+									panel.setWidget(createPresenter.getView());
+									break;
 								case INPUT:
 									panel.setWidget(inputPresenter.getView());
 									break;

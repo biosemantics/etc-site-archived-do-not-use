@@ -49,48 +49,9 @@
 				</g:HorizontalPanel>
 				<g:VerticalPanel styleName="{style.padding}">
 					<g:VerticalPanel>
-						<g:VerticalPanel styleName="{style.padding}" />
 						<g:FlowPanel>
-							<g:InlineLabel styleName="{style.bold}">INPUT
-								REQUIREMENTS:&nbsp;
-							</g:InlineLabel>
 							<g:InlineLabel styleName="DescriptionFont">
-								Text Capture takes textual morphological descriptions of one or
-								more taxa as input. The input files, which must be in English and
-								conform to this&nbsp;
-							</g:InlineLabel>
-							<g:Anchor
-								href="http://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupInput.xsd"
-								target="_blank" styleName="{style.padding}">format</g:Anchor>
-							<g:InlineLabel styleName="DescriptionFont">
-			            	, can be created using the 'Create Input for Text Capture' function in the&nbsp;
-							</g:InlineLabel>
-							<g:Anchor ui:field="fileManagerAnchor" styleName="{style.clickable}">File
-								Manager</g:Anchor>
-							<g:InlineLabel>
-								.
-							</g:InlineLabel>
-						</g:FlowPanel>
-
-						<g:InlineLabel>&nbsp;
-						</g:InlineLabel>
-
-						<g:FlowPanel>
-							<g:InlineLabel styleName="{style.bold}">1.&nbsp;
-							</g:InlineLabel>
-							<g:InlineLabel styleName="DescriptionFont">
-								If you have not done so, please upload or create input taxon
-								descriptions using the&nbsp;
-							</g:InlineLabel>
-							<g:Anchor ui:field="fileManagerAnchor2" styleName="{style.clickable}">File
-								Manager</g:Anchor>
-						</g:FlowPanel>
-						<g:InlineLabel>&nbsp;</g:InlineLabel>
-						<g:FlowPanel>
-							<g:InlineLabel styleName="{style.bold}">2.&nbsp;
-							</g:InlineLabel>
-							<g:InlineLabel styleName="DescriptionFont">
-								Then, provide the information below and click on "Next Step in Text Capture" to start the
+								Provide the information below and click on "Next Step in Text Capture" to start the
 								process:
 							</g:InlineLabel>
 						</g:FlowPanel>
@@ -125,7 +86,7 @@
 						<g:HorizontalPanel styleName="inputForm">
 							<g:VerticalPanel styleName="{style.firstColumn}">
 								<g:cell verticalAlignment="ALIGN_TOP">
-									<g:Label>Select Folder:</g:Label>
+									<g:Label>Selected Folder:</g:Label>
 								</g:cell>
 <!-- 								<g:InlineLabel styleName="{style.note}"> -->
 <!-- 									Select a folder of taxon -->
@@ -137,10 +98,10 @@
 								</g:InlineLabel>-->
 							</g:VerticalPanel>
 							<g:cell verticalAlignment="ALIGN_MIDDLE">
-								<g:Button ui:field="inputButton">Select Folder</g:Button>
+								<g:Label ui:field="inputLabel" styleName="{style.important}"></g:Label>
 							</g:cell>
 							<g:cell verticalAlignment="ALIGN_MIDDLE">
-								<g:Label ui:field="inputLabel" styleName="{style.important}"></g:Label>
+								<g:Button ui:field="inputButton">Change Folder</g:Button>
 							</g:cell>
 						</g:HorizontalPanel>
 						<g:HorizontalPanel styleName="inputForm">

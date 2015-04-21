@@ -57,4 +57,7 @@ public interface IFileServiceAsync {
 			String uploadedDirectory, List<String> uploadedFiles,
 			AsyncCallback<Void> asyncCallback);
 
+	void getAllOwnedFolders(AuthenticationToken authrnticationToken,
+			AsyncCallback<List<FileInfo>> callback);
+
 }

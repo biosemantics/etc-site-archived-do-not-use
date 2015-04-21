@@ -92,6 +92,7 @@ import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGe
 import edu.arizona.biosemantics.etcsite.client.content.news.INewsView;
 import edu.arizona.biosemantics.etcsite.client.content.news.NewsView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.IImportOtoView;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupCreateView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupInputView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupLearnView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupOutputView;
@@ -99,6 +100,8 @@ import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticM
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupPreprocessView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupReviewView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ImportOtoView;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupCreatePresenter;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupCreateView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupLearnPresenter;
@@ -230,6 +233,8 @@ public class ClientModule extends AbstractGinModule {
 		bind(IMatrixGenerationOutputView.class).to(MatrixGenerationOutputView.class);
 		bind(IMatrixGenerationOutputView.Presenter.class).to(MatrixGenerationOutputPresenter.class);
 		
+		bind(ISemanticMarkupCreateView.class).to(SemanticMarkupCreateView.class);
+		bind(ISemanticMarkupCreateView.Presenter.class).to(SemanticMarkupCreatePresenter.class);
 		bind(ISemanticMarkupInputView.class).to(SemanticMarkupInputView.class);
 		bind(ISemanticMarkupInputView.Presenter.class).to(SemanticMarkupInputPresenter.class);
 		bind(ISemanticMarkupPreprocessView.class).to(SemanticMarkupPreprocessView.class);
