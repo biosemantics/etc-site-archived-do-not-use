@@ -1,9 +1,6 @@
 package edu.arizona.biosemantics.etcsite.server;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
-import edu.arizona.biosemantics.common.validation.key.KeyElementValidator;
-import edu.arizona.biosemantics.common.validation.key.KeyValidationException;
-import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.server.process.file.ContentValidatorProvider;
 import edu.arizona.biosemantics.etcsite.server.process.file.IContentValidator;
 import edu.arizona.biosemantics.etcsite.server.process.file.XmlNamespaceManager;
@@ -20,7 +17,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,10 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang3.StringUtils;
 
-import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
-import com.sencha.gxt.widget.core.client.box.MessageBox;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
  * This is an example of how to use UploadAction class.
@@ -84,10 +76,8 @@ public class UploadServlet extends UploadAction {
 		List<String> fileNames = new LinkedList<String>();
 		List<String> fileAlreadyExists = new LinkedList<String>();
 		if(authenticationResult.getResult()) {
-			int cont = 0;
 			for (FileItem item : sessionFiles) {
 				if (false == item.isFormField()) {
-					cont++;
 					
 						// / Create a new file based on the remote file name in the
 						// client

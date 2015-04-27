@@ -8,7 +8,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.file.Tree;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 
@@ -51,6 +50,11 @@ public interface IFileServiceAsync {
 	public void getDownloadPath(AuthenticationToken authenticationToken, String filePath, AsyncCallback<String> callback);
 
 	void validateKeys(AuthenticationToken authenticationToken,
-			String directory, AsyncCallback<HashMap<String, String>> callback);
+			String directory, List<String> uploadedFiles,
+			AsyncCallback<HashMap<String, String>> callback);
+
+	void deleteUploadedFiles(AuthenticationToken token,
+			String uploadedDirectory, List<String> uploadedFiles,
+			AsyncCallback<Void> asyncCallback);
 
 }
