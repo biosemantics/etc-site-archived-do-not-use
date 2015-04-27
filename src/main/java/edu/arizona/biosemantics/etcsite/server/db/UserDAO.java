@@ -73,8 +73,7 @@ public class UserDAO {
 		String otoAuthenticationToken = result.getString(12);
 		Date created = result.getTimestamp(13);
 
-		Map<String , Boolean> profile=null;
-		profile = getSerializedProfile(id);
+		Map<String , Boolean> profile = getSerializedProfile(id);
 
 		return new User(id, openIdProviderId, openIdProvider, password,
 					firstName, lastName, email, affiliation, bioportalUserId,
@@ -127,7 +126,7 @@ public class UserDAO {
 			if(generatedKeys.next()) {
 				result = this.getUser(generatedKeys.getInt(1));
 			}
-			storeSerializedProfile(result);
+			storeSerializedProfile(result.getId(), result.getProfile());
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't add user", e);
 		}
@@ -156,31 +155,33 @@ public class UserDAO {
 			query.setParameter(11, user.getOtoAuthenticationToken());
 			query.setParameter(12, user.getId());
 			query.execute();
-			storeSerializedProfile(user);
+			storeSerializedProfile(user.getId(), user.getProfile());
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't update matrix generation configuration", e);
 		}
 	}
 
-	private void storeSerializedProfile(User user) {
+	private void storeSerializedProfile(int userId, Map<String, Boolean> profile) {
 		String file = Configuration.etcFiles + File.separator + "profiles"
-				+ File.separator + user.getId() + ".ser";
+				+ File.separator + userId + ".ser";
 		try (ObjectOutput output = new ObjectOutputStream(
 				new BufferedOutputStream(new FileOutputStream(file)))) {
-			output.writeObject(user.getProfile());
+			output.writeObject(profile);
 		} catch (Exception e) {
 			log(LogLevel.ERROR, "Serialization of user failed", e);
 		}
 	}
 	
-	private HashMap<String, Boolean> getSerializedProfile(int userId) {
+	private Map<String, Boolean> getSerializedProfile(int userId) {
 		String file = Configuration.etcFiles + File.separator + "profiles" + File.separator + userId + ".ser";
 		try(ObjectInput input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
-			return (HashMap<String, Boolean>) input.readObject();
+			return (Map<String, Boolean>) input.readObject();
 		} catch (ClassNotFoundException | IOException e) {
-			log(LogLevel.ERROR, "Deserialization of user failed", e);
+			log(LogLevel.ERROR, "Deserialization of user failed. Will instantiate default profile.", e);
+			Map<String, Boolean> defaultProfile = new HashMap<String, Boolean>();
+			this.storeSerializedProfile(userId, defaultProfile);
+			return defaultProfile;
 		}
-		return new HashMap<String, Boolean>();
 	}
 	
 	public List<ShortUser> getUsers() {
