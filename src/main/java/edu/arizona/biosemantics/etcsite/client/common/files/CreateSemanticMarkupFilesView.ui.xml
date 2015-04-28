@@ -83,16 +83,13 @@
 						<g:VerticalPanel>
 							<g:VerticalPanel>
 								<g:Label styleName="{style.sub-heading}">Source Document Information *</g:Label>
-								<g:Grid>
+								<g:Grid ui:field="docInfoGrid">
 								    <g:row>
 								        <g:customCell>
 											<g:Label>Author *</g:Label>
 										</g:customCell>
 										<g:customCell>
-											<g:TextBox ui:field="author"></g:TextBox>
-										</g:customCell>
-										<g:customCell>
-										    <g:Label styleName="{style.toolTip}	">Last Name of the first Author</g:Label>
+											<g:TextBox visibleLength="45" ui:field="author"></g:TextBox>
 										</g:customCell>
 									</g:row>
 									<g:row>
@@ -100,7 +97,7 @@
 											<g:Label>Publication Year *</g:Label>
 										</g:customCell>
 										<g:customCell>
-											<g:TextBox ui:field="year"></g:TextBox>
+											<g:TextBox visibleLength="45" ui:field="year"></g:TextBox>
 										</g:customCell>
 									</g:row>
 									<g:row>
@@ -108,7 +105,7 @@
 											<g:Label>Title *</g:Label>
 										</g:customCell>
 										<g:customCell>
-											<g:TextBox ui:field="title"></g:TextBox>
+											<g:TextBox visibleLength="45" ui:field="title"></g:TextBox>
 										</g:customCell>
 									</g:row>
 									<g:row>
@@ -116,7 +113,7 @@
 											<g:Label>DOI</g:Label>
 										</g:customCell>
 										<g:customCell>
-											<g:TextBox ui:field="doi"></g:TextBox>
+											<g:TextBox visibleLength="45" ui:field="doi"></g:TextBox>
 										</g:customCell>
 									</g:row>
 									<g:row>
@@ -124,7 +121,7 @@
 											<g:Label>Full Citation</g:Label>
 										</g:customCell>
 										<g:customCell>
-											<g:TextBox ui:field="fullCitation"></g:TextBox>
+											<g:TextBox visibleLength="45" ui:field="fullCitation"></g:TextBox>
 										</g:customCell>
 									</g:row>
 								</g:Grid>
@@ -357,7 +354,7 @@
 											<g:Label>Author *</g:Label>
 										</g:customCell>
 										<g:customCell>
-											<g:TextBox ui:field="batch_author"></g:TextBox>
+											<g:TextBox visibleLength="45" ui:field="batch_author"></g:TextBox>
 										</g:customCell>
 									</g:row>
 									<g:row>
@@ -365,7 +362,7 @@
 											<g:Label>Publication Year *</g:Label>
 										</g:customCell>
 										<g:customCell>
-											<g:TextBox ui:field="batch_year"></g:TextBox>
+											<g:TextBox visibleLength="45" ui:field="batch_year"></g:TextBox>
 										</g:customCell>
 									</g:row>
 									<g:row>
@@ -373,7 +370,7 @@
 											<g:Label>Title *</g:Label>
 										</g:customCell>
 										<g:customCell>
-											<g:TextBox ui:field="batch_title"></g:TextBox>
+											<g:TextBox visibleLength="45" ui:field="batch_title"></g:TextBox>
 										</g:customCell>
 									</g:row>
 									<g:row>
@@ -381,7 +378,7 @@
 											<g:Label>DOI</g:Label>
 										</g:customCell>
 										<g:customCell>
-											<g:TextBox ui:field="batch_doi"></g:TextBox>
+											<g:TextBox visibleLength="45" ui:field="batch_doi"></g:TextBox>
 										</g:customCell>
 									</g:row>
 									<g:row>
@@ -389,7 +386,7 @@
 											<g:Label>Full Citation</g:Label>
 										</g:customCell>
 										<g:customCell>
-											<g:TextBox ui:field="batch_fullCitation"></g:TextBox>
+											<g:TextBox visibleLength="45" ui:field="batch_fullCitation"></g:TextBox>
 										</g:customCell>
 									</g:row>
 								</g:Grid>

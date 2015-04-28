@@ -210,9 +210,9 @@ public class ClientModule extends AbstractGinModule {
 		bind(IResetPasswordView.Presenter.class).to(ResetPasswordPresenter.class);
 		bind(IRegisterView.class).to(RegisterView.class);
 		bind(IRegisterView.Presenter.class).to(RegisterPresenter.class);
-		bind(ICreateSemanticMarkupFilesDialogView.Presenter.class).to(CreateSemanticMarkupFilesDialogPresenter.class).in(Singleton.class);
+		bind(ICreateSemanticMarkupFilesDialogView.Presenter.class).to(CreateSemanticMarkupFilesDialogPresenter.class);
 		bind(ICreateSemanticMarkupFilesDialogView.class).to(CreateSemanticMarkupFilesDialogView.class);
-		bind(ICreateSemanticMarkupFilesView.Presenter.class).to(CreateSemanticMarkupFilesPresenter.class).in(Singleton.class);
+		bind(ICreateSemanticMarkupFilesView.Presenter.class).to(CreateSemanticMarkupFilesPresenter.class);
 		bind(ICreateSemanticMarkupFilesView.class).to(CreateSemanticMarkupFilesView.class);
 		
 		bind(IAnnotationReviewView.class).to(AnnotationReviewView.class);

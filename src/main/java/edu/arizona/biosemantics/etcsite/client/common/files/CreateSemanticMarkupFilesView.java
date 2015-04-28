@@ -75,6 +75,9 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	
 	@UiField
 	HorizontalPanel buttonPanel;
+	
+	@UiField
+	Grid docInfoGrid;
 
 	/*================= Buttons in containing panel (Tab Panel) =================*/
 	@UiField
@@ -228,6 +231,18 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	    toggleGroup.add(tNames);
 	    toggleGroup.add(descInstructions);
 		tabPanel.selectTab(0);
+		
+		author.getElement().setPropertyString("placeholder", "Enter only the Last Name of the first Author here");
+		title.getElement().setPropertyString("placeholder", "Enter Publication Title");
+		doi.getElement().setPropertyString("placeholder", "Enter DoI");
+		fullCitation.getElement().setPropertyString("placeholder", "Enter Full Citation");
+		year.getElement().setPropertyString("placeholder", "Enter Publication Year");
+		
+		batch_author.getElement().setPropertyString("placeholder", "Enter only the Last Name of the first Author here");
+		batch_title.getElement().setPropertyString("placeholder", "Enter Publication Title");
+		batch_doi.getElement().setPropertyString("placeholder", "Enter DoI");
+		batch_fullCitation.getElement().setPropertyString("placeholder", "Enter Full Citation");
+		batch_year.getElement().setPropertyString("placeholder", "Enter Publication Year");
 	}
  
 	/*============ Handler Methods ============*/
