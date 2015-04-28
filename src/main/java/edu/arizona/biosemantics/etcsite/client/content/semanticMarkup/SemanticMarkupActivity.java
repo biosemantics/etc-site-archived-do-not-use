@@ -87,9 +87,13 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 		Place place = placeController.getWhere();
 		if(place instanceof SemanticMarkupPlace)
 			task = ((SemanticMarkupPlace)place).getTask();
-		if(task == null) 
-			panel.setWidget(createPresenter.getView());
-		else 
+		if(task == null){
+			if(place instanceof SemanticMarkupInputPlace){
+				panel.setWidget(inputPresenter.getView());
+			}else{
+				panel.setWidget(createPresenter.getView());
+			}
+		}else 
 			this.taskService.getTask(Authentication.getInstance().getToken(),
 					 task, new AsyncCallback<Task>() {
 						@Override

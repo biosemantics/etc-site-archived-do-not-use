@@ -27,6 +27,7 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 	private FilePathShortener filePathShortener;
 	private String inputFile;
 	private IFileManagerDialogView.Presenter fileManagerDialogPresenter;
+	ISemanticMarkupCreateView.Presenter  semanticMarkupCreatePresenter;
 
 	@Inject
 	public SemanticMarkupInputPresenter(ISemanticMarkupInputView view, 
@@ -34,7 +35,8 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 			placeController, ISemanticMarkupServiceAsync semanticMarkupService, 
 			ISelectableFileTreeView.Presenter selectableFileTreePresenter,
 			FilePathShortener filePathShortener,
-			IFileManagerDialogView.Presenter fileManagerDialogPresenter
+			IFileManagerDialogView.Presenter fileManagerDialogPresenter,
+			ISemanticMarkupCreateView.Presenter  semanticMarkupCreatePresenter
 			) {
 		this.view = view;
 		view.setPresenter(this);
@@ -45,6 +47,8 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 		this.fileTreePresenter = selectableFileTreePresenter.getFileTreePresenter();
 		this.filePathShortener = filePathShortener;
 		this.fileManagerDialogPresenter = fileManagerDialogPresenter;
+		this.semanticMarkupCreatePresenter = semanticMarkupCreatePresenter;
+		//view.setInput(semanticMarkupCreatePresenter.getInputFolder());
 	}
 	
 	@Override

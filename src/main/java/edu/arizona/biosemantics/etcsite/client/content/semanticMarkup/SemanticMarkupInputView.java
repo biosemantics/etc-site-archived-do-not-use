@@ -68,7 +68,9 @@ public class SemanticMarkupInputView extends Composite implements ISemanticMarku
 	
 	@Override
 	public void setInput(String input) {
-		this.inputLabel.setText(input);
+		if(input != null){
+			this.inputLabel.setText(input);
+		}
 	}
 	
 	@Override

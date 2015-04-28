@@ -66,5 +66,7 @@ public interface IFileService extends RemoteService {
 
 	public void deleteUploadedFiles(AuthenticationToken token, String uploadedDirectory, List<String> uploadedFiles) throws PermissionDeniedException, FileDeleteFailedException;
 
-	public List<FileInfo> getAllOwnedFolders(AuthenticationToken authrnticationToken);
+	public List<FileInfo> getAllOwnedFolders(AuthenticationToken authenticationToken);
+	
+	public FileInfo getOwnedRootFolder(AuthenticationToken authenticationToken);
 }

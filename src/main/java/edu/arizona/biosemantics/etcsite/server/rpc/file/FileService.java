@@ -692,5 +692,12 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		return allOwnedFolders;
 	}
 
+	@Override
+	public FileInfo getOwnedRootFolder(AuthenticationToken authenticationToken) {
+		File ownedFolder = new File(Configuration.fileBase + File.separator + authenticationToken.getUserId());
+		FileInfo ownedFolderFileInfo = new FileInfo(ownedFolder.getName(), ownedFolder.getAbsolutePath(), "", getFileType(authenticationToken, ownedFolder.getAbsolutePath()), authenticationToken.getUserId(), false, ownedFolder.isDirectory(), true);
+		return ownedFolderFileInfo;
+	}
+
 }
 

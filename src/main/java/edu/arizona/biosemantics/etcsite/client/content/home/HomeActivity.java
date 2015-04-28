@@ -6,19 +6,10 @@ import java.util.LinkedList;
 import com.google.gwt.activity.shared.MyAbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
-import com.sencha.gxt.widget.core.client.box.MessageBox;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
-import edu.arizona.biosemantics.etcsite.client.common.Alerter;
-import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.AuthenticationPresenter;
 import edu.arizona.biosemantics.etcsite.client.common.AuthenticationToPlaceGoer;
-import edu.arizona.biosemantics.etcsite.client.common.HasTaskPlace;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
@@ -27,15 +18,10 @@ import edu.arizona.biosemantics.etcsite.client.common.ToPlaceGoer;
 import edu.arizona.biosemantics.etcsite.client.content.about.AboutPlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.pipeline.PipelinePlace;
-import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPlace;
-import edu.arizona.biosemantics.etcsite.client.content.taskManager.ResumeTaskPlaceMapper;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonInputPlace;
-import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonPlace;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationInputPlace;
-import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationPlace;
 import edu.arizona.biosemantics.etcsite.client.content.visualization.VisualizationPlace;
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.pipeline.IPipelineServiceAsync;
@@ -96,7 +82,7 @@ public class HomeActivity extends MyAbstractActivity implements IHomeView.Presen
 
 	@Override
 	public void onSemanticMarkup() {
-		this.authenticationToPlaceGoer.goTo(new SemanticMarkupInputPlace(), new LinkedList<ToPlaceGoer>(Arrays.asList(this.resumeTaskToPlaceGoer)));
+		this.authenticationToPlaceGoer.goTo(new SemanticMarkupCreatePlace(), new LinkedList<ToPlaceGoer>(Arrays.asList(this.resumeTaskToPlaceGoer)));
 	}
 
 	@Override
