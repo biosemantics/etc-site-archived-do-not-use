@@ -52,7 +52,7 @@ public class MatrixGenerationConfigurationDAO {
 					matrixGenerationQuery.setParameter(2, matrixGenerationConfiguration.getInput());
 					matrixGenerationQuery.setParameter(3, matrixGenerationConfiguration.getOutput());
 					matrixGenerationQuery.setParameter(4, matrixGenerationConfiguration.isInheritValues());
-					matrixGenerationQuery.setParameter(5, matrixGenerationConfiguration.isInheritValues());
+					matrixGenerationQuery.setParameter(5, matrixGenerationConfiguration.isGenerateAbsentPresent());
 					matrixGenerationQuery.execute();
 				}
 				result = this.getMatrixGenerationConfiguration(generatedKeys.getInt(1));

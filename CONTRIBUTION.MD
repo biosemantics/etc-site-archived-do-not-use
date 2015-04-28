@@ -5,6 +5,7 @@ Contribution
 If you want to contribute, the source is built using Maven and Google Web Toolkit.
 In Eclipse you can therefore use:
 * m2e - Maven Integration for Eclipse (e.g. for Juno version: http://download.eclipse.org/releases/juno)
+http://download.eclipse.org/technology/m2e/releases
 * AspectJ Development Tools (http://download.eclipse.org/tools/ajdt/42/update)
 * Maven Integration for AJDT (http://dist.springsource.org/release/AJDT/configurator/)
 * Google Plugin for Eclipse (https://developers.google.com/eclipse/)
