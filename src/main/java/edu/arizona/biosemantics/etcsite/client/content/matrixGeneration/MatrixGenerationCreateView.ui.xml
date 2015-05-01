@@ -71,7 +71,7 @@
 								conform to this&nbsp;
 							</g:InlineLabel>
 							<g:Anchor
-								href="http://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupInput.xsd"
+								href="http://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupOutput.xsd"
 								target="_blank" styleName="{style.padding}">format</g:Anchor>
 							<g:InlineLabel styleName="DescriptionFont">
 			            	. Choose one of the following methods to provide the input or Click Next to choose an existing folder.
@@ -83,43 +83,6 @@
 
 					<g:VerticalPanel styleName="{style.subMenuEntry}">
 					    <g:VerticalPanel spacing="20">
-					        <g:RadioButton ui:field="createRadio" name="selectInputMethod" styleName="{style.radioPadding}">Create Files</g:RadioButton>
-					        <g:VerticalPanel styleName = "{style.margin15}" ui:field="createPanel" visible="false">
-					            <g:InlineLabel>
-					                Create/Choose a folder to save the files.
-					            </g:InlineLabel>
-					            <g:Grid cellSpacing="5">
-					                <g:row>
-					                    <g:customCell>
-					                    	<g:RadioButton name="createFileFolder" ui:field="newFolderRadio_create" styleName="{style.radioPadding}">Create New Folder</g:RadioButton>    
-					                    </g:customCell>
-					                    <g:customCell>
-					                    	<g:TextBox enabled="false" ui:field="newFolderTextBox_create"></g:TextBox>    
-					                    </g:customCell>
-					                    <g:customCell>
-					                        <g:Button visible="false" ui:field="createNewFolderButton_create">Create New Folder</g:Button>
-					                    </g:customCell>
-					                    <g:customCell>
-					                        <g:Label ui:field="createFolderStatusLabel_create"></g:Label>
-					                    </g:customCell>
-					                </g:row>
-					                <g:row>
-					                    <g:customCell>
-					                    	<g:RadioButton name="createFileFolder" ui:field="selectFolderRadio_create" styleName="{style.radioPadding}">Select an Existing Folder</g:RadioButton>    
-					                    </g:customCell>
-					                    <g:customCell>
-					                    	<form:ComboBox ui:field="selectFolderComboBox_create"></form:ComboBox>
-					        				<!-- <g:SuggestBox></g:SuggestBox> -->
-					                    </g:customCell>
-					                </g:row>
-					                <g:row>
-					                    <g:customCell>
-					                    	<g:Button ui:field="createFilesButton" enabled="false">Create Files</g:Button> 
-					                    </g:customCell>
-					                    <g:cell></g:cell>
-					                </g:row>
-					            </g:Grid>
-					        </g:VerticalPanel>
 					        <g:RadioButton name="selectInputMethod" ui:field="uploadRadio" styleName="{style.radioPadding}">Upload Files</g:RadioButton>
 					        <g:VerticalPanel styleName = "{style.margin15}" ui:field="uploadPanel" visible="false">
 					            <g:InlineLabel>

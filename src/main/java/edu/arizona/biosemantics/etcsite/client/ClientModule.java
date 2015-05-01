@@ -77,10 +77,13 @@ import edu.arizona.biosemantics.etcsite.client.content.home.HomeView;
 import edu.arizona.biosemantics.etcsite.client.content.home.IHomeHeaderView;
 import edu.arizona.biosemantics.etcsite.client.content.home.IHomeMainView;
 import edu.arizona.biosemantics.etcsite.client.content.home.IHomeView;
+import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.IMatrixGenerationCreateView;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.IMatrixGenerationInputView;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.IMatrixGenerationOutputView;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.IMatrixGenerationProcessView;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.IMatrixGenerationReviewView;
+import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationCreatePresenter;
+import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationCreateView;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputView;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationOutputPresenter;
@@ -226,6 +229,8 @@ public class ClientModule extends AbstractGinModule {
 		
 		bind(IMatrixGenerationInputView.class).to(MatrixGenerationInputView.class);
 		bind(IMatrixGenerationInputView.Presenter.class).to(MatrixGenerationInputPresenter.class);
+		bind(IMatrixGenerationCreateView.class).to(MatrixGenerationCreateView.class);
+		bind(IMatrixGenerationCreateView.Presenter.class).to(MatrixGenerationCreatePresenter.class);
 		bind(IMatrixGenerationProcessView.class).to(MatrixGenerationProcessView.class);
 		bind(IMatrixGenerationProcessView.Presenter.class).to(MatrixGenerationProcessPresenter.class);
 		bind(IMatrixGenerationReviewView.class).to(MatrixGenerationReviewView.class);
@@ -233,10 +238,10 @@ public class ClientModule extends AbstractGinModule {
 		bind(IMatrixGenerationOutputView.class).to(MatrixGenerationOutputView.class);
 		bind(IMatrixGenerationOutputView.Presenter.class).to(MatrixGenerationOutputPresenter.class);
 		
-		bind(ISemanticMarkupCreateView.class).to(SemanticMarkupCreateView.class);
-		bind(ISemanticMarkupCreateView.Presenter.class).to(SemanticMarkupCreatePresenter.class);
 		bind(ISemanticMarkupInputView.class).to(SemanticMarkupInputView.class);
 		bind(ISemanticMarkupInputView.Presenter.class).to(SemanticMarkupInputPresenter.class);
+		bind(ISemanticMarkupCreateView.class).to(SemanticMarkupCreateView.class);
+		bind(ISemanticMarkupCreateView.Presenter.class).to(SemanticMarkupCreatePresenter.class);
 		bind(ISemanticMarkupPreprocessView.class).to(SemanticMarkupPreprocessView.class);
 		bind(ISemanticMarkupPreprocessView.Presenter.class).to(SemanticMarkupPreprocessPresenter.class);
 		bind(ISemanticMarkupLearnView.class).to(SemanticMarkupLearnView.class);

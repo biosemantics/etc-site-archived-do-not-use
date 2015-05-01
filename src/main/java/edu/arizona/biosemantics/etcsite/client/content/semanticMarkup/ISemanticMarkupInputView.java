@@ -9,10 +9,8 @@ public interface ISemanticMarkupInputView extends IsWidget {
 		IsWidget getView();
 
 		void onNext();
-
-		void onInput();
-
-		void onFileManager();
+		
+		void setSelectedFolder(String fullPath, String shortendPath);
 		
 	}
 	

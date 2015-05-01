@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.client.content.semanticMarkup;
+package edu.arizona.biosemantics.etcsite.client.content.matrixGeneration;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.Widget;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
 import gwtupload.client.Uploader;
 
-public interface ISemanticMarkupCreateView extends IsWidget{
+public interface IMatrixGenerationCreateView extends IsWidget{
 	
 	public interface Presenter {
 
@@ -20,12 +20,6 @@ public interface ISemanticMarkupCreateView extends IsWidget{
 		void getAllFolders();
 
 		boolean createNewFolder(String text);
-
-		void createFiles(FileInfo createdFolder);
-
-		void createFilesInNewFolder();
-
-		String getInputFolder();
 
 		void onSelect();
 
@@ -43,8 +37,6 @@ public interface ISemanticMarkupCreateView extends IsWidget{
 
 	void setCreateFolderStatus(String string);
 	
-	boolean getCreateRadioValue();
-	
 	boolean getUploadRadioValue();
 	
 	Uploader getUploader();
@@ -57,12 +49,6 @@ public interface ISemanticMarkupCreateView extends IsWidget{
 
 	void enableNextButton(boolean value);
 	
-	public boolean getNewFolderRadio_create();
-
-	public Boolean getSelectFolderRadio_create();
-
-	public FileInfo getSelectFolderComboBox_create();
-
 	public Boolean getNewFolderRadio_upload();
 
 	public Boolean getSelectFolderRadio_upload();

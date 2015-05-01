@@ -16,7 +16,7 @@ import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
 import edu.arizona.biosemantics.etcsite.client.common.ResumeTaskToPlaceGoer;
 import edu.arizona.biosemantics.etcsite.client.common.ToPlaceGoer;
 import edu.arizona.biosemantics.etcsite.client.content.about.AboutPlace;
-import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPlace;
+import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.pipeline.PipelinePlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonInputPlace;
@@ -77,7 +77,7 @@ public class HomeActivity extends MyAbstractActivity implements IHomeView.Presen
 
 	@Override
 	public void onMatrixGeneration() {		
-		this.authenticationToPlaceGoer.goTo(new MatrixGenerationInputPlace(), new LinkedList<ToPlaceGoer>(Arrays.asList(this.resumeTaskToPlaceGoer)));
+		this.authenticationToPlaceGoer.goTo(new MatrixGenerationCreatePlace(), new LinkedList<ToPlaceGoer>(Arrays.asList(this.resumeTaskToPlaceGoer)));
 	}
 
 	@Override

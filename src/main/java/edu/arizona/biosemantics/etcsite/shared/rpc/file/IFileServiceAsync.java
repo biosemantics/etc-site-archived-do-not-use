@@ -63,4 +63,7 @@ public interface IFileServiceAsync {
 	void getOwnedRootFolder(AuthenticationToken authenticationToken,
 			AsyncCallback<FileInfo> callback);
 
+	void getAllSharedFolders(AuthenticationToken authenticationToken,
+			AsyncCallback<List<FileInfo>> callback);
+
 }

@@ -68,5 +68,7 @@ public interface IFileService extends RemoteService {
 
 	public List<FileInfo> getAllOwnedFolders(AuthenticationToken authenticationToken);
 	
+	public List<FileInfo> getAllSharedFolders(AuthenticationToken authenticationToken);
+	
 	public FileInfo getOwnedRootFolder(AuthenticationToken authenticationToken);
 }

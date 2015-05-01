@@ -28,6 +28,7 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 
 	private ITaskServiceAsync taskService;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
+	private IMatrixGenerationCreateView.Presenter createPresenter;
 	private IMatrixGenerationInputView.Presenter inputPresenter;
 	private IMatrixGenerationProcessView.Presenter processPresenter;
 	private IMatrixGenerationReviewView.Presenter reviewPresenter;
@@ -41,6 +42,7 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 	@Inject
 	public MatrixGenerationActivity(ITaskServiceAsync taskService, 
 			IMatrixGenerationServiceAsync matrixGenerationService,
+			IMatrixGenerationCreateView.Presenter createPresenter,
 			IMatrixGenerationInputView.Presenter inputPresenter, 
 			IMatrixGenerationProcessView.Presenter processPresenter,
 			IMatrixGenerationReviewView.Presenter reviewPresenter,
@@ -53,6 +55,7 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter);
 		this.taskService = taskService;
 		this.matrixGenerationService = matrixGenerationService;
+		this.createPresenter = createPresenter;
 		this.inputPresenter = inputPresenter;
 		this.processPresenter = processPresenter;
 		this.reviewPresenter = reviewPresenter;
@@ -81,9 +84,14 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 		Place place = placeController.getWhere();
 		if(place instanceof MatrixGenerationPlace)
 			currentTask = ((MatrixGenerationPlace)place).getTask();
-		if(currentTask == null) 
-			panel.setWidget(inputPresenter.getView());
-		else 
+		if(currentTask == null){
+			if( place instanceof MatrixGenerationCreatePlace){
+				panel.setWidget(createPresenter.getView());
+			}else{
+				inputPresenter.setSelectedFolder(createPresenter.getInputFolderPath(), createPresenter.getInputFolderShortenedPath());
+				panel.setWidget(inputPresenter.getView());
+			}
+		}else 
 			this.taskService.getTask(Authentication.getInstance().getToken(),
 					currentTask, new AsyncCallback<Task>() {
 						@Override
@@ -92,6 +100,7 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 								currentTaskStage = TaskStageEnum.valueOf(result.getTaskStage().getTaskStage());
 								switch(currentTaskStage) {
 								case INPUT:
+									inputPresenter.setSelectedFolder(createPresenter.getInputFolderPath(), createPresenter.getInputFolderShortenedPath());
 									panel.setWidget(inputPresenter.getView());
 									break;
 								case OUTPUT:

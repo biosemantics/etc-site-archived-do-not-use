@@ -38,8 +38,7 @@ public class SemanticMarkupInputView extends Composite implements ISemanticMarku
 	@UiField
 	Label inputLabel;
 	
-	@UiField
-	Button inputButton;
+	//@UiField Button inputButton;
 	
 	@UiField
 	TextBox taskNameTextBox;
@@ -59,11 +58,6 @@ public class SemanticMarkupInputView extends Composite implements ISemanticMarku
 	@UiHandler("nextButton")
 	public void onNext(ClickEvent event) {
 		presenter.onNext();
-	}
-	
-	@UiHandler("inputButton")
-	public void onInput(ClickEvent event) {
-		presenter.onInput();
 	}
 	
 	@Override
@@ -91,7 +85,7 @@ public class SemanticMarkupInputView extends Composite implements ISemanticMarku
 	@Override
 	public void resetFields(){
 		this.taskNameTextBox.setText("");
-		this.inputLabel.setText("");
+		//this.inputLabel.setText("");
 		this.glossaryListBox.setSelectedIndex(getInitialGlossaryIndex());
 	}
 

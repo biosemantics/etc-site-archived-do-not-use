@@ -21,7 +21,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
-
+@SuppressWarnings("unused")
 public class SemanticMarkupActivity extends MyAbstractActivity {
 
 	private ITaskServiceAsync taskService;
@@ -89,6 +89,7 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 			task = ((SemanticMarkupPlace)place).getTask();
 		if(task == null){
 			if(place instanceof SemanticMarkupInputPlace){
+				inputPresenter.setSelectedFolder(createPresenter.getInputFolderPath(), createPresenter.getInputFolderShortenedPath());
 				panel.setWidget(inputPresenter.getView());
 			}else{
 				panel.setWidget(createPresenter.getView());
@@ -104,6 +105,7 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 									panel.setWidget(createPresenter.getView());
 									break;
 								case INPUT:
+									inputPresenter.setSelectedFolder(createPresenter.getInputFolderPath(), createPresenter.getInputFolderShortenedPath());
 									panel.setWidget(inputPresenter.getView());
 									break;
 								case OUTPUT:

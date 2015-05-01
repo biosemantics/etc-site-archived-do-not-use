@@ -21,7 +21,7 @@ import edu.arizona.biosemantics.etcsite.client.common.ToPlaceGoer;
 import edu.arizona.biosemantics.etcsite.client.content.about.AboutPlace;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerPlace;
 import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
-import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPlace;
+import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.news.NewsPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsPlace;
@@ -195,7 +195,7 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 
 	@Override
 	public void onMatrixGeneration() {
-		this.authenticationToPlaceGoer.goTo(new MatrixGenerationInputPlace(), new LinkedList<ToPlaceGoer>(Arrays.asList(this.resumeTaskToPlaceGoer)));
+		this.authenticationToPlaceGoer.goTo(new MatrixGenerationCreatePlace(), new LinkedList<ToPlaceGoer>(Arrays.asList(this.resumeTaskToPlaceGoer)));
 	}
 
 	@Override

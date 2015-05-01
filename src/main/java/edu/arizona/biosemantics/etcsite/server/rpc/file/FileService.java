@@ -46,6 +46,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 
 	private static final long serialVersionUID = -9193602268703418530L;
 	private IFilePermissionService filePermissionService = new FilePermissionService();
+	@SuppressWarnings("unused")
 	private IFileFormatService fileFormatService = new FileFormatService();
 	private SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MM-dd-yyyy");
 	private	XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager();
@@ -697,6 +698,21 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		File ownedFolder = new File(Configuration.fileBase + File.separator + authenticationToken.getUserId());
 		FileInfo ownedFolderFileInfo = new FileInfo(ownedFolder.getName(), ownedFolder.getAbsolutePath(), "", getFileType(authenticationToken, ownedFolder.getAbsolutePath()), authenticationToken.getUserId(), false, ownedFolder.isDirectory(), true);
 		return ownedFolderFileInfo;
+	}
+
+	@Override
+	public List<FileInfo> getAllSharedFolders(
+			AuthenticationToken authenticationToken) {
+		List<FileInfo> allSharedFolders = new LinkedList<FileInfo>();
+		File sharedFolder = new File(Configuration.fileBase + File.separator + authenticationToken.getUserId());
+		File[] childFiles = sharedFolder.listFiles();
+		for(File child : childFiles){
+			String fileAbsolutePath = child.getAbsolutePath();
+			String displayPath = fileAbsolutePath.replace(Configuration.fileBase + File.separator + authenticationToken.getUserId(), "");
+			allSharedFolders.add(new FileInfo(child.getName(), fileAbsolutePath, displayPath, getFileType(authenticationToken, fileAbsolutePath), 
+					authenticationToken.getUserId(), false, child.isDirectory(), true));
+		}
+		return allSharedFolders;
 	}
 
 }

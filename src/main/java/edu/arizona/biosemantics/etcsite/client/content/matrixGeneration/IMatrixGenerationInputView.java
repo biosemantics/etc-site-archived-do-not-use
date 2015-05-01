@@ -5,10 +5,9 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface IMatrixGenerationInputView extends IsWidget {
 
 	public interface Presenter {
-		void onInputSelect();
-		void onFileManager();
 		void onNext();
 		IMatrixGenerationInputView getView();
+		void setSelectedFolder(String fullPath, String shortendPath);
 	}
 	  
 	void setPresenter(Presenter presenter);

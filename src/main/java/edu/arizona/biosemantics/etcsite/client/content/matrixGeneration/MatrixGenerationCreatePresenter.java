@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.client.content.semanticMarkup;
+package edu.arizona.biosemantics.etcsite.client.content.matrixGeneration;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -17,8 +17,6 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkupFilesDialogPresenter;
-import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkupFilesDialogPresenter.ICloseHandler;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileImageLabelTreeItem;
 import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView;
@@ -29,7 +27,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
 import gwtupload.client.BaseUploadStatus;
 import gwtupload.client.IFileInput.ButtonFileInput;
 import gwtupload.client.IUploadStatus;
@@ -38,22 +36,20 @@ import gwtupload.client.IUploader;
 import gwtupload.client.IUploader.OnFinishUploaderHandler;
 import gwtupload.client.IUploader.OnStartUploaderHandler;
 
-public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.Presenter{
+public class MatrixGenerationCreatePresenter implements MatrixGenerationCreateView.Presenter{
 
 	private IFileServiceAsync fileService;
-	private ISemanticMarkupCreateView view;
+	private IMatrixGenerationCreateView view;
 	private PlaceController placeController;
-	private CreateSemanticMarkupFilesDialogPresenter createSemanticMarkupFilesDialogPresenter;
 	private edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView.Presenter selectableFileTreePresenter;
 	private edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView.Presenter fileTreePresenter;
 	private IFileManagerDialogView.Presenter fileManagerDialogPresenter;
 	private FilePathShortener filePathShortener;
-	private ISemanticMarkupServiceAsync semanticMarkupService;
+	private IMatrixGenerationServiceAsync matrixGenerationService;
 	
 	private FileInfo parentFileInfo;
 	private String inputFolderPath;
 	private String inputFolderShortenedPath;
-	private String createFiles_newFolder;
 	private String uploadFiles_newFolder;
 	
 	private String defaultServletPath;
@@ -64,24 +60,22 @@ public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.P
 	
 	@SuppressWarnings("deprecation")
 	@Inject
-	public SemanticMarkupCreatePresenter(ISemanticMarkupCreateView view, 
+	public MatrixGenerationCreatePresenter(IMatrixGenerationCreateView view, 
 			PlaceController placeController,
 			FilePathShortener filePathShortener,
 			IFileServiceAsync fileService,
-			CreateSemanticMarkupFilesDialogPresenter createSemanticMarkupFilesDialogPresenter,
 			ISelectableFileTreeView.Presenter selectableFileTreePresenter,
 			IFileManagerDialogView.Presenter fileManagerDialogPresenter,
-			ISemanticMarkupServiceAsync semanticMarkupService) {
+			IMatrixGenerationServiceAsync matrixGenerationService) {
 		this.view = view;
 		view.setPresenter(this);
 		this.placeController = placeController;
 		this.fileService = fileService;
-		this.createSemanticMarkupFilesDialogPresenter = createSemanticMarkupFilesDialogPresenter;
 		this.selectableFileTreePresenter = selectableFileTreePresenter;
 		this.fileTreePresenter = selectableFileTreePresenter.getFileTreePresenter();
 		this.fileManagerDialogPresenter = fileManagerDialogPresenter;
 		this.filePathShortener = filePathShortener;
-		this.semanticMarkupService = semanticMarkupService;
+		this.matrixGenerationService = matrixGenerationService;
 		this.parentFileInfo = null;
 		this.inputFolderPath = null;
 		getAllFolders();
@@ -106,25 +100,7 @@ public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.P
 
 	@Override
 	public void onNext() {
-		if(view.getCreateRadioValue()){
-			if(view.getNewFolderRadio_create()){
-				if(createFiles_newFolder == null){
-					Alerter.selectValidInputDirectory();
-					return;
-				}else{
-					inputFolderPath = createFiles_newFolder;
-					inputFolderShortenedPath = filePathShortener.shortenOwnedPath(inputFolderPath);
-				}
-			}else{
-				if(view.getSelectFolderComboBox_create() == null){
-					Alerter.selectValidInputDirectory();
-					return;
-				}else{
-					inputFolderPath = view.getSelectFolderComboBox_create().getFilePath();
-					inputFolderShortenedPath = filePathShortener.shortenOwnedPath(inputFolderPath);
-				}
-			}
-		}else if(view.getUploadRadioValue()){
+		if(view.getUploadRadioValue()){
 			if(view.getNewFolderRadio_upload()){
 				if(uploadFiles_newFolder == null){
 					Alerter.selectValidInputDirectory();
@@ -149,14 +125,14 @@ public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.P
 			}
 		}
 		Alerter.startLoading();
-		semanticMarkupService.isValidInput(Authentication.getInstance().getToken(), inputFolderPath, new AsyncCallback<Boolean>() {
+		matrixGenerationService.isValidInput(Authentication.getInstance().getToken(), inputFolderPath, new AsyncCallback<Boolean>() {
 			@Override
 			public void onSuccess(Boolean result) {
 				if(!result) {
 					Alerter.invalidInputDirectory();
 					Alerter.stopLoading();
 				} else {
-					placeController.goTo(new SemanticMarkupInputPlace());
+					placeController.goTo(new MatrixGenerationInputPlace());
 					Alerter.stopLoading();
 				}
 			}
@@ -213,47 +189,14 @@ public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.P
 
 			@Override
 			public void onSuccess(String result) {
-				if(view.getCreateRadioValue()){
-					createFiles_newFolder = result;
-				}else{
-					uploadFiles_newFolder = result;
-				}
+				uploadFiles_newFolder = result;
 				Alerter.stopLoading();
 				view.setCreateFolderStatus("Folder Created");
 			}
 		});
 		return true;
 	}
-	@Override
-	public void createFiles(final FileInfo selectedFolder) {
-		if(selectedFolder != null && selectedFolder.isAllowsNewFiles()) {
-			showCreateFilesDialog(selectedFolder.getFilePath());
-		}
-		else {
-			Alerter.noDestinationSelected();	
-		}		
-	}
-	
-	public void showCreateFilesDialog(final String folderPath){
-		createSemanticMarkupFilesDialogPresenter.setCloseHandler(new ICloseHandler() {
-			@Override
-			public void onClose(int filesCreated) {
-				if(filesCreated > 0)
-					inputFolderPath = folderPath;
-			}
-		});
-		createSemanticMarkupFilesDialogPresenter.show(folderPath);
-	}
-
-	@Override
-	public void createFilesInNewFolder() {
-		if(!createFiles_newFolder.isEmpty()){
-			showCreateFilesDialog(createFiles_newFolder);
-		}else{
-			Alerter.inputError("New Folder is not created yet. Wait and try again.");
-		}
-	}
-	
+		
 public class OnFinishUploadHandler implements OnFinishUploaderHandler {
 		
 		String serverResponse = null;
@@ -376,18 +319,14 @@ public class OnFinishUploadHandler implements OnFinishUploaderHandler {
 	public class OnStartUploadHandler implements OnStartUploaderHandler {
 		@Override
 		public void onStart(final IUploader uploader) {			
-			String servletPath = view.getUploader().getServletPath() + "?fileType=" + FileTypeEnum.TAXON_DESCRIPTION.displayName() + "&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId()))
+			String servletPath = view.getUploader().getServletPath() + "?fileType=" + FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION.displayName() + "&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId()))
 					+ "&sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId());
 			uploader.setServletPath(servletPath);
 			
 			List<String> fileNames = new LinkedList<String>();
 			fileNames.add("Uploading, please wait...");
 			uploader.getStatusWidget().setFileNames(fileNames);
-			if(view.getCreateRadioValue()){
-				targetUploadDirectory = uploadFiles_newFolder;
-			}else{
-				targetUploadDirectory = view.getSelectedUploadDirectory();
-			}
+			targetUploadDirectory = view.getSelectedUploadDirectory();
 			uploader.setServletPath(uploader.getServletPath() + "&target=" + targetUploadDirectory);
 			
 			/*
@@ -412,12 +351,6 @@ public class OnFinishUploadHandler implements OnFinishUploaderHandler {
 			//ignore visibility based on active upload
 		}
 
-	}
-
-	@Override
-	public String getInputFolder() {
-		
-		return null;
 	}
 	
 	@Override
