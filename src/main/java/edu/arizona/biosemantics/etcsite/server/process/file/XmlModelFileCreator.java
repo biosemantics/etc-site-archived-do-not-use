@@ -141,12 +141,19 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 				if(key.endsWith(" name")){	
 					rankedNames.put(Rank.valueOf(key.replaceFirst("\\s+name", "").toUpperCase()), data.get(key));
 					//if(!data.get(key).matches(".*?,.*?\\w+.*")) modelFile.appendError("'"+key+":"+data.get(key)+ "' does not have authority/date.");
-					String name = data.get(key).trim();
-					if(name.contains(" ")) name = name.substring(0, data.get(key).indexOf(" "));
-					if(names.contains(name)){
-						 modelFile.appendError("'"+name + "' in '"+data.get(key)+"' is repeated in an entry, did you include genus name in species name/epithet?");
+					String fullName = data.get(key).trim();
+					String taxonName = "";
+					//remove the authority date part 
+					if(fullName.contains(",")){
+						fullName = fullName.substring(0, data.get(key).indexOf(","));
+						fullName = fullName.trim();
+						taxonName = fullName.split(" ")[0];
+						taxonName = taxonName.trim();
+					}
+					if(taxonName.contains(" ")){
+							modelFile.appendError("'"+taxonName + "' in '"+data.get(key)+"' is repeated in an entry, did you include genus name in species name/epithet?");
 					}else{
-						names.add(name);
+						names.add(taxonName);
 					}
 					nameTypes.add(key);
 				}
