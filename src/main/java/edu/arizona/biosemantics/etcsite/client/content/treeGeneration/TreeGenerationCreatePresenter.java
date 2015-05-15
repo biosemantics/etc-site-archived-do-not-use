@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.client.content.matrixGeneration;
+package edu.arizona.biosemantics.etcsite.client.content.treeGeneration;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.treegeneration.ITreeGenerationServiceAsync;
 import gwtupload.client.BaseUploadStatus;
 import gwtupload.client.IFileInput.ButtonFileInput;
 import gwtupload.client.IUploadStatus;
@@ -30,16 +30,16 @@ import gwtupload.client.IUploader;
 import gwtupload.client.IUploader.OnFinishUploaderHandler;
 import gwtupload.client.IUploader.OnStartUploaderHandler;
 
-public class MatrixGenerationCreatePresenter implements MatrixGenerationCreateView.Presenter{
+public class TreeGenerationCreatePresenter implements TreeGenerationCreateView.Presenter{
 
 	private IFileServiceAsync fileService;
-	private IMatrixGenerationCreateView view;
+	private ITreeGenerationCreateView view;
 	private PlaceController placeController;
 	private edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView.Presenter selectableFileTreePresenter;
 	private edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView.Presenter fileTreePresenter;
 	private IFileManagerDialogView.Presenter fileManagerDialogPresenter;
 	private FilePathShortener filePathShortener;
-	private IMatrixGenerationServiceAsync matrixGenerationService;
+	private ITreeGenerationServiceAsync TreeGenerationService;
 	
 	private FileInfo parentFileInfo;
 	private String inputFolderPath;
@@ -56,13 +56,13 @@ public class MatrixGenerationCreatePresenter implements MatrixGenerationCreateVi
 	
 	@SuppressWarnings("deprecation")
 	@Inject
-	public MatrixGenerationCreatePresenter(IMatrixGenerationCreateView view, 
+	public TreeGenerationCreatePresenter(ITreeGenerationCreateView view, 
 			PlaceController placeController,
 			FilePathShortener filePathShortener,
 			IFileServiceAsync fileService,
 			ISelectableFileTreeView.Presenter selectableFileTreePresenter,
 			IFileManagerDialogView.Presenter fileManagerDialogPresenter,
-			IMatrixGenerationServiceAsync matrixGenerationService) {
+			ITreeGenerationServiceAsync TreeGenerationService) {
 		this.view = view;
 		view.setPresenter(this);
 		this.placeController = placeController;
@@ -71,7 +71,7 @@ public class MatrixGenerationCreatePresenter implements MatrixGenerationCreateVi
 		this.fileTreePresenter = selectableFileTreePresenter.getFileTreePresenter();
 		this.fileManagerDialogPresenter = fileManagerDialogPresenter;
 		this.filePathShortener = filePathShortener;
-		this.matrixGenerationService = matrixGenerationService;
+		this.TreeGenerationService = TreeGenerationService;
 		this.parentFileInfo = null;
 		this.inputFolderPath = null;
 		getAllFolders();
@@ -122,14 +122,14 @@ public class MatrixGenerationCreatePresenter implements MatrixGenerationCreateVi
 			}
 		}
 		Alerter.startLoading();
-		matrixGenerationService.isValidInput(Authentication.getInstance().getToken(), inputFolderPath, new AsyncCallback<Boolean>() {
+		TreeGenerationService.isValidInput(Authentication.getInstance().getToken(), inputFolderPath, new AsyncCallback<Boolean>() {
 			@Override
 			public void onSuccess(Boolean result) {
 				if(!result) {
 					Alerter.invalidInputDirectory();
 					Alerter.stopLoading();
 				} else {
-					placeController.goTo(new MatrixGenerationInputPlace());
+					placeController.goTo(new TreeGenerationInputPlace());
 					Alerter.stopLoading();
 				}
 			}
@@ -201,7 +201,7 @@ public class MatrixGenerationCreatePresenter implements MatrixGenerationCreateVi
 		public void onFinish(IUploader uploader) {	
 			serverResponse = fileUploadHandler.parseServerResponse(uploader);
 			if (uploader.getStatus() == Status.SUCCESS) {
-				fileUploadHandler.keyValidateUploadedFiles(fileService, targetUploadDirectory);
+				Alerter.fileManagerMessage(serverResponse);
 			}
 			uploader.setServletPath(defaultServletPath);
 			view.enableNextButton(true);
@@ -219,7 +219,7 @@ public class MatrixGenerationCreatePresenter implements MatrixGenerationCreateVi
 			}else{
 				targetUploadDirectory = view.getSelectedUploadDirectory();
 			}
-			fileUploadHandler.setServletPathOfUploader(uploader, view.getUploader(), FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION.displayName(), targetUploadDirectory);
+			fileUploadHandler.setServletPathOfUploader(uploader, view.getUploader(), FileTypeEnum.MATRIX.displayName(), targetUploadDirectory);
 			view.enableNextButton(false);
 		}
 	}

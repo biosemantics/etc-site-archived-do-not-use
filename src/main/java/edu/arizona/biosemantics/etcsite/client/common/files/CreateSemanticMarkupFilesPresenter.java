@@ -250,6 +250,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 				
 				String error = overallError.toString();
 				if(error.isEmpty()){
+					System.out.println(destinationFilePath);
 					createXmlFiles(modelFiles, destinationFilePath);
 					view.resetDescriptions();
 				}else {

@@ -1,40 +1,39 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.semanticMarkup"
+	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison"
 	xmlns:form='urn:import:com.sencha.gxt.widget.core.client.form'
 	xmlns:my2="urn:import:edu.arizona.biosemantics.etcsite.client.common"
 	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout"
-	xmlns:up="urn:import:gwtupload.client"
-	>
+	xmlns:up="urn:import:gwtupload.client">
 	<ui:style>
 	.important {
 		font-weight: bold;
 		margin-left: 10px;
 	}
-	
+	.radioPadding{
+		padding: 5px;
+	}
+
 	.subMenuEntry {
 		margin-left: 20px;
 		padding-top: 10px;
 		padding-bottom: 10px;
 	}
 	
+	.margin15{
+		margin-left: 15px;
+	}
+	
+
 	.padding {
 		padding-top: 10px;
 		padding-bottom: 10px;
-	}
-
-	.margin15{
-		margin-left: 15px;
 	}
 	
 	.note {
 		font-size: 14px;
 		color: #555555;
-	}
-	
-	.clickable {
-		cursor: pointer;
 	}
 	
 	.firstColumn {
@@ -44,86 +43,50 @@
 	.bold {
 		font-weight: bold;
 	}
-
-	.radioPadding{
-		padding: 5px;
-	}
+	
+	.DescriptionFont {font-size: 14px;}
+	
 	</ui:style>
-
 	<g:ScrollPanel>
 		<lay:CenteredContentPanel>
 			<g:VerticalPanel>
 				<g:HorizontalPanel>
-					<!-- <my2:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.SemanticMarkupShort.gif" 
-						imageWidth="65px" imageHeight="20px" text="" /> -->
+					<!-- <my2:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.TreeGenerationShort.gif" 
+						imageWidth="80px" imageHeight="20px" text="" /> -->
 					<my:SubMenu ui:field="subMenu" step="CREATE_INPUT" />
 				</g:HorizontalPanel>
+						<g:InlineLabel>&nbsp;
+						</g:InlineLabel>
 				<g:VerticalPanel styleName="{style.padding}">
 					<g:VerticalPanel>
-						<g:VerticalPanel styleName="{style.padding}" />
 						<g:FlowPanel>
 							<g:InlineLabel styleName="{style.bold}">INPUT
 								REQUIREMENTS:&nbsp;
 							</g:InlineLabel>
-							<g:InlineLabel styleName="DescriptionFont">
-								Text Capture takes textual morphological descriptions of one or
-								more taxa as input. The input files, which must be in English and
-								conform to this&nbsp;
+							<g:InlineLabel styleName="{style.DescriptionFont}">
+								Taxonomy Comparison takes as input either a folder output by the Tree
+								Generation tool or a folder containing a text files in tree generation output format.
 							</g:InlineLabel>
-							<g:Anchor
-								href="http://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupInput.xsd"
-								target="_blank" styleName="{style.padding}">format</g:Anchor>
-							<g:InlineLabel styleName="DescriptionFont">
-			            	. Choose one of the following methods to provide the input and Click Next.
+						</g:FlowPanel>
+						<g:InlineLabel>&nbsp;
+						</g:InlineLabel>
+						<g:FlowPanel>
+							<g:InlineLabel styleName="{style.bold} {style.DescriptionFont}">1.&nbsp;
+							</g:InlineLabel>
+							<g:InlineLabel styleName="{style.DescriptionFont}">
+								If you do not have the input ready, please run the Tree Generation
+								tool first to generate it, or upload here.
 							</g:InlineLabel>
 						</g:FlowPanel>
 						<g:FlowPanel>
-						    <g:InlineLabel styleName="DescriptionFont">
-			            	 To View, Edit or Delete the created or uploaded files, go to&nbsp; 
+							<g:InlineLabel>To Edit, Delete or View uploaded file, go to &nbsp;
 							</g:InlineLabel>
-							<g:Anchor ui:field="fileManagerAnchor" styleName="DescriptionFont">File Manager.</g:Anchor>
+							<g:Anchor ui:field="fileManagerAnchor" styleName="{style.DescriptionFont}">File Manager</g:Anchor>
 						</g:FlowPanel>
 					</g:VerticalPanel>
-
+					<!-- <g:VerticalPanel styleName="{style.padding}">  -->
 					<g:VerticalPanel styleName="{style.subMenuEntry}">
 					    <g:VerticalPanel spacing="20">
-					        <g:RadioButton ui:field="createRadio" name="selectInputMethod" styleName="{style.radioPadding}">Create Files</g:RadioButton>
-					        <g:VerticalPanel styleName = "{style.margin15}" ui:field="createPanel" visible="false">
-					            <g:InlineLabel>
-					                Create/Choose a folder to save the files.
-					            </g:InlineLabel>
-					            <g:Grid cellSpacing="5">
-					                <g:row>
-					                    <g:customCell>
-					                    	<g:RadioButton name="createFileFolder" ui:field="newFolderRadio_create" styleName="{style.radioPadding}">Create New Folder</g:RadioButton>    
-					                    </g:customCell>
-					                    <g:customCell>
-					                    	<g:TextBox enabled="false" ui:field="newFolderTextBox_create"></g:TextBox>    
-					                    </g:customCell>
-					                    <g:customCell>
-					                        <g:Button visible="false" ui:field="createNewFolderButton_create">Create New Folder</g:Button>
-					                    </g:customCell>
-					                    <g:customCell>
-					                        <g:Label ui:field="createFolderStatusLabel_create"></g:Label>
-					                    </g:customCell>
-					                </g:row>
-					                <g:row>
-					                    <g:customCell>
-					                    	<g:RadioButton name="createFileFolder" ui:field="selectFolderRadio_create" styleName="{style.radioPadding}">Select an Existing Folder</g:RadioButton>    
-					                    </g:customCell>
-					                    <g:customCell>
-					                    	<form:ComboBox ui:field="selectFolderComboBox_create"></form:ComboBox>
-					        				<!-- <g:SuggestBox></g:SuggestBox> -->
-					                    </g:customCell>
-					                </g:row>
-					                <g:row>
-					                    <g:customCell>
-					                    	<g:Button ui:field="createFilesButton" enabled="false">Create Files</g:Button> 
-					                    </g:customCell>
-					                    <g:cell></g:cell>
-					                </g:row>
-					            </g:Grid>
-					        </g:VerticalPanel>
 					        <g:RadioButton name="selectInputMethod" ui:field="uploadRadio" styleName="{style.radioPadding}">Upload Files</g:RadioButton>
 					        <g:VerticalPanel styleName = "{style.margin15}" ui:field="uploadPanel" visible="false">
 					            <g:InlineLabel>
@@ -161,7 +124,7 @@
 					        </g:VerticalPanel>
 					        <g:HorizontalPanel spacing="5">
 					   			<g:RadioButton name="selectInputMethod" ui:field="selectRadio" styleName="{style.radioPadding}">Select Existing Folder</g:RadioButton>
-					         	<g:HorizontalPanel styleName = "{style.margin15}" ui:field="selectPanel" visible="false">					            
+					        	<g:HorizontalPanel styleName = "{style.margin15}" ui:field="selectPanel" visible="false">
 					        			<g:cell verticalAlignment="ALIGN_MIDDLE">
 											<g:Button ui:field="selectFolderButton">Select Folder</g:Button>
 										</g:cell>
@@ -171,12 +134,13 @@
 					        	</g:HorizontalPanel>
 					        </g:HorizontalPanel>
 					    </g:VerticalPanel>
-						<g:FlowPanel styleName="{style.padding}">
-							<g:Button ui:field="nextButton" enabled="false">Next Step in Text Capture</g:Button>
-						</g:FlowPanel>
+						<g:VerticalPanel styleName="{style.padding}">
+							<g:Button ui:field="nextButton">Next Step in Taxonomy Comparison</g:Button>
+						</g:VerticalPanel>
 					</g:VerticalPanel>
+					<!-- <g:Button styleName="{style.important}" ui:field="button" /> -->
 				</g:VerticalPanel>
 			</g:VerticalPanel>
 		</lay:CenteredContentPanel>
 	</g:ScrollPanel>
-</ui:UiBinder> 
+</ui:UiBinder>

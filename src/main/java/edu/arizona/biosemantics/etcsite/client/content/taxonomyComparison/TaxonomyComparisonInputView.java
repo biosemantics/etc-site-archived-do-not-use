@@ -33,29 +33,15 @@ public class TaxonomyComparisonInputView extends Composite implements ITaxonomyC
 	
 	@UiField
 	SubMenu subMenu;
-	
-	@UiField
-	Anchor fileManagerAnchor;
 
 	public TaxonomyComparisonInputView() {
 		super();
 		initWidget(uiBinder.createAndBindUi(this));
-		fileManagerAnchor.getElement().getStyle().setCursor(Cursor.POINTER);
 	}
 
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
-	}
-
-	@UiHandler("fileManagerAnchor") 
-	public void onFileManager(ClickEvent event) {
-		presenter.onFileManager();
-	}
-	
-	@UiHandler("inputButton") 
-	public void onInputSelect(ClickEvent event) {
-		presenter.onInputSelect();
 	}
 	
 	@UiHandler("nextButton")
@@ -81,6 +67,5 @@ public class TaxonomyComparisonInputView extends Composite implements ITaxonomyC
 	@Override
 	public void resetFields(){
 		this.taskNameTextBox.setText("");
-		this.inputLabel.setText("");
 	}
 }

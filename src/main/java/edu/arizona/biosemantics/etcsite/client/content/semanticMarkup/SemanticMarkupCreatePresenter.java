@@ -1,19 +1,12 @@
 package edu.arizona.biosemantics.etcsite.client.content.semanticMarkup;
 
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
-import com.google.gwt.http.client.URL;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.Inject;
-import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
-import com.sencha.gxt.widget.core.client.box.MessageBox;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
@@ -21,6 +14,7 @@ import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkup
 import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkupFilesDialogPresenter.ICloseHandler;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileImageLabelTreeItem;
 import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
+import edu.arizona.biosemantics.etcsite.client.common.files.FileUploadHandler;
 import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.common.files.MyUploaderConstants;
 import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePresenter.ISelectListener;
@@ -62,6 +56,8 @@ public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.P
 	List<FileInfo> allOwnedFolders;
 	List<FileInfo> allFolders;
 	
+	private FileUploadHandler fileUploadHandler;
+	
 	@SuppressWarnings("deprecation")
 	@Inject
 	public SemanticMarkupCreatePresenter(ISemanticMarkupCreateView view, 
@@ -97,6 +93,8 @@ public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.P
 	    view.getUploader().setStatusWidget(statusWidget);
 	    view.setStatusWidget(statusWidget.getWidget());
 		view.getUploader().setFileInput(new MyFileInput(view.getUploadButton()));
+		
+		this.fileUploadHandler = new FileUploadHandler();
 	}
 	
 	@Override
@@ -254,121 +252,20 @@ public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.P
 		}
 	}
 	
-public class OnFinishUploadHandler implements OnFinishUploaderHandler {
+	public class OnFinishUploadHandler implements OnFinishUploaderHandler {
 		
+	
 		String serverResponse = null;
-		List<String> uploadedFiles = null;
-		@SuppressWarnings("deprecation")
 		@Override
 		public void onFinish(IUploader uploader) {	
-			serverResponse = uploader.getServerInfo().message;
-			uploadedFiles = uploader.getFileInput().getFilenames();
-			if(serverResponse != null && !serverResponse.isEmpty()) {
-				serverResponse = serverResponse.replaceAll("\n", "<br>");
-				if(serverResponse.contains("#")){ //# is used in response only when there are errors
-					String responseStrings[] = serverResponse.split("#");
-					responseStrings[1] = responseStrings[1].trim();
-					String xmlErrorFiles[] = responseStrings[1].split("\\|");
-					responseStrings[2] = responseStrings[2].trim();
-					String existingFiles[] = responseStrings[2].split("\\|");
-					serverResponse = responseStrings[0]+"<br>";
-					if(xmlErrorFiles.length>0 && !responseStrings[1].isEmpty()){
-						serverResponse += "Following files have xml format errors<br>";
-					}
-					int i;
-					for(i=0;i<20 && i<xmlErrorFiles.length;i++){
-						serverResponse += xmlErrorFiles[i] + "<br>";
-					}
-					int j=0;
-					if(i<20){
-						if(existingFiles.length>0 && !responseStrings[2].isEmpty()){
-							serverResponse += "<br>Following files already exist in the folder<br>";
-						}
-						for(;i<20 && j<existingFiles.length; i++, j++){
-							serverResponse += existingFiles[j] + "<br>";
-						}
-					}
-					if(j<existingFiles.length-1 | i<xmlErrorFiles.length-1){
-						serverResponse += "and so on.<br>";
-					}
-					for(i=0; i<xmlErrorFiles.length; i++){
-						uploadedFiles.remove(xmlErrorFiles[i]);
-					}
-					for(i=0;i<existingFiles.length;i++){
-						uploadedFiles.remove(existingFiles[i]);
-					}
-				}
-				
-			}else{
-				serverResponse = "Files uploaded Successfully.";
-			}
-			
+			serverResponse = fileUploadHandler.parseServerResponse(uploader);
 			if (uploader.getStatus() == Status.SUCCESS) {
-				fileService.validateKeys(Authentication.getInstance().getToken(), targetUploadDirectory, uploadedFiles, new AsyncCallback<HashMap<String,String>>() {
-
-					@Override
-					public void onFailure(Throwable caught) {
-						Alerter.inputError("Key Validation Failed.");
-					}
-
-					@Override
-					public void onSuccess(final HashMap<String, String> result) {
-						if(!result.isEmpty()){
-							String infoMessage = "The following files have key errors and will not be parsed.<br><br>";
-							String errorMessage = "";
-							int allowedErrorCounts = 2;
-							for(String filename: result.keySet()){
-								if (allowedErrorCounts <= 0 ){
-									errorMessage += "and so on.<br>";
-									break;
-								}
-								String errorsInFile = result.get(filename);
-								errorMessage += errorsInFile.replace("\n", "<br>")+"<br>";
-								allowedErrorCounts--;
-							}
-							MessageBox box = Alerter.showKeyValidationResult(infoMessage, errorMessage);
-							box.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
-							
-								@Override
-								public void onSelect(SelectEvent event) {
-									Alerter.fileManagerMessage(serverResponse);
-								}
-							});
-							box.getButton(PredefinedButton.NO).addSelectHandler(new SelectHandler() {
-								
-								@Override
-								public void onSelect(SelectEvent event) {
-									// TODO Auto-generated method stub
-									fileService.deleteUploadedFiles(Authentication.getInstance().getToken(), targetUploadDirectory, uploadedFiles, new AsyncCallback<Void>() {
-
-										@Override
-										public void onFailure(
-													Throwable caught) {
-											// TODO Auto-generated method stub
-											Alerter.inputError("Could not delete files.");
-										}
-
-										@Override
-										public void onSuccess(Void result) {
-												// TODO Auto-generated method stub
-												view.enableNextButton(true);
-										}
-									});
-								}
-							});
-							box.show();
-						}else{
-							Alerter.fileManagerMessage(serverResponse);
-						}
-					}
-				});
-			}else{
-				Alerter.fileManagerMessage("Upload Failed.");
+				fileUploadHandler.keyValidateUploadedFiles(fileService, targetUploadDirectory);
 			}
-			//targetUploadDirectory = "";			
 			uploader.setServletPath(defaultServletPath);
 			view.enableNextButton(true);
 		}		
+	
 	}
 	
 	
@@ -376,27 +273,12 @@ public class OnFinishUploadHandler implements OnFinishUploaderHandler {
 	public class OnStartUploadHandler implements OnStartUploaderHandler {
 		@Override
 		public void onStart(final IUploader uploader) {			
-			String servletPath = view.getUploader().getServletPath() + "?fileType=" + FileTypeEnum.TAXON_DESCRIPTION.displayName() + "&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId()))
-					+ "&sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId());
-			uploader.setServletPath(servletPath);
-			
-			List<String> fileNames = new LinkedList<String>();
-			fileNames.add("Uploading, please wait...");
-			uploader.getStatusWidget().setFileNames(fileNames);
 			if(view.getCreateRadioValue()){
 				targetUploadDirectory = uploadFiles_newFolder;
 			}else{
 				targetUploadDirectory = view.getSelectedUploadDirectory();
 			}
-			uploader.setServletPath(uploader.getServletPath() + "&target=" + targetUploadDirectory);
-			
-			/*
-			 * Creation of directories directly inside of the upload target should not be possible (possible name clash)
-			 * Rename of target and files directly inside of target should not be possible (target no longer available, name clash)
-			 * Delete of target should not be possible (target no longer available)
-			 */
-			
-			// for now, just disable all of the others:
+			fileUploadHandler.setServletPathOfUploader(uploader, view.getUploader(), FileTypeEnum.TAXON_DESCRIPTION.displayName(), targetUploadDirectory);
 			view.enableNextButton(false);
 		}
 	}

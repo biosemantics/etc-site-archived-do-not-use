@@ -5,9 +5,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface ITaxonomyComparisonInputView extends IsWidget {
 
 	public interface Presenter {
-		void onInputSelect();
-		void onFileManager();
 		void onNext();
+		void setSelectedFolder(String fullPath, String shortenedPath);
 		ITaxonomyComparisonInputView getView();
 	}
 	  

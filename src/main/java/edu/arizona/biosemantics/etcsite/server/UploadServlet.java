@@ -72,95 +72,194 @@ public class UploadServlet extends UploadAction {
 		AuthenticationResult authenticationResult = 
 				authenticationService.isValidSession(new AuthenticationToken(userID, sessionID));
 		
-		int numberNotAdded = 0;
-		List<String> fileNames = new LinkedList<String>();
-		List<String> fileAlreadyExists = new LinkedList<String>();
 		if(authenticationResult.getResult()) {
-			for (FileItem item : sessionFiles) {
-				if (false == item.isFormField()) {
-					
-						// / Create a new file based on the remote file name in the
-						// client
-						// String saveName =
-						// item.getName().replaceAll("[\\\\/><\\|\\s\"'{}()\\[\\]]+",
-						// "_");
-						// File file =new File("/tmp/" + saveName);
-	
-						// / Create a temporary file placed in /tmp (only works in
-						// unix)
-						// File file = File.createTempFile("upload-", ".bin", new
-						// File("/tmp"));
-	
-						// / Create a temporary file placed in the default system
-						// temp folder
-						File file = new File(target + File.separator + item.getName());
-						if(!file.exists()) {
-							String fileContent;
-							try {
-								fileContent = item.getString("UTF-8");
-								boolean valid = true;
-								IContentValidator validator = contentValidatorProvider.getValidator(fileTypeEnum);
-								if(validator != null)
-									valid = validator.validate(fileContent);
-								
-								if(valid) {
-									try {
-										file.createNewFile();
-										item.write(file);
-										
-										try {
-											xmlNamespaceManager.setXmlSchema(file, fileTypeEnum);
-											
-											// / Save a list with the received files
-											receivedFiles.put(item.getFieldName(), file);
-											receivedContentTypes.put(item.getFieldName(),
-													item.getContentType());
-						
-											// / Send a customized message to the client.
-											//response += "File saved as " + file.getAbsolutePath();
-											
-										} catch (Exception e) {
-											String message = "Couldn't set xml schema to file. Will attempt to delete the file";
-											log(message, e);
-											log(LogLevel.ERROR, message, e);
-											file.delete();
-											numberNotAdded++;
-											fileNames.add(item.getName());
-										}
-										
-									} catch(IOException e) {
-										String message = "Couldn't create new file";
-										log(message, e);
-										log(LogLevel.ERROR, message, e);
-										numberNotAdded++;
-										fileNames.add(item.getName());
-									} catch(Exception e) {
-										String message = "Couldn't write item to file";
-										log(message, e);
-										log(LogLevel.ERROR, message, e);
-										numberNotAdded++;
-										fileNames.add(item.getName());
-									}
-								} else {
-									numberNotAdded++;
-									fileNames.add(item.getName());
-									//error message would when too long (because many files are not valid) freeze the web page
-									//response += "File " + item.getName() + " was not added. Invalid file format.\n";
-								}
-							} catch (UnsupportedEncodingException e) {
-								String message = "Couldn't get UTF-8 encoding";
-								log(message, e);
-								log(LogLevel.ERROR, message, e);
-							}
-						} else {
-							numberNotAdded++;
-							fileAlreadyExists.add(item.getName());
-							//response += "File " + item.getName() + " was not added. File with same name exists in directory.\n";
-						}
-				}
+			if(fileTypeEnum == FileTypeEnum.TAXON_DESCRIPTION || fileTypeEnum == FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION){
+				response = uploadXmlFiles(sessionFiles, target, fileTypeEnum);
+			}else if(fileTypeEnum == FileTypeEnum.MATRIX){
+				response = uploadCsvFile(sessionFiles, target);
+			}else if(fileTypeEnum == FileTypeEnum.PLAIN_TEXT){
+				response = uploadTextFiles(sessionFiles, target);
+			}else{
+				response = "Files are not in the required format. Upload Failed.";
 			}
 		}
 		
+		
+		// / Remove files from session because we have a copy of them
+		removeSessionFileItems(request);
+		
+		// / Send your customized message to the client. <- this is where i specify which files were not valid
+		return response;
+	}
+	
+	
+	private String uploadTextFiles(List<FileItem> sessionFiles, String target) {
+		String response = "";
+		int numberNotAdded = 0;
+		List<String> fileAlreadyExists = new LinkedList<String>();
+		for (FileItem item : sessionFiles) {
+			if (false == item.isFormField()) {				
+					File file = new File(target + File.separator + item.getName());
+					if(!file.exists()) {
+						String fileContent;
+						try {
+							fileContent = item.getString("UTF-8");
+							try {
+									file.createNewFile();
+									item.write(file);
+									receivedFiles.put(item.getFieldName(), file);
+									receivedContentTypes.put(item.getFieldName(),
+												item.getContentType());
+								} catch(IOException e) {
+									String message = "Couldn't create file";
+									log(message, e);
+									log(LogLevel.ERROR, message, e);
+								} catch(Exception e) {
+									String message = "Couldn't write file";
+									log(message, e);
+									log(LogLevel.ERROR, message, e);
+								}
+						} catch (UnsupportedEncodingException e) {
+							String message = "Couldn't get UTF-8 encoding";
+							log(message, e);
+							log(LogLevel.ERROR, message, e);
+						}
+					} else {
+						numberNotAdded++;
+						fileAlreadyExists.add(item.getName());
+						//response += "File " + item.getName() + " was not added. File with same name exists in directory.\n";
+					}
+			}
+		}
+		if(numberNotAdded == 1)
+			response += numberNotAdded + " file was not added.";
+		if(numberNotAdded > 1)
+			response += numberNotAdded + " files were not added.";
+		String allFiles = " "; //Do not remove this space - used in client side processing of server response
+		String allExistingFiles = " "; //Do not remove this space - used in client side processing of server response
+		if(fileAlreadyExists.size() > 0){
+			allExistingFiles = StringUtils.join(fileAlreadyExists, '|');
+		}
+		if(fileAlreadyExists.size()>0){
+			response += "#"+allFiles+"#"+allExistingFiles+"#";
+		}
+		return response;
+	}
+
+	private String uploadCsvFile(List<FileItem> sessionFiles, String target) {
+		String response = "";
+		List<FileItem> copySessionFiles = new LinkedList<FileItem>();
+		for( FileItem item: sessionFiles) {
+			if(item.isFormField() == false){
+				copySessionFiles.add(item);
+			}
+		}
+		if(copySessionFiles.size() > 1){
+			response = "Can upload only one file.";
+			return response;
+		}
+		FileItem item = copySessionFiles.get(0);
+		File file = new File(target + File.separator + item.getName());
+		if(!file.exists()) {
+			String fileContent;
+			try {
+				fileContent = item.getString("UTF-8");
+				file.createNewFile();
+				item.write(file);
+			} catch (UnsupportedEncodingException e) {
+				response="Unsupported Encoding. Upload failed.";
+				e.printStackTrace();
+			} catch (IOException e) {
+				response = "Couldn't create file. Upload failed.";
+				e.printStackTrace();
+			} catch (Exception e) {
+				response = "Couldn't write file. Upload failed.";
+				e.printStackTrace();
+			}
+			receivedFiles.put(item.getFieldName(), file);
+			receivedContentTypes.put(item.getFieldName(),
+					item.getContentType());
+			response = "File uploaded successfully.";
+		}else{
+			response = "File already exists.";
+		}
+			
+		return response;
+	}
+
+	public String uploadXmlFiles(List<FileItem> sessionFiles, String target, FileTypeEnum fileTypeEnum){
+		String response = "";
+		int numberNotAdded = 0;
+		List<String> fileNames = new LinkedList<String>();
+		List<String> fileAlreadyExists = new LinkedList<String>();
+		for (FileItem item : sessionFiles) {
+			if (false == item.isFormField()) {				
+					File file = new File(target + File.separator + item.getName());
+					if(!file.exists()) {
+						String fileContent;
+						try {
+							fileContent = item.getString("UTF-8");
+							boolean valid = true;
+							IContentValidator validator = contentValidatorProvider.getValidator(fileTypeEnum);
+							if(validator != null)
+								valid = validator.validate(fileContent);
+							
+							if(valid) {
+								try {
+									file.createNewFile();
+									item.write(file);
+									
+									try {
+										xmlNamespaceManager.setXmlSchema(file, fileTypeEnum);
+										
+										// / Save a list with the received files
+										receivedFiles.put(item.getFieldName(), file);
+										receivedContentTypes.put(item.getFieldName(),
+												item.getContentType());
+					
+										// / Send a customized message to the client.
+										//response += "File saved as " + file.getAbsolutePath();
+										
+									} catch (Exception e) {
+										String message = "Couldn't set xml schema to file. Will attempt to delete the file";
+										log(message, e);
+										log(LogLevel.ERROR, message, e);
+										file.delete();
+										numberNotAdded++;
+										fileNames.add(item.getName());
+									}
+									
+								} catch(IOException e) {
+									String message = "Couldn't create new file";
+									log(message, e);
+									log(LogLevel.ERROR, message, e);
+									numberNotAdded++;
+									fileNames.add(item.getName());
+								} catch(Exception e) {
+									String message = "Couldn't write item to file";
+									log(message, e);
+									log(LogLevel.ERROR, message, e);
+									numberNotAdded++;
+									fileNames.add(item.getName());
+								}
+							} else {
+								numberNotAdded++;
+								fileNames.add(item.getName());
+								//error message would when too long (because many files are not valid) freeze the web page
+								//response += "File " + item.getName() + " was not added. Invalid file format.\n";
+							}
+						} catch (UnsupportedEncodingException e) {
+							String message = "Couldn't get UTF-8 encoding";
+							log(message, e);
+							log(LogLevel.ERROR, message, e);
+						}
+					} else {
+						numberNotAdded++;
+						fileAlreadyExists.add(item.getName());
+						//response += "File " + item.getName() + " was not added. File with same name exists in directory.\n";
+					}
+			}
+		}
 		if(numberNotAdded == 1)
 			response += numberNotAdded + " file was not added due to invalid file format and or name collisions";
 		if(numberNotAdded > 1)
@@ -176,10 +275,6 @@ public class UploadServlet extends UploadAction {
 		if(fileNames.size() > 0 || fileAlreadyExists.size()>0){
 			response += "#"+allFiles+"#"+allExistingFiles+"#";
 		}
-		// / Remove files from session because we have a copy of them
-		removeSessionFileItems(request);
-		
-		// / Send your customized message to the client. <- this is where i specify which files were not valid
 		return response;
 	}
 

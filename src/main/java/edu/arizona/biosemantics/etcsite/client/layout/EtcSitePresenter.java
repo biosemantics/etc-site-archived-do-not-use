@@ -26,8 +26,8 @@ import edu.arizona.biosemantics.etcsite.client.content.news.NewsPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
-import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonPlace;
-import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationInputPlace;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonCreatePlace;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.visualization.VisualizationPlace;
 import edu.arizona.biosemantics.etcsite.client.event.AuthenticationEvent;
 import edu.arizona.biosemantics.etcsite.client.event.AuthenticationEvent.AuthenticationEventType;
@@ -200,12 +200,12 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 
 	@Override
 	public void onTreeGeneration() {
-		this.authenticationToPlaceGoer.goTo(new TreeGenerationInputPlace(), new LinkedList<ToPlaceGoer>(Arrays.asList(this.resumeTaskToPlaceGoer)));
+		this.authenticationToPlaceGoer.goTo(new TreeGenerationCreatePlace(), new LinkedList<ToPlaceGoer>(Arrays.asList(this.resumeTaskToPlaceGoer)));
 	}
 
 	@Override
 	public void onTaxonomyComparison() {
-		this.authenticationToPlaceGoer.goTo(new TaxonomyComparisonPlace(), new LinkedList<ToPlaceGoer>(Arrays.asList(this.resumeTaskToPlaceGoer)));
+		this.authenticationToPlaceGoer.goTo(new TaxonomyComparisonCreatePlace(), new LinkedList<ToPlaceGoer>(Arrays.asList(this.resumeTaskToPlaceGoer)));
 	}
 
 	@Override

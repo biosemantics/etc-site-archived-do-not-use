@@ -46,19 +46,6 @@
 					<g:VerticalPanel styleName="{style.padding}" />
 					<g:VerticalPanel>
 						<g:FlowPanel>
-							<g:InlineLabel styleName="{style.bold} {style.DescriptionFont}">1.&nbsp;
-							</g:InlineLabel>
-							<g:InlineLabel styleName="{style.DescriptionFont}">
-								If you do not have the input ready, please upload files conforming to the
-								required format using the&nbsp;
-							</g:InlineLabel>
-							<g:Anchor ui:field="fileManagerAnchor" styleName="{style.DescriptionFont}">File Manager.</g:Anchor>
-						</g:FlowPanel>
-						<g:FlowPanel>
-						<g:InlineLabel>&nbsp;
-						</g:InlineLabel>
-						</g:FlowPanel>
-						<g:FlowPanel>
 							<g:InlineLabel styleName="{style.bold} {style.DescriptionFont}">2.&nbsp;
 							</g:InlineLabel>
 							<g:InlineLabel styleName="{style.DescriptionFont}">
@@ -100,13 +87,12 @@
 						<g:HorizontalPanel>
 							<g:VerticalPanel styleName="{style.firstColumn}">
 								<g:cell verticalAlignment="ALIGN_TOP">
-									<g:Label>Select Folder:</g:Label>
+									<g:Label>Selected Folder:</g:Label>
 								</g:cell>
 								<g:InlineLabel styleName="{style.note}">
 									Select a input file.
 								</g:InlineLabel>
 							</g:VerticalPanel>
-							<g:Button ui:field="inputButton">Select Input</g:Button>
 							<g:cell verticalAlignment="ALIGN_TOP">
 								<g:Label ui:field="inputLabel" styleName="{style.important}"></g:Label>
 							</g:cell>

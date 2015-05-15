@@ -28,6 +28,7 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 
 	private ITaskServiceAsync taskService;
 	private ITaxonomyComparisonServiceAsync taxonomyComparisonService;
+	private ITaxonomyComparisonCreateView.Presenter createPresenter;
 	private ITaxonomyComparisonInputView.Presenter inputPresenter;
 	private ITaxonomyComparisonAlignView.Presenter alignPresenter;
 	private AcceptsOneWidget panel;
@@ -39,6 +40,7 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 	@Inject
 	public TaxonomyComparisonActivity(ITaskServiceAsync taskService, 
 			ITaxonomyComparisonServiceAsync taxonomyComparisonService,
+			ITaxonomyComparisonCreateView.Presenter createPresenter,
 			ITaxonomyComparisonInputView.Presenter inputPresenter,
 			ITaxonomyComparisonAlignView.Presenter alignPresenter,
 			PlaceController placeController, 
@@ -49,6 +51,7 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter);
 		this.taskService = taskService;
 		this.taxonomyComparisonService = taxonomyComparisonService;
+		this.createPresenter = createPresenter;
 		this.inputPresenter = inputPresenter;
 		this.alignPresenter = alignPresenter;
 		alignPresenter.getView().getEulerAlignmentView().getEventBus().addHandler(LoadModelEvent.TYPE, new LoadModelEvent.LoadModelEventHandler() {
@@ -76,8 +79,13 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 		if(place instanceof TaxonomyComparisonPlace) {
 			currentTask = ((TaxonomyComparisonPlace)place).getTask();
 		}
-		if(currentTask == null) 
-			panel.setWidget(inputPresenter.getView());
+		if(currentTask == null){
+			if(place instanceof TaxonomyComparisonInputPlace){
+				panel.setWidget(inputPresenter.getView());
+			}else{
+				panel.setWidget(createPresenter.getView());
+			}
+		}
 		else 
 			this.taskService.getTask(Authentication.getInstance().getToken(),
 					currentTask, new AsyncCallback<Task>() {

@@ -24,13 +24,15 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
 public class TreeGenerationActivity extends MyAbstractActivity {
 
 	private ITaskServiceAsync taskService;
+	private ITreeGenerationCreateView.Presenter createPresenter;
 	private ITreeGenerationInputView.Presenter inputPresenter;
 	private ITreeGenerationViewView.Presenter viewPresenter;
 	private AcceptsOneWidget panel;
 	private HelpDialog helpDialog = new HelpDialog(Help.Type.WELCOME.getKey(), "Key Generation");
 
 	@Inject
-	public TreeGenerationActivity(ITaskServiceAsync taskService, 
+	public TreeGenerationActivity(ITaskServiceAsync taskService,
+			ITreeGenerationCreateView.Presenter createPresenter,
 			ITreeGenerationInputView.Presenter inputPresenter,
 			ITreeGenerationViewView.Presenter viewPresenter,
 			PlaceController placeController, 
@@ -40,6 +42,7 @@ public class TreeGenerationActivity extends MyAbstractActivity {
 			IResetPasswordView.Presenter resetPasswordPresenter) {
 		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter);
 		this.taskService = taskService;
+		this.createPresenter = createPresenter;
 		this.inputPresenter = inputPresenter;
 		this.viewPresenter = viewPresenter;
 	}
@@ -61,8 +64,15 @@ public class TreeGenerationActivity extends MyAbstractActivity {
 		Place place = placeController.getWhere();
 		if(place instanceof TreeGenerationPlace)
 			task = ((TreeGenerationPlace)place).getTask();
-		if(task == null) 
-			panel.setWidget(inputPresenter.getView());
+		if(task == null){
+			if(place instanceof TreeGenerationInputPlace){
+				inputPresenter.setSelectedFolder(createPresenter.getInputFolderPath(), createPresenter.getInputFolderShortenedPath());
+				panel.setWidget(inputPresenter.getView());
+			}else{
+				panel.setWidget(createPresenter.getView());
+			}
+		}
+			
 		else 
 			this.taskService.getTask(Authentication.getInstance().getToken(),
 					 task, new AsyncCallback<Task>() {
@@ -70,7 +80,11 @@ public class TreeGenerationActivity extends MyAbstractActivity {
 						public void onSuccess(Task result) {
 							if(result.getTaskType().getTaskTypeEnum().equals(TaskTypeEnum.TREE_GENERATION)) {
 								switch(TaskStageEnum.valueOf(result.getTaskStage().getTaskStage())) {
+								case CREATE_INPUT:
+									panel.setWidget(createPresenter.getView());
+									break;
 								case INPUT:
+									inputPresenter.setSelectedFolder(createPresenter.getInputFolderPath(), createPresenter.getInputFolderShortenedPath());
 									panel.setWidget(inputPresenter.getView());
 									break;
 								case VIEW:

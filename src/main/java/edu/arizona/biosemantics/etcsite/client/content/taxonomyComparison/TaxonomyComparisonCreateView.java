@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.client.content.semanticMarkup;
+package edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison;
 
 import java.util.List;
 
@@ -26,33 +26,23 @@ import com.sencha.gxt.widget.core.client.form.ComboBox;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
 import gwtupload.client.Uploader;
 
-public class SemanticMarkupCreateView extends Composite implements ISemanticMarkupCreateView{
+public class TaxonomyComparisonCreateView extends Composite implements ITaxonomyComparisonCreateView{
 
-	private static SemanticmarkupCreateViewUiBinder uiBinder = GWT
-			.create(SemanticmarkupCreateViewUiBinder.class);
+	private static TaxonomyComparisonCreateViewUiBinder uiBinder = GWT
+			.create(TaxonomyComparisonCreateViewUiBinder.class);
 
-	interface SemanticmarkupCreateViewUiBinder extends
-			UiBinder<Widget, SemanticMarkupCreateView> {
+	interface TaxonomyComparisonCreateViewUiBinder extends
+			UiBinder<Widget, TaxonomyComparisonCreateView> {
 	}
 
-	private ISemanticMarkupCreateView.Presenter presenter;
+	private ITaxonomyComparisonCreateView.Presenter presenter;
 	
 	@UiField Anchor fileManagerAnchor;
 	
-	@UiField VerticalPanel createPanel;
 	@UiField VerticalPanel uploadPanel;
 	@UiField HorizontalPanel selectPanel;
 	
-	@UiField RadioButton createRadio;
 	@UiField RadioButton uploadRadio;
-	
-	@UiField RadioButton newFolderRadio_create;
-	@UiField RadioButton selectFolderRadio_create;
-	@UiField TextBox newFolderTextBox_create;
-	@UiField(provided=true) ComboBox<FileInfo> selectFolderComboBox_create;
-	@UiField Button createFilesButton;
-	@UiField Button createNewFolderButton_create;
-	@UiField Label createFolderStatusLabel_create;
 	
 	@UiField RadioButton newFolderRadio_upload;
 	@UiField RadioButton selectFolderRadio_upload;
@@ -73,7 +63,7 @@ public class SemanticMarkupCreateView extends Composite implements ISemanticMark
 	
 	ListStore<FileInfo> ownedFolderNameStore;
 	
-	public SemanticMarkupCreateView() {
+	public TaxonomyComparisonCreateView() {
 		
 		ownedFolderNameStore = new ListStore<FileInfo>(new ModelKeyProvider<FileInfo>() {
 			@Override
@@ -87,16 +77,13 @@ public class SemanticMarkupCreateView extends Composite implements ISemanticMark
 				return item.getName(false);
 			}
 	    };
-		selectFolderComboBox_create = new ComboBox<FileInfo>(ownedFolderNameStore, nameLabelProvider);
 		selectFolderComboBox_upload = new ComboBox<FileInfo>(ownedFolderNameStore, nameLabelProvider);
 		
-		selectFolderComboBox_create.setEnabled(false);
 		selectFolderComboBox_upload.setEnabled(false);
 		
 		initWidget(uiBinder.createAndBindUi(this));
 		
 		newFolderTextBox_upload.getElement().setPropertyString("placeholder", "Enter New Folder Name Here");
-		newFolderTextBox_create.getElement().setPropertyString("placeholder", "Enter New Folder Name Here");
 		
 		fileManagerAnchor.getElement().getStyle().setCursor(Cursor.POINTER);
 	}
@@ -106,16 +93,9 @@ public class SemanticMarkupCreateView extends Composite implements ISemanticMark
 		this.presenter = presenter;
 	}
 	
-	@UiHandler("createRadio")
-	public void onCreateRadio(ClickEvent event){
-		createPanel.setVisible(true);
-		uploadPanel.setVisible(false);
-		selectPanel.setVisible(false);
-	}
 	
 	@UiHandler("uploadRadio")
 	public void onUploadRadio(ClickEvent event){
-		createPanel.setVisible(false);
 		uploadPanel.setVisible(true);
 		selectPanel.setVisible(false);
 		nextButton.setEnabled(true);
@@ -123,27 +103,8 @@ public class SemanticMarkupCreateView extends Composite implements ISemanticMark
 	
 	@UiHandler("selectRadio")
 	public void onSelectRadio(ClickEvent event){
-		createPanel.setVisible(false);
 		uploadPanel.setVisible(false);
 		selectPanel.setVisible(true);
-	}
-	
-	@UiHandler("newFolderRadio_create")
-	public void onNewFolderRadioCreate(ClickEvent event){
-		newFolderTextBox_create.setEnabled(true);
-		selectFolderComboBox_create.setEnabled(false);
-		createFilesButton.setEnabled(true);
-		createNewFolderButton_create.setVisible(true);
-		createFilesButton.setText("Create Files in New Folder");
-	}
-	
-	@UiHandler("selectFolderRadio_create")
-	public void onSelectFolderRadioCreate(ClickEvent event){
-		newFolderTextBox_create.setEnabled(false);
-		selectFolderComboBox_create.setEnabled(true);
-		createNewFolderButton_create.setVisible(false);
-		createFilesButton.setEnabled(true);
-		createFilesButton.setText("Create Files in Selected Folder");
 	}
 	
 	@UiHandler("newFolderRadio_upload")
@@ -162,22 +123,6 @@ public class SemanticMarkupCreateView extends Composite implements ISemanticMark
 		createNewFolderButton_upload.setVisible(false);
 		uploadFilesButton.setEnabled(true);
 		uploadFilesButton.setText("Upload Files in Selected Folder");
-	}
-	
-	@UiHandler("createFilesButton")
-	public void onCreateFiles(ClickEvent event){
-		if(newFolderRadio_create.getValue()){
-				presenter.createFilesInNewFolder();
-		}else{
-			presenter.createFiles(selectFolderComboBox_create.getValue());
-		}
-		nextButton.setEnabled(true);
-	}
-	
-	@UiHandler("createNewFolderButton_create")
-	public void onCreateNewFolderButton_create(ClickEvent event){
-		String folderName = newFolderTextBox_create.getText();
-		presenter.createNewFolder(folderName);
 	}
 	
 	@UiHandler("createNewFolderButton_upload")
@@ -210,15 +155,7 @@ public class SemanticMarkupCreateView extends Composite implements ISemanticMark
 
 	@Override
 	public void setCreateFolderStatus(String status) {
-		if(createRadio.getValue()){
-			createFolderStatusLabel_create.setText(status);
-		}else{
 			createFolderStatusLabel_upload.setText(status);
-		}
-	}
-	
-	public boolean getCreateRadioValue() {
-		return createRadio.getValue();
 	}
 
 	public boolean getUploadRadioValue() {
@@ -249,19 +186,7 @@ public class SemanticMarkupCreateView extends Composite implements ISemanticMark
 		nextButton.setEnabled(value);
 		
 	}
-
-	public boolean getNewFolderRadio_create() {
-		return newFolderRadio_create.getValue();
-	}
-
-	public Boolean getSelectFolderRadio_create() {
-		return selectFolderRadio_create.getValue();
-	}
-
-	public FileInfo getSelectFolderComboBox_create() {
-		return selectFolderComboBox_create.getValue();
-	}
-
+	
 	public Boolean getNewFolderRadio_upload() {
 		return newFolderRadio_upload.getValue();
 	}
@@ -278,6 +203,16 @@ public class SemanticMarkupCreateView extends Composite implements ISemanticMark
 	public void setSelectedFolder(String shortendPath) {
 		selectedFolderLabel.setText(shortendPath);
 	}
-	
+
+	@Override
+	public void setFilePath(String shortendPath) {
+		selectedFolderLabel.setText(shortendPath);
+	}
+
+	@Override
+	public void setEnabledNext(boolean enabled) {
+		nextButton.setEnabled(enabled);
+	}
+
 	
 }

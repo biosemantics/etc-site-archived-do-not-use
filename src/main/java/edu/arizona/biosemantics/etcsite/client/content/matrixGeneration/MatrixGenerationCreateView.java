@@ -11,6 +11,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -27,10 +28,10 @@ import gwtupload.client.Uploader;
 
 public class MatrixGenerationCreateView extends Composite implements IMatrixGenerationCreateView{
 
-	private static SemanticmarkupCreateViewUiBinder uiBinder = GWT
-			.create(SemanticmarkupCreateViewUiBinder.class);
+	private static MatrixGenerationCreateViewUiBinder uiBinder = GWT
+			.create(MatrixGenerationCreateViewUiBinder.class);
 
-	interface SemanticmarkupCreateViewUiBinder extends
+	interface MatrixGenerationCreateViewUiBinder extends
 			UiBinder<Widget, MatrixGenerationCreateView> {
 	}
 
@@ -39,7 +40,7 @@ public class MatrixGenerationCreateView extends Composite implements IMatrixGene
 	@UiField Anchor fileManagerAnchor;
 	
 	@UiField VerticalPanel uploadPanel;
-	@UiField VerticalPanel selectPanel;
+	@UiField HorizontalPanel selectPanel;
 	
 	@UiField RadioButton uploadRadio;
 	

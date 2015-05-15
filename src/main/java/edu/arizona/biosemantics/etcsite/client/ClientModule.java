@@ -124,15 +124,21 @@ import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPr
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerView;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.IProcessingView;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.ITaxonomyComparisonAlignView;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.ITaxonomyComparisonCreateView;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.ITaxonomyComparisonInputView;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.ProcessingPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.ProcessingView;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonAlignPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonAlignView;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonCreatePresenter;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonCreateView;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonInputPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonInputView;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.ITreeGenerationCreateView;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.ITreeGenerationInputView;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.ITreeGenerationViewView;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationCreatePresenter;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationCreateView;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationInputPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationInputView;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationViewPresenter;
@@ -213,10 +219,10 @@ public class ClientModule extends AbstractGinModule {
 		bind(IResetPasswordView.Presenter.class).to(ResetPasswordPresenter.class);
 		bind(IRegisterView.class).to(RegisterView.class);
 		bind(IRegisterView.Presenter.class).to(RegisterPresenter.class);
-		bind(ICreateSemanticMarkupFilesDialogView.Presenter.class).to(CreateSemanticMarkupFilesDialogPresenter.class);
-		bind(ICreateSemanticMarkupFilesDialogView.class).to(CreateSemanticMarkupFilesDialogView.class);
-		bind(ICreateSemanticMarkupFilesView.Presenter.class).to(CreateSemanticMarkupFilesPresenter.class);
-		bind(ICreateSemanticMarkupFilesView.class).to(CreateSemanticMarkupFilesView.class);
+		bind(ICreateSemanticMarkupFilesDialogView.Presenter.class).to(CreateSemanticMarkupFilesDialogPresenter.class).in(Singleton.class);
+		bind(ICreateSemanticMarkupFilesDialogView.class).to(CreateSemanticMarkupFilesDialogView.class).in(Singleton.class);
+		bind(ICreateSemanticMarkupFilesView.Presenter.class).to(CreateSemanticMarkupFilesPresenter.class).in(Singleton.class);
+		bind(ICreateSemanticMarkupFilesView.class).to(CreateSemanticMarkupFilesView.class).in(Singleton.class);
 		
 		bind(IAnnotationReviewView.class).to(AnnotationReviewView.class);
 		bind(IAnnotationReviewView.Presenter.class).to(AnnotationReviewPresenter.class);
@@ -260,12 +266,16 @@ public class ClientModule extends AbstractGinModule {
 		//bind(ISemanticMarkupOrdersView.Presenter.class).to(SemanticMarkupOrdersPresenter.class);
 		bind(ITreeGenerationInputView.class).to(TreeGenerationInputView.class);
 		bind(ITreeGenerationInputView.Presenter.class).to(TreeGenerationInputPresenter.class);
+		bind(ITreeGenerationCreateView.class).to(TreeGenerationCreateView.class);
+		bind(ITreeGenerationCreateView.Presenter.class).to(TreeGenerationCreatePresenter.class);
 		bind(ITreeGenerationViewView.class).to(TreeGenerationViewView.class);
 		bind(ITreeGenerationViewView.Presenter.class).to(TreeGenerationViewPresenter.class);
 		bind(IImportOtoView.class).to(ImportOtoView.class);
 		
 		bind(ITaxonomyComparisonInputView.class).to(TaxonomyComparisonInputView.class);
 		bind(ITaxonomyComparisonInputView.Presenter.class).to(TaxonomyComparisonInputPresenter.class);
+		bind(ITaxonomyComparisonCreateView.class).to(TaxonomyComparisonCreateView.class);
+		bind(ITaxonomyComparisonCreateView.Presenter.class).to(TaxonomyComparisonCreatePresenter.class);
 		bind(ITaxonomyComparisonAlignView.class).to(TaxonomyComparisonAlignView.class);
 		bind(ITaxonomyComparisonAlignView.Presenter.class).to(TaxonomyComparisonAlignPresenter.class);
 		bind(IProcessingView.class).to(ProcessingView.class);

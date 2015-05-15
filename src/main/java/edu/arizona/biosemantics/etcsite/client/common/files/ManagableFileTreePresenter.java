@@ -1,10 +1,6 @@
 
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
@@ -45,6 +41,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	private String defaultServletPath;
 	private String targetUploadDirectory;
 	private ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter;
+	private FileUploadHandler fileUploadHandler;
 	
 	@SuppressWarnings("deprecation")
 	@Inject
@@ -83,7 +80,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	    view.getUploader().setStatusWidget(statusWidget);
 	    view.setStatusWidget(statusWidget.getWidget());
 		view.getUploader().setFileInput(new MyFileInput(view.getAddButton()));
-	
+		fileUploadHandler = new FileUploadHandler(this);
 		initActions();
 	}
 	
@@ -317,115 +314,15 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	public class OnFinishUploadHandler implements OnFinishUploaderHandler {
 		
 		String serverResponse = null;
-		List<String> uploadedFiles = null;
-		@SuppressWarnings("deprecation")
 		@Override
 		public void onFinish(IUploader uploader) {	
-			serverResponse = uploader.getServerInfo().message;
-			uploadedFiles = uploader.getFileInput().getFilenames();
-			if(serverResponse != null && !serverResponse.isEmpty()) {
-				serverResponse = serverResponse.replaceAll("\n", "<br>");
-				if(serverResponse.contains("#")){ //# is used in response only when there are errors
-					String responseStrings[] = serverResponse.split("#");
-					responseStrings[1] = responseStrings[1].trim();
-					String xmlErrorFiles[] = responseStrings[1].split("\\|");
-					responseStrings[2] = responseStrings[2].trim();
-					String existingFiles[] = responseStrings[2].split("\\|");
-					serverResponse = responseStrings[0]+"<br>";
-					if(xmlErrorFiles.length>0 && !responseStrings[1].isEmpty()){
-						serverResponse += "Following files have xml format errors<br>";
-					}
-					int i;
-					for(i=0;i<20 && i<xmlErrorFiles.length;i++){
-						serverResponse += xmlErrorFiles[i] + "<br>";
-					}
-					int j=0;
-					if(i<20){
-						if(existingFiles.length>0 && !responseStrings[2].isEmpty()){
-							serverResponse += "<br>Following files already exist in the folder<br>";
-						}
-						for(;i<20 && j<existingFiles.length; i++, j++){
-							serverResponse += existingFiles[j] + "<br>";
-						}
-					}
-					if(j<existingFiles.length-1 | i<xmlErrorFiles.length-1){
-						serverResponse += "and so on.<br>";
-					}
-					for(i=0; i<xmlErrorFiles.length; i++){
-						uploadedFiles.remove(xmlErrorFiles[i]);
-					}
-					for(i=0;i<existingFiles.length;i++){
-						uploadedFiles.remove(existingFiles[i]);
-					}
-				}
-				
-			}
-			
+			serverResponse = fileUploadHandler.parseServerResponse(uploader);
 			if (uploader.getStatus() == Status.SUCCESS) {
 				fileTreePresenter.refresh(fileFilter);
-				fileService.validateKeys(Authentication.getInstance().getToken(), targetUploadDirectory, uploadedFiles, new AsyncCallback<HashMap<String,String>>() {
-
-					@Override
-					public void onFailure(Throwable caught) {
-						Alerter.inputError("Key Validation Failed.");
-					}
-
-					@Override
-					public void onSuccess(final HashMap<String, String> result) {
-						if(!result.isEmpty()){
-							String infoMessage = "The following files have key errors and will not be parsed.<br><br>";
-							String errorMessage = "";
-							int allowedErrorCounts = 2;
-							for(String filename: result.keySet()){
-								if (allowedErrorCounts <= 0 ){
-									errorMessage += "and so on.<br>";
-									break;
-								}
-								String errorsInFile = result.get(filename);
-								errorMessage += errorsInFile.replace("\n", "<br>")+"<br>";
-								allowedErrorCounts--;
-							}
-							MessageBox box = Alerter.showKeyValidationResult(infoMessage, errorMessage);
-							box.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
-							
-								@Override
-								public void onSelect(SelectEvent event) {
-									Alerter.fileManagerMessage(serverResponse);
-									fileTreePresenter.refresh(fileFilter);
-								}
-							});
-							box.getButton(PredefinedButton.NO).addSelectHandler(new SelectHandler() {
-								
-								@Override
-								public void onSelect(SelectEvent event) {
-									// TODO Auto-generated method stub
-									fileService.deleteUploadedFiles(Authentication.getInstance().getToken(), targetUploadDirectory, uploadedFiles, new AsyncCallback<Void>() {
-
-										@Override
-										public void onFailure(
-													Throwable caught) {
-											// TODO Auto-generated method stub
-											Alerter.inputError("Could not delete files.");
-										}
-
-										@Override
-										public void onSuccess(Void result) {
-												// TODO Auto-generated method stub
-												//fileTreePresenter.refresh(fileFilter);
-										}
-									});
-									fileTreePresenter.refresh(fileFilter);
-								}
-							});
-							box.show();
-						}
-					}
-				});
+				fileUploadHandler.keyValidateUploadedFiles(fileService, targetUploadDirectory);
 			}
-			//targetUploadDirectory = "";			
 			uploader.setServletPath(defaultServletPath);
 			enableManagement();
-			
 		}		
 	}
 	
@@ -433,24 +330,16 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 
 	public class OnStartUploadHandler implements OnStartUploaderHandler {
 		@Override
-		public void onStart(final IUploader uploader) {			
-			String servletPath = view.getUploader().getServletPath() + "?fileType=" + view.getFormat() + "&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId()))
-					+ "&sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId());
-			uploader.setServletPath(servletPath);
-			
-			List<String> fileNames = new LinkedList<String>();
-			fileNames.add("Uploading, please wait...");
-			uploader.getStatusWidget().setFileNames(fileNames);
+		public void onStart(final IUploader uploader) {
 			final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
 			if(selection.getFileInfo().getFileType().equals(FileTypeEnum.DIRECTORY)) {
 				targetUploadDirectory = selection.getFileInfo().getFilePath();
-				uploader.setServletPath(uploader.getServletPath() + "&target=" + URL.encodeQueryString(selection.getFileInfo().getFilePath()));
 			} else {
 				String newFilePath = getParent(selection);
 				targetUploadDirectory = newFilePath;
-				uploader.setServletPath(uploader.getServletPath() + "&target=" + URL.encodeQueryString(newFilePath));
-			}
 			
+			}
+			fileUploadHandler.setServletPathOfUploader(uploader, view.getUploader(), view.getFormat(), targetUploadDirectory);
 			/*
 			 * Creation of directories directly inside of the upload target should not be possible (possible name clash)
 			 * Rename of target and files directly inside of target should not be possible (target no longer available, name clash)

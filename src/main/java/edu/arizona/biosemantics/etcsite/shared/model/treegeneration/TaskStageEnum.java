@@ -1,7 +1,7 @@
 package edu.arizona.biosemantics.etcsite.shared.model.treegeneration;
 
 public enum TaskStageEnum {
-	
+	CREATE_INPUT("Create Input"),
     INPUT("Input"),
     VIEW("View");
 

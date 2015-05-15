@@ -5,10 +5,9 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface ITreeGenerationInputView extends IsWidget {
 
 	public interface Presenter {
-		void onInputSelect();
-		void onFileManager();
 		void onNext();
 		ITreeGenerationInputView getView();
+		void setSelectedFolder(String fullPath, String shortendPath);
 	}
 	  
 	void setPresenter(Presenter presenter);
@@ -16,5 +15,4 @@ public interface ITreeGenerationInputView extends IsWidget {
 	void setFilePath(String shortendPath);
 	void setEnabledNext(boolean b);
 	void resetFields();
-
 }
