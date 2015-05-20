@@ -3,6 +3,7 @@ package edu.arizona.biosemantics.etcsite.client.content.semanticMarkup;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupConfiguration;
@@ -33,16 +34,16 @@ public class ImportOtoPresenter implements IImportOtoView.Presenter {
 
 	@Override
 	public void onImport(String termCategorization, String synonymy) {
-		Alerter.startLoading();
+		final MessageBox box = Alerter.startLoading();
 		semanticMarkupService.importOto(task, termCategorization, synonymy, new AsyncCallback<Void>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToImportOto(caught);
-				Alerter.stopLoading();
+				Alerter.stopLoading(box);
 			}
 			@Override
 			public void onSuccess(Void result) {
-				Alerter.stopLoading();
+				Alerter.stopLoading(box);
 
 				SemanticMarkupConfiguration configuration = (SemanticMarkupConfiguration)task.getConfiguration();
 				oto.loadCollection(configuration.getOtoUploadId(), configuration.getOtoSecret(), false);

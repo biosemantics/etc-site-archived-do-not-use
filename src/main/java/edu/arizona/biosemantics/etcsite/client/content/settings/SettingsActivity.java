@@ -56,11 +56,11 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 			if(accessToken != null && accessToken != null) {
 				switch(action) {
 					case "settings_save_oto":
-						Alerter.startLoading();
+						final MessageBox box = Alerter.startLoading();
 						userService.saveOTOAccount(Authentication.getInstance().getToken(), accessToken, new AsyncCallback<edu.arizona.biosemantics.oto.common.model.User>() {
 							@Override
 							public void onFailure(Throwable caught) {
-								Alerter.stopLoading();
+								Alerter.stopLoading(box);
 								MessageBox box;
 								if(caught instanceof InvalidOTOAccountException) {
 									box = Alerter.invalidOTOAccount(caught);
@@ -77,17 +77,17 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 							@Override
 							public void onSuccess(edu.arizona.biosemantics.oto.common.model.User result) {
 								view.setLinkedOTOAccount(result.getUserEmail());
-								Alerter.stopLoading();
+								Alerter.stopLoading(box);
 								Window.Location.replace(ServerSetup.getInstance().getSetup().getGoogleRedirectURI() + "#" + SettingsPlace.class.getSimpleName() + ":");
 							} 
 						});
 						break;
 					case "settings_create_oto":
-						Alerter.startLoading();
+						final MessageBox boxCreate = Alerter.startLoading();
 						userService.createOTOAccount(Authentication.getInstance().getToken(), accessToken, new AsyncCallback<edu.arizona.biosemantics.oto.common.model.User>() {
 							@Override
 							public void onFailure(Throwable caught) {
-								Alerter.stopLoading();
+								Alerter.stopLoading(boxCreate);
 								MessageBox box = Alerter.failedToCreateOTOAccount(caught);
 								box.addHideHandler(new HideHandler() {
 									@Override
@@ -101,7 +101,7 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 								view.setOTOAccount(result.getUserEmail(), result.getPassword());
 								view.setLinkedOTOAccount(result.getUserEmail());
 								//populateUserData();
-								Alerter.stopLoading();
+								Alerter.stopLoading(boxCreate);
 								MessageBox box = Alerter.successfullyCreatedOTOAccount();
 								box.addHideHandler(new HideHandler() {
 									@Override
@@ -208,11 +208,11 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 		if(!password.equals(passwordConfirm)) {
 			Alerter.passwordsDontMatch();
 		} else {
-			Alerter.startLoading();
+			final MessageBox box = Alerter.startLoading();
 			userService.createOTOAccount(Authentication.getInstance().getToken(), email, password, new AsyncCallback<edu.arizona.biosemantics.oto.common.model.User>() {
 				@Override
 				public void onFailure(Throwable caught) {
-					Alerter.stopLoading();
+					Alerter.stopLoading(box);
 					Alerter.failedToCreateOTOAccount(caught);
 				}
 				@Override
@@ -220,7 +220,7 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 					view.setOTOAccount(result.getUserEmail(), result.getPassword());
 					view.setLinkedOTOAccount(email);
 					//populateUserData();
-					Alerter.stopLoading();
+					Alerter.stopLoading(box);
 					Alerter.successfullyCreatedOTOAccount();
 				}
 			});
@@ -229,11 +229,11 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 
 	@Override
 	public void onSaveOTOAccount(final boolean share, final String email, final String password) {
-		Alerter.startLoading();
+		final MessageBox box = Alerter.startLoading();
 		userService.saveOTOAccount(Authentication.getInstance().getToken(), share, email, password, new AsyncCallback<Void>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				Alerter.stopLoading();
+				Alerter.stopLoading(box);
 				if(caught instanceof InvalidOTOAccountException) {
 					Alerter.invalidOTOAccount(caught);
 				} else {
@@ -244,7 +244,7 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 			public void onSuccess(Void result) {
 				if(share)
 					view.setLinkedOTOAccount(email);
-				Alerter.stopLoading();
+				Alerter.stopLoading(box);
 				Alerter.savedSuccessfully();
 			} 
 		});
@@ -252,11 +252,11 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 
 	@Override
 	public void onLinkAccount(final Boolean share, final String email, final String password) {
-		Alerter.startLoading();
+		final MessageBox box = Alerter.startLoading();
 		userService.saveOTOAccount(Authentication.getInstance().getToken(), share, email, password, new AsyncCallback<Void>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				Alerter.stopLoading();
+				Alerter.stopLoading(box);
 				if(caught instanceof InvalidOTOAccountException) {
 					Alerter.invalidOTOAccount(caught);
 				} else {
@@ -267,7 +267,7 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 			public void onSuccess(Void result) {
 				if(share)
 					view.setLinkedOTOAccount(email);
-				Alerter.stopLoading();
+				Alerter.stopLoading(box);
 			}
 		});
 	}

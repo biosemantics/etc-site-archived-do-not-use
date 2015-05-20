@@ -269,16 +269,16 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 		eulerEventBus.addHandler(SaveEvent.TYPE, new SaveEvent.SaveHandler() {
 			@Override
 			public void onSave(SaveEvent event) {
-				Alerter.startLoading();
+				final MessageBox box = Alerter.startLoading();
 				taxonomyComparisonService.saveModel(Authentication.getInstance().getToken(), task, model, new AsyncCallback<Void>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						Alerter.failedToSaveTaxonomyComparisonModel(caught);
-						Alerter.stopLoading();
+						Alerter.stopLoading(box);
 					}
 					@Override
 					public void onSuccess(Void result) { 
-						Alerter.stopLoading();
+						Alerter.stopLoading(box);
 						unsavedChanges = false;
 					}
 				});
@@ -287,12 +287,12 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 		eulerEventBus.addHandler(DownloadEvent.TYPE, new DownloadEvent.DownloadHandler() {
 			@Override
 			public void onDownload(DownloadEvent event) {
-				Alerter.startLoading();
+				final MessageBox box = Alerter.startLoading();
 				taxonomyComparisonService.exportArticulations(Authentication.getInstance().getToken(), 
 						task, event.getModel(), new AsyncCallback<String>() {
 					@Override
 					public void onSuccess(String result) {
-						Alerter.stopLoading();
+						Alerter.stopLoading(box);
 						Window.open("download.dld?target=" + URL.encodeQueryString(result) + 
 								"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
 								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()), "_blank", "");
@@ -300,7 +300,7 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 					@Override
 					public void onFailure(Throwable caught) {
 						Alerter.failedToOutputMatrix(caught);
-						Alerter.stopLoading();
+						Alerter.stopLoading(box);
 					}
 				});
 			}
@@ -315,7 +315,7 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 	@Override
 	public void setTask(final Task task) {
 		this.task = task;
-		Alerter.startLoading();
+		final MessageBox box = Alerter.startLoading();
 		view.getEulerAlignmentView().setShowDialogs(true);
 		taxonomyComparisonService.getModel(Authentication.getInstance().getToken(), 
 				task, new AsyncCallback<Model>() {
@@ -333,12 +333,12 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 				case ANALYZE_COMPLETE:	
 					break;
 				}
-				Alerter.stopLoading();
+				Alerter.stopLoading(box);
 			}
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToLoadTaxonomies(caught);
-				Alerter.stopLoading();
+				Alerter.stopLoading(box);
 			}
 		});
 	}

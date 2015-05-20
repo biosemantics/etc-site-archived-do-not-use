@@ -44,12 +44,12 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 		otoEventBus.addHandler(SaveEvent.TYPE, new SaveHandler() {
 			@Override
 			public void onSave(SaveEvent event) {
-				Alerter.startLoading();
+				final MessageBox box = Alerter.startLoading();
 				semanticMarkupService.saveOto(Authentication.getInstance().getToken(), 
 						task, new AsyncCallback<String>() {
 					@Override
 					public void onSuccess(String result) {
-						Alerter.stopLoading();
+						Alerter.stopLoading(box);
 						Window.open("download.dld?target=" + URL.encodeQueryString(result) + 
 								"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
 								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()), "_blank", "");
@@ -105,8 +105,7 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 				SemanticMarkupConfiguration configuration = (SemanticMarkupConfiguration)task.getConfiguration();
 				view.setReview(configuration.getOtoUploadId(), 
 						configuration.getOtoSecret());
-				//view.setFrameUrl(ServerSetup.getInstance().getSetup().getOtoLiteReviewURL() + "&uploadID=" + configuration.getOtoUploadId() + 
-				//		"&secret=" + configuration.getOtoSecret());
+				view.setEnabledSendToOto(!configuration.isOtoCreatedDataset());
 				SemanticMarkupReviewPresenter.this.task = task;
 			}
 
@@ -133,6 +132,23 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToGoToTaskStage(caught);
+			}
+		});
+	}
+
+	@Override
+	public void onSendToOto() {
+		final MessageBox messageBox = Alerter.startLoading();
+		semanticMarkupService.sendToOto(Authentication.getInstance().getToken(), task, new AsyncCallback<Void>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToSendToOto(caught);
+				Alerter.stopLoading(messageBox);
+			}
+			@Override
+			public void onSuccess(Void result) {
+				Alerter.contributedSuccessfullyToOTO();
+				Alerter.stopLoading(messageBox);
 			}
 		});
 	}

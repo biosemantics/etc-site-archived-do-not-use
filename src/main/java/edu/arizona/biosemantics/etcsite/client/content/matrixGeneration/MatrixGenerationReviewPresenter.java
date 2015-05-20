@@ -158,12 +158,12 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 		view.getMatrixReviewView().getFullModelBus().addHandler(DownloadEvent.TYPE, new DownloadEvent.DownloadHandler() {
 			@Override
 			public void onDownload(DownloadEvent event) {
-				Alerter.startLoading();
+				final MessageBox box = Alerter.startLoading();
 				matrixGenerationService.outputMatrix(Authentication.getInstance().getToken(), 
 						task, event.getModel(), new AsyncCallback<String>() {
 					@Override
 					public void onSuccess(String result) {
-						Alerter.stopLoading();
+						Alerter.stopLoading(box);
 						Window.open("download.dld?target=" + URL.encodeQueryString(result) + 
 								"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
 								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()), "_blank", "");
@@ -171,7 +171,7 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 					@Override
 					public void onFailure(Throwable caught) {
 						Alerter.failedToOutputMatrix(caught);
-						Alerter.stopLoading();
+						Alerter.stopLoading(box);
 					}
 				});
 			}
@@ -179,16 +179,16 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 		view.getMatrixReviewView().getFullModelBus().addHandler(SaveEvent.TYPE, new SaveEvent.SaveHandler() {
 			@Override
 			public void onSave(SaveEvent event) {				
-				Alerter.startLoading();
+				final MessageBox box = Alerter.startLoading();
 				matrixGenerationService.save(Authentication.getInstance().getToken(), event.getModel(), task, new AsyncCallback<Void>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						Alerter.failedToSaveMatrix(caught);
-						Alerter.stopLoading();
+						Alerter.stopLoading(box);
 					}
 					@Override
 					public void onSuccess(Void result) {
-						Alerter.stopLoading();
+						Alerter.stopLoading(box);
 						unsavedChanges = false;
 					}
 				});
@@ -203,7 +203,7 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 			confirm.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
 				@Override
 				public void onSelect(SelectEvent event) {
-					Alerter.startLoading();
+					final MessageBox box = Alerter.startLoading();
 					matrixGenerationService.save(Authentication.getInstance().getToken(), model, task, new AsyncCallback<Void>() {
 						@Override
 						public void onSuccess(Void result) { 
@@ -211,14 +211,14 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 									task, new AsyncCallback<Task>() {
 								@Override
 								public void onSuccess(Task result) {	
-									Alerter.stopLoading();
+									Alerter.stopLoading(box);
 									unsavedChanges = false;
 									placeController.goTo(new MatrixGenerationOutputPlace(result));
 								}
 								@Override
 								public void onFailure(Throwable caught) {
 									Alerter.failedToCompleteReview(caught);
-									Alerter.stopLoading();
+									Alerter.stopLoading(box);
 								}
 							});
 						}
@@ -226,7 +226,7 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 						@Override
 						public void onFailure(Throwable caught) {
 							Alerter.failedToSaveMatrix(caught);
-							Alerter.stopLoading();
+							Alerter.stopLoading(box);
 						}
 					});
 				}
@@ -235,18 +235,18 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 				@Override
 				public void onSelect(SelectEvent event) {
 					unsavedChanges = false; // user decided he doesn't care
-					Alerter.startLoading();
+					final MessageBox box = Alerter.startLoading();
 					matrixGenerationService.completeReview(Authentication.getInstance().getToken(), 
 							task, new AsyncCallback<Task>() {
 						@Override
 						public void onSuccess(Task result) {	
-							Alerter.stopLoading();
+							Alerter.stopLoading(box);
 							placeController.goTo(new MatrixGenerationOutputPlace(result));
 						}
 						@Override
 						public void onFailure(Throwable caught) {
 							Alerter.failedToCompleteReview(caught);
-							Alerter.stopLoading();
+							Alerter.stopLoading(box);
 						}
 					});
 				}
@@ -263,13 +263,13 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 	@Override
 	public void setTask(Task task) {
 		this.task = task;
-		Alerter.startLoading();
+		final MessageBox box = Alerter.startLoading();
 		matrixGenerationService.review(Authentication.getInstance().getToken(), task, new AsyncCallback<Model>() { 
 			public void onSuccess(Model result) {
 				model = result;
 				TaxonMatrix taxonMatrix = model.getTaxonMatrix();
 				view.setFullModel(model);
-				Alerter.stopLoading();
+				Alerter.stopLoading(box);
 				if (taxonMatrix.getCharacterCount() == 0 || (taxonMatrix.getCharacterCount() == 1 && taxonMatrix.getFlatCharacters().get(0).getName().equals(""))){
 					Alerter.matrixGeneratedEmpty();
 				}
@@ -277,7 +277,7 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToReview(caught);
-				Alerter.stopLoading();
+				Alerter.stopLoading(box);
 			}
 		}); 
 	}
@@ -289,16 +289,16 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 
 	@Override
 	public void onSave() {
-		Alerter.startLoading();
+		final MessageBox box = Alerter.startLoading();
 		matrixGenerationService.save(Authentication.getInstance().getToken(), model, task, new AsyncCallback<Void>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToSaveMatrix(caught);
-				Alerter.stopLoading();
+				Alerter.stopLoading(box);
 			}
 			@Override
 			public void onSuccess(Void result) {
-				Alerter.stopLoading();	
+				Alerter.stopLoading(box);	
 				unsavedChanges = false;
 			}
 		});

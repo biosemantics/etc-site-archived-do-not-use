@@ -2,6 +2,7 @@ package edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup;
 
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -43,6 +44,8 @@ public interface ISemanticMarkupService extends RemoteService, IHasTasksService 
 	public void renameTerm(AuthenticationToken token, Task task, String term, String newName);
 
 	public void importOto(Task task, String termCategorization, String synonymy) throws SemanticMarkupException;
+	
+	public void sendToOto(AuthenticationToken token, Task task,	AsyncCallback<Void> asyncCallback) throws Exception;
 	
 	//public RPCResult<Void> prepareOptionalOtoLiteSteps(AuthenticationToken authenticationToken, Task task);
 

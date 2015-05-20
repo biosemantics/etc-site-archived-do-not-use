@@ -275,12 +275,12 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		if(selection != null) { 
 			final String selectionPath = selection.getFileInfo().getFilePath();
 			if(selectionPath != null) {
-				Alerter.startLoading();
+				final MessageBox box = Alerter.startLoading();
 				fileService.getDownloadPath(Authentication.getInstance().getToken(), selectionPath, new AsyncCallback<String>() {
 					@Override
 					public void onSuccess(String result) {
 						//target=" + result.getData() + "&directory=yes
-						Alerter.stopLoading();
+						Alerter.stopLoading(box);
 						Window.open("download.dld?target=" + URL.encodeQueryString(result) + 
 								"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
 								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()), "_blank", "");

@@ -4,6 +4,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
@@ -47,19 +48,19 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 		this.currentFileInfo = fileInfo;
 		//this.dialogBox.setText("File Content of "+path);
 		this.dialog.show();
-		Alerter.startLoading();
+		final MessageBox box = Alerter.startLoading();
 		fileType = FileTypeEnum.getEnum(view.getFormat());
 		fileAccessService.getFileContent(Authentication.getInstance().getToken(), 
-				currentFileInfo.getFilePath(), fileType, new FileContentCallback(true));
+				currentFileInfo.getFilePath(), fileType, new FileContentCallback(true, box));
 	}
 	
 	@Override
 	public void onFormatChange(String format) {
-		Alerter.startLoading();
+		final MessageBox box = Alerter.startLoading();
 		fileType = FileTypeEnum.getEnum(format);
 		fileAccessService.getFileContent(
 				Authentication.getInstance().getToken(), 
-				currentFileInfo.getFilePath(), fileType, new FileContentCallback(false));
+				currentFileInfo.getFilePath(), fileType, new FileContentCallback(false, box));
 	}
 	
 	@Override
@@ -136,8 +137,10 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 	
 	private class FileContentCallback implements AsyncCallback<String> {
 		private boolean center;
-		public FileContentCallback(boolean center) {
+		private MessageBox box;
+		public FileContentCallback(boolean center, MessageBox box) {
 			this.center = center;
+			this.box = box;
 		}
 		@Override
 		public void onSuccess(String result) {
@@ -145,12 +148,12 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 			view.setEditable(false);
 			if(center)
 				dialog.show();
-			Alerter.stopLoading();
+			Alerter.stopLoading(box);
 		}
 		@Override
 		public void onFailure(Throwable caught) {
 			Alerter.failedToGetFileContent(caught);
-			Alerter.stopLoading();
+			Alerter.stopLoading(box);
 		}
 	}
 

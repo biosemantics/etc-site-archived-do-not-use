@@ -14,17 +14,16 @@ import edu.arizona.biosemantics.oto2.oto.client.common.Alerter.InfoMessageBox;
 public class Alerter {
 	
 	private static IUserServiceAsync userService = GWT.create(IUserService.class);
-	private static AutoProgressMessageBox box;
 	
 	public static MessageBox startLoading() {
-		box = new AutoProgressMessageBox("Loading", "Loading your data, please wait...");
+		AutoProgressMessageBox box = new AutoProgressMessageBox("Loading", "Loading your data, please wait...");
         box.setProgressText("Loading...");
         box.auto();
         box.show();
         return box;
 	}
 	
-	public static void stopLoading() {
+	public static void stopLoading(MessageBox box) {
 		box.hide();
 		box = null;
 	}
@@ -55,6 +54,10 @@ public class Alerter {
 
 	public static MessageBox failedToCreateTaxonDescription(Throwable caught) {
 		return showAlert("Create Taxon Description", "Failed to create taxon description.", caught);
+	}
+	
+	public static MessageBox failedToSendToOto(Throwable caught) {
+		return showAlert("Failed to send to OTO", "Failed to send to OTO.", caught);
 	}
 	
 	public static MessageBox failedToSetProfile(Throwable caught) {
@@ -544,4 +547,10 @@ public class Alerter {
 		box.getButton(PredefinedButton.NO).setText("Abort Upload");
 		return box;
 	}
+
+	public static MessageBox contributedSuccessfullyToOTO() {
+		return showInfo("Contribution successful", "Contributed classifications sucessfully to OTO.");
+	}
+
+
 }

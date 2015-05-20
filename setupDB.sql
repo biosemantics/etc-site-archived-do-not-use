@@ -131,6 +131,7 @@ CREATE TABLE IF NOT EXISTS `etcsite_semanticmarkupconfigurations` (
   `use_empty_glossary` tinyint(1) DEFAULT NULL,
   `oto_uploadid` int(11) DEFAULT NULL,
   `oto_secret` varchar(100) DEFAULT NULL,
+  `oto_created_dataset` tinyint(1) DEFAULT NULL,
   `output` varchar(200) DEFAULT NULL,
   KEY `configurations_semanticmarkupconfigurations_CON` (`configuration`),
   KEY `taxon_group_semanticmarkupconfigurations_CON` (`taxon_group`)

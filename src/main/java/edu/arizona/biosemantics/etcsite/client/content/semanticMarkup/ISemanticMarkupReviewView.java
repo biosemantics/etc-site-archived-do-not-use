@@ -14,6 +14,8 @@ public interface ISemanticMarkupReviewView extends IsWidget {
 		ISemanticMarkupReviewView getView();
 
 		void onNext();
+
+		void onSendToOto();
 		
 	}
 	
@@ -24,5 +26,7 @@ public interface ISemanticMarkupReviewView extends IsWidget {
 	void setReview(int collectionId, String secret);
 
 	Oto getOto();
+
+	void setEnabledSendToOto(boolean b);
 	
 }

@@ -31,6 +31,10 @@
 							<my:SubMenu ui:field="subMenu" step="REVIEW_TERMS" />
 						</g:cell>
 						<g:cell>
+							<g:Button addStyleNames="{style.nextButton}" ui:field="sendToOtoButton">
+							Contribute classifications to OTO</g:Button>
+						</g:cell>
+						<g:cell>
 							<g:Button addStyleNames="{style.nextButton}" ui:field="nextButton">Next
 								Step in Text Capture</g:Button>
 						</g:cell>
