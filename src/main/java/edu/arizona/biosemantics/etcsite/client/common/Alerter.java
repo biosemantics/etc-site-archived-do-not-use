@@ -57,6 +57,10 @@ public class Alerter {
 		return showAlert("Create Taxon Description", "Failed to create taxon description.", caught);
 	}
 	
+	public static MessageBox failedToSendToOto(Throwable caught) {
+		return showAlert("Failed to send to OTO", "Failed to send to OTO.", caught);
+	}
+	
 	public static MessageBox failedToSetProfile(Throwable caught) {
 		return showAlert("Save Profile", "Failed to set profile value", caught);
 	}
@@ -544,4 +548,6 @@ public class Alerter {
 		box.getButton(PredefinedButton.NO).setText("Abort Upload");
 		return box;
 	}
+
+
 }

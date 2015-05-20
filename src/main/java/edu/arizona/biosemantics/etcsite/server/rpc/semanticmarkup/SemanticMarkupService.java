@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -30,6 +32,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
@@ -73,12 +76,31 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarku
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkupException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserNotFoundException;
+import edu.arizona.biosemantics.oto.client.oto.OTOClient;
+import edu.arizona.biosemantics.oto.common.model.CategorizeTerms;
+import edu.arizona.biosemantics.oto.common.model.CategoryBean;
+import edu.arizona.biosemantics.oto.common.model.CreateDataset;
+import edu.arizona.biosemantics.oto.common.model.DecisionHolder;
+import edu.arizona.biosemantics.oto.common.model.GlossaryDownload;
+import edu.arizona.biosemantics.oto.common.model.GroupTerms;
+import edu.arizona.biosemantics.oto.common.model.StructureHierarchy;
+import edu.arizona.biosemantics.oto.common.model.TermCategory;
+import edu.arizona.biosemantics.oto.common.model.TermContext;
+import edu.arizona.biosemantics.oto.common.model.TermSynonym;
+import edu.arizona.biosemantics.oto.common.model.lite.Decision;
+import edu.arizona.biosemantics.oto.common.model.lite.Download;
+import edu.arizona.biosemantics.oto.common.model.lite.Synonym;
+import edu.arizona.biosemantics.oto.common.model.lite.UploadResult;
+import edu.arizona.biosemantics.oto2.oto.server.rest.client.Client;
 import edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService;
+import edu.arizona.biosemantics.oto2.oto.server.rpc.ContextService;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Collection;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Context;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Label;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Term;
+import edu.arizona.biosemantics.oto2.oto.shared.model.TypedContext;
 import edu.arizona.biosemantics.oto2.oto.shared.rpc.ICollectionService;
+import edu.arizona.biosemantics.oto2.oto.shared.rpc.IContextService;
 /*import edu.arizona.biosemantics.etcsite.shared.db.otolite.OrderCategoriesDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.otolite.StructuresDAO;
 import edu.arizona.biosemantics.etcsite.shared.db.otolite.SynonymsDAO;
@@ -88,6 +110,8 @@ import edu.arizona.biosemantics.etcsite.shared.db.otolite.TermsInOrderCategoryDA
 public class SemanticMarkupService extends RemoteServiceServlet implements ISemanticMarkupService  {
 
 	private static final long serialVersionUID = -7871896158610489838L;
+	private ICollectionService collectionService = new CollectionService();
+	private IContextService contextService = new ContextService();
 	private IFileAccessService fileAccessService = new FileAccessService();
 	private IFileService fileService = new FileService();
 	private IFileFormatService fileFormatService = new FileFormatService();
@@ -1059,5 +1083,105 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				}
 			}
 		}
+	}
+
+	@Override
+	public void sendToOto(AuthenticationToken token, Task task, AsyncCallback<Void> asyncCallback) throws Exception {
+		SemanticMarkupConfiguration config = getSemanticMarkupConfiguration(task);
+		User user = daoManager.getUserDAO().getUser(token.getUserId());
+		
+		try(OTOClient otoClient = new OTOClient(edu.arizona.biosemantics.semanticmarkup.config.Configuration.otoUrl)) {
+			otoClient.open();
+			edu.arizona.biosemantics.common.biology.TaxonGroup taxonGroupEnum = 
+					edu.arizona.biosemantics.common.biology.TaxonGroup.valueOf(config.getTaxonGroup().getName().toUpperCase());
+			CreateDataset createDataset = new CreateDataset(task.getName(), taxonGroupEnum, user.getOtoAuthenticationToken());
+			Future<String> datasetFuture = otoClient.postDataset(createDataset);
+			String datasetName = datasetFuture.get();
+									
+			Collection collection = collectionService.get(config.getOtoUploadId(), config.getOtoSecret());
+			List<TermContext> termContexts = new LinkedList<TermContext>();
+			for(Label label : collection.getLabels()) {
+				for(edu.arizona.biosemantics.oto2.oto.shared.model.Term mainTerm : label.getMainTerms()) {
+					addTermContext(termContexts, collection, mainTerm);
+					
+					List<edu.arizona.biosemantics.oto2.oto.shared.model.Term> termsSynonyms = label.getSynonyms(mainTerm);
+					for(edu.arizona.biosemantics.oto2.oto.shared.model.Term synonym : termsSynonyms) {
+						addTermContext(termContexts, collection, synonym);
+					}
+				}
+			}
+			GroupTerms groupTerms = new GroupTerms(termContexts, user.getOtoAuthenticationToken(), false);
+			StructureHierarchy structureHierarchy = new StructureHierarchy(termContexts, user.getOtoAuthenticationToken(), false);
+			
+			otoClient.postGroupTerms(datasetName, groupTerms);
+			otoClient.postStructureHierarchy(datasetName, structureHierarchy);
+			
+			CategorizeTerms categorizeTerms = new CategorizeTerms();
+			categorizeTerms.setAuthenticationToken(user.getOtoAuthenticationToken());
+			categorizeTerms.setDecisionHolder(createDecisionHolder(collection));
+			otoClient.postGroupTermsCategorization(datasetName, categorizeTerms);
+		} catch (InterruptedException | ExecutionException e) {
+			log(LogLevel.ERROR, "Couldnt' set description upon rename term", e);
+			throw new Exception("Could not send terms to OTO.");
+		} 
+		
+		config.setOtoCreatedDataset(true);
+		daoManager.getSemanticMarkupConfigurationDAO().updateSemanticMarkupConfiguration(config);
+	}
+
+	private DecisionHolder createDecisionHolder(Collection collection) {
+		DecisionHolder decisionHolder = new DecisionHolder();
+		ArrayList<CategoryBean> regularCategories = new ArrayList<CategoryBean>();
+		
+		for(Label label : collection.getLabels()) {
+			CategoryBean categoryBean = new CategoryBean();
+			categoryBean.setName(label.getName());
+			
+			ArrayList<edu.arizona.biosemantics.oto.common.model.Term> changedTerms = 
+					new ArrayList<edu.arizona.biosemantics.oto.common.model.Term>();
+			for(edu.arizona.biosemantics.oto2.oto.shared.model.Term mainTerm : label.getMainTerms()) {
+				List<edu.arizona.biosemantics.oto2.oto.shared.model.Term> termsSynonyms = label.getSynonyms(mainTerm);
+				edu.arizona.biosemantics.oto.common.model.Term term = new edu.arizona.biosemantics.oto.common.model.Term();
+				term.setIsAdditional(false); //true if the term is synonym, false if main term
+				term.setHasSyn(!termsSynonyms.isEmpty());
+				term.setTerm(mainTerm.getTerm());
+				
+				
+				ArrayList<edu.arizona.biosemantics.oto.common.model.Term> synoymTerms = 
+						new ArrayList<edu.arizona.biosemantics.oto.common.model.Term>();
+				for(edu.arizona.biosemantics.oto2.oto.shared.model.Term synonym : termsSynonyms) {
+					edu.arizona.biosemantics.oto.common.model.Term synonymTerm = new edu.arizona.biosemantics.oto.common.model.Term();
+					term.setIsAdditional(true); //true if the term is synonym, false if main term
+					term.setHasSyn(false);
+					term.setTerm(synonym.getTerm());
+					
+					changedTerms.add(synonymTerm);
+					synoymTerms.add(synonymTerm);
+				}
+				term.setSyns(synoymTerms);
+				changedTerms.add(term);
+			}
+			categoryBean.setChanged_terms(changedTerms);
+			
+			ArrayList<String> terms = new ArrayList<String>();
+			for(edu.arizona.biosemantics.oto2.oto.shared.model.Term mainTerm : label.getMainTerms()) {
+				terms.add(mainTerm.getTerm());
+				List<edu.arizona.biosemantics.oto2.oto.shared.model.Term> termsSynonyms = label.getSynonyms(mainTerm);
+				
+				for(edu.arizona.biosemantics.oto2.oto.shared.model.Term synonym : termsSynonyms) {
+					terms.add(synonym.getTerm());
+				}
+			}
+			categoryBean.setTerms(terms);
+		}
+		
+		decisionHolder.setRegular_categories(regularCategories);
+		return decisionHolder;
+	}
+
+	private void addTermContext(List<TermContext> termContexts, Collection collection, Term term) {
+		List<TypedContext> contexts = contextService.getContexts(collection, term);
+		for(TypedContext context : contexts) 
+			termContexts.add(new TermContext(term.getTerm(), context.getText()));
 	}
 }

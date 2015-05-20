@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
@@ -26,6 +27,9 @@ public class SemanticMarkupReviewView extends Composite implements ISemanticMark
 	private Oto oto = new Oto();
 
 	@UiField
+	Button sendToOtoButton;
+	
+	@UiField
 	SimpleLayoutPanel otoPanel;
 	
 	@Inject
@@ -40,6 +44,11 @@ public class SemanticMarkupReviewView extends Composite implements ISemanticMark
 		this.presenter = presenter;
 	}
 
+	@UiHandler("sendToOtoButton")
+	public void onSendToOto(ClickEvent event) {
+		presenter.onSendToOto();
+	}
+	
 	@UiHandler("nextButton")
 	public void onNext(ClickEvent event) {
 		presenter.onNext();
@@ -63,6 +72,11 @@ public class SemanticMarkupReviewView extends Composite implements ISemanticMark
 	@Override
 	public Oto getOto() {
 		return oto;
+	}
+
+	@Override
+	public void setEnabledSendToOto(boolean value) {
+		sendToOtoButton.setEnabled(value);
 	}
 
 }

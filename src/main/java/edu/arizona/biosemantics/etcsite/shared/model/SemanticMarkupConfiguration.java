@@ -13,12 +13,13 @@ public class SemanticMarkupConfiguration extends AbstractTaskConfiguration imple
 	private boolean useEmptyGlossary;
 	private int otoUploadId;
 	private String otoSecret;
+	private boolean otoCreatedDataset;
 	private String output;
 	
 	public SemanticMarkupConfiguration() { }
 	
 	public SemanticMarkupConfiguration(Configuration configuration, String input, int numberOfInputFiles, TaxonGroup taxonGroup, 
-			boolean useEmptyGlossary, int otoUploadId, String otoSecret, String output) {
+			boolean useEmptyGlossary, int otoUploadId, String otoSecret, boolean otoCreatedDataset, String output) {
 		super(configuration);
 		this.input = input;
 		this.numberOfInputFiles = numberOfInputFiles;
@@ -26,6 +27,7 @@ public class SemanticMarkupConfiguration extends AbstractTaskConfiguration imple
 		this.useEmptyGlossary = useEmptyGlossary;
 		this.otoUploadId = otoUploadId;
 		this.otoSecret = otoSecret;
+		this.otoCreatedDataset = otoCreatedDataset;
 		this.output = output;
 	}
 
@@ -79,6 +81,14 @@ public class SemanticMarkupConfiguration extends AbstractTaskConfiguration imple
 	
 	public void setOtoSecret(String otoSecret) {
 		this.otoSecret = otoSecret;
+	}
+	
+	public boolean isOtoCreatedDataset() {
+		return otoCreatedDataset;
+	}
+
+	public void setOtoCreatedDataset(boolean otoCreatedDataset) {
+		this.otoCreatedDataset = otoCreatedDataset;
 	}
 
 	public void setOutput(String output) {

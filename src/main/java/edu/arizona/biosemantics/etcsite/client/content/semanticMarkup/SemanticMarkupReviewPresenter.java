@@ -105,8 +105,7 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 				SemanticMarkupConfiguration configuration = (SemanticMarkupConfiguration)task.getConfiguration();
 				view.setReview(configuration.getOtoUploadId(), 
 						configuration.getOtoSecret());
-				//view.setFrameUrl(ServerSetup.getInstance().getSetup().getOtoLiteReviewURL() + "&uploadID=" + configuration.getOtoUploadId() + 
-				//		"&secret=" + configuration.getOtoSecret());
+				view.setEnabledSendToOto(!configuration.isOtoCreatedDataset());
 				SemanticMarkupReviewPresenter.this.task = task;
 			}
 
@@ -133,6 +132,20 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToGoToTaskStage(caught);
+			}
+		});
+	}
+
+	@Override
+	public void onSendToOto() {
+		semanticMarkupService.sendToOto(Authentication.getInstance().getToken(), task, new AsyncCallback<Void>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToSendToOto(caught);
+			}
+			@Override
+			public void onSuccess(Void result) {
+				
 			}
 		});
 	}
