@@ -7,6 +7,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.Inject;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
@@ -146,23 +147,23 @@ public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.P
 				return;
 			}
 		}
-		Alerter.startLoading();
+		final MessageBox box = Alerter.startLoading();
 		semanticMarkupService.isValidInput(Authentication.getInstance().getToken(), inputFolderPath, new AsyncCallback<Boolean>() {
 			@Override
 			public void onSuccess(Boolean result) {
 				if(!result) {
 					Alerter.invalidInputDirectory();
-					Alerter.stopLoading();
+					Alerter.stopLoading(box);
 				} else {
 					placeController.goTo(new SemanticMarkupInputPlace());
-					Alerter.stopLoading();
+					Alerter.stopLoading(box);
 				}
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToIsValidInput(caught);
-				Alerter.stopLoading();
+				Alerter.stopLoading(box);
 			}
 		});
 	}
@@ -201,12 +202,12 @@ public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.P
 			Alerter.inputError("New folder name cannot be empty.");
 			return false;
 		}
-		Alerter.startLoading();
+		final MessageBox box = Alerter.startLoading();
 		fileService.createDirectory(Authentication.getInstance().getToken(), parentFileInfo.getFilePath(), folderName, false, new AsyncCallback<String>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				Alerter.stopLoading();
+				Alerter.stopLoading(box);
 			}
 
 			@Override
@@ -216,7 +217,7 @@ public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.P
 				}else{
 					uploadFiles_newFolder = result;
 				}
-				Alerter.stopLoading();
+				Alerter.stopLoading(box);
 				view.setCreateFolderStatus("Folder Created");
 			}
 		});

@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
@@ -44,18 +45,18 @@ public class FileTreePresenter implements IFileTreeView.Presenter {
 		//remove previous data
 		view.clear();
 		
-		Alerter.startLoading();
+		final MessageBox box = Alerter.startLoading();
 		this.fileService.getUsersFiles(Authentication.getInstance().getToken(), FileFilter.ALL, 
 				new AsyncCallback<Tree<FileInfo>>() {
 				@Override
 				public void onSuccess(Tree<FileInfo> result) {
 					decorate(result, selectionPath, retainedStates, fileFilter);
-					Alerter.stopLoading();
+					Alerter.stopLoading(box);
 				}
 				@Override
 				public void onFailure(Throwable caught) {
 					Alerter.failedToGetUsersFiles(caught);
-					Alerter.stopLoading();
+					Alerter.stopLoading(box);
 				}
 			}
 		);

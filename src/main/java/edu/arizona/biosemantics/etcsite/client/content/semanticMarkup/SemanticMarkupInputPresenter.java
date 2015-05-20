@@ -4,6 +4,7 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.Inject;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
@@ -45,7 +46,7 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 			return;
 		}
 		
-		Alerter.startLoading();
+		final MessageBox box = Alerter.startLoading();
 		semanticMarkupService.start(Authentication.getInstance().getToken(), 
 				view.getTaskName(), inputFile, view.getGlossaryName(), view.isEmptyGlossarySelected(), new AsyncCallback<Task>() {
 			@Override
@@ -58,13 +59,13 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 						placeController.goTo(new SemanticMarkupPreprocessPlace(result));
 						break;
 				}
-				Alerter.stopLoading();
+				Alerter.stopLoading(box);
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToStartSemanticMarkup(caught);
-				Alerter.stopLoading();
+				Alerter.stopLoading(box);
 			}
 		});
 	}

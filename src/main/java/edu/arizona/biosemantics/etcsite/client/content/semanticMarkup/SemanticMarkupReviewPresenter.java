@@ -44,12 +44,12 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 		otoEventBus.addHandler(SaveEvent.TYPE, new SaveHandler() {
 			@Override
 			public void onSave(SaveEvent event) {
-				Alerter.startLoading();
+				final MessageBox box = Alerter.startLoading();
 				semanticMarkupService.saveOto(Authentication.getInstance().getToken(), 
 						task, new AsyncCallback<String>() {
 					@Override
 					public void onSuccess(String result) {
-						Alerter.stopLoading();
+						Alerter.stopLoading(box);
 						Window.open("download.dld?target=" + URL.encodeQueryString(result) + 
 								"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
 								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()), "_blank", "");

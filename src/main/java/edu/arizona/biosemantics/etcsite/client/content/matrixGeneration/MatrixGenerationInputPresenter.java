@@ -3,6 +3,7 @@ package edu.arizona.biosemantics.etcsite.client.content.matrixGeneration;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
@@ -38,13 +39,13 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 			return;
 		}
 		
-		Alerter.startLoading();
+		final MessageBox box = Alerter.startLoading();
 		matrixGenerationService.start(Authentication.getInstance().getToken(), 
 			view.getTaskName(), inputFile, view.isInheritValues(), view.isGenerateAbsentPresent(), new AsyncCallback<Task>() {
 			@Override
 			public void onSuccess(Task result) {
 				placeController.goTo(new MatrixGenerationProcessPlace(result));
-				Alerter.stopLoading();
+				Alerter.stopLoading(box);
 			}
 			@Override
 			public void onFailure(Throwable caught) {

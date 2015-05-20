@@ -3,6 +3,7 @@ package edu.arizona.biosemantics.etcsite.client.content.treeGeneration;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
@@ -35,18 +36,18 @@ public class TreeGenerationViewPresenter implements ITreeGenerationViewView.Pres
 	@Override
 	public void setTask(final Task task) {
 		this.task = task;
-		Alerter.startLoading();
+		final MessageBox box = Alerter.startLoading();
 		treeGenerationService.view(Authentication.getInstance().getToken(), 
 				task, new AsyncCallback<TaxonMatrix>() {
 			@Override
 			public void onSuccess(TaxonMatrix taxonMatrix) {
 				view.getKeyView().initialize(taxonMatrix);
-				Alerter.stopLoading();
+				Alerter.stopLoading(box);
 			}
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToViewKey(caught);
-				Alerter.stopLoading();
+				Alerter.stopLoading(box);
 			}
 		});
 	}
