@@ -138,14 +138,17 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 
 	@Override
 	public void onSendToOto() {
+		final MessageBox messageBox = Alerter.startLoading();
 		semanticMarkupService.sendToOto(Authentication.getInstance().getToken(), task, new AsyncCallback<Void>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToSendToOto(caught);
+				Alerter.stopLoading(messageBox);
 			}
 			@Override
 			public void onSuccess(Void result) {
-				
+				Alerter.contributedSuccessfullyToOTO();
+				Alerter.stopLoading(messageBox);
 			}
 		});
 	}

@@ -37,6 +37,8 @@ public class SemanticMarkupReviewView extends Composite implements ISemanticMark
 		super();
 		initWidget(uiBinder.createAndBindUi(this));
 		otoPanel.setWidget(oto.getView().asWidget());
+		
+		sendToOtoButton.setTitle("Contribute classifications to OTO");
 	}
 
 	@Override
