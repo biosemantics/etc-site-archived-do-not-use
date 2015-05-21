@@ -32,13 +32,13 @@ public class SubMenu extends Composite {
 	public void setStep(TaskStageEnum taskStage) {
 		switch(taskStage) {
 		case CREATE_INPUT:
-			createInput.setImage("images/Enumeration_0.gif");
+			createInput.setImage("images/Enumeration_1.gif");
 			break;
 		case INPUT:
-			input.setImage("images/Enumeration_1.gif");
+			input.setImage("images/Enumeration_2.gif");
 			break;
 		case VIEW:
-			view.setImage("images/Enumeration_2.gif");
+			view.setImage("images/Enumeration_3.gif");
 			break;
 		default:
 			input.setImage("images/Enumeration_1.gif");

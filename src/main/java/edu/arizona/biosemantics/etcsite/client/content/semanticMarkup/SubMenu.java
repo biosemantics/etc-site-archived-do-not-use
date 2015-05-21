@@ -54,22 +54,22 @@ public class SubMenu extends Composite {
 	public void setStep(TaskStageEnum taskStage) {
 		switch(taskStage) {
 		case CREATE_INPUT:
-			createInput.setImage("images/Enumeration_0.gif");
+			createInput.setImage("images/Enumeration_1.gif");
 			break;
 		case INPUT:
-			input.setImage("images/Enumeration_1.gif");
+			input.setImage("images/Enumeration_2.gif");
 			break;
 		case PREPROCESS_TEXT:
-			preprocess.setImage("images/Enumeration_2.gif");
+			preprocess.setImage("images/Enumeration_3.gif");
 			break;
 		case LEARN_TERMS:
-			learn.setImage("images/Enumeration_3.gif");
+			learn.setImage("images/Enumeration_4.gif");
 			break;
 		case REVIEW_TERMS:
-			review.setImage("images/Enumeration_4.gif");
+			review.setImage("images/Enumeration_5.gif");
 			break;		
 		case PARSE_TEXT:
-			parse.setImage("images/Enumeration_5.gif");
+			parse.setImage("images/Enumeration_6.gif");
 			break;
 		/*case TO_ONTOLOGIES:
 			toOntologies.setImage("images/Enumeration_6.gif");
@@ -81,7 +81,7 @@ public class SubMenu extends Composite {
 			orders.setImage("images/Enumeration_8.gif");
 			break; */
 		case OUTPUT:
-			output.setImage("images/Enumeration_6.gif");
+			output.setImage("images/Enumeration_7.gif");
 			break;
 		default:
 			input.setImage("images/Enumeration_1.gif");
