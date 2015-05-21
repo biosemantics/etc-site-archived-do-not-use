@@ -43,7 +43,7 @@ public class XmlModelFileCreator {
 				} else {
 					String key = line.substring(0, colonIndex).toLowerCase().trim();
 					for(String descriptionType : descriptionTypes) {
-						if(descriptionType.equals(key)) {
+						if(key.contains(descriptionType)) {
 							String value = line.substring(colonIndex + 1, line.length()).trim();
 							if(value.startsWith("#")) 
 								insideContinuousValue = true;

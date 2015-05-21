@@ -1,6 +1,8 @@
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
@@ -8,6 +10,8 @@ import com.google.inject.Inject;
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
+import com.sencha.gxt.widget.core.client.event.MaximizeEvent;
+import com.sencha.gxt.widget.core.client.event.MaximizeEvent.MaximizeHandler;
 
 public class CreateSemanticMarkupFilesDialogView implements
 		ICreateSemanticMarkupFilesDialogView {

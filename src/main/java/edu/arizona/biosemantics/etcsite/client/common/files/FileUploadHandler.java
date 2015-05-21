@@ -138,7 +138,11 @@ public class FileUploadHandler {
 					});
 					box.show();
 				}else{
-					Alerter.fileManagerMessage("File(s) uploaded successfully.");
+					if(serverResponse == null || serverResponse.isEmpty()){
+						Alerter.fileManagerMessage("File(s) uploaded successfully.");
+					}else{
+						Alerter.fileManagerMessage(serverResponse);
+					}
 				}
 			}
 		});

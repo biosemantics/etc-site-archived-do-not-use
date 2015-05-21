@@ -108,7 +108,7 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 			showMessage("key/value ", key + " = " + value);
 			
 			for(String descriptionType : descriptionTypes) {
-				if(descriptionType.equals(key)) {
+				if(key.contains(descriptionType)) {
 					if(value.startsWith("#")) {
 						StringBuilder valueBuilder = new StringBuilder();
 						valueBuilder.append(value.replaceAll("(^#|#$)", "") + "\n"); 
@@ -120,6 +120,15 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 								valueBuilder.append(line + "\n");
 						}
 						value = valueBuilder.toString();
+					}
+					if(!key.equals(descriptionType)){
+						String[] descriptionSplits = key.split("-");
+						if(descriptionSplits.length > 1){
+							key = descriptionSplits[1];
+							if(value!=null && descriptionSplits[0]!=null){
+								value = "scope:" + descriptionSplits[0] + "#" + value;
+							}
+						}
 					}
 				}
 			}
@@ -372,12 +381,21 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 			if(data.containsKey(descriptionType)) {
 				String descriptionText = data.get(descriptionType);
 				if(descriptionText != null && !descriptionText.trim().isEmpty()) {
+					String scope = "";
+					if(descriptionText.startsWith("scope:")){
+						String[] desc = descriptionText.split("#");
+						scope = desc[0].replace("scope:", "");
+						descriptionText = desc[1];
+					}
 					String[] paragraphs = descriptionText.split("\n");
 					for(String paragraph : paragraphs) {
 						if(!paragraph.isEmpty()) {
 							Element description = new Element("description");
 							treatment.addContent(description);
 							description.setAttribute("type", descriptionType);
+							if(!scope.isEmpty()){
+								description.setAttribute("scope", scope);
+							}
 							description.setText(paragraph);
 							
 							String bracketError = bracketChecker.checkBrackets(paragraph, descriptionType);

@@ -16,7 +16,6 @@ import edu.arizona.biosemantics.etcsite.shared.model.file.DescriptionEntry;
 import edu.arizona.biosemantics.etcsite.shared.model.file.TaxonIdentificationEntry;
 import edu.arizona.biosemantics.etcsite.shared.model.file.XmlModelFile;
 import edu.arizona.biosemantics.etcsite.shared.model.process.file.XmlModelFileCreator;
-import edu.arizona.biosemantics.etcsite.shared.model.process.semanticmarkup.BracketChecker;
 //import edu.arizona.biosemantics.etcsite.server.rpc.FileFormatService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.access.IFileAccessServiceAsync;
@@ -188,10 +187,8 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	private IFileServiceAsync fileService;
 	private IFileAccessServiceAsync fileAccessService;
 	private IFileFormatServiceAsync fileFormatService;
-	private FilePathShortener filePathShortener = new FilePathShortener();
 	private int filesCreated;
 	private String destinationFilePath;
-	private BracketChecker bracketChecker = new BracketChecker();
 	private XmlModelFileCreator xmlModelFileCreator = new XmlModelFileCreator();
 	
 	@Inject
@@ -231,9 +228,14 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 		List<DescriptionEntry> descriptions  = view.getDescriptionsList();
 		for(DescriptionEntry entry: descriptions){
 			Description type = entry.getType();
+			String scope = entry.getScope();
 			String desc = entry.getDescription();
 			if(type!=null && !desc.isEmpty()){
-				textBuilder.append(type + ": #" + desc + "#\n");
+				String descriptionType = type.name();
+				if(scope != null && !scope.isEmpty()){
+					descriptionType = scope + "-" + descriptionType;
+				}
+				textBuilder.append(descriptionType + ": #" + desc + "#\n");
 			}
 		}		
 		

@@ -4,16 +4,19 @@ import java.io.Serializable;
 
 import edu.arizona.biosemantics.common.taxonomy.Description;
 
+@SuppressWarnings("serial")
 public class DescriptionEntry implements Serializable{
 
 
 	private Description type;
+	private String scope;
 	private String description;
 
 
-	public DescriptionEntry(Description type, String description) {
+	public DescriptionEntry(Description type,String scope, String description) {
 		super();
 		this.type = type;
+		this.scope = scope;
 		this.description = description;
 	}
 	
@@ -32,5 +35,15 @@ public class DescriptionEntry implements Serializable{
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
+	public String getScope() {
+		return scope;
+	}
+
+	public void setScope(String scope) {
+		this.scope = scope;
+	}
+	
+	
 
 }

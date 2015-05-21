@@ -31,6 +31,7 @@ targetNamespace="http://www.github.com/biosemantics">
 				<xs:element type="taxon_relation_articulation" name="taxon_relation_articulation"
 					minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element type="key" name="key" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element type="reference_type" name="references" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
@@ -148,6 +149,7 @@ targetNamespace="http://www.github.com/biosemantics">
 		<xs:simpleContent>
 			<xs:extension base="nonEmptyString">
 				<xs:attribute name="type" type="description_type" use="required"/>
+				<xs:attribute name="scope" type="nonEmptyString" />
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
@@ -170,6 +172,12 @@ targetNamespace="http://www.github.com/biosemantics">
 				<xs:attribute name="type" type="nonEmptyString"/>
 			</xs:extension>
 		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name="reference_type">
+		<xs:sequence>
+			<xs:element name="reference" type="nonEmptyString" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
 	</xs:complexType>
 
 	<xs:element name="synonym" type="nonEmptyString"/>
