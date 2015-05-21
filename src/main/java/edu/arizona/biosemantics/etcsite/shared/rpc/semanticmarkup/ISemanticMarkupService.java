@@ -45,8 +45,6 @@ public interface ISemanticMarkupService extends RemoteService, IHasTasksService 
 
 	public void importOto(Task task, String termCategorization, String synonymy) throws SemanticMarkupException;
 	
-	public void sendToOto(AuthenticationToken token, Task task,	AsyncCallback<Void> asyncCallback) throws Exception;
+	public void sendToOto(AuthenticationToken token, Task task) throws Exception;
 	
-	//public RPCResult<Void> prepareOptionalOtoLiteSteps(AuthenticationToken authenticationToken, Task task);
-
 }
