@@ -31,6 +31,7 @@ targetNamespace="http://www.github.com/biosemantics">
 				<xs:element type="taxon_relation_articulation" name="taxon_relation_articulation"
 					minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element type="key" name="key" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element type="references" name="references" minOccurs="0" maxOccurs="unbounded" />
 			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
@@ -148,6 +149,7 @@ targetNamespace="http://www.github.com/biosemantics">
 		<xs:simpleContent>
 			<xs:extension base="nonEmptyString">
 				<xs:attribute name="type" type="description_type" use="required"/>
+				<xs:attribute name="scope"/>
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
@@ -209,11 +211,11 @@ targetNamespace="http://www.github.com/biosemantics">
 	<xs:complexType name="key">
 		<xs:sequence>
 			<xs:element type="meta" name="meta" minOccurs="0"/>
-			<xs:element name="key_heading" type="nonEmptyString" minOccurs="0"/>
+			<xs:element name="key_head" type="nonEmptyString" minOccurs="0" maxOccurs="1"/>
 			<xs:element name="key_author" type="nonEmptyString" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element name="discussion" type="nonEmptyString"/>
-				<xs:element name="key_head" type="nonEmptyString"/>
+				<!--<xs:element name="key_head" type="nonEmptyString"/>-->
 				<xs:element type="key_statement" name="key_statement"/>
 			</xs:choice>
 		</xs:sequence>
@@ -319,5 +321,12 @@ targetNamespace="http://www.github.com/biosemantics">
 		</xs:restriction>
 	</xs:simpleType>
 	
-</xs:schema>
+	
+    <xs:complexType name="references">
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" name="reference_discussion" type="nonEmptyString"/>
+        <xs:element maxOccurs="unbounded" name="reference" type="nonEmptyString"/>
+      </xs:sequence>
+    </xs:complexType>
 
+</xs:schema>

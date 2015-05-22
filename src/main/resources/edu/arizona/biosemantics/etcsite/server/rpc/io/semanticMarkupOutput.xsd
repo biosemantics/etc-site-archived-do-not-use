@@ -28,6 +28,7 @@
 				<xs:element type="taxon_relation_articulation" name="taxon_relation_articulation"
 					minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element type="key" name="key" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element type="references" name="references" minOccurs="0" maxOccurs="unbounded" />
 			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
@@ -224,6 +225,8 @@
 			<xs:element minOccurs="0" maxOccurs="unbounded" type="statement" name="statement"/>
 		</xs:sequence>
 		<xs:attribute name="type" type="description_type" use="required"/>
+		<xs:attribute name="scope"/>
+		
 	</xs:complexType>
 
 	<xs:simpleType name="description_type">
@@ -402,4 +405,11 @@
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
-</xs:schema>
+	<xs:complexType name="references">
+      		<xs:sequence>
+        		<xs:element minOccurs="0" maxOccurs="unbounded" name="reference_discussion" type="nonEmptyString"/>
+        		<xs:element maxOccurs="unbounded" name="reference" type="nonEmptyString"/>
+      		</xs:sequence>
+    	</xs:complexType>
+	
+	</xs:schema>
