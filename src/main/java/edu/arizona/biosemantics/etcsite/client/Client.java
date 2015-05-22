@@ -12,9 +12,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.Setup;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.setup.ISetupServiceAsync;
 
 /**
- * This is only a test
- * @author rodenhausen
- *
+ * Yet another test
  */
 public class Client implements EntryPoint {
 
