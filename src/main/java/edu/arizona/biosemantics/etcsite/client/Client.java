@@ -11,6 +11,11 @@ import edu.arizona.biosemantics.etcsite.client.common.ServerSetup;
 import edu.arizona.biosemantics.etcsite.shared.model.Setup;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.setup.ISetupServiceAsync;
 
+/**
+ * This is only a test
+ * @author rodenhausen
+ *
+ */
 public class Client implements EntryPoint {
 
 	private final ClientGinjector injector = GWT.create(ClientGinjector.class);
