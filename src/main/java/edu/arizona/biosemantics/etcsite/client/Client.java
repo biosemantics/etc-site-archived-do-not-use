@@ -36,6 +36,7 @@ public class Client implements EntryPoint {
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToRetrieveSetup(caught);
+				System.out.println("test");
 			}
 		}); 
 	}
