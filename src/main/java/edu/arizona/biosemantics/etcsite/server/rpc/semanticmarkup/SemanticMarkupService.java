@@ -95,6 +95,7 @@ import edu.arizona.biosemantics.oto.common.model.lite.UploadResult;
 import edu.arizona.biosemantics.oto2.oto.server.rest.client.Client;
 import edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService;
 import edu.arizona.biosemantics.oto2.oto.server.rpc.ContextService;
+import edu.arizona.biosemantics.oto2.oto.shared.model.Bucket;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Collection;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Context;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Label;
@@ -1091,7 +1092,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		User user = daoManager.getUserDAO().getUser(token.getUserId());
 		Collection collection = collectionService.get(config.getOtoUploadId(), config.getOtoSecret());
 		
-		try(OTOClient otoClient = new OTOClient(edu.arizona.biosemantics.semanticmarkup.config.Configuration.otoUrl)) {
+		try(OTOClient otoClient = new OTOClient(edu.arizona.biosemantics.etcsite.server.Configuration.otoUrl)) {
 			otoClient.open();
 			String datasetName = createDataSet(otoClient, config, user, task);		
 			createTerms(datasetName, otoClient, config, user, collection);
@@ -1099,7 +1100,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		} catch (InterruptedException | ExecutionException e) {
 			log(LogLevel.ERROR, "Couldnt' set description upon rename term", e);
 			throw new Exception("Could not send terms to OTO.");
-		} 
+		}
 		
 		config.setOtoCreatedDataset(true);
 		daoManager.getSemanticMarkupConfigurationDAO().updateSemanticMarkupConfiguration(config);
@@ -1115,7 +1116,13 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 
 	private void createTerms(String datasetName, OTOClient otoClient, SemanticMarkupConfiguration config, User user, Collection collection) {
 		List<TermContext> termContexts = new LinkedList<TermContext>();
-		for(Label label : collection.getLabels()) {
+		for(Bucket bucket : collection.getBuckets()) {
+			for(Term term : bucket.getTerms()) {
+				addTermContext(termContexts, collection, term);
+			}
+		}
+
+		/*for(Label label : collection.getLabels()) {
 			for(edu.arizona.biosemantics.oto2.oto.shared.model.Term mainTerm : label.getMainTerms()) {
 				addTermContext(termContexts, collection, mainTerm);
 				
@@ -1124,7 +1131,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 					addTermContext(termContexts, collection, synonym);
 				}
 			}
-		}
+		}*/
 		GroupTerms groupTerms = new GroupTerms(termContexts, user.getOtoAuthenticationToken(), false);
 		StructureHierarchy structureHierarchy = new StructureHierarchy(termContexts, user.getOtoAuthenticationToken(), false);
 		
@@ -1180,7 +1187,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		otoClient.postGroupTermsCategorization(datasetName, categorizeTerms);
 				
 		//second step
-		categorizeTerms = new CategorizeTerms();
+		/*categorizeTerms = new CategorizeTerms();
 		categorizeTerms.setAuthenticationToken(user.getOtoAuthenticationToken());
 		decisionHolder = new DecisionHolder();
 		regularCategories = new ArrayList<CategoryBean>();
@@ -1228,7 +1235,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		}
 		decisionHolder.setRegular_categories(regularCategories);
 		categorizeTerms.setDecisionHolder(decisionHolder);
-		otoClient.postGroupTermsCategorization(datasetName, categorizeTerms);
+		otoClient.postGroupTermsCategorization(datasetName, categorizeTerms);*/
 	}
 
 	/*private DecisionHolder createDecisionHolder(Collection collection) {
@@ -1283,6 +1290,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 
 	private void addTermContext(List<TermContext> termContexts, Collection collection, Term term) {
 		List<TypedContext> contexts = contextService.getContexts(collection, term);
+		if(contexts.isEmpty())
+			termContexts.add(new TermContext(term.getTerm(), ""));
 		for(TypedContext context : contexts) 
 			termContexts.add(new TermContext(term.getTerm(), context.getText()));
 	}

@@ -149,6 +149,7 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 			public void onSuccess(Void result) {
 				Alerter.contributedSuccessfullyToOTO();
 				Alerter.stopLoading(messageBox);
+				view.setEnabledSendToOto(false);
 			}
 		});
 	}
