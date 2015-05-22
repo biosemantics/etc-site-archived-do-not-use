@@ -328,6 +328,4 @@ targetNamespace="http://www.github.com/biosemantics">
         <xs:element maxOccurs="unbounded" name="reference" type="nonEmptyString"/>
       </xs:sequence>
     </xs:complexType>
-
->>>>>>> branch 'master' of https://github.com/biosemantics/etc-site.git
 </xs:schema>
