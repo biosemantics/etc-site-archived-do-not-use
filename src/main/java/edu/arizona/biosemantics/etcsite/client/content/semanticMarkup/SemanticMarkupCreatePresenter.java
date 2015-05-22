@@ -16,6 +16,7 @@ import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkup
 import edu.arizona.biosemantics.etcsite.client.common.files.FileImageLabelTreeItem;
 import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileUploadHandler;
+import edu.arizona.biosemantics.etcsite.client.common.files.ICreateSemanticMarkupFilesDialogView;
 import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.common.files.MyUploaderConstants;
 import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePresenter.ISelectListener;
@@ -38,7 +39,7 @@ public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.P
 	private IFileServiceAsync fileService;
 	private ISemanticMarkupCreateView view;
 	private PlaceController placeController;
-	private CreateSemanticMarkupFilesDialogPresenter createSemanticMarkupFilesDialogPresenter;
+	private ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter;
 	private edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView.Presenter selectableFileTreePresenter;
 	private edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView.Presenter fileTreePresenter;
 	private IFileManagerDialogView.Presenter fileManagerDialogPresenter;
@@ -65,7 +66,7 @@ public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.P
 			PlaceController placeController,
 			FilePathShortener filePathShortener,
 			IFileServiceAsync fileService,
-			CreateSemanticMarkupFilesDialogPresenter createSemanticMarkupFilesDialogPresenter,
+			ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter,
 			ISelectableFileTreeView.Presenter selectableFileTreePresenter,
 			IFileManagerDialogView.Presenter fileManagerDialogPresenter,
 			ISemanticMarkupServiceAsync semanticMarkupService) {
