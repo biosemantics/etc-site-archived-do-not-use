@@ -1087,10 +1087,6 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	}
 
 	public void sendToOto(AuthenticationToken token, Task task) throws Exception {
-		task = new Task();
-		task.setId(195);
-		TaskService taskService = new TaskService();
-		task = taskService.getTask(token, task);
 		SemanticMarkupConfiguration config = getSemanticMarkupConfiguration(task);
 		User user = daoManager.getUserDAO().getUser(token.getUserId());
 		Collection collection = collectionService.get(config.getOtoUploadId(), config.getOtoSecret());
