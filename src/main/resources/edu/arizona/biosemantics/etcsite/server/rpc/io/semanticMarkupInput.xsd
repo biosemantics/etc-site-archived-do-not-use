@@ -329,4 +329,5 @@ targetNamespace="http://www.github.com/biosemantics">
       </xs:sequence>
     </xs:complexType>
 
+>>>>>>> branch 'master' of https://github.com/biosemantics/etc-site.git
 </xs:schema>

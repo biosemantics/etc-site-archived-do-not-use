@@ -47,6 +47,7 @@ import edu.arizona.biosemantics.etcsite.server.rpc.file.FileService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.access.FileAccessService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.format.FileFormatService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.permission.FilePermissionService;
+import edu.arizona.biosemantics.etcsite.server.rpc.task.TaskService;
 import edu.arizona.biosemantics.etcsite.server.rpc.user.UserService;
 import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupConfiguration;
@@ -1085,41 +1086,16 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		}
 	}
 
-	@Override
-	public void sendToOto(AuthenticationToken token, Task task, AsyncCallback<Void> asyncCallback) throws Exception {
+	public void sendToOto(AuthenticationToken token, Task task) throws Exception {
 		SemanticMarkupConfiguration config = getSemanticMarkupConfiguration(task);
 		User user = daoManager.getUserDAO().getUser(token.getUserId());
+		Collection collection = collectionService.get(config.getOtoUploadId(), config.getOtoSecret());
 		
 		try(OTOClient otoClient = new OTOClient(edu.arizona.biosemantics.semanticmarkup.config.Configuration.otoUrl)) {
 			otoClient.open();
-			edu.arizona.biosemantics.common.biology.TaxonGroup taxonGroupEnum = 
-					edu.arizona.biosemantics.common.biology.TaxonGroup.valueOf(config.getTaxonGroup().getName().toUpperCase());
-			CreateDataset createDataset = new CreateDataset(task.getName(), taxonGroupEnum, user.getOtoAuthenticationToken());
-			Future<String> datasetFuture = otoClient.postDataset(createDataset);
-			String datasetName = datasetFuture.get();
-									
-			Collection collection = collectionService.get(config.getOtoUploadId(), config.getOtoSecret());
-			List<TermContext> termContexts = new LinkedList<TermContext>();
-			for(Label label : collection.getLabels()) {
-				for(edu.arizona.biosemantics.oto2.oto.shared.model.Term mainTerm : label.getMainTerms()) {
-					addTermContext(termContexts, collection, mainTerm);
-					
-					List<edu.arizona.biosemantics.oto2.oto.shared.model.Term> termsSynonyms = label.getSynonyms(mainTerm);
-					for(edu.arizona.biosemantics.oto2.oto.shared.model.Term synonym : termsSynonyms) {
-						addTermContext(termContexts, collection, synonym);
-					}
-				}
-			}
-			GroupTerms groupTerms = new GroupTerms(termContexts, user.getOtoAuthenticationToken(), false);
-			StructureHierarchy structureHierarchy = new StructureHierarchy(termContexts, user.getOtoAuthenticationToken(), false);
-			
-			otoClient.postGroupTerms(datasetName, groupTerms);
-			otoClient.postStructureHierarchy(datasetName, structureHierarchy);
-			
-			CategorizeTerms categorizeTerms = new CategorizeTerms();
-			categorizeTerms.setAuthenticationToken(user.getOtoAuthenticationToken());
-			categorizeTerms.setDecisionHolder(createDecisionHolder(collection));
-			otoClient.postGroupTermsCategorization(datasetName, categorizeTerms);
+			String datasetName = createDataSet(otoClient, config, user, task);		
+			createTerms(datasetName, otoClient, config, user, collection);
+			createCategorizations(datasetName, otoClient, user, collection);
 		} catch (InterruptedException | ExecutionException e) {
 			log(LogLevel.ERROR, "Couldnt' set description upon rename term", e);
 			throw new Exception("Could not send terms to OTO.");
@@ -1129,7 +1105,133 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		daoManager.getSemanticMarkupConfigurationDAO().updateSemanticMarkupConfiguration(config);
 	}
 
-	private DecisionHolder createDecisionHolder(Collection collection) {
+	private String createDataSet(OTOClient otoClient, SemanticMarkupConfiguration config, User user, Task task) throws InterruptedException, ExecutionException {
+		edu.arizona.biosemantics.common.biology.TaxonGroup taxonGroupEnum = 
+				edu.arizona.biosemantics.common.biology.TaxonGroup.valueOf(config.getTaxonGroup().getName().toUpperCase());
+		CreateDataset createDataset = new CreateDataset(task.getName(), taxonGroupEnum, user.getOtoAuthenticationToken());
+		Future<String> datasetFuture = otoClient.postDataset(createDataset);
+		return datasetFuture.get();
+	}
+
+	private void createTerms(String datasetName, OTOClient otoClient, SemanticMarkupConfiguration config, User user, Collection collection) {
+		List<TermContext> termContexts = new LinkedList<TermContext>();
+		for(Label label : collection.getLabels()) {
+			for(edu.arizona.biosemantics.oto2.oto.shared.model.Term mainTerm : label.getMainTerms()) {
+				addTermContext(termContexts, collection, mainTerm);
+				
+				List<edu.arizona.biosemantics.oto2.oto.shared.model.Term> termsSynonyms = label.getSynonyms(mainTerm);
+				for(edu.arizona.biosemantics.oto2.oto.shared.model.Term synonym : termsSynonyms) {
+					addTermContext(termContexts, collection, synonym);
+				}
+			}
+		}
+		GroupTerms groupTerms = new GroupTerms(termContexts, user.getOtoAuthenticationToken(), false);
+		StructureHierarchy structureHierarchy = new StructureHierarchy(termContexts, user.getOtoAuthenticationToken(), false);
+		
+		otoClient.postGroupTerms(datasetName, groupTerms);
+		otoClient.postStructureHierarchy(datasetName, structureHierarchy);
+	}
+
+	/**
+	 * OTO does only allow synonym creation in two steps. First terms have all to be moved into the category.
+	 * Then in second step synonym relation can be created.
+	 * @param datasetName
+	 * @param otoClient
+	 * @param user 
+	 * @param collection 
+	 */
+	private void createCategorizations(String datasetName, OTOClient otoClient, User user, Collection collection) {
+		//first step
+		CategorizeTerms categorizeTerms = new CategorizeTerms();
+		categorizeTerms.setAuthenticationToken(user.getOtoAuthenticationToken());
+		
+		DecisionHolder decisionHolder = new DecisionHolder();
+		ArrayList<CategoryBean> regularCategories = new ArrayList<CategoryBean>();
+		
+		for(Label label : collection.getLabels()) {
+			CategoryBean categoryBean = new CategoryBean();
+			categoryBean.setName(label.getName());
+			
+			ArrayList<edu.arizona.biosemantics.oto.common.model.Term> changedTerms = 
+					new ArrayList<edu.arizona.biosemantics.oto.common.model.Term>();
+			for(edu.arizona.biosemantics.oto2.oto.shared.model.Term mainTerm : label.getMainTerms()) {
+				List<edu.arizona.biosemantics.oto2.oto.shared.model.Term> termsSynonyms = label.getSynonyms(mainTerm);
+				edu.arizona.biosemantics.oto.common.model.Term term = new edu.arizona.biosemantics.oto.common.model.Term();
+				term.setIsAdditional(false);
+				term.setHasSyn(false);
+				term.setTerm(mainTerm.getTerm());
+				changedTerms.add(term);
+				
+				ArrayList<edu.arizona.biosemantics.oto.common.model.Term> synoymTerms = 
+						new ArrayList<edu.arizona.biosemantics.oto.common.model.Term>();
+				for(edu.arizona.biosemantics.oto2.oto.shared.model.Term synonym : termsSynonyms) {
+					edu.arizona.biosemantics.oto.common.model.Term synonymTerm = new edu.arizona.biosemantics.oto.common.model.Term();
+					term.setIsAdditional(false);
+					term.setHasSyn(false);
+					term.setTerm(synonym.getTerm());
+					changedTerms.add(synonymTerm);
+				}
+			}
+			categoryBean.setChanged_terms(changedTerms);
+		}
+		
+		decisionHolder.setRegular_categories(regularCategories);
+		categorizeTerms.setDecisionHolder(decisionHolder);
+		otoClient.postGroupTermsCategorization(datasetName, categorizeTerms);
+				
+		//second step
+		categorizeTerms = new CategorizeTerms();
+		categorizeTerms.setAuthenticationToken(user.getOtoAuthenticationToken());
+		decisionHolder = new DecisionHolder();
+		regularCategories = new ArrayList<CategoryBean>();
+		
+		for(Label label : collection.getLabels()) {
+			CategoryBean categoryBean = new CategoryBean();
+			categoryBean.setName(label.getName());
+			
+			ArrayList<edu.arizona.biosemantics.oto.common.model.Term> changedTerms = 
+					new ArrayList<edu.arizona.biosemantics.oto.common.model.Term>();
+			for(edu.arizona.biosemantics.oto2.oto.shared.model.Term mainTerm : label.getMainTerms()) {
+				List<edu.arizona.biosemantics.oto2.oto.shared.model.Term> termsSynonyms = label.getSynonyms(mainTerm);
+				if(!termsSynonyms.isEmpty()) {
+					String relatedTerms = "";
+					for(edu.arizona.biosemantics.oto2.oto.shared.model.Term synonym : termsSynonyms) {
+						edu.arizona.biosemantics.oto.common.model.Term oldTerm = new edu.arizona.biosemantics.oto.common.model.Term();
+						oldTerm.setAdditional(true);
+						oldTerm.setHasSyn(false);
+						oldTerm.setRelatedTerms("synonym of '" + mainTerm.getTerm() + "'");
+						oldTerm.setTerm(synonym.getTerm());
+						changedTerms.add(oldTerm);
+						relatedTerms += "'" + synonym.getTerm() + "'";
+					}
+					
+					edu.arizona.biosemantics.oto.common.model.Term term = new edu.arizona.biosemantics.oto.common.model.Term();
+					term.setIsAdditional(false);
+					term.setHasSyn(true);
+					term.setTerm(mainTerm.getTerm());
+					term.setRelatedTerms(relatedTerms);
+					
+					ArrayList<edu.arizona.biosemantics.oto.common.model.Term> synoymTerms = new ArrayList<edu.arizona.biosemantics.oto.common.model.Term>();
+					for(edu.arizona.biosemantics.oto2.oto.shared.model.Term synonym : termsSynonyms) {
+						edu.arizona.biosemantics.oto.common.model.Term synonymTerm = new edu.arizona.biosemantics.oto.common.model.Term();
+						synonymTerm.setIsAdditional(true);
+						synonymTerm.setHasSyn(false);
+						synonymTerm.setTerm(synonym.getTerm());
+						synoymTerms.add(synonymTerm);
+					}
+					term.setSyns(synoymTerms);
+					changedTerms.add(term);
+				}
+			}
+			categoryBean.setChanged_terms(changedTerms);
+			regularCategories.add(categoryBean);
+		}
+		decisionHolder.setRegular_categories(regularCategories);
+		categorizeTerms.setDecisionHolder(decisionHolder);
+		otoClient.postGroupTermsCategorization(datasetName, categorizeTerms);
+	}
+
+	/*private DecisionHolder createDecisionHolder(Collection collection) {
 		DecisionHolder decisionHolder = new DecisionHolder();
 		ArrayList<CategoryBean> regularCategories = new ArrayList<CategoryBean>();
 		
@@ -1177,11 +1279,12 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		
 		decisionHolder.setRegular_categories(regularCategories);
 		return decisionHolder;
-	}
+	}*/
 
 	private void addTermContext(List<TermContext> termContexts, Collection collection, Term term) {
 		List<TypedContext> contexts = contextService.getContexts(collection, term);
 		for(TypedContext context : contexts) 
 			termContexts.add(new TermContext(term.getTerm(), context.getText()));
 	}
+
 }
