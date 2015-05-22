@@ -13,7 +13,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.setup.ISetupServiceAsync
 
 /**
  * This is only a test
- * @author rodenhausen
+ * @author aarthy
  *
  */
 public class Client implements EntryPoint {
@@ -41,7 +41,6 @@ public class Client implements EntryPoint {
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToRetrieveSetup(caught);
-				System.out.println("test");
 			}
 		}); 
 	}
