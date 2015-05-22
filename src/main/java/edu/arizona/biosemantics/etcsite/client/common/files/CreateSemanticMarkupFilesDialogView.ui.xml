@@ -5,7 +5,7 @@
 	<ui:style>
 		.scrollPanel {
 			height: 600px;
-			width: 820px;
+			width: 900px;
 			border: 1px;
 		}
 	</ui:style>

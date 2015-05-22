@@ -99,7 +99,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 				@Override
 				public void onClose(int filesCreated) {
 					if(filesCreated > 0)
-						refresh(fileFilter);
+						refresh(FileFilter.ALL);
 				}
 			});
 			createSemanticMarkupFilesDialogPresenter.show(fileTreePresenter.getSelectedItem().getFileInfo().getFilePath());

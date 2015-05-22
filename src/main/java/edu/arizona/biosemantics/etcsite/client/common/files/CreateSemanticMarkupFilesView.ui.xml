@@ -13,9 +13,13 @@
 			height: 100%;
 			width: 100%;
 		}
+		.scrollPanel{
+			height: 100%;
+			width: 100%;
+		}
 		.descriptionArea {
 			height: 60px;
-			width: 600px;
+			width: 550px;
 		}
 		.batchArea {
 			height: 400px;
@@ -66,7 +70,7 @@
   		</ui:with>
 		<g:TabPanel ui:field="tabPanel" styleName="{style.tabPanel}">
 	    <g:Tab text="Single-File Creation">
-	        <g:ScrollPanel >
+	        <g:ScrollPanel styleName="{style.scrollPanel}">
 				<g:VerticalPanel>
 					<g:VerticalPanel>
 						<g:Label styleName="{style.heading}">INSTRUCTIONS</g:Label>
@@ -191,16 +195,25 @@
 									<g:Grid ui:field="descriptionGrid">
 									    <g:row>
 									        <g:cell>
-									            Type
+									            Type*
 									        </g:cell>
 									        <g:cell>
-									            Description
+									            Scope
+									        </g:cell>
+									        <g:cell>
+									            Description*
 									        </g:cell>
 									    </g:row>
 										<g:row>
 									    	<g:customCell>
 												<form:ComboBox ui:field="descriptionCombo" />
 												<!-- <g:SuggestBox ui:field="descriptionCombo"></g:SuggestBox> -->
+											</g:customCell>
+											<g:customCell>
+											    <g:VerticalPanel ui:field="scopePanel" spacing="2">
+											    	<form:ComboBox ui:field="scopeCombo" />
+											    	<g:TextBox ui:field="scopeTextBox" visible="false"></g:TextBox>    
+											    </g:VerticalPanel> 
 											</g:customCell>
 											<g:customCell>
 											    <g:TextArea ui:field="descriptionArea" styleName="{style.descriptionArea}"></g:TextArea>
@@ -280,6 +293,7 @@
 		      						    			<li><b>equivalent strain numbers</b>(O)</li> 
 			      						    		<li><b>accession number 16S rRNA</b>(O)</li>
 			      						    		<li>at least one of {<b>morphology</b>, <b>phenology</b>, <b>habitat</b>, <b>distribution</b>}(R)</li>
+			      						    		<li>Scope value is optional for each description</li>
 			      						    	</ol>
 		      							    </g:HTMLPanel>
 		    	  					    </g:ScrollPanel>
@@ -305,6 +319,7 @@
 												<ol style="list-style:disc;padding: 5px 20px;">
 													<li>If you have multiple paragraphs for any of the description fields (morphology, phenology, habitat, distribution), 
 		      										insert an empty line between the paragraphs and enclose all the paragraphs with one pair of number signs (#, see example 3). Do not use # in description content (they can be replaced with 'no.'). </li>
+		      										<li>If there is specific scope for descriptions, mention the labels as scope-description. Eg: male-morphology</li>
 													<li>A paragraph is a string without any line break</li>
 													<li>Superscripts (e.g. "squared") should be typed as a regular character, for example cm2 for square centimeter.</li>		    
 												</ol>	    

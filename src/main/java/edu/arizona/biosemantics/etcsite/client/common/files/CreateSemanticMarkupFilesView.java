@@ -8,6 +8,8 @@ import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -41,7 +43,7 @@ import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.shared.model.file.DescriptionEntry;
 import edu.arizona.biosemantics.etcsite.shared.model.file.TaxonIdentificationEntry;
 
-
+@SuppressWarnings("unchecked")
 public class CreateSemanticMarkupFilesView extends Composite implements ICreateSemanticMarkupFilesView {
 
 	private static CreateSemanticMarkupFilesViewUiBinder uiBinder = GWT.create(CreateSemanticMarkupFilesViewUiBinder.class);
@@ -135,6 +137,15 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	@UiField(provided=true)
 	ComboBox<Description> descriptionCombo;
 	
+	@UiField(provided=true)
+	ComboBox<String> scopeCombo;
+	
+	@UiField
+	TextBox scopeTextBox;
+	
+	@UiField
+	VerticalPanel scopePanel;
+	
 	@UiField
 	TextArea descriptionArea;
 	
@@ -222,7 +233,41 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	    descriptionCombo.setForceSelection(true);
 	    descriptionCombo.setTriggerAction(TriggerAction.ALL);
 	    descriptionCombo.setValue(Description.MORPHOLOGY);
-	   
+	    
+	    
+	    ListStore<String> scopeList = new ListStore<String>(new ModelKeyProvider<String>() {
+
+			@Override
+			public String getKey(String item) {
+				return item;
+			}
+		});
+	    scopeList.add("male");
+	    scopeList.add("female");
+	    scopeList.add("larva");
+	    scopeList.add("worker");
+	    scopeList.add("queen");
+	    scopeList.add("Other");
+	    
+	    scopeCombo = new ComboBox<String>(scopeList, new LabelProvider<String>() {
+			@Override
+			public String getLabel(String item) {
+				return item;
+			}
+	    });
+	    
+	    scopeCombo.addSelectionHandler(new SelectionHandler<String>() {
+			
+			@Override
+			public void onSelection(SelectionEvent<String> event) {
+				if(event.getSelectedItem().equals("Other")){
+					scopeTextBox.setVisible(true);
+				}else{
+					scopeTextBox.setVisible(false);
+				}
+			}
+		});
+	    
 		initWidget(uiBinder.createAndBindUi(this));
 		
 		ToggleGroup toggleGroup = new ToggleGroup();
@@ -243,6 +288,7 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		batch_doi.getElement().setPropertyString("placeholder", "Enter DoI");
 		batch_fullCitation.getElement().setPropertyString("placeholder", "Enter Full Citation");
 		batch_year.getElement().setPropertyString("placeholder", "Enter Publication Year");
+		
 	}
  
 	/*============ Handler Methods ============*/
@@ -306,10 +352,20 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		int newRow = descriptionGrid.insertRow(descriptionGrid.getRowCount()-1);
 		TextArea tArea = new TextArea();
 		tArea.setStyleName(descriptionArea.getStyleName());
-		Label label = new Label(descriptionCombo.getValue().name());
-		descriptionGrid.setWidget(newRow-1, 0, label);
+		Label descriptionLabel = new Label(descriptionCombo.getValue().name());
+		Label scopeLabel = new Label();
+		if(scopeCombo.getText().equals("Other")){
+			scopeLabel.setText(scopeTextBox.getText());
+		}else{
+			scopeLabel.setText(scopeCombo.getText());
+		}
+		scopeTextBox.setVisible(false);
+		scopeCombo.clear();
+		descriptionGrid.setWidget(newRow-1, 0, descriptionLabel);
+		descriptionGrid.setWidget(newRow-1, 1, scopeLabel);
 		descriptionGrid.setWidget(newRow, 0, descriptionCombo);
-		descriptionGrid.setWidget(newRow, 1, tArea);
+		descriptionGrid.setWidget(newRow, 1, scopePanel);
+		descriptionGrid.setWidget(newRow, 2, tArea);
 	}
 	
 	@UiHandler("authorityDateButton")
@@ -369,7 +425,7 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 			Rank rank = null;
 			
 			if(rankWidget instanceof ComboBox) {
-				ComboBox<Rank> rankBox = (ComboBox)rankWidget;
+				ComboBox<Rank> rankBox = (ComboBox<Rank>)rankWidget;
 				//String rank = rankBox.getItemText(rankBox.getSelectedIndex());
 				rank = rankBox.getValue();
 			}
@@ -391,9 +447,11 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		List<DescriptionEntry> entries = new LinkedList<DescriptionEntry>();
 		for(int i=1; i<descriptionGrid.getRowCount()-1; i++){
 			Widget typeWidget = descriptionGrid.getWidget(i, 0);
-			Widget descriptionWidget = descriptionGrid.getWidget(i, 1);
+			Widget scopeWidget = descriptionGrid.getWidget(i,  1);
+			Widget descriptionWidget = descriptionGrid.getWidget(i, 2);
 			
 			Description type = null;
+			String scope = "";
 			
 			if(typeWidget instanceof ComboBox){
 				ComboBox<Description> descCombo = (ComboBox<Description>)typeWidget;
@@ -403,11 +461,21 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 				Label typeLabel = (Label)typeWidget;
 				type = Description.valueOf(typeLabel.getText());
 			}
+			if(scopeWidget instanceof VerticalPanel){
+				if(scopeCombo.getText().equals("Other")){
+					scope = scopeTextBox.getText().trim();
+				}else{
+					scope = scopeCombo.getText().trim();
+				}
+			}
+			if(scopeWidget instanceof Label){
+				Label scopeLabel = (Label)scopeWidget;
+				scope = scopeLabel.getText();
+			}
 			if(descriptionWidget instanceof TextArea){
-				TextArea tArea = (TextArea)descriptionWidget;
 				String desc = ((TextArea) descriptionWidget).getText().trim();
 				if(type!=null){
-					entries.add(new DescriptionEntry(type, desc));
+					entries.add(new DescriptionEntry(type, scope, desc));
 				}
 			}
 		}
