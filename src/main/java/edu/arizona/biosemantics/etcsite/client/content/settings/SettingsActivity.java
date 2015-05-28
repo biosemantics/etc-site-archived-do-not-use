@@ -57,7 +57,7 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 				switch(action) {
 					case "settings_save_oto":
 						final MessageBox box = Alerter.startLoading();
-						userService.saveOTOAccount(Authentication.getInstance().getToken(), accessToken, new AsyncCallback<edu.arizona.biosemantics.oto.common.model.User>() {
+						userService.saveOTOAccount(Authentication.getInstance().getToken(), accessToken, new AsyncCallback<edu.arizona.biosemantics.oto.model.User>() {
 							@Override
 							public void onFailure(Throwable caught) {
 								Alerter.stopLoading(box);
@@ -75,7 +75,7 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 								});
 							}
 							@Override
-							public void onSuccess(edu.arizona.biosemantics.oto.common.model.User result) {
+							public void onSuccess(edu.arizona.biosemantics.oto.model.User result) {
 								view.setLinkedOTOAccount(result.getUserEmail());
 								Alerter.stopLoading(box);
 								Window.Location.replace(ServerSetup.getInstance().getSetup().getGoogleRedirectURI() + "#" + SettingsPlace.class.getSimpleName() + ":");
@@ -84,7 +84,7 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 						break;
 					case "settings_create_oto":
 						final MessageBox boxCreate = Alerter.startLoading();
-						userService.createOTOAccount(Authentication.getInstance().getToken(), accessToken, new AsyncCallback<edu.arizona.biosemantics.oto.common.model.User>() {
+						userService.createOTOAccount(Authentication.getInstance().getToken(), accessToken, new AsyncCallback<edu.arizona.biosemantics.oto.model.User>() {
 							@Override
 							public void onFailure(Throwable caught) {
 								Alerter.stopLoading(boxCreate);
@@ -97,7 +97,7 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 								});
 							}
 							@Override
-							public void onSuccess(edu.arizona.biosemantics.oto.common.model.User result) {
+							public void onSuccess(edu.arizona.biosemantics.oto.model.User result) {
 								view.setOTOAccount(result.getUserEmail(), result.getPassword());
 								view.setLinkedOTOAccount(result.getUserEmail());
 								//populateUserData();
@@ -209,14 +209,14 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 			Alerter.passwordsDontMatch();
 		} else {
 			final MessageBox box = Alerter.startLoading();
-			userService.createOTOAccount(Authentication.getInstance().getToken(), email, password, new AsyncCallback<edu.arizona.biosemantics.oto.common.model.User>() {
+			userService.createOTOAccount(Authentication.getInstance().getToken(), email, password, new AsyncCallback<edu.arizona.biosemantics.oto.model.User>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					Alerter.stopLoading(box);
 					Alerter.failedToCreateOTOAccount(caught);
 				}
 				@Override
-				public void onSuccess(edu.arizona.biosemantics.oto.common.model.User result) {
+				public void onSuccess(edu.arizona.biosemantics.oto.model.User result) {
 					view.setOTOAccount(result.getUserEmail(), result.getPassword());
 					view.setLinkedOTOAccount(email);
 					//populateUserData();

@@ -1,90 +1,101 @@
-//package edu.arizona.biosemantics.etcsite.client.content.semanticMarkup;
-//
-//import com.google.gwt.event.shared.HandlerManager;
-//import com.google.gwt.place.shared.PlaceController;
-//import com.google.gwt.user.client.ui.IsWidget;
-//import com.google.inject.Inject;
-//import com.google.inject.name.Named;
-//
-//import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-//import edu.arizona.biosemantics.etcsite.client.common.LoadingPopup;
-//import edu.arizona.biosemantics.etcsite.client.common.ServerSetup;
-//import edu.arizona.biosemantics.etcsite.shared.db.SemanticMarkupConfiguration;
-//import edu.arizona.biosemantics.etcsite.shared.db.Task;
-//import edu.arizona.biosemantics.etcsite.shared.rpc.RPCCallback;
-//import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
-//import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.TaskStageEnum;
-//import edu.arizona.biosemantics.otolite.client.presenter.MainPresenter;
-//import edu.arizona.biosemantics.otolite.client.presenter.processing.ProcessingMsgPresenter;
-//import edu.arizona.biosemantics.otolite.client.presenter.terminfo.TermInfoPresenter;
-//import edu.arizona.biosemantics.otolite.client.presenter.toontologies.ToOntologyPresenter;
-//import edu.arizona.biosemantics.otolite.client.view.processing.ProcessingMsgView;
-//import edu.arizona.biosemantics.otolite.client.view.terminfo.TermInfoView;
-//import edu.arizona.biosemantics.otolite.client.view.toontologies.ToOntologyView;
-//
-//public class SemanticMarkupToOntologiesPresenter implements ISemanticMarkupToOntologiesView.Presenter {
-//
-//	private ISemanticMarkupToOntologiesView view;
-//	private Task task;
-//	private PlaceController placeController;
-//	private HandlerManager eventBus;
-//	private ISemanticMarkupServiceAsync semanticMarkupService;
-//	private LoadingPopup loadingPopup = new LoadingPopup();
-//	
-//	@Inject
-//	public SemanticMarkupToOntologiesPresenter(ISemanticMarkupToOntologiesView view, PlaceController placeController, ISemanticMarkupServiceAsync semanticMarkupService,
-//			@Named("OTOLite")HandlerManager eventBus) {
-//		this.view = view;
-//		view.setPresenter(this);
-//		this.placeController = placeController;
-//		this.semanticMarkupService = semanticMarkupService;
-//		this.eventBus = eventBus;
-//	}
-//	
-//	@Override
-//	public void setTask(final Task task) {
-//		SemanticMarkupConfiguration configuration = (SemanticMarkupConfiguration)task.getConfiguration();
-//		loadingPopup.start();
-//		
-//		this.semanticMarkupService.prepareOptionalOtoLiteSteps(Authentication.getInstance().getToken(), task, new RPCCallback<Void>() {
-//			@Override
-//			public void onResult(Void result) { 
-//				SemanticMarkupConfiguration configuration = (SemanticMarkupConfiguration)task.getConfiguration();
-//				
-//				//MainPresenter mainPresenter = new MainPresenter(1, "123");
-//				MainPresenter mainPresenter = new MainPresenter(configuration.getOtoUploadId(), configuration.getOtoSecret());
-//				ToOntologyView toOntologyView = new ToOntologyView();
-//				toOntologyView.setSize("950px", "300px");
-//				ToOntologyPresenter toOntologyPresenter = new ToOntologyPresenter(toOntologyView, eventBus);
-//				toOntologyPresenter.go(view.getToOntologiesContainer());
-//				
-//				TermInfoView termInfoView = new TermInfoView();
-//				termInfoView.getTabPanel().setSize("950px", "200px");
-//				TermInfoPresenter termInfoPresenter = new TermInfoPresenter(termInfoView, eventBus);
-//				termInfoPresenter.go(view.getContextContainer());
-//				
-//				ProcessingMsgPresenter processingMsgPresenter = new ProcessingMsgPresenter(new ProcessingMsgView(), eventBus);
-//				processingMsgPresenter.go(null);
-//
-//				SemanticMarkupToOntologiesPresenter.this.task = task;
-//				loadingPopup.stop();
-//			}
-//		});
-//	}
-//
-//	@Override
-//	public ISemanticMarkupToOntologiesView getView() {
-//		return view;
-//	}
-//	
-//	@Override
-//	public void onNext() {
-//		/*semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), task, TaskStageEnum.HIERARCHY, new RPCCallback<Task>() {
-//			@Override
-//			public void onResult(Task result) {
-//				placeController.goTo(new SemanticMarkupHierarchyPlace(task));
-//			}
-//		}); */
-//	}
-//
-//}
+package edu.arizona.biosemantics.etcsite.client.content.semanticMarkup;
+
+import com.google.gwt.http.client.URL;
+import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
+import com.google.web.bindery.event.shared.EventBus;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
+import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupConfiguration;
+import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
+import edu.arizona.biosemantics.oto2.oto.client.event.ImportEvent;
+import edu.arizona.biosemantics.oto2.ontologize.client.event.DownloadEvent;
+
+public class SemanticMarkupToOntologiesPresenter implements ISemanticMarkupToOntologiesView.Presenter {
+
+	private Task task;
+	private ISemanticMarkupToOntologiesView view;
+	private PlaceController placeController;
+	private ISemanticMarkupServiceAsync semanticMarkupService;
+	private EventBus ontologizeEventBus;
+	
+	@Inject
+	public SemanticMarkupToOntologiesPresenter(final ISemanticMarkupToOntologiesView view, 
+			final ISemanticMarkupServiceAsync semanticMarkupService,
+			PlaceController placeController, 
+			final ImportOtoPresenter importOtoPresenter) {
+		this.view = view;
+		view.setPresenter(this);
+		this.ontologizeEventBus = view.getOntologize().getEventBus();
+		ontologizeEventBus.addHandler(DownloadEvent.TYPE, new DownloadEvent.Handler() {
+			@Override
+			public void onDownload(DownloadEvent event) {
+				//TODO
+				/*final MessageBox box = Alerter.startLoading();
+				semanticMarkupService.saveOto(Authentication.getInstance().getToken(), 
+						task, new AsyncCallback<String>() {
+					@Override
+					public void onSuccess(String result) {
+						Alerter.stopLoading(box);
+						Window.open("download.dld?target=" + URL.encodeQueryString(result) + 
+								"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
+								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()), "_blank", "");
+					}
+					@Override
+					public void onFailure(Throwable caught) {
+						Alerter.failedToSaveOto(caught);
+					}
+				});*/
+			}
+		});
+		this.placeController = placeController;
+		this.semanticMarkupService = semanticMarkupService;
+	}
+
+	@Override
+	public void setTask(Task task) {
+		semanticMarkupService.ontologize(Authentication.getInstance().getToken(), 
+				task, new AsyncCallback<Task>() {
+			@Override
+			public void onSuccess(Task task) {
+				SemanticMarkupConfiguration configuration = (SemanticMarkupConfiguration)task.getConfiguration();
+				view.setOntologize(configuration.getOntologizeUploadId(), 
+						configuration.getOntologizeSecret());
+				SemanticMarkupToOntologiesPresenter.this.task = task;
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToOntologize(caught);
+			}
+		});
+	}
+
+	@Override
+	public ISemanticMarkupToOntologiesView getView() {
+		return view;
+	}
+
+	@Override
+	public void onNext() {
+		semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), task, TaskStageEnum.OUTPUT, new AsyncCallback<Task>() {
+			@Override
+			public void onSuccess(Task result) {
+				placeController.goTo(new SemanticMarkupOutputPlace(task));
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToGoToTaskStage(caught);
+			}
+		});
+	}
+}

@@ -34,8 +34,6 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 	private ISemanticMarkupParseView.Presenter parsePresenter;
 	private ISemanticMarkupOutputView.Presenter outputPresenter;
 	private AcceptsOneWidget panel;
-	private edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupHierarchyView.Presenter hierarchyPresenter;
-	private edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupOrdersView.Presenter ordersPresenter;
 	private HelpDialog helpDialog = new HelpDialog(Help.Type.WELCOME.getKey(), "Text Capture");
 
 	@Inject
@@ -124,18 +122,10 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 									reviewPresenter.setTask(result);
 									panel.setWidget(reviewPresenter.getView());
 									break;
-								/*case TO_ONTOLOGIES:
+								case TO_ONTOLOGIES:
 									toOntologyPresenter.setTask(result);
 									panel.setWidget(toOntologyPresenter.getView());
 									break;
-								case HIERARCHY:
-									hierarchyPresenter.setTask(result);
-									panel.setWidget(hierarchyPresenter.getView());
-									break;
-								case ORDERS:
-									ordersPresenter.setTask(result);
-									panel.setWidget(ordersPresenter.getView());
-									break;*/
 								case PARSE_TEXT:
 									parsePresenter.setTask(result);
 									panel.setWidget(parsePresenter.getView());

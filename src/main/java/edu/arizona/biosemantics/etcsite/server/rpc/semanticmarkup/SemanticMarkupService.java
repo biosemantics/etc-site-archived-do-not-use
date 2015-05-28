@@ -47,6 +47,7 @@ import edu.arizona.biosemantics.etcsite.server.rpc.file.FileService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.access.FileAccessService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.format.FileFormatService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.permission.FilePermissionService;
+import edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup.MarkupResultReader.BiologicalEntity;
 import edu.arizona.biosemantics.etcsite.server.rpc.task.TaskService;
 import edu.arizona.biosemantics.etcsite.server.rpc.user.UserService;
 import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
@@ -77,37 +78,13 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarku
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkupException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserNotFoundException;
-import edu.arizona.biosemantics.oto.client.oto.OTOClient;
-import edu.arizona.biosemantics.oto.common.model.CategorizeTerms;
-import edu.arizona.biosemantics.oto.common.model.CategoryBean;
-import edu.arizona.biosemantics.oto.common.model.CreateDataset;
-import edu.arizona.biosemantics.oto.common.model.DecisionHolder;
-import edu.arizona.biosemantics.oto.common.model.GlossaryDownload;
-import edu.arizona.biosemantics.oto.common.model.GroupTerms;
-import edu.arizona.biosemantics.oto.common.model.StructureHierarchy;
-import edu.arizona.biosemantics.oto.common.model.TermCategory;
-import edu.arizona.biosemantics.oto.common.model.TermContext;
-import edu.arizona.biosemantics.oto.common.model.TermSynonym;
-import edu.arizona.biosemantics.oto.common.model.lite.Decision;
-import edu.arizona.biosemantics.oto.common.model.lite.Download;
-import edu.arizona.biosemantics.oto.common.model.lite.Synonym;
-import edu.arizona.biosemantics.oto.common.model.lite.UploadResult;
-import edu.arizona.biosemantics.oto2.oto.server.rest.client.Client;
+import edu.arizona.biosemantics.oto2.ontologize.server.rest.client.Client;
 import edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService;
-import edu.arizona.biosemantics.oto2.oto.server.rpc.ContextService;
-import edu.arizona.biosemantics.oto2.oto.shared.model.Bucket;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Collection;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Context;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Label;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Term;
-import edu.arizona.biosemantics.oto2.oto.shared.model.TypedContext;
 import edu.arizona.biosemantics.oto2.oto.shared.rpc.ICollectionService;
-import edu.arizona.biosemantics.oto2.oto.shared.rpc.IContextService;
-/*import edu.arizona.biosemantics.etcsite.shared.db.otolite.OrderCategoriesDAO;
-import edu.arizona.biosemantics.etcsite.shared.db.otolite.StructuresDAO;
-import edu.arizona.biosemantics.etcsite.shared.db.otolite.SynonymsDAO;
-import edu.arizona.biosemantics.etcsite.shared.db.otolite.TermCategoryPairDAO;
-import edu.arizona.biosemantics.etcsite.shared.db.otolite.TermsInOrderCategoryDAO;*/
 
 public class SemanticMarkupService extends RemoteServiceServlet implements ISemanticMarkupService  {
 
@@ -655,72 +632,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		try (FileWriter fileWriter = new FileWriter(new File(path))) {
 			fileWriter.write(jsonCollection);
 		}*/
-	}
-
-	/*@Override
-	public RPCResult<Void> prepareOptionalOtoLiteSteps(AuthenticationToken authenticationToken, Task task) {
-		try { 
-			task = daoManager.getTaskDAO().getTask(task.getId());
-			final AbstractTaskConfiguration configuration = task.getConfiguration();
-			if(!(configuration instanceof SemanticMarkupConfiguration))
-				return new RPCResult<Void>(false, "Not a compatible task");
-			final SemanticMarkupConfiguration semanticMarkupConfiguration = (SemanticMarkupConfiguration)configuration;
-			int uploadId = semanticMarkupConfiguration.getOtoUploadId();
-			
-			MarkupResultReader reader = new MarkupResultReader();
-			String charaParserOutputDirectory = Configuration.charaparser_tempFileBase + File.separator + task.getId() + File.separator + "out";
-			File input = new File(charaParserOutputDirectory);
-			List<String> structures = reader.getStructures(input);
-			List<Character> characters = reader.getCharacters(input);
-			List<Character> rangeValueCharacters = reader.getRangeValueCharacters(input);
-			
-			
-			//for to ontologies view
-			TermCategoryPairDAO termCategoryPairDAO = TermCategoryPairDAO.getInstance();
-			SynonymsDAO synonymsDAO = SynonymsDAO.getInstance();
-			for(String structure : structures) {
-				try {
-					List<String> synonyms = synonymsDAO.getSynonyms(uploadId, structure, "structure");
-					termCategoryPairDAO.addTermCategoryPair(uploadId, structure, "structure", synonyms);
-				} catch(Exception e) {
-					e.printStackTrace();
-				}
-			}
-			
-			for(Character character : characters) {
-				try {
-					//character types such as range_value for e.g. size do not have a value attribute
-					List<String> synonyms = synonymsDAO.getSynonyms(uploadId, character.getValue(), character.getCategory());
-					termCategoryPairDAO.addTermCategoryPair(uploadId, character.getValue(), character.getCategory(), synonyms);
-				} catch(Exception e) {
-					e.printStackTrace();
-				}
-			}
-			
-			//for hierarchies view
-			StructuresDAO structuresDAO = StructuresDAO.getInstance();
-			for(String structure : structures) {
-				try {
-					structuresDAO.addStructure(uploadId, structure);
-				} catch(Exception e) {
-					e.printStackTrace();
-				}
-			}
-			//for orders view
-			OrderCategoriesDAO orderCategoriesDAO = OrderCategoriesDAO.getInstance();
-			TermsInOrderCategoryDAO termsInOrderCategoryDAO = TermsInOrderCategoryDAO.getInstance();
-			for(Character character : rangeValueCharacters) {
-				int categoryId = orderCategoriesDAO.addOrderCategory(uploadId, character.getCategory());
-				termsInOrderCategoryDAO.addTermsInOrderCategory(categoryId, character.getValue());
-			}
-			
-		} catch(Exception e) {
-			e.printStackTrace();
-			return new RPCResult<Void>(false, "Internal Server Error");
-		}
-		return new RPCResult<Void>(true);
-	}*/
-	
+	}	
 
 	@Override
 	public List<Description> getDescriptions(AuthenticationToken authenticationToken, String filePath) {	
@@ -1095,5 +1007,76 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		otoSender.send(task, config, user, collection);
 		config.setOtoCreatedDataset(true);
 		daoManager.getSemanticMarkupConfigurationDAO().updateSemanticMarkupConfiguration(config);
+	}
+
+	@Override
+	public Task ontologize(AuthenticationToken token, Task task) throws SemanticMarkupException {
+		SemanticMarkupConfiguration config = getSemanticMarkupConfiguration(task);
+		String input = config.getInput();
+				
+		try(Client client = new Client(Configuration.ontologizeUrl)) {
+			MarkupResultReader reader = new MarkupResultReader();
+			String charaParserOutputDirectory = Configuration.charaparser_tempFileBase + File.separator + task.getId() + File.separator + "out";
+			File charaparserOutputFile = new File(charaParserOutputDirectory);
+			List<MarkupResultReader.BiologicalEntity> structures = reader.getBiologicalEntities(charaparserOutputFile);
+			List<MarkupResultReader.Character> characters = reader.getCharacters(charaparserOutputFile, false);
+			List<MarkupResultReader.Character> rangeValueCharacters = reader.getRangeValueCharacters(charaparserOutputFile, false);
+			
+			List<edu.arizona.biosemantics.oto2.ontologize.shared.model.Term> terms = 
+					new LinkedList<edu.arizona.biosemantics.oto2.ontologize.shared.model.Term>();					
+			for(BiologicalEntity structure : structures) {
+				terms.add(new edu.arizona.biosemantics.oto2.ontologize.shared.model.Term(
+						structure.getName(), structure.getIri(), "/structure", "structure"));
+			}
+			for(MarkupResultReader.Character character : characters) {
+				//filter comparison values such as "wider than long". "twice of leaf"
+				if(character.getValue().split("\\W+").length < 3) {
+					terms.add(new edu.arizona.biosemantics.oto2.ontologize.shared.model.Term(
+							character.getValue(), character.getIri(), "/character/" + character.getCategory(), character.getCategory()));
+				}
+			}
+			edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection collection = 
+					new edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection(
+							task.getName(), 
+							edu.arizona.biosemantics.common.biology.TaxonGroup.valueOf(config.getTaxonGroup().getName().toUpperCase()),
+							String.valueOf(task.getId()), 
+							terms);
+			collection = client.post(collection).get();
+			config.setOntologizeUploadId(collection.getId());
+			config.setOntologizeSecret(collection.getSecret());
+			daoManager.getSemanticMarkupConfigurationDAO().updateSemanticMarkupConfiguration(config);
+						
+			List<edu.arizona.biosemantics.oto2.ontologize.shared.model.Context> contexts = 
+					new LinkedList<edu.arizona.biosemantics.oto2.ontologize.shared.model.Context>();
+			List<String> files = new LinkedList<String>();
+			try {
+				files = fileService.getDirectoriesFiles(token, input);
+			} catch (PermissionDeniedException e) {
+				throw new SemanticMarkupException(task);
+			}
+			for(String file : files) {
+				List<Description> descriptions = getDescriptions(token, input + File.separator + file);
+				for(Description description : descriptions) {
+					try {
+						contexts.add(new edu.arizona.biosemantics.oto2.ontologize.shared.model.Context(collection.getId(), 
+								getTaxonIdentification(token, input + File.separator + file), 
+								description.getContent()));
+					} catch (PermissionDeniedException | GetFileContentFailedException e) {
+						throw new SemanticMarkupException(task);
+					}
+				}
+			}
+			try {
+				List<edu.arizona.biosemantics.oto2.ontologize.shared.model.Context> result = 
+						client.post(collection.getId(), collection.getSecret(), contexts).get();
+			} catch (InterruptedException | ExecutionException e) {
+				throw new SemanticMarkupException(task);
+			}
+			
+			return task;
+		} catch (InterruptedException | ExecutionException | JDOMException | IOException e) {
+			log(LogLevel.ERROR, "Couldn't prepare ontologize", e);
+			throw new SemanticMarkupException();
+		}		
 	}
 }

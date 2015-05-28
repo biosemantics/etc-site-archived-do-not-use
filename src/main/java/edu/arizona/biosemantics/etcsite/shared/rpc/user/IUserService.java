@@ -31,13 +31,13 @@ public interface IUserService extends RemoteService {
 	public ShortUser add(String openIdProviderId, String string, String firstName,
 			String lastName, String password) throws UserAddException;
 	
-	public edu.arizona.biosemantics.oto.common.model.User createOTOAccount(AuthenticationToken authenticationToken, String email, String password) throws CreateOTOAccountException;
+	public edu.arizona.biosemantics.oto.model.User createOTOAccount(AuthenticationToken authenticationToken, String email, String password) throws CreateOTOAccountException;
 	
 	public void saveOTOAccount(AuthenticationToken authenticationToken, boolean share, String email, String password) throws InvalidOTOAccountException, OTOException; 
 	
-	public edu.arizona.biosemantics.oto.common.model.User createOTOAccount(AuthenticationToken token, String googleCode) throws CreateOTOAccountException, OTOException;
+	public edu.arizona.biosemantics.oto.model.User createOTOAccount(AuthenticationToken token, String googleCode) throws CreateOTOAccountException, OTOException;
 	
-	public edu.arizona.biosemantics.oto.common.model.User saveOTOAccount(AuthenticationToken token, String googleCode) throws UserNotFoundException, InvalidOTOAccountException, OTOException;
+	public edu.arizona.biosemantics.oto.model.User saveOTOAccount(AuthenticationToken token, String googleCode) throws UserNotFoundException, InvalidOTOAccountException, OTOException;
 	
 	public void setProfile(AuthenticationToken token,String type,boolean dontShowPopup);
 

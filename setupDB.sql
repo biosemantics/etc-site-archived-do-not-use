@@ -132,6 +132,8 @@ CREATE TABLE IF NOT EXISTS `etcsite_semanticmarkupconfigurations` (
   `oto_uploadid` int(11) DEFAULT NULL,
   `oto_secret` varchar(100) DEFAULT NULL,
   `oto_created_dataset` tinyint(1) DEFAULT NULL,
+  `ontologize_uploadid` int(11) DEFAULT NULL,
+  `ontologize_secret` varchar(100) DEFAULT NULL,
   `output` varchar(200) DEFAULT NULL,
   KEY `configurations_semanticmarkupconfigurations_CON` (`configuration`),
   KEY `taxon_group_semanticmarkupconfigurations_CON` (`taxon_group`)
@@ -240,14 +242,12 @@ INSERT INTO `etcsite_taskstages` (`id`, `name`, `tasktype`, `created`) VALUES
 (20, 'OUTPUT', 7, '2013-11-19 22:30:35'),
 (21, 'REVIEW', 7, '2013-11-19 22:30:35'),
 (22, 'TO_ONTOLOGIES', 6, '2014-01-15 22:30:35'),
-(23, 'HIERARCHY', 6, '2014-01-15 22:30:35'),
-(24, 'ORDERS', 6, '2014-01-15 22:30:35'),
-(25, 'INPUT', 8, '2014-01-15 22:30:35'),
-(26, 'VIEW', 8, '2014-01-15 22:30:35'), 
-(27, 'INPUT', 9, '2014-01-15 22:30:35'),
-(28, 'ALIGN', 9, '2014-01-15 22:30:35'),
-(29, 'ANALYZE', 9, '2014-01-15 22:30:35'),
-(30, 'ANALYZE_COMPLETE', 9, '2014-01-15 22:30:35');
+(23, 'INPUT', 8, '2014-01-15 22:30:35'),
+(24, 'VIEW', 8, '2014-01-15 22:30:35'), 
+(25, 'INPUT', 9, '2014-01-15 22:30:35'),
+(26, 'ALIGN', 9, '2014-01-15 22:30:35'),
+(27, 'ANALYZE', 9, '2014-01-15 22:30:35'),
+(28, 'ANALYZE_COMPLETE', 9, '2014-01-15 22:30:35');
 
 -- --------------------------------------------------------
 

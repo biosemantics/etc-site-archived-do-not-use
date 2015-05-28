@@ -17,7 +17,6 @@ import edu.arizona.biosemantics.common.log.LogLevel;
 public class ConnectionPool {
 	
 	private BoneCP connectionPool;
-	//private BoneCP connectionPoolOtoLite;
 	private Driver mySqlDriver;
 	
 	public ConnectionPool() throws ClassNotFoundException, SQLException, IOException {
@@ -45,23 +44,6 @@ public class ConnectionPool {
 		config.setDisableJMX(true);
 		
 		connectionPool = new BoneCP(config);
-		
-		/*String otoLiteDatabaseName = properties.getProperty("otolite_databaseName");
-		String otoLiteDatabaseUser = properties.getProperty("otolite_databaseUser");
-		String otoLiteDatabasePassword = properties.getProperty("otolite_databasePassword");
-		String otoLiteJdbcUrl = "jdbc:mysql://localhost:3306/" + otoLiteDatabaseName + "?connecttimeout=0&sockettimeout=0&autoreconnect=true";
-		
-		config = new BoneCPConfig();
-		config.setJdbcUrl(otoLiteJdbcUrl); // jdbc url specific to your database, eg jdbc:mysql://127.0.0.1/yourdb
-		config.setUsername(otoLiteDatabaseUser); 
-		config.setPassword(otoLiteDatabasePassword);
-		config.setMinConnectionsPerPartition(10);
-		config.setMaxConnectionsPerPartition(20);
-		config.setPartitionCount(2);
-		config.setPoolName("otoLitePool");
-		config.setDisableJMX(true);*/
-		
-		//connectionPoolOtoLite = new BoneCP(config);
 	}
 	
 	public Connection getConnection() throws SQLException {
@@ -69,8 +51,6 @@ public class ConnectionPool {
 	}
 	
 	public Connection getConnection(String connection) throws SQLException {
-		/*if(connection.equals("otolite"))
-			return connectionPoolOtoLite.getConnection();*/
 		return connectionPool.getConnection();
 	}
 	

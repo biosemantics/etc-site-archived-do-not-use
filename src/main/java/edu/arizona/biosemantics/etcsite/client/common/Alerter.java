@@ -260,6 +260,10 @@ public class Alerter {
 		return showAlert("Review Matrix", "Failed to review matrix.", caught);
 	}
 	
+	public static MessageBox failedToOntologize(Throwable caught) {
+		return showAlert("Ontologize", "Failed to ontologize.", caught);
+	}
+	
 	public static MessageBox failedToViewKey(Throwable caught) {
 		return showAlert("View Key", "Failed to view key.", caught);
 	}
@@ -551,6 +555,8 @@ public class Alerter {
 	public static MessageBox contributedSuccessfullyToOTO() {
 		return showInfo("Contribution successful", "Contributed classifications sucessfully to OTO.");
 	}
+
+
 
 
 }

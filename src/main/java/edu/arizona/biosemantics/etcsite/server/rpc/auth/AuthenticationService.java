@@ -45,8 +45,6 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.auth.OpenPasswordResetRequest
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.RegistrationFailedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserAddException;
-import edu.arizona.biosemantics.oto.client.oto.OTOClient;
-import edu.arizona.biosemantics.oto.common.model.CreateUserResult;
 
 /**
  * The server side implementation of the RPC service.

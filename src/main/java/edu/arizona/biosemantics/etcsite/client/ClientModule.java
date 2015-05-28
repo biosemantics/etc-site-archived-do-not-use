@@ -301,7 +301,6 @@ public class ClientModule extends AbstractGinModule {
 		
 		bind(EventBus.class).annotatedWith(Names.named("EtcSite")).to(SimpleEventBus.class).in(Singleton.class);
 		bind(EventBus.class).annotatedWith(Names.named("AnnotationReview")).to(SimpleEventBus.class).in(Singleton.class);
-		//bind(HandlerManager.class).annotatedWith(Names.named("OTOLite")).toProvider(HandlerManagerProvider.class).in(Singleton.class);
 		
 		//services
 		bind(IAuthenticationServiceAsync.class).in(Singleton.class);

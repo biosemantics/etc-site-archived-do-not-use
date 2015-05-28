@@ -18,9 +18,94 @@ import org.jdom2.xpath.XPathFactory;
 
 public class MarkupResultReader {
 	
+	public static class Character {
+
+		private String value;
+		private String category;
+		private String iri;
+		
+		public Character(String value, String category, String iri) {
+			this.value = value;
+			this.category = category;
+			this.iri = iri;
+		}
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+
+		public String getCategory() {
+			return category;
+		}
+
+		public void setCategory(String category) {
+			this.category = category;
+		}
+			
+		public String getIri() {
+			return iri;
+		}
+
+		public void setIri(String iri) {
+			this.iri = iri;
+		}
+
+		@Override
+		public String toString() {
+			return this.category + ": " + this.value + " ( " + iri + " )";
+		}
+	}
+	
+	public static class BiologicalEntity {
+
+		private String name;
+		private String type;
+		private String iri;
+		
+		public BiologicalEntity(String name, String type, String iri) {
+			this.name = name;
+			this.type = type;
+			this.iri = iri;
+		}
+			
+		public String getName() {
+			return name;
+		}
+		
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getType() {
+			return type;
+		}
+
+		public void setType(String type) {
+			this.type = type;
+		}
+
+		public String getIri() {
+			return iri;
+		}
+
+		public void setIri(String iri) {
+			this.iri = iri;
+		}
+
+		@Override
+		public String toString() {
+			return this.name + ": " + this.type + " ( " + iri + " )";
+		}
+	}
+	
+	
 	private Pattern numericalsPattern = Pattern.compile(".*\\d+.*");
 	
-	public List<Character> getRangeValueCharacters(File input) throws JDOMException, IOException {
+	public List<Character> getRangeValueCharacters(File input, boolean includeNumericals) throws JDOMException, IOException {
 		List<Character> result = new LinkedList<Character>();
 		SAXBuilder saxBuilder = new SAXBuilder();
 		
@@ -34,7 +119,7 @@ public class MarkupResultReader {
 			}
 			
 			XPathFactory xpf = XPathFactory.instance();
-			XPathExpression<Element> xpath = xpf.compile("/bio:treatment/description/statement/structure/character",
+			XPathExpression<Element> xpath = xpf.compile("/bio:treatment/description/statement/biological_entity/character",
 			              Filters.element(), null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
 			List<Element> elements = xpath.evaluate(document);
 			for(Element element : elements) {
@@ -42,14 +127,15 @@ public class MarkupResultReader {
 				if(charType != null && charType.equals("range_value")) {
 					String toValue = element.getAttributeValue("to");
 					String fromValue = element.getAttributeValue("from");
+					String iri = element.getAttributeValue("ontologyid");
 					
 					String name = element.getAttributeValue("name");
-					if(toValue != null && !numericalsPattern.matcher(toValue).matches()) {
-						result.add(new Character(toValue, name));
+					if(toValue != null && (includeNumericals || !numericalsPattern.matcher(toValue).matches())) {
+						result.add(new Character(toValue, name, iri));
 					}
 					
-					if(fromValue != null && !numericalsPattern.matcher(fromValue).matches()) {
-						result.add(new Character(fromValue, name));
+					if(fromValue != null && (includeNumericals || !numericalsPattern.matcher(fromValue).matches())) {
+						result.add(new Character(fromValue, name, iri));
 					}
 				}
 			}
@@ -57,7 +143,7 @@ public class MarkupResultReader {
 		return result;
 	}
 	
-	public List<Character> getCharacters(File input) throws JDOMException, IOException {
+	public List<Character> getCharacters(File input, boolean includeNumericals) throws JDOMException, IOException {
 		List<Character> result = new LinkedList<Character>();
 		SAXBuilder saxBuilder = new SAXBuilder();
 		for(File file : input.listFiles()) {
@@ -70,29 +156,36 @@ public class MarkupResultReader {
 			}
 			
 			XPathFactory xpf = XPathFactory.instance();
-			XPathExpression<Element> xpath = xpf.compile("/bio:treatment/description/statement/structure/character",
+			XPathExpression<Element> xpath = xpf.compile("/bio:treatment/description/statement/biological_entity/character",
 			              Filters.element(), null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics")); 
 			List<Element> elements = xpath.evaluate(document);
 			for(Element element : elements) {
 				String charType = element.getAttributeValue("char_type");
+				String category = element.getAttributeValue("name");
+				String iri = element.getAttributeValue("ontologyid");
 				if(charType != null && charType.equals("range_value")) {
 					String toValue = element.getAttributeValue("to");
 					String fromValue = element.getAttributeValue("from");
-					String category = element.getAttributeValue("name");
-					result.add(new Character(toValue, category));
-					result.add(new Character(fromValue, category));
+					
+					if(toValue != null && (includeNumericals || !numericalsPattern.matcher(toValue).matches())) {
+						result.add(new Character(toValue, category, iri));
+					}
+					if(fromValue != null && (includeNumericals || !numericalsPattern.matcher(fromValue).matches())) {
+						result.add(new Character(fromValue, category, iri));
+					}
 				} else {
 					String value = element.getAttributeValue("value");
-					String category = element.getAttributeValue("name");
-					result.add(new Character(value, category));
-				}				
+					if(value != null && (includeNumericals || !numericalsPattern.matcher(value).matches())) {
+						result.add(new Character(value, category, iri));
+					}
+				}
 			}
 		}
 		return result;
 	}
 
-	public List<String> getStructures(File input) throws JDOMException, IOException {
-		List<String> result = new LinkedList<String>();
+	public List<BiologicalEntity> getBiologicalEntities(File input) throws JDOMException, IOException {
+		List<BiologicalEntity> result = new LinkedList<BiologicalEntity>();
 		SAXBuilder saxBuilder = new SAXBuilder();
 		for(File file : input.listFiles()) {
 			Document document = null;
@@ -104,15 +197,17 @@ public class MarkupResultReader {
 			}
 			
 			XPathFactory xpf = XPathFactory.instance();
-			XPathExpression<Element> xpath = xpf.compile("/bio:treatment/description/statement/structure",
+			XPathExpression<Element> xpath = xpf.compile("/bio:treatment/description/statement/biological_entity",
 			              Filters.element(), null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics")); 
 			List<Element> elements = xpath.evaluate(document);
 			for(Element element : elements) {
 				String name = element.getAttributeValue("name");
 				String constraint = element.getAttributeValue("constraint");
+				String type = element.getAttributeValue("type");
+				String iri = element.getAttributeValue("ontologyid");
 				if(constraint != null)
 					name = constraint + " " + name;
-				result.add(name);
+				result.add(new BiologicalEntity(name, type, iri));
 			}
 		}
 		return result;

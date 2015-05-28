@@ -21,28 +21,23 @@
   <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
   <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
 
-  <!-- Other module inherits                                      -->
+  <!-- Module inherits                                      -->
   <inherits name="com.google.gwt.inject.Inject"/>
   <inherits name="com.google.gwt.activity.Activity"/>
   <inherits name="com.google.gwt.place.Place"/>
   <inherits name='com.sencha.gxt.ui.GXT' />
-  
-  <!-- Matrix Review Module -->
   <inherits name='edu.arizona.biosemantics.matrixreview.Matrix_review'/>
   <inherits name='edu.arizona.biosemantics.common.log.Log'/>
   <inherits name='edu.arizona.biosemantics.common.taxonomy.Taxonomy'/>
   <inherits name='edu.arizona.biosemantics.common.biology.Biology'/>
   <inherits name='edu.arizona.biosemantics.euler.alignment.Euler_alignment'/>
-  <inherits name='edu.ucdavis.cs.cfgproject.CfgProject'/>
-  <inherits name='edu.arizona.biosemantics.oto.common.Common'/>
-  
-  <!-- Include GWTUpload library -->
-  <inherits name="gwtupload.GWTUpload"/>
-  
-  <!-- OTO 2 module -->
+  <inherits name='edu.arizona.biosemantics.oto.Model'/>
   <inherits name='edu.arizona.biosemantics.oto2.oto.Oto'/>
+  <inherits name='edu.arizona.biosemantics.oto2.ontologize.Ontologize'/>
+  <inherits name='edu.ucdavis.cs.cfgproject.CfgProject'/>
   
-  <!-- Include GWT incubator: -->
+  <inherits name="gwtupload.GWTUpload"/>
+    
   <inherits name='com.google.gwt.widgetideas.WidgetIdeas' />   
   <inherits name='com.google.gwt.libideas.LibIdeas' />
   
@@ -53,12 +48,6 @@
   
   <!-- Load dinamically predefined styles in the library when the application starts -->
   <stylesheet src="Upload.css"/>
-  
-  <!-- Otolite css
-  <stylesheet src="oto_lite_css/general.css"/>
-  <stylesheet src="oto_lite_css/hierarchy.css"/>
-  <stylesheet src="oto_lite_css/order.css"/>
-  <stylesheet src="oto_lite_css/to_ontologies.css"/> -->
   
   <!-- Specify the app entry point class.                         -->
   <entry-point class='edu.arizona.biosemantics.etcsite.client.Client'/>

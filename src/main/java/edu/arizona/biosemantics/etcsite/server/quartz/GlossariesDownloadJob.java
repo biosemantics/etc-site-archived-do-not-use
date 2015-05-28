@@ -15,12 +15,12 @@ import edu.arizona.biosemantics.common.biology.TaxonGroup;
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.oto.client.oto.OTOClient;
 import edu.arizona.biosemantics.oto.client.oto2.Client;
-import edu.arizona.biosemantics.oto.common.model.GlossaryDownload;
-import edu.arizona.biosemantics.oto.common.model.TermCategory;
-import edu.arizona.biosemantics.oto.common.model.TermSynonym;
-import edu.arizona.biosemantics.oto.common.model.lite.Decision;
-import edu.arizona.biosemantics.oto.common.model.lite.Download;
-import edu.arizona.biosemantics.oto.common.model.lite.Synonym;
+import edu.arizona.biosemantics.oto.model.GlossaryDownload;
+import edu.arizona.biosemantics.oto.model.TermCategory;
+import edu.arizona.biosemantics.oto.model.TermSynonym;
+import edu.arizona.biosemantics.oto.model.lite.Decision;
+import edu.arizona.biosemantics.oto.model.lite.Download;
+import edu.arizona.biosemantics.oto.model.lite.Synonym;
 
 public class GlossariesDownloadJob  implements Job {
 

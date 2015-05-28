@@ -60,7 +60,7 @@ import java.io.ObjectOutputStream;
 import java.net.URL;
 
 import edu.arizona.biosemantics.oto.client.oto.OTOClient;
-import edu.arizona.biosemantics.oto.common.model.CreateUserResult;
+import edu.arizona.biosemantics.oto.model.CreateUserResult;
 
 public class UserService extends RemoteServiceServlet implements IUserService {
 	
@@ -167,7 +167,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 
 
 	@Override
-	public edu.arizona.biosemantics.oto.common.model.User saveOTOAccount(AuthenticationToken token, String googleCode) throws UserNotFoundException, InvalidOTOAccountException, OTOException {
+	public edu.arizona.biosemantics.oto.model.User saveOTOAccount(AuthenticationToken token, String googleCode) throws UserNotFoundException, InvalidOTOAccountException, OTOException {
 		ShortUser shortUser = this.getUser(token);
 		boolean share = true;
 		GoogleUser googleUser;
@@ -179,7 +179,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		}
 		String dummyPassword = Configuration.otoSecret + ":" + googleUser.getId();
 		saveOTOAccount(token, share, googleUser.getEmail(), dummyPassword);
-		edu.arizona.biosemantics.oto.common.model.User otoUser = new edu.arizona.biosemantics.oto.common.model.User();
+		edu.arizona.biosemantics.oto.model.User otoUser = new edu.arizona.biosemantics.oto.model.User();
 		otoUser.setUserEmail(googleUser.getEmail());
 		otoUser.setFirstName(googleUser.getFirstName());
 		otoUser.setLastName(googleUser.getLastName());
@@ -199,7 +199,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		if(share) {
 			try (OTOClient otoClient = new OTOClient(Configuration.otoUrl)) {
 				otoClient.open();
-				edu.arizona.biosemantics.oto.common.model.User otoUser = new edu.arizona.biosemantics.oto.common.model.User();
+				edu.arizona.biosemantics.oto.model.User otoUser = new edu.arizona.biosemantics.oto.model.User();
 				otoUser.setUserEmail(email);
 				otoUser.setPassword(password);
 				Future<String> tokenResult = otoClient.getUserAuthenticationToken(otoUser);
@@ -226,7 +226,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 	}
 	
 	@Override
-	public edu.arizona.biosemantics.oto.common.model.User createOTOAccount(AuthenticationToken token, String email, String password) throws CreateOTOAccountException {
+	public edu.arizona.biosemantics.oto.model.User createOTOAccount(AuthenticationToken token, String email, String password) throws CreateOTOAccountException {
 		ShortUser shortUser;
 		try {
 			shortUser = this.getUser(token);
@@ -234,7 +234,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 			throw new CreateOTOAccountException(e);
 		}
 		
-		edu.arizona.biosemantics.oto.common.model.User otoUser = new edu.arizona.biosemantics.oto.common.model.User();
+		edu.arizona.biosemantics.oto.model.User otoUser = new edu.arizona.biosemantics.oto.model.User();
 		otoUser.setUserEmail(email);
 		otoUser.setPassword(password);
 		otoUser.setAffiliation(shortUser.getAffiliation());
@@ -258,7 +258,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 	
 	//TODO: use https://code.google.com/p/google-api-java-client/w/list
 	@Override
-	public edu.arizona.biosemantics.oto.common.model.User createOTOAccount(AuthenticationToken token, String googleCode) throws CreateOTOAccountException, OTOException {
+	public edu.arizona.biosemantics.oto.model.User createOTOAccount(AuthenticationToken token, String googleCode) throws CreateOTOAccountException, OTOException {
 		GoogleUser googleUser;
 		try {
 			googleUser = getGoogleUserFromAccessToken(googleCode);
@@ -273,7 +273,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 			throw new CreateOTOAccountException(e);
 		}
 		
-		edu.arizona.biosemantics.oto.common.model.User otoUser = new edu.arizona.biosemantics.oto.common.model.User();
+		edu.arizona.biosemantics.oto.model.User otoUser = new edu.arizona.biosemantics.oto.model.User();
 		String dummyPassword = Configuration.otoSecret + googleUser.getId();
 		otoUser.setUserEmail(googleUser.getEmail());
 		otoUser.setFirstName(googleUser.getFirstName());

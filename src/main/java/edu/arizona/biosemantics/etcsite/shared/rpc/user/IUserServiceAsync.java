@@ -27,14 +27,14 @@ public interface IUserServiceAsync {
 			String lastName, String password, AsyncCallback<ShortUser> callback);
 
 	public void createOTOAccount(AuthenticationToken authenticationToken, String email, String password,
-			AsyncCallback<edu.arizona.biosemantics.oto.common.model.User> asyncCallback);
+			AsyncCallback<edu.arizona.biosemantics.oto.model.User> asyncCallback);
 
 	public void saveOTOAccount(AuthenticationToken authenticationToken, boolean share, String email, String password,
 			AsyncCallback<Void> asyncCallback);
 
-	public void createOTOAccount(AuthenticationToken token, String googleCode, AsyncCallback<edu.arizona.biosemantics.oto.common.model.User> callback);
+	public void createOTOAccount(AuthenticationToken token, String googleCode, AsyncCallback<edu.arizona.biosemantics.oto.model.User> callback);
 
-	public void saveOTOAccount(AuthenticationToken token, String googleCode, AsyncCallback<edu.arizona.biosemantics.oto.common.model.User> callback);
+	public void saveOTOAccount(AuthenticationToken token, String googleCode, AsyncCallback<edu.arizona.biosemantics.oto.model.User> callback);
 
 	public void isProfile(AuthenticationToken token,String type, AsyncCallback<Boolean> callback);
 	

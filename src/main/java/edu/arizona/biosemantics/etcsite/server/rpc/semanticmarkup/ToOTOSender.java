@@ -14,13 +14,13 @@ import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupConfiguration
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.User;
 import edu.arizona.biosemantics.oto.client.oto.OTOClient;
-import edu.arizona.biosemantics.oto.common.model.CategorizeTerms;
-import edu.arizona.biosemantics.oto.common.model.CategoryBean;
-import edu.arizona.biosemantics.oto.common.model.CreateDataset;
-import edu.arizona.biosemantics.oto.common.model.DecisionHolder;
-import edu.arizona.biosemantics.oto.common.model.GroupTerms;
-import edu.arizona.biosemantics.oto.common.model.StructureHierarchy;
-import edu.arizona.biosemantics.oto.common.model.TermContext;
+import edu.arizona.biosemantics.oto.model.CategorizeTerms;
+import edu.arizona.biosemantics.oto.model.CategoryBean;
+import edu.arizona.biosemantics.oto.model.CreateDataset;
+import edu.arizona.biosemantics.oto.model.DecisionHolder;
+import edu.arizona.biosemantics.oto.model.GroupTerms;
+import edu.arizona.biosemantics.oto.model.StructureHierarchy;
+import edu.arizona.biosemantics.oto.model.TermContext;
 import edu.arizona.biosemantics.oto2.oto.server.rpc.ContextService;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Bucket;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Collection;
@@ -154,20 +154,20 @@ public class ToOTOSender {
 				CategoryBean categoryBean = new CategoryBean();
 				categoryBean.setName(label.getName());
 				
-				ArrayList<edu.arizona.biosemantics.oto.common.model.Term> changedTerms = 
-						new ArrayList<edu.arizona.biosemantics.oto.common.model.Term>();
+				ArrayList<edu.arizona.biosemantics.oto.model.Term> changedTerms = 
+						new ArrayList<edu.arizona.biosemantics.oto.model.Term>();
 				for(edu.arizona.biosemantics.oto2.oto.shared.model.Term mainTerm : label.getMainTerms()) {
 					List<edu.arizona.biosemantics.oto2.oto.shared.model.Term> termsSynonyms = label.getSynonyms(mainTerm);
-					edu.arizona.biosemantics.oto.common.model.Term term = new edu.arizona.biosemantics.oto.common.model.Term();
+					edu.arizona.biosemantics.oto.model.Term term = new edu.arizona.biosemantics.oto.model.Term();
 					term.setIsAdditional(false);
 					term.setHasSyn(false);
 					term.setTerm(mainTerm.getTerm());
 					changedTerms.add(term);
 					
-					ArrayList<edu.arizona.biosemantics.oto.common.model.Term> synoymTerms = 
-							new ArrayList<edu.arizona.biosemantics.oto.common.model.Term>();
+					ArrayList<edu.arizona.biosemantics.oto.model.Term> synoymTerms = 
+							new ArrayList<edu.arizona.biosemantics.oto.model.Term>();
 					for(edu.arizona.biosemantics.oto2.oto.shared.model.Term synonym : termsSynonyms) {
-						edu.arizona.biosemantics.oto.common.model.Term synonymTerm = new edu.arizona.biosemantics.oto.common.model.Term();
+						edu.arizona.biosemantics.oto.model.Term synonymTerm = new edu.arizona.biosemantics.oto.model.Term();
 						synonymTerm.setIsAdditional(false);
 						synonymTerm.setHasSyn(false);
 						synonymTerm.setTerm(synonym.getTerm());
@@ -196,14 +196,14 @@ public class ToOTOSender {
 				CategoryBean categoryBean = new CategoryBean();
 				categoryBean.setName(label.getName());
 				
-				ArrayList<edu.arizona.biosemantics.oto.common.model.Term> changedTerms = 
-						new ArrayList<edu.arizona.biosemantics.oto.common.model.Term>();
+				ArrayList<edu.arizona.biosemantics.oto.model.Term> changedTerms = 
+						new ArrayList<edu.arizona.biosemantics.oto.model.Term>();
 				for(edu.arizona.biosemantics.oto2.oto.shared.model.Term mainTerm : label.getMainTerms()) {
 					List<edu.arizona.biosemantics.oto2.oto.shared.model.Term> termsSynonyms = label.getSynonyms(mainTerm);
 					if(!termsSynonyms.isEmpty()) {
 						String relatedTerms = "";
 						for(edu.arizona.biosemantics.oto2.oto.shared.model.Term synonym : termsSynonyms) {
-							edu.arizona.biosemantics.oto.common.model.Term oldTerm = new edu.arizona.biosemantics.oto.common.model.Term();
+							edu.arizona.biosemantics.oto.model.Term oldTerm = new edu.arizona.biosemantics.oto.model.Term();
 							oldTerm.setAdditional(true);
 							oldTerm.setHasSyn(false);
 							oldTerm.setRelatedTerms("synonym of '" + mainTerm.getTerm() + "'");
@@ -212,15 +212,15 @@ public class ToOTOSender {
 							relatedTerms += "'" + synonym.getTerm() + "',";
 						}
 						
-						edu.arizona.biosemantics.oto.common.model.Term term = new edu.arizona.biosemantics.oto.common.model.Term();
+						edu.arizona.biosemantics.oto.model.Term term = new edu.arizona.biosemantics.oto.model.Term();
 						term.setIsAdditional(false);
 						term.setHasSyn(true);
 						term.setTerm(mainTerm.getTerm());
 						term.setRelatedTerms(relatedTerms.substring(0, relatedTerms.length() - 1));
 						
-						ArrayList<edu.arizona.biosemantics.oto.common.model.Term> synoymTerms = new ArrayList<edu.arizona.biosemantics.oto.common.model.Term>();
+						ArrayList<edu.arizona.biosemantics.oto.model.Term> synoymTerms = new ArrayList<edu.arizona.biosemantics.oto.model.Term>();
 						for(edu.arizona.biosemantics.oto2.oto.shared.model.Term synonym : termsSynonyms) {
-							edu.arizona.biosemantics.oto.common.model.Term synonymTerm = new edu.arizona.biosemantics.oto.common.model.Term();
+							edu.arizona.biosemantics.oto.model.Term synonymTerm = new edu.arizona.biosemantics.oto.model.Term();
 							synonymTerm.setIsAdditional(false);
 							synonymTerm.setHasSyn(false);
 							synonymTerm.setTerm(synonym.getTerm());

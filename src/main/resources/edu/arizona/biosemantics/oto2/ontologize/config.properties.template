@@ -1,0 +1,16 @@
+#Ontology
+permanentOntologyDirectory=
+collectionOntologyDirectory=
+etcOntologyBaseIRI=http://www.etc-project.org/owl/ontologies/
+oboOntologyBaseIRI=http://purl.obolibrary.org/obo/
+
+#Database
+databaseName=
+databaseUser=
+databasePassword=
+databaseHost=
+databasePort=
+
+#Bioportal
+bioportalUrl=http://data.bioontology.org
+bioportalApiKey=

@@ -88,6 +88,9 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 	
 	/** OTO 2 **/
 	public static String oto2Url;
+	
+	/** Ontologize **/
+	public static String ontologizeUrl;
 
 	public static String otoUrl;
 	public static String otoSecret;
@@ -99,6 +102,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			properties = new Properties(); 
 			properties.load(loader.getResourceAsStream("edu/arizona/biosemantics/etcsite/config.properties"));
 			
+			ontologizeUrl = properties.getProperty("ontologizeUrl");
 			oto2Url = properties.getProperty("oto2Url");
 			otoUrl = properties.getProperty("otoUrl");
 			otoSecret = properties.getProperty("otoSecret");

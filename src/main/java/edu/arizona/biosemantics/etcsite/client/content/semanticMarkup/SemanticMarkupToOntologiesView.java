@@ -10,6 +10,10 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.oto2.ontologize.client.Ontologize;
+import edu.arizona.biosemantics.oto2.oto.client.Oto;
+
 public class SemanticMarkupToOntologiesView extends Composite implements ISemanticMarkupToOntologiesView {
 
 	private static SemanticMarkupToOntologyViewUiBinder uiBinder = GWT
@@ -20,27 +24,16 @@ public class SemanticMarkupToOntologiesView extends Composite implements ISemant
 	}
 	
 	@UiField
-	SimplePanel toOntologiesContainer;
-	
-	@UiField
-	SimplePanel contextContainer;
+	SimplePanel ontologizePanel;
 	
 	private Presenter presenter;
+	private Ontologize ontologize = new Ontologize();
 
 	public SemanticMarkupToOntologiesView() {
 		initWidget(uiBinder.createAndBindUi(this));
+		ontologizePanel.setWidget(ontologize.getView().asWidget());
 	}
 	
-	@Override
-	public HasWidgets getToOntologiesContainer() {
-		return toOntologiesContainer;
-	}
-	
-	@Override 
-	public HasWidgets getContextContainer() {
-		return contextContainer;
-	}
-
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
@@ -49,6 +42,20 @@ public class SemanticMarkupToOntologiesView extends Composite implements ISemant
 	@UiHandler("nextButton")
 	public void onNext(ClickEvent event) {
 		presenter.onNext();
+	}
+
+	@Override
+	public Ontologize getOntologize() {
+		return ontologize;
+	}
+
+	@Override
+	public void setOntologize(int uploadId, String secret) {
+		ontologize.setUser(Authentication.getInstance().getFirstName() + " " + 
+				Authentication.getInstance().getLastName() + " (" + 
+				Authentication.getInstance().getEmail() + ")");
+		
+		ontologize.loadCollection(uploadId, secret);
 	}
 	
 }
