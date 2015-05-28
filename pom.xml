@@ -107,10 +107,11 @@
 			<artifactId>gwtupload</artifactId>
 			<version>1.0.1</version>
 		</dependency>
+		<!-- This specific beta version required by owlapi 4.0.2  -->
 		<dependency>
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
-			<version>3.0</version>
+			<version>4.0-beta</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt.inject</groupId>
