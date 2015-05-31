@@ -26,6 +26,7 @@ import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.OrderedMultiSelectionModel;
@@ -37,6 +38,7 @@ import com.google.gwt.view.client.SelectionModel;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum;
 
 public class TaskManagerView extends Composite implements ITaskManagerView, Handler {
 
@@ -58,6 +60,8 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 	Button deleteButton;
 	@UiField
 	Button shareButton;
+	@UiField
+	ListBox rewindListBox;
 	
 	private Presenter presenter;
 	private ListDataProvider<TaskData> dataProvider;
@@ -80,6 +84,7 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 		rewindButton.setHeight("20px");
 		deleteButton.setHeight("20px");
 		shareButton.setHeight("20px");
+		rewindListBox.setEnabled(false);
 	}
 	
 	private SimplePager createPager(CellTable<TaskData> cellTable) {
@@ -380,7 +385,7 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 	public void onRewind(ClickEvent e) {
 		List<TaskData> list = this.getSelectedTaskData();
 		if (list.size() == 1){
-			presenter.onRewind(list.get(0));
+			presenter.onRewind(list.get(0), rewindListBox.getValue(rewindListBox.getSelectedIndex()));
 		} else {
 			//multiple selections. Show an error message or do nothing. 
 		}
@@ -410,12 +415,12 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 	public void onSelectionChange(SelectionChangeEvent event) {
 		if(this.dataProvider.getList().isEmpty()) {
 			this.resumeButton.setEnabled(false);
-			this.rewindButton.setEnabled(false);
+			setEnabledRewind(false);
 			this.deleteButton.setEnabled(false);
 			this.shareButton.setEnabled(false);
 		} else {
 			this.resumeButton.setEnabled(true);
-			this.rewindButton.setEnabled(true);
+			setEnabledRewind(true);
 			this.deleteButton.setEnabled(true);
 			this.shareButton.setEnabled(true);
 		}
@@ -431,42 +436,66 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 						this.shareButton.setEnabled(true);
 					}
 					if(task.isComplete()) {
-						switch(task.getTaskType().getTaskTypeEnum()) {
-						case MATRIX_GENERATION:
-							this.rewindButton.setEnabled(true);
-							break;
-						case SEMANTIC_MARKUP:
-							this.rewindButton.setEnabled(true);
-							break;
-						case TAXONOMY_COMPARISON:
-							this.rewindButton.setEnabled(true);
-							break;
-						case TREE_GENERATION:
-							this.rewindButton.setEnabled(true);
-							break;
-						case VISUALIZATION:
-							break;
-						default:
-							break;
-						}
+						initRewind(task.getTaskType().getTaskTypeEnum());
 						this.resumeButton.setEnabled(false);
 					} else {
-						this.rewindButton.setEnabled(false);
+						setEnabledRewind(false);
 						this.resumeButton.setEnabled(task.isResumable());
 					}
 				} else {
 					this.resumeButton.setEnabled(false);
-					this.rewindButton.setEnabled(false);
+					setEnabledRewind(false);
 					this.deleteButton.setEnabled(true);
 					this.shareButton.setEnabled(true);
 				}
 			} else {
 				//multiple selections. Only allow delete. 
 				this.resumeButton.setEnabled(false);
-				this.rewindButton.setEnabled(false);
+				setEnabledRewind(false);
 				this.deleteButton.setEnabled(true);
 				this.shareButton.setEnabled(false);
 			}
+		}
+	}
+
+	private void setEnabledRewind(boolean value) {
+		this.rewindButton.setEnabled(value);
+		if(!value)
+			this.rewindListBox.clear();
+		this.rewindListBox.setEnabled(value);
+	}
+
+	private void initRewind(TaskTypeEnum taskTypeEnum) {
+		this.rewindListBox.clear();
+		switch(taskTypeEnum) {
+		case MATRIX_GENERATION:
+			this.rewindButton.setEnabled(true);
+			this.rewindListBox.addItem(edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum.REVIEW.displayName());
+			this.rewindListBox.setEnabled(true);
+			break;
+		case SEMANTIC_MARKUP:
+			this.rewindButton.setEnabled(true);
+			this.rewindListBox.addItem(
+					edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum.REVIEW_TERMS.displayName());
+			this.rewindListBox.addItem(
+					edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum.TO_ONTOLOGIES.displayName());
+			this.rewindListBox.setEnabled(true);
+			break;
+		case TREE_GENERATION:
+			this.rewindButton.setEnabled(true);
+			this.rewindListBox.addItem(edu.arizona.biosemantics.etcsite.shared.model.treegeneration.TaskStageEnum.VIEW.displayName());
+			this.rewindListBox.setEnabled(true);
+			break;
+		case TAXONOMY_COMPARISON:
+			this.rewindButton.setEnabled(true);
+			this.rewindListBox.addItem(edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison.TaskStageEnum.ALIGN.displayName());
+			this.rewindListBox.setEnabled(true);
+		case VISUALIZATION:
+		default:
+			this.rewindButton.setEnabled(false);
+			this.rewindListBox.clear();
+			this.rewindListBox.setEnabled(false);
+			break;
 		}
 	}
 

@@ -110,10 +110,10 @@ public class SemanticMarkupConfigurationDAO {
 			query.setParameter(5, otoUploadId);
 			query.setParameter(6, otoSecret);
 			query.setParameter(7, otoCreatedDataset);
-			query.setParameter(7, ontologizeUploadId);
-			query.setParameter(7, ontologizeSecret);
-			query.setParameter(8, output);
-			query.setParameter(9, configuration.getId());
+			query.setParameter(8, ontologizeUploadId);
+			query.setParameter(9, ontologizeSecret);
+			query.setParameter(10, output);
+			query.setParameter(11, configuration.getId());
 			query.execute();
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't update semantic markup configuration", e);

@@ -15,6 +15,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.apache.commons.io.FileUtils;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -104,6 +105,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	private DAOManager daoManager = new DAOManager();
 	private Emailer emailer = new Emailer();
 	private ICollectionService otoCollectionService = new CollectionService();
+	private edu.arizona.biosemantics.oto2.ontologize.shared.rpc.ICollectionService ontologizeCollectionService = 
+			new edu.arizona.biosemantics.oto2.ontologize.server.rpc.CollectionService();
 	
 	public SemanticMarkupService() {
 		executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(Configuration.maxActiveSemanticMarkup));
@@ -342,8 +345,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 								TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.OUTPUT.toString());
 								task.setTaskStage(newTaskStage);
 								daoManager.getTaskDAO().updateTask(task);
-								sendFinishedParsingEmail(task);
-								
+								sendFinishedParsingEmail(task);	
 							}
 						} else {
 							task.setFailed(true);
@@ -773,12 +775,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 					break;
 				case REVIEW_TERMS:
 					break;
-				/*case TO_ONTOLOGIES:
+				case TO_ONTOLOGIES:
 					break;
-				case HIERARCHY:
-					break;
-				case ORDERS: 
-					break;*/
 				default:
 					break;
 				}
@@ -1015,6 +1013,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		String input = config.getInput();
 				
 		try(Client client = new Client(Configuration.ontologizeUrl)) {
+			client.open();
 			MarkupResultReader reader = new MarkupResultReader();
 			String charaParserOutputDirectory = Configuration.charaparser_tempFileBase + File.separator + task.getId() + File.separator + "out";
 			File charaparserOutputFile = new File(charaParserOutputDirectory);
@@ -1078,5 +1077,54 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			log(LogLevel.ERROR, "Couldn't prepare ontologize", e);
 			throw new SemanticMarkupException();
 		}		
+	}
+
+	@Override
+	public String downloadOntologize(AuthenticationToken token, Task task) throws SemanticMarkupException {
+		final SemanticMarkupConfiguration config = getSemanticMarkupConfiguration(task);
+		int uploadId = config.getOntologizeUploadId();
+		String secret = config.getOntologizeSecret();
+		
+		edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection collection;
+		try {
+			collection = ontologizeCollectionService.get(uploadId, secret);
+		} catch (Exception e) {
+			log(LogLevel.ERROR, "Couldn't get oto collection", e);
+			throw new SemanticMarkupException(task);
+		}
+		
+		String zipSource = Configuration.compressedFileBase + File.separator + token.getUserId() + File.separator + "ontologize" + 
+				File.separator + task.getId() + File.separator + task.getName() + "_ontologies";
+		File zipSourceFile = new File(zipSource);
+		try {
+			FileUtils.deleteDirectory(zipSourceFile);
+		} catch (IOException e) {
+			log(LogLevel.ERROR, "Couldn't clean/remove directory to zip", e);
+			throw new SemanticMarkupException(task);
+		}
+		zipSourceFile.mkdirs();
+		
+		String source = edu.arizona.biosemantics.oto2.ontologize.server.Configuration.collectionOntologyDirectory + 
+				File.separator + uploadId;
+		File sourceFile = new File(source);
+		for(File file : sourceFile.listFiles()) {
+			if(file.isDirectory()) {
+				try {
+					
+					FileUtils.copyDirectoryToDirectory(file, zipSourceFile);
+				} catch (IOException e) {
+					log(LogLevel.ERROR, "Couldn't copy ontology file", e);
+					throw new SemanticMarkupException(task);
+				}
+			}
+		}
+		
+		String zipFilePath = Configuration.compressedFileBase + File.separator + token.getUserId() + File.separator + "ontologize" + 
+				File.separator + task.getId() + File.separator + task.getName() + "_ontologies.zip";
+		Zipper zipper = new Zipper();
+		zipFilePath = zipper.zip(zipSource, zipFilePath);
+		if(zipFilePath != null)
+			return zipFilePath;
+		throw new SemanticMarkupException("Saving failed");
 	}
 }

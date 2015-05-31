@@ -159,36 +159,36 @@
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>oto2_collectionServlet</servlet-name>
+		<servlet-name>oto_collectionServlet</servlet-name>
 		<servlet-class>edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>oto2_collectionServlet</servlet-name>
-		<url-pattern>/etcsite/collection</url-pattern>
+		<servlet-name>oto_collectionServlet</servlet-name>
+		<url-pattern>/etcsite/oto_collection</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>oto2_communityServlet</servlet-name>
+		<servlet-name>oto_communityServlet</servlet-name>
 		<servlet-class>edu.arizona.biosemantics.oto2.oto.server.rpc.CommunityService</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>oto2_communityServlet</servlet-name>
-		<url-pattern>/etcsite/community</url-pattern>
+		<servlet-name>oto_communityServlet</servlet-name>
+		<url-pattern>/etcsite/oto_community</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>oto2_contextServlet</servlet-name>
+		<servlet-name>oto_contextServlet</servlet-name>
 		<servlet-class>edu.arizona.biosemantics.oto2.oto.server.rpc.ContextService</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>oto2_contextServlet</servlet-name>
-		<url-pattern>/etcsite/context</url-pattern>
+		<servlet-name>oto_contextServlet</servlet-name>
+		<url-pattern>/etcsite/oto_context</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>oto2_ontologyServlet</servlet-name>
+		<servlet-name>oto_ontologyServlet</servlet-name>
 		<servlet-class>edu.arizona.biosemantics.oto2.oto.server.rpc.OntologyService</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>oto2_ontologyServlet</servlet-name>
-		<url-pattern>/etcsite/ontology</url-pattern>
+		<servlet-name>oto_ontologyServlet</servlet-name>
+		<url-pattern>/etcsite/oto_ontology</url-pattern>
 	</servlet-mapping>
 
 	<servlet>

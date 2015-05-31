@@ -1,4 +1,6 @@
 log4j.rootLogger=DEBUG, A1, A2
+log4j.category.org.semanticweb.owlapi=ERROR
+log4j.category.uk.ac.manchester.cs.owl.owlapi=ERROR
 
 log4j.appender.A1=org.apache.log4j.RollingFileAppender
 log4j.appender.A1.MaxFileSize=100MB

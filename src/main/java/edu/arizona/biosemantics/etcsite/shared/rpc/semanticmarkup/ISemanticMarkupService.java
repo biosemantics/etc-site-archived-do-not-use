@@ -49,4 +49,6 @@ public interface ISemanticMarkupService extends RemoteService, IHasTasksService 
 
 	public Task ontologize(AuthenticationToken token, Task task) throws SemanticMarkupException;
 	
+	public String downloadOntologize(AuthenticationToken token, Task task) throws SemanticMarkupException;
+	
 }

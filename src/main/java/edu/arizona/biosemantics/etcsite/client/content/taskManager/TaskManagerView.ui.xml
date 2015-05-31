@@ -49,6 +49,10 @@
 						    <g:Button ui:field='resumeButton' styleName="{style.middle}" title="continue with the selected task/analysis">Resume</g:Button>
 						    </g:FlowPanel>
 						    <g:FlowPanel styleName="{style.leftMargin}">
+						   	<g:ListBox ui:field='rewindListBox' styleName="{style.middle}" title="select to the interactive step to rewind to, e.g, re-categorize the terms for Text Capture, or re-review the matrix for Matrix Generation">
+						   	</g:ListBox>
+						    </g:FlowPanel>
+						    <g:FlowPanel styleName="{style.leftMargin}">
 						    <g:Button ui:field='rewindButton' styleName="{style.middle}" title="go back to the interactive step for the selected task/analysis, e.g, re-categorize the terms for Text Capture, or re-review the matrix for Matrix Generation">Rewind</g:Button>
 						    </g:FlowPanel>
 						    <g:FlowPanel styleName="{style.leftMargin}">

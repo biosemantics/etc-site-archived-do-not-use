@@ -27,6 +27,7 @@ import edu.arizona.biosemantics.etcsite.client.event.ResumableTasksEvent;
 import edu.arizona.biosemantics.etcsite.shared.model.Share;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
@@ -249,21 +250,42 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 	}
 
 	@Override
-	public void onRewind(final TaskData taskData) {
+	public void onRewind(final TaskData taskData, String taskStage) {
 		switch(taskData.getTask().getTaskType().getTaskTypeEnum()) {
 		case SEMANTIC_MARKUP:
-			semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), taskData.getTask(), 
-					edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum.REVIEW_TERMS ,new AsyncCallback<Task>() {
-				@Override
-				public void onSuccess(Task result) {
-					placeController.goTo(new edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupReviewPlace(result));
+			TaskStageEnum taskStageEnum = TaskStageEnum.fromDisplayName(taskStage);
+			if(taskStageEnum != null) {
+				switch(taskStageEnum) {
+				case REVIEW_TERMS:
+					semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), taskData.getTask(), 
+							taskStageEnum, new AsyncCallback<Task>() {
+						@Override
+						public void onSuccess(Task result) {
+							placeController.goTo(new edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupReviewPlace(result));
+						}
+						@Override
+						public void onFailure(Throwable caught) {
+							Alerter.failedToGoToTaskStage(caught);
+						}
+					});
+					break;
+				case TO_ONTOLOGIES:
+					semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), taskData.getTask(), 
+							taskStageEnum, new AsyncCallback<Task>() {
+						@Override
+						public void onSuccess(Task result) {
+							placeController.goTo(new edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupToOntologiesPlace(result));
+						}
+						@Override
+						public void onFailure(Throwable caught) {
+							Alerter.failedToGoToTaskStage(caught);
+						}
+					});
+					break;
+				default:
+					break;
 				}
-
-				@Override
-				public void onFailure(Throwable caught) {
-					Alerter.failedToGoToTaskStage(caught);
-				}
-			});
+			}
 			break;
 		case MATRIX_GENERATION:
 			matrixGenerationService.goToTaskStage(Authentication.getInstance().getToken(), taskData.getTask(), 

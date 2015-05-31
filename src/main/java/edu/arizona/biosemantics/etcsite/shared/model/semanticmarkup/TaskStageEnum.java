@@ -19,5 +19,13 @@ public enum TaskStageEnum {
     public String displayName() { 
     	return displayName; 
     }
+    
+    public static TaskStageEnum fromDisplayName(String displayName) {
+    	for(TaskStageEnum value : values()) {
+    		if(value.displayName().equals(displayName))
+    			return value;
+    	}
+    	return null;
+    }
 }
 

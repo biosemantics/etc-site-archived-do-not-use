@@ -44,9 +44,7 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 			ISemanticMarkupPreprocessView.Presenter preprocessPresenter,
 			ISemanticMarkupLearnView.Presenter learnPresenter,
 			ISemanticMarkupReviewView.Presenter reviewPresenter,
-			//ISemanticMarkupToOntologiesView.Presenter toOntologyPresenter,
-			//ISemanticMarkupHierarchyView.Presenter hierarchyPresenter,
-			//ISemanticMarkupOrdersView.Presenter ordersPresenter,
+			ISemanticMarkupToOntologiesView.Presenter toOntologyPresenter,
 			ISemanticMarkupParseView.Presenter parsePresenter,
 			ISemanticMarkupOutputView.Presenter outputPresenter, 
 			PlaceController placeController, 
@@ -61,9 +59,7 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 		this.preprocessPresenter = preprocessPresenter;
 		this.learnPresenter = learnPresenter;
 		this.reviewPresenter = reviewPresenter;
-		//this.hierarchyPresenter = hierarchyPresenter;
-		//this.ordersPresenter = ordersPresenter;
-		//this.toOntologyPresenter = toOntologyPresenter;
+		this.toOntologyPresenter = toOntologyPresenter;
 		this.parsePresenter = parsePresenter;
 		this.outputPresenter = outputPresenter;
 	}
