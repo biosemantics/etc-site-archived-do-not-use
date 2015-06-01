@@ -31,10 +31,14 @@ public class XmlNamespaceManager {
 	private Map<String, FileTypeEnum> schemaFileTypeMap = new HashMap<String, FileTypeEnum>(); 
 	
 	public XmlNamespaceManager() {
-		fileTypeSchemaMap.put(FileTypeEnum.TAXON_DESCRIPTION, Configuration.taxonDescriptionSchemaFileWeb);
-		fileTypeSchemaMap.put(FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION, Configuration.markedUpTaxonDescriptionSchemaFileWeb);
-		schemaFileTypeMap.put(Configuration.taxonDescriptionSchemaFileWeb, FileTypeEnum.TAXON_DESCRIPTION);
-		schemaFileTypeMap.put(Configuration.markedUpTaxonDescriptionSchemaFileWeb, FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION);
+		for(String schema : Configuration.taxonDescriptionSchemaFileWeb) {
+			fileTypeSchemaMap.put(FileTypeEnum.TAXON_DESCRIPTION, schema);
+			schemaFileTypeMap.put(schema, FileTypeEnum.TAXON_DESCRIPTION);
+		}
+		for(String schema : Configuration.markedUpTaxonDescriptionSchemaFileWeb) {
+			fileTypeSchemaMap.put(FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION, schema);
+			schemaFileTypeMap.put(schema, FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION);
+		}
 	}
 		
 	public FileTypeEnum getFileType(File file) { 

@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.client.common;
+package edu.arizona.biosemantics.etcsite.shared;
 
 
 public class Configuration {

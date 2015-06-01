@@ -1,7 +1,10 @@
 package edu.arizona.biosemantics.etcsite.server;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Matcher;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -9,7 +12,7 @@ import org.codehaus.jackson.map.ObjectWriter;
 
 import edu.arizona.biosemantics.common.log.Logger;
 
-public class Configuration extends edu.arizona.biosemantics.etcsite.client.common.Configuration {
+public class Configuration extends edu.arizona.biosemantics.etcsite.shared.Configuration {
 
 	private final static Logger logger = Logger.getLogger(Configuration.class);
 
@@ -18,8 +21,8 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 	
 	/** Files **/
 	public static String targetNamespace;
-	public static String taxonDescriptionSchemaFileWeb;
-	public static String markedUpTaxonDescriptionSchemaFileWeb;
+	public static Set<String> taxonDescriptionSchemaFileWeb;
+	public static Set<String> markedUpTaxonDescriptionSchemaFileWeb;
 	
 	/** Database **/
 	public static String databaseName;
@@ -110,8 +113,8 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.client.commo
 			classpath = properties.getProperty("classpath");
 			
 			targetNamespace = properties.getProperty("targetNamespace");
-			taxonDescriptionSchemaFileWeb = properties.getProperty("taxonDescriptionSchemaFileWeb");
-			markedUpTaxonDescriptionSchemaFileWeb = properties.getProperty("markedUpTaxonDescriptionSchemaFileWeb");
+			taxonDescriptionSchemaFileWeb = new HashSet<String>(Arrays.asList(properties.getProperty("taxonDescriptionSchemaFileWeb").split(";")));
+			markedUpTaxonDescriptionSchemaFileWeb = new HashSet<String>(Arrays.asList(properties.getProperty("markedUpTaxonDescriptionSchemaFileWeb").split(";")));
 			
 			databaseName = properties.getProperty("databaseName");
 			databaseUser = properties.getProperty("databaseUser");
