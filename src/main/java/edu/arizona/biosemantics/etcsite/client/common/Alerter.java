@@ -557,6 +557,14 @@ public class Alerter {
 		return showInfo("Contribution successful", "Contributed classifications sucessfully to OTO.");
 	}
 
+	public static MessageBox createdFolderSuccessfully() {
+		return showInfo("Folder creation successful", "Created folder sucessfully.");
+	}
+
+	public static MessageBox failedToRetrieveFiles() {
+		return showAlert("Failed to retrieve files", "Failed to retrieve files in file manager.");
+	}
+
 
 
 

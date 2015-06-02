@@ -86,9 +86,10 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 				inputPresenter.setSelectedFolder(createPresenter.getInputFolderPath(), createPresenter.getInputFolderShortenedPath());
 				panel.setWidget(inputPresenter.getView());
 			}else{
+				createPresenter.refresh();
 				panel.setWidget(createPresenter.getView());
 			}
-		}else 
+		} else 
 			this.taskService.getTask(Authentication.getInstance().getToken(),
 					 task, new AsyncCallback<Task>() {
 						@Override
@@ -97,6 +98,7 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 								switch(TaskStageEnum.valueOf(result.getTaskStage().getTaskStage())) {
 								case CREATE_INPUT:
 									panel.setWidget(createPresenter.getView());
+									createPresenter.refresh();
 									break;
 								case INPUT:
 									inputPresenter.setSelectedFolder(createPresenter.getInputFolderPath(), createPresenter.getInputFolderShortenedPath());

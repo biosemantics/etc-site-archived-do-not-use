@@ -1,0 +1,136 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.semanticMarkup"
+	xmlns:form='urn:import:com.sencha.gxt.widget.core.client.form'
+	xmlns:my2="urn:import:edu.arizona.biosemantics.etcsite.client.common"
+	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout"
+	xmlns:up="urn:import:gwtupload.client"
+	>
+	<ui:style>
+	.important {
+		font-weight: bold;
+		margin-left: 10px;
+	}
+	
+	.subMenuEntry {
+		margin-left: 20px;
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
+	
+	.padding {
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
+
+	.margin15{
+		margin-left: 15px;
+	}
+	
+	.note {
+		font-size: 14px;
+		color: #555555;
+	}
+	
+	.clickable {
+		cursor: pointer;
+	}
+	
+	.firstColumn {
+		width: 220px;
+	}
+	
+	.bold {
+		font-weight: bold;
+	}
+
+	.radioPadding{
+		padding: 5px;
+	}
+	</ui:style>
+	<g:VerticalPanel styleName="{style.subMenuEntry}">
+	    <g:VerticalPanel spacing="20" ui:field="verticalPanel">
+	        <g:RadioButton ui:field="createFilesRadio" name="selectInputMethod" styleName="{style.radioPadding}">Create Files</g:RadioButton>
+	        <g:VerticalPanel styleName = "{style.margin15}" ui:field="createPanel" visible="false">
+	            <g:InlineLabel>
+	                Create/Choose a folder to save the files.
+	            </g:InlineLabel>
+	            <g:Grid cellSpacing="5">
+	                <g:row>
+	                    <g:customCell>
+	                    	<g:RadioButton name="createFileFolder" ui:field="createFolderForCreateFilesRadio" styleName="{style.radioPadding}">Create New Folder</g:RadioButton>    
+	                    </g:customCell>
+	                    <g:customCell>
+	                    	<g:TextBox enabled="false" ui:field="createFolderForCreateFilesTextBox"></g:TextBox>    
+	                    </g:customCell>
+	                    <g:customCell>
+	                        <g:Button visible="false" ui:field="createFolderForCreateFilesButton">Create New Folder</g:Button>
+	                    </g:customCell>
+	                </g:row>
+	                <g:row>
+	                    <g:customCell>
+	                    	<g:RadioButton name="createFileFolder" ui:field="selectFolderForCreateFilesRadio" styleName="{style.radioPadding}">Select an Existing Folder</g:RadioButton>    
+	                    </g:customCell>
+	                    <g:customCell>
+	                    	<form:ComboBox ui:field="selectFolderForCreateFilesComboBox"></form:ComboBox>
+	        				<!-- <g:SuggestBox></g:SuggestBox> -->
+	                    </g:customCell>
+	                </g:row>
+	                <g:row>
+	                    <g:customCell>
+	                    	<g:Button ui:field="createFilesButton" enabled="false">Create Files</g:Button> 
+	                    </g:customCell>
+	                    <g:cell></g:cell>
+	                </g:row>
+	            </g:Grid>
+	        </g:VerticalPanel>
+	        <g:RadioButton name="selectInputMethod" ui:field="uploadRadio" styleName="{style.radioPadding}">Upload Files</g:RadioButton>
+	        <g:VerticalPanel styleName = "{style.margin15}" ui:field="uploadPanel" visible="false">
+	            <g:InlineLabel>
+	                Choose/Create a folder to upload files into.
+	            </g:InlineLabel>
+	            <g:Grid cellSpacing="5">
+	                <g:row>
+	                    <g:customCell>
+	                    	<g:RadioButton name="uploadFileFolder" ui:field="createFolderForUploadRadio" styleName="{style.radioPadding}">Create New Folder</g:RadioButton>    
+	                    </g:customCell>
+	                    <g:customCell>
+	                    	<g:TextBox enabled="false" ui:field="createFolderForUploadTextBox"></g:TextBox>    
+	                    </g:customCell>
+	                    <g:customCell>
+	                        <g:Button visible="false" ui:field="createFolderForUploadButton">Create New Folder</g:Button>
+	                    </g:customCell>
+	                </g:row>
+	                <g:row>
+	                    <g:customCell>
+	                    	<g:RadioButton name="uploadFileFolder" ui:field="selectFolderForUploadRadio" styleName="{style.radioPadding}">Select an Existing Folder</g:RadioButton>    
+	                    </g:customCell>
+	                    <g:customCell>
+	                        <form:ComboBox ui:field="selectFolderForUploadComboBox"></form:ComboBox>
+	        				<!-- <g:SuggestBox></g:SuggestBox> -->
+	                    </g:customCell>
+	                </g:row>
+	            </g:Grid>
+	  					<up:SingleUploader ui:field="uploader" type="BUTTON" autoSubmit="true" avoidRepeatFiles="false"/>
+	  					<!-- validExtensions="xml" -->
+	  				 	<g:Button ui:field="uploadButton" title="Select a parent folder before uploading one or more files">Upload Files</g:Button>
+	  				 	<g:SimplePanel addStyleNames="GWTUpld" ui:field="statusWidgetContainer"></g:SimplePanel>
+	        </g:VerticalPanel>
+	        <g:HorizontalPanel spacing="5">
+	   			<g:RadioButton name="selectInputMethod" ui:field="selectExistingFolderRadio" styleName="{style.radioPadding}">Select Existing Folder</g:RadioButton>
+	         	<g:HorizontalPanel styleName = "{style.margin15}" ui:field="selectPanel" visible="false">					            
+	        			<g:cell verticalAlignment="ALIGN_MIDDLE">
+							<g:Button ui:field="selectExistingFolderButton">Select Folder</g:Button>
+						</g:cell>
+						<g:cell verticalAlignment="ALIGN_MIDDLE">
+							<g:Label ui:field="selectExistingFolderLabel"></g:Label>
+						</g:cell>
+	        	</g:HorizontalPanel>
+	        </g:HorizontalPanel>
+	    </g:VerticalPanel>
+		<g:FlowPanel styleName="{style.padding}">
+			<g:Button ui:field="nextButton" enabled="false">Next Step</g:Button>
+		</g:FlowPanel>
+	</g:VerticalPanel>
+</ui:UiBinder> 

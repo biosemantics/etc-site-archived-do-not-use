@@ -329,7 +329,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 				}
 				if(!resultMkDir){ 
 					if(file.isDirectory() && file.exists())
-						throw new CreateDirectoryFailedException("Directory "+file.getName()+" already exists");
+						throw new CreateDirectoryFailedException("Directory "+file.getName()+" already exists. You can try again with another name.");
 					else
 						throw new CreateDirectoryFailedException("Network or server errors");
 				}

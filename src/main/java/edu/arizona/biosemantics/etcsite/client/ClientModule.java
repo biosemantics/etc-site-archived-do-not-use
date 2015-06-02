@@ -17,9 +17,12 @@ import com.google.inject.name.Names;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 
+import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
+import edu.arizona.biosemantics.etcsite.client.common.InputCreatePresenter;
+import edu.arizona.biosemantics.etcsite.client.common.InputCreateView;
 import edu.arizona.biosemantics.etcsite.client.common.LoginPresenter;
 import edu.arizona.biosemantics.etcsite.client.common.LoginView;
 import edu.arizona.biosemantics.etcsite.client.common.RegisterPresenter;
@@ -321,6 +324,11 @@ public class ClientModule extends AbstractGinModule {
 		
 		//misc
 		bind(FilePathShortener.class).in(Singleton.class);
+		bind(IInputCreateView.class).to(InputCreateView.class);
+		bind(IInputCreateView.Presenter.class).annotatedWith(Names.named("SemanticMarkup")).to(InputCreatePresenter.class).in(Singleton.class);
+		bind(IInputCreateView.Presenter.class).annotatedWith(Names.named("MatrixGeneration")).to(InputCreatePresenter.class).in(Singleton.class);
+		bind(IInputCreateView.Presenter.class).annotatedWith(Names.named("TreeGeneration")).to(InputCreatePresenter.class).in(Singleton.class);
+		bind(IInputCreateView.Presenter.class).annotatedWith(Names.named("TaxonomyComparison")).to(InputCreatePresenter.class).in(Singleton.class);
 	}
 	
 	public static class HandlerManagerProvider implements Provider<HandlerManager> {

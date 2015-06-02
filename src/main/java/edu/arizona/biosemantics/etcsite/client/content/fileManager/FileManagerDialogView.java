@@ -16,7 +16,7 @@ public class FileManagerDialogView implements IFileManagerDialogView {
 		
 		dialog = new Dialog();
 		dialog.setBodyBorder(false);
-		dialog.setHeadingText("Register");
+		dialog.setHeadingText("File Manager");
 		dialog.setPixelSize(-1, -1);
 		dialog.setMinWidth(0);
 		dialog.setMinHeight(0);

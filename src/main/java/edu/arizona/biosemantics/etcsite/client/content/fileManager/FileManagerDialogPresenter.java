@@ -19,8 +19,8 @@ public class FileManagerDialogPresenter implements IFileManagerDialogView.Presen
 	
 	@Override
 	public void show() {
-		managableFileTreePresenter.refresh(FileFilter.ALL);
 		view.show();
+		managableFileTreePresenter.refresh(FileFilter.ALL);
 	}
 
 	@Override

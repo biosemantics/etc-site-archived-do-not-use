@@ -83,6 +83,7 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 			if(place instanceof TaxonomyComparisonInputPlace){
 				panel.setWidget(inputPresenter.getView());
 			}else{
+				createPresenter.refresh();
 				panel.setWidget(createPresenter.getView());
 			}
 		}
@@ -94,6 +95,10 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 							if(result.getTaskType().getTaskTypeEnum().equals(TaskTypeEnum.TAXONOMY_COMPARISON)) {
 								currentTaskStage = TaskStageEnum.valueOf(result.getTaskStage().getTaskStage());
 								switch(currentTaskStage) {
+								case CREATE_INPUT:
+									panel.setWidget(createPresenter.getView());
+									createPresenter.refresh();
+									break;
 								case ALIGN:
 								case ANALYZE:
 								case ANALYZE_COMPLETE:

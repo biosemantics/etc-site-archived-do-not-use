@@ -88,28 +88,27 @@
 								<g:cell verticalAlignment="ALIGN_TOP">
 									<g:Label>Selected Folder:</g:Label>
 								</g:cell>
-<!-- 								<g:InlineLabel styleName="{style.note}"> -->
-<!-- 									Select a folder of taxon -->
-<!-- 									descriptions -->
-<!-- 								</g:InlineLabel> 
+<!-- 								<g:InlineLabel styleName="{style.note}"> 
+ 									Select a folder of taxon
+ 									descriptions 
+ 								</g:InlineLabel> 
 								<g:InlineLabel styleName="{style.note}">
 									conforming to the format
 									requirements.
-								</g:InlineLabel>-->
+								</g:InlineLabel> -->
 							</g:VerticalPanel>
-						<!--<g:cell verticalAlignment="ALIGN_MIDDLE">
+						<g:cell verticalAlignment="ALIGN_MIDDLE">
 								<g:Button ui:field="inputButton">Select Folder</g:Button>
-							</g:cell> -->
+							</g:cell>
 							<g:cell verticalAlignment="ALIGN_MIDDLE">
 								<g:Label ui:field="inputLabel" styleName="{style.important}"></g:Label>
 							</g:cell>
 						</g:HorizontalPanel>
-			<!--			<g:HorizontalPanel styleName="inputForm">
+						<g:HorizontalPanel styleName="inputForm">
 						<g:InlineLabel styleName="{style.note} DescriptionFont">
 						Select a folder of taxon descriptions conforming to the format requirements.
 						</g:InlineLabel>
-								
-						</g:HorizontalPanel> -->
+						</g:HorizontalPanel>
 					</g:VerticalPanel>
 					<g:VerticalPanel styleName="{style.subMenuEntry}">
 						<g:HorizontalPanel styleName="inputForm">

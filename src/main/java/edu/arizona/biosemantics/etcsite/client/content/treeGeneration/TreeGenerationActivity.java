@@ -69,6 +69,7 @@ public class TreeGenerationActivity extends MyAbstractActivity {
 				inputPresenter.setSelectedFolder(createPresenter.getInputFolderPath(), createPresenter.getInputFolderShortenedPath());
 				panel.setWidget(inputPresenter.getView());
 			}else{
+				createPresenter.refresh();
 				panel.setWidget(createPresenter.getView());
 			}
 		}
@@ -82,6 +83,7 @@ public class TreeGenerationActivity extends MyAbstractActivity {
 								switch(TaskStageEnum.valueOf(result.getTaskStage().getTaskStage())) {
 								case CREATE_INPUT:
 									panel.setWidget(createPresenter.getView());
+									createPresenter.refresh();
 									break;
 								case INPUT:
 									inputPresenter.setSelectedFolder(createPresenter.getInputFolderPath(), createPresenter.getInputFolderShortenedPath());

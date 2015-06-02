@@ -86,6 +86,7 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 			currentTask = ((MatrixGenerationPlace)place).getTask();
 		if(currentTask == null){
 			if( place instanceof MatrixGenerationCreatePlace){
+				createPresenter.refresh();
 				panel.setWidget(createPresenter.getView());
 			}else{
 				inputPresenter.setSelectedFolder(createPresenter.getInputFolderPath(), createPresenter.getInputFolderShortenedPath());
@@ -99,6 +100,10 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 							if(result.getTaskType().getTaskTypeEnum().equals(TaskTypeEnum.MATRIX_GENERATION)) {
 								currentTaskStage = TaskStageEnum.valueOf(result.getTaskStage().getTaskStage());
 								switch(currentTaskStage) {
+								case CREATE_INPUT:
+									panel.setWidget(createPresenter.getView());
+									createPresenter.refresh();
+									break;
 								case INPUT:
 									inputPresenter.setSelectedFolder(createPresenter.getInputFolderPath(), createPresenter.getInputFolderShortenedPath());
 									panel.setWidget(inputPresenter.getView());
