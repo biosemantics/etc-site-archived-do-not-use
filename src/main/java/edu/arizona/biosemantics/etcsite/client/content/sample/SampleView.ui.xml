@@ -1,0 +1,40 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout">
+	<ui:style>      
+		.header{
+			padding-top:20px;
+			font-size: 24px;
+			font-weight: bold;
+			color: #339900;
+		}
+		.textArea{
+			width: 950px; 
+			height: 400px;
+		}
+	</ui:style>
+	<g:ScrollPanel>
+
+	<lay:CenteredContentPanel>
+		<g:VerticalPanel>
+		    <g:Label styleName="{style.header}">Sample Input</g:Label>
+		    <g:TextArea ui:field="textArea" styleName="{style.textArea}"/>
+		    <g:HTMLPanel>
+				    <div style="font-weight: bold">Brief video tutorials (Please wait a moment for the video to load)</div>
+			    	<div style="font-weight: bold">Introduction</div>
+				    <object ui:field="objectElement1">
+			            <param ui:field="movieParamElement1" name="movie"/>
+			            <param ui:field="qualityParamElement1" name="quality"/>
+			            <param ui:field="bgColorParamElement1" name="bgcolor"/>
+			            <param ui:field="flashVarsParamElement1" name="flashVars"/>
+			            <param ui:field="allowFullScreenParamElement1" name="allowFullScreen"/>
+			            <param ui:field="scaleParamElement1" name="scale"/>
+			            <param ui:field="allowScriptAccessParamElement1" name="allowScriptAccess"/>
+			            <param ui:field="baseParamElement1" name="base"/>
+			        </object> 
+			</g:HTMLPanel>
+		</g:VerticalPanel>
+	</lay:CenteredContentPanel>
+	</g:ScrollPanel>
+</ui:UiBinder> 

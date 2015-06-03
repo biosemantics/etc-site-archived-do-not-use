@@ -97,6 +97,8 @@ import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGe
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationReviewView;
 import edu.arizona.biosemantics.etcsite.client.content.news.INewsView;
 import edu.arizona.biosemantics.etcsite.client.content.news.NewsView;
+import edu.arizona.biosemantics.etcsite.client.content.sample.ISampleView;
+import edu.arizona.biosemantics.etcsite.client.content.sample.SampleView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.IImportOtoView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupCreateView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupInputView;
@@ -284,6 +286,7 @@ public class ClientModule extends AbstractGinModule {
 		bind(IProcessingView.Presenter.class).to(ProcessingPresenter.class);
 		
 		bind(edu.arizona.biosemantics.etcsite.client.help.IHelpView.class).to(edu.arizona.biosemantics.etcsite.client.help.HelpView2.class);
+		bind(ISampleView.class).to(SampleView.class).in(Singleton.class);
 		
 		//activites, places, eventbus
 		bind(EventBus.class).annotatedWith(Names.named("ActivitiesBus")).to(SimpleEventBus.class).in(Singleton.class);

@@ -23,6 +23,7 @@ import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerPl
 import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.news.NewsPlace;
+import edu.arizona.biosemantics.etcsite.client.content.sample.SamplePlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
@@ -212,6 +213,11 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 	public void onVisualization() {
 		placeController.goTo(new VisualizationPlace());
 	}
+	
+	@Override
+	public void onSample() {
+		placeController.goTo(new SamplePlace());
+	}
 
 	@Override
 	public void onOpenHelpInNewWindow() {
@@ -254,4 +260,6 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 			placeController.goTo(new HomePlace());
 		}
 	}
+
+
 }

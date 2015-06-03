@@ -40,6 +40,8 @@ public interface IEtcSiteView extends IsWidget {
 
 		void updateAuthentication();
 
+		void onSample();
+
 	}
 	
 	void setContent(IsWidget content);

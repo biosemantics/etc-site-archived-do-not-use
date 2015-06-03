@@ -194,6 +194,11 @@ public class EtcSiteView extends Composite implements IEtcSiteView {
 		presenter.onVisualization();
 	}
 	
+	@UiHandler("sample")
+	void onSampleInput1(ClickEvent e) {
+		presenter.onSample();
+	}
+	
 	@UiHandler("helpButton") 
 	void onHelpButtonClick(ClickEvent e) {
 		presenter.onOpenHelpInNewWindow();
