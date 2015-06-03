@@ -89,7 +89,7 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		nameTypes = new ArrayList<String>();
 		
 		//prepare data map
-		Map<String, String> data = new HashMap<String, String>();
+		Map<String, List<String>> data = new HashMap<String, List<String>>();
 		String[] lines = text.split("\n");
 		
 		Iterator<String> lineIterator = Arrays.asList(lines).iterator();
@@ -132,11 +132,25 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 					}
 				}
 			}
-			if(data.containsKey(key)) {
-				modelFile.appendError("No duplicate fields are allowed in one treatment: " + key);
+			
+			
+			if(descriptionTypesSet.contains(key)) {
+				if(!value.isEmpty()) {
+					if(!data.containsKey(key)) 
+						data.put(key, new LinkedList<String>());
+					data.get(key).add(value);
+					showMessage("Put key", key + " = " + value);
+				}
+			} else {
+				if(data.containsKey(key)) {
+					modelFile.appendError("No duplicate fields are allowed in one treatment: " + key);
+				}
+				showMessage("Put key", key + " = " + value);
+				List<String> singleValueList = new LinkedList<String>();
+				if(!value.isEmpty())
+					singleValueList.add(value);
+				data.put(key, singleValueList);
 			}
-			showMessage("Put key", key + " = " + value);
-			data.put(key, value.isEmpty()? null : value);
 		}
 		
 		this.showMessage("data", data.toString());
@@ -148,19 +162,19 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 				modelFile.appendError("Don't know what " +key + " is.");
 			} else {
 				if(key.endsWith(" name")){	
-					rankedNames.put(Rank.valueOf(key.replaceFirst("\\s+name", "").toUpperCase()), data.get(key));
+					rankedNames.put(Rank.valueOf(key.replaceFirst("\\s+name", "").toUpperCase()), data.get(key).get(0));
 					//if(!data.get(key).matches(".*?,.*?\\w+.*")) modelFile.appendError("'"+key+":"+data.get(key)+ "' does not have authority/date.");
-					String fullName = data.get(key).trim();
+					String fullName = data.get(key).get(0).trim();
 					String taxonName = "";
 					//remove the authority date part 
 					if(fullName.contains(",")){
-						fullName = fullName.substring(0, data.get(key).indexOf(","));
+						fullName = fullName.substring(0, data.get(key).get(0).indexOf(","));
 						fullName = fullName.trim();
 						taxonName = fullName.split(" ")[0];
 						taxonName = taxonName.trim();
 					}
 					if(taxonName.contains(" ")){
-							modelFile.appendError("'"+taxonName + "' in '"+data.get(key)+"' is repeated in an entry, did you include genus name in species name/epithet?");
+							modelFile.appendError("'"+taxonName + "' in '" + data.get(key).get(0) + "' is repeated in an entry, did you include genus name in species name/epithet?");
 					}else{
 						names.add(taxonName);
 					}
@@ -196,28 +210,33 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		
 	
 		//check data required to generate error if necessary
-		if(!data.containsKey("author") || data.get("author") == null || data.get("author").trim().isEmpty())
+		if(!data.containsKey("author") || data.get("author").isEmpty() || data.get("author").get(0).trim().isEmpty())
 			modelFile.appendError("You need to provide an author");
-		if(!data.containsKey("year") || data.get("year") == null || data.get("year").trim().isEmpty())
+		if(!data.containsKey("year") || data.get("year").isEmpty() || data.get("year").get(0).trim().isEmpty())
 			modelFile.appendError("You need to provide a year");
-		if(!data.containsKey("title") || data.get("title") == null || data.get("title").trim().isEmpty())
+		if(!data.containsKey("title") || data.get("title").isEmpty() || data.get("title").get(0).trim().isEmpty())
 			modelFile.appendError("You need to provide a title");
 		
 		boolean nameValid = false;
 		if(nameTypes.size()>0){
 			for(String nameType : nameTypes) {
-				nameValid = data.containsKey(nameType) && data.get(nameType) != null && !data.get(nameType).trim().isEmpty();
+				nameValid = data.containsKey(nameType) && !data.get(nameType).isEmpty() && !data.get(nameType).get(0).trim().isEmpty();
 				if(nameValid)
 					break;
 			}
 		}
-		nameValid = nameValid || (!nameValid && data.containsKey("strain number") && data.get("strain number") != null && !data.get("strain number").trim().isEmpty()); 
+		nameValid = nameValid || (!nameValid && data.containsKey("strain number") && !data.get("strain number").isEmpty() && !data.get("strain number").get(0).trim().isEmpty()); 
 		if(!nameValid)
 			modelFile.appendError("You need to provide at least either a taxon rank or a strain");
 		
 		boolean descriptionValid = false;
 		for(String descriptionType : descriptionTypes) {
-			descriptionValid = data.containsKey(descriptionType) && data.get(descriptionType) != null && !data.get(descriptionType).trim().isEmpty();
+			if(data.containsKey(descriptionType)) {
+				for(String description : data.get(descriptionType)) {
+					if(!description.trim().isEmpty())
+						descriptionValid = true;
+				}
+			}
 			if(descriptionValid)
 				break;
 		}
@@ -232,7 +251,7 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		return modelFile;
 	}
 	
-	private Document createXML(Map<String, String> data, String username, XmlModelFile modelFile) {
+	private Document createXML(Map<String, List<String>> data, String username, XmlModelFile modelFile) {
 		
 		Element treatment = new Element("treatment");
 		/*root.addContent(new Element(article));
@@ -250,9 +269,9 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		source.addContent(author);
 		source.addContent(srcDate);
 		source.addContent(title);
-		author.setText(data.get("author"));
-		srcDate.setText(data.get("year"));
-		title.setText(data.get("title"));
+		author.setText(data.get("author").get(0));
+		srcDate.setText(data.get("year").get(0));
+		title.setText(data.get("title").get(0));
 		meta.addContent(source);
 		Element processedBy = new Element("processed_by");
 		Element processor = new Element("processor");
@@ -270,15 +289,15 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		processor.addContent(operator);
 		meta.addContent(processedBy);
 		
-		if(data.containsKey("doi") && data.get("doi") != null && !data.get("doi").trim().isEmpty()) {
+		if(data.containsKey("doi") && !data.get("doi").isEmpty() && !data.get("doi").get(0).trim().isEmpty()) {
 			Element otherInfoOnMeta = new Element("other_info_on_meta");
-			otherInfoOnMeta.setText(data.get("doi"));
+			otherInfoOnMeta.setText(data.get("doi").get(0));
 			otherInfoOnMeta.setAttribute("type", "doi");
 			meta.addContent(otherInfoOnMeta);
 		}
-		if(data.containsKey("full citation") && data.get("full citation") != null && !data.get("full citation").trim().isEmpty()) {
+		if(data.containsKey("full citation") && !data.get("full citation").isEmpty() && !data.get("full citation").get(0).trim().isEmpty()) {
 			Element otherInfoOnMeta = new Element("other_info_on_meta");
-			otherInfoOnMeta.setText(data.get("full citation"));
+			otherInfoOnMeta.setText(data.get("full citation").get(0));
 			otherInfoOnMeta.setAttribute("type", "citation");
 			meta.addContent(otherInfoOnMeta);
 		}
@@ -317,7 +336,7 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		});
 		for(String nameType: nameTypes){
 			String rank = nameType.replaceFirst(" name$", "");
-			String nameString = data.get(nameType).trim();
+			String nameString = data.get(nameType).get(0).trim();
 			String name = nameString;
 			String authority = null;
 			String ndate = null;
@@ -338,17 +357,17 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 				if(ndate!=null) element.setAttribute("date", ndate);
 				else element.setAttribute("date", "n.d");
 			}else{
-				element.setAttribute("authority", data.get("author"));
-				element.setAttribute("date", data.get("year"));
+				element.setAttribute("authority", data.get("author").get(0));
+				element.setAttribute("date", data.get("year").get(0));
 			}
 		}
 
-		if(data.containsKey("strain number") && data.get("strain number") != null && !data.get("strain number").trim().isEmpty()) {
+		if(data.containsKey("strain number") && !data.get("strain number").isEmpty() && !data.get("strain number").get(0).trim().isEmpty()) {
 			Element element = new Element("strain_number");
 			taxonIdentification.addContent(element);
-			element.setText(data.get("strain number"));
-			if(data.get("equivalent strain numbers") != null && !data.get("equivalent strain numbers").trim().isEmpty()) element.setAttribute("equivalent_strain_numbers", data.get("equivalent strain numbers"));
-			if(data.get("accession number 16s rrna") != null && !data.get("accession number 16s rrna").trim().isEmpty()) element.setAttribute("accession_number_16s_rrna", data.get("accession number 16s rrna"));
+			element.setText(data.get("strain number").get(0));
+			if(!data.get("equivalent strain numbers").isEmpty() && !data.get("equivalent strain numbers").get(0).trim().isEmpty()) element.setAttribute("equivalent_strain_numbers", data.get("equivalent strain numbers").get(0));
+			if(!data.get("accession number 16s rrna").isEmpty() && !data.get("accession number 16s rrna").get(0).trim().isEmpty()) element.setAttribute("accession_number_16s_rrna", data.get("accession number 16s rrna").get(0));
 		}
 
 		taxonIdentification.setAttribute("status", "ACCEPTED");
@@ -379,28 +398,30 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 
 		for(String descriptionType : descriptionTypes) {
 			if(data.containsKey(descriptionType)) {
-				String descriptionText = data.get(descriptionType);
-				if(descriptionText != null && !descriptionText.trim().isEmpty()) {
-					String scope = "";
-					if(descriptionText.startsWith("scope:")){
-						String[] desc = descriptionText.split("#");
-						scope = desc[0].replace("scope:", "");
-						descriptionText = desc[1];
-					}
-					String[] paragraphs = descriptionText.split("\n");
-					for(String paragraph : paragraphs) {
-						if(!paragraph.isEmpty()) {
-							Element description = new Element("description");
-							treatment.addContent(description);
-							description.setAttribute("type", descriptionType);
-							if(!scope.isEmpty()){
-								description.setAttribute("scope", scope);
+				List<String> descriptionTexts = data.get(descriptionType);
+				for(String descriptionText : descriptionTexts) {
+					if(descriptionText != null && !descriptionText.trim().isEmpty()) {
+						String scope = "";
+						if(descriptionText.startsWith("scope:")){
+							String[] desc = descriptionText.split("#");
+							scope = desc[0].replace("scope:", "");
+							descriptionText = desc[1];
+						}
+						String[] paragraphs = descriptionText.split("\n");
+						for(String paragraph : paragraphs) {
+							if(!paragraph.isEmpty()) {
+								Element description = new Element("description");
+								treatment.addContent(description);
+								description.setAttribute("type", descriptionType);
+								if(!scope.isEmpty()){
+									description.setAttribute("scope", scope);
+								}
+								description.setText(paragraph);
+								
+								String bracketError = bracketChecker.checkBrackets(paragraph, descriptionType);
+								if(!bracketError.isEmpty())
+									modelFile.appendError(bracketError.substring(0, bracketError.length() - 2));
 							}
-							description.setText(paragraph);
-							
-							String bracketError = bracketChecker.checkBrackets(paragraph, descriptionType);
-							if(!bracketError.isEmpty())
-								modelFile.appendError(bracketError.substring(0, bracketError.length() - 2));
 						}
 					}
 				}
@@ -418,30 +439,30 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 
 	private void addAsElementIfExists(Element parentElement,
 			Map<String, String> data, String dataName, String xmlName, Document document) {
-		if(data.containsKey(dataName) && data.get(dataName) != null && !data.get(dataName).trim().isEmpty()) {
+		if(data.containsKey(dataName) && !data.get(dataName).isEmpty() && !data.get(dataName).trim().isEmpty()) {
 			Element element = new Element(xmlName);
 			parentElement.addContent(element);
 			element.setText(data.get(dataName));
 		}
 	}
 
-	public String createFileName(Map<String, String> data, XmlModelFile modelFile) {
+	public String createFileName(Map<String, List<String>> data, XmlModelFile modelFile) {
 		List<TaxonIdentificationEntry> taxonIdentificationEntries = new LinkedList<TaxonIdentificationEntry>();
 		for(String nameType : nameTypes) {
-			if(data.containsKey(nameType) && data.get(nameType) != null && !data.get(nameType).trim().isEmpty()) {
+			if(data.containsKey(nameType) && !data.get(nameType).isEmpty() && !data.get(nameType).get(0).trim().isEmpty()) {
 				taxonIdentificationEntries.add(new TaxonIdentificationEntry(Rank.valueOf(nameType.replaceFirst(" name$", "").toUpperCase()), 
-						data.get(nameType)));
+						data.get(nameType).get(0)));
 			}
 		}
 		Collections.sort(taxonIdentificationEntries);
 		
-		String filename = data.get("author") + data.get("year") + "_";
+		String filename = data.get("author").get(0) + data.get("year").get(0) + "_";
 		for (TaxonIdentificationEntry taxonIdentificationEntry : taxonIdentificationEntries) {
 			if (filename.matches(".*(_|^)" + taxonIdentificationEntry.getRank()	+ "(_|$).*"))
 				modelFile.appendError("Redundant rank '" + taxonIdentificationEntry.getRank() + "'");
 			filename += taxonIdentificationEntry.getRank() + "_" + taxonIdentificationEntry.getValue() + "_";
 		}
-		if(data.containsKey("strain number") && data.get("strain number") != null && !data.get("strain number").trim().isEmpty())
+		if(data.containsKey("strain number") && !data.get("strain number").isEmpty() && !data.get("strain number").get(0).trim().isEmpty())
 			filename += "strain_" + data.get("strain number") + "_";
 		
 		filename = filename.replaceAll("_+", "_").replaceFirst("_$", ".xml");

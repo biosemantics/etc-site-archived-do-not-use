@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.gwt.user.client.rpc.core.java.util.Arrays;
+
 /**
  * The shared part of XmlModelFileCreator, necessary to split text already on client side into treatments
  * in order to show progress.
@@ -15,6 +17,13 @@ import java.util.Set;
 public class XmlModelFileCreator {
 
 	protected String[] descriptionTypes = { "morphology", "habitat", "distribution", "phenology" };
+	protected Set<String> descriptionTypesSet;
+	
+	public XmlModelFileCreator() {
+		descriptionTypesSet = new HashSet<String>();
+		for(String descriptionType : descriptionTypes)
+			descriptionTypesSet.add(descriptionType);
+	}
 	
 	public String normalizeText(String text) {
 		text = text.trim();
