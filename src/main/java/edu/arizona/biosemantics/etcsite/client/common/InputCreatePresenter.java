@@ -320,5 +320,4 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 		view.removeCreateFiles();
 	}
 	
-	
 }

@@ -1,9 +1,11 @@
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
@@ -311,7 +313,7 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	  
 	@UiHandler("previewButton")
 	public void onPreview(ClickEvent event) {
-		  this.presenter.setPreviewText(getBatchSourceDocumentInfo(),this.batchArea.getText());
+		  this.presenter.setPreviewText(getBatchSourceDocumentInfo(), this.batchArea.getText());
 		  batchCreateCards.setActiveWidget(previewPanel);
 	}
 	  
@@ -495,19 +497,14 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		return copyCheckBox.getValue();
 	}
 	
-	@Override
-	public String getBatchSourceDocumentInfo(){
-		String info = "";
-		info += "author: "+batch_author.getText()+"\n";
-		info += "year: "+batch_year.getText()+"\n";
-		info += "title: "+batch_title.getText()+"\n";
-		if(!batch_doi.getText().isEmpty()){
-			info+="doi: "+batch_doi.getText()+"\n";
-		}
-		if(!batch_fullCitation.getText().isEmpty()){
-			info+="full citation: "+batch_fullCitation.getText()+"\n";
-		}
-		return info;
+	private Map<String, String> getBatchSourceDocumentInfo() {
+		Map<String, String> sourceDocumentInfoMap = new HashMap<String, String>();
+		sourceDocumentInfoMap.put("author", batch_author.getText());
+		sourceDocumentInfoMap.put("year", batch_year.getText());
+		sourceDocumentInfoMap.put("title", batch_title.getText());
+		sourceDocumentInfoMap.put("doi", batch_doi.getText());
+		sourceDocumentInfoMap.put("full citation", batch_fullCitation.getText());
+		return sourceDocumentInfoMap;
 	}
 	
 	@Override

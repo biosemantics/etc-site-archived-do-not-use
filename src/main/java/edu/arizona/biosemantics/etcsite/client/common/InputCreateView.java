@@ -165,9 +165,9 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	@UiHandler("createFilesButton")
 	public void onCreateFiles(ClickEvent event){
 		if(selectFolderForCreateFilesRadio.getValue()) {
-			presenter.createFilesInNewFolder();
-		} else {
 			presenter.createFiles(selectFolderForCreateFilesComboBox.getValue());
+		} else {
+			presenter.createFilesInNewFolder();
 		}
 		nextButton.setEnabled(true);
 	}

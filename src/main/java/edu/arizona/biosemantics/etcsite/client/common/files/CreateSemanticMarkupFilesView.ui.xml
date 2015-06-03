@@ -362,11 +362,11 @@
 		            	<g:VerticalPanel ui:field="batchPanel">
 		                	<g:Label styleName="{style.heading}">CREATE FILES</g:Label>
 			                <g:VerticalPanel>
-								<g:Label styleName="{style.sub-heading}">Source Document Information *</g:Label>
+								<g:Label styleName="{style.sub-heading}">Source Document Information</g:Label>
 								<g:Grid>
 								    <g:row>
 								        <g:customCell>
-											<g:Label>Author *</g:Label>
+											<g:Label>Author</g:Label>
 										</g:customCell>
 										<g:customCell>
 											<g:TextBox visibleLength="45" ui:field="batch_author"></g:TextBox>
@@ -374,7 +374,7 @@
 									</g:row>
 									<g:row>
 									    <g:customCell>
-											<g:Label>Publication Year *</g:Label>
+											<g:Label>Publication Year</g:Label>
 										</g:customCell>
 										<g:customCell>
 											<g:TextBox visibleLength="45" ui:field="batch_year"></g:TextBox>
@@ -382,7 +382,7 @@
 									</g:row>
 									<g:row>
 								    	<g:customCell>
-											<g:Label>Title *</g:Label>
+											<g:Label>Title</g:Label>
 										</g:customCell>
 										<g:customCell>
 											<g:TextBox visibleLength="45" ui:field="batch_title"></g:TextBox>

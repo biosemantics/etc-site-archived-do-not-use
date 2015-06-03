@@ -1,7 +1,10 @@
 package edu.arizona.biosemantics.etcsite.shared.model.process.file;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * The shared part of XmlModelFileCreator, necessary to split text already on client side into treatments
@@ -87,6 +90,53 @@ public class XmlModelFileCreator {
 			}
 		}
 		return null;
+	}
+
+	public List<String> getTreatmentTexts(Map<String, String> batchSourceDocumentInfoMap, String text) {
+		List<String> result = new LinkedList<String>();
+		
+		boolean insideContinuousValue = false;
+		
+		StringBuilder treatment = new StringBuilder();
+		Set<String> keys = new HashSet<String>();
+		for(String line : text.split("\n")) {
+			line = line.trim();
+			if(line.length()==0 && !insideContinuousValue) {
+				result.add(treatment.toString());
+				treatment = new StringBuilder();
+			} else {
+				treatment.append(line + "\n");
+				int colonIndex = line.indexOf(":");
+				if(colonIndex == -1 || insideContinuousValue) {
+					if(line.endsWith("#"))
+						insideContinuousValue = false;
+					continue;
+				} else {
+					String key = line.substring(0, colonIndex).toLowerCase().trim();
+					keys.add(key);
+					for(String descriptionType : descriptionTypes) {
+						if(key.contains(descriptionType)) {
+							String value = line.substring(colonIndex + 1, line.length()).trim();
+							if(value.startsWith("#")) 
+								insideContinuousValue = true;
+							if(value.endsWith("#"))
+								insideContinuousValue = false;
+						}
+					}
+				}
+			}			
+		}
+		
+		for(String key : batchSourceDocumentInfoMap.keySet()) {
+			if(!keys.contains(key) && !batchSourceDocumentInfoMap.get(key).isEmpty()) {
+				treatment.append(key + ": " + batchSourceDocumentInfoMap.get(key) + "\n");
+			}
+		}
+
+		String aTreatment = treatment.toString().trim();
+		//TODO: when requested: sort(aTreatment);
+		result.add(aTreatment); //replace all non-visible characters proceeding/trailing the treatment.
+		return result;
 	}
 
 }

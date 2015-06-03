@@ -2,6 +2,7 @@ package edu.arizona.biosemantics.etcsite.client.common.files;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -342,17 +343,17 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	}
 	
 	@Override
-	public void setPreviewText(String batchSourceDocumentInfo, String text) {
+	public void setPreviewText(Map<String, String> batchSourceDocumentInfoMap, String text) {
 		String returnString = "";
 		
 		String normalizedText = xmlModelFileCreator.normalizeText(text);
 		if(view.isCopyCheckBox()){
 			normalizedText = xmlModelFileCreator.copyAuthorityAndDate(normalizedText);
 		}
-		final List<String> treatments = xmlModelFileCreator.getTreatmentTexts(normalizedText);
+		final List<String> treatments = xmlModelFileCreator.getTreatmentTexts(batchSourceDocumentInfoMap, normalizedText);
 		
-		for(String treatment: treatments){
-			returnString += batchSourceDocumentInfo+treatment+"\n";
+		for (String treatment : treatments) {
+			returnString += treatment + "\n";
 		}
 		
 		view.setPreviewText(returnString);

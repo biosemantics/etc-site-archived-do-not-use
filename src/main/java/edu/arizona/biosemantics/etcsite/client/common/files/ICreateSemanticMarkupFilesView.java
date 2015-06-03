@@ -1,6 +1,7 @@
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -23,7 +24,7 @@ public interface ICreateSemanticMarkupFilesView extends IsWidget {
 
 		void onBatch(String text);
 
-		void setPreviewText(String batchSourceDocumentInfo, String text);
+		void setPreviewText(Map<String, String> map, String text);
 
 	}
 
@@ -62,8 +63,6 @@ public interface ICreateSemanticMarkupFilesView extends IsWidget {
 	void resetDescriptions();
 
 	void setPreviewText(String text);
-
-	String getBatchSourceDocumentInfo();
 
 	void clearBatchText();
 	
