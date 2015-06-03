@@ -344,7 +344,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 							if(!futureResult.isCancelled()) {
 								task.setResumable(true);
 								//TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.TO_ONTOLOGIES.toString());
-								TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.OUTPUT.toString());
+								TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.TO_ONTOLOGIES.toString());
 								task.setTaskStage(newTaskStage);
 								daoManager.getTaskDAO().updateTask(task);
 								sendFinishedParsingEmail(task);	
