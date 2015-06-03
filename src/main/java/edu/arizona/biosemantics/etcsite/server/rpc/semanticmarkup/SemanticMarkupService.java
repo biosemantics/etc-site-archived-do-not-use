@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -1025,15 +1027,26 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			
 			List<edu.arizona.biosemantics.oto2.ontologize.shared.model.Term> terms = 
 					new LinkedList<edu.arizona.biosemantics.oto2.ontologize.shared.model.Term>();					
+			Set<String> containedStructures = new HashSet<String>();
 			for(BiologicalEntity structure : structures) {
-				terms.add(new edu.arizona.biosemantics.oto2.ontologize.shared.model.Term(
-						structure.getName(), structure.getIri(), "/structure", "structure"));
+				if(!containedStructures.contains(structure.getName() + structure.getIri())) {
+					terms.add(new edu.arizona.biosemantics.oto2.ontologize.shared.model.Term(
+							structure.getName(), structure.getIri(), "/structure", "structure"));
+					containedStructures.add(structure.getName() + structure.getIri());
+				}
 			}
+			Set<String> containedCharacters = new HashSet<String>();
 			for(MarkupResultReader.Character character : characters) {
 				//filter comparison values such as "wider than long". "twice of leaf"
 				if(character.getValue().split("\\W+").length < 3) {
-					terms.add(new edu.arizona.biosemantics.oto2.ontologize.shared.model.Term(
-							character.getValue(), character.getIri(), "/character/" + character.getCategory(), character.getCategory()));
+					if(character.getValue().equals("distinct")) {
+						System.out.println(character.getValue() + character.getCategory() + character.getIri());
+					}
+					if(!containedCharacters.contains(character.getValue() + character.getCategory() + character.getIri())) {
+						terms.add(new edu.arizona.biosemantics.oto2.ontologize.shared.model.Term(
+								character.getValue(), character.getIri(), "/character/" + character.getCategory(), character.getCategory()));
+						containedCharacters.add(character.getValue() + character.getCategory() + character.getIri());
+					}
 				}
 			}
 			edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection collection = 
