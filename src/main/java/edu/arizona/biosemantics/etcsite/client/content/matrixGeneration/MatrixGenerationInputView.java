@@ -45,6 +45,12 @@ public class MatrixGenerationInputView extends Composite implements IMatrixGener
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
+	@UiHandler("inputButton") 
+	public void onInputSelect(ClickEvent event) {
+		presenter.onInputSelect();
+	}
+
+	
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;

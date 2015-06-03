@@ -272,7 +272,7 @@ public class UploadServlet extends UploadAction {
 		if(fileAlreadyExists.size() > 0){
 			allExistingFiles = StringUtils.join(fileAlreadyExists, '|');
 		}
-		if(fileNames.size() > 0 || fileAlreadyExists.size()>0){
+		if(fileNames.size() > 0 || fileAlreadyExists.size() > 0){
 			response += "#"+allFiles+"#"+allExistingFiles+"#";
 		}
 		return response;

@@ -95,7 +95,7 @@ public class TreeGenerationService extends RemoteServiceServlet implements ITree
 		if(!file.isDirectory())
 			return false;
 		int count = file.listFiles().length;
-		if(count == 0 || count > 1) 
+		if(count != 1) 
 			return false;
 		return true;
 	}

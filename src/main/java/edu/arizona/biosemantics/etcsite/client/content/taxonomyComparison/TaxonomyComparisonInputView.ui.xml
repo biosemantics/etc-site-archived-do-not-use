@@ -93,6 +93,7 @@
 									Select a input file.
 								</g:InlineLabel>
 							</g:VerticalPanel>
+							<g:Button ui:field="inputButton">Select Input</g:Button>
 							<g:cell verticalAlignment="ALIGN_TOP">
 								<g:Label ui:field="inputLabel" styleName="{style.important}"></g:Label>
 							</g:cell>

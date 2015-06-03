@@ -10,24 +10,33 @@ import com.sencha.gxt.widget.core.client.box.MessageBox;
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView;
+import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView.UploadCompleteHandler;
+import edu.arizona.biosemantics.etcsite.client.common.files.FileUploadHandler;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
+import gwtupload.client.IUploadStatus.Status;
+import gwtupload.client.IUploader;
+import gwtupload.client.Uploader;
 
 public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.Presenter {
 
+	private IFileServiceAsync fileService;
 	private ISemanticMarkupCreateView view;
 	private PlaceController placeController;
 	private IFileManagerDialogView.Presenter fileManagerDialogPresenter;
 	private IInputCreateView.Presenter inputCreatePresenter;
 	
 	@Inject
-	public SemanticMarkupCreatePresenter(final PlaceController placeController, 
+	public SemanticMarkupCreatePresenter(final PlaceController placeController, final IFileServiceAsync fileService,
 			ISemanticMarkupCreateView view, 
 			@Named("SemanticMarkup") IInputCreateView.Presenter inputCreatePresenter,
 			final ISemanticMarkupServiceAsync semanticMarkupService, 
 			IFileManagerDialogView.Presenter fileManagerDialogPresenter) {
 		this.view = view;
+		this.fileService = fileService;
 		this.fileManagerDialogPresenter = fileManagerDialogPresenter;
 		this.inputCreatePresenter = inputCreatePresenter;
 		view.setPresenter(this);
@@ -46,7 +55,6 @@ public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.P
 							Alerter.stopLoading(box);
 						}
 					}
-
 					@Override
 					public void onFailure(Throwable caught) {
 						Alerter.failedToIsValidInput(caught);
@@ -55,6 +63,15 @@ public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.P
 				});
 			}
 		});
+		inputCreatePresenter.setUploadCompleteHandler(new UploadCompleteHandler() {
+			@Override
+			public void handle(FileUploadHandler fileUploadHandler,	IUploader uploader, String uploadDirectory) {
+				if (uploader.getStatus() == Status.SUCCESS) {
+					fileUploadHandler.keyValidateUploadedFiles(uploadDirectory);
+				}
+			}
+		});
+		inputCreatePresenter.setUploadFileType(FileTypeEnum.TAXON_DESCRIPTION);
 	}
 	
 	@Override
@@ -81,7 +98,5 @@ public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.P
 	public void refresh() {
 		inputCreatePresenter.refreshFolders();
 	}
-	
-
 
 }

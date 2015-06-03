@@ -109,7 +109,6 @@ public class InputCreateView extends Composite implements IInputCreateView {
 		createPanel.setVisible(false);
 		uploadPanel.setVisible(true);
 		selectPanel.setVisible(false);
-		nextButton.setEnabled(true);
 		createFolderForCreateFilesTextBox.setValue(null);
 	}
 	
@@ -164,12 +163,11 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	
 	@UiHandler("createFilesButton")
 	public void onCreateFiles(ClickEvent event){
-		if(selectFolderForCreateFilesRadio.getValue()) {
+		if(this.isSelectFolderForCreateFiles()) {
 			presenter.createFiles(selectFolderForCreateFilesComboBox.getValue());
-		} else {
+		} else if(this.isCreateFolderForCreateFiles()) {
 			presenter.createFilesInNewFolder();
 		}
-		nextButton.setEnabled(true);
 	}
 	
 	@UiHandler("createFolderForCreateFilesButton")
@@ -217,11 +215,6 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	@Override
 	public void setStatusWidget(Widget widget) {
 		statusWidgetContainer.setWidget(widget);
-	}
-
-	@Override
-	public void enableNextButton(boolean value) {
-		nextButton.setEnabled(value);
 	}
 
 	@Override
@@ -275,5 +268,9 @@ public class InputCreateView extends Composite implements IInputCreateView {
 		verticalPanel.remove(0);
 	}
 
+	@Override
+	public boolean isSelectFolderForCreateFiles() {
+		return this.selectFolderForCreateFilesRadio.getValue();
+	}
 	
 }

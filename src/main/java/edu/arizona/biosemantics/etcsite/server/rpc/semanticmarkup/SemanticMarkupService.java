@@ -435,6 +435,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		} catch (PermissionDeniedException e) {
 			throw new SemanticMarkupException();
 		}
+		if(files.isEmpty())
+			return false;
 		for(String file : files) {
 			boolean validResult;
 			try {

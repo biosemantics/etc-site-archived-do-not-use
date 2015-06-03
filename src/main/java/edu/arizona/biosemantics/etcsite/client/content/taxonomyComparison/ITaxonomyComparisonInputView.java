@@ -8,6 +8,7 @@ public interface ITaxonomyComparisonInputView extends IsWidget {
 		void onNext();
 		void setSelectedFolder(String fullPath, String shortenedPath);
 		ITaxonomyComparisonInputView getView();
+		void onInputSelect();
 	}
 	  
 	void setPresenter(Presenter presenter);

@@ -439,6 +439,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		} catch (PermissionDeniedException e) {
 			return false;
 		}
+		if(files.isEmpty())
+			return false;
 		
 		//extra validation, since a valid taxon description is automatically also a valid marked up taxon description according to 
 		//the schema. Check for min. 1 statement

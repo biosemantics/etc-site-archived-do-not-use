@@ -80,6 +80,7 @@ public class TaxonomyComparisonCreatePresenter implements TaxonomyComparisonCrea
 				});
 			}
 		});
+		inputCreatePresenter.setUploadFileType(FileTypeEnum.PLAIN_TEXT);
 	}
 	
 	@Override

@@ -130,7 +130,7 @@
 	        </g:HorizontalPanel>
 	    </g:VerticalPanel>
 		<g:FlowPanel styleName="{style.padding}">
-			<g:Button ui:field="nextButton" enabled="false">Next Step</g:Button>
+			<g:Button ui:field="nextButton" enabled="true">Next Step</g:Button>
 		</g:FlowPanel>
 	</g:VerticalPanel>
 </ui:UiBinder> 

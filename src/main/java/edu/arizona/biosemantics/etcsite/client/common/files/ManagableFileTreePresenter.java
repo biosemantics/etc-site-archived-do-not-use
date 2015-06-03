@@ -80,7 +80,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	    view.getUploader().setStatusWidget(statusWidget);
 	    view.setStatusWidget(statusWidget.getWidget());
 		view.getUploader().setFileInput(new MyFileInput(view.getAddButton()));
-		fileUploadHandler = new FileUploadHandler(this);
+		fileUploadHandler = new FileUploadHandler(this, fileService);
 		initActions();
 	}
 	
@@ -317,12 +317,16 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		@Override
 		public void onFinish(IUploader uploader) {	
 			serverResponse = fileUploadHandler.parseServerResponse(uploader);
-			if (uploader.getStatus() == Status.SUCCESS) {
-				fileTreePresenter.refresh(fileFilter);
-				fileUploadHandler.keyValidateUploadedFiles(fileService, targetUploadDirectory);
+			if(serverResponse != null && !serverResponse.isEmpty()) {
+				Alerter.failedToUpload(serverResponse);
+			} else {
+				if (uploader.getStatus() == Status.SUCCESS) {
+					fileTreePresenter.refresh(fileFilter);
+					fileUploadHandler.keyValidateUploadedFiles(targetUploadDirectory);
+				}
+				uploader.setServletPath(defaultServletPath);
+				enableManagement();
 			}
-			uploader.setServletPath(defaultServletPath);
-			enableManagement();
 		}		
 	}
 	
@@ -339,7 +343,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 				targetUploadDirectory = newFilePath;
 			
 			}
-			fileUploadHandler.setServletPathOfUploader(uploader, view.getUploader(), view.getFormat(), targetUploadDirectory);
+			fileUploadHandler.setServletPathOfUploader(uploader, view.getFormat(), targetUploadDirectory);
 			/*
 			 * Creation of directories directly inside of the upload target should not be possible (possible name clash)
 			 * Rename of target and files directly inside of target should not be possible (target no longer available, name clash)

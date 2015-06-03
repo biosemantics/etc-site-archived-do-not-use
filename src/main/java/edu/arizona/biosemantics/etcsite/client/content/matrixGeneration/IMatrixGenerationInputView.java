@@ -8,6 +8,7 @@ public interface IMatrixGenerationInputView extends IsWidget {
 		void onNext();
 		IMatrixGenerationInputView getView();
 		void setSelectedFolder(String fullPath, String shortendPath);
+		void onInputSelect();
 	}
 	  
 	void setPresenter(Presenter presenter);

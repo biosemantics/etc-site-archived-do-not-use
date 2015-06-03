@@ -12,9 +12,14 @@ import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView;
 import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView.InputValidator;
 import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView.Presenter;
+import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView.UploadCompleteHandler;
+import edu.arizona.biosemantics.etcsite.client.common.files.FileUploadHandler;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPlace;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
+import gwtupload.client.IUploadStatus.Status;
+import gwtupload.client.IUploader;
 
 public class MatrixGenerationCreatePresenter implements MatrixGenerationCreateView.Presenter {
 
@@ -44,7 +49,7 @@ public class MatrixGenerationCreatePresenter implements MatrixGenerationCreateVi
 							Alerter.invalidInputDirectory();
 							Alerter.stopLoading(box);
 						} else {
-							placeController.goTo(new SemanticMarkupInputPlace());
+							placeController.goTo(new MatrixGenerationInputPlace());
 							Alerter.stopLoading(box);
 						}
 					}
@@ -57,6 +62,15 @@ public class MatrixGenerationCreatePresenter implements MatrixGenerationCreateVi
 				});
 			}
 		});
+		inputCreatePresenter.setUploadCompleteHandler(new UploadCompleteHandler() {
+			@Override
+			public void handle(FileUploadHandler fileUploadHandler,IUploader uploader, String uploadDirectory) {
+				if (uploader.getStatus() == Status.SUCCESS) {
+					fileUploadHandler.keyValidateUploadedFiles(uploadDirectory);
+				}
+			}
+		});
+		inputCreatePresenter.setUploadFileType(FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION);
 	}
 	
 	@Override

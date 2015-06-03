@@ -82,6 +82,7 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 		if(place instanceof SemanticMarkupPlace)
 			task = ((SemanticMarkupPlace)place).getTask();
 		if(task == null){
+			//TODO: normally the info of type input folder is tied to InputPlace and should reside there, tokenization, linking, etc.
 			if(place instanceof SemanticMarkupInputPlace){
 				inputPresenter.setSelectedFolder(createPresenter.getInputFolderPath(), createPresenter.getInputFolderShortenedPath());
 				panel.setWidget(inputPresenter.getView());

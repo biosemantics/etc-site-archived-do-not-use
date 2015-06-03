@@ -81,6 +81,7 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 		}
 		if(currentTask == null){
 			if(place instanceof TaxonomyComparisonInputPlace){
+				inputPresenter.setSelectedFolder(createPresenter.getInputFolderPath(), createPresenter.getInputFolderShortenedPath());
 				panel.setWidget(inputPresenter.getView());
 			}else{
 				createPresenter.refresh();

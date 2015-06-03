@@ -22,17 +22,20 @@ public class FileUploadHandler {
 	List<String> uploadedFiles;
 	String serverResponse;
 	ManagableFileTreePresenter presenter;
+	private IFileServiceAsync fileService;
 
-	public FileUploadHandler() {
+	public FileUploadHandler(IFileServiceAsync fileService) {
 		uploadedFiles = null;
 		serverResponse = null;
 		presenter = null;
+		this.fileService = fileService;
 	}
 	
-	public FileUploadHandler(ManagableFileTreePresenter presenter) {
+	public FileUploadHandler(ManagableFileTreePresenter presenter, IFileServiceAsync fileService) {
 		uploadedFiles = null;
 		serverResponse = null;
 		this.presenter = presenter;
+		this.fileService = fileService;
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -79,7 +82,7 @@ public class FileUploadHandler {
 		return serverResponse;
 	}
 	
-	public void keyValidateUploadedFiles(final IFileServiceAsync fileService, final String targetUploadDirectory){
+	public void keyValidateUploadedFiles(final String targetUploadDirectory) {
 		fileService.validateKeys(Authentication.getInstance().getToken(), targetUploadDirectory, uploadedFiles, new AsyncCallback<HashMap<String,String>>() {
 
 			@Override
@@ -149,8 +152,8 @@ public class FileUploadHandler {
 
 	}
 	
-	public void setServletPathOfUploader(IUploader uploader, IUploader viewUploader,String fileType, String targetUploadDirectory){
-		String servletPath = viewUploader.getServletPath() + "?fileType=" + fileType + "&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId()))
+	public void setServletPathOfUploader(IUploader uploader, String fileType, String targetUploadDirectory){
+		String servletPath = uploader.getServletPath() + "?fileType=" + fileType + "&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId()))
 				+ "&sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId());
 		uploader.setServletPath(servletPath);
 		

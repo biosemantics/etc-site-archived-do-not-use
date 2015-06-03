@@ -44,6 +44,11 @@ public class TaxonomyComparisonInputView extends Composite implements ITaxonomyC
 		this.presenter = presenter;
 	}
 	
+	@UiHandler("inputButton") 
+	public void onInputSelect(ClickEvent event) {
+		presenter.onInputSelect();
+	}
+	
 	@UiHandler("nextButton")
 	public void onSearchClick(ClickEvent event) {
 		presenter.onNext();

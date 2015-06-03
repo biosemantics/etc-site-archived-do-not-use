@@ -79,6 +79,7 @@ public class TreeGenerationCreatePresenter implements TreeGenerationCreateView.P
 				});
 			}
 		});
+		inputCreatePresenter.setUploadFileType(FileTypeEnum.PLAIN_TEXT);
 	}
 	
 	@Override

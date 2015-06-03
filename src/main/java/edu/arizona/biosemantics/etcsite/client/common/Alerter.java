@@ -565,7 +565,12 @@ public class Alerter {
 		return showAlert("Failed to retrieve files", "Failed to retrieve files in file manager.");
 	}
 
+	public static MessageBox failedToUpload(String message) {
+		return showAlert("Failed to upload files", message);
+	}
 
-
+	public static MessageBox successfullyUploadedFiles() {
+		return showInfo("Upload files", "Uploaded files successfully.");
+	}
 
 }

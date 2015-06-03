@@ -8,6 +8,7 @@ public interface ITreeGenerationInputView extends IsWidget {
 		void onNext();
 		ITreeGenerationInputView getView();
 		void setSelectedFolder(String fullPath, String shortendPath);
+		void onInputSelect();
 	}
 	  
 	void setPresenter(Presenter presenter);

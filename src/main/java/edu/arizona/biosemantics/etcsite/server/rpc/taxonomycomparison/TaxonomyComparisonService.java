@@ -438,6 +438,12 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 
 	@Override
 	public boolean isValidInput(AuthenticationToken token, String inputFile) {
+		File file = new File(inputFile);
+		if(!file.isDirectory())
+			return false;
+		int count = file.listFiles().length;
+		if(count != 2) 
+			return false;
 		return true;
 	}
 
