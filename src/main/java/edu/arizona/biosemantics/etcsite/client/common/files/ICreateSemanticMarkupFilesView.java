@@ -1,5 +1,6 @@
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +25,7 @@ public interface ICreateSemanticMarkupFilesView extends IsWidget {
 
 		void onBatch(String text);
 
-		void setPreviewText(Map<String, String> map, String text);
+		void setPreviewText(LinkedHashMap<String, String> map, String text);
 
 	}
 

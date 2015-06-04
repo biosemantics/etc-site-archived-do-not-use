@@ -106,12 +106,12 @@ public class XmlModelFileCreator {
 		
 		boolean insideContinuousValue = false;
 		
+		List<String> treatmentTexts = new LinkedList<String>();
 		StringBuilder treatment = new StringBuilder();
-		Set<String> keys = new HashSet<String>();
 		for(String line : text.split("\n")) {
 			line = line.trim();
 			if(line.length()==0 && !insideContinuousValue) {
-				result.add(treatment.toString());
+				treatmentTexts.add(treatment.toString().trim());
 				treatment = new StringBuilder();
 			} else {
 				treatment.append(line + "\n");
@@ -122,7 +122,6 @@ public class XmlModelFileCreator {
 					continue;
 				} else {
 					String key = line.substring(0, colonIndex).toLowerCase().trim();
-					keys.add(key);
 					for(String descriptionType : descriptionTypes) {
 						if(key.contains(descriptionType)) {
 							String value = line.substring(colonIndex + 1, line.length()).trim();
@@ -133,19 +132,70 @@ public class XmlModelFileCreator {
 						}
 					}
 				}
-			}			
+			}
+		}
+		treatmentTexts.add(treatment.toString().trim());
+				
+		
+		for(String treatmentText : treatmentTexts) {
+			treatmentText = completeTreatmentWithSourceDocumentInformation(batchSourceDocumentInfoMap, treatmentText);
+			result.add(treatmentText);
 		}
 		
+		return result;
+	}
+
+	private String completeTreatmentWithSourceDocumentInformation(Map<String, String> batchSourceDocumentInfoMap, String treatmentText) {
+		List<String> keys = new LinkedList<String>();
+		List<String> values = new LinkedList<String>();
+
+		boolean insideContinuousValue = false;
+		StringBuilder valueBuilder = new StringBuilder();
+		for(String line : treatmentText.split("\n")) {
+			line = line.trim();
+			int colonIndex = line.indexOf(":");
+			if(colonIndex == -1 && insideContinuousValue) {
+				valueBuilder.append(line + "\n");
+				if(line.endsWith("#")) {
+					insideContinuousValue = false;
+					values.add(valueBuilder.toString());
+				}
+				continue;
+			} else {
+				String key = line.substring(0, colonIndex).toLowerCase().trim();
+				String value = line.substring(colonIndex + 1, line.length()).trim();
+				keys.add(key);
+				for(String descriptionType : descriptionTypes) {
+					if(key.contains(descriptionType)) {
+						if(value.startsWith("#")) 
+							insideContinuousValue = true;
+						if(value.endsWith("#"))
+							insideContinuousValue = false;
+					}
+				}
+				if(insideContinuousValue)
+					valueBuilder.append(value + "\n");
+				else
+					values.add(value);
+			}
+		}
+		
+		int i=0;
 		for(String key : batchSourceDocumentInfoMap.keySet()) {
 			if(!keys.contains(key) && !batchSourceDocumentInfoMap.get(key).isEmpty()) {
-				treatment.append(key + ": " + batchSourceDocumentInfoMap.get(key) + "\n");
+				keys.add(i, key);
+				values.add(i, batchSourceDocumentInfoMap.get(key));
+				i++;
 			}
 		}
 
-		String aTreatment = treatment.toString().trim();
-		//TODO: when requested: sort(aTreatment);
-		result.add(aTreatment); //replace all non-visible characters proceeding/trailing the treatment.
-		return result;
+		StringBuilder treatment = new StringBuilder();
+		for(int j=0; j<keys.size(); j++) {
+			String key = keys.get(j);
+			String value = values.get(j);
+			treatment.append(key + ": " + value + "\n");
+		}
+		return treatment.toString();
 	}
 
 }

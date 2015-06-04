@@ -202,7 +202,10 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 				lowestName = rname;
 			}			
 		}
-		if(!lowestName.matches(".*?,.*?\\w+.*")) modelFile.appendError("'"+lowestName+ "' does not have authority/date.");
+		if(lowestName == null)
+			modelFile.appendError("No rank and name is given.");
+		else 
+			if(!lowestName.matches(".*?,.*?\\w+.*")) modelFile.appendError("'"+lowestName+ "' does not have authority/date.");
 		if(taxonNames.contains(completeName.toString()))
 			modelFile.appendError("'"+completeName.toString()+ "' already exists. Duplicate taxa are not allowed");
 		else
@@ -269,9 +272,12 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		source.addContent(author);
 		source.addContent(srcDate);
 		source.addContent(title);
-		author.setText(data.get("author").get(0));
-		srcDate.setText(data.get("year").get(0));
-		title.setText(data.get("title").get(0));
+		if(data.get("author") != null && !data.get("author").isEmpty())
+			author.setText(data.get("author").get(0));
+		if(data.get("year") != null && !data.get("year").isEmpty())
+			srcDate.setText(data.get("year").get(0));
+		if(data.get("title") != null && !data.get("title").isEmpty())
+			title.setText(data.get("title").get(0));
 		meta.addContent(source);
 		Element processedBy = new Element("processed_by");
 		Element processor = new Element("processor");
@@ -289,13 +295,13 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		processor.addContent(operator);
 		meta.addContent(processedBy);
 		
-		if(data.containsKey("doi") && !data.get("doi").isEmpty() && !data.get("doi").get(0).trim().isEmpty()) {
+		if(data.get("doi") != null && !data.get("doi").isEmpty() && !data.get("doi").get(0).trim().isEmpty()) {
 			Element otherInfoOnMeta = new Element("other_info_on_meta");
 			otherInfoOnMeta.setText(data.get("doi").get(0));
 			otherInfoOnMeta.setAttribute("type", "doi");
 			meta.addContent(otherInfoOnMeta);
 		}
-		if(data.containsKey("full citation") && !data.get("full citation").isEmpty() && !data.get("full citation").get(0).trim().isEmpty()) {
+		if(data.get("full citation") != null && !data.get("full citation").isEmpty() && !data.get("full citation").get(0).trim().isEmpty()) {
 			Element otherInfoOnMeta = new Element("other_info_on_meta");
 			otherInfoOnMeta.setText(data.get("full citation").get(0));
 			otherInfoOnMeta.setAttribute("type", "citation");
@@ -356,18 +362,20 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 				element.setAttribute("authority", authority);
 				if(ndate!=null) element.setAttribute("date", ndate);
 				else element.setAttribute("date", "n.d");
-			}else{
-				element.setAttribute("authority", data.get("author").get(0));
-				element.setAttribute("date", data.get("year").get(0));
+			} else {
+				if(data.get("authority") != null && !data.get("authority").isEmpty())
+					element.setAttribute("authority", data.get("author").get(0));
+				if(data.get("year") != null && !data.get("year").isEmpty())
+					element.setAttribute("date", data.get("year").get(0));
 			}
 		}
 
-		if(data.containsKey("strain number") && !data.get("strain number").isEmpty() && !data.get("strain number").get(0).trim().isEmpty()) {
+		if(data.get("strain number") != null && !data.get("strain number").isEmpty() && !data.get("strain number").get(0).trim().isEmpty()) {
 			Element element = new Element("strain_number");
 			taxonIdentification.addContent(element);
 			element.setText(data.get("strain number").get(0));
-			if(!data.get("equivalent strain numbers").isEmpty() && !data.get("equivalent strain numbers").get(0).trim().isEmpty()) element.setAttribute("equivalent_strain_numbers", data.get("equivalent strain numbers").get(0));
-			if(!data.get("accession number 16s rrna").isEmpty() && !data.get("accession number 16s rrna").get(0).trim().isEmpty()) element.setAttribute("accession_number_16s_rrna", data.get("accession number 16s rrna").get(0));
+			if(data.get("equivalent strain numbers") != null && !data.get("equivalent strain numbers").isEmpty() && !data.get("equivalent strain numbers").get(0).trim().isEmpty()) element.setAttribute("equivalent_strain_numbers", data.get("equivalent strain numbers").get(0));
+			if(data.get("accession number 16s rrna") != null && !data.get("accession number 16s rrna").isEmpty() && !data.get("accession number 16s rrna").get(0).trim().isEmpty()) element.setAttribute("accession_number_16s_rrna", data.get("accession number 16s rrna").get(0));
 		}
 
 		taxonIdentification.setAttribute("status", "ACCEPTED");
@@ -449,24 +457,27 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 	public String createFileName(Map<String, List<String>> data, XmlModelFile modelFile) {
 		List<TaxonIdentificationEntry> taxonIdentificationEntries = new LinkedList<TaxonIdentificationEntry>();
 		for(String nameType : nameTypes) {
-			if(data.containsKey(nameType) && !data.get(nameType).isEmpty() && !data.get(nameType).get(0).trim().isEmpty()) {
+			if(data.get(nameType) != null && !data.get(nameType).isEmpty() && !data.get(nameType).get(0).trim().isEmpty()) {
 				taxonIdentificationEntries.add(new TaxonIdentificationEntry(Rank.valueOf(nameType.replaceFirst(" name$", "").toUpperCase()), 
 						data.get(nameType).get(0)));
 			}
 		}
 		Collections.sort(taxonIdentificationEntries);
 		
-		String filename = data.get("author").get(0) + data.get("year").get(0) + "_";
-		for (TaxonIdentificationEntry taxonIdentificationEntry : taxonIdentificationEntries) {
-			if (filename.matches(".*(_|^)" + taxonIdentificationEntry.getRank()	+ "(_|$).*"))
-				modelFile.appendError("Redundant rank '" + taxonIdentificationEntry.getRank() + "'");
-			filename += taxonIdentificationEntry.getRank() + "_" + taxonIdentificationEntry.getValue() + "_";
+		if(data.get("author") != null && !data.get("author").isEmpty() && data.get("year") != null && !data.get("year").isEmpty()) {
+			String filename = data.get("author").get(0) + data.get("year").get(0) + "_";
+			for (TaxonIdentificationEntry taxonIdentificationEntry : taxonIdentificationEntries) {
+				if (filename.matches(".*(_|^)" + taxonIdentificationEntry.getRank()	+ "(_|$).*"))
+					modelFile.appendError("Redundant rank '" + taxonIdentificationEntry.getRank() + "'");
+				filename += taxonIdentificationEntry.getRank() + "_" + taxonIdentificationEntry.getValue() + "_";
+			}
+			if(data.containsKey("strain number") && !data.get("strain number").isEmpty() && !data.get("strain number").get(0).trim().isEmpty())
+				filename += "strain_" + data.get("strain number") + "_";
+			
+			filename = filename.replaceAll("_+", "_").replaceFirst("_$", ".xml");
+			return filename;
 		}
-		if(data.containsKey("strain number") && !data.get("strain number").isEmpty() && !data.get("strain number").get(0).trim().isEmpty())
-			filename += "strain_" + data.get("strain number") + "_";
-		
-		filename = filename.replaceAll("_+", "_").replaceFirst("_$", ".xml");
-		return filename;
+		return "";
 	}
 	
 }

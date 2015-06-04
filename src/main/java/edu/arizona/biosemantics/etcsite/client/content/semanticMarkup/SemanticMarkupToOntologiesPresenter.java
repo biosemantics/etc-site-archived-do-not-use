@@ -64,27 +64,22 @@ public class SemanticMarkupToOntologiesPresenter implements ISemanticMarkupToOnt
 	@Override
 	public void setTask(Task task) {
 		SemanticMarkupToOntologiesPresenter.this.task = task;
-		SemanticMarkupConfiguration configuration = (SemanticMarkupConfiguration)task.getConfiguration();
-		if(configuration.getOntologizeUploadId() == 0) {
-			final MessageBox box = Alerter.startLoading();
-			semanticMarkupService.ontologize(Authentication.getInstance().getToken(), 
-					task, new AsyncCallback<Task>() {
-				@Override
-				public void onSuccess(Task task) {
-					SemanticMarkupConfiguration configuration = (SemanticMarkupConfiguration)task.getConfiguration();
-					view.setOntologize(configuration.getOntologizeUploadId(), configuration.getOntologizeSecret());
-					Alerter.stopLoading(box);
-					SemanticMarkupToOntologiesPresenter.this.task = task;
-				}
-				@Override
-				public void onFailure(Throwable caught) {
-					Alerter.failedToOntologize(caught);
-					Alerter.stopLoading(box);
-				}
-			});
-		} else {
-			view.setOntologize(configuration.getOntologizeUploadId(), 	configuration.getOntologizeSecret());
-		}
+		final MessageBox box = Alerter.startLoading();
+		semanticMarkupService.ontologize(Authentication.getInstance().getToken(), 
+				task, new AsyncCallback<Task>() {
+			@Override
+			public void onSuccess(Task task) {
+				SemanticMarkupConfiguration configuration = (SemanticMarkupConfiguration)task.getConfiguration();
+				view.setOntologize(configuration.getOntologizeUploadId(), configuration.getOntologizeSecret());
+				Alerter.stopLoading(box);
+				SemanticMarkupToOntologiesPresenter.this.task = task;
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToOntologize(caught);
+				Alerter.stopLoading(box);
+			}
+		});
 	}
 
 	@Override

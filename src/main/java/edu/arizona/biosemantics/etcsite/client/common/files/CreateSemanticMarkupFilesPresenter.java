@@ -1,5 +1,6 @@
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -343,7 +344,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	}
 	
 	@Override
-	public void setPreviewText(Map<String, String> batchSourceDocumentInfoMap, String text) {
+	public void setPreviewText(LinkedHashMap<String, String> batchSourceDocumentInfoMap, String text) {
 		String returnString = "";
 		
 		String normalizedText = xmlModelFileCreator.normalizeText(text);

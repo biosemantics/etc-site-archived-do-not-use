@@ -3,6 +3,7 @@ package edu.arizona.biosemantics.etcsite.client.common.files;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -497,8 +498,8 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		return copyCheckBox.getValue();
 	}
 	
-	private Map<String, String> getBatchSourceDocumentInfo() {
-		Map<String, String> sourceDocumentInfoMap = new HashMap<String, String>();
+	private LinkedHashMap<String, String> getBatchSourceDocumentInfo() {
+		LinkedHashMap<String, String> sourceDocumentInfoMap = new LinkedHashMap<String, String>();
 		sourceDocumentInfoMap.put("author", batch_author.getText());
 		sourceDocumentInfoMap.put("year", batch_year.getText());
 		sourceDocumentInfoMap.put("title", batch_title.getText());
