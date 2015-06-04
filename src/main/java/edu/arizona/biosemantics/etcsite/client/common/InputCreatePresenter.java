@@ -73,21 +73,6 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 		this.fileManagerDialogPresenter = fileManagerDialogPresenter;
 		this.filePathShortener = filePathShortener;
 
-		final MessageBox box = Alerter.startLoading();
-		fileService.getOwnedRootFolder(Authentication.getInstance().getToken(), new AsyncCallback<FileInfo>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				Alerter.failedToRetrieveFiles();
-				Alerter.stopLoading(box);
-			}
-			@Override
-			public void onSuccess(FileInfo result) {
-				ownedFileInfo = result;
-				Alerter.stopLoading(box);
-			}
-		});
-		this.refreshFolders();
-		
 		Uploader uploader = view.getUploader();
 		defaultServletPath = uploader.getServletPath();
 		uploader.setServletPath(defaultServletPath);
@@ -195,6 +180,19 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 			public void onFailure(Throwable caught) {
 				Alerter.stopLoading(box);
 				Alerter.failedToRetrieveFiles();
+			}
+		});
+		final MessageBox box2 = Alerter.startLoading();
+		fileService.getOwnedRootFolder(Authentication.getInstance().getToken(), new AsyncCallback<FileInfo>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToRetrieveFiles();
+				Alerter.stopLoading(box2);
+			}
+			@Override
+			public void onSuccess(FileInfo result) {
+				ownedFileInfo = result;
+				Alerter.stopLoading(box2);
 			}
 		});
 	}

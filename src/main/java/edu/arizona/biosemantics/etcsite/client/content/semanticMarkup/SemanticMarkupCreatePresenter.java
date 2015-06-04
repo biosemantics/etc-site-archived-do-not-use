@@ -23,20 +23,17 @@ import gwtupload.client.Uploader;
 
 public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.Presenter {
 
-	private IFileServiceAsync fileService;
 	private ISemanticMarkupCreateView view;
-	private PlaceController placeController;
 	private IFileManagerDialogView.Presenter fileManagerDialogPresenter;
 	private IInputCreateView.Presenter inputCreatePresenter;
 	
 	@Inject
-	public SemanticMarkupCreatePresenter(final PlaceController placeController, final IFileServiceAsync fileService,
+	public SemanticMarkupCreatePresenter(final PlaceController placeController,
 			ISemanticMarkupCreateView view, 
 			@Named("SemanticMarkup") IInputCreateView.Presenter inputCreatePresenter,
 			final ISemanticMarkupServiceAsync semanticMarkupService, 
 			IFileManagerDialogView.Presenter fileManagerDialogPresenter) {
 		this.view = view;
-		this.fileService = fileService;
 		this.fileManagerDialogPresenter = fileManagerDialogPresenter;
 		this.inputCreatePresenter = inputCreatePresenter;
 		view.setPresenter(this);

@@ -25,7 +25,7 @@ public class MatrixGenerationCreatePresenter implements MatrixGenerationCreateVi
 
 	private IMatrixGenerationCreateView view;
 	private edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView.Presenter fileManagerDialogPresenter;
-	private Presenter inputCreatePresenter;
+	private IInputCreateView.Presenter inputCreatePresenter;
 
 	@Inject
 	public MatrixGenerationCreatePresenter(final PlaceController placeController, 
