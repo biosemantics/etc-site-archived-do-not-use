@@ -269,15 +269,17 @@
 											<g:HTMLPanel>
 			      								The batch creation function allows you to upload multiple taxonomic treatments formatted in the same way as the single file creation.<br/>
 			      								<ol style="list-style:disc;padding: 5px 20px;">
-			      							    	<li>Fill the Source Document Information in the form below.</li>
-				      							    <li>The source document information is applicable to all taxon names included in the taxon names and description area.</li>
-				      							    <li>Add only taxon names and descriptions in the names and descriptions area(Source Document Information should not be added in this area).</li>
-			    	  								<li>Use an empty line to separate taxonomic treatments</li>
-		    	  									<li>The system will generate one file for each taxonomic treatment given</li>
-		      										<li>Use a <b>colon (:)</b> to separate a field name from its value</li>
-		      										<li>Use a new line for each field</li>
-		      										<li>If you copy/paste from another source, check word by word (especially special symbols) that the content is copied correctly</li>
+			      							    	<li>Source Document Information form is provided when you need to create multiple treatments from one source. 
+			      							    	Information provided in the form will be applied to all treatments included in the Taxonomic Treatment Area.</li>
+			      							    	<li>Alternatively, specific author, year, title information should be included in the 
+			      							    	Taxonomic Treatment Area for each treatment, while leaving Source Document Information form blank.</li>
+			      							    	<li>See “Required/Optional Fields” for the information needed for a treatment.</li>
+		      										<li>Use a <b>colon (:)</b> to separate a field name (e.g. author, year, title, etc.) from its value.</li>
+		      										<li>Use a new line for each field.</li>
+		      										<li>Use an empty line to separate taxonomic treatments</li>
+		      										<li>If you copy/paste from another source, check word by word (especially special symbols) that the content is copied correctly.</li>
 													<li>Do not include any HTML or XML tag in the text.</li>
+													<li>The system will generate one file for each taxonomic treatment provided.</li>
 												</ol>
 											</g:HTMLPanel>
 										</g:ScrollPanel>
@@ -285,15 +287,16 @@
 										<!-- Required/Optional Fields -->
 										<g:ScrollPanel>
 											<g:HTMLPanel>
-											    (*) denotes the required fields in the Source Document Information form.<br/>
-											    The following are the required and optional fields that can be included in the Taxon names and Descriptions Area(R denotes a required field, O optional).<br/>
+											  Required and optional fields for a taxonomic treatment are listed below: (R = required, O = optional).<br/>
 											    <br/>
 											    <ol> 
-										    	    <li>at least one <b>strain number</b> or one ranked taxon name, in the format of <b><i>rank</i> name</b>, e.g., <b>family name</b>(R)</li>   
-		      						    			<li><b>equivalent strain numbers</b>(O)</li> 
+											    	<li><b>author</b>(R), <b>year</b>(R), <b>title</b>(R), either specified in the Source Document Information form, or included in Taxonomic Treatment Area.</li>
+										    	    <li>At least one <b>strain number</b> or one ranked taxon name, in the format of "<b><i>rank</i> name</b>"(R), e.g., family name.</li>   
+		      						    			<li><b>equivalent strain numbers</b>(O), comma separated list if multiple numbers</li> 
 			      						    		<li><b>accession number 16S rRNA</b>(O)</li>
-			      						    		<li>at least one of {<b>morphology</b>, <b>phenology</b>, <b>habitat</b>, <b>distribution</b>}(R)</li>
-			      						    		<li>Scope value is optional for each description</li>
+			      						    		<li>At least one taxon description type of {<b>morphology</b>, <b>phenology</b>, <b>habitat</b>, <b>distribution</b>}(R)</li>
+			      						    		<li>Scope may be applied for each description type in the format of "scope-description type". For example, male-morphology, fruiting-phenology,
+			      						    		 see "Specifying Taxon Descriptions"</li>
 			      						    	</ol>
 		      							    </g:HTMLPanel>
 		    	  					    </g:ScrollPanel>
@@ -301,11 +304,11 @@
 										<!-- Specifying Taxon Names -->
 										<g:ScrollPanel>
 											<g:HTMLPanel>
-											    Follow the following instructions to include Taxon names.<br/>
+											    Follow the following instructions to include taxon names.<br/>
 											    <br/>
 											    <ol style="list-style:disc;padding: 5px 20px;">
 		      						    			<li>Taxon authority and date should be included in taxon names, use a <b>comma (,)</b> to separate the date. For example: Homosclerophorida Dendy, 1905. Use the token "unspecified" if the authority or the date can not be provided. </li>
-		      						    			<li>Alternatively, the Copy Authority and Date Checkbox can be checked to copy the last included Authority and Date to the taxon names that does not have any Authority and Date specified. (see example)</li>
+		      						    			<li>Alternatively, the Copy Authority and Date checkbox can be checked to copy the last included authority and date to the taxon names that do not have any authority and date specified. (see example)</li>
 		      						    			<li>Lower rank taxa should list all ranks on separate lines, starting from the highest rank of interests (see examples 2 and 3)</li>
 												</ol>
 											</g:HTMLPanel>
@@ -314,14 +317,14 @@
 										<!-- Specifying Description -->
 										<g:ScrollPanel>
 											<g:HTMLPanel>
-												Strictly Follow the following instructions to specify Taxon descriptions.<br/>
+												Strictly follow the following instructions to specify description fields (see also "Required/Optional Fields").<br/>
 												<br/>
 												<ol style="list-style:disc;padding: 5px 20px;">
-													<li>If you have multiple paragraphs for any of the description fields (morphology, phenology, habitat, distribution), 
-		      										insert an empty line between the paragraphs and enclose all the paragraphs with one pair of number signs (#, see example 3). Do not use # in description content (they can be replaced with 'no.'). </li>
-		      										<li>If there is specific scope for descriptions, mention the labels as scope-description. Eg: male-morphology</li>
 													<li>A paragraph is a string without any line break</li>
-													<li>Superscripts (e.g. "squared") should be typed as a regular character, for example cm2 for square centimeter.</li>		    
+													<li>If you have multiple paragraphs for any type of the description types {morphology, phenology, habitat, distribution}, 
+		      										insert an empty line between the paragraphs enclose all the paragraphs with one pair of number signs (#, see example 3). 
+		      										Do not use # in description content (they may be replaced with 'no.', for example). </li>
+		      										<li>Superscripts (e.g. "squared") should be typed as a regular character, for example cm2 for square centimeter.</li>		    
 												</ol>	    
 											</g:HTMLPanel>
 										</g:ScrollPanel>
@@ -407,7 +410,7 @@
 								</g:Grid>
 							</g:VerticalPanel>
 							<g:HorizontalPanel width="100%">
-		                        <g:Label styleName="{style.sub-heading}">Taxon Names and Descriptions *</g:Label>
+		                        <g:Label styleName="{style.sub-heading}">Taxonomic Treatment Area *</g:Label>
 		                        <g:cell width="50%" horizontalAlignment="ALIGN_RIGHT" verticalAlignment="ALIGN_MIDDLE">
 		                            <g:CheckBox ui:field="copyCheckBox">Copy Authority and Date values</g:CheckBox>
 		                        </g:cell>
