@@ -48,6 +48,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.shared.Confi
 	public static int maxActiveMatrixGeneration;
 	public static String matrixgeneration_xms;
 	public static String matrixgeneration_xmx;
+	public static String matrixgeneration_classpath;
 	
 	/** Taxonomy Comparison **/
 	public static int maxActiveTaxonomyComparison;
@@ -98,6 +99,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.shared.Confi
 	public static String otoUrl;
 	public static String otoSecret;
 	public static String secret;
+
 	
 	static {		
 		try {
@@ -137,6 +139,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.shared.Confi
 			maxActiveMatrixGeneration = Integer.parseInt(properties.getProperty("maxActiveMatrixGeneration"));
 			matrixgeneration_xms = properties.getProperty("matrixgeneration_xms");
 			matrixgeneration_xmx = properties.getProperty("matrixgeneration_xmx");
+			matrixgeneration_classpath = properties.getProperty("matrixgeneration_classpath");
 			
 			maxActiveTaxonomyComparison = Integer.parseInt(properties.getProperty("maxActiveTaxonomyComparison"));
 			

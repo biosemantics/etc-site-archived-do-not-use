@@ -46,10 +46,10 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements 
 			this.setXms(Configuration.matrixgeneration_xms);
 		if(!Configuration.matrixgeneration_xmx.isEmpty()) 
 			this.setXmx(Configuration.matrixgeneration_xmx);
-		if(Configuration.classpath.isEmpty())
+		if(Configuration.matrixgeneration_classpath.isEmpty())
 			this.setClassPath(System.getProperty("java.class.path"));
 		else
-			this.setClassPath(Configuration.classpath);
+			this.setClassPath(Configuration.matrixgeneration_classpath);
 		this.setMainClass(MainWrapper.class);
 	}
 	
