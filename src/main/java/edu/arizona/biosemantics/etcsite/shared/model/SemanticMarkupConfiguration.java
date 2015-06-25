@@ -14,15 +14,13 @@ public class SemanticMarkupConfiguration extends AbstractTaskConfiguration imple
 	private int otoUploadId;
 	private String otoSecret;
 	private boolean otoCreatedDataset;
-	private int ontologizeUploadId;
-	private String ontologizeSecret;
 	private String output;
 	
 	public SemanticMarkupConfiguration() { }
 	
 	public SemanticMarkupConfiguration(Configuration configuration, String input, int numberOfInputFiles, TaxonGroup taxonGroup, 
 			boolean useEmptyGlossary, int otoUploadId, String otoSecret, boolean otoCreatedDataset, 
-			int ontologizeUploadId, String ontologizeSecret, String output) {
+			String output) {
 		super(configuration);
 		this.input = input;
 		this.numberOfInputFiles = numberOfInputFiles;
@@ -31,8 +29,6 @@ public class SemanticMarkupConfiguration extends AbstractTaskConfiguration imple
 		this.otoUploadId = otoUploadId;
 		this.otoSecret = otoSecret;
 		this.otoCreatedDataset = otoCreatedDataset;
-		this.ontologizeUploadId = ontologizeUploadId;
-		this.ontologizeSecret = ontologizeSecret;
 		this.output = output;
 	}
 
@@ -98,22 +94,6 @@ public class SemanticMarkupConfiguration extends AbstractTaskConfiguration imple
 
 	public void setOutput(String output) {
 		this.output = output;
-	}
-
-	public int getOntologizeUploadId() {
-		return ontologizeUploadId;
-	}
-
-	public void setOntologizeUploadId(int ontologizeUploadId) {
-		this.ontologizeUploadId = ontologizeUploadId;
-	}
-
-	public String getOntologizeSecret() {
-		return ontologizeSecret;
-	}
-
-	public void setOntologizeSecret(String ontologizeSecret) {
-		this.ontologizeSecret = ontologizeSecret;
 	}
 
 	@Override

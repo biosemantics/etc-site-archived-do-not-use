@@ -30,7 +30,6 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 	private ISemanticMarkupPreprocessView.Presenter preprocessPresenter;
 	private ISemanticMarkupLearnView.Presenter learnPresenter;
 	private ISemanticMarkupReviewView.Presenter reviewPresenter;
-	private ISemanticMarkupToOntologiesView.Presenter toOntologyPresenter;
 	private ISemanticMarkupParseView.Presenter parsePresenter;
 	private ISemanticMarkupOutputView.Presenter outputPresenter;
 	private AcceptsOneWidget panel;
@@ -44,7 +43,6 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 			ISemanticMarkupPreprocessView.Presenter preprocessPresenter,
 			ISemanticMarkupLearnView.Presenter learnPresenter,
 			ISemanticMarkupReviewView.Presenter reviewPresenter,
-			ISemanticMarkupToOntologiesView.Presenter toOntologyPresenter,
 			ISemanticMarkupParseView.Presenter parsePresenter,
 			ISemanticMarkupOutputView.Presenter outputPresenter, 
 			PlaceController placeController, 
@@ -59,7 +57,6 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 		this.preprocessPresenter = preprocessPresenter;
 		this.learnPresenter = learnPresenter;
 		this.reviewPresenter = reviewPresenter;
-		this.toOntologyPresenter = toOntologyPresenter;
 		this.parsePresenter = parsePresenter;
 		this.outputPresenter = outputPresenter;
 	}
@@ -120,10 +117,6 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 								case REVIEW_TERMS:
 									reviewPresenter.setTask(result);
 									panel.setWidget(reviewPresenter.getView());
-									break;
-								case TO_ONTOLOGIES:
-									toOntologyPresenter.setTask(result);
-									panel.setWidget(toOntologyPresenter.getView());
 									break;
 								case PARSE_TEXT:
 									parsePresenter.setTask(result);

@@ -6,13 +6,19 @@ import java.sql.SQLException;
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.Configuration;
 import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationConfiguration;
+import edu.arizona.biosemantics.etcsite.shared.model.TaxonGroup;
 
 public class MatrixGenerationConfigurationDAO {
 
 	private ConfigurationDAO configurationDAO;
+	private TaxonGroupDAO taxonGroupDAO;
 		
 	public void setConfigurationDAO(ConfigurationDAO configurationDAO) {
 		this.configurationDAO = configurationDAO;
+	}
+	
+	public void setTaxonGroupDAO(TaxonGroupDAO taxonGroupDAO) {
+		this.taxonGroupDAO = taxonGroupDAO;
 	}
 
 	public MatrixGenerationConfiguration getMatrixGenerationConfiguration(int configurationId) {
@@ -32,11 +38,13 @@ public class MatrixGenerationConfigurationDAO {
 	private MatrixGenerationConfiguration createMatrixGenerationConfiguration(ResultSet result) throws SQLException {
 		int configurationId = result.getInt(1);
 		String input = result.getString(2);
-		String output = result.getString(3);
-		boolean inheritValues = result.getBoolean(4);
-		boolean generateAbsentPresent = result.getBoolean(5);
+		int taxonGroupId = result.getInt(3);
+		String output = result.getString(4);
+		boolean inheritValues = result.getBoolean(5);
+		boolean generateAbsentPresent = result.getBoolean(6);
 		Configuration configuration = configurationDAO.getConfiguration(configurationId);
-		return  new MatrixGenerationConfiguration(configuration, input, output, inheritValues, generateAbsentPresent);
+		TaxonGroup taxonGroup = taxonGroupDAO.getTaxonGroup(taxonGroupId);
+		return new MatrixGenerationConfiguration(configuration, input, taxonGroup, output, inheritValues, generateAbsentPresent);
 	}
 
 	public MatrixGenerationConfiguration addMatrixGenerationConfiguration(MatrixGenerationConfiguration matrixGenerationConfiguration) {
@@ -47,12 +55,13 @@ public class MatrixGenerationConfigurationDAO {
 			while(generatedKeys.next()) {
 				Configuration configuration = configurationDAO.getConfiguration(generatedKeys.getInt(1));
 				try (Query matrixGenerationQuery = new Query("INSERT INTO `etcsite_matrixgenerationconfigurations` " +
-						"(`configuration`, `input`, `output`, `inheritvalues`, `generateabsentpresent`) VALUES (?, ?, ?, ?, ?)")) {
+						"(`configuration`, `input`, `taxon_group`, `output`, `inheritvalues`, `generateabsentpresent`) VALUES (?, ?, ?, ?, ?, ?)")) {
 					matrixGenerationQuery.setParameter(1, configuration.getId());
 					matrixGenerationQuery.setParameter(2, matrixGenerationConfiguration.getInput());
-					matrixGenerationQuery.setParameter(3, matrixGenerationConfiguration.getOutput());
-					matrixGenerationQuery.setParameter(4, matrixGenerationConfiguration.isInheritValues());
-					matrixGenerationQuery.setParameter(5, matrixGenerationConfiguration.isGenerateAbsentPresent());
+					matrixGenerationQuery.setParameter(3, matrixGenerationConfiguration.getTaxonGroup().getId());
+					matrixGenerationQuery.setParameter(4, matrixGenerationConfiguration.getOutput());
+					matrixGenerationQuery.setParameter(5, matrixGenerationConfiguration.isInheritValues());
+					matrixGenerationQuery.setParameter(6, matrixGenerationConfiguration.isGenerateAbsentPresent());
 					matrixGenerationQuery.execute();
 				}
 				result = this.getMatrixGenerationConfiguration(generatedKeys.getInt(1));
@@ -66,16 +75,18 @@ public class MatrixGenerationConfigurationDAO {
 	public void updateMatrixGenerationConfiguration(MatrixGenerationConfiguration matrixGenerationConfiguration) {
 		Configuration configuration = matrixGenerationConfiguration.getConfiguration();
 		String input = matrixGenerationConfiguration.getInput();
+		int taxonGroupId = matrixGenerationConfiguration.getTaxonGroup().getId();
 		String output = matrixGenerationConfiguration.getOutput();
 		boolean inheritValues = matrixGenerationConfiguration.isInheritValues();
 		boolean generateAbsentPresent = matrixGenerationConfiguration.isGenerateAbsentPresent();
-		try (Query query = new Query("UPDATE etcsite_matrixgenerationconfigurations SET input = ?, output = ?, "
+		try (Query query = new Query("UPDATE etcsite_matrixgenerationconfigurations SET input = ?, taxon_group = ?, output = ?, "
 				+ "inheritvalues = ?, generateabsentpresent = ? WHERE configuration = ?")) {
 			query.setParameter(1, input);
-			query.setParameter(2, output);
-			query.setParameter(3, inheritValues);
-			query.setParameter(4, generateAbsentPresent);
-			query.setParameter(5, configuration.getId());
+			query.setParameter(2, taxonGroupId);
+			query.setParameter(3, output);
+			query.setParameter(4, inheritValues);
+			query.setParameter(5, generateAbsentPresent);
+			query.setParameter(6, configuration.getId());
 			query.execute();
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't update matrix generation configuration", e);
@@ -90,8 +101,6 @@ public class MatrixGenerationConfigurationDAO {
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't remove matrix generation configuration", e);
 		}
-	}
-
-
+	}	
 	
 }

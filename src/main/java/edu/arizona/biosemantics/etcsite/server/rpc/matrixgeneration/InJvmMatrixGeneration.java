@@ -10,6 +10,7 @@ import edu.arizona.biosemantics.matrixgeneration.CLIMain;
 public class InJvmMatrixGeneration implements MatrixGeneration {
 	
 	private String inputDir;
+	private String taxonGroup;
 	private String outputFile;	
 	private boolean inheritValues;
 	private boolean generateAbsentPresent;
@@ -17,9 +18,10 @@ public class InJvmMatrixGeneration implements MatrixGeneration {
 	
 	private boolean executedSuccessfully = false;
 	
-	public InJvmMatrixGeneration(String inputDir, String outputFile, boolean inheritValues, 
+	public InJvmMatrixGeneration(String inputDir, String taxonGroup, String outputFile, boolean inheritValues, 
 			boolean generateAbsentPresent, boolean inferCharactersFromOntologies) {
 		this.inputDir = inputDir;
+		this.taxonGroup = taxonGroup;
 		this.outputFile = outputFile;
 		this.inheritValues = inheritValues;
 		this.generateAbsentPresent = generateAbsentPresent;
@@ -43,6 +45,7 @@ public class InJvmMatrixGeneration implements MatrixGeneration {
 			addArg(argList, "up_ontology_inheritance");
 			addArg(argList, "down_ontology_inheritance");
 		}
+		addArg(argList, "taxon_group", taxonGroup);
 		addArg(argList, "output_format", "serialize");
 		
 		String[] args = argList.toArray(new String[argList.size()]);
@@ -78,7 +81,7 @@ public class InJvmMatrixGeneration implements MatrixGeneration {
 
 	public static void main(String[] args) throws Exception {
 		//MatrixGeneration mg = new MatrixGeneration("C:/test/users/1070/input_2", "C:/test/temp/matrixGeneration/124/Matrix.mx");
-		InJvmMatrixGeneration mg = new InJvmMatrixGeneration("C:/test/Test_mmm", "C:/test/Test_mmm.mx", true, true, true);
+		InJvmMatrixGeneration mg = new InJvmMatrixGeneration("C:/test/Test_mmm", "Plant", "C:/test/Test_mmm.mx", true, true, true);
 		mg.call();
 		
 	}

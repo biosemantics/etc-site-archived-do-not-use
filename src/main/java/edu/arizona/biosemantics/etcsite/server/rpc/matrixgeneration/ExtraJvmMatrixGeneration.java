@@ -6,6 +6,7 @@ import java.util.List;
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.ExtraJvmCallable;
+import edu.arizona.biosemantics.etcsite.shared.model.TaxonGroup;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
 
 public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements MatrixGeneration {
@@ -31,10 +32,12 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements 
 	private boolean inheritValues;
 	private boolean generateAbsentPresent;
 	private boolean inferCharactersFromOntologies;
+	private String taxonGroup;
 
-	public ExtraJvmMatrixGeneration(String inputDir, String outputFile, boolean inheritValues, 
+	public ExtraJvmMatrixGeneration(String inputDir, String taxonGroup, String outputFile, boolean inheritValues, 
 			boolean generateAbsentPresent, boolean inferCharactersFromOntologies) {
 		this.inputDir = inputDir;
+		this.taxonGroup = taxonGroup;
 		this.outputFile = outputFile;
 		this.inheritValues = inheritValues;
 		this.generateAbsentPresent = generateAbsentPresent;
@@ -69,6 +72,7 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements 
 			addArg(argList, "up_ontology_inheritance");
 			addArg(argList, "down_ontology_inheritance");
 		}
+		addArg(argList, "taxon_group", taxonGroup);
 		addArg(argList, "output_format", "serialize");
 		
 		String[] args = argList.toArray(new String[argList.size()]);
@@ -95,7 +99,7 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements 
 	
 	public static void main(String[] args) throws Exception {
 		//MatrixGeneration mg = new MatrixGeneration("C:/test/users/1070/input_2", "C:/test/temp/matrixGeneration/124/Matrix.mx");
-		ExtraJvmMatrixGeneration mg = new ExtraJvmMatrixGeneration("C:/test/Test_mmm", "C:/test/Test_mmm.mx", true, 
+		ExtraJvmMatrixGeneration mg = new ExtraJvmMatrixGeneration("C:/test/Test_mmm", "PLANT", "C:/test/Test_mmm.mx", true, 
 				true, true);
 		mg.call();
 		

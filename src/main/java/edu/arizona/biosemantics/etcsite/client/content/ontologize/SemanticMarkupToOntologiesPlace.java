@@ -1,7 +1,8 @@
-package edu.arizona.biosemantics.etcsite.client.content.semanticMarkup;
+package edu.arizona.biosemantics.etcsite.client.content.ontologize;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupPlace;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 
 public class SemanticMarkupToOntologiesPlace extends SemanticMarkupPlace {

@@ -107,7 +107,6 @@ import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticM
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupParseView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupPreprocessView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupReviewView;
-import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupToOntologiesView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ImportOtoView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupCreatePresenter;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupCreateView;
@@ -123,8 +122,6 @@ import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMa
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupPreprocessView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupReviewPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupReviewView;
-import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupToOntologiesPresenter;
-import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupToOntologiesView;
 import edu.arizona.biosemantics.etcsite.client.content.settings.ISettingsView;
 import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsView;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.ITaskManagerView;
@@ -266,8 +263,6 @@ public class ClientModule extends AbstractGinModule {
 		bind(ISemanticMarkupParseView.Presenter.class).to(SemanticMarkupParsePresenter.class);
 		bind(ISemanticMarkupOutputView.class).to(SemanticMarkupOutputView.class);
 		bind(ISemanticMarkupOutputView.Presenter.class).to(SemanticMarkupOutputPresenter.class);
-		bind(ISemanticMarkupToOntologiesView.class).to(SemanticMarkupToOntologiesView.class);
-		bind(ISemanticMarkupToOntologiesView.Presenter.class).to(SemanticMarkupToOntologiesPresenter.class);
 		bind(ITreeGenerationInputView.class).to(TreeGenerationInputView.class);
 		bind(ITreeGenerationInputView.Presenter.class).to(TreeGenerationInputPresenter.class);
 		bind(ITreeGenerationCreateView.class).to(TreeGenerationCreateView.class);

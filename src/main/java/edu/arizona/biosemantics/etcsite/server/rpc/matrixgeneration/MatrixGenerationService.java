@@ -58,6 +58,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
+import edu.arizona.biosemantics.etcsite.shared.model.TaxonGroup;
 import edu.arizona.biosemantics.etcsite.shared.model.User;
 import edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
@@ -108,7 +109,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 	
 	@Override
-	public Task start(AuthenticationToken authenticationToken, String taskName, String input, boolean inheritValues, boolean generateAbsentPresent) throws MatrixGenerationException {	
+	public Task start(AuthenticationToken authenticationToken, String taskName, String input, String taxonGroup, boolean inheritValues, boolean generateAbsentPresent) throws MatrixGenerationException {	
 		boolean isShared = filePermissionService.isSharedFilePath(authenticationToken.getUserId(), input);
 		String fileName = null;
 		try {
@@ -135,6 +136,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		
 		MatrixGenerationConfiguration config = new MatrixGenerationConfiguration();
 		config.setInput(input);	
+		TaxonGroup group = daoManager.getTaxonGroupDAO().getTaxonGroup(taxonGroup);
+		config.setTaxonGroup(group);
 		config.setOutput(config.getInput() + "_output_by_MG_task_" + taskName);
 		config.setInheritValues(inheritValues);
 		config.setGenerateAbsentPresent(generateAbsentPresent);
@@ -187,13 +190,14 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				throw new MatrixGenerationException(task);
 			}
 			final String outputFile = getOutputFile(task);
+			String taxonGroup = config.getTaxonGroup().getName().toUpperCase();
 			
 			boolean inheritValues = config.isInheritValues();
 			boolean generateAbsentPresent = config.isGenerateAbsentPresent();
 			
 			
-			final MatrixGeneration matrixGeneration = new ExtraJvmMatrixGeneration(input, outputFile, inheritValues, generateAbsentPresent, true);
-			//final MatrixGeneration matrixGeneration = new InJvmMatrixGeneration(input, outputFile, inheritValues, generateAbsentPresent, true);
+			final MatrixGeneration matrixGeneration = new ExtraJvmMatrixGeneration(input, taxonGroup, outputFile, inheritValues, generateAbsentPresent, true);
+			//final MatrixGeneration matrixGeneration = new InJvmMatrixGeneration(input, taxonGroup, outputFile, inheritValues, generateAbsentPresent, true);
 			activeProcess.put(config.getConfiguration().getId(), matrixGeneration);
 			final ListenableFuture<Void> futureResult = executorService.submit(matrixGeneration);
 			this.activeProcessFutures.put(config.getConfiguration().getId(), futureResult);
@@ -577,7 +581,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	    	}
 	    	
 	    	List<TaxonIdentification> taxonIdentifications = new LinkedList<TaxonIdentification>();
-	    	Map<RankData, Taxon> rankTaxaMap = new HashMap<RankData, Taxon>();
+	    	Map<TaxonIdentification, Taxon> rankTaxaMap = new HashMap<TaxonIdentification, Taxon>();
 	    	Map<Taxon, RowHead> taxonRowHeadMap = new HashMap<Taxon, RowHead>();
 	    	for(RowHead rowHead : rawMatrix.getRowHeads()) {
 	    		 TaxonIdentification taxonIdentification = 
@@ -585,22 +589,29 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	    		 taxonIdentifications.add(taxonIdentification);
 	    		 String description = getMorphologyDescription(rowHead.getSource().getSourceFile());
 	    		 Taxon taxon = createPlainTaxon(taxonIdentification, description);
-	    		 rankTaxaMap.put(taxonIdentification.getRankData().getLast(), taxon);
+	    		 rankTaxaMap.put(taxonIdentification, taxon);
 	    		 taxonRowHeadMap.put(taxon, rowHead);
 	    	 }
 	    	
 	    	for(TaxonIdentification taxonIdentification : taxonIdentifications) {
-		    	LinkedList<RankData> rankData = taxonIdentification.getRankData();
-		    	Taxon taxon = rankTaxaMap.get(rankData.getLast());
+	    		LinkedList<RankData> rankData = taxonIdentification.getRankData();
+		    	Taxon taxon = rankTaxaMap.get(taxonIdentification);
 		    	if(rankData.size() == 1) 
 		    		hierarchyTaxa.add(taxon);
 			    if(rankData.size() > 1) {
-			    	int parentRankIndex = rankData.size() - 2;
+			    	//int parentRankIndex = rankData.size() - 2;
 			    	Taxon parentTaxon = null;
-			    	while(parentTaxon == null && parentRankIndex >= 0) {
-				    	RankData parentRankData = rankData.get(parentRankIndex);
-			    		parentTaxon = rankTaxaMap.get(parentRankData);
-			    		parentRankIndex--;
+			    	//while(parentTaxon == null && parentRankIndex >= 0) {
+		    		LinkedList<RankData> parentRankDatas = new LinkedList<RankData>(rankData);
+		    		while(parentRankDatas.size() > 1) {
+			    		parentRankDatas.removeLast();
+			    		TaxonIdentification parentTaxonIdentificaiton = new TaxonIdentification(parentRankDatas, 
+			    				taxonIdentification.getAuthor(), taxonIdentification.getDate());
+				    	//RankData parentRankData = rankData.get(parentRankIndex);
+			    		parentTaxon = rankTaxaMap.get(parentTaxonIdentificaiton);
+			    		//parentRankIndex--;
+						if(parentTaxon != null)
+							break;
 			    	}
 			    	if(parentTaxon == null)
 			    		hierarchyTaxa.add(taxon);

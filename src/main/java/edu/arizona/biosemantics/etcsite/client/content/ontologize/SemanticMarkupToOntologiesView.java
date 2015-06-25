@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.client.content.semanticMarkup;
+package edu.arizona.biosemantics.etcsite.client.content.ontologize;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.ISemanticMarkupToOntologiesView.Presenter;
 import edu.arizona.biosemantics.oto2.ontologize.client.Ontologize;
 import edu.arizona.biosemantics.oto2.oto.client.Oto;
 

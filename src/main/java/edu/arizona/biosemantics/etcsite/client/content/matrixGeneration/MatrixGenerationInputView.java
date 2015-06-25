@@ -9,8 +9,11 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+
+import edu.arizona.biosemantics.common.biology.TaxonGroup;
 
 public class MatrixGenerationInputView extends Composite implements IMatrixGenerationInputView {
 
@@ -28,6 +31,9 @@ public class MatrixGenerationInputView extends Composite implements IMatrixGener
 	Label inputLabel;
 	
 	@UiField
+	ListBox glossaryListBox;
+	
+	@UiField
 	Button nextButton;
 	
 	@UiField
@@ -43,6 +49,9 @@ public class MatrixGenerationInputView extends Composite implements IMatrixGener
 	public MatrixGenerationInputView() {
 		super();
 		initWidget(uiBinder.createAndBindUi(this));
+		for(TaxonGroup taxonGroup : TaxonGroup.values()) {
+			this.glossaryListBox.addItem(taxonGroup.getDisplayName());
+		}
 	}
 
 	@UiHandler("inputButton") 
@@ -80,6 +89,15 @@ public class MatrixGenerationInputView extends Composite implements IMatrixGener
 	public void resetFields(){
 		this.taskNameTextBox.setText("");
 		this.inputLabel.setText("");
+		this.glossaryListBox.setSelectedIndex(getInitialGlossaryIndex());
+	}
+
+	private int getInitialGlossaryIndex() {
+		for(int i=0; i<TaxonGroup.values().length; i++) {
+			if(TaxonGroup.values()[i].equals(TaxonGroup.PLANT))
+				return i;
+		}
+		return 0;
 	}
 
 	@Override
@@ -90,5 +108,10 @@ public class MatrixGenerationInputView extends Composite implements IMatrixGener
 	@Override
 	public boolean isGenerateAbsentPresent() {
 		return generateAbsentPresentBox.getValue();
+	}
+	
+	@Override
+	public String getTaxonGroup() {
+		return glossaryListBox.getItemText(glossaryListBox.getSelectedIndex());
 	}
 }

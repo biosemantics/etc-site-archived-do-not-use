@@ -44,9 +44,5 @@ public interface ISemanticMarkupServiceAsync extends IHasTasksServiceAsync {
 	public void importOto(Task task, String termCategorization, String synonymy, AsyncCallback<Void> callback);
 	
 	public void sendToOto(AuthenticationToken token, Task task,	AsyncCallback<Void> callback);
-
-	public void ontologize(AuthenticationToken token, Task task, AsyncCallback<Task> callback);
-
-	public void downloadOntologize(AuthenticationToken token, Task task, AsyncCallback<String> callback);
 	
 }

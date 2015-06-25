@@ -60,6 +60,7 @@ public class DAOManager {
 		shareDAO.setUserDAO(userDAO);
 		filesInUseDAO.setTaskDAO(taskDAO);
 		matrixGenerationConfigurationDAO.setConfigurationDAO(configurationDAO);
+		matrixGenerationConfigurationDAO.setTaxonGroupDAO(taxonGroupDAO);
 		semanticMarkupConfigurationDAO.setConfigurationDAO(configurationDAO);
 		semanticMarkupConfigurationDAO.setTaxonGroupDAO(taxonGroupDAO);
 		taskConfigurationDAO.setSemanticMarkupConfigurationDAO(semanticMarkupConfigurationDAO);

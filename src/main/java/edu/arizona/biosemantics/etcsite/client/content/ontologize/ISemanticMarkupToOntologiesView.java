@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.client.content.semanticMarkup;
+package edu.arizona.biosemantics.etcsite.client.content.ontologize;
 
 import com.google.gwt.user.client.ui.IsWidget;
 

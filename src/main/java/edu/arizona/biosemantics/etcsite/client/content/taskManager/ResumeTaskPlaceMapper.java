@@ -7,13 +7,13 @@ import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGe
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationOutputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationProcessPlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationReviewPlace;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.SemanticMarkupToOntologiesPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupLearnPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupOutputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupParsePlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupPreprocessPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupReviewPlace;
-import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupToOntologiesPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonAlignPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonPlace;
@@ -36,8 +36,6 @@ public class ResumeTaskPlaceMapper {
 					return new SemanticMarkupLearnPlace(task);
 				case REVIEW_TERMS:
 					return new SemanticMarkupReviewPlace(task);
-				case TO_ONTOLOGIES:
-					return new SemanticMarkupToOntologiesPlace(task);
 				case PARSE_TEXT:
 					return new SemanticMarkupParsePlace(task);
 				case OUTPUT:

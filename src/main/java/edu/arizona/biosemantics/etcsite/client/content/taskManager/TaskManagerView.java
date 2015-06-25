@@ -60,8 +60,8 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 	Button deleteButton;
 	@UiField
 	Button shareButton;
-	@UiField
-	ListBox rewindListBox;
+	//@UiField
+	//ListBox rewindListBox;
 	
 	private Presenter presenter;
 	private ListDataProvider<TaskData> dataProvider;
@@ -84,7 +84,7 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 		rewindButton.setHeight("20px");
 		deleteButton.setHeight("20px");
 		shareButton.setHeight("20px");
-		rewindListBox.setEnabled(false);
+		//rewindListBox.setEnabled(false);
 	}
 	
 	private SimplePager createPager(CellTable<TaskData> cellTable) {
@@ -385,7 +385,8 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 	public void onRewind(ClickEvent e) {
 		List<TaskData> list = this.getSelectedTaskData();
 		if (list.size() == 1){
-			presenter.onRewind(list.get(0), rewindListBox.getValue(rewindListBox.getSelectedIndex()));
+			presenter.onRewind(list.get(0));
+			//presenter.onRewind(list.get(0), rewindListBox.getValue(rewindListBox.getSelectedIndex()));
 		} else {
 			//multiple selections. Show an error message or do nothing. 
 		}
@@ -460,41 +461,39 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 
 	private void setEnabledRewind(boolean value) {
 		this.rewindButton.setEnabled(value);
-		if(!value)
-			this.rewindListBox.clear();
-		this.rewindListBox.setEnabled(value);
+		//if(!value)
+		//	this.rewindListBox.clear();
+		//this.rewindListBox.setEnabled(value);
 	}
 
 	private void initRewind(TaskTypeEnum taskTypeEnum) {
-		this.rewindListBox.clear();
+		//this.rewindListBox.clear();
 		switch(taskTypeEnum) {
 		case MATRIX_GENERATION:
 			this.rewindButton.setEnabled(true);
-			this.rewindListBox.addItem(edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum.REVIEW.displayName());
-			this.rewindListBox.setEnabled(true);
+			//this.rewindListBox.addItem(edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum.REVIEW.displayName());
+			//this.rewindListBox.setEnabled(true);
 			break;
 		case SEMANTIC_MARKUP:
 			this.rewindButton.setEnabled(true);
-			this.rewindListBox.addItem(
-					edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum.REVIEW_TERMS.displayName());
-			this.rewindListBox.addItem(
-					edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum.TO_ONTOLOGIES.displayName());
-			this.rewindListBox.setEnabled(true);
+			//this.rewindListBox.addItem(
+			//		edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum.REVIEW_TERMS.displayName());
+			//this.rewindListBox.setEnabled(true);
 			break;
 		case TREE_GENERATION:
 			this.rewindButton.setEnabled(true);
-			this.rewindListBox.addItem(edu.arizona.biosemantics.etcsite.shared.model.treegeneration.TaskStageEnum.VIEW.displayName());
-			this.rewindListBox.setEnabled(true);
+			//this.rewindListBox.addItem(edu.arizona.biosemantics.etcsite.shared.model.treegeneration.TaskStageEnum.VIEW.displayName());
+			//this.rewindListBox.setEnabled(true);
 			break;
 		case TAXONOMY_COMPARISON:
 			this.rewindButton.setEnabled(true);
-			this.rewindListBox.addItem(edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison.TaskStageEnum.ALIGN.displayName());
-			this.rewindListBox.setEnabled(true);
+			//this.rewindListBox.addItem(edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison.TaskStageEnum.ALIGN.displayName());
+			//this.rewindListBox.setEnabled(true);
 		case VISUALIZATION:
 		default:
 			this.rewindButton.setEnabled(false);
-			this.rewindListBox.clear();
-			this.rewindListBox.setEnabled(false);
+			//this.rewindListBox.clear();
+			//this.rewindListBox.setEnabled(false);
 			break;
 		}
 	}

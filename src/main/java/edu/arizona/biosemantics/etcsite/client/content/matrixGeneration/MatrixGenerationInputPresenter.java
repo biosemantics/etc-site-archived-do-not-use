@@ -90,7 +90,7 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 		
 		final MessageBox box = Alerter.startLoading();
 		matrixGenerationService.start(Authentication.getInstance().getToken(), 
-			view.getTaskName(), inputFile, view.isInheritValues(), view.isGenerateAbsentPresent(), new AsyncCallback<Task>() {
+			view.getTaskName(), inputFile, view.getTaxonGroup(), view.isInheritValues(), view.isGenerateAbsentPresent(), new AsyncCallback<Task>() {
 			@Override
 			public void onSuccess(Task result) {
 				placeController.goTo(new MatrixGenerationProcessPlace(result));

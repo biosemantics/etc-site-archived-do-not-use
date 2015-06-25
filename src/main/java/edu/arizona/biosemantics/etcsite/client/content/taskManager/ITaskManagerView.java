@@ -11,7 +11,8 @@ public interface ITaskManagerView extends IsWidget {
 		void onShare(TaskData taskData);
 		void onDelete(TaskData taskData);
 		void onDelete(List<TaskData> list);
-		void onRewind(TaskData taskData, String string);
+		void onRewind(TaskData taskData);
+		//void onRewind(TaskData taskData, String string);
 		void onResume(TaskData taskData);
 		IsWidget getView();
 		void refresh();

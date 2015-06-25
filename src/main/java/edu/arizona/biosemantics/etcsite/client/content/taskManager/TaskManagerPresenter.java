@@ -250,10 +250,12 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 	}
 
 	@Override
-	public void onRewind(final TaskData taskData, String taskStage) {
+	//public void onRewind(final TaskData taskData, String taskStage) {
+	public void onRewind(final TaskData taskData) {
 		switch(taskData.getTask().getTaskType().getTaskTypeEnum()) {
 		case SEMANTIC_MARKUP:
-			TaskStageEnum taskStageEnum = TaskStageEnum.fromDisplayName(taskStage);
+			//TaskStageEnum taskStageEnum = TaskStageEnum.fromDisplayName(taskStage);
+			TaskStageEnum taskStageEnum = TaskStageEnum.REVIEW_TERMS;
 			if(taskStageEnum != null) {
 				switch(taskStageEnum) {
 				case REVIEW_TERMS:
@@ -262,19 +264,6 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 						@Override
 						public void onSuccess(Task result) {
 							placeController.goTo(new edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupReviewPlace(result));
-						}
-						@Override
-						public void onFailure(Throwable caught) {
-							Alerter.failedToGoToTaskStage(caught);
-						}
-					});
-					break;
-				case TO_ONTOLOGIES:
-					semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), taskData.getTask(), 
-							taskStageEnum, new AsyncCallback<Task>() {
-						@Override
-						public void onSuccess(Task result) {
-							placeController.goTo(new edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupToOntologiesPlace(result));
 						}
 						@Override
 						public void onFailure(Throwable caught) {

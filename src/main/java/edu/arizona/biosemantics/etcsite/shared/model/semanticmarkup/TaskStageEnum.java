@@ -7,7 +7,6 @@ public enum TaskStageEnum {
     LEARN_TERMS("Learn Terms"),
     REVIEW_TERMS("Review Terms"),
     PARSE_TEXT("Parse Text"),
-    TO_ONTOLOGIES("To Ontologies"), 
     OUTPUT("Output");
 
     private String displayName;

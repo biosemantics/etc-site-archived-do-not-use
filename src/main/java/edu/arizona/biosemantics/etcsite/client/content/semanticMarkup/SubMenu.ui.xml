@@ -30,7 +30,6 @@
 			<my:ImageLabel ui:field="learn" styleName="{style.subMenuEntry}" imagePath="images/Enumeration_unselected_4.gif" imageWidth="20px" imageHeight="20px" text="Learn" systemFolder="false"></my:ImageLabel>
 			<my:ImageLabel ui:field="review" styleName="{style.subMenuEntry}" imagePath="images/Enumeration_unselected_5.gif" imageWidth="20px" imageHeight="20px" text="Review" systemFolder="false"></my:ImageLabel>
 			<my:ImageLabel ui:field="parse" styleName="{style.subMenuEntry}" imagePath="images/Enumeration_unselected_6.gif" imageWidth="20px" imageHeight="20px" text="Parse" systemFolder="false"></my:ImageLabel>
-			<my:ImageLabel ui:field="toOntologies" styleName="{style.subMenuEntry}" imagePath="images/Enumeration_unselected_7.gif" imageWidth="20px" imageHeight="20px" text="To Ontologies" systemFolder="false"></my:ImageLabel>
 			<my:ImageLabel ui:field="output" styleName="{style.subMenuEntry}" imagePath="images/Enumeration_unselected_8.gif" imageWidth="20px" imageHeight="20px" text="Output" systemFolder="false"></my:ImageLabel>
 		</g:HorizontalPanel>
 	</g:VerticalPanel>

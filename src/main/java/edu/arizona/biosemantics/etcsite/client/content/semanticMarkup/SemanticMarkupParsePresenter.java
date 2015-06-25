@@ -12,6 +12,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.SemanticMarkupToOntologiesPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
 import edu.arizona.biosemantics.etcsite.client.event.FailedTasksEvent;
 import edu.arizona.biosemantics.etcsite.client.event.ResumableTasksEvent;
@@ -66,7 +67,7 @@ public class SemanticMarkupParsePresenter implements ISemanticMarkupParseView.Pr
 
 	@Override
 	public void onNext() {
-		semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), task, TaskStageEnum.TO_ONTOLOGIES,
+		semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), task, TaskStageEnum.OUTPUT,
 				new AsyncCallback<Task>() {
 			@Override
 			public void onSuccess(Task result) {

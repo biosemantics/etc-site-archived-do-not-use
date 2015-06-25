@@ -20,6 +20,7 @@ import java.util.Map;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
+import edu.arizona.biosemantics.etcsite.server.db.Query.QueryException;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.User;
 import edu.arizona.biosemantics.etcsite.shared.model.User.EmailPreferences;
@@ -205,7 +206,7 @@ public class UserDAO {
 			while (resultSet.next()) {
 				result.add(createShortUser(createUser(resultSet)));
 			}
-		}catch(Exception e) {
+		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't get users without given", e);
 		}
 		return result;
@@ -213,6 +214,40 @@ public class UserDAO {
 
 	public boolean hasUser(String email) {
 		return this.getUser(email) != null;
+	}
+
+	public List<edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection> getOntologizeCollections(int userId) {
+		List<edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection> collections = new LinkedList<edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection>();
+		try (Query query = new Query("SELECT * FROM etcsite_user_ontologize_collection WHERE user = ?")) {
+			query.setParameter(1, userId);
+			ResultSet result = query.execute();
+			while (result.next()) {
+				int collectionId = result.getInt("ontologize_collection_id");
+				String collectionSecret = result.getString("ontologize_collection_secret");
+				edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection collection = 
+						new edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection();
+				collection.setId(collectionId);
+				collection.setSecret(collectionSecret);
+				collections.add(collection);
+			}
+		} catch (Exception e) {
+			log(LogLevel.ERROR, "Couldn't get user", e);
+		}	
+		return collections;
+	}
+
+	public void insertOntologizeCollection(int userId, int collectionId, String collectionSecret) throws QueryException {
+		try(Query query = new Query(
+				"INSERT INTO `etcsite_user_ontologize_collection`(`user`, `ontologize_collection_id`, `ontologize_collection_secret`) VALUES" +
+				" (?, ?, ?)");) {
+				query.setParameter(1, userId);
+				query.setParameter(2, collectionId);
+				query.setParameter(3, collectionSecret);
+				query.execute();
+		} catch(QueryException e) {
+			log(LogLevel.ERROR, "Couldn't insert user ontologize collection", e);
+			throw e;
+		}
 	}
 
 }

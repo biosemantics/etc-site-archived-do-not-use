@@ -82,6 +82,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkup
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserNotFoundException;
 import edu.arizona.biosemantics.oto2.ontologize.server.rest.client.Client;
+import edu.arizona.biosemantics.oto2.ontologize.shared.model.Ontology;
 import edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Collection;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Context;
@@ -344,7 +345,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 							if(!futureResult.isCancelled()) {
 								task.setResumable(true);
 								//TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.TO_ONTOLOGIES.toString());
-								TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.TO_ONTOLOGIES.toString());
+								TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.OUTPUT.toString());
 								task.setTaskStage(newTaskStage);
 								daoManager.getTaskDAO().updateTask(task);
 								sendFinishedParsingEmail(task);	
@@ -779,8 +780,6 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 					break;
 				case REVIEW_TERMS:
 					break;
-				case TO_ONTOLOGIES:
-					break;
 				default:
 					break;
 				}
@@ -1011,135 +1010,5 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		daoManager.getSemanticMarkupConfigurationDAO().updateSemanticMarkupConfiguration(config);
 	}
 
-	@Override
-	public Task ontologize(AuthenticationToken token, Task task) throws SemanticMarkupException {
-		SemanticMarkupConfiguration config = getSemanticMarkupConfiguration(task);
-		String input = config.getInput();
-				
-		try(Client client = new Client(Configuration.ontologizeUrl)) {
-			client.open();
-			MarkupResultReader reader = new MarkupResultReader();
-			String charaParserOutputDirectory = Configuration.charaparser_tempFileBase + File.separator + task.getId() + File.separator + "out";
-			File charaparserOutputFile = new File(charaParserOutputDirectory);
-			List<MarkupResultReader.BiologicalEntity> structures = reader.getBiologicalEntities(charaparserOutputFile);
-			List<MarkupResultReader.Character> characters = reader.getCharacters(charaparserOutputFile, false);
-			List<MarkupResultReader.Character> rangeValueCharacters = reader.getRangeValueCharacters(charaparserOutputFile, false);
-			
-			List<edu.arizona.biosemantics.oto2.ontologize.shared.model.Term> terms = 
-					new LinkedList<edu.arizona.biosemantics.oto2.ontologize.shared.model.Term>();					
-			Set<String> containedStructures = new HashSet<String>();
-			for(BiologicalEntity structure : structures) {
-				if(!containedStructures.contains(structure.getName() + structure.getIri())) {
-					terms.add(new edu.arizona.biosemantics.oto2.ontologize.shared.model.Term(
-							structure.getName(), structure.getIri(), "/structure", "structure"));
-					containedStructures.add(structure.getName() + structure.getIri());
-				}
-			}
-			Set<String> containedCharacters = new HashSet<String>();
-			for(MarkupResultReader.Character character : characters) {
-				//filter comparison values such as "wider than long". "twice of leaf"
-				if(character.getValue().split("\\W+").length < 3) {
-					if(character.getValue().equals("distinct")) {
-						System.out.println(character.getValue() + character.getCategory() + character.getIri());
-					}
-					if(!containedCharacters.contains(character.getValue() + character.getCategory() + character.getIri())) {
-						terms.add(new edu.arizona.biosemantics.oto2.ontologize.shared.model.Term(
-								character.getValue(), character.getIri(), "/character/" + character.getCategory(), character.getCategory()));
-						containedCharacters.add(character.getValue() + character.getCategory() + character.getIri());
-					}
-				}
-			}
-			edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection collection = 
-					new edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection(
-							task.getName(), 
-							edu.arizona.biosemantics.common.biology.TaxonGroup.valueOf(config.getTaxonGroup().getName().toUpperCase()),
-							String.valueOf(task.getId()), 
-							terms);
-			collection = client.post(collection).get();
-			config.setOntologizeUploadId(collection.getId());
-			config.setOntologizeSecret(collection.getSecret());
-			daoManager.getSemanticMarkupConfigurationDAO().updateSemanticMarkupConfiguration(config);
-						
-			List<edu.arizona.biosemantics.oto2.ontologize.shared.model.Context> contexts = 
-					new LinkedList<edu.arizona.biosemantics.oto2.ontologize.shared.model.Context>();
-			List<String> files = new LinkedList<String>();
-			try {
-				files = fileService.getDirectoriesFiles(token, input);
-			} catch (PermissionDeniedException e) {
-				throw new SemanticMarkupException(task);
-			}
-			for(String file : files) {
-				List<Description> descriptions = getDescriptions(token, input + File.separator + file);
-				for(Description description : descriptions) {
-					try {
-						contexts.add(new edu.arizona.biosemantics.oto2.ontologize.shared.model.Context(collection.getId(), 
-								getTaxonIdentification(token, input + File.separator + file), 
-								description.getContent()));
-					} catch (PermissionDeniedException | GetFileContentFailedException e) {
-						throw new SemanticMarkupException(task);
-					}
-				}
-			}
-			try {
-				List<edu.arizona.biosemantics.oto2.ontologize.shared.model.Context> result = 
-						client.post(collection.getId(), collection.getSecret(), contexts).get();
-			} catch (InterruptedException | ExecutionException e) {
-				throw new SemanticMarkupException(task);
-			}
-			
-			return task;
-		} catch (InterruptedException | ExecutionException | JDOMException | IOException e) {
-			log(LogLevel.ERROR, "Couldn't prepare ontologize", e);
-			throw new SemanticMarkupException();
-		}		
-	}
 
-	@Override
-	public String downloadOntologize(AuthenticationToken token, Task task) throws SemanticMarkupException {
-		final SemanticMarkupConfiguration config = getSemanticMarkupConfiguration(task);
-		int uploadId = config.getOntologizeUploadId();
-		String secret = config.getOntologizeSecret();
-		
-		edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection collection;
-		try {
-			collection = ontologizeCollectionService.get(uploadId, secret);
-		} catch (Exception e) {
-			log(LogLevel.ERROR, "Couldn't get oto collection", e);
-			throw new SemanticMarkupException(task);
-		}
-		
-		String zipSource = Configuration.compressedFileBase + File.separator + token.getUserId() + File.separator + "ontologize" + 
-				File.separator + task.getId() + File.separator + task.getName() + "_ontologies";
-		File zipSourceFile = new File(zipSource);
-		try {
-			FileUtils.deleteDirectory(zipSourceFile);
-		} catch (IOException e) {
-			log(LogLevel.ERROR, "Couldn't clean/remove directory to zip", e);
-			throw new SemanticMarkupException(task);
-		}
-		zipSourceFile.mkdirs();
-		
-		String source = edu.arizona.biosemantics.oto2.ontologize.server.Configuration.collectionOntologyDirectory + 
-				File.separator + uploadId;
-		File sourceFile = new File(source);
-		for(File file : sourceFile.listFiles()) {
-			if(file.isDirectory()) {
-				try {
-					
-					FileUtils.copyDirectoryToDirectory(file, zipSourceFile);
-				} catch (IOException e) {
-					log(LogLevel.ERROR, "Couldn't copy ontology file", e);
-					throw new SemanticMarkupException(task);
-				}
-			}
-		}
-		
-		String zipFilePath = Configuration.compressedFileBase + File.separator + token.getUserId() + File.separator + "ontologize" + 
-				File.separator + task.getId() + File.separator + task.getName() + "_ontologies.zip";
-		Zipper zipper = new Zipper();
-		zipFilePath = zipper.zip(zipSource, zipFilePath);
-		if(zipFilePath != null)
-			return zipFilePath;
-		throw new SemanticMarkupException("Saving failed");
-	}
 }

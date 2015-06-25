@@ -73,7 +73,8 @@ INSERT INTO `etcsite_taxon_group` (`id`, `name`, `created`) VALUES
 (5, 'Plant', '2013-10-22 01:07:24'),
 (6, 'Gastropods', '2013-10-22 01:07:24'),
 (7, 'Cnidaria', '2013-10-22 01:07:24'),
-(8, 'Empty', '2013-10-22 01:07:24');
+(8, 'Spider', '2013-10-22 01:07:24'),
+(9, 'Empty', '2013-10-22 01:07:24');
 
 -- --------------------------------------------------------
 
@@ -84,10 +85,12 @@ INSERT INTO `etcsite_taxon_group` (`id`, `name`, `created`) VALUES
 CREATE TABLE IF NOT EXISTS `etcsite_matrixgenerationconfigurations` (
   `configuration` bigint(20) unsigned DEFAULT NULL,
   `input` varchar(200) DEFAULT NULL,
+  `taxon_group` bigint(20) unsigned DEFAULT NULL,
   `output` varchar(200) DEFAULT NULL,
   `inheritvalues` tinyint(1) DEFAULT NULL,
   `generateabsentpresent` tinyint(1) DEFAULT NULL,
-  KEY `configurations_matrixgenerationconfigurations_CON` (`configuration`)
+  KEY `configurations_matrixgenerationconfigurations_CON` (`configuration`),
+  KEY `taxon_group_matrixgenerationconfigurations_CON` (`taxon_group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -129,11 +132,9 @@ CREATE TABLE IF NOT EXISTS `etcsite_semanticmarkupconfigurations` (
   `numberofinputfiles` int(11) DEFAULT NULL,
   `taxon_group` bigint(20) unsigned DEFAULT NULL,
   `use_empty_glossary` tinyint(1) DEFAULT NULL,
-  `oto_uploadid` int(11) DEFAULT NULL,
+  `oto_uploadid` int(11) DEFAULT -1,
   `oto_secret` varchar(100) DEFAULT NULL,
   `oto_created_dataset` tinyint(1) DEFAULT NULL,
-  `ontologize_uploadid` int(11) DEFAULT NULL,
-  `ontologize_secret` varchar(100) DEFAULT NULL,
   `output` varchar(200) DEFAULT NULL,
   KEY `configurations_semanticmarkupconfigurations_CON` (`configuration`),
   KEY `taxon_group_semanticmarkupconfigurations_CON` (`taxon_group`)
@@ -241,7 +242,6 @@ INSERT INTO `etcsite_taskstages` (`id`, `name`, `tasktype`, `created`) VALUES
 (19, 'PROCESS', 7, '2013-11-19 22:30:35'),
 (20, 'OUTPUT', 7, '2013-11-19 22:30:35'),
 (21, 'REVIEW', 7, '2013-11-19 22:30:35'),
-(22, 'TO_ONTOLOGIES', 6, '2014-01-15 22:30:35'),
 (23, 'INPUT', 8, '2014-01-15 22:30:35'),
 (24, 'VIEW', 8, '2014-01-15 22:30:35'), 
 (25, 'INPUT', 9, '2014-01-15 22:30:35'),
@@ -350,7 +350,18 @@ CREATE TABLE IF NOT EXISTS `etcsite_users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `id_2` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1068 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;
+
+CREATE TABLE IF NOT EXISTS `etcsite_user_ontologize_collection` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user` bigint(20) unsigned NOT NULL,
+  `ontologize_collection_id` bigint(20) unsigned NOT NULL,
+  `ontologize_collection_secret` varchar(100) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
+  UNIQUE KEY `user_ontologize_collection` (`user`, `ontologize_collection_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;
 
 --
 -- Table structure for table `passwordresetrequests`
@@ -387,7 +398,8 @@ ALTER TABLE `etcsite_tasksoutputfiles`
 -- Constraints for table `matrixgenerationconfigurations`
 --
 ALTER TABLE `etcsite_matrixgenerationconfigurations`
-  ADD CONSTRAINT `configurations_matrixgenerationconfigurations_CON` FOREIGN KEY (`configuration`) REFERENCES `etcsite_configurations` (`id`);
+  ADD CONSTRAINT `configurations_matrixgenerationconfigurations_CON` FOREIGN KEY (`configuration`) REFERENCES `etcsite_configurations` (`id`),
+  ADD CONSTRAINT `taxon_group_matrixgenerationconfigurations_CON` FOREIGN KEY (`taxon_group`) REFERENCES `etcsite_taxon_group` (`id`);
 
 --
 -- Constraints for table `pipelineconfigurations`

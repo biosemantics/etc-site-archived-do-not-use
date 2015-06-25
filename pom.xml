@@ -86,13 +86,13 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.37-SNAPSHOT</version>
+		  <version>0.0.39-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.37-SNAPSHOT</version>
+		  <version>0.0.39-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
@@ -212,7 +212,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>semantic-markup</artifactId>
-			<version>0.1.132-SNAPSHOT</version>
+			<version>0.1.140-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>app</artifactId>
@@ -245,19 +245,41 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize</artifactId>
-		  <version>0.0.7-SNAPSHOT</version>
+		  <version>0.0.9-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize</artifactId>
-		  <version>0.0.7-SNAPSHOT</version>
+		  <version>0.0.9-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.matrixgeneration</groupId>
 		  <artifactId>matrix-generation</artifactId>
-		  <version>0.1.38-SNAPSHOT</version>
+		  <version>0.1.42-SNAPSHOT</version>
+		  <exclusions>
+		  	<exclusion>
+		  		<artifactId>owlapi-tools</artifactId>
+		  		<groupId>net.sourceforge.owlapi</groupId>
+		  	</exclusion>
+		  	<exclusion>
+		  		<artifactId>owlapi-apibinding</artifactId>
+		  		<groupId>net.sourceforge.owlapi</groupId>
+		  	</exclusion>
+		  	<exclusion>
+		  		<artifactId>owlapi-api</artifactId>
+		  		<groupId>net.sourceforge.owlapi</groupId>
+		  	</exclusion>
+		  	<exclusion>
+		  		<artifactId>owlapi-impl</artifactId>
+		  		<groupId>net.sourceforge.owlapi</groupId>
+		  	</exclusion>
+		  	<exclusion>
+		  		<artifactId>owlapi-parsers</artifactId>
+		  		<groupId>net.sourceforge.owlapi</groupId>
+		  	</exclusion>
+		  </exclusions>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics</groupId>
@@ -329,12 +351,12 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>taxonomy</artifactId>
-			<version>0.0.14-SNAPSHOT</version>
+			<version>0.0.17-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>taxonomy</artifactId>
-			<version>0.0.14-SNAPSHOT</version>
+			<version>0.0.17-SNAPSHOT</version>
 			<classifier>sources</classifier>
 		</dependency>
 		<!-- Neeeded For JavaEnvUtils.getJreExecutable(), even if removed no errors are displayed -->
@@ -369,13 +391,13 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.common</groupId>
 		  <artifactId>biology</artifactId>
-		  <version>0.0.3-SNAPSHOT</version>
+		  <version>0.0.6-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.common</groupId>
 		  <artifactId>biology</artifactId>
-		  <version>0.0.3-SNAPSHOT</version>
+		  <version>0.0.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.euler</groupId>
@@ -385,24 +407,24 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.euler</groupId>
 			<artifactId>io</artifactId>
-			<version>0.0.8-SNAPSHOT</version>
+			<version>0.0.9-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.euler</groupId>
 		  <artifactId>alignment</artifactId>
-		  <version>0.0.44-SNAPSHOT</version>
+		  <version>0.0.45-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.euler</groupId>
 		  <artifactId>alignment</artifactId>
-		  <version>0.0.44-SNAPSHOT</version>
+		  <version>0.0.45-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		<groupId>edu.arizona.biosemantics.oto</groupId>
 		<artifactId>oto-client</artifactId>
-		<version>0.0.49-SNAPSHOT</version>
+		<version>0.0.50-SNAPSHOT</version>
 			</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
@@ -412,12 +434,12 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.oto</groupId>
 			<artifactId>oto-model</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto</groupId>
 		  <artifactId>oto-model</artifactId>
-		  <version>0.0.2-SNAPSHOT</version>
+		  <version>0.0.3-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 	</dependencies>

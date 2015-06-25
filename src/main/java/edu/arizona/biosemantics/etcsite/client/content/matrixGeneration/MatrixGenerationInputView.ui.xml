@@ -102,6 +102,31 @@
 						</g:HorizontalPanel>
 					</g:VerticalPanel>
 					<g:VerticalPanel styleName="{style.subMenuEntry}">
+						<g:HorizontalPanel styleName="inputForm">
+							<g:VerticalPanel styleName="{style.firstColumn}">
+								<g:cell verticalAlignment="ALIGN_TOP">
+									<g:Label>Select Taxon Group:</g:Label>
+								</g:cell>
+<!-- 								<g:InlineLabel styleName="{style.note}"> 
+ 									select taxon group relevant 
+ 								</g:InlineLabel> 
+ 								<g:InlineLabel styleName="{style.note}"> 
+ 									to your text. 
+ 								</g:InlineLabel> -->
+							</g:VerticalPanel>
+							<g:cell verticalAlignment="ALIGN_MIDDLE">
+								<g:ListBox ui:field="glossaryListBox"
+									visibleItemCount="1"></g:ListBox>
+							</g:cell>
+						</g:HorizontalPanel>
+						<g:HorizontalPanel styleName="inputForm">
+						<g:InlineLabel styleName="{style.note} DescriptionFont">
+						Select taxon group relevant to your text.
+						</g:InlineLabel>
+								
+						</g:HorizontalPanel>
+					</g:VerticalPanel>
+					<g:VerticalPanel styleName="{style.subMenuEntry}">
 						<g:HorizontalPanel>
 							<g:VerticalPanel styleName="{style.firstColumn}">
 								<g:cell verticalAlignment="ALIGN_TOP">

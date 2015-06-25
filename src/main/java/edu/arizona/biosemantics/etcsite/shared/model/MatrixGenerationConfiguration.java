@@ -10,12 +10,14 @@ public class MatrixGenerationConfiguration extends AbstractTaskConfiguration imp
 	private String output;
 	private boolean inheritValues;
 	private boolean generateAbsentPresent;
+	private TaxonGroup taxonGroup;
 
 	public MatrixGenerationConfiguration () { }
 	
-	public MatrixGenerationConfiguration(Configuration configuration, String input, String output, boolean inheritValues, boolean generateAbsentPresent) {
+	public MatrixGenerationConfiguration(Configuration configuration, String input, TaxonGroup taxonGroup, String output, boolean inheritValues, boolean generateAbsentPresent) {
 		super(configuration);
 		this.input = input;
+		this.taxonGroup = taxonGroup;
 		this.output = output;
 		this.inheritValues = inheritValues;
 		this.generateAbsentPresent = generateAbsentPresent;
@@ -66,5 +68,13 @@ public class MatrixGenerationConfiguration extends AbstractTaskConfiguration imp
 		result.add(this.getOutput());
 		return result;
 	}
-	
+
+	public void setTaxonGroup(TaxonGroup taxonGroup) {
+		this.taxonGroup = taxonGroup;
+	}
+
+	public TaxonGroup getTaxonGroup() {
+		return taxonGroup;
+	}
+		
 }

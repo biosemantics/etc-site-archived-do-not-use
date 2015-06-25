@@ -18,5 +18,6 @@ public interface IMatrixGenerationInputView extends IsWidget {
 	void resetFields();
 	boolean isInheritValues();
 	boolean isGenerateAbsentPresent();
+	String getTaxonGroup();
 
 }

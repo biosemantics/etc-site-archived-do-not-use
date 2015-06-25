@@ -44,14 +44,12 @@ public class SemanticMarkupConfigurationDAO {
 		boolean useEmptyGlossary = result.getBoolean(5);
 		int otoUploadId = result.getInt(6);
 		String otoSecret = result.getString(7);
-		int ontologizeUploadId = result.getInt(8);
-		String ontologizeSecret = result.getString(9);
-		boolean otoCreatedDataset = result.getBoolean(10);
-		String output = result.getString(11);
+		boolean otoCreatedDataset = result.getBoolean(8);
+		String output = result.getString(9);
 		Configuration configuration = configurationDAO.getConfiguration(configurationId);
 		TaxonGroup taxonGroup = taxonGroupDAO.getTaxonGroup(taxonGroupId);
 		return new SemanticMarkupConfiguration(configuration, input, numberOfInputFiles, taxonGroup, useEmptyGlossary, 
-				otoUploadId, otoSecret, otoCreatedDataset, ontologizeUploadId, ontologizeSecret, output);
+				otoUploadId, otoSecret, otoCreatedDataset, output);
 	}
 
 	public SemanticMarkupConfiguration addSemanticMarkupConfiguration(SemanticMarkupConfiguration semanticMarkupConfiguration) {
@@ -63,8 +61,8 @@ public class SemanticMarkupConfigurationDAO {
 				Configuration configuration = configurationDAO.getConfiguration(generatedKeys.getInt(1));
 				try(Query semanticMarkupQuery = new Query("INSERT INTO `etcsite_semanticmarkupconfigurations` " +
 						"(`configuration`, `input`, `numberofinputfiles`, `taxon_group`, `use_empty_glossary`,  `oto_uploadid`, "
-						+ "`oto_secret`, `oto_created_dataset`, `ontologize_uploadid`, `ontologize_secret`, `output`)" +
-						" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+						+ "`oto_secret`, `oto_created_dataset`, `output`)" +
+						" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
 					semanticMarkupQuery.setParameter(1, configuration.getId());
 					semanticMarkupQuery.setParameter(2, semanticMarkupConfiguration.getInput());
 					semanticMarkupQuery.setParameter(3, semanticMarkupConfiguration.getNumberOfInputFiles());
@@ -73,9 +71,7 @@ public class SemanticMarkupConfigurationDAO {
 					semanticMarkupQuery.setParameter(6, semanticMarkupConfiguration.getOtoUploadId());
 					semanticMarkupQuery.setParameter(7, semanticMarkupConfiguration.getOtoSecret());
 					semanticMarkupQuery.setParameter(8, semanticMarkupConfiguration.isOtoCreatedDataset());
-					semanticMarkupQuery.setParameter(9, semanticMarkupConfiguration.getOntologizeUploadId());
-					semanticMarkupQuery.setParameter(10, semanticMarkupConfiguration.getOntologizeSecret());
-					semanticMarkupQuery.setParameter(11, semanticMarkupConfiguration.getOutput());
+					semanticMarkupQuery.setParameter(9, semanticMarkupConfiguration.getOutput());
 					
 					semanticMarkupQuery.execute();
 				}
@@ -96,13 +92,11 @@ public class SemanticMarkupConfigurationDAO {
 		int otoUploadId = semanticMarkupConfiguration.getOtoUploadId();
 		String otoSecret = semanticMarkupConfiguration.getOtoSecret();
 		boolean otoCreatedDataset = semanticMarkupConfiguration.isOtoCreatedDataset();
-		int ontologizeUploadId = semanticMarkupConfiguration.getOntologizeUploadId();
-		String ontologizeSecret = semanticMarkupConfiguration.getOntologizeSecret();
 		int numberOfInputFiles = semanticMarkupConfiguration.getNumberOfInputFiles();
 		try (Query query = new Query("UPDATE etcsite_semanticmarkupconfigurations SET input = ?, numberofinputfiles = ?, "
 				+ "taxon_group = ?, use_empty_glossary = ?, " +
 				"oto_uploadid = ?, oto_secret = ?, oto_created_dataset = ?,"
-				+ " ontologize_uploadid = ?, ontologize_secret = ?, output = ? WHERE configuration = ?")) {
+				+ " output = ? WHERE configuration = ?")) {
 			query.setParameter(1, input);
 			query.setParameter(2, numberOfInputFiles);
 			query.setParameter(3, glossaryId);
@@ -110,10 +104,8 @@ public class SemanticMarkupConfigurationDAO {
 			query.setParameter(5, otoUploadId);
 			query.setParameter(6, otoSecret);
 			query.setParameter(7, otoCreatedDataset);
-			query.setParameter(8, ontologizeUploadId);
-			query.setParameter(9, ontologizeSecret);
-			query.setParameter(10, output);
-			query.setParameter(11, configuration.getId());
+			query.setParameter(8, output);
+			query.setParameter(9, configuration.getId());
 			query.execute();
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't update semantic markup configuration", e);
