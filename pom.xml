@@ -227,7 +227,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.85-SNAPSHOT</version>
+		  <version>0.0.86-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		  <exclusions>
 		  	<exclusion>
@@ -239,7 +239,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.85-SNAPSHOT</version>
+		  <version>0.0.86-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
