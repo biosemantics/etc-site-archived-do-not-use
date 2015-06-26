@@ -588,7 +588,9 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	    				 rowHead.getSource().getTaxonIdentification();
 	    		 taxonIdentifications.add(taxonIdentification);
 	    		 String description = getMorphologyDescription(rowHead.getSource().getSourceFile());
-	    		 Taxon taxon = createPlainTaxon(taxonIdentification, description);
+	    		 
+	    		 //TODO: Integrate rank authority and date
+	    		 Taxon taxon = new Taxon(taxonIdentification, description);
 	    		 rankTaxaMap.put(taxonIdentification, taxon);
 	    		 taxonRowHeadMap.put(taxon, rowHead);
 	    	 }
@@ -698,13 +700,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		TaxonIdentification result = new TaxonIdentification(rankData, author.split("=")[1], date.split("=")[1]);
 		return result;
 	}
-
-	//TODO: Integrate rank authority and date
-	private Taxon createPlainTaxon(TaxonIdentification taxonName, String description) {
-		RankData lowestRank = taxonName.getRankData().getLast();
-		return new Taxon(lowestRank.getRank(), lowestRank.getName(), taxonName.getAuthor(), taxonName.getDate(), description);
-	}
-
+	
 	private String getCSVMatrix(TaxonMatrix matrix) throws IOException {
 		//TODO: Add RankData authority and date
 		try(StringWriter stringWriter = new StringWriter()) {
@@ -736,7 +732,9 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 
 	private String getTaxonName(Taxon taxon) {
-		String name = "";
+		//return taxon.getFullName();
+		
+		/*String name = "";
 		ArrayList<Taxon> taxonPath = new ArrayList<Taxon>();
 		Taxon current = taxon;
 		taxonPath.add(taxon);
@@ -749,6 +747,19 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		while(it.hasPrevious()) {
 			current = it.previous();
 			name += current.getRank() + "=" + current.getName() + ";";
+		}
+		name = name.substring(0, name.length() - 1);
+		name += ":";
+		name += "author=" + taxon.getAuthor() + ",";
+		name += "date=" + taxon.getYear();
+	
+		return name;*/
+		
+		String name = "";
+		
+		LinkedList<RankData> rankDatas = taxon.getTaxonIdentification().getRankData();
+		for(RankData rankData : rankDatas) {
+			name += rankData.getRank() + "=" + rankData.getName() + ";";
 		}
 		name = name.substring(0, name.length() - 1);
 		name += ":";
