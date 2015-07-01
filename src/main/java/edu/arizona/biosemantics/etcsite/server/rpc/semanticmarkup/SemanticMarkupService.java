@@ -45,6 +45,7 @@ import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Emailer;
 import edu.arizona.biosemantics.etcsite.server.Zipper;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
+import edu.arizona.biosemantics.etcsite.server.db.SemanticMarkupDBDAO;
 import edu.arizona.biosemantics.etcsite.server.rpc.auth.AdminAuthenticationToken;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.FileService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.access.FileAccessService;
@@ -997,6 +998,14 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				}
 			}
 		}
+		
+		//replace in DB of learn because parse step picks up from there
+		renameTermInSemanticMarkupDB(task, term, newName);
+	}
+
+	private void renameTermInSemanticMarkupDB(Task task, String term, String newName) {
+		SemanticMarkupDBDAO semanticMarkupDBDAO = daoManager.getSemanticMarkupDBDAO();
+		semanticMarkupDBDAO.renameTerm(String.valueOf(task.getId()), term, newName);
 	}
 
 	@Override

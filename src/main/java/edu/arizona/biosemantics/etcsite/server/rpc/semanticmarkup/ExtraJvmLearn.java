@@ -151,7 +151,7 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 			log(LogLevel.ERROR, "Semantic Markup Learn failed.");
 			throw new SemanticMarkupException();
 		}
-		DatasetPrefix datasetPrefix = daoManager.getDatasetPrefixDAO().getDatasetPrefix(tablePrefix);
+		DatasetPrefix datasetPrefix = daoManager.getSemanticMarkupDBDAO().getDatasetPrefix(tablePrefix);
 		if(datasetPrefix == null)
 			throw new SemanticMarkupException();
 		LearnResult result = new LearnResult(datasetPrefix.getOtoUploadId(), datasetPrefix.getOtoSecret());

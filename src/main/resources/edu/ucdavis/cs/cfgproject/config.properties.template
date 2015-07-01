@@ -1,2 +1,4 @@
 valueSeparator=|
-columnSeparator=;
+columnSeparator=,
+quoteCharacter="
+escapeCharacter=\

@@ -1,9 +1,13 @@
 package edu.arizona.biosemantics.etcsite.server.db;
 
+import java.io.IOException;
+
+import edu.arizona.biosemantics.common.log.LogLevel;
+
 public class DAOManager {
 
 	private ConfigurationDAO configurationDAO;
-	private DatasetPrefixDAO datasetPrefixDAO;
+	private SemanticMarkupDBDAO semanticMarkupDBDAO;
 	private FilesInUseDAO filesInUseDAO;
 	private FileTypeDAO fileTypeDAO;
 	private TaxonGroupDAO taxonGroupDAO;
@@ -25,7 +29,11 @@ public class DAOManager {
 	public DAOManager() {
 		configurationDAO = new ConfigurationDAO();
 		userDAO = new UserDAO();
-		datasetPrefixDAO = new DatasetPrefixDAO();
+		try {
+			semanticMarkupDBDAO = new SemanticMarkupDBDAO();
+		} catch (IOException e) {
+			log(LogLevel.ERROR, "Could not instantiate SemanticMarkupDBDAO", e);
+		}
 		taxonGroupDAO = new TaxonGroupDAO();
 		passwordResetRequestDAO = new PasswordResetRequestDAO();
 		tasksOutputFilesDAO = new TasksOutputFilesDAO();
@@ -77,8 +85,8 @@ public class DAOManager {
 		return configurationDAO;
 	}
 
-	public DatasetPrefixDAO getDatasetPrefixDAO() {
-		return datasetPrefixDAO;
+	public SemanticMarkupDBDAO getSemanticMarkupDBDAO() {
+		return semanticMarkupDBDAO;
 	}
 
 	public FilesInUseDAO getFilesInUseDAO() {
