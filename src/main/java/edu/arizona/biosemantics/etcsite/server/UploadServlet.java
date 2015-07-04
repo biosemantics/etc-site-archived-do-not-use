@@ -17,6 +17,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
+import java.nio.charset.StandardCharsets;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,18 +31,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
-
-/**
- * This is an example of how to use UploadAction class.
- * 
- * This servlet saves all received files in a temporary folder, and deletes them
- * when the user sends a remove request.
- * 
- * @author Manolo Carrasco Mo�ino
- * 
- */
 public class UploadServlet extends UploadAction {
 
 	private static final long serialVersionUID = 1L;
@@ -96,33 +93,45 @@ public class UploadServlet extends UploadAction {
 	private String uploadTextFiles(List<FileItem> sessionFiles, String target) {
 		String response = "";
 		int numberNotAdded = 0;
+		List<String> writeFiles = new LinkedList<String>();
 		List<String> fileAlreadyExists = new LinkedList<String>();
+		List<String> invalidEncoding = new LinkedList<String>();
+		
 		for (FileItem item : sessionFiles) {
 			if (false == item.isFormField()) {				
 					File file = new File(target + File.separator + item.getName());
 					if(!file.exists()) {
-						String fileContent;
-						try {
-							fileContent = item.getString("UTF-8");
+						if(isValidUTF8(item)) {
+							String fileContent;
 							try {
-									file.createNewFile();
-									item.write(file);
-									receivedFiles.put(item.getFieldName(), file);
-									receivedContentTypes.put(item.getFieldName(),
-												item.getContentType());
-								} catch(IOException e) {
-									String message = "Couldn't create file";
-									log(message, e);
-									log(LogLevel.ERROR, message, e);
-								} catch(Exception e) {
-									String message = "Couldn't write file";
-									log(message, e);
-									log(LogLevel.ERROR, message, e);
-								}
-						} catch (UnsupportedEncodingException e) {
-							String message = "Couldn't get UTF-8 encoding";
-							log(message, e);
-							log(LogLevel.ERROR, message, e);
+								fileContent = item.getString("UTF-8");
+								try {
+										file.createNewFile();
+										item.write(file);
+										receivedFiles.put(item.getFieldName(), file);
+										receivedContentTypes.put(item.getFieldName(),
+													item.getContentType());
+									} catch(IOException e) {
+										String message = "Couldn't create file";
+										log(message, e);
+										log(LogLevel.ERROR, message, e);
+										numberNotAdded++;
+										writeFiles.add(item.getName());
+									} catch(Exception e) {
+										String message = "Couldn't write file";
+										log(message, e);
+										log(LogLevel.ERROR, message, e);
+										numberNotAdded++;
+										writeFiles.add(item.getName());
+									}
+							} catch (UnsupportedEncodingException e) {
+								String message = "Couldn't get UTF-8 encoding";
+								log(message, e);
+								log(LogLevel.ERROR, message, e);
+							}
+						} else {
+							numberNotAdded++;
+							invalidEncoding.add(item.getName());
 						}
 					} else {
 						numberNotAdded++;
@@ -132,16 +141,24 @@ public class UploadServlet extends UploadAction {
 			}
 		}
 		if(numberNotAdded == 1)
-			response += numberNotAdded + " file was not added.";
+			response += numberNotAdded + " file was not added due to invalid file format and or name collisions.";
 		if(numberNotAdded > 1)
-			response += numberNotAdded + " files were not added.";
-		String allFiles = " "; //Do not remove this space - used in client side processing of server response
-		String allExistingFiles = " "; //Do not remove this space - used in client side processing of server response
-		if(fileAlreadyExists.size() > 0){
-			allExistingFiles = StringUtils.join(fileAlreadyExists, '|');
+			response += numberNotAdded + " files were not added due to invalid file format and or name collision.";
+		String writeFailedFiles = " "; //Do not remove this space - used in client side processing of server response
+		String existingFiles = " "; //Do not remove this space - used in client side processing of server response
+		String invalidFormatFiles = " ";
+		String invalidEncodingFiles = " ";
+		if(writeFiles.size() > 0){
+			writeFailedFiles = StringUtils.join(writeFiles, '|');
 		}
-		if(fileAlreadyExists.size()>0){
-			response += "#"+allFiles+"#"+allExistingFiles+"#";
+		if(fileAlreadyExists.size() > 0){
+			existingFiles = StringUtils.join(fileAlreadyExists, '|');
+		}
+		if(invalidEncoding.size() > 0) {
+			invalidEncodingFiles = StringUtils.join(invalidEncoding, '|');
+		}
+		if(writeFiles.size() > 0 || fileAlreadyExists.size() > 0 || invalidEncoding.size() > 0){
+			response += "#" + writeFailedFiles + "#" + existingFiles + "#" + invalidFormatFiles + "#" + invalidEncodingFiles + "#";
 		}
 		return response;
 	}
@@ -161,25 +178,29 @@ public class UploadServlet extends UploadAction {
 		FileItem item = copySessionFiles.get(0);
 		File file = new File(target + File.separator + item.getName());
 		if(!file.exists()) {
-			String fileContent;
-			try {
-				fileContent = item.getString("UTF-8");
-				file.createNewFile();
-				item.write(file);
-			} catch (UnsupportedEncodingException e) {
-				response="Unsupported Encoding. Upload failed.";
-				e.printStackTrace();
-			} catch (IOException e) {
-				response = "Couldn't create file. Upload failed.";
-				e.printStackTrace();
-			} catch (Exception e) {
-				response = "Couldn't write file. Upload failed.";
-				e.printStackTrace();
+			if(isValidUTF8(item)) {
+				String fileContent;
+				try {
+					fileContent = item.getString("UTF-8");
+					file.createNewFile();
+					item.write(file);
+				} catch (UnsupportedEncodingException e) {
+					response="Unsupported Encoding. Upload failed.";
+					e.printStackTrace();
+				} catch (IOException e) {
+					response = "Couldn't create file. Upload failed.";
+					e.printStackTrace();
+				} catch (Exception e) {
+					response = "Couldn't write file. Upload failed.";
+					e.printStackTrace();
+				}
+				receivedFiles.put(item.getFieldName(), file);
+				receivedContentTypes.put(item.getFieldName(),
+						item.getContentType());
+				response = "File uploaded successfully.";
+			} else {
+				response = "File has an invalid encoding. You can only upload UTF-8 encoded files.";
 			}
-			receivedFiles.put(item.getFieldName(), file);
-			receivedContentTypes.put(item.getFieldName(),
-					item.getContentType());
-			response = "File uploaded successfully.";
 		}else{
 			response = "File already exists.";
 		}
@@ -187,71 +208,78 @@ public class UploadServlet extends UploadAction {
 		return response;
 	}
 
-	public String uploadXmlFiles(List<FileItem> sessionFiles, String target, FileTypeEnum fileTypeEnum){
+	private String uploadXmlFiles(List<FileItem> sessionFiles, String target, FileTypeEnum fileTypeEnum){
 		String response = "";
 		int numberNotAdded = 0;
-		List<String> fileNames = new LinkedList<String>();
+		List<String> writeFiles = new LinkedList<String>();
 		List<String> fileAlreadyExists = new LinkedList<String>();
+		List<String> invalidEncoding = new LinkedList<String>();
+		List<String> invalidFormat = new LinkedList<String>();
 		for (FileItem item : sessionFiles) {
-			if (false == item.isFormField()) {				
+			if (false == item.isFormField()) {
 					File file = new File(target + File.separator + item.getName());
-					if(!file.exists()) {
-						String fileContent;
-						try {
-							fileContent = item.getString("UTF-8");
-							boolean valid = true;
-							IContentValidator validator = contentValidatorProvider.getValidator(fileTypeEnum);
-							if(validator != null)
-								valid = validator.validate(fileContent);
-							
-							if(valid) {
-								try {
-									file.createNewFile();
-									item.write(file);
-									
+					if(!file.exists()) {						
+						if(isValidUTF8(item)) {
+							String fileContent;
+							try {
+								fileContent = item.getString("UTF-8");
+								boolean valid = true;
+								IContentValidator validator = contentValidatorProvider.getValidator(fileTypeEnum);
+								if(validator != null)
+									valid = validator.validate(fileContent);
+								
+								if(valid) {
 									try {
-										xmlNamespaceManager.setXmlSchema(file, fileTypeEnum);
+										file.createNewFile();
+										item.write(file);
 										
-										// / Save a list with the received files
-										receivedFiles.put(item.getFieldName(), file);
-										receivedContentTypes.put(item.getFieldName(),
-												item.getContentType());
-					
-										// / Send a customized message to the client.
-										//response += "File saved as " + file.getAbsolutePath();
+										try {
+											xmlNamespaceManager.setXmlSchema(file, fileTypeEnum);
+											
+											// / Save a list with the received files
+											receivedFiles.put(item.getFieldName(), file);
+											receivedContentTypes.put(item.getFieldName(),
+													item.getContentType());
+						
+											// / Send a customized message to the client.
+											//response += "File saved as " + file.getAbsolutePath();
+											
+										} catch (Exception e) {
+											String message = "Couldn't set xml schema to file. Will attempt to delete the file";
+											log(message, e);
+											log(LogLevel.ERROR, message, e);
+											file.delete();
+											numberNotAdded++;
+											writeFiles.add(item.getName());
+										}
 										
-									} catch (Exception e) {
-										String message = "Couldn't set xml schema to file. Will attempt to delete the file";
+									} catch(IOException e) {
+										String message = "Couldn't create new file";
 										log(message, e);
 										log(LogLevel.ERROR, message, e);
-										file.delete();
 										numberNotAdded++;
-										fileNames.add(item.getName());
+										writeFiles.add(item.getName());
+									} catch(Exception e) {
+										String message = "Couldn't write item to file";
+										log(message, e);
+										log(LogLevel.ERROR, message, e);
+										numberNotAdded++;
+										writeFiles.add(item.getName());
 									}
-									
-								} catch(IOException e) {
-									String message = "Couldn't create new file";
-									log(message, e);
-									log(LogLevel.ERROR, message, e);
+								} else {
 									numberNotAdded++;
-									fileNames.add(item.getName());
-								} catch(Exception e) {
-									String message = "Couldn't write item to file";
-									log(message, e);
-									log(LogLevel.ERROR, message, e);
-									numberNotAdded++;
-									fileNames.add(item.getName());
+									invalidFormat.add(item.getName());
+									//error message would when too long (because many files are not valid) freeze the web page
+									//response += "File " + item.getName() + " was not added. Invalid file format.\n";
 								}
-							} else {
-								numberNotAdded++;
-								fileNames.add(item.getName());
-								//error message would when too long (because many files are not valid) freeze the web page
-								//response += "File " + item.getName() + " was not added. Invalid file format.\n";
+							} catch (UnsupportedEncodingException e) {
+								String message = "Couldn't get UTF-8 encoding";
+								log(message, e);
+								log(LogLevel.ERROR, message, e);
 							}
-						} catch (UnsupportedEncodingException e) {
-							String message = "Couldn't get UTF-8 encoding";
-							log(message, e);
-							log(LogLevel.ERROR, message, e);
+						} else {
+							numberNotAdded++;
+							invalidEncoding.add(item.getName());
 						}
 					} else {
 						numberNotAdded++;
@@ -264,21 +292,48 @@ public class UploadServlet extends UploadAction {
 			response += numberNotAdded + " file was not added due to invalid file format and or name collisions";
 		if(numberNotAdded > 1)
 			response += numberNotAdded + " files were not added due to invalid file format and or name collisions";
-		String allFiles = " "; //Do not remove this space - used in client side processing of server response
-		String allExistingFiles = " "; //Do not remove this space - used in client side processing of server response
-		if(fileNames.size()>0){
-			allFiles = StringUtils.join(fileNames, '|');
+		String writeFailedFiles = " "; //Do not remove this space - used in client side processing of server response
+		String existingFiles = " "; //Do not remove this space - used in client side processing of server response
+		String invalidFormatFiles = " ";
+		String invalidEncodingFiles = " ";
+		if(writeFiles.size() > 0){
+			writeFailedFiles = StringUtils.join(writeFiles, '|');
 		}
 		if(fileAlreadyExists.size() > 0){
-			allExistingFiles = StringUtils.join(fileAlreadyExists, '|');
+			existingFiles = StringUtils.join(fileAlreadyExists, '|');
 		}
-		if(fileNames.size() > 0 || fileAlreadyExists.size() > 0){
-			response += "#"+allFiles+"#"+allExistingFiles+"#";
+		if(invalidFormat.size() > 0) {
+			invalidFormatFiles = StringUtils.join(invalidFormat, '|');
+		}
+		if(invalidEncoding.size() > 0) {
+			invalidEncodingFiles = StringUtils.join(invalidEncoding, '|');
+		}
+		if(writeFiles.size() > 0 || fileAlreadyExists.size() > 0 || invalidFormat.size() > 0 || invalidEncoding.size() > 0){
+			response += "#" + writeFailedFiles + "#" + existingFiles + "#" + invalidFormatFiles + "#" + invalidEncodingFiles + "#";
 		}
 		return response;
 	}
 
 	
+	private boolean isValidUTF8(FileItem item) {
+		/*Charset charset = null;
+		try {
+			charset = new AutoDetectReader(item.getInputStream()).getCharset();
+		} catch(TikaException | IOException e) {
+			String message = "Couldn't detect encoding. Will allow.";
+			//log(message, e);
+			log(LogLevel.DEBUG, message, e);
+		}*/
+		
+		CharsetDecoder utf8Decoder = Charset.forName("UTF8").newDecoder().onMalformedInput(CodingErrorAction.REPORT);
+		try {
+			utf8Decoder.decode(ByteBuffer.wrap(item.get()));
+			return true;
+		} catch (CharacterCodingException e) {
+			return false;
+		}
+	}
+
 	/**
 	 * Get the content of an uploaded file.
 	 */

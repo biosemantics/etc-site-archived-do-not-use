@@ -312,22 +312,19 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	 *
 	 */
 	public class OnFinishUploadHandler implements OnFinishUploaderHandler {
-		
 		String serverResponse = null;
 		@Override
 		public void onFinish(IUploader uploader) {	
 			serverResponse = fileUploadHandler.parseServerResponse(uploader);
-			if(serverResponse != null && !serverResponse.isEmpty()) {
+			if(serverResponse != null && !serverResponse.isEmpty())
 				Alerter.failedToUpload(serverResponse);
-			} else {
-				if (uploader.getStatus() == Status.SUCCESS) {
-					fileTreePresenter.refresh(fileFilter);
-					fileUploadHandler.keyValidateUploadedFiles(targetUploadDirectory);
-				}
-				uploader.setServletPath(defaultServletPath);
-				enableManagement();
+			if (uploader.getStatus() == Status.SUCCESS) {
+				fileUploadHandler.keyValidateUploadedFiles(targetUploadDirectory);
+				fileTreePresenter.refresh(fileFilter);
 			}
-		}		
+			uploader.setServletPath(defaultServletPath);
+			enableManagement();
+		}
 	}
 	
 	

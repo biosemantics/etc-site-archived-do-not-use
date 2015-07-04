@@ -19,6 +19,8 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 public class FileUploadHandler {
 	
+	private static final int MAX_FILES_TO_REPORT_FAILED = 20;
+	
 	List<String> uploadedFiles;
 	String serverResponse;
 	ManagableFileTreePresenter presenter;
@@ -41,43 +43,72 @@ public class FileUploadHandler {
 	@SuppressWarnings("deprecation")
 	public String parseServerResponse(IUploader uploader){
 		serverResponse = uploader.getServerInfo().message;
+		System.out.println(serverResponse);
 		uploadedFiles = uploader.getFileInput().getFilenames();
-		if(serverResponse != null && !serverResponse.isEmpty()) {
+		if (serverResponse != null && !serverResponse.isEmpty()) {
 			serverResponse = serverResponse.replaceAll("\n", "<br>");
-			if(serverResponse.contains("#")){ //# is used in response only when there are errors
+			if (serverResponse.contains("#")) { // # is used in response only
+												// when there are errors
 				String responseStrings[] = serverResponse.split("#");
-				responseStrings[1] = responseStrings[1].trim();
-				String xmlErrorFiles[] = responseStrings[1].split("\\|");
-				responseStrings[2] = responseStrings[2].trim();
-				String existingFiles[] = responseStrings[2].split("\\|");
-				serverResponse = responseStrings[0]+"<br>";
-				if(xmlErrorFiles.length>0 && !responseStrings[1].isEmpty()){
-					serverResponse += "Following files have xml format errors<br>";
+				for(int i=0; i<responseStrings.length; i++)
+					responseStrings[i] = responseStrings[i].trim();
+				
+				String writeFailedFiles[] = responseStrings[1].isEmpty() ? new String[] { } : responseStrings[1].split("\\|");
+				String existingFiles[] = responseStrings[2].isEmpty() ? new String[] { } : responseStrings[2].split("\\|");
+				String invalidFormatFiles[] = responseStrings[3].isEmpty() ? new String[] { } : responseStrings[3].split("\\|");
+				String invalidEncodingFiles[] = responseStrings[4].isEmpty() ? new String[] { } : responseStrings[4].split("\\|");
+				
+				serverResponse = responseStrings[0] + "<br>";
+				
+				int reportedUploadFailedFiles = 0;
+				
+				if (writeFailedFiles.length > 0) {
+					serverResponse += "Following files could not be written<br>";
 				}
-				int i;
-				for(i=0;i<20 && i<xmlErrorFiles.length;i++){
-					serverResponse += xmlErrorFiles[i] + "<br>";
+				for (int i = 0; reportedUploadFailedFiles < MAX_FILES_TO_REPORT_FAILED && i < writeFailedFiles.length; i++) {
+					serverResponse += writeFailedFiles[i] + "<br>";
+					reportedUploadFailedFiles++;
 				}
-				int j=0;
-				if(i<20){
-					if(existingFiles.length>0 && !responseStrings[2].isEmpty()){
-						serverResponse += "<br>Following files already exist in the folder<br>";
-					}
-					for(;i<20 && j<existingFiles.length; i++, j++){
-						serverResponse += existingFiles[j] + "<br>";
-					}
+				if(existingFiles.length > 0) {
+					serverResponse += "<br>Following files already exist in the folder<br>";
 				}
-				if(j<existingFiles.length-1 | i<xmlErrorFiles.length-1){
+				for (int i = 0; reportedUploadFailedFiles < MAX_FILES_TO_REPORT_FAILED && i < existingFiles.length; i++) {
+					serverResponse += existingFiles[i] + "<br>";
+					reportedUploadFailedFiles++;
+				}
+				if (invalidFormatFiles.length > 0) {
+					serverResponse += "Following files have format errors<br>";
+				}
+				for (int i = 0; reportedUploadFailedFiles < MAX_FILES_TO_REPORT_FAILED && i < invalidFormatFiles.length; i++) {
+					serverResponse += invalidFormatFiles[i] + "<br>";
+					reportedUploadFailedFiles++;
+				}
+				if (invalidEncodingFiles.length > 0) {
+					serverResponse += "Following files have an invalid encoding. You can only upload UTF-8 encoded files.<br>";
+				}
+				for (int i = 0; reportedUploadFailedFiles < MAX_FILES_TO_REPORT_FAILED && i < invalidEncodingFiles.length; i++) {
+					serverResponse += invalidEncodingFiles[i] + "<br>";
+					reportedUploadFailedFiles++;
+				}
+				
+				if(writeFailedFiles.length + existingFiles.length + invalidFormatFiles.length + invalidEncodingFiles.length > MAX_FILES_TO_REPORT_FAILED)
 					serverResponse += "and so on.<br>";
+				
+				//remove all failed upload files
+				for (int i = 0; i < writeFailedFiles.length; i++) {
+					uploadedFiles.remove(writeFailedFiles[i]);
 				}
-				for(i=0; i<xmlErrorFiles.length; i++){
-					uploadedFiles.remove(xmlErrorFiles[i]);
-				}
-				for(i=0;i<existingFiles.length;i++){
+				for (int i = 0; i < existingFiles.length; i++) {
 					uploadedFiles.remove(existingFiles[i]);
 				}
+				for (int i = 0; i < invalidFormatFiles.length; i++) {
+					uploadedFiles.remove(invalidFormatFiles[i]);
+				}
+				for (int i = 0; i < invalidEncodingFiles.length; i++) {
+					uploadedFiles.remove(invalidEncodingFiles[i]);
+				}
 			}
-			
+
 		}
 		return serverResponse;
 	}
@@ -106,7 +137,7 @@ public class FileUploadHandler {
 						allowedErrorCounts--;
 					}
 					MessageBox box = Alerter.showKeyValidationResult(infoMessage, errorMessage);
-					box.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
+					/*box.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
 					
 						@Override
 						public void onSelect(SelectEvent event) {
@@ -114,27 +145,19 @@ public class FileUploadHandler {
 								Alerter.fileManagerMessage(serverResponse);
 							}
 						}
-					});
+					}); */
 					box.getButton(PredefinedButton.NO).addSelectHandler(new SelectHandler() {
 						
 						@Override
 						public void onSelect(SelectEvent event) {
 							// TODO Auto-generated method stub
 							fileService.deleteUploadedFiles(Authentication.getInstance().getToken(), targetUploadDirectory, uploadedFiles, new AsyncCallback<Void>() {
-
 								@Override
-								public void onFailure(
-											Throwable caught) {
-									// TODO Auto-generated method stub
+								public void onFailure(Throwable caught) {
 									Alerter.inputError("Could not delete files.");
 								}
-
 								@Override
 								public void onSuccess(Void result) {
-										// TODO Auto-generated method stub
-									if(presenter!=null){
-										presenter.refresh(FileFilter.ALL);
-									}
 								}
 							});
 						}
@@ -143,8 +166,6 @@ public class FileUploadHandler {
 				}else{
 					if(serverResponse == null || serverResponse.isEmpty()){
 						Alerter.fileManagerMessage("File(s) uploaded successfully.");
-					}else{
-						Alerter.fileManagerMessage(serverResponse);
 					}
 				}
 			}
