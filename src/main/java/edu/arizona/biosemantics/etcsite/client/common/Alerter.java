@@ -282,7 +282,7 @@ public class Alerter {
 	}
 	
 	public static MessageBox failedToStartTreeGeneration(Throwable caught) {
-		return showAlert("Start Tree Generation", "Failed to start tree generation.", caught);
+		return showAlert("Start Key Generation", "Failed to start key generation.", caught);
 	}
 	
 	public static MessageBox failedToIsValidInput(Throwable caught) {
