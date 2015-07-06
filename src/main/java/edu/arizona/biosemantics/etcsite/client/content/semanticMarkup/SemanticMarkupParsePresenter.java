@@ -53,13 +53,17 @@ public class SemanticMarkupParsePresenter implements ISemanticMarkupParseView.Pr
 			@Override
 			public void onFailedTasksEvent(FailedTasksEvent failedTasksEvent) {
 				if(task != null && failedTasksEvent.getTasks().containsKey(task.getId())) {
-					MessageBox alert = Alerter.failedToParse(null);
-					alert.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
-						@Override
-						public void onSelect(SelectEvent event) {
-							placeController.goTo(new TaskManagerPlace());
-						}
-					});
+					Task failedTask = failedTasksEvent.getTasks().get(task.getId());
+					TaskStageEnum failedTaskStageEnum = TaskStageEnum.valueOf(failedTask.getTaskStage().getTaskStage());
+					if(failedTaskStageEnum.equals(TaskStageEnum.PARSE_TEXT)) {
+						MessageBox alert = Alerter.failedToParse(null);
+						alert.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
+							@Override
+							public void onSelect(SelectEvent event) {
+								placeController.goTo(new TaskManagerPlace());
+							}
+						});
+					}
 				}
 			}
 		});

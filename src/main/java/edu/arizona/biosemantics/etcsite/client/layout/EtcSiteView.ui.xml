@@ -172,7 +172,7 @@
 							<my:ImageLabel styleName="{style.navEntry}" ui:field="matrixGeneration" imagePath="images/MatrixGeneration.gif" imageWidth="20px" imageHeight="20px" text="Matrix Generation" systemFolder="false"></my:ImageLabel>
 						</div>
 						<div>
-							<my:ImageLabel styleName="{style.navEntry}" ui:field="treeGeneration" imagePath="images/TreeGeneration.gif" imageWidth="20px" imageHeight="20px" text="Tree Generation" systemFolder="false"></my:ImageLabel>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="treeGeneration" imagePath="images/TreeGeneration.gif" imageWidth="20px" imageHeight="20px" text="Key Generation" systemFolder="false"></my:ImageLabel>
 						</div>
 						<div>
 							<my:ImageLabel styleName="{style.navEntry}" ui:field="taxonomyComparison" imagePath="images/TaxonomyComparison.gif" imageWidth="20px" imageHeight="20px" text="Taxonomy Comparison" systemFolder="false"></my:ImageLabel>

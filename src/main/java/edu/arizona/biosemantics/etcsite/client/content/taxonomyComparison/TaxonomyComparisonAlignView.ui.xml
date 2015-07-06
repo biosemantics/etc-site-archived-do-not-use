@@ -15,7 +15,12 @@
 		margin-top: 4px;
 		margin-left: 20px;
 	}
-	
+	.saveButton {
+			margin-top: 4px;
+   			margin-left: 10px;
+			width: 60px;
+			font-size:10px !important;
+	}
 	.subMenuEntry {
 		margin-left: 0px;
 		padding-top: 10px;
@@ -31,6 +36,9 @@
 					<g:cell>
 						<my:SubMenu ui:field="subMenu" step="ALIGN" />
 					</g:cell>
+					<g:cell>
+	    	      		<g:Button addStyleNames="{style.saveButton}" ui:field="saveButton">Save Progress</g:Button>
+	    	      	</g:cell>
 				</g:HorizontalPanel>
 			</g:SimplePanel>
 		</g:north>

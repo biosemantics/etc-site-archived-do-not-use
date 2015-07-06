@@ -154,13 +154,18 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 			@Override
 			public void onFailedTasksEvent(FailedTasksEvent failedTasksEvent) {
 				if(task != null && failedTasksEvent.getTasks().containsKey(task.getId())) {
-					MessageBox alert = Alerter.failedToRunTaxonomyComparison(null);
-					alert.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
-						@Override
-						public void onSelect(SelectEvent event) {
-							placeController.goTo(new TaskManagerPlace());
-						}
-					});
+					Task failedTask = failedTasksEvent.getTasks().get(task.getId());
+					onSave();
+					TaskStageEnum failedTaskStageEnum = TaskStageEnum.valueOf(failedTask.getTaskStage().getTaskStage());
+					//if(failedTaskStageEnum.equals(TaskStageEnum.ANALYZE)) {
+						MessageBox alert = Alerter.failedToRunTaxonomyComparison(null);
+						alert.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
+							@Override
+							public void onSelect(SelectEvent event) {
+								placeController.goTo(new TaskManagerPlace());
+							}
+						});
+					//}
 				}
 			}
 		});
@@ -227,7 +232,7 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 					}
 					@Override
 					public void onSuccess(Void result) { 
-						unsavedChanges = false;
+						//unsavedChanges = false;
 					}
 				});
 			}
@@ -269,19 +274,7 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 		eulerEventBus.addHandler(SaveEvent.TYPE, new SaveEvent.SaveHandler() {
 			@Override
 			public void onSave(SaveEvent event) {
-				final MessageBox box = Alerter.startLoading();
-				taxonomyComparisonService.saveModel(Authentication.getInstance().getToken(), task, model, new AsyncCallback<Void>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						Alerter.failedToSaveTaxonomyComparisonModel(caught);
-						Alerter.stopLoading(box);
-					}
-					@Override
-					public void onSuccess(Void result) { 
-						Alerter.stopLoading(box);
-						unsavedChanges = false;
-					}
-				});
+				TaxonomyComparisonAlignPresenter.this.onSave();
 			}
 		});
 		eulerEventBus.addHandler(DownloadEvent.TYPE, new DownloadEvent.DownloadHandler() {
@@ -357,6 +350,22 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 	public void clearDialogs() {
 		processingDialog.hide();
 		view.getEulerAlignmentView().setShowDialogs(false);
-		//TODO others inside align, e.g. comments, colors, results
+	}
+
+	@Override
+	public void onSave() {
+		final MessageBox box = Alerter.startLoading();
+		taxonomyComparisonService.saveModel(Authentication.getInstance().getToken(), task, model, new AsyncCallback<Void>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToSaveTaxonomyComparisonModel(caught);
+				Alerter.stopLoading(box);
+			}
+			@Override
+			public void onSuccess(Void result) { 
+				Alerter.stopLoading(box);
+				unsavedChanges = false;
+			}
+		});	
 	}
 }

@@ -64,20 +64,17 @@
 								REQUIREMENTS:&nbsp;
 							</g:InlineLabel>
 							<g:InlineLabel styleName="{style.DescriptionFont}">
-								Taxonomy Comparison takes as input either a folder output by the Tree
-								Generation tool or a folder containing a text files in tree generation output format.
+								Taxonomy Comparison takes as input a folder containing two text files in&nbsp;
 							</g:InlineLabel>
+							<g:Anchor
+								href="https://github.com/EulerProject/EulerX"
+								target="_blank" styleName="{style.padding}">CleanTax format</g:Anchor>
+							<g:InlineLabel styleName="DescriptionFont">
+			            	. Choose one of the following methods to provide the input and Click Next.
+			            	</g:InlineLabel>
 						</g:FlowPanel>
 						<g:InlineLabel>&nbsp;
 						</g:InlineLabel>
-						<g:FlowPanel>
-							<g:InlineLabel styleName="{style.bold} {style.DescriptionFont}">1.&nbsp;
-							</g:InlineLabel>
-							<g:InlineLabel styleName="{style.DescriptionFont}">
-								If you do not have the input ready, please run the Tree Generation
-								tool first to generate it, or upload here.
-							</g:InlineLabel>
-						</g:FlowPanel>
 						<g:FlowPanel>
 							<g:InlineLabel>To Edit, Delete or View uploaded file, go to &nbsp;
 							</g:InlineLabel>

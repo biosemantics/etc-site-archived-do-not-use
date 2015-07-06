@@ -16,6 +16,7 @@ import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPl
 import edu.arizona.biosemantics.etcsite.client.event.FailedTasksEvent;
 import edu.arizona.biosemantics.etcsite.client.event.ResumableTasksEvent;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
 
 public class MatrixGenerationProcessPresenter implements IMatrixGenerationProcessView.Presenter {
@@ -50,13 +51,17 @@ public class MatrixGenerationProcessPresenter implements IMatrixGenerationProces
 			@Override
 			public void onFailedTasksEvent(FailedTasksEvent failedTasksEvent) {
 				if(task != null && failedTasksEvent.getTasks().containsKey(task.getId())) {
-					MessageBox alert = Alerter.failedToGenerateMatrix(null);
-					alert.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
-						@Override
-						public void onSelect(SelectEvent event) {
-							placeController.goTo(new TaskManagerPlace());
-						}
-					});
+					Task failedTask = failedTasksEvent.getTasks().get(task.getId());
+					TaskStageEnum failedtaskStageEnum = TaskStageEnum.valueOf(failedTask.getTaskStage().getTaskStage());
+					if(failedtaskStageEnum.equals(TaskStageEnum.PROCESS)) {
+						MessageBox alert = Alerter.failedToGenerateMatrix(null);
+						alert.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
+							@Override
+							public void onSelect(SelectEvent event) {
+								placeController.goTo(new TaskManagerPlace());
+							}
+						});
+					}
 				}
 			}
 		});

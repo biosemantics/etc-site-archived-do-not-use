@@ -1,8 +1,10 @@
 package edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
@@ -47,4 +49,8 @@ public class TaxonomyComparisonAlignView extends Composite implements ITaxonomyC
 		return eulerAlignmentView;
 	}
 
+	@UiHandler("saveButton")
+	public void onSave(ClickEvent event) {
+		presenter.onSave();
+	}
 }

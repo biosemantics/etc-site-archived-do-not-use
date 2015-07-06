@@ -148,7 +148,7 @@ public class SettingsView extends Composite implements ISettingsView {
 	    matrixGenerationFieldLabel.setLabelWidth(200);
 	    matrixGenerationEmail.setBoxLabel("");
 	    emailNotificationVertical.add(matrixGenerationFieldLabel, new VerticalLayoutData(1, -1));
-	    FieldLabel treeGenerationFieldLabel = new FieldLabel(this.treeGenerationEmail, "Tree Generation Task");
+	    FieldLabel treeGenerationFieldLabel = new FieldLabel(this.treeGenerationEmail, "Key Generation Task");
 	    emailNotificationVertical.add(treeGenerationFieldLabel, new VerticalLayoutData(1, -1));
 	    treeGenerationFieldLabel.setLabelWidth(200);
 	    treeGenerationEmail.setBoxLabel("");
@@ -168,7 +168,7 @@ public class SettingsView extends Composite implements ISettingsView {
 	    emailPreferencesFieldSet.add(emailPreferencesVertical);
 	    emailPreferencesVertical.add(new FieldLabel(this.matrixGenerationEmail, "Text Capture Task"), new VerticalLayoutData(1, -1));
 	    emailPreferencesVertical.add(new FieldLabel(this.matrixGenerationEmail, "Matrix Generation Task"), new VerticalLayoutData(1, -1));
-	    emailPreferencesVertical.add(new FieldLabel(this.treeGenerationEmail, "Tree Generation Task"), new VerticalLayoutData(1, -1));
+	    emailPreferencesVertical.add(new FieldLabel(this.treeGenerationEmail, "Key Generation Task"), new VerticalLayoutData(1, -1));
 	    emailPreferencesVertical.add(new FieldLabel(this.taxonomyComparisonEmail, "Taxonomy Comparison Task"), new VerticalLayoutData(1, -1));
 	    emailPreferencesVertical.add(saveEmailPreferencesButton, new VerticalLayoutData(1, -1));
 	    */
