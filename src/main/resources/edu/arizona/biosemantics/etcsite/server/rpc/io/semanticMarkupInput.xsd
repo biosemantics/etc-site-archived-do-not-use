@@ -248,8 +248,8 @@ targetNamespace="http://www.github.com/biosemantics">
 		<xs:simpleContent>
 			<xs:extension base="nonEmptyString">
 				<xs:attribute name="rank" type="rank_type" use="required"/>
-				<xs:attribute name="authority"/>
-				<xs:attribute name="date"/>	
+				<xs:attribute name="authority" use="required"/>
+				<xs:attribute name="date" use="required"/>	
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
