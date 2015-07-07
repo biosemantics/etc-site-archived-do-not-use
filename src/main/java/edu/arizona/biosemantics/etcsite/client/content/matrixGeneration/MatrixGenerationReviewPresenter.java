@@ -199,60 +199,53 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 	@Override
 	public void onNext() {
 		if(task != null) {
-			MessageBox confirm = Alerter.confirmSaveMatrix();
-			confirm.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
-				@Override
-				public void onSelect(SelectEvent event) {
-					final MessageBox box = Alerter.startLoading();
-					matrixGenerationService.save(Authentication.getInstance().getToken(), model, task, new AsyncCallback<Void>() {
-						@Override
-						public void onSuccess(Void result) { 
-							matrixGenerationService.completeReview(Authentication.getInstance().getToken(), 
-									task, new AsyncCallback<Task>() {
-								@Override
-								public void onSuccess(Task result) {	
-									Alerter.stopLoading(box);
-									unsavedChanges = false;
-									placeController.goTo(new MatrixGenerationOutputPlace(result));
-								}
-								@Override
-								public void onFailure(Throwable caught) {
-									Alerter.failedToCompleteReview(caught);
-									Alerter.stopLoading(box);
-								}
-							});
-						}
-
-						@Override
-						public void onFailure(Throwable caught) {
-							Alerter.failedToSaveMatrix(caught);
-							Alerter.stopLoading(box);
-						}
-					});
-				}
-			});
-			confirm.getButton(PredefinedButton.NO).addSelectHandler(new SelectHandler() {
-				@Override
-				public void onSelect(SelectEvent event) {
-					unsavedChanges = false; // user decided he doesn't care
-					final MessageBox box = Alerter.startLoading();
-					matrixGenerationService.completeReview(Authentication.getInstance().getToken(), 
-							task, new AsyncCallback<Task>() {
-						@Override
-						public void onSuccess(Task result) {	
-							Alerter.stopLoading(box);
-							placeController.goTo(new MatrixGenerationOutputPlace(result));
-						}
-						@Override
-						public void onFailure(Throwable caught) {
-							Alerter.failedToCompleteReview(caught);
-							Alerter.stopLoading(box);
-						}
-					});
-				}
-				
-			});
+			if(unsavedChanges) {
+				MessageBox confirm = Alerter.confirmSaveMatrix();
+				confirm.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
+					@Override
+					public void onSelect(SelectEvent event) {
+						final MessageBox box = Alerter.startLoading();
+						matrixGenerationService.save(Authentication.getInstance().getToken(), model, task, new AsyncCallback<Void>() {
+							@Override
+							public void onSuccess(Void result) { 
+								unsavedChanges = false;
+								completeReview(box);
+							}
+							@Override
+							public void onFailure(Throwable caught) {
+								Alerter.failedToSaveMatrix(caught);
+								Alerter.stopLoading(box);
+							}
+						});
+					}
+				});
+				confirm.getButton(PredefinedButton.NO).addSelectHandler(new SelectHandler() {
+					@Override
+					public void onSelect(SelectEvent event) {
+						unsavedChanges = false; // user decided he doesn't care
+						final MessageBox box = Alerter.startLoading();
+						completeReview(box);
+					}
+					
+				});
+			}
 		}
+	}
+	
+	private void completeReview(final MessageBox box) {
+		matrixGenerationService.completeReview(Authentication.getInstance().getToken(), 
+				task, new AsyncCallback<Task>() {
+			@Override
+			public void onSuccess(Task result) {	
+				Alerter.stopLoading(box);
+				placeController.goTo(new MatrixGenerationOutputPlace(result));
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToCompleteReview(caught);
+				Alerter.stopLoading(box);
+			}
+		});
 	}
 
 	@Override
