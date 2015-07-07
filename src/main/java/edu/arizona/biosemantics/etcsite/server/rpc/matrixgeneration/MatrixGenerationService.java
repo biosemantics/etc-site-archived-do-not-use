@@ -351,7 +351,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
 		List<Task> tasks = daoManager.getTaskDAO().getOwnedTasks(user.getId());
 		for(Task task : tasks) {
-			if(task != null && task.isResumable() && 
+			if(task != null && task.isResumable() && !task.isFailed() && 
 					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION)) {
 						return task;
 			}

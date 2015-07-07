@@ -720,7 +720,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
 		List<Task> tasks = daoManager.getTaskDAO().getOwnedTasks(user.getId());
 		for(Task task : tasks) {
-			if(task !=  null && task.isResumable() && 
+			if(task !=  null && task.isResumable() && !task.isFailed() && 
 				task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP)) {
 					//SemanticMarkupConfiguration configuration = daoManager.getSemanticMarkupConfigurationDAO().getSemanticMarkupConfiguration(task.getConfiguration().getConfiguration().getId());
 					return task;
