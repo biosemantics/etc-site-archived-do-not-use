@@ -228,6 +228,8 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 					}
 					
 				});
+			} else {
+				completeReview(null);
 			}
 		}
 	}
@@ -236,14 +238,16 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 		matrixGenerationService.completeReview(Authentication.getInstance().getToken(), 
 				task, new AsyncCallback<Task>() {
 			@Override
-			public void onSuccess(Task result) {	
-				Alerter.stopLoading(box);
+			public void onSuccess(Task result) {
+				if(box != null)
+					Alerter.stopLoading(box);
 				placeController.goTo(new MatrixGenerationOutputPlace(result));
 			}
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToCompleteReview(caught);
-				Alerter.stopLoading(box);
+				if(box != null)
+					Alerter.stopLoading(box);
 			}
 		});
 	}
