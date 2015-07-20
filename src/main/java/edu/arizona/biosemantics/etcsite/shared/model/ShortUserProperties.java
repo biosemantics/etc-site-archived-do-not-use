@@ -32,4 +32,8 @@ public interface ShortUserProperties extends PropertyAccess<ShortUser> {
   
   ValueProvider<ShortUser, String> otoAccountEmail();
   
+  ValueProvider<ShortUser, String> fullName();
+  
+  ValueProvider<ShortUser, String> fullNameEmail();
+  
 }
