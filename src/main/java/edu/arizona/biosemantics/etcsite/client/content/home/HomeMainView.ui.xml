@@ -15,8 +15,13 @@
 		}
 		.matrixGenerationImage {
 		    background-image: url('images/MatrixGeneration.gif');
+		    top: 230px;
+		}
+		.ontologizeImage {
+		    background-image: url('images/Ontologize.gif');
 		    top: 115px;
 		}
+		
 		.actionText {
 		    background-size: 100% 100%;
 			width: 175px;
@@ -30,6 +35,10 @@
 		}
 		.matrixGenerationText {
 		    background-image: url('images/Text.MatrixGeneration.gif');
+		    top: 230px;
+		}
+		.ontologizeText {
+		    background-image: url('images/Text.Ontologize.gif');
 		    top: 115px;
 		}
 		.actionDescription {
@@ -43,6 +52,9 @@
 		    top: 35px;
 		}
 		.matrixGenerationDescription {
+		    top: 265px;
+		}
+		.ontologizeDescription {
 		    top: 150px;
 		}
 		.actionArrow {
@@ -58,6 +70,9 @@
 		    top: 0px;
 		}
 		.matrixGenerationArrow {
+		    top: 230px;
+		}
+		.ontologizeArrow {
 		    top: 115px;
 		}
 		.actionButton  {
@@ -78,9 +93,18 @@
 		    left: 774px;
 		}
 		.matrixGenerationButton {
+		    top: 252px;
+		}
+		.ontologizeButton {
 		    top: 137px;
 		}
 		.matrixGenerationButtonText {
+		    width: 240px;
+		    position: absolute;
+		    top: 270px;
+		    left: 765px;
+		}
+		.ontologizeButtonText {
 		    width: 240px;
 		    position: absolute;
 		    top: 155px;
@@ -88,73 +112,73 @@
 		}
 		.treeGenerationImage {
 		    background-image: url('images/TreeGeneration.gif');
-		    top: 230px;
+		    top: 345px;
 		}
 		.treeGenerationText {
 		    background-image: url('images/Text.TreeGeneration.gif');
-		    top: 230px;
+		    top: 345px;
 		}
 		.treeGenerationDescription {
-		    top: 265px;
+		    top: 380px;
 		}
 		.treeGenerationArrow {
-		    top: 230px;
+		    top: 345px;
 		}
 		.treeGenerationButton {
-		    top: 252px;
+		    top: 367px;
 		}
 		.treeGenerationButtonText {
 		    width: 240px;
 		    position: absolute;
-		    top: 270px;
+		    top: 385px;
 		    left: 770px;
 		}
 		.taxonomyComparisonImage {
 		    background-image: url('images/TaxonomyComparison.gif');
-		    top: 345px;
+		    top: 460px;
 		}
 		.taxonomyComparisonText {
 		    background-image: url('images/Text.TaxonomyComparison.gif');
-		    top: 345px;
+		    top: 460px;
 		}
 		.taxonomyComparisonDescription {
-		    top: 380px;
+		    top: 495px;
 		}
 		.taxonomyComparisonArrow {
-		    top: 345px;
+		    top: 460px;
 		}
 		.taxonomyComparisonButton {
-		    top: 367px;
+		    top: 482px;
 		}
 		.taxonomyComparisonButtonText {
 		    width: 240px;
 		    position: absolute;
-		    top: 385px;
+		    top: 500px;
 		    left: 747px;
 		}
 		.visualizationImage {
 		    background-image: url('images/Visualization_unselected.gif');
-		    top: 460px;
+		    top: 575px;
 		}
 		.visualizationText {
 		    background-image: url('images/Text.Visualization.gif');
 		    /*width: 191px;
 		    height: 24px;*/
-		    top: 460px;
+		    top: 575px;
 		}
 		.visualizationDescription {
-		    top: 495px;
+		    top: 610px;
 		}
 		.visualizationArrow {
-		    top: 460px;
+		    top: 575px;
 		}
 		.visualizationButton {
-		    top: 482px;
+		    top: 597px;
 		}
 		.visualizationButtonText {
 		    width: 240px;
 		    position: absolute;
-		    top: 500px;
+		    top: 615px;
 		    left: 775px;
 		}
 		.orText {
@@ -163,7 +187,7 @@
 		    width: 50px;
 		    height: 39px;
 		    position: absolute;
-		    top: 605px;
+		    top: 720px;
 		    left: 670px;
 		}
 		.pipelineButton {
@@ -172,13 +196,13 @@
 		    width: 200px;
 		    height: 50px;
 		    position: absolute;
-		    top: 597px;
+		    top: 712px;
 		    left: 730px;
 		}
 		.pipelineButtonText {
 		    width: 240px;
 		    position: absolute;
-		    top: 615px;
+		    top: 730px;
 		    left: 775px;
 		}
 		.clickable {
@@ -201,6 +225,18 @@
 			<div class="{style.semanticMarkupButtonText} {style.clickable}">Begin Text Capture</div> 
 		</g:HTML>
 		
+		<div class="{style.ontologizeImage} {style.actionImage}"></div>
+		<div class="{style.ontologizeText} {style.actionText}"></div>
+		<div class="{style.ontologizeDescription} {style.actionDescription} ">
+			Allows to build ontologies from the anatomy and quality descriptive terminology identified by text capture. Built ontologies are available 
+			in OWL format.  
+		</div>
+		<div class="{style.ontologizeArrow} {style.actionArrow}"></div>
+		<g:HTML ui:field="ontologizeButton">
+			<div class="{style.ontologizeButton} {style.actionButton} {style.clickable}"><img src="images/ButtonGreen.gif" width="200px" height="50px"/></div>
+			<div class="{style.ontologizeButtonText} {style.clickable}">Begin Ontology Building</div>
+		</g:HTML>
+		
 		<div class="{style.matrixGenerationImage} {style.actionImage}"></div>
 		<div class="{style.matrixGenerationText} {style.actionText}"></div>
 		<div class="{style.matrixGenerationDescription} {style.actionDescription} ">
@@ -217,7 +253,6 @@
 		<div class="{style.treeGenerationText} {style.actionText}"></div>
 		<div class="{style.treeGenerationDescription} {style.actionDescription}">
 			Generates interactive identification keys from taxon-character matrices, using an information entropy based method which treats character polymorphisms gracefully.  
-
 		</div>
 		<div class="{style.treeGenerationArrow} {style.actionArrow}"></div>
 		<g:HTML ui:field="treeGenerationButton">

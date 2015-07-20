@@ -83,6 +83,8 @@ public class FileTreeDecorator {
 			return fileType.equals(FileTypeEnum.DIRECTORY);
 		case DIRECTORY:
 			return !fileType.equals(FileTypeEnum.DIRECTORY);
+		case OWL_ONTOLOGY:
+			return !fileType.equals(FileTypeEnum.OWL_ONTOLOGY);
 		}
 		return true;
 	}

@@ -7,27 +7,13 @@ import edu.arizona.biosemantics.etcsite.client.common.RequiresAuthenticationPlac
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 
 public class TaxonomyComparisonPlace extends HasTaskPlace implements RequiresAuthenticationPlace  {
-
-	public TaxonomyComparisonPlace() {
-		super(null);
-	}
 	
 	public TaxonomyComparisonPlace(Task task) {
 		super(task);
 	}
-	
-	public static class Tokenizer implements PlaceTokenizer<TaxonomyComparisonPlace> {
 
-		@Override
-		public TaxonomyComparisonPlace getPlace(String token) {
-			return new TaxonomyComparisonPlace();
-		}
-
-		@Override
-		public String getToken(TaxonomyComparisonPlace place) {
-			return "";
-		}
-
+	public TaxonomyComparisonPlace() {
 	}
+
 
 }

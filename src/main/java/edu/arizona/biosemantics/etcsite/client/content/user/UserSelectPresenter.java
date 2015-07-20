@@ -8,6 +8,7 @@ import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
+import edu.arizona.biosemantics.etcsite.client.content.user.IUserSelectView.ISelectListener;
 import edu.arizona.biosemantics.etcsite.client.content.user.IUsersView.Presenter;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 
@@ -45,14 +46,10 @@ public class UserSelectPresenter implements IUserSelectView.Presenter {
 	}
 	
 	@Override
-	public void show(ISelectListener listener) {
+	public void show(ISelectListener listener, Set<ShortUser> selected) {
 		usersPresenter.refresh();
 		this.currentListener = listener;
 		dialog.show();	
-	}
-	
-	public interface ISelectListener {
-		void onSelect(Set<ShortUser> user);
 	}
 
 }

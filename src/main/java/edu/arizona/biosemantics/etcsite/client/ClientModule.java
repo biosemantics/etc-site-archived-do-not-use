@@ -97,6 +97,18 @@ import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGe
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationReviewView;
 import edu.arizona.biosemantics.etcsite.client.content.news.INewsView;
 import edu.arizona.biosemantics.etcsite.client.content.news.NewsView;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.IOntologizeBuildView;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.IOntologizeCreateView;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.IOntologizeInputView;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.IOntologizeOutputView;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeBuildPresenter;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeBuildView;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeCreatePresenter;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeCreateView;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeInputPresenter;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeInputView;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeOutputPresenter;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeOutputView;
 import edu.arizona.biosemantics.etcsite.client.content.sample.ISampleView;
 import edu.arizona.biosemantics.etcsite.client.content.sample.SampleView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.IImportOtoView;
@@ -151,6 +163,7 @@ import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenera
 import edu.arizona.biosemantics.etcsite.client.content.user.IUserSelectView;
 import edu.arizona.biosemantics.etcsite.client.content.user.IUsersView;
 import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectPresenter;
+import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectPresenter2;
 import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectView;
 import edu.arizona.biosemantics.etcsite.client.content.user.UsersPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.user.UsersView;
@@ -172,6 +185,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.IFilePermissi
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.search.IFileSearchServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.setup.ISetupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.ontologize.IOntologizeServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonServiceAsync;
@@ -209,7 +223,7 @@ public class ClientModule extends AbstractGinModule {
 		bind(IUsersView.class).to(UsersView.class);
 		bind(IUsersView.Presenter.class).to(UsersPresenter.class).in(Singleton.class);
 		bind(IUserSelectView.class).to(UserSelectView.class);
-		bind(IUserSelectView.Presenter.class).to(UserSelectPresenter.class).in(Singleton.class);
+		bind(IUserSelectView.Presenter.class).to(UserSelectPresenter2.class).in(Singleton.class);
 				
 		bind(IFileTreeView.Presenter.class).to(FileTreePresenter.class).in(Singleton.class);
 		bind(IFileTreeView.class).to(FileTreeView.class).in(Singleton.class);
@@ -228,6 +242,15 @@ public class ClientModule extends AbstractGinModule {
 		bind(ICreateSemanticMarkupFilesDialogView.class).to(CreateSemanticMarkupFilesDialogView.class).in(Singleton.class);
 		bind(ICreateSemanticMarkupFilesView.Presenter.class).to(CreateSemanticMarkupFilesPresenter.class).in(Singleton.class);
 		bind(ICreateSemanticMarkupFilesView.class).to(CreateSemanticMarkupFilesView.class).in(Singleton.class);
+		
+		bind(IOntologizeCreateView.class).to(OntologizeCreateView.class).in(Singleton.class);
+		bind(IOntologizeCreateView.Presenter.class).to(OntologizeCreatePresenter.class).in(Singleton.class);
+		bind(IOntologizeInputView.class).to(OntologizeInputView.class).in(Singleton.class);
+		bind(IOntologizeInputView.Presenter.class).to(OntologizeInputPresenter.class).in(Singleton.class);
+		bind(IOntologizeBuildView.class).to(OntologizeBuildView.class).in(Singleton.class);
+		bind(IOntologizeBuildView.Presenter.class).to(OntologizeBuildPresenter.class).in(Singleton.class);
+		bind(IOntologizeOutputView.class).to(OntologizeOutputView.class).in(Singleton.class);
+		bind(IOntologizeOutputView.Presenter.class).to(OntologizeOutputPresenter.class).in(Singleton.class);
 		
 		bind(IAnnotationReviewView.class).to(AnnotationReviewView.class);
 		bind(IAnnotationReviewView.Presenter.class).to(AnnotationReviewPresenter.class);
@@ -319,11 +342,13 @@ public class ClientModule extends AbstractGinModule {
 		bind(IVisualizationServiceAsync.class).in(Singleton.class);
 		bind(ITreeGenerationServiceAsync.class).in(Singleton.class);
 		bind(ITaxonomyComparisonServiceAsync.class).in(Singleton.class);
+		bind(IOntologizeServiceAsync.class).in(Singleton.class);
 		
 		//misc
 		bind(FilePathShortener.class).in(Singleton.class);
 		bind(IInputCreateView.class).to(InputCreateView.class);
 		bind(IInputCreateView.Presenter.class).annotatedWith(Names.named("SemanticMarkup")).to(InputCreatePresenter.class).in(Singleton.class);
+		bind(IInputCreateView.Presenter.class).annotatedWith(Names.named("Ontologize")).to(InputCreatePresenter.class).in(Singleton.class);
 		bind(IInputCreateView.Presenter.class).annotatedWith(Names.named("MatrixGeneration")).to(InputCreatePresenter.class).in(Singleton.class);
 		bind(IInputCreateView.Presenter.class).annotatedWith(Names.named("TreeGeneration")).to(InputCreatePresenter.class).in(Singleton.class);
 		bind(IInputCreateView.Presenter.class).annotatedWith(Names.named("TaxonomyComparison")).to(InputCreatePresenter.class).in(Singleton.class);

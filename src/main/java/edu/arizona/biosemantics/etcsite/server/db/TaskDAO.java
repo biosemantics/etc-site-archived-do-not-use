@@ -11,6 +11,8 @@ import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.Configuration;
 import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationTaskStage;
+import edu.arizona.biosemantics.etcsite.shared.model.OntologizeConfiguration;
+import edu.arizona.biosemantics.etcsite.shared.model.OntologizeTaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupTaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.Share;
@@ -30,6 +32,7 @@ public class TaskDAO {
 	private ShareDAO shareDAO;
 	private TaskTypeDAO taskTypeDAO;
 	private ConfigurationDAO configurationDAO;
+	private OntologizeConfigurationDAO ontologizeConfigurationDAO;
 	private MatrixGenerationConfigurationDAO matrixGenerationConfigurationDAO;
 	private SemanticMarkupConfigurationDAO semanticMarkupConfigurationDAO;
 	private TreeGenerationConfigurationDAO treeGenerationConfigurationDAO;
@@ -44,6 +47,13 @@ public class TaskDAO {
 	public void setTasksOutputFilesDAO(TasksOutputFilesDAO tasksOutputFilesDAO) {
 		this.tasksOutputFilesDAO = tasksOutputFilesDAO;
 	}
+
+	public void setOntologizeConfigurationDAO(
+			OntologizeConfigurationDAO ontologizeConfigurationDAO) {
+		this.ontologizeConfigurationDAO = ontologizeConfigurationDAO;
+	}
+
+
 
 	public void setFilesInUseDAO(FilesInUseDAO filesInUseDAO) {
 		this.filesInUseDAO = filesInUseDAO;
@@ -263,6 +273,11 @@ public class TaskDAO {
 		queryNumberInput.close();
 		*/
 		switch(taskType.getTaskTypeEnum()) {
+		case ONTOLOGIZE:
+			OntologizeTaskStage ontologizeTaskStage = taskStageDAO.getOntologizeTaskStage(taskStageId);
+			OntologizeConfiguration ontologizeConfiguration = ontologizeConfigurationDAO.getOntologizeConfiguration(configurationId);
+			return new Task(id, name, taskType, ontologizeTaskStage, ontologizeConfiguration, user, resumable, 
+					complete, completed, failed, failedTime, created);
 		case MATRIX_GENERATION:
 			MatrixGenerationTaskStage matrixGenerationTaskStage = taskStageDAO.getMatrixGenerationTaskStage(taskStageId);
 			MatrixGenerationConfiguration matrixGenerationConfiguration = matrixGenerationConfigurationDAO.getMatrixGenerationConfiguration(configurationId);

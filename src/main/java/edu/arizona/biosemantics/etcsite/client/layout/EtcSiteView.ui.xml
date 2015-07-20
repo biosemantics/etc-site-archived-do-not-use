@@ -169,6 +169,9 @@
 							<my:ImageLabel styleName="{style.navEntry}" ui:field="textCapture" imagePath="images/SemanticMarkup.gif" imageWidth="20px" imageHeight="20px" text="Text Capture" systemFolder="false"></my:ImageLabel>
 						</div>
 						<div>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="ontologize" imagePath="images/Ontologize.gif" imageWidth="20px" imageHeight="20px" text="Ontology Building" systemFolder="false"></my:ImageLabel>
+						</div>
+						<div>
 							<my:ImageLabel styleName="{style.navEntry}" ui:field="matrixGeneration" imagePath="images/MatrixGeneration.gif" imageWidth="20px" imageHeight="20px" text="Matrix Generation" systemFolder="false"></my:ImageLabel>
 						</div>
 						<div>

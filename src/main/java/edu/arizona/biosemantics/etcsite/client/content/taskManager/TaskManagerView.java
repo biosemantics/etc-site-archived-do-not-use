@@ -147,11 +147,11 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 		      public String getValue(TaskData object) {
 		    	  if(object.getTask().getUser().getId() == Authentication.getInstance().getUserId()) {
 		    		  if(object.getInvitees() != null && !object.getInvitees().isEmpty()) {
-		    			  String shared = "and shared with ";
+		    			  String shared = "Shared with ";
 		    			  for(ShortUser shortUser : object.getInvitees()) {
 		    				  shared += shortUser.getFullNameEmailAffiliation() + ", ";
 		    			  }
-		    			  return "Owned " + shared.substring(0, shared.length() - 2);
+		    			  return "Owned. " + shared.substring(0, shared.length() - 2);
 		    		  } else {
 		    			  return ("Owned");
 		    		  }
@@ -469,6 +469,9 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 	private void initRewind(TaskTypeEnum taskTypeEnum) {
 		//this.rewindListBox.clear();
 		switch(taskTypeEnum) {
+		case ONTOLOGIZE:
+			this.rewindButton.setEnabled(true);
+			break;
 		case MATRIX_GENERATION:
 			this.rewindButton.setEnabled(true);
 			//this.rewindListBox.addItem(edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum.REVIEW.displayName());

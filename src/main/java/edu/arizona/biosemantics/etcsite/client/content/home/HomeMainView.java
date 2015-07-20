@@ -50,6 +50,11 @@ public class HomeMainView extends Composite implements IHomeMainView {
 		presenter.onPipeline();
 	} 
 	
+	@UiHandler("ontologizeButton")
+	public void onOntologize(ClickEvent event) {
+		presenter.onOntologize();
+	}
+	
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;

@@ -174,6 +174,11 @@ public class EtcSiteView extends Composite implements IEtcSiteView {
 		presenter.onTextCapture();
 	}
 	
+	@UiHandler("ontologize")
+	void onOntologizeClick(ClickEvent e) {
+		presenter.onOntologize();
+	}
+	
 	@UiHandler("matrixGeneration")
 	void onMatrixGenerationClick(ClickEvent e) {
 		presenter.onMatrixGeneration();

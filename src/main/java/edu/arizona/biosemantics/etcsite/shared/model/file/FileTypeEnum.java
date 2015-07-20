@@ -23,6 +23,7 @@ public enum FileTypeEnum {
 	
 	TAXON_DESCRIPTION("Input for Text Capture Tool", true),
 	MARKED_UP_TAXON_DESCRIPTION("Input for Matrix Generation Tool", true),
+	OWL_ONTOLOGY("OWL Ontology", true),
 	MATRIX("Input for Key Generation Tool", true), 
 	PLAIN_TEXT("Plain Text", true),
 	DIRECTORY("Directory", false);

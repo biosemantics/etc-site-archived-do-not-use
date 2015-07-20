@@ -330,6 +330,7 @@ public class UploadServlet extends UploadAction {
 			utf8Decoder.decode(ByteBuffer.wrap(item.get()));
 			return true;
 		} catch (CharacterCodingException e) {
+			e.printStackTrace();
 			return false;
 		}
 	}

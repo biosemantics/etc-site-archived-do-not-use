@@ -17,6 +17,7 @@ import edu.arizona.biosemantics.etcsite.client.common.ResumeTaskToPlaceGoer;
 import edu.arizona.biosemantics.etcsite.client.common.ToPlaceGoer;
 import edu.arizona.biosemantics.etcsite.client.content.about.AboutPlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationCreatePlace;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.pipeline.PipelinePlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonCreatePlace;
@@ -113,5 +114,10 @@ public class HomeActivity extends MyAbstractActivity implements IHomeView.Presen
 	@Override
 	public void update() {
 		
+	}
+
+	@Override
+	public void onOntologize() {
+		this.authenticationToPlaceGoer.goTo(new OntologizeCreatePlace(), new LinkedList<ToPlaceGoer>(Arrays.asList(this.resumeTaskToPlaceGoer)));
 	}
 }

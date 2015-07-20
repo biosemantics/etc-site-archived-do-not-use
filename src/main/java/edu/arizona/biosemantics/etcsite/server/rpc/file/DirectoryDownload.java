@@ -54,17 +54,17 @@ public class DirectoryDownload {
 			}
 			if(filePath.startsWith("Share.Input")) {
 				Task task = this.getTaskFromFilePath(filePath);
-				zipSource = Configuration.compressedFileBase + File.separator + authenticationToken.getUserId() + File.separator + task.getName() + "Input";
+				zipSource = Configuration.compressedFileBase + File.separator + authenticationToken.getUserId() + File.separator + new FileNameNormalizer().normalize(task.getName()) + "Input";
 				gatherShareInput(this.getTaskFromFilePath(filePath), zipSource);
 			}
 			if(filePath.startsWith("Share.Output")) {
 				Task task = this.getTaskFromFilePath(filePath);
-				zipSource = Configuration.compressedFileBase + File.separator + authenticationToken.getUserId() + File.separator + task.getName() + "Output";
+				zipSource = Configuration.compressedFileBase + File.separator + authenticationToken.getUserId() + File.separator + new FileNameNormalizer().normalize(task.getName()) + "Output";
 				gatherShareOutput(task, zipSource);
 			}
 			if(filePath.matches("Share\\.\\d*")) {
 				Task task = this.getTaskFromFilePath(filePath);
-				zipSource = Configuration.compressedFileBase + File.separator + authenticationToken.getUserId() + File.separator + task.getName();
+				zipSource = Configuration.compressedFileBase + File.separator + authenticationToken.getUserId() + File.separator + new FileNameNormalizer().normalize(task.getName());
 				gatherShare(task, zipSource);
 			}
 		} else {
@@ -139,7 +139,7 @@ public class DirectoryDownload {
 		ITaskService taskService = new TaskService();
 		List<Task> sharedTasks = taskService.getSharedWithTasks(authenticationToken);
 		for(Task task : sharedTasks) {
-			String taskDestination = destination + File.separator + task.getName();
+			String taskDestination = destination + File.separator + new FileNameNormalizer().normalize(task.getName());
 			this.gatherShare(task, taskDestination);
 		}
 	}
@@ -177,15 +177,24 @@ public class DirectoryDownload {
 
 	private void cleanup(String destination) throws PermissionDeniedException, FileDeleteFailedException, CreateDirectoryFailedException {
 		File destinationFile = new File(destination);
-		fileService.deleteFile(authenticationToken, destination);
-		fileService.createDirectory(authenticationToken, destinationFile.getParent(), destinationFile.getName(), false);				
+		File parent = destinationFile.getParentFile();
+		String fileName = destinationFile.getName();
+		String normalizedFileName = new FileNameNormalizer().normalize(fileName);
+		
+		destinationFile = new File(parent, normalizedFileName);
+		
+		fileService.deleteFile(authenticationToken, destinationFile.getAbsolutePath());
+		fileService.createDirectory(authenticationToken, destinationFile.getParent(), destinationFile.getName(), false);
 	}
 
 
-	//add some security for the task really being shared with the user
+	//TODO: add some security for the task really being shared with the user
 	//add some general task permission check service
 	private Task getTaskFromFilePath(String filePath) {
-		int taskId = Integer.parseInt(filePath.substring(filePath.lastIndexOf(".")));
+		System.out.println("1" + filePath);
+		System.out.println("2" + filePath.lastIndexOf("."));
+		System.out.println("3" + filePath.substring(filePath.lastIndexOf(".") + 1));
+		int taskId = Integer.parseInt(filePath.substring(filePath.lastIndexOf(".") + 1));
 		daoManager.getTaskDAO().getTask(taskId);
 		Task task = new Task();
 		task.setId(taskId);

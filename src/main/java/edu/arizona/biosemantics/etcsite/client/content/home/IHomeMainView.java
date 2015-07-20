@@ -11,6 +11,7 @@ public interface IHomeMainView extends IsWidget {
 		void onVisualization();
 		void onPipeline();
 		void onTreeGeneration();
+		void onOntologize();
 	}
 	
 	void setPresenter(Presenter presenter);

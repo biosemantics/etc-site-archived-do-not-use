@@ -20,8 +20,8 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.content.user.IUserSelectView;
+import edu.arizona.biosemantics.etcsite.client.content.user.IUserSelectView.ISelectListener;
 import edu.arizona.biosemantics.etcsite.client.content.user.IUsersView;
-import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectPresenter.ISelectListener;
 import edu.arizona.biosemantics.etcsite.client.event.FailedTasksEvent;
 import edu.arizona.biosemantics.etcsite.client.event.ResumableTasksEvent;
 import edu.arizona.biosemantics.etcsite.shared.model.Share;
@@ -29,6 +29,8 @@ import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.ontologize.IOntologizeService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.ontologize.IOntologizeServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonServiceAsync;
@@ -37,11 +39,11 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.treegeneration.ITreeGeneratio
 public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 	
 	private IUserSelectView.Presenter userSelectPresenter;
-	private IUsersView.Presenter usersPresenter;
 	private Map<Task, Set<ShortUser>> inviteesForOwnedTasks = new HashMap<Task, Set<ShortUser>>();
 	private ITaskServiceAsync taskService;
 	private ITaskManagerView view;
 	private ISemanticMarkupServiceAsync semanticMarkupService;
+	private IOntologizeServiceAsync ontologizeService;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
 	private ITaxonomyComparisonServiceAsync taxonomyComparisonService;
 	private PlaceController placeController;
@@ -57,16 +59,17 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 			IMatrixGenerationServiceAsync matrixGenerationService, 
 			ITreeGenerationServiceAsync treeGenerationService,
 			ITaxonomyComparisonServiceAsync taxonomyComparisonService,
+			IOntologizeServiceAsync ontologizeService,
 			ResumeTaskPlaceMapper resumeTaskPlaceMapper, 
-			IUserSelectView.Presenter userSelectPresenter, IUsersView.Presenter usersPresenter) {
+			IUserSelectView.Presenter userSelectPresenter) {
 		this.view = view;
 		this.view.setPresenter(this);
 		this.placeController = placeController;
 		this.eventBus = eventBus;
 		this.userSelectPresenter = userSelectPresenter;
-		this.usersPresenter = usersPresenter;
 		this.taskService = taskService;
 		this.semanticMarkupService = semanticMarkupService;
+		this.ontologizeService = ontologizeService;
 		this.matrixGenerationService = matrixGenerationService;
 		this.treeGenerationService = treeGenerationService;
 		this.taxonomyComparisonService = taxonomyComparisonService;
@@ -98,8 +101,6 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 		taskService.getInvitees(Authentication.getInstance().getToken(), task, new AsyncCallback<Set<ShortUser>>() {			
 			@Override
 			public void onSuccess(Set<ShortUser> result) {
-				usersPresenter.refresh();
-				//usersPresenter.setSelected(result);
 				userSelectPresenter.show(new ISelectListener() {
 					@Override
 					public void onSelect(Set<ShortUser> users) {
@@ -116,7 +117,7 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 							} 				
 						});
 					}
-				});
+				}, result);
 			}
 			@Override
 			public void onFailure(Throwable caught) {
@@ -304,6 +305,21 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 				}
 			});
 			break;
+		case ONTOLOGIZE:
+			ontologizeService.goToTaskStage(Authentication.getInstance().getToken(), taskData.getTask(), 
+					edu.arizona.biosemantics.etcsite.shared.model.ontologize.TaskStageEnum.BUILD, new AsyncCallback<Task>() {
+				@Override
+				public void onSuccess(Task result) {
+					placeController.goTo(new edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeBuildPlace(result));
+				}
+
+				@Override
+				public void onFailure(Throwable caught) {
+					Alerter.failedToGoToTaskStage(caught);
+				}
+			});
+			break;
+
 		case TAXONOMY_COMPARISON:
 			taxonomyComparisonService.goToTaskStage(Authentication.getInstance().getToken(), taskData.getTask(), 
 					edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison.TaskStageEnum.ALIGN ,new AsyncCallback<Task>() {

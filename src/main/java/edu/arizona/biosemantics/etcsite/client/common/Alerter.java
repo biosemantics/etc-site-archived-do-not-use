@@ -573,4 +573,25 @@ public class Alerter {
 		return showInfo("Upload files", "Uploaded files successfully.");
 	}
 
+	public static MessageBox failedToStartOntologize(Throwable caught) {
+		return showAlert("Failed to start Ontology Building", "Failed to start Ontology Buildling", caught);
+	}
+
+	public static MessageBox selectOrCreateOntology() {
+		return showAlert("Ontology missing", "You have to select or create an ontology");
+	}
+
+	public static MessageBox failedToValidateInput(Throwable caught) {
+		return showAlert("Validate Input", "Failed to validate input.", caught);
+	}
+	
+	public static MessageBox failedToValidateOntology(Throwable caught) {
+		return showAlert("Validate Ontology", "Failed to validate ontology.", caught);
+	}
+
+	public static void getUsersFailed(Throwable caught) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

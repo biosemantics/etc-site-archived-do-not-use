@@ -50,6 +50,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	private IFileFormatService fileFormatService = new FileFormatService();
 	private SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MM-dd-yyyy");
 	private	XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager();
+	private FileNameNormalizer fileNameNormalizer = new FileNameNormalizer();
 	
 	private DAOManager daoManager = new DAOManager();
 	
@@ -98,7 +99,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			AbstractTaskConfiguration taskConfiguration = share.getTask().getConfiguration();
 			
 			List<String> outputs = daoManager.getTasksOutputFilesDAO().getOutputs(share.getTask());
-			Tree<FileInfo> outputTree = new Tree<FileInfo>(new FileInfo("Output", "Share.Output" + share.getTask().getId(), 
+			Tree<FileInfo> outputTree = new Tree<FileInfo>(new FileInfo("Output", "Share.Output." + share.getTask().getId(), 
 					"Output", FileTypeEnum.DIRECTORY, shareOwnerUserId, false, false, false));
 			shareTree.addChild(outputTree);
 			for(String output : outputs) {
@@ -121,7 +122,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			
 			if(taskConfiguration != null) {
 				List<String> inputFiles = taskConfiguration.getInputs();
-				Tree<FileInfo> inputTree = new Tree<FileInfo>(new FileInfo("Input", "Share.Input" + share.getTask().getId(), "Input", 
+				Tree<FileInfo> inputTree = new Tree<FileInfo>(new FileInfo("Input", "Share.Input." + share.getTask().getId(), "Input", 
 						FileTypeEnum.DIRECTORY, shareOwnerUserId, false, false, false));
 				shareTree.addChild(inputTree);
 				for(String input : inputFiles) {
@@ -189,7 +190,10 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			return fileType.equals(FileTypeEnum.DIRECTORY);
 		case DIRECTORY:
 			return !fileType.equals(FileTypeEnum.DIRECTORY);
+		case OWL_ONTOLOGY:
+			return !fileType.equals(FileTypeEnum.OWL_ONTOLOGY);
 		}
+		
 		return true;
 	}
 
@@ -205,6 +209,8 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 				}
 			} else if(file.getName().endsWith(".csv") || file.getName().endsWith(".mx") || file.getName().endsWith(".nxs") || file.getName().endsWith(".nex") || file.getName().endsWith(".sdd")) {
 				return FileTypeEnum.MATRIX;
+			} else if(file.getName().endsWith(".owl")) {
+				return FileTypeEnum.OWL_ONTOLOGY;
 			} else 
 				return FileTypeEnum.PLAIN_TEXT;
 			/*RPCResult<Boolean> validationResult = fileFormatService.isValidMarkedupTaxonDescription(authenticationToken, filePath);
@@ -300,7 +306,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		if(idealFolderName.trim().isEmpty()) 
 			throw new CreateDirectoryFailedException("Directory name is empty. The directory was not created.");
 		
-		idealFolderName = normalizeFileName(idealFolderName);
+		idealFolderName = fileNameNormalizer.normalize(idealFolderName);
 		
 		File dir = new File(filePath);
 		dir.mkdirs();
@@ -338,15 +344,6 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			}
 		}
 	}
-	
-	private String normalizeFileName(String name) {
-		//replace all non-(word characters, dots, hyphens, whitespaces) by empty string
-		String notAllowedFileNameCharacters = "[^\\w\\.\\-\\s]";
-		name = name.replaceAll(notAllowedFileNameCharacters, "");
-		//remove multiple whitespace
-		name = name.replaceAll("\\s+", "\\s");
-		return name;
-	}
 
 	/**
 	 * create file successfully: message="", result = file created
@@ -356,7 +353,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	@Override
 	public String createFile(AuthenticationToken authenticationToken, String directory, String idealFileName, boolean force) 
 			throws CreateFileFailedException, PermissionDeniedException {					
-		idealFileName = normalizeFileName(idealFileName);
+		idealFileName = fileNameNormalizer.normalize(idealFileName);
 		boolean permissionResult = filePermissionService.hasWritePermission(authenticationToken, directory);
 		if(!permissionResult)
 			throw new PermissionDeniedException();

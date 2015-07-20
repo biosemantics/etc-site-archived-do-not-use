@@ -75,11 +75,9 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	
 	public TaxonomyComparisonService() {
 		executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(Configuration.maxActiveTaxonomyComparison));
-		try {
-			fileService.createDirectory(new AdminAuthenticationToken(), Configuration.tempFiles, "taxonomyComparison", false);			
-		} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
-			log(LogLevel.ERROR, "Couldn't create cache for taxonomy comparison", e);
-		}
+		File taxonomyComparisonCache = new File(Configuration.tempFiles, "taxonomyComparison");
+		if(!taxonomyComparisonCache.exists())
+			taxonomyComparisonCache.mkdirs();			
 	}
 	
 	@Override

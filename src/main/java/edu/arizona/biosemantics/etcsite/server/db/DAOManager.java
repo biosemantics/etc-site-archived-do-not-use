@@ -1,13 +1,16 @@
 package edu.arizona.biosemantics.etcsite.server.db;
 
 import java.io.IOException;
+import java.util.List;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.etcsite.shared.model.Task;
 
 public class DAOManager {
 
 	private ConfigurationDAO configurationDAO;
 	private SemanticMarkupDBDAO semanticMarkupDBDAO;
+	private OntologizeConfigurationDAO ontologizeConfigurationDAO;
 	private FilesInUseDAO filesInUseDAO;
 	private FileTypeDAO fileTypeDAO;
 	private TaxonGroupDAO taxonGroupDAO;
@@ -41,6 +44,7 @@ public class DAOManager {
 		taxonomyComparisonConfigurationDAO = new TaxonomyComparisonConfigurationDAO();
 		treeGenerationConfigurationDAO = new TreeGenerationConfigurationDAO();
 		visualizationConfigurationDAO = new VisualizationConfigurationDAO();
+		ontologizeConfigurationDAO = new OntologizeConfigurationDAO();
 		captchaDAO = new CaptchaDAO();
 		
 		taskTypeDAO = new TaskTypeDAO();
@@ -59,6 +63,7 @@ public class DAOManager {
 		taskDAO.setMatrixGenerationConfigurationDAO(matrixGenerationConfigurationDAO);
 		taskDAO.setSemanticMarkupConfigurationDAO(semanticMarkupConfigurationDAO);
 		taskDAO.setTaxonomyComparisonConfigurationDAO(taxonomyComparisonConfigurationDAO);
+		taskDAO.setOntologizeConfigurationDAO(ontologizeConfigurationDAO);
 		taskDAO.setShareDAO(shareDAO);
 		taskDAO.setTasksOutputFilesDAO(tasksOutputFilesDAO);
 		taskDAO.setTaskStageDAO(taskStageDAO);
@@ -79,6 +84,8 @@ public class DAOManager {
 		treeGenerationConfigurationDAO.setConfigurationDAO(configurationDAO);
 		taskDAO.setTreeGenerationConfigurationDAO(treeGenerationConfigurationDAO);
 		taxonomyComparisonConfigurationDAO.setConfigurationDAO(configurationDAO);
+		ontologizeConfigurationDAO.setConfigurationDAO(configurationDAO);
+		ontologizeConfigurationDAO.setTaxonGroupDAO(taxonGroupDAO);
 	}
 
 	public ConfigurationDAO getConfigurationDAO() {
@@ -155,5 +162,9 @@ public class DAOManager {
 
 	public CaptchaDAO getCaptchaDAO() {
 		return captchaDAO;
+	}
+
+	public OntologizeConfigurationDAO getOntologizeConfigurationDAO() {
+		return ontologizeConfigurationDAO;
 	}
 }

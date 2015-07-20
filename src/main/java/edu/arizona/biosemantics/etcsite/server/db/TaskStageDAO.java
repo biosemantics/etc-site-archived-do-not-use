@@ -5,6 +5,7 @@ import java.util.Date;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationTaskStage;
+import edu.arizona.biosemantics.etcsite.shared.model.OntologizeTaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupTaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
@@ -91,6 +92,8 @@ public class TaskStageDAO {
 	
 	private TaskStage createTaskStage(int id, String taskStage, TaskType taskType, Date created) {
 		switch(taskType.getTaskTypeEnum()) {
+		case ONTOLOGIZE: 
+			return new OntologizeTaskStage(id, taskType, created, edu.arizona.biosemantics.etcsite.shared.model.ontologize.TaskStageEnum.valueOf(taskStage));
 		case MATRIX_GENERATION:
 			return new MatrixGenerationTaskStage(id, taskType, created, edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum.valueOf(taskStage));
 		case SEMANTIC_MARKUP:
@@ -137,6 +140,19 @@ public class TaskStageDAO {
 		return null;
 	}
 	
+	public TaskStage getOntologizeTaskStage(String name) {
+		TaskType taskType = taskTypeDAO.getTaskType(TaskTypeEnum.ONTOLOGIZE);
+		TaskStage taskStage = this.getTaskStage(taskType, name);
+		if(taskStage instanceof OntologizeTaskStage)
+			return (OntologizeTaskStage)taskStage;
+		return null;
+	}
 	
+	public OntologizeTaskStage getOntologizeTaskStage(int taskStageId) {
+		TaskStage taskStage = this.getTaskStage(taskStageId);
+		if(taskStage instanceof OntologizeTaskStage)
+			return (OntologizeTaskStage)taskStage;
+		return null;
+	}
 
 }

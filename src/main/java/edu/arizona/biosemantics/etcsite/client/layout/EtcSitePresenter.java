@@ -23,6 +23,7 @@ import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerPl
 import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.news.NewsPlace;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.sample.SamplePlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsPlace;
@@ -192,6 +193,11 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 	@Override
 	public void onTextCapture() {
 		this.authenticationToPlaceGoer.goTo(new SemanticMarkupCreatePlace(), new LinkedList<ToPlaceGoer>(Arrays.asList(this.resumeTaskToPlaceGoer)));
+	}
+	
+	@Override
+	public void onOntologize() {
+		this.authenticationToPlaceGoer.goTo(new OntologizeCreatePlace(), new LinkedList<ToPlaceGoer>(Arrays.asList(this.resumeTaskToPlaceGoer)));
 	}
 
 	@Override

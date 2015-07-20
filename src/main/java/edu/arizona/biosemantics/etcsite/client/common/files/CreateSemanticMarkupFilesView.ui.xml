@@ -276,7 +276,7 @@
 			      							    	<li>See “Required/Optional Fields” for the information needed for a treatment.</li>
 		      										<li>Use a <b>colon (:)</b> to separate a field name (e.g. author, year, title, etc.) from its value.</li>
 		      										<li>Use a new line for each field.</li>
-		      										<li>Use an empty line to separate taxonomic treatments</li>
+		      										<li>Use an empty line to separate taxonomic treatments, do not use empty lines between fields.</li>
 		      										<li>If you copy/paste from another source, check word by word (especially special symbols) that the content is copied correctly.</li>
 													<li>Do not include any HTML or XML tag in the text.</li>
 													<li>The system will generate one file for each taxonomic treatment provided.</li>

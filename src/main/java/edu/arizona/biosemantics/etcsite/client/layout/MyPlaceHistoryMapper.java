@@ -13,6 +13,10 @@ import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGe
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationProcessPlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationReviewPlace;
 import edu.arizona.biosemantics.etcsite.client.content.news.NewsPlace;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeBuildPlace;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeCreatePlace;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeInputPlace;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeOutputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupLearnPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupOutputPlace;
@@ -21,7 +25,14 @@ import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMa
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupReviewPlace;
 import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonAlignPlace;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonCreatePlace;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonPlace;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationCreatePlace;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationInputPlace;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationPlace;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationViewPlace;
 import edu.arizona.biosemantics.etcsite.client.content.visualization.VisualizationPlace;
 
 @WithTokenizers( { 
@@ -39,11 +50,20 @@ import edu.arizona.biosemantics.etcsite.client.content.visualization.Visualizati
 	SemanticMarkupReviewPlace.Tokenizer.class,
 	SemanticMarkupParsePlace.Tokenizer.class,
 	SemanticMarkupOutputPlace.Tokenizer.class,
+	OntologizeCreatePlace.Tokenizer.class,
+	OntologizeInputPlace.Tokenizer.class,
+	OntologizeBuildPlace.Tokenizer.class,
+	OntologizeOutputPlace.Tokenizer.class,
 	MatrixGenerationInputPlace.Tokenizer.class,
 	MatrixGenerationProcessPlace.Tokenizer.class,
 	MatrixGenerationReviewPlace.Tokenizer.class,
 	MatrixGenerationOutputPlace.Tokenizer.class,
-	TaxonomyComparisonPlace.Tokenizer.class,
+	TreeGenerationCreatePlace.Tokenizer.class,
+	TreeGenerationInputPlace.Tokenizer.class,
+	TreeGenerationViewPlace.Tokenizer.class,
+	TaxonomyComparisonAlignPlace.Tokenizer.class,
+	TaxonomyComparisonCreatePlace.Tokenizer.class,
+	TaxonomyComparisonInputPlace.Tokenizer.class,
 	VisualizationPlace.Tokenizer.class
 	})
 public interface MyPlaceHistoryMapper extends PlaceHistoryMapper {

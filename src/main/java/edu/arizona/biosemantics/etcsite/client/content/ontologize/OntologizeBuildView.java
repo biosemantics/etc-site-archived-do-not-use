@@ -11,17 +11,17 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.content.ontologize.ISemanticMarkupToOntologiesView.Presenter;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.IOntologizeBuildView.Presenter;
 import edu.arizona.biosemantics.oto2.ontologize.client.Ontologize;
 import edu.arizona.biosemantics.oto2.oto.client.Oto;
 
-public class SemanticMarkupToOntologiesView extends Composite implements ISemanticMarkupToOntologiesView {
+public class OntologizeBuildView extends Composite implements IOntologizeBuildView {
 
-	private static SemanticMarkupToOntologyViewUiBinder uiBinder = GWT
-			.create(SemanticMarkupToOntologyViewUiBinder.class);
+	private static OntologyBuildUiBinder uiBinder = GWT
+			.create(OntologyBuildUiBinder.class);
 
-	interface SemanticMarkupToOntologyViewUiBinder extends
-			UiBinder<Widget, SemanticMarkupToOntologiesView> {
+	interface OntologyBuildUiBinder extends
+			UiBinder<Widget, OntologizeBuildView> {
 	}
 	
 	@UiField
@@ -30,7 +30,7 @@ public class SemanticMarkupToOntologiesView extends Composite implements ISemant
 	private Presenter presenter;
 	private Ontologize ontologize = new Ontologize();
 
-	public SemanticMarkupToOntologiesView() {
+	public OntologizeBuildView() {
 		initWidget(uiBinder.createAndBindUi(this));
 		ontologizePanel.setWidget(ontologize.getView().asWidget());
 	}

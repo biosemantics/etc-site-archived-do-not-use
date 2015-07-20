@@ -1,7 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.semanticMarkup"
+	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.ontologize"
 	xmlns:my2="urn:import:edu.arizona.biosemantics.etcsite.client.common"
 	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout">
 	<ui:style>
@@ -28,11 +28,11 @@
 				<g:VerticalPanel>
 					<g:HorizontalPanel styleName="{style.centered}">
 						<g:cell>
-							<my:SubMenu ui:field="subMenu" step="TO_ONTOLOGIES" />
+							<my:SubMenu ui:field="subMenu" step="BUILD" />
 						</g:cell>
 						<g:cell>
 							<g:Button addStyleNames="{style.nextButton}" ui:field="nextButton">Next
-								Step in Text Capture</g:Button>
+								Step in Ontology Building</g:Button>
 						</g:cell>
 					</g:HorizontalPanel>
 				</g:VerticalPanel>

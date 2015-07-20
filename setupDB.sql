@@ -45,7 +45,9 @@ INSERT INTO `etcsite_filetypes` (`id`, `name`, `created`) VALUES
 (1, 'TAXON_DESCRIPTION', '2013-10-22 02:02:26'),
 (2, 'MARKED_UP_TAXON_DESCRIPTION', '2013-11-19 23:55:51'),
 (3, 'MATRIX', '2013-11-19 22:25:17'), 
-(4, 'PLAIN_TEXT', '2013-11-19 22:25:17');
+(4, 'PLAIN_TEXT', '2013-11-19 22:25:17'),
+(5, 'OWL_ONTOLOGY', '2013-11-19 22:25:17');
+
 
 -- --------------------------------------------------------
 
@@ -75,6 +77,20 @@ INSERT INTO `etcsite_taxon_group` (`id`, `name`, `created`) VALUES
 (7, 'Cnidaria', '2013-10-22 01:07:24'),
 (8, 'Spider', '2013-10-22 01:07:24'),
 (9, 'Empty', '2013-10-22 01:07:24');
+
+
+CREATE TABLE IF NOT EXISTS `etcsite_ontologizeconfigurations` (
+  `configuration` bigint(20) unsigned DEFAULT NULL,
+  `input` varchar(200) DEFAULT NULL,
+  `taxon_group` bigint(20) unsigned DEFAULT NULL,
+  `ontology` varchar(200) DEFAULT NULL,
+  `ontologize_collection_id` bigint(20) unsigned DEFAULT NULL,
+  `ontologize_collection_secret` varchar(100) DEFAULT NULL,
+  `output` varchar(200) DEFAULT NULL,
+  KEY `configurations_ontologizeconfigurations_CON` (`configuration`),
+  KEY `taxon_group_ontologizeconfigurations_CON` (`taxon_group`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 -- --------------------------------------------------------
 
@@ -232,22 +248,31 @@ CREATE TABLE IF NOT EXISTS `etcsite_taskstages` (
 --
 
 INSERT INTO `etcsite_taskstages` (`id`, `name`, `tasktype`, `created`) VALUES
-(12, 'INPUT', 6, '2013-11-19 22:30:35'),
-(13, 'PREPROCESS_TEXT', 6, '2013-11-19 22:30:35'),
-(14, 'LEARN_TERMS', 6, '2013-11-19 22:30:35'),
-(15, 'REVIEW_TERMS', 6, '2013-11-19 22:30:35'),
-(16, 'PARSE_TEXT', 6, '2013-11-19 22:30:35'),
-(17, 'OUTPUT', 6, '2013-11-19 22:30:35'),
-(18, 'INPUT', 7, '2013-11-19 22:30:35'),
-(19, 'PROCESS', 7, '2013-11-19 22:30:35'),
-(20, 'OUTPUT', 7, '2013-11-19 22:30:35'),
-(21, 'REVIEW', 7, '2013-11-19 22:30:35'),
-(23, 'INPUT', 8, '2014-01-15 22:30:35'),
-(24, 'VIEW', 8, '2014-01-15 22:30:35'), 
-(25, 'INPUT', 9, '2014-01-15 22:30:35'),
-(26, 'ALIGN', 9, '2014-01-15 22:30:35'),
-(27, 'ANALYZE', 9, '2014-01-15 22:30:35'),
-(28, 'ANALYZE_COMPLETE', 9, '2014-01-15 22:30:35');
+(1, 'CREATE_INPUT', 1, '2013-11-19 22:30:35'),
+(2, 'INPUT', 1, '2013-11-19 22:30:35'),
+(3, 'PREPROCESS_TEXT', 1, '2013-11-19 22:30:35'),
+(4, 'LEARN_TERMS', 1, '2013-11-19 22:30:35'),
+(5, 'REVIEW_TERMS', 1, '2013-11-19 22:30:35'),
+(6, 'PARSE_TEXT', 1, '2013-11-19 22:30:35'),
+(7, 'OUTPUT', 1, '2013-11-19 22:30:35'),
+(8, 'CREATE_INPUT', 2, '2013-11-19 22:30:35'),
+(9, 'INPUT', 2, '2013-11-19 22:30:35'),
+(10, 'BUILD', 2, '2013-11-19 22:30:35'),
+(11, 'OUTPUT', 2, '2013-11-19 22:30:35'),
+(12, 'CREATE_INPUT', 3, '2013-11-19 22:30:35'),
+(13, 'INPUT', 3, '2013-11-19 22:30:35'),
+(14, 'PROCESS', 3, '2013-11-19 22:30:35'),
+(15, 'REVIEW', 3, '2013-11-19 22:30:35'),
+(16, 'OUTPUT', 3, '2013-11-19 22:30:35'),
+(17, 'CREATE_INPUT', 4, '2013-11-19 22:30:35'),
+(18, 'INPUT', 4, '2014-01-15 22:30:35'),
+(19, 'VIEW', 4, '2014-01-15 22:30:35'), 
+(20, 'CREATE_INPUT', 5, '2013-11-19 22:30:35'),
+(21, 'INPUT', 5, '2014-01-15 22:30:35'),
+(22, 'ALIGN', 5, '2014-01-15 22:30:35'),
+(23, 'ANALYZE', 5, '2014-01-15 22:30:35'),
+(24, 'ANALYZE_COMPLETE', 5, '2014-01-15 22:30:35');
+
 
 -- --------------------------------------------------------
 
@@ -273,10 +298,12 @@ CREATE TABLE IF NOT EXISTS `etcsite_tasktypes` (
 --
 
 INSERT INTO `etcsite_tasktypes` (`id`, `name`, `inputfiletype`, `inputtype`, `outputfiletype`, `outputtype`, `created`) VALUES
-(6, 'SEMANTIC_MARKUP', 1, 'directory', 2, 'directory', '2013-11-19 22:25:43'),
-(7, 'MATRIX_GENERATION', 2, 'directory', 3, 'file', '2013-11-19 22:26:26'),
-(8, 'TREE_GENERATION', 3, 'directory', 4, 'file', '2013-11-19 22:26:26'),
-(9, 'TAXONOMY_COMPARISON', 4, 'file', 4, 'directory', '2013-11-19 22:26:26');
+(1, 'SEMANTIC_MARKUP', 1, 'directory', 2, 'directory', '2013-11-19 22:25:43'),
+(2, 'ONTOLOGIZE', 2, 'directory', 5, 'file', '2013-11-19 22:25:43'),
+(3, 'MATRIX_GENERATION', 2, 'directory', 3, 'file', '2013-11-19 22:26:26'),
+(4, 'TREE_GENERATION', 3, 'directory', 4, 'file', '2013-11-19 22:26:26'),
+(5, 'TAXONOMY_COMPARISON', 4, 'file', 4, 'directory', '2013-11-19 22:26:26');
+
 
 -- --------------------------------------------------------
 
@@ -350,17 +377,6 @@ CREATE TABLE IF NOT EXISTS `etcsite_users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `id_2` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;
-
-CREATE TABLE IF NOT EXISTS `etcsite_user_ontologize_collection` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `user` bigint(20) unsigned NOT NULL,
-  `ontologize_collection_id` bigint(20) unsigned NOT NULL,
-  `ontologize_collection_secret` varchar(100) NOT NULL,
-  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
-  UNIQUE KEY `user_ontologize_collection` (`user`, `ontologize_collection_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;
 
 --

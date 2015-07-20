@@ -5,13 +5,13 @@ import com.google.gwt.user.client.ui.IsWidget;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.oto2.ontologize.client.Ontologize;
 
-public interface ISemanticMarkupToOntologiesView extends IsWidget {
+public interface IOntologizeBuildView extends IsWidget {
 
 	public interface Presenter {
 
 		void setTask(Task task);
 
-		ISemanticMarkupToOntologiesView getView();
+		IOntologizeBuildView getView();
 
 		void onNext();
 		

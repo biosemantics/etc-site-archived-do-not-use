@@ -12,12 +12,14 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationPlace;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizePlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonPlace;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationPlace;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.ontologize.IOntologizeServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonServiceAsync;
@@ -30,18 +32,21 @@ public class ResumeTaskToPlaceGoer implements ToPlaceGoer {
 	private ISemanticMarkupServiceAsync semanticMarkupService;
 	private ITreeGenerationServiceAsync treeGenerationService;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
+	private IOntologizeServiceAsync ontologizeService;
 	private ITaxonomyComparisonServiceAsync taxonomyComparisonService;
 
 	@Inject
 	public ResumeTaskToPlaceGoer(PlaceController placeController, ITaskServiceAsync taskService, 
 			ISemanticMarkupServiceAsync semanticMarkupService, IMatrixGenerationServiceAsync matrixGenerationService, 
-			ITreeGenerationServiceAsync treeGenerationService, ITaxonomyComparisonServiceAsync taxonomyComparisonService) {
+			ITreeGenerationServiceAsync treeGenerationService, ITaxonomyComparisonServiceAsync taxonomyComparisonService,
+			IOntologizeServiceAsync ontologizeService) {
 		this.placeController = placeController;
 		this.taskService = taskService;
 		this.semanticMarkupService = semanticMarkupService;
 		this.matrixGenerationService = matrixGenerationService;
 		this.treeGenerationService = treeGenerationService;
 		this.taxonomyComparisonService = taxonomyComparisonService;
+		this.ontologizeService = ontologizeService;
 	}
 	
 	@Override
@@ -92,6 +97,8 @@ public class ResumeTaskToPlaceGoer implements ToPlaceGoer {
 			return this.treeGenerationService;
 		if(newPlace instanceof TaxonomyComparisonPlace)
 			return this.taxonomyComparisonService;
+		if(newPlace instanceof OntologizePlace)
+			return this.ontologizeService;
 		return null;
 	}
 

@@ -7,7 +7,10 @@ import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGe
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationOutputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationProcessPlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationReviewPlace;
-import edu.arizona.biosemantics.etcsite.client.content.ontologize.SemanticMarkupToOntologiesPlace;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeBuildPlace;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeInputPlace;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeOutputPlace;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizePlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupLearnPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupOutputPlace;
@@ -42,6 +45,18 @@ public class ResumeTaskPlaceMapper {
 					return new SemanticMarkupOutputPlace(task);
 			}
 			return new SemanticMarkupInputPlace();
+		case ONTOLOGIZE:
+			switch(edu.arizona.biosemantics.etcsite.shared.model.ontologize.TaskStageEnum.valueOf(task.getTaskStage().getTaskStage())) {
+				case INPUT:
+					return new OntologizeInputPlace();
+				case BUILD:
+					return new OntologizeBuildPlace(task);
+				case OUTPUT:
+					return new OntologizeOutputPlace(task);
+				default:
+					break;
+			}
+			return new OntologizePlace();
 		case MATRIX_GENERATION:
 			switch(edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum.valueOf(task.getTaskStage().getTaskStage())) {
 				case INPUT:

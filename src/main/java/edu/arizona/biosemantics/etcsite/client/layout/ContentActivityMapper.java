@@ -19,6 +19,8 @@ import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGe
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationPlace;
 import edu.arizona.biosemantics.etcsite.client.content.news.NewsActivity;
 import edu.arizona.biosemantics.etcsite.client.content.news.NewsPlace;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeActivity;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizePlace;
 import edu.arizona.biosemantics.etcsite.client.content.sample.SampleActivity;
 import edu.arizona.biosemantics.etcsite.client.content.sample.SamplePlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupActivity;
@@ -46,6 +48,7 @@ public class ContentActivityMapper implements MyActivityMapper {
 	private AnnotationReviewActivity annotationReviewActivity;
 	private TreeGenerationActivity treeGenerationActivity;
 	private TaxonomyComparisonActivity taxonomyComparisonActivity;
+	private OntologizeActivity ontologizeActivity;
 	private SampleActivity sampleActivity;
 	
 	private MyActivity currentActivity;
@@ -54,7 +57,8 @@ public class ContentActivityMapper implements MyActivityMapper {
 	public ContentActivityMapper(GettingStartedActivity helpActivity, HomeActivity homeActivity, AboutActivity aboutActivity, NewsActivity newsActivity, SettingsActivity settingsActivity, TaskManagerActivity taskManagerActivity,
 			FileManagerActivity fileManagerActivity, SemanticMarkupActivity semanticMarkupActivity, MatrixGenerationActivity matrixGenerationActivity, 
 			AnnotationReviewActivity annotationReviewActivity, TreeGenerationActivity treeGenerationActivity, 
-			TaxonomyComparisonActivity taxonomyComparisonActivity, SampleActivity sampleActivity) {
+			TaxonomyComparisonActivity taxonomyComparisonActivity, SampleActivity sampleActivity, 
+			OntologizeActivity ontologizeActivity) {
 		super();
 		this.helpActivity = helpActivity;
 		this.homeActivity = homeActivity;
@@ -69,6 +73,7 @@ public class ContentActivityMapper implements MyActivityMapper {
 		this.treeGenerationActivity = treeGenerationActivity;
 		this.taxonomyComparisonActivity = taxonomyComparisonActivity;
 		this.sampleActivity = sampleActivity;
+		this.ontologizeActivity = ontologizeActivity;
 	}
 
 	@Override
@@ -102,6 +107,8 @@ public class ContentActivityMapper implements MyActivityMapper {
 			currentActivity = taxonomyComparisonActivity;
 		if(place instanceof SamplePlace)
 			currentActivity = sampleActivity;
+		if(place instanceof OntologizePlace)
+			currentActivity = ontologizeActivity;
 		
 		return currentActivity;
 	}
