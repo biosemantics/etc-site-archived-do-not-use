@@ -1,6 +1,13 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.setup;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.nio.charset.Charset;
+import java.util.Properties;
+
+import org.apache.commons.io.IOUtils;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -28,6 +35,26 @@ public class SetupService extends RemoteServiceServlet implements ISetupService 
 		setup.setGoogleClientId(Configuration.googleClientId);
 		setup.setGoogleRedirectURI(Configuration.googleRedirectURI);
 		return setup;
+	}
+	
+	@Override
+	public String getNews() throws Exception {
+		return readNews();
+	}
+
+	private String readNews() throws IOException {
+		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		InputStream inputStream = loader.getResourceAsStream("edu/arizona/biosemantics/etcsite/news.html");
+		
+		StringWriter writer = new StringWriter();
+		IOUtils.copy(inputStream, writer, Charset.forName("UTF-8"));
+		String news = writer.toString();
+		try {
+			inputStream.close();
+		} catch (IOException e) {
+			log(LogLevel.ERROR, "Could not close news inputstream", e);
+		}		
+		return news;
 	}
 
 }

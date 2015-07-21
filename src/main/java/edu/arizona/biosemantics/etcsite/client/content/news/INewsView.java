@@ -9,5 +9,7 @@ public interface INewsView extends IsWidget {
 	}
 
 	void setPresenter(Presenter presenter);
+
+	void setHtml(String html);
 	
 }

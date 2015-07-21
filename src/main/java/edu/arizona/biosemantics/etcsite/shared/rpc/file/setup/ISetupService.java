@@ -10,4 +10,6 @@ public interface ISetupService extends RemoteService {
 
 	public Setup getSetup();
 
+	String getNews() throws Exception;
+
 }

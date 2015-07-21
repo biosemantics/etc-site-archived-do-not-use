@@ -589,9 +589,8 @@ public class Alerter {
 		return showAlert("Validate Ontology", "Failed to validate ontology.", caught);
 	}
 
-	public static void getUsersFailed(Throwable caught) {
-		// TODO Auto-generated method stub
-		
+	public static MessageBox failedToGetNews(Throwable caught) {
+		return showAlert("Failed to get News", "Failed to get news.", caught);
 	}
 
 }

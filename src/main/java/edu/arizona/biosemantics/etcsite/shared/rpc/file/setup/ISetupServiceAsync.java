@@ -8,4 +8,6 @@ public interface ISetupServiceAsync {
 
 	public void getSetup(AsyncCallback<Setup> callback);
 	
+	public void getNews(AsyncCallback<String> callback);
+	
 }
