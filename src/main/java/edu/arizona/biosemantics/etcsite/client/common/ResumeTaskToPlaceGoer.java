@@ -1,16 +1,19 @@
 package edu.arizona.biosemantics.etcsite.client.common;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
+import edu.arizona.biosemantics.etcsite.client.common.TaskSelectDialog.ISelectListener;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationPlace;
 import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizePlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupPlace;
@@ -55,7 +58,35 @@ public class ResumeTaskToPlaceGoer implements ToPlaceGoer {
 			final HasTaskPlace hasTaskPlace = (HasTaskPlace)newPlace;
 			IHasTasksServiceAsync hasTasksService = getTasksService(hasTaskPlace);		
 			if(hasTasksService != null) {
-				hasTasksService.getLatestResumable(Authentication.getInstance().getToken(),
+				hasTasksService.getResumables(Authentication.getInstance().getToken(), new AsyncCallback<List<Task>>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						Alerter.failedToGetLatestResumable(caught);
+					}
+					@Override
+					public void onSuccess(List<Task> result) {
+						if(!result.isEmpty()) {
+							TaskSelectDialog taskDialog = new TaskSelectDialog(SelectionMode.SINGLE);
+							taskDialog.getButton(PredefinedButton.OK).setText("Resume selected task");
+							taskDialog.getButton(PredefinedButton.CANCEL).setText("Start new task");
+							taskDialog.show(result, new ISelectListener() {
+								@Override
+								public void onSelect(List<Task> selection) {
+									hasTaskPlace.setTask(selection.get(0));
+									doGoTo(hasTaskPlace, nextToPlaceGoers);
+								}
+								@Override
+								public void onCancel() {
+									doGoTo(hasTaskPlace, nextToPlaceGoers);
+								}
+							});
+						} else {
+							doGoTo(hasTaskPlace, nextToPlaceGoers);
+						}
+					}
+				});
+				
+				/*hasTasksService.getLatestResumable(Authentication.getInstance().getToken(),
 						new AsyncCallback<Task>() {
 					@Override
 					public void onSuccess(final Task task) {
@@ -83,7 +114,7 @@ public class ResumeTaskToPlaceGoer implements ToPlaceGoer {
 					public void onFailure(Throwable caught) {
 						Alerter.failedToGetLatestResumable(caught);
 					}
-				});
+				});*/
 			}
 		}
 	}

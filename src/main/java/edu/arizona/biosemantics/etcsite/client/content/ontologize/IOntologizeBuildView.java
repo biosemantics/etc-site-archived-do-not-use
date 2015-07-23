@@ -14,6 +14,8 @@ public interface IOntologizeBuildView extends IsWidget {
 		IOntologizeBuildView getView();
 
 		void onNext();
+
+		void onAddInput();
 		
 	}
 	

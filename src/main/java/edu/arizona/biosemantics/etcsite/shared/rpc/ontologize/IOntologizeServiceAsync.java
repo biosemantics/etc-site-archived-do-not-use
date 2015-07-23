@@ -23,7 +23,7 @@ public interface IOntologizeServiceAsync extends IHasTasksServiceAsync {
 			String taxonGroup, String ontologyPrefix, AsyncCallback<Task> callback);
 
 	void isValidInput(AuthenticationToken token, String inputFolderPath,
-			AsyncCallback<Boolean> asyncCallback);
+			AsyncCallback<Boolean> callback);
 
 	void goToTaskStage(AuthenticationToken token, Task task, TaskStageEnum taskStageEnum, 
 			AsyncCallback<Task> callback);
@@ -32,5 +32,7 @@ public interface IOntologizeServiceAsync extends IHasTasksServiceAsync {
 			AsyncCallback<Boolean> callback);
 
 	void output(AuthenticationToken token, Task task,
-			AsyncCallback<Task> asyncCallback);
+			AsyncCallback<Task> callback);
+
+	void addInput(AuthenticationToken token, Task task, String inputFile, AsyncCallback<Void> callback);
 }

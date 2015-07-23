@@ -870,18 +870,22 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			}
 		
 			XPathFactory xpfac = XPathFactory.instance();
-			XPathExpression<Element> xp = xpfac.compile("/bio:treatment/taxon_identification[@status='ACCEPTED']/taxon_name", Filters.element(), null,
+			XPathExpression<Element> sourceXPath = xpfac.compile("/bio:treatment/meta/source", Filters.element(), null,
+					Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));	
+			XPathExpression<Element> taxonNameXPath = xpfac.compile("/bio:treatment/taxon_identification[@status='ACCEPTED']/taxon_name", Filters.element(), null,
 					Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
 
 			if(doc != null) {
-				List<Element> taxonIdentification = xp.evaluate(doc);
-				return createTaxonIdentification(taxonIdentification);
+				List<Element> sources = sourceXPath.evaluate(doc);
+				List<Element> taxonIdentification = taxonNameXPath.evaluate(doc);
+				return createTaxonIdentification(sources.get(0), taxonIdentification);
 			}
 		}
 		return null;
 	}
 	
-	private String createTaxonIdentification(List<Element> taxonIdentifications) {
+	private String createTaxonIdentification(Element source, List<Element> taxonIdentifications) {
+		String result = "";
 		//StringBuilder taxonNameBuilder = new StringBuilder();
 		
 		//the whole set of classes dealing with taxonomy building from plain text
@@ -911,10 +915,27 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				if(found)
 					fullName += rankData.getName() + " ";
 			}
-			return fullName.substring(0, fullName.length() - 1);
+			result = fullName.substring(0, fullName.length() - 1);
 		} else {
-			return rankDatas.getLast().getName();
+			result = rankDatas.getLast().getName();
 		}
+		
+		Element author = source.getChild("author");
+		Element date = source.getChild("date");
+		Element title = source.getChild("title");
+		Element pages = source.getChild("pages");
+		String sourceString = "";
+		if(author != null)
+			sourceString += author.getText();
+		if(date != null)
+			sourceString += ", " + date.getText();
+		if(title != null)
+			sourceString += ", " + title.getText();
+		if(pages != null)
+			sourceString += ", " + pages.getText();
+		
+		result += " sec. " + sourceString;
+		return result;
 	}
 
 	private String replaceDescription(String content, String description, int descriptionNumber) throws JDOMException, IOException {
@@ -1017,5 +1038,18 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		daoManager.getSemanticMarkupConfigurationDAO().updateSemanticMarkupConfiguration(config);
 	}
 
+	@Override
+	public List<Task> getResumables(AuthenticationToken authenticationToken) {
+		List<Task> result = new LinkedList<Task>();
+		ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
+		List<Task> tasks = daoManager.getTaskDAO().getResumableTasks(user.getId());
+		for(Task task : tasks) {
+			if(task != null && task.isResumable() && !task.isFailed() && 
+					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP)) {
+				result.add(task);
+			}
+		}
+		return result;
+	}
 
 }
