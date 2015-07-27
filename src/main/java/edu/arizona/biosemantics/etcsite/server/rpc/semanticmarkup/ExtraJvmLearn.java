@@ -36,25 +36,19 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 	private String config;
 	private String input;
 	private String tablePrefix;
-	private AuthenticationToken authenticationToken;
 	private String source;
 	private String operator;
-	private String bioportalUserId;
-	private String bioportalAPIKey;
 	private IFileService fileService = new FileService();
 	private boolean useEmptyGlossary;
 
-	public ExtraJvmLearn(AuthenticationToken authenticationToken, String config, boolean useEmptyGlossary, String input, String tablePrefix,
-			String source, String operator, String bioportalUserId, String bioportalAPIKey) throws SemanticMarkupException {
-		this.authenticationToken = authenticationToken;
+	public ExtraJvmLearn(String config, boolean useEmptyGlossary, String input, String tablePrefix,
+			String source, String operator) throws SemanticMarkupException {
 		this.config = config;
 		this.useEmptyGlossary = useEmptyGlossary;
 		this.input = input;
 		this.tablePrefix = tablePrefix;
 		this.source = source;
 		this.operator = operator;
-		this.bioportalUserId = bioportalUserId;
-		this.bioportalAPIKey = bioportalAPIKey;
 		
 		try {
 			this.setArgs(createArgs());
@@ -75,21 +69,7 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 	}
 	
 	private String[] createArgs() throws PermissionDeniedException, CreateDirectoryFailedException {
-		String databaseName = Configuration.charaparser_databaseName;
-		String databaseUser = Configuration.databaseUser;
-		String databasePassword = Configuration.databasePassword;
-		String databaseHost = Configuration.databaseHost;
-		String databasePort = Configuration.databasePort;
-		String workspace = Configuration.charaparser_tempFileBase;
-		String wordnet = Configuration.charaparser_wordnet;
-		String perl = Configuration.charaparser_perl;
-		String otoLiteURL = Configuration.oto2Url;
-		String debugFile = workspace + File.separator + tablePrefix + File.separator + "debug.log";
-		String errorFile = workspace + File.separator + tablePrefix + File.separator + "error.log";
-		String ontologies = Configuration.charaparser_ontologies;
-		
-		fileService.createDirectory(new AdminAuthenticationToken(), workspace, tablePrefix, false);
-
+		//fileService.createDirectory(new AdminAuthenticationToken(), workspace, tablePrefix, false);
 		
 		//only temporary until charaparser can deal with the namespaces and they don't need to be pre- and post treated with XmlNamespaceManager
 		/*fileService.createDirectory(new AdminAuthenticationToken(), workspace + File.separator + tablePrefix, "in", false);
@@ -101,25 +81,11 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 			xmlNamespaceManager.removeXmlSchema(child);
 		}*/
 		List<String> argList = new LinkedList<String>();
-		addArg(argList, "a", workspace);
 		addArg(argList, "f", source);
 		addArg(argList, "g", operator);
-		addArg(argList, "j", bioportalUserId);
-		addArg(argList, "k", bioportalAPIKey);
-		addArg(argList, "b", debugFile);
-		addArg(argList, "e", errorFile);
 		addArg(argList, "c", config);
-		addArg(argList, "w", wordnet);
-		addArg(argList, "l", perl);
-		addArg(argList, "n", databaseHost);
-		addArg(argList, "p", databasePort);
-		addArg(argList, "d", databaseName);
-		addArg(argList, "u", databaseUser);
-		addArg(argList, "s", databasePassword);
 		addArg(argList, "i", input);
 		addArg(argList, "z", tablePrefix);
-		addArg(argList, "o", otoLiteURL);
-		addArg(argList, "q", ontologies);
 		if(useEmptyGlossary)
 			addArg(argList, "x");
 

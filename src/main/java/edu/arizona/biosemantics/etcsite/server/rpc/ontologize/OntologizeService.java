@@ -208,12 +208,21 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 			XPathExpression<Element> xp = xpfac.compile("//description", Filters.element(), null,
 					Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
 			List<Element> descriptionElements = xp.evaluate(doc);
-			if(descriptionElements != null) 
+			if(descriptionElements != null) {
+				StringBuilder textBuilder = new StringBuilder();
 				for(Element descriptionElement : descriptionElements) {
 					String type = descriptionElement.getAttributeValue("type");
-					String text = descriptionElement.getValue();
+					List<Element> statements = descriptionElement.getChildren("statement");
+					for(Element statement : statements) {
+						Element textElement = statement.getChild("text");
+						textBuilder.append(textElement.getValue() + " ");
+					}
+					String text = textBuilder.toString();
+					if(!text.isEmpty())
+						text = text.substring(0, text.length() - 1);
 					descriptions.add(new Description(text, type));
 				}
+			}
 		}
 		return descriptions;
 	}

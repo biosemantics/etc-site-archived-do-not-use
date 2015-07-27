@@ -14,3 +14,5 @@ bioportalApiKey=7ae4743f-edb1-4308-9221-c879d3bd55c7
 
 #OTO
 otoClientUrl=http://biosemantics.arizona.edu:8080/OTO/
+
+wordNetSource=/var/lib/etcsite/wordnet/wn31/dict
