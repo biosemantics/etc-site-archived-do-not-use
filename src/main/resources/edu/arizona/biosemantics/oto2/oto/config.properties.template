@@ -4,6 +4,9 @@ databaseUser=
 databasePassword=
 databaseHost=
 databasePort=
+database_partitionCount=2
+database_minConnectionsPerPartition=10
+database_maxConnectionsPerPartition=20
 
 #Temporary Storage
 files = 
