@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.util.Date;
 
+import edu.arizona.biosemantics.common.ling.know.SingularPluralProvider;
+import edu.arizona.biosemantics.common.ling.know.lib.WordNetPOSKnowledgeBase;
+import edu.arizona.biosemantics.common.ling.transform.lib.SomeInflector;
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.db.Query.QueryException;
 import edu.arizona.biosemantics.etcsite.shared.model.DatasetPrefix;
-import edu.arizona.biosemantics.semanticmarkup.config.SingularPluralProvider;
-import edu.arizona.biosemantics.semanticmarkup.know.lib.WordNetPOSKnowledgeBase;
-import edu.arizona.biosemantics.semanticmarkup.ling.transform.lib.SomeInflector;
 
 public class SemanticMarkupDBDAO {
 

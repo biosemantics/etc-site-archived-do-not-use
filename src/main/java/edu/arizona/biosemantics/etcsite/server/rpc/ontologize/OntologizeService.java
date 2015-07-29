@@ -31,6 +31,7 @@ import edu.arizona.biosemantics.common.taxonomy.Rank;
 import edu.arizona.biosemantics.common.taxonomy.RankData;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Emailer;
+import edu.arizona.biosemantics.etcsite.server.Zipper;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.FileService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.access.FileAccessService;
@@ -59,7 +60,9 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDen
 import edu.arizona.biosemantics.etcsite.shared.rpc.ontologize.IOntologizeService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ontologize.OntologizeException;
 import edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection;
+import edu.arizona.biosemantics.oto2.ontologize.shared.model.Context;
 import edu.arizona.biosemantics.oto2.ontologize.shared.model.Ontology;
+import edu.arizona.biosemantics.oto2.ontologize.shared.model.Term;
 import edu.arizona.biosemantics.oto2.ontologize.shared.rpc.toontology.CreateOntologyException;
 
 public class OntologizeService extends RemoteServiceServlet implements IOntologizeService {
@@ -110,7 +113,42 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 		Collection collection = new Collection();
 		collection.setName(name);
 		collection.setTaxonGroup(taxonGroup);
+		collection.setTerms(getTerms(input));
 		
+		try {
+			collection = collectionService.insert(collection);
+			contextService.insert(collection.getId(), collection.getSecret(), getContexts(token, input, collection));
+		} catch (Exception e) {
+			throw new OntologizeException();
+		}
+		return collection;
+	}
+	
+	private List<Context> getContexts(AuthenticationToken token, String input, Collection collection) throws OntologizeException {
+		List<edu.arizona.biosemantics.oto2.ontologize.shared.model.Context> contexts = 
+				new LinkedList<edu.arizona.biosemantics.oto2.ontologize.shared.model.Context>();
+		List<String> files = new LinkedList<String>();
+		try {
+			files = fileService.getDirectoriesFiles(token, input);
+		} catch (PermissionDeniedException e) {
+			throw new OntologizeException();
+		}
+		for(String file : files) {
+			List<Description> descriptions = getDescriptions(token, input + File.separator + file);
+			for(Description description : descriptions) {
+				try {
+					contexts.add(new edu.arizona.biosemantics.oto2.ontologize.shared.model.Context(collection.getId(), 
+							getTaxonIdentification(token, input + File.separator + file), 
+							description.getContent()));
+				} catch (PermissionDeniedException | GetFileContentFailedException e) {
+					throw new OntologizeException();
+				}
+			}
+		}
+		return contexts;
+	}
+
+	private List<Term> getTerms(String input) throws OntologizeException {
 		MarkupResultReader reader = new MarkupResultReader();
 		File inputFile = new File(input);
 		List<MarkupResultReader.BiologicalEntity> structures;
@@ -146,43 +184,9 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 				}
 			}
 		}
-		collection.setTerms(terms);
-		
-		
-		try {
-			collection = collectionService.insert(collection);
-		} catch (Exception e) {
-			throw new OntologizeException();
-		}
-		
-		List<edu.arizona.biosemantics.oto2.ontologize.shared.model.Context> contexts = 
-				new LinkedList<edu.arizona.biosemantics.oto2.ontologize.shared.model.Context>();
-		List<String> files = new LinkedList<String>();
-		try {
-			files = fileService.getDirectoriesFiles(token, input);
-		} catch (PermissionDeniedException e) {
-			throw new OntologizeException();
-		}
-		for(String file : files) {
-			List<Description> descriptions = getDescriptions(token, input + File.separator + file);
-			for(Description description : descriptions) {
-				try {
-					contexts.add(new edu.arizona.biosemantics.oto2.ontologize.shared.model.Context(collection.getId(), 
-							getTaxonIdentification(token, input + File.separator + file), 
-							description.getContent()));
-				} catch (PermissionDeniedException | GetFileContentFailedException e) {
-					throw new OntologizeException();
-				}
-			}
-		}
-		try {
-			contextService.insert(collection.getId(), collection.getSecret(), contexts);
-		} catch (Exception e) {
-			throw new OntologizeException();
-		}
-		return collection;
+		return terms;
 	}
-	
+
 	public List<Description> getDescriptions(AuthenticationToken authenticationToken, String filePath) {	
 		List<Description> descriptions = new LinkedList<Description>();
 		String fileContent;
@@ -204,12 +208,21 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 			XPathExpression<Element> xp = xpfac.compile("//description", Filters.element(), null,
 					Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
 			List<Element> descriptionElements = xp.evaluate(doc);
-			if(descriptionElements != null) 
+			if(descriptionElements != null) {
+				StringBuilder textBuilder = new StringBuilder();
 				for(Element descriptionElement : descriptionElements) {
 					String type = descriptionElement.getAttributeValue("type");
-					String text = descriptionElement.getValue();
+					List<Element> statements = descriptionElement.getChildren("statement");
+					for(Element statement : statements) {
+						Element textElement = statement.getChild("text");
+						textBuilder.append(textElement.getValue() + " ");
+					}
+					String text = textBuilder.toString();
+					if(!text.isEmpty())
+						text = text.substring(0, text.length() - 1);
 					descriptions.add(new Description(text, type));
 				}
+			}
 		}
 		return descriptions;
 	}
@@ -226,18 +239,22 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 			}
 		
 			XPathFactory xpfac = XPathFactory.instance();
-			XPathExpression<Element> xp = xpfac.compile("/bio:treatment/taxon_identification[@status='ACCEPTED']/taxon_name", Filters.element(), null,
+			XPathExpression<Element> sourceXPath = xpfac.compile("/bio:treatment/meta/source", Filters.element(), null,
+					Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));	
+			XPathExpression<Element> taxonNameXPath = xpfac.compile("/bio:treatment/taxon_identification[@status='ACCEPTED']/taxon_name", Filters.element(), null,
 					Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
 
 			if(doc != null) {
-				List<Element> taxonIdentification = xp.evaluate(doc);
-				return createTaxonIdentification(taxonIdentification);
+				List<Element> sources = sourceXPath.evaluate(doc);
+				List<Element> taxonIdentification = taxonNameXPath.evaluate(doc);
+				return createTaxonIdentification(sources.get(0), taxonIdentification);
 			}
 		}
 		return null;
 	}
 	
-	private String createTaxonIdentification(List<Element> taxonIdentifications) {
+	private String createTaxonIdentification(Element source, List<Element> taxonIdentifications) {
+		String result = "";
 		//StringBuilder taxonNameBuilder = new StringBuilder();
 		
 		//the whole set of classes dealing with taxonomy building from plain text
@@ -267,10 +284,27 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 				if(found)
 					fullName += rankData.getName() + " ";
 			}
-			return fullName.substring(0, fullName.length() - 1);
+			result = fullName.substring(0, fullName.length() - 1);
 		} else {
-			return rankDatas.getLast().getName();
+			result = rankDatas.getLast().getName();
 		}
+		
+		Element author = source.getChild("author");
+		Element date = source.getChild("date");
+		Element title = source.getChild("title");
+		Element pages = source.getChild("pages");
+		String sourceString = "";
+		if(author != null)
+			sourceString += author.getText();
+		if(date != null)
+			sourceString += ", " + date.getText();
+		if(title != null)
+			sourceString += ", " + title.getText();
+		if(pages != null)
+			sourceString += ", " + pages.getText();
+		
+		result += " sec. " + sourceString;
+		return result;
 	}
 
 	private String getOntologyFromSelection(AuthenticationToken token, String ontology, edu.arizona.biosemantics.common.biology.TaxonGroup taxonGroup, 
@@ -298,30 +332,39 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 			ontology = destination;
 		}
 		
-		//TODO: copy ontology to the cache of that specific collection for ontologize access
-		String ontologyFile;
+		String ontologyPath;
 		try {
-			ontologyFile = ontology + File.separator + getOntologyFile(token, ontology);
+			String owlFile = getOntologyFile(token, ontology);
+			if(owlFile == null)
+				throw new OntologizeException("Could not find ontology file");
+			ontologyPath = ontology + File.separator + owlFile;
 		} catch (PermissionDeniedException e) {
 			log(LogLevel.ERROR, "Couldn't get ontology file from directory", e);
 			throw new OntologizeException();
 		}
 		
-		String ontologyAcronym = getOntologyAcronym(ontologyFile);
+		String ontologyAcronym = getOntologyAcronym(ontologyPath);
 		String ontologyTempFile = this.getOntologyTempFile(collection, ontologyAcronym);
-		try {
-			FileUtils.copyFile(new File(ontologyFile), new File(ontologyTempFile));
-		} catch (IOException e) {
-			log(LogLevel.ERROR, "Couldn't copy ontology to ontologize cache", e);
-			throw new OntologizeException();
-		}
+		File ontologyFile = new File(ontology);
+		for(File file : ontologyFile.listFiles())
+			try {
+				FileUtils.copyDirectoryToDirectory(file,
+						new File(ontologyTempFile));
+			} catch (IOException e) {
+				log(LogLevel.ERROR, "Couldn't copy ontology to ontologize cache", e);
+				throw new OntologizeException();
+			}
 		ontologyTempFile = getOntologyFromCreation(ontologyAcronym, taxonGroup, collection, false);		
 		return ontologyTempFile;
 	}
 
 	private String getOntologyFile(AuthenticationToken token, String filePath) throws PermissionDeniedException {
 		List<String> files = fileService.getDirectoriesFiles(token, filePath);
-		return files.get(0);
+		for(String file : files) {
+			if(!file.startsWith("module."))
+				return file;
+		}
+		return null;
 	}
 
 	private String getOntologyAcronym(String ontology) {
@@ -426,6 +469,20 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 			}
 		}
 		return null;
+	}
+	
+	@Override
+	public List<Task> getResumables(AuthenticationToken authenticationToken) {
+		List<Task> result = new LinkedList<Task>();
+		ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
+		List<Task> tasks = daoManager.getTaskDAO().getResumableTasks(user.getId());
+		for(Task task : tasks) {
+			if(task != null && task.isResumable() && !task.isFailed() && 
+					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.ONTOLOGIZE)) {
+				result.add(task);
+			}
+		}
+		return result;
 	}
 	
 	@Override
@@ -564,52 +621,56 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 	
 	@Override
 	public String downloadOntologize(AuthenticationToken token, Task task) throws OntologizeException {
-		/*final SemanticMarkupConfiguration config = getSemanticMarkupConfiguration(task);
-		int uploadId = config.getOntologizeUploadId();
-		String secret = config.getOntologizeSecret();
-		
-		edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection collection;
-		try {
-			collection = ontologizeCollectionService.get(uploadId, secret);
-		} catch (Exception e) {
-			log(LogLevel.ERROR, "Couldn't get oto collection", e);
-			throw new SemanticMarkupException(task);
-		}
+		final OntologizeConfiguration config = this.getOntologizeConfiguration(task);
 		
 		String zipSource = Configuration.compressedFileBase + File.separator + token.getUserId() + File.separator + "ontologize" + 
 				File.separator + task.getId() + File.separator + task.getName() + "_ontologies";
+		
 		File zipSourceFile = new File(zipSource);
 		try {
 			FileUtils.deleteDirectory(zipSourceFile);
 		} catch (IOException e) {
 			log(LogLevel.ERROR, "Couldn't clean/remove directory to zip", e);
-			throw new SemanticMarkupException(task);
+			throw new OntologizeException(task);
 		}
 		zipSourceFile.mkdirs();
 		
-		String source = edu.arizona.biosemantics.oto2.ontologize.server.Configuration.collectionOntologyDirectory + 
-				File.separator + uploadId;
-		File sourceFile = new File(source);
-		for(File file : sourceFile.listFiles()) {
-			if(file.isDirectory()) {
+		Collection collection = new Collection();
+		collection.setId(config.getOntologizeCollectionId());
+		collection.setSecret(config.getOntologizeCollectionSecret());
+		collection.setTaxonGroup(edu.arizona.biosemantics.common.biology.TaxonGroup.valueFromDisplayName(config.getTaxonGroup().getName()));
+		List<Ontology> ontologies;
+		try {
+			ontologies = toOntologyService.getLocalOntologies(collection);
+		} catch (Exception e) {
+			log(LogLevel.ERROR, "Couldn't get ontologies of collection", e);
+			throw new OntologizeException(task);
+		}
+		for (Ontology ontology : ontologies) {
+			String ontologyPath = edu.arizona.biosemantics.oto2.ontologize.server.Configuration.collectionOntologyDirectory
+					+ File.separator
+					+ collection.getId()
+					+ File.separator
+					+ ontology.getAcronym();
+			
+			File ontologyFile = new File(ontologyPath);
+			for(File file : ontologyFile.listFiles())
 				try {
-					
-					FileUtils.copyDirectoryToDirectory(file, zipSourceFile);
+					FileUtils.copyDirectoryToDirectory(file,
+							zipSourceFile);
 				} catch (IOException e) {
 					log(LogLevel.ERROR, "Couldn't copy ontology file", e);
-					throw new SemanticMarkupException(task);
+					throw new OntologizeException(task);
 				}
-			}
 		}
 		
-		String zipFilePath = Configuration.compressedFileBase + File.separator + token.getUserId() + File.separator + "ontologize" + 
-				File.separator + task.getId() + File.separator + task.getName() + "_ontologies.zip";
+		String zipFilePath = Configuration.compressedFileBase + File.separator + token.getUserId() + File.separator + 
+				"ontologize" + File.separator + task.getId() + File.separator + task.getName() + "_ontologies.zip";
 		Zipper zipper = new Zipper();
 		zipFilePath = zipper.zip(zipSource, zipFilePath);
 		if(zipFilePath != null)
 			return zipFilePath;
-		throw new SemanticMarkupException("Saving failed");*/
-		return null;
+		throw new OntologizeException("Saving failed");
 	}
 	
 	
@@ -656,11 +717,12 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 		
 		int ontologizeCollectionId = config.getOntologizeCollectionId();
 		String ontologyAcronym = getOntologyAcronym(config.getOntologyFile());
-		String ontologyTempFile = edu.arizona.biosemantics.oto2.ontologize.server.Configuration.collectionOntologyDirectory 
-			+ File.separator + ontologizeCollectionId + File.separator + ontologyAcronym
-			+ File.separator + ontologyAcronym + ".owl";
+		String ontologyTempFilePath = edu.arizona.biosemantics.oto2.ontologize.server.Configuration.collectionOntologyDirectory 
+			+ File.separator + ontologizeCollectionId + File.separator + ontologyAcronym;
 		try {
-			FileUtils.copyFileToDirectory(new File(ontologyTempFile), new File(createDirectoryResult));
+			File ontologyTempFile = new File(ontologyTempFilePath);
+			for(File file : ontologyTempFile.listFiles())
+				FileUtils.copyFileToDirectory(file, new File(createDirectoryResult));
 		} catch (IOException e) {
 			log(LogLevel.ERROR, "Couldn't copy ontology to file manager", e);
 			throw new OntologizeException();
@@ -676,6 +738,31 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 		daoManager.getTasksOutputFilesDAO().addOutput(task, createDirectoryResult);
 		
 		return task;
+	}
+
+	@Override
+	public void addInput(AuthenticationToken token, Task task, String input) throws OntologizeException {
+		OntologizeConfiguration config = this.getOntologizeConfiguration(task);
+		try {
+			Collection collection = collectionService.get(config.getOntologizeCollectionId(), config.getOntologizeCollectionSecret());
+			List<Term> newTerms = getTerms(input);
+			List<Term> existingTerms = collection.getTerms();
+			
+			Map<String, Term> termsMap = new HashMap<String, Term>();
+			for(Term term : existingTerms) 
+				termsMap.put(term.getCategory() + " " + term.getTerm(), term);
+			List<Term> toAddTerms = new LinkedList<Term>();
+			for(Term term : newTerms)
+				if(!termsMap.containsKey(term.getCategory() + " " + term.getTerm()))
+					toAddTerms.add(term);
+			
+			collection.addTerms(toAddTerms);
+			collectionService.update(collection);
+			contextService.insert(collection.getId(), collection.getSecret(), getContexts(token, input, collection));
+		} catch (Exception e) {
+			log(LogLevel.ERROR, "Couldn't add input to collection", e);
+			throw new OntologizeException();
+		}
 	}
 
 }

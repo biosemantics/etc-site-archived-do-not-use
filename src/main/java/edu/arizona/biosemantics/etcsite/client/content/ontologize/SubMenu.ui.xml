@@ -28,7 +28,7 @@
 			<my:ImageLabel ui:field="createInput" styleName="{style.subMenuEntry}" imagePath="images/Enumeration_unselected_1.gif" imageWidth="20px" imageHeight="20px" text="Create Input" systemFolder="false"></my:ImageLabel>
 			<my:ImageLabel ui:field="input" styleName="{style.subMenuEntry}" imagePath="images/Enumeration_unselected_2.gif" imageWidth="20px" imageHeight="20px" text="Input" systemFolder="false"></my:ImageLabel>
 			<my:ImageLabel ui:field="build" styleName="{style.subMenuEntry}" imagePath="images/Enumeration_unselected_3.gif" imageWidth="20px" imageHeight="20px" text="Build" systemFolder="false"></my:ImageLabel>
-			<my:ImageLabel ui:field="output" styleName="{style.subMenuEntry}" imagePath="images/Enumeration_unselected_4.gif" imageWidth="20px" imageHeight="20px" text="Output" systemFolder="false"></my:ImageLabel>
+			<!-- <my:ImageLabel ui:field="output" styleName="{style.subMenuEntry}" imagePath="images/Enumeration_unselected_4.gif" imageWidth="20px" imageHeight="20px" text="Output" systemFolder="false"></my:ImageLabel> -->
 		</g:HorizontalPanel>
 	</g:VerticalPanel>
 </ui:UiBinder> 

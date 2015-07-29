@@ -31,8 +31,10 @@
 							<my:SubMenu ui:field="subMenu" step="BUILD" />
 						</g:cell>
 						<g:cell>
-							<g:Button addStyleNames="{style.nextButton}" ui:field="nextButton">Next
-								Step in Ontology Building</g:Button>
+							<g:Button addStyleNames="{style.nextButton}" ui:field="addFilesButton">Add additional input</g:Button>
+						</g:cell>
+						<g:cell>
+							<g:Button addStyleNames="{style.nextButton}" ui:field="nextButton">Save Ontology to File Manager</g:Button>
 						</g:cell>
 					</g:HorizontalPanel>
 				</g:VerticalPanel>

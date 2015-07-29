@@ -4,6 +4,9 @@ databaseUser=termsuser
 databasePassword=termspassword
 databaseHost=localhost
 databasePort=3306
+database_partitionCount=2
+database_minConnectionsPerPartition=10
+database_maxConnectionsPerPartition=20
 
 #Temporary Storage
 files = /var/lib/etcsite/oto2
@@ -14,3 +17,5 @@ bioportalApiKey=7ae4743f-edb1-4308-9221-c879d3bd55c7
 
 #OTO
 otoClientUrl=http://biosemantics.arizona.edu:8080/OTO/
+
+wordNetSource=/var/lib/etcsite/wordnet/wn31/dict

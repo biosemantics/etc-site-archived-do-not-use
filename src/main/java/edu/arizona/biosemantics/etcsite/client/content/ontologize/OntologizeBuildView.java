@@ -40,6 +40,11 @@ public class OntologizeBuildView extends Composite implements IOntologizeBuildVi
 		this.presenter = presenter;
 	}
 	
+	@UiHandler("addFilesButton")
+	public void onAddInput(ClickEvent event) {
+		presenter.onAddInput();
+	}
+	
 	@UiHandler("nextButton")
 	public void onNext(ClickEvent event) {
 		presenter.onNext();
