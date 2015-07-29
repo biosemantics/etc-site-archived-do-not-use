@@ -3,8 +3,8 @@ package edu.arizona.biosemantics.etcsite.shared.model.ontologize;
 public enum TaskStageEnum {
 	CREATE_INPUT("Create Input"),
     INPUT("Input"),
-    BUILD("Build");
-    //OUTPUT("Output");
+    BUILD("Build"),
+    OUTPUT("Output");
 
     private String displayName;
 

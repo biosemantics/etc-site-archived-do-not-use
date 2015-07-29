@@ -62,22 +62,7 @@ public class OntologizeInputPresenter implements IOntologizeInputView.Presenter 
 			@Override
 			public void onSuccess(Boolean result) {
 				if(result) {
-					ontologizeService.startWithOntologyCreation(Authentication.getInstance().getToken(), 
-							view.getTaskName(), inputFile, view.getTaxonGroup(), view.getOntologyPrefix()
-							, new AsyncCallback<Task>() {
-						@Override
-						public void onSuccess(Task result) {
-							placeController.goTo(new OntologizeBuildPlace(result));
-							Alerter.stopLoading(box);
-						}
-						@Override
-						public void onFailure(Throwable caught) {
-							Alerter.failedToStartOntologize(caught);
-							Alerter.stopLoading(box);
-						}
-					});
-					
-					/*if (view.isCreateOntology()) {
+					if (view.isCreateOntology()) {
 						ontologizeService.startWithOntologyCreation(Authentication.getInstance().getToken(), 
 								view.getTaskName(), inputFile, view.getTaxonGroup(), view.getOntologyPrefix()
 								, new AsyncCallback<Task>() {
@@ -107,7 +92,7 @@ public class OntologizeInputPresenter implements IOntologizeInputView.Presenter 
 								Alerter.stopLoading(box);
 							}
 						});
-					}*/
+					}
 				} else {
 					Alerter.stopLoading(box);
 				}
@@ -127,20 +112,13 @@ public class OntologizeInputPresenter implements IOntologizeInputView.Presenter 
 			callback.onSuccess(false);
 			return;
 		}
-		
-		if(view.getOntologyPrefix().isEmpty()) {
-			Alerter.selectOrCreateOntology();
-			callback.onSuccess(false);
-			return;
-		}
-		
-		/*if((!view.isCreateOntology() || (view.isCreateOntology() && view.getOntologyPrefix().isEmpty()))
+		if((!view.isCreateOntology() || (view.isCreateOntology() && view.getOntologyPrefix().isEmpty()))
 				&& (!view.isSelectOntology() || 
 				(view.isSelectOntology() && ontologyFile == null))) {
 			Alerter.selectOrCreateOntology();
 			callback.onSuccess(false);
 			return;
-		}*/
+		}
 		
 		ontologizeService.isValidInput(Authentication.getInstance().getToken(), 
 				inputFile, new AsyncCallback<Boolean>() {
@@ -150,7 +128,7 @@ public class OntologizeInputPresenter implements IOntologizeInputView.Presenter 
 					}
 					@Override
 					public void onSuccess(Boolean result) {
-						/*if(view.isSelectOntology()) {
+						if(view.isSelectOntology()) {
 							ontologizeService.isValidOntology(Authentication.getInstance().getToken(), 
 									ontologyFile, new AsyncCallback<Boolean>() {
 										@Override
@@ -163,9 +141,9 @@ public class OntologizeInputPresenter implements IOntologizeInputView.Presenter 
 										}
 								
 							});
-						} else {*/
+						} else {
 							callback.onSuccess(true);
-						//}
+						}
 					}
 		});
 	}
@@ -211,7 +189,7 @@ public class OntologizeInputPresenter implements IOntologizeInputView.Presenter 
 		});
 	}
 
-	/*@Override
+	@Override
 	public void onOntologySelect() {
 		selectableFileTreePresenter.show("Select ontology", FileFilter.DIRECTORY, new ISelectListener() {
 			@Override
@@ -225,7 +203,7 @@ public class OntologizeInputPresenter implements IOntologizeInputView.Presenter 
 					} else if(selection.getText().contains(" 0 file")) {
 						Alerter.emptyFolder();
 					} else {
-						view.setOntologyFilePath(shortendPath);
+						view.setFilePath(shortendPath);
 						view.setEnabledNext(true);			
 						if(selection.getFileInfo().getOwnerUserId() != Authentication.getInstance().getUserId()) {
 							Alerter.sharedInputForTask();
@@ -237,5 +215,5 @@ public class OntologizeInputPresenter implements IOntologizeInputView.Presenter 
 				}
 			}
 		});
-	}*/
+	}
 }

@@ -17,28 +17,49 @@ public class InJvmParse implements Parse {
 	private String config;
 	private String input;
 	private String tablePrefix;
+	private AuthenticationToken authenticationToken;
 	private String source;
 	private String operator;
+	private String bioportalUserId;
+	private String bioportalAPIKey;	
 	private boolean executedSuccessfully = false;
 	private boolean useEmptyGlossary;
 
-	public InJvmParse(String config, boolean useEmptyGlossary, String input, String tablePrefix,
-			String source, String operator) {
+	public InJvmParse(AuthenticationToken authenticationToken, String config, boolean useEmptyGlossary, String input, String tablePrefix,
+			String source, String operator, String bioportalUserId, String bioportalAPIKey) {
+		this.authenticationToken = authenticationToken;
 		this.config = config;
 		this.input = input;
 		this.tablePrefix = tablePrefix;
 		this.source = source;
 		this.operator = operator;
+		this.bioportalUserId = bioportalUserId;
+		this.bioportalAPIKey = bioportalAPIKey;
 		this.useEmptyGlossary = useEmptyGlossary;
 	}
 	
 	@Override
 	public ParseResult call() throws SemanticMarkupException {
 		ParseResult result = new ParseResult(new HashSet<File>());
+		String databaseName = Configuration.charaparser_databaseName;
+		String databaseUser = Configuration.databaseUser;
+		String databasePassword = Configuration.databasePassword;
+		String databaseHost = Configuration.databaseHost;
+		String databasePort = Configuration.databasePort;
+		String workspace = Configuration.charaparser_tempFileBase;
+		String wordnet = Configuration.charaparser_wordnet;
+		String perl = Configuration.charaparser_perl;
+		String otoLiteURL = Configuration.oto2Url;
+		String debugFile = workspace + File.separator + tablePrefix + File.separator + "debug.log";
+		String errorFile = workspace + File.separator + tablePrefix + File.separator + "error.log";
+		String ontologies = Configuration.charaparser_ontologies;
+		
 		//only temporary until charaparser can deal with the namespaces and they don't need to be pre- and post treated with XmlNamespaceManager
 		//String newInput = workspace + File.separator + tablePrefix + File.separator + "in";
 		
-		String[] args = new String[] { "-f", source, "-g", operator, "-c", config,"-i", input, "-z" , tablePrefix };
+		String[] args = new String[] { "-a", workspace, "-f", source, "-g", operator, "-j", bioportalUserId, "-k", bioportalAPIKey, "-b", debugFile, "-e", errorFile, "-c", config, "-w", wordnet, "-l", perl,
+				"-n", databaseHost, "-p", databasePort, "-d", databaseName, "-u", databaseUser, 
+				"-s", databasePassword, "-i", input, "-z" , tablePrefix, "-y", "-o", otoLiteURL, "-q", ontologies};
 		if(useEmptyGlossary) {
 			List<String> argList = new ArrayList<String>(Arrays.asList(args));
 			argList.add("-x");

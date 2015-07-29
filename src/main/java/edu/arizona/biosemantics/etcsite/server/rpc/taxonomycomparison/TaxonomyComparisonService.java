@@ -531,18 +531,4 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		return path;
 	}
 	
-	@Override
-	public List<Task> getResumables(AuthenticationToken authenticationToken) {
-		List<Task> result = new LinkedList<Task>();
-		ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
-		List<Task> tasks = daoManager.getTaskDAO().getResumableTasks(user.getId());
-		for(Task task : tasks) {
-			if(task != null && task.isResumable() && !task.isFailed() && 
-					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.TAXONOMY_COMPARISON)) {
-				result.add(task);
-			}
-		}
-		return result;
-	}
-	
 }

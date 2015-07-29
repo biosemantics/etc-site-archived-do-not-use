@@ -11,7 +11,7 @@ public interface IOntologizeInputView extends IsWidget {
 		IOntologizeInputView getView();
 		void setSelectedFolder(String fullPath, String shortendPath);
 		void onInputSelect();
-		//void onOntologySelect();
+		void onOntologySelect();
 	}
 	  
 	void setPresenter(Presenter presenter);
@@ -19,9 +19,8 @@ public interface IOntologizeInputView extends IsWidget {
 	void setFilePath(String shortendPath);
 	void setEnabledNext(boolean b);
 	void resetFields();
-	//boolean isSelectOntology();
+	boolean isSelectOntology();
 	String getTaxonGroup();
 	String getOntologyPrefix();
-	//boolean isCreateOntology();
-	//void setOntologyFilePath(String shortendPath);
+	boolean isCreateOntology();
 }

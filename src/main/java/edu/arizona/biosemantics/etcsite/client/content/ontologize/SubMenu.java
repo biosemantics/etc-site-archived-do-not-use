@@ -25,8 +25,8 @@ public class SubMenu extends Composite {
 	@UiField
 	ImageLabel build;
 	
-	//@UiField
-	//ImageLabel output;
+	@UiField
+	ImageLabel output;
 	
 	public SubMenu() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -43,8 +43,8 @@ public class SubMenu extends Composite {
 		case BUILD:
 			build.setImage("images/Enumeration_3.gif");
 			break;
-		//case OUTPUT:
-		//	output.setImage("images/Enumeration_4.gif");
+		case OUTPUT:
+			output.setImage("images/Enumeration_4.gif");
 		default:
 			input.setImage("images/Enumeration_1.gif");
 		}

@@ -151,7 +151,6 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 		switch(task.getTaskType().getTaskTypeEnum()) {
 		case ONTOLOGIZE:
 			ontologizeService.cancel(authenticationToken, task);
-			break;
 		case MATRIX_GENERATION:
 			matrixGenerationService.cancel(authenticationToken, task);
 			break;

@@ -593,20 +593,4 @@ public class Alerter {
 		return showAlert("Failed to get News", "Failed to get news.", caught);
 	}
 
-	public static MessageBox failedToOutputOntology(Throwable caught) {
-		return showAlert("Failure", "Failed to save ontology.", caught);
-	}
-
-	public static MessageBox successfullySavedOntology(String directory) {
-		return showInfo("Success", "Successfully saved ontology to " + directory);
-	}
-
-	public static MessageBox failedToAddInput(Throwable caught) {
-		return showAlert("Failure", "Failed to add input.", caught);
-	}
-
-	public static MessageBox selectATask() {
-		return showAlert("Select a task", "Select a task to resume.");
-	}
-
 }

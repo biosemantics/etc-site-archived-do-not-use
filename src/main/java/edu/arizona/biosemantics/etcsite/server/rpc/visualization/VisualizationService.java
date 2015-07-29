@@ -1,7 +1,5 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.visualization;
 
-import java.util.List;
-
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
@@ -27,12 +25,6 @@ public class VisualizationService extends RemoteServiceServlet implements IVisua
 	@Override
 	public void cancel(AuthenticationToken authenticationToken, Task task) {
 		
-	}
-
-	@Override
-	public List<Task> getResumables(AuthenticationToken authenticationToken) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

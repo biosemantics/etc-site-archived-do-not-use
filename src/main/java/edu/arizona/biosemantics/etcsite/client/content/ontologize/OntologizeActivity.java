@@ -95,10 +95,10 @@ public class OntologizeActivity extends MyAbstractActivity {
 									buildPresenter.setTask(result);
 									panel.setWidget(buildPresenter.getView());
 									break;
-								/*case OUTPUT:
+								case OUTPUT:
 									outputPresenter.setTask(result);
 									panel.setWidget(outputPresenter.getView());
-									break;*/
+									break;
 								default:
 									panel.setWidget(createPresenter.getView());
 									break;

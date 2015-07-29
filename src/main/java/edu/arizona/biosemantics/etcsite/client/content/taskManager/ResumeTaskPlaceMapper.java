@@ -51,8 +51,8 @@ public class ResumeTaskPlaceMapper {
 					return new OntologizeInputPlace();
 				case BUILD:
 					return new OntologizeBuildPlace(task);
-				/*case OUTPUT:
-					return new OntologizeOutputPlace(task);*/
+				case OUTPUT:
+					return new OntologizeOutputPlace(task);
 				default:
 					break;
 			}

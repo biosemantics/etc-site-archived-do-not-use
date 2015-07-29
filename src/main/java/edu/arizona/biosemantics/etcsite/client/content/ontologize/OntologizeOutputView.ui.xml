@@ -23,7 +23,7 @@
 		<g:VerticalPanel styleName="{style.padding}">
 		    <g:HorizontalPanel>
 <!-- 		       <my2:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.MatrixGenerationShort.gif" imageWidth="80px" imageHeight="20px" text="" /> -->
-		        <!-- <my:SubMenu ui:field="subMenu" step="OUTPUT"/>-->
+		        <my:SubMenu ui:field="subMenu" step="OUTPUT"/>
 		    </g:HorizontalPanel>
 			<g:VerticalPanel>
 			    <g:InlineLabel>Ontology Building is complete.</g:InlineLabel>

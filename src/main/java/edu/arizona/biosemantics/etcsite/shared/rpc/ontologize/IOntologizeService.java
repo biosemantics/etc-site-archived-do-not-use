@@ -32,8 +32,7 @@ public interface IOntologizeService extends RemoteService, IHasTasksService {
 
 	boolean isValidOntology(AuthenticationToken authenticationToken, String ontologyPath);
 	
+
 	Task output(AuthenticationToken token, Task task) throws OntologizeException;
-	
-	void addInput(AuthenticationToken token, Task task, String inputFile) throws OntologizeException;
 	
 }

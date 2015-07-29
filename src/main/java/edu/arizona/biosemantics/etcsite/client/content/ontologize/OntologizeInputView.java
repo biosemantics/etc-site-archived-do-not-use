@@ -41,17 +41,14 @@ public class OntologizeInputView extends Composite implements IOntologizeInputVi
 	@UiField
 	SubMenu subMenu;
 	
-	/*@UiField
+	@UiField
 	RadioButton selectOntologyRadio;
 
 	@UiField
 	VerticalPanel selectOntologyPanel;
 	
 	@UiField
-	Label ontologyLabel;
-	
-	@UiField
-	RadioButton createOntologyRadio;*/
+	RadioButton createOntologyRadio;
 
 	@UiField
 	VerticalPanel createOntologyPanel;
@@ -66,8 +63,8 @@ public class OntologizeInputView extends Composite implements IOntologizeInputVi
 		for(TaxonGroup taxonGroup : TaxonGroup.values()) {
 			this.glossaryListBox.addItem(taxonGroup.getDisplayName());
 		}
-		//selectOntologyPanel.setVisible(false);
-		//createOntologyPanel.setVisible(false);
+		selectOntologyPanel.setVisible(false);
+		createOntologyPanel.setVisible(false);
 	}
 
 	@Override
@@ -85,7 +82,7 @@ public class OntologizeInputView extends Composite implements IOntologizeInputVi
 		presenter.onNext();
     }
 	
-	/*@UiHandler("selectOntologyRadio")
+	@UiHandler("selectOntologyRadio")
 	public void onSelectOntologyRadio(ClickEvent event) {
 		createOntologyPanel.setVisible(false);
 		selectOntologyPanel.setVisible(true);
@@ -100,7 +97,7 @@ public class OntologizeInputView extends Composite implements IOntologizeInputVi
 	@UiHandler("ontologyButton")
 	public void onOntologyButton(ClickEvent event) {
 		presenter.onOntologySelect();
-	}*/
+	}
 
 	@Override
 	public String getTaskName() {
@@ -122,10 +119,10 @@ public class OntologizeInputView extends Composite implements IOntologizeInputVi
 		this.taskNameTextBox.setText("");
 	}
 
-	/*@Override
+	@Override
 	public boolean isSelectOntology() {
 		return selectOntologyRadio.getValue();
-	}*/
+	}
 	
 	@Override
 	public String getTaxonGroup() {
@@ -137,13 +134,8 @@ public class OntologizeInputView extends Composite implements IOntologizeInputVi
 		return ontologyPrefixTextBox.getValue();
 	}
 
-	/*@Override
+	@Override
 	public boolean isCreateOntology() {
 		return createOntologyRadio.getValue();
 	}
-
-	@Override
-	public void setOntologyFilePath(String path) {
-		this.ontologyLabel.setText(path);
-	}*/
 }

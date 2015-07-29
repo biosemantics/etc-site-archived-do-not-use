@@ -10,9 +10,6 @@ databaseUser=
 databasePassword=
 databaseHost=
 databasePort=
-database_partitionCount=2
-database_minConnectionsPerPartition=10
-database_maxConnectionsPerPartition=20
 
 #Bioportal
 bioportalUrl=http://data.bioontology.org

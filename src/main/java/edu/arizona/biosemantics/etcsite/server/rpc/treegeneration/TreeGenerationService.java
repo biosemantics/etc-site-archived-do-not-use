@@ -3,7 +3,6 @@ package edu.arizona.biosemantics.etcsite.server.rpc.treegeneration;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 import au.com.bytecode.opencsv.CSVParser;
@@ -196,19 +195,5 @@ public class TreeGenerationService extends RemoteServiceServlet implements ITree
 		task.setCompleted(null);
 		daoManager.getTaskDAO().updateTask(task);
 		return task;
-	}
-	
-	@Override
-	public List<Task> getResumables(AuthenticationToken authenticationToken) {
-		List<Task> result = new LinkedList<Task>();
-		ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
-		List<Task> tasks = daoManager.getTaskDAO().getResumableTasks(user.getId());
-		for(Task task : tasks) {
-			if(task != null && task.isResumable() && !task.isFailed() && 
-					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.TREE_GENERATION)) {
-				result.add(task);
-			}
-		}
-		return result;
 	}
 }

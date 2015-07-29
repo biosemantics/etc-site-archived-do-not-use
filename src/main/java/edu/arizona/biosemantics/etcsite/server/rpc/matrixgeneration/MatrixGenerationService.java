@@ -878,18 +878,4 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		//MatrixGenerationService service = new MatrixGenerationService();
 		//service.createTaxonMatrix("C:/test/Test_mmm", "C:/test/Test_mmm.csv");
 	}
-	
-	@Override
-	public List<Task> getResumables(AuthenticationToken authenticationToken) {
-		List<Task> result = new LinkedList<Task>();
-		ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
-		List<Task> tasks = daoManager.getTaskDAO().getResumableTasks(user.getId());
-		for(Task task : tasks) {
-			if(task != null && task.isResumable() && !task.isFailed() && 
-					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION)) {
-				result.add(task);
-			}
-		}
-		return result;
-	}
 }

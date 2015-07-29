@@ -13,7 +13,6 @@ import com.jolbox.bonecp.BoneCPConfig;
 import com.mysql.jdbc.AbandonedConnectionCleanupThread;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
-import edu.arizona.biosemantics.etcsite.server.Configuration;
 
 public class ConnectionPool {
 	
@@ -38,9 +37,9 @@ public class ConnectionPool {
 		config.setJdbcUrl(jdbcUrl); // jdbc url specific to your database, eg jdbc:mysql://127.0.0.1/yourdb
 		config.setUsername(databaseUser); 
 		config.setPassword(databasePassword);
-		config.setMinConnectionsPerPartition(Configuration.database_minConnectionsPerPartition);
-		config.setMaxConnectionsPerPartition(Configuration.database_maxConnectionsPerPartition);
-		config.setPartitionCount(Configuration.database_partitionCount);
+		config.setMinConnectionsPerPartition(10);
+		config.setMaxConnectionsPerPartition(20);
+		config.setPartitionCount(2);
 		config.setPoolName("etcSitePool");
 		config.setDisableJMX(true);
 		
