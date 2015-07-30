@@ -22,6 +22,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
 import edu.arizona.biosemantics.etcsite.shared.model.TaxonomyComparisonConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.TaxonomyComparisonTaskStage;
+import edu.arizona.biosemantics.etcsite.shared.model.TinyUser;
 import edu.arizona.biosemantics.etcsite.shared.model.TreeGenerationConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.TreeGenerationTaskStage;
 
@@ -259,7 +260,7 @@ public class TaskDAO {
 		boolean failed = result.getBoolean(10);
 		Date failedTime = result.getTimestamp(11);
 		Date created = result.getTimestamp(12);
-		ShortUser user = userDAO.getShortUser(userId);
+		TinyUser user = userDAO.getTinyUser(userId);
 		TaskStage taskStage = taskStageDAO.getTaskStage(taskStageId);
 		Configuration configuration = configurationDAO.getConfiguration(configurationId);
 		TaskType taskType = taskTypeDAO.getTaskType(taskTypeId);

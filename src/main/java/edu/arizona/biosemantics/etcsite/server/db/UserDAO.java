@@ -22,6 +22,7 @@ import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.db.Query.QueryException;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
+import edu.arizona.biosemantics.etcsite.shared.model.TinyUser;
 import edu.arizona.biosemantics.etcsite.shared.model.User;
 import edu.arizona.biosemantics.etcsite.shared.model.User.EmailPreferences;
 
@@ -41,8 +42,7 @@ public class UserDAO {
 		return new ShortUser(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), 
 				user.getAffiliation(), user.getOpenIdProvider(), user.getOpenIdProviderId(), 
 				user.getBioportalUserId(), user.getBioportalAPIKey(), user.getOtoAccountEmail(),
-			user.getProfile());
-		
+			user.getProfile());	
 	}
 
 	public User getUser(int id) {
@@ -248,6 +248,16 @@ public class UserDAO {
 			log(LogLevel.ERROR, "Couldn't insert user ontologize collection", e);
 			throw e;
 		}
+	}
+
+	public TinyUser getTinyUser(int userId) {
+		User user = this.getUser(userId);
+		return createTinyUser(user);
+	}
+
+	private TinyUser createTinyUser(User user) {
+		return new TinyUser(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), 
+				user.getAffiliation());
 	}
 
 }

@@ -46,6 +46,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
 import edu.arizona.biosemantics.etcsite.shared.model.TaxonGroup;
+import edu.arizona.biosemantics.etcsite.shared.model.TinyUser;
 import edu.arizona.biosemantics.etcsite.shared.model.ontologize.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.Description;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
@@ -410,7 +411,7 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 		edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum taskType = edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.ONTOLOGIZE;
 		TaskType dbTaskType = daoManager.getTaskTypeDAO().getTaskType(taskType);
 		TaskStage taskStage = daoManager.getTaskStageDAO().getOntologizeTaskStage(TaskStageEnum.INPUT.toString());
-		ShortUser user = daoManager.getUserDAO().getShortUser(token.getUserId());
+		TinyUser user = daoManager.getUserDAO().getTinyUser(token.getUserId());
 		Task task = new Task();
 		task.setName(taskName);
 		task.setResumable(true);

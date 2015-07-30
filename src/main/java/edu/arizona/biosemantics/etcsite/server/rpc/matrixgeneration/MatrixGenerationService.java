@@ -59,6 +59,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
 import edu.arizona.biosemantics.etcsite.shared.model.TaxonGroup;
+import edu.arizona.biosemantics.etcsite.shared.model.TinyUser;
 import edu.arizona.biosemantics.etcsite.shared.model.User;
 import edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
@@ -146,7 +147,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum taskType = edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION;
 		TaskType dbTaskType = daoManager.getTaskTypeDAO().getTaskType(taskType);
 		TaskStage taskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.INPUT.toString());
-		ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
+		TinyUser user = daoManager.getUserDAO().getTinyUser(authenticationToken.getUserId());
 		Task task = new Task();
 		task.setName(taskName);
 		task.setResumable(true);

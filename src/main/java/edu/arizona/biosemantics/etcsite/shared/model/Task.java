@@ -11,7 +11,7 @@ public class Task implements Serializable, Comparable<Task> {
 	private TaskType taskType;
 	private TaskStage taskStage;
 	private AbstractTaskConfiguration taskConfiguration;
-	private ShortUser user;
+	private TinyUser user;
 	private boolean resumable;
 	private boolean complete;
 	private boolean failed;
@@ -22,7 +22,7 @@ public class Task implements Serializable, Comparable<Task> {
 	public Task() { }
 	
 	public Task(int id, String name, TaskType taskType, TaskStage taskStage, AbstractTaskConfiguration taskConfiguration, 
-			ShortUser user, boolean resumable, boolean complete, Date completed, boolean failed, Date failedTime, Date created) {
+			TinyUser user, boolean resumable, boolean complete, Date completed, boolean failed, Date failedTime, Date created) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -78,11 +78,11 @@ public class Task implements Serializable, Comparable<Task> {
 		this.taskConfiguration = taskConfiguration;
 	}
 
-	public ShortUser getUser() {
+	public TinyUser getUser() {
 		return user;
 	}
 
-	public void setUser(ShortUser user) {
+	public void setUser(TinyUser user) {
 		this.user = user;
 	}
 

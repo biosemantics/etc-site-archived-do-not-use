@@ -22,6 +22,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
+import edu.arizona.biosemantics.etcsite.shared.model.TinyUser;
 import edu.arizona.biosemantics.etcsite.shared.model.TreeGenerationConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.treegeneration.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
@@ -133,7 +134,7 @@ public class TreeGenerationService extends RemoteServiceServlet implements ITree
 		edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum taskType = edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.TREE_GENERATION;
 		TaskType dbTaskType = daoManager.getTaskTypeDAO().getTaskType(taskType);
 		TaskStage taskStage = daoManager.getTaskStageDAO().getTreeGenerationTaskStage(TaskStageEnum.INPUT.toString());
-		ShortUser user = daoManager.getUserDAO().getShortUser(token.getUserId());
+		TinyUser user = daoManager.getUserDAO().getTinyUser(token.getUserId());
 		Task task = new Task();
 		task.setName(taskName);
 		task.setResumable(true);

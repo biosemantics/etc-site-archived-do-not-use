@@ -61,6 +61,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
 import edu.arizona.biosemantics.etcsite.shared.model.TaxonGroup;
+import edu.arizona.biosemantics.etcsite.shared.model.TinyUser;
 import edu.arizona.biosemantics.etcsite.shared.model.User;
 import edu.arizona.biosemantics.etcsite.shared.model.process.semanticmarkup.BracketValidator;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.Description;
@@ -166,7 +167,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum taskType = edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.SEMANTIC_MARKUP;
 		TaskType dbTaskType = daoManager.getTaskTypeDAO().getTaskType(taskType);
 		TaskStage taskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.INPUT.toString());
-		ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
+		TinyUser user = daoManager.getUserDAO().getTinyUser(authenticationToken.getUserId());
 		Task task = new Task();
 		task.setName(taskName);
 		task.setResumable(true);
