@@ -43,6 +43,7 @@ import edu.arizona.biosemantics.common.taxonomy.Rank;
 import edu.arizona.biosemantics.common.taxonomy.RankData;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Emailer;
+import edu.arizona.biosemantics.etcsite.server.JavaZipper;
 import edu.arizona.biosemantics.etcsite.server.Zipper;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.db.SemanticMarkupDBDAO;
@@ -476,8 +477,12 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		createCategoriesFile(task, collection, zipSource);
 		
 		String zipFilePath = zipSource + ".zip";
-		Zipper zipper = new Zipper();
-		zipFilePath = zipper.zip(zipSource, zipFilePath);
+		JavaZipper zipper = new JavaZipper();
+		try {
+			zipFilePath = zipper.zip(zipSource, zipFilePath);
+		} catch (Exception e) {
+			throw new SemanticMarkupException("Saving failed");
+		}
 		if(zipFilePath != null)
 			return zipFilePath;
 		throw new SemanticMarkupException("Saving failed");

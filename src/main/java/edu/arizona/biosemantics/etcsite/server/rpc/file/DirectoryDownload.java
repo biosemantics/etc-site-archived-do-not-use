@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
+import edu.arizona.biosemantics.etcsite.server.JavaZipper;
 import edu.arizona.biosemantics.etcsite.server.Zipper;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.permission.FilePermissionService;
@@ -14,6 +15,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.CopyFilesFailedException
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.CreateDirectoryFailedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.FileDeleteFailedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.ZipDirectoryFailedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.IFilePermissionService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDeniedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskService;
@@ -35,8 +37,8 @@ public class DirectoryDownload {
 		this.authenticationToken = authenticationToken;
 	}
 
-	public boolean execute() throws CopyFilesFailedException, PermissionDeniedException, FileDeleteFailedException, CreateDirectoryFailedException {
-		Zipper zipper = new Zipper();
+	public boolean execute() throws ZipDirectoryFailedException, CopyFilesFailedException, PermissionDeniedException, FileDeleteFailedException, CreateDirectoryFailedException {
+		JavaZipper zipper = new JavaZipper();
 		String zipSource = null;
 		
 		if((filePath.startsWith("Share.") || filePath.equals("Root") || filePath.equals("Owned") || filePath.equals("Shared"))) {
@@ -91,7 +93,11 @@ public class DirectoryDownload {
 		
 		if(zipSource != null) {
 			zipFilepath = zipSource + ".zip";
-			zipFilepath = zipper.zip(zipSource, zipFilepath);
+			try {
+				zipFilepath = zipper.zip(zipSource, zipFilepath);
+			} catch (Exception e) {
+				throw new ZipDirectoryFailedException();
+			}
 			if(zipFilepath != null)
 				return true;
 			else {

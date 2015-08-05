@@ -40,10 +40,8 @@ public class FileUploadHandler {
 		this.fileService = fileService;
 	}
 	
-	@SuppressWarnings("deprecation")
 	public String parseServerResponse(IUploader uploader){
-		serverResponse = uploader.getServerInfo().message;
-		System.out.println(serverResponse);
+		serverResponse = uploader.getServerMessage().getMessage();
 		uploadedFiles = uploader.getFileInput().getFilenames();
 		if (serverResponse != null && !serverResponse.isEmpty()) {
 			serverResponse = serverResponse.replaceAll("\n", "<br>");

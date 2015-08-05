@@ -293,7 +293,7 @@
 	<servlet>
 		<servlet-name>uploadServlet</servlet-name>
 		<!-- This is the default servlet, it puts files in session -->
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.UploadServlet</servlet-class>
+		<servlet-class>edu.arizona.biosemantics.etcsite.server.upload.UploadServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>uploadServlet</servlet-name>

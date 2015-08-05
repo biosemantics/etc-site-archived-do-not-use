@@ -31,6 +31,7 @@ import edu.arizona.biosemantics.common.taxonomy.Rank;
 import edu.arizona.biosemantics.common.taxonomy.RankData;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Emailer;
+import edu.arizona.biosemantics.etcsite.server.JavaZipper;
 import edu.arizona.biosemantics.etcsite.server.Zipper;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.FileService;
@@ -657,7 +658,7 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 			File ontologyFile = new File(ontologyPath);
 			for(File file : ontologyFile.listFiles())
 				try {
-					FileUtils.copyDirectoryToDirectory(file,
+					FileUtils.copyFileToDirectory(file,
 							zipSourceFile);
 				} catch (IOException e) {
 					log(LogLevel.ERROR, "Couldn't copy ontology file", e);
@@ -667,11 +668,15 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 		
 		String zipFilePath = Configuration.compressedFileBase + File.separator + token.getUserId() + File.separator + 
 				"ontologize" + File.separator + task.getId() + File.separator + task.getName() + "_ontologies.zip";
-		Zipper zipper = new Zipper();
-		zipFilePath = zipper.zip(zipSource, zipFilePath);
+		JavaZipper zipper = new JavaZipper();
+		try {
+			zipFilePath = zipper.zip(zipSource, zipFilePath);
+		} catch (Exception e) {
+			throw new OntologizeException("Download failed");
+		}
 		if(zipFilePath != null)
 			return zipFilePath;
-		throw new OntologizeException("Saving failed");
+		throw new OntologizeException("Download failed");
 	}
 	
 	

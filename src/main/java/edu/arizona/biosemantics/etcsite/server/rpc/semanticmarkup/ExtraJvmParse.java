@@ -67,7 +67,6 @@ public class ExtraJvmParse extends ExtraJvmCallable<ParseResult> implements Pars
 		addArg(argList, "c", config);
 		addArg(argList, "i", input);
 		addArg(argList, "z", tablePrefix);
-		argList.add("-y");
 		if(useEmptyGlossary)
 			addArg(argList, "x");
 		

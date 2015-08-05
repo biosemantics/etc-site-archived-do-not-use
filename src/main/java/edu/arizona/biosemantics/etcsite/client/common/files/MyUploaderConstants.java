@@ -1,5 +1,7 @@
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
+import com.google.gwt.i18n.client.Constants.DefaultStringValue;
+
 import gwtupload.client.IUploader;
 
 public class MyUploaderConstants implements IUploader.UploaderConstants  {
@@ -137,5 +139,18 @@ public class MyUploaderConstants implements IUploader.UploaderConstants  {
 	public String uploaderInvalidPathError() {
 		return "Error you have typed an invalid file name, please select a valid one.";
 	}
+
+	/*
+	@Override
+    @DefaultStringValue("Drop files here.")
+	public String uploaderDrop() {
+		return "Drop files here.";
+	}
+
+	@Override
+    @DefaultStringValue("Check logs in server side, maybe it raised an exception, or maybe it made a CORS request.")
+	public String uploaderBadParsing() {
+		return "Check logs in server side, maybe it raised an exception, or maybe it made a CORS request.";
+	}*/
 
 }

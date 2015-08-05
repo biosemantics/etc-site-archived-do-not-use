@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import edu.arizona.biosemantics.common.log.LogLevel;
 
 
-public class Zipper {
+public class Zipper implements IZipper {
 
 	public String zip(String source, String destination) {
 		String effectiveDestination = destination;
@@ -85,6 +85,12 @@ public class Zipper {
 			log(LogLevel.ERROR, "Couldn't close reader", e);
 		}
 		return p;
+	}
+
+	@Override
+	public void unzip(String source, String destination) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
