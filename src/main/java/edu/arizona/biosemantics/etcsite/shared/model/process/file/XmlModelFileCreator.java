@@ -136,7 +136,6 @@ public class XmlModelFileCreator {
 		}
 		treatmentTexts.add(treatment.toString().trim());
 				
-		
 		for(String treatmentText : treatmentTexts) {
 			treatmentText = completeTreatmentWithSourceDocumentInformation(batchSourceDocumentInfoMap, treatmentText);
 			result.add(treatmentText);
@@ -152,6 +151,7 @@ public class XmlModelFileCreator {
 		boolean insideContinuousValue = false;
 		StringBuilder valueBuilder = new StringBuilder();
 		for(String line : treatmentText.split("\n")) {
+			//System.out.println(line);
 			line = line.trim();
 			int colonIndex = line.indexOf(":");
 			if(colonIndex == -1 && insideContinuousValue) {
@@ -162,21 +162,30 @@ public class XmlModelFileCreator {
 				}
 				continue;
 			} else {
-				String key = line.substring(0, colonIndex).toLowerCase().trim();
-				String value = line.substring(colonIndex + 1, line.length()).trim();
-				keys.add(key);
-				for(String descriptionType : descriptionTypes) {
-					if(key.contains(descriptionType)) {
-						if(value.startsWith("#")) 
-							insideContinuousValue = true;
-						if(value.endsWith("#"))
-							insideContinuousValue = false;
-					}
-				}
-				if(insideContinuousValue)
+				if(insideContinuousValue) {
+					String value = line;
 					valueBuilder.append(value + "\n");
-				else
-					values.add(value);
+					if(value.endsWith("#")) {
+						insideContinuousValue = false;
+						values.add(valueBuilder.toString());
+					}
+				} else {
+					String key = line.substring(0, colonIndex).toLowerCase().trim();
+					String value = line.substring(colonIndex + 1, line.length()).trim();
+					keys.add(key);
+					for(String descriptionType : descriptionTypes) {
+						if(key.contains(descriptionType)) {
+							if(value.startsWith("#")) 
+								insideContinuousValue = true;
+							if(value.endsWith("#"))
+								insideContinuousValue = false;
+						}
+					}
+					if(!insideContinuousValue)
+						values.add(value);
+					else
+						valueBuilder.append(value + "\n");
+				}
 			}
 		}
 		
