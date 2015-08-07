@@ -19,7 +19,8 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 public class FileUploadHandler {
 	
-	private static final int MAX_FILES_TO_REPORT_FAILED = 20;
+	//private static final int MAX_FILES_TO_REPORT_FAILED = 20;
+	private static final String NEWLINE = "\n";
 	
 	List<String> uploadedFiles;
 	String serverResponse;
@@ -44,7 +45,7 @@ public class FileUploadHandler {
 		serverResponse = uploader.getServerMessage().getMessage();
 		uploadedFiles = uploader.getFileInput().getFilenames();
 		if (serverResponse != null && !serverResponse.isEmpty()) {
-			serverResponse = serverResponse.replaceAll("\n", "<br>");
+			//serverResponse = serverResponse.replaceAll("\n", "<br>");
 			if (serverResponse.contains("#")) { // # is used in response only
 												// when there are errors
 				String responseStrings[] = serverResponse.split("#");
@@ -53,44 +54,51 @@ public class FileUploadHandler {
 				
 				String writeFailedFiles[] = responseStrings[1].isEmpty() ? new String[] { } : responseStrings[1].split("\\|");
 				String existingFiles[] = responseStrings[2].isEmpty() ? new String[] { } : responseStrings[2].split("\\|");
-				String invalidFormatFiles[] = responseStrings[3].isEmpty() ? new String[] { } : responseStrings[3].split("\\|");
+				String invalidFormatFiles[] = responseStrings[3].isEmpty() ? new String[] { } : responseStrings[3].split("\n");
 				String invalidEncodingFiles[] = responseStrings[4].isEmpty() ? new String[] { } : responseStrings[4].split("\\|");
 				
-				serverResponse = responseStrings[0] + "<br>";
+				serverResponse = responseStrings[0] + "\n";
 				
 				int reportedUploadFailedFiles = 0;
 				
-				if (writeFailedFiles.length > 0) {
-					serverResponse += "Following files could not be written<br>";
-				}
-				for (int i = 0; reportedUploadFailedFiles < MAX_FILES_TO_REPORT_FAILED && i < writeFailedFiles.length; i++) {
-					serverResponse += writeFailedFiles[i] + "<br>";
-					reportedUploadFailedFiles++;
-				}
-				if(existingFiles.length > 0) {
-					serverResponse += "<br>Following files already exist in the folder<br>";
-				}
-				for (int i = 0; reportedUploadFailedFiles < MAX_FILES_TO_REPORT_FAILED && i < existingFiles.length; i++) {
-					serverResponse += existingFiles[i] + "<br>";
-					reportedUploadFailedFiles++;
-				}
-				if (invalidFormatFiles.length > 0) {
-					serverResponse += "Following files have format errors<br>";
-				}
-				for (int i = 0; reportedUploadFailedFiles < MAX_FILES_TO_REPORT_FAILED && i < invalidFormatFiles.length; i++) {
-					serverResponse += invalidFormatFiles[i] + "<br>";
-					reportedUploadFailedFiles++;
-				}
 				if (invalidEncodingFiles.length > 0) {
-					serverResponse += "Following files have an invalid encoding. You can only upload UTF-8 encoded files.<br>";
-				}
-				for (int i = 0; reportedUploadFailedFiles < MAX_FILES_TO_REPORT_FAILED && i < invalidEncodingFiles.length; i++) {
-					serverResponse += invalidEncodingFiles[i] + "<br>";
-					reportedUploadFailedFiles++;
+					serverResponse += "\nFollowing files have an invalid encoding. You can only upload UTF-8 encoded files.\n";
+					
+					for (int i = 0; /*reportedUploadFailedFiles < MAX_FILES_TO_REPORT_FAILED &&*/ i < invalidEncodingFiles.length; i++) {
+						serverResponse += invalidEncodingFiles[i] + "\n";
+						reportedUploadFailedFiles++;
+					}
 				}
 				
-				if(writeFailedFiles.length + existingFiles.length + invalidFormatFiles.length + invalidEncodingFiles.length > MAX_FILES_TO_REPORT_FAILED)
-					serverResponse += "and so on.<br>";
+				if (invalidFormatFiles.length > 0) {
+					serverResponse += "\nFollowing files have format errors\n";
+					
+					for (int i = 0; /*reportedUploadFailedFiles < MAX_FILES_TO_REPORT_FAILED &&*/ i < invalidFormatFiles.length; i++) {
+						serverResponse += invalidFormatFiles[i] + "\n";
+						reportedUploadFailedFiles++;
+					}
+				}
+				
+				if(existingFiles.length > 0) {
+					serverResponse += "\nFollowing files already exist in the folder\n";
+					
+					for (int i = 0; /*reportedUploadFailedFiles < MAX_FILES_TO_REPORT_FAILED &&*/ i < existingFiles.length; i++) {
+						serverResponse += existingFiles[i] + "\n";
+						reportedUploadFailedFiles++;
+					}
+				}	
+				
+				if (writeFailedFiles.length > 0) {
+					serverResponse += "\nFollowing files could not be written\n";
+					
+					for (int i = 0; /*reportedUploadFailedFiles < MAX_FILES_TO_REPORT_FAILED &&*/ i < writeFailedFiles.length; i++) {
+						serverResponse += writeFailedFiles[i] + "\n";
+						reportedUploadFailedFiles++;
+					}
+				}
+				
+				//if(writeFailedFiles.length + existingFiles.length + invalidFormatFiles.length + invalidEncodingFiles.length > MAX_FILES_TO_REPORT_FAILED)
+				//	serverResponse += "and so on.\n";
 				
 				//remove all failed upload files
 				for (int i = 0; i < writeFailedFiles.length; i++) {

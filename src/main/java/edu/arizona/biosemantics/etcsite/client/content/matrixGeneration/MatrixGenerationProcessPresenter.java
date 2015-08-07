@@ -84,8 +84,8 @@ public class MatrixGenerationProcessPresenter implements IMatrixGenerationProces
 
 	@Override
 	public void setTask(Task task) {
-		this.task = task;
 		view.setNonResumable();
+		this.task = task;
 		matrixGenerationService.process(Authentication.getInstance().getToken(), 
 			task, new AsyncCallback<Task>() {
 			@Override

@@ -316,13 +316,15 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		String serverResponse = null;
 		@Override
 		public void onFinish(IUploader uploader) {	
-			serverResponse = fileUploadHandler.parseServerResponse(uploader);
-			if(serverResponse != null && !serverResponse.isEmpty())
-				Alerter.failedToUpload(serverResponse);
 			if (uploader.getStatus() == Status.SUCCESS) {
 				fileUploadHandler.keyValidateUploadedFiles(targetUploadDirectory);
 				fileTreePresenter.refresh(fileFilter);
 			}
+			
+			serverResponse = fileUploadHandler.parseServerResponse(uploader);
+			if(serverResponse != null && !serverResponse.isEmpty())
+				Alerter.failedToUpload(serverResponse);
+			
 			uploader.setServletPath(defaultServletPath);
 			enableManagement();
 		}

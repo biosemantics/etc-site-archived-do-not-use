@@ -87,8 +87,8 @@ public class SemanticMarkupLearnPresenter implements ISemanticMarkupLearnView.Pr
 
 	@Override
 	public void setTask(final Task task) {
-		this.task = task;
 		view.setNonResumable();
+		this.task = task;
 		semanticMarkupService.learn(Authentication.getInstance().getToken(), 
 			task, new AsyncCallback<LearnInvocation>() {
 			@Override

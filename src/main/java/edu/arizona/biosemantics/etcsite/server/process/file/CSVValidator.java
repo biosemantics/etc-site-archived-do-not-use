@@ -6,5 +6,10 @@ public class CSVValidator implements IContentValidator {
 	public boolean validate(String input) {
 		return true;
 	}
+
+	@Override
+	public String getInvalidMessage() {
+		return "";
+	}
 	
 }

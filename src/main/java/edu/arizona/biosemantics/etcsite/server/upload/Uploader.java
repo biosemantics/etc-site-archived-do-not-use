@@ -19,15 +19,15 @@ public abstract class Uploader {
 
 	public static class UploadResult {
 
-		private boolean success = true;
 		private boolean writeFailed = false;
 		private boolean fileExisted = false;
 		private boolean invalidFormat = false;
+		private String formatErrorMessage = "";
 		private boolean invalidEncoding = false;
 		
 		private FileItem fileItem;
 		private File file;
-		private String relativeFileName;
+		private String relativeFileName; //relative to the target upload directory
 		private List<UploadResult> childResults = new LinkedList<UploadResult>();
 		
 		public UploadResult(FileItem fileItem,	File file, String relativeFileName) {		
@@ -37,12 +37,11 @@ public abstract class Uploader {
 			this.relativeFileName = relativeFileName;
 		}
 		
-		public UploadResult(boolean success, boolean writeFailed,
+		public UploadResult(boolean writeFailed,
 				boolean fileExisted, boolean invalidFormat,
 				boolean invalidEncoding, FileItem fileItem,
 				File file, String relativeFileName) {
 			super();
-			this.success = success;
 			this.writeFailed = writeFailed;
 			this.fileExisted = fileExisted;
 			this.invalidFormat = invalidFormat;
@@ -66,14 +65,12 @@ public abstract class Uploader {
 		public boolean isInvalidFormat() {
 			return invalidFormat;
 		}
-		public void setInvalidFormat(boolean invalidFormat) {
+		public void setInvalidFormat(boolean invalidFormat, String formatErrorMessage) {
 			this.invalidFormat = invalidFormat;
+			this.formatErrorMessage = formatErrorMessage;
 		}
 		public boolean isSuccess() {
-			return success;
-		}
-		public void setSuccess(boolean success) {
-			this.success = success;
+			return !writeFailed && !fileExisted && !invalidFormat && !invalidEncoding;
 		}
 		public FileItem getFileItem() {
 			return fileItem;
@@ -98,24 +95,20 @@ public abstract class Uploader {
 		}
 		public void setChildResults(List<UploadResult> childResults) {
 			this.childResults = childResults;
-			for(UploadResult childResult : childResults) {
-				if(!childResult.isSuccess())
-					this.setSuccess(false);
-				if(childResult.isFileExisted())
-					this.setFileExisted(true);
-				if(childResult.isInvalidEncoding())
-					this.setInvalidEncoding(true);
-				if(childResult.isInvalidFormat())
-					this.setInvalidEncoding(true);
-				if(childResult.isWriteFailed())
-					this.setWriteFailed(true);
-			}
 		}
 		public String getRelativeFileName() {
 			return relativeFileName;
 		}
 		public void setRelativeFileName(String relativeFileName) {
 			this.relativeFileName = relativeFileName;
+		}
+
+		public String getFormatErrorMessage() {
+			return formatErrorMessage;
+		}
+
+		public void setFormatErrorMessage(String formatErrorMessage) {
+			this.formatErrorMessage = formatErrorMessage;
 		}
 	}
 	

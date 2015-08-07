@@ -121,28 +121,34 @@ public class UploadServlet extends UploadAction {
 			evaluate(uploadResult, notAdded, fileExisted, invalidFormat, invalidEncoding, writeFailed);
 		}
 		
-		if(notAdded.size() == 1)
-			result += notAdded.size() + " file was not added.";
-		if(notAdded.size() > 1)
-			result += notAdded.size() + " files were not added.";
+
 		
-		String writeFailedFiles = " "; //Do not remove this space - used in client side processing of server response
-		String existingFiles = " "; //Do not remove this space - used in client side processing of server response
-		String invalidFormatFiles = " ";
-		String invalidEncodingFiles = " ";
-		if(fileExisted.size() > 0){
-			existingFiles = getJoinedFileNames(fileExisted);
-		}
-		if(invalidFormat.size() > 0) {
-			invalidFormatFiles = getJoinedFileNames(invalidFormat);
-		}
-		if(invalidEncoding.size() > 0) {
-			invalidEncodingFiles = getJoinedFileNames(invalidEncoding);
-		}
-		if(writeFailed.size() > 0){
-			writeFailedFiles = getJoinedFileNames(writeFailed);
-		}
-		if(writeFailed.size() > 0 || fileExisted.size() > 0 || invalidEncoding.size() > 0){
+		if(!notAdded.isEmpty()) {
+			if(notAdded.size() == 1)
+				result += notAdded.size() + " file was not added.";
+			if(notAdded.size() > 1)
+				result += notAdded.size() + " files were not added.";
+			
+			String writeFailedFiles = " "; //Do not remove this space - used in client side processing of server response
+			String existingFiles = " "; //Do not remove this space - used in client side processing of server response
+			String invalidFormatFiles = " ";
+			String invalidEncodingFiles = " ";
+			if(fileExisted.size() > 0){
+				existingFiles = getJoinedFileNames(fileExisted);
+			}
+			if(invalidFormat.size() > 0) {
+				for(UploadResult uploadResult : invalidFormat) {
+					invalidFormatFiles += uploadResult.getRelativeFileName() + " " + uploadResult.getFormatErrorMessage() + "\n";
+				}
+				
+				//invalidFormatFiles = getJoinedFileNames(invalidFormat);
+			}
+			if(invalidEncoding.size() > 0) {
+				invalidEncodingFiles = getJoinedFileNames(invalidEncoding);
+			}
+			if(writeFailed.size() > 0){
+				writeFailedFiles = getJoinedFileNames(writeFailed);
+			}
 			result += "#" + writeFailedFiles + "#" + existingFiles + "#" + invalidFormatFiles + "#" + invalidEncodingFiles + "#";
 		}
 		

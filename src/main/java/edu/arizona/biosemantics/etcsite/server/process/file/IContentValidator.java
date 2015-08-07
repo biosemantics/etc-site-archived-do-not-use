@@ -5,4 +5,6 @@ public interface IContentValidator {
 	
 	public boolean validate(String input);
 
+	public String getInvalidMessage();
+
 }

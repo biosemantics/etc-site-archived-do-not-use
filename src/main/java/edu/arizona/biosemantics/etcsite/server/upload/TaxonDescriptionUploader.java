@@ -67,31 +67,26 @@ public class TaxonDescriptionUploader extends Uploader {
 								String message = "Couldn't set xml schema to file. Will attempt to delete the file";
 								log(LogLevel.ERROR, message, e);
 								file.delete();
-								uploadResult.setSuccess(false);
 								uploadResult.setWriteFailed(true);
 							}
 							return uploadResult;					
 						} catch(Exception e) {
 							String message = "Couldn't create file";
 							log(LogLevel.ERROR, message, e);
-							uploadResult.setSuccess(false);
 							uploadResult.setWriteFailed(true);
 						}						
 					} else {
-						uploadResult.setSuccess(false);
-						uploadResult.setInvalidFormat(true);
+						uploadResult.setInvalidFormat(true, validator.getInvalidMessage());
 					}
 				} catch (UnsupportedEncodingException e) {
 					String message = "Couldn't get UTF-8 encoding";
 					log(LogLevel.ERROR, message, e);
-					uploadResult.setSuccess(false);
+					uploadResult.setWriteFailed(true);
 				}
 			} else {
-				uploadResult.setSuccess(false);
 				uploadResult.setInvalidEncoding(true);
 			}
 		} else {
-			uploadResult.setSuccess(false);
 			uploadResult.setFileExisted(true);
 		}
 		return uploadResult;
@@ -99,14 +94,14 @@ public class TaxonDescriptionUploader extends Uploader {
 
 	@Override
 	protected UploadResult uploadZip(ShortUser shortUser, FileItem item, String targetPath, FileTypeEnum fileType) {
-		File target = new File(FilenameUtils.removeExtension(targetPath + File.separator + item.getName()));
+		File target = new File(targetPath);//new File(FilenameUtils.removeExtension(targetPath + File.separator + item.getName()));
 		File temp = new File(Configuration.compressedFileBase + File.separator + shortUser.getId() + File.separator + UUID.randomUUID().toString());
 		temp.mkdirs();
 		UploadResult uploadResult = new UploadResult(item, target, item.getName());
-		if(target.exists()) {
+		/*if(target.exists()) {
 			uploadResult.setFileExisted(true);
 			return uploadResult;
-		}
+		}*/
 			
 		JavaZipper zipper = new JavaZipper();
 		File tempFile = new File(temp, item.getName());
@@ -115,7 +110,6 @@ public class TaxonDescriptionUploader extends Uploader {
 			item.write(tempFile);
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't create temporary file", e);
-			uploadResult.setSuccess(false);
 			uploadResult.setWriteFailed(true);
 			return uploadResult;
 		}
@@ -127,13 +121,17 @@ public class TaxonDescriptionUploader extends Uploader {
 			zipper.unzip(tempFile.getAbsolutePath(), tempOutput.getAbsolutePath());
 		} catch (IOException e) {
 			log(LogLevel.ERROR, "Couldn't unzip file", e);
-			uploadResult.setSuccess(false);
 			uploadResult.setWriteFailed(true);
 			return uploadResult;
 		}
 		
 		List<UploadResult> childUploadResults = new LinkedList<UploadResult>();
-		for(File file : tempOutput.listFiles()) {
+		/*if(tempOutput.listFiles().length == 0 || !tempOutput.listFiles()[0].isDirectory()) {
+			uploadResult.setSuccess(false);
+			uploadResult.setWriteFailed(true);
+			return uploadResult;
+		}*/
+		for(File file : tempOutput.listFiles()) { //tempOutput.listFiles()[0].listFiles()) {
 			childUploadResults.addAll(handleFile(item, file, fileType, tempOutput, target));
 		}
 		uploadResult.setChildResults(childUploadResults);
@@ -155,7 +153,6 @@ public class TaxonDescriptionUploader extends Uploader {
 			try {
 				bytes = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
 				if(!isValidUTF8(bytes)) {
-					childUploadResult.setSuccess(false);
 					childUploadResult.setInvalidEncoding(true);
 				} else {
 					String fileContent = new String(bytes, Charset.forName("UTF8"));
@@ -172,22 +169,19 @@ public class TaxonDescriptionUploader extends Uploader {
 								FileUtils.copyFileToDirectory(file, target);
 							} catch (IOException e) {
 								childUploadResult.setWriteFailed(true);
-								childUploadResult.setSuccess(false);
 								log(LogLevel.ERROR, "Couldn't copy extracted files to target directory", e);
 							}
 						} catch (Exception e) {
 							log(LogLevel.ERROR, "Couldn't set xml schema to file. Will attempt to delete the file", e);
-							childUploadResult.setSuccess(false);
 							childUploadResult.setWriteFailed(true);
 						}
 					} else {
-						childUploadResult.setSuccess(false);
-						childUploadResult.setInvalidFormat(true);
+						childUploadResult.setInvalidFormat(true, validator.getInvalidMessage());
 					}
 				}
 			} catch (IOException e) {
 				log(LogLevel.ERROR, "Could not read file", e);
-				childUploadResult.setSuccess(false);
+				childUploadResult.setWriteFailed(true);
 			}
 			result.add(childUploadResult);
 		}

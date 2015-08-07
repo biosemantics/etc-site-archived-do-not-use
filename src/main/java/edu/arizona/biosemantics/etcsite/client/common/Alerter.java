@@ -1,11 +1,15 @@
 package edu.arizona.biosemantics.etcsite.client.common;
 
 import com.google.gwt.core.client.GWT;
+import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 import com.sencha.gxt.widget.core.client.box.AutoProgressMessageBox;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.form.TextArea;
 
 import edu.arizona.biosemantics.etcsite.shared.Configuration;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
@@ -565,8 +569,33 @@ public class Alerter {
 		return showAlert("Failed to retrieve files", "Failed to retrieve files in file manager.");
 	}
 
-	public static MessageBox failedToUpload(String message) {
-		return showAlert("Failed to upload files", message);
+	public static Dialog failedToUpload(String message) {
+		Dialog dialog = new Dialog();
+		dialog.setBodyBorder(false);
+		dialog.setModal(true);
+		dialog.setResizable(true);
+		dialog.setMaximizable(true);
+		//this.setMinimizable(true);
+		dialog.setBlinkModal(true);
+		//this.setCollapsible(true)
+		
+		ContentPanel panel = new ContentPanel();
+		final TextArea textArea = new TextArea();
+		panel.add(textArea);
+		textArea.setValue(message);
+		textArea.setEnabled(false);
+		dialog.setPredefinedButtons(PredefinedButton.CLOSE);
+		dialog.add(panel);
+		dialog.setBodyBorder(false);
+		dialog.setHeadingText("Import Articulations");
+		dialog.setWidth(600);
+		dialog.setHeight(400);
+		dialog.setHideOnButtonClick(true);
+		dialog.setModal(true);
+		
+		dialog.show();
+		return dialog;
+		//return showAlert("Failed to upload files", message);
 	}
 
 	public static MessageBox successfullyUploadedFiles() {
