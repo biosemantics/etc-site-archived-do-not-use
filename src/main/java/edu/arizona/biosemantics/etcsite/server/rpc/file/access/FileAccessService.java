@@ -26,6 +26,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.io.IOUtils;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.process.file.FileFormatter;
@@ -41,8 +42,13 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDen
 public class FileAccessService extends RemoteServiceServlet implements IFileAccessService {
 
 	private static final long serialVersionUID = 5956919724639140570L;
-	private IFilePermissionService filePermissionService = new FilePermissionService();
+	private IFilePermissionService filePermissionService;
 	//private IFileFormatService fileFormatService = new FileFormatService();
+	
+	@Inject
+	public FileAccessService(FilePermissionService filePermissionService) {
+		this.filePermissionService = filePermissionService;
+	}
 	
 	@Override
 	protected void doUnexpectedFailure(Throwable t) {

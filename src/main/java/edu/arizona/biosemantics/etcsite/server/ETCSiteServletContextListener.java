@@ -11,8 +11,10 @@ import javax.servlet.ServletContextListener;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.etcsite.server.db.CaptchaDAO;
 import edu.arizona.biosemantics.etcsite.server.db.ConnectionPool;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
+import edu.arizona.biosemantics.etcsite.server.db.PasswordResetRequestDAO;
 import edu.arizona.biosemantics.etcsite.server.db.Query;
 
 public class ETCSiteServletContextListener implements ServletContextListener {
@@ -52,15 +54,16 @@ public class ETCSiteServletContextListener implements ServletContextListener {
 		
 		if(connectionPool != null) {
 			Query.connectionPool = connectionPool;
-			DAOManager daoManager = new DAOManager();
+			CaptchaDAO captchaDAO = new CaptchaDAO();
+			PasswordResetRequestDAO passwordResetRequestDAO = new PasswordResetRequestDAO();
 			
 			log(LogLevel.INFO, "Cleaning up password reset requests");
 			//delete all 'old' password reset requests. Should only happen once per server restart. 
-			daoManager.getPasswordResetRequestDAO().cleanup();
+			passwordResetRequestDAO.cleanup();
 			
 			log(LogLevel.INFO, "Cleaning up captchas");
 			// schedule a task to automatically scan and delete old captchas. 
-			daoManager.getCaptchaDAO().cleanup();
+			captchaDAO.cleanup();
 		}
 		
 		//set XPath objectmodel for XPath 2 supoprt (saxon)

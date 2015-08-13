@@ -24,11 +24,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsPlace;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
+import edu.arizona.biosemantics.etcsite.server.db.UserDAO;
 import edu.arizona.biosemantics.etcsite.server.rpc.auth.BCrypt;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
@@ -61,7 +63,12 @@ import edu.arizona.biosemantics.oto.model.CreateUserResult;
 
 public class UserService extends RemoteServiceServlet implements IUserService {
 	
-	private DAOManager daoManager = new DAOManager();
+	private UserDAO userDAO;
+	
+	@Inject
+	public UserService(UserDAO userDAO) {
+		this.userDAO = userDAO;
+	}
 	
 	@Override
 	protected void doUnexpectedFailure(Throwable t) {
@@ -75,16 +82,16 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 	public List<ShortUser> getUsers(AuthenticationToken authenticationToken, boolean includeSelf) {
 		List<ShortUser> usernames;
 		if(includeSelf)
-			usernames = daoManager.getUserDAO().getUsers();
+			usernames = userDAO.getUsers();
 		else
-			usernames = daoManager.getUserDAO().getUsersWithout(authenticationToken.getUserId());
+			usernames = userDAO.getUsersWithout(authenticationToken.getUserId());
 		return usernames;
 	}
 
 	@Override
 	public ShortUser getUser(AuthenticationToken authenticationToken) throws UserNotFoundException {
 		int userId = authenticationToken.getUserId();
-		ShortUser user = daoManager.getUserDAO().getShortUser(userId);
+		ShortUser user = userDAO.getShortUser(userId);
 		if(user != null){
 			return user;
 		} else { 
@@ -96,8 +103,8 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 	public ShortUser add(String firstName, String lastName, String email, String password) throws UserAddException {
 		String encryptedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 		
-		if(!daoManager.getUserDAO().hasUser(email)) {
-			User user = daoManager.getUserDAO().insert(new User(encryptedPassword, firstName, lastName, email, "", "", "", "", ""));
+		if(!userDAO.hasUser(email)) {
+			User user = userDAO.insert(new User(encryptedPassword, firstName, lastName, email, "", "", "", "", ""));
 			if(user == null) {
 				throw new UserAddException("Adding user failed");
 			}
@@ -111,8 +118,8 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 			String lastName, String password) throws UserAddException {
 		String encryptedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 		
-		if(!daoManager.getUserDAO().hasUser(openIdProviderId)) {
-			User user = daoManager.getUserDAO().insert(new User(openIdProviderId, "google", encryptedPassword, firstName, lastName, "", "", "", "", ""));
+		if(!userDAO.hasUser(openIdProviderId)) {
+			User user = userDAO.insert(new User(openIdProviderId, "google", encryptedPassword, firstName, lastName, "", "", "", "", ""));
 			if(user == null) {
 				throw new UserAddException("Adding user failed");
 			}
@@ -123,13 +130,13 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 
 	@Override
 	public boolean existsUser(String email) {
-		return daoManager.getUserDAO().hasUser(email);
+		return userDAO.hasUser(email);
 	}
 	
 
 	@Override
 	public ShortUser update(AuthenticationToken authenticationToken, ShortUser shortUser) throws UserNotFoundException {
-		User user = daoManager.getUserDAO().getUser(authenticationToken.getUserId());
+		User user = userDAO.getUser(authenticationToken.getUserId());
 		if(user == null)
 			throw new UserNotFoundException();			
 		
@@ -141,13 +148,13 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		user.setLastName(shortUser.getLastName());
 		user.setProfile(shortUser.getProfile());
 		
-		daoManager.getUserDAO().update(user);
-		return daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
+		userDAO.update(user);
+		return userDAO.getShortUser(authenticationToken.getUserId());
 	}
 
 	@Override
 	public ShortUser update(AuthenticationToken authenticationToken, String oldPassword, String newPassword) throws UserNotFoundException, InvalidPasswordException { 
-		User user = daoManager.getUserDAO().getUser(authenticationToken.getUserId());
+		User user = userDAO.getUser(authenticationToken.getUserId());
 		if(user == null)
 			throw new UserNotFoundException();			
 		
@@ -158,8 +165,8 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		String encryptedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
 		user.setPassword(encryptedPassword);
 		
-		daoManager.getUserDAO().update(user);
-		return daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
+		userDAO.update(user);
+		return userDAO.getShortUser(authenticationToken.getUserId());
 	}
 
 
@@ -191,7 +198,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 
 	@Override
 	public void saveOTOAccount(AuthenticationToken authenticationToken, boolean share, String email, String password) throws InvalidOTOAccountException, OTOException {
-		User user = daoManager.getUserDAO().getUser(authenticationToken.getUserId());
+		User user = userDAO.getUser(authenticationToken.getUserId());
 		
 		if(share) {
 			try (OTOClient otoClient = new OTOClient(Configuration.otoUrl)) {
@@ -204,11 +211,11 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 				if(token != null && !token.isEmpty()) {
 					user.setOtoAccountEmail(otoUser.getUserEmail());
 					user.setOtoAuthenticationToken(token);
-					daoManager.getUserDAO().update(user);
+					userDAO.update(user);
 				} else {
 					user.setOtoAccountEmail("");
 					user.setOtoAuthenticationToken("");
-					daoManager.getUserDAO().update(user);
+					userDAO.update(user);
 					throw new InvalidOTOAccountException();
 				}
 			} catch (InterruptedException | ExecutionException e) {
@@ -218,7 +225,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		} else {
 			user.setOtoAccountEmail("");
 			user.setOtoAuthenticationToken("");
-			daoManager.getUserDAO().update(user);
+			userDAO.update(user);
 		}
 	}
 	
@@ -391,13 +398,13 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 	}
 	
 	public void setProfile(AuthenticationToken token, String key, boolean value) {
-		User user = daoManager.getUserDAO().getUser(token.getUserId());
+		User user = userDAO.getUser(token.getUserId());
 		user.setProfileValue(key, value);
-		daoManager.getUserDAO().update(user);
+		userDAO.update(user);
 	}
 
 	@Override
 	public boolean isProfile(AuthenticationToken token, String type) {
-		return daoManager.getUserDAO().getUser(token.getUserId()).getProfileValue(type);
+		return userDAO.getUser(token.getUserId()).getProfileValue(type);
 	}
 }

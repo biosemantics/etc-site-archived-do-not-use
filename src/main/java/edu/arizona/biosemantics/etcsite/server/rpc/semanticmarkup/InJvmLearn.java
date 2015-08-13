@@ -20,24 +20,26 @@ import edu.arizona.biosemantics.semanticmarkup.ETCLearnMain;
 
 public class InJvmLearn implements Learn {
 	
-	private DAOManager daoManager = new DAOManager();
 	private String config;
 	private String input;
 	private String tablePrefix;
 	private String source;
 	private String operator;
-	private IFileService fileService = new FileService();
 	private boolean executedSuccessfully = false;
 	private boolean useEmptyGlossary;
+	private FileService fileService;
+	private DAOManager daoManager;
 
-	public InJvmLearn(String config, boolean useEmptyGlossary, String input, String tablePrefix,
+	public InJvmLearn(DAOManager daoManager, FileService fileService, String config, boolean useEmptyGlossary, String input, String tablePrefix,
 			String source, String operator) {
+		this.fileService = fileService;
 		this.config = config;
 		this.useEmptyGlossary = useEmptyGlossary;
 		this.input = input;
 		this.tablePrefix = tablePrefix;
 		this.source = source;
 		this.operator = operator;
+		this.daoManager = daoManager;
 	}
 	
 	@Override

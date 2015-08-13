@@ -8,6 +8,8 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
@@ -31,12 +33,27 @@ public class FileFormatService extends RemoteServiceServlet implements IFileForm
 
 	private Logger logger = Logger.getLogger(FileFormatService.class);
 	
-	private IUserService userService = new UserService();
-	private IFileAccessService fileAccessService = new FileAccessService();
-	private CSVValidator csvValidator = new CSVValidator();
-	private XMLValidator taxonDescriptionValidator = new XMLValidator(new File(Configuration.taxonDescriptionSchemaFile));
-	private XMLValidator markedUpTaxonDescriptionValidator = new XMLValidator(new File(Configuration.markedUpTaxonDescriptionSchemaFile));
-	private XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager();
+	private IUserService userService;
+	private IFileAccessService fileAccessService;
+	private CSVValidator csvValidator;
+	private XMLValidator taxonDescriptionValidator;
+	private XMLValidator markedUpTaxonDescriptionValidator;
+	private XmlNamespaceManager xmlNamespaceManager;
+	private XmlModelFileCreator xmlModelFileCreator;
+	
+	@Inject
+	public FileFormatService(UserService userService, FileAccessService fileAccessService, CSVValidator csvValidator, 
+			XmlNamespaceManager xmlNamespaceManager, @Named("TaxonDescription")XMLValidator taxonDescriptionValidator, 
+			@Named("MarkedUpTaxonDescription")XMLValidator markedUpTaxonDescriptionValidator, 
+			XmlModelFileCreator xmlModelFileCreator) {
+		this.userService = userService;
+		this.fileAccessService = fileAccessService;
+		this.csvValidator = csvValidator;
+		this.xmlNamespaceManager = xmlNamespaceManager;
+		this.taxonDescriptionValidator = taxonDescriptionValidator;
+		this.markedUpTaxonDescriptionValidator = markedUpTaxonDescriptionValidator;
+		this.xmlModelFileCreator = xmlModelFileCreator;
+	}
 	
 	@Override
 	protected void doUnexpectedFailure(Throwable t) {
@@ -92,7 +109,6 @@ public class FileFormatService extends RemoteServiceServlet implements IFileForm
 		} catch (UserNotFoundException e) {
 			log(LogLevel.ERROR, "Couldn't find user", e);
 		}
-		XmlModelFileCreator xmlModelFileCreator = new XmlModelFileCreator();
 		List<XmlModelFile> result = xmlModelFileCreator.createXmlModelFiles(text, operator);
 		return result;
 	}

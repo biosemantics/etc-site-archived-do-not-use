@@ -10,6 +10,8 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import com.google.inject.Inject;
+
 import edu.arizona.biosemantics.common.log.LogLevel;
 
 
@@ -17,6 +19,7 @@ public class Emailer {
 	
 	private Session session;
 	
+	@Inject
 	public Emailer(){
 		Properties props = new Properties();
 		props.put("mail.smtp.auth", "true");

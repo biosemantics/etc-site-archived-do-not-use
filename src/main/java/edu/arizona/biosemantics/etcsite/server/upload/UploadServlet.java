@@ -39,12 +39,26 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.inject.Inject;
+
 public class UploadServlet extends UploadAction {
 
 	private static final long serialVersionUID = 1L;
 
 	private Hashtable<String, String> receivedContentTypes = new Hashtable<String, String>();
 	private	Hashtable<String, File> receivedFiles = new Hashtable<String, File>();
+
+	private AuthenticationService authenticationService;
+	private XmlNamespaceManager xmlNamespaceManager;
+	private ContentValidatorProvider contentValidatorProvider;
+	
+	@Inject
+	public UploadServlet(AuthenticationService authenticationService, XmlNamespaceManager xmlNamespaceManager,
+			ContentValidatorProvider contentValidatorProvider) {
+		this.authenticationService = authenticationService;
+		this.xmlNamespaceManager = xmlNamespaceManager;
+		this.contentValidatorProvider = contentValidatorProvider;
+	}
 	
 	@Override
 	public String executeAction(HttpServletRequest request, List<FileItem> sessionFiles) {
@@ -59,7 +73,6 @@ public class UploadServlet extends UploadAction {
 		String fileType = request.getParameter("fileType");
 		FileTypeEnum fileTypeEnum = FileTypeEnum.getEnum(fileType);
 		
-		IAuthenticationService authenticationService = new AuthenticationService();
 		AuthenticationResult authenticationResult = 
 				authenticationService.isValidSession(new AuthenticationToken(userID, sessionID));
 		
@@ -68,10 +81,10 @@ public class UploadServlet extends UploadAction {
 			
 			switch(fileTypeEnum) {
 			case TAXON_DESCRIPTION:
-				uploader = new TaxonDescriptionUploader();
+				uploader = new TaxonDescriptionUploader(xmlNamespaceManager, contentValidatorProvider);
 				break;
 			case MARKED_UP_TAXON_DESCRIPTION:
-				uploader = new MarkedUpTaxonDescriptionUploader();
+				uploader = new MarkedUpTaxonDescriptionUploader(xmlNamespaceManager, contentValidatorProvider);
 				break;
 			case MATRIX:
 				uploader = new MatrixUploader();

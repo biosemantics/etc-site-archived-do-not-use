@@ -32,16 +32,15 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 		
 	}
 	
-	private DAOManager daoManager = new DAOManager();
 	private String config;
 	private String input;
 	private String tablePrefix;
 	private String source;
 	private String operator;
-	private IFileService fileService = new FileService();
 	private boolean useEmptyGlossary;
+	private DAOManager daoManager;
 
-	public ExtraJvmLearn(String config, boolean useEmptyGlossary, String input, String tablePrefix,
+	public ExtraJvmLearn(DAOManager daoManager, String config, boolean useEmptyGlossary, String input, String tablePrefix,
 			String source, String operator) throws SemanticMarkupException {
 		this.config = config;
 		this.useEmptyGlossary = useEmptyGlossary;
@@ -49,6 +48,7 @@ public class ExtraJvmLearn extends ExtraJvmCallable<LearnResult> implements Lear
 		this.tablePrefix = tablePrefix;
 		this.source = source;
 		this.operator = operator;
+		this.daoManager = daoManager;
 		
 		try {
 			this.setArgs(createArgs());

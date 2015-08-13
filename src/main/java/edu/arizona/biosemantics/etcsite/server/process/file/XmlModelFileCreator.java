@@ -22,6 +22,8 @@ import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
+import com.google.inject.Inject;
+
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.common.taxonomy.Rank;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
@@ -43,14 +45,18 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 			"strain number", "equivalent strain numbers", "accession number 16s rrna",
 			"morphology", "phenology",  "habitat", "distribution" };
 	
-	protected BracketChecker bracketChecker = new BracketChecker();
+	protected BracketChecker bracketChecker;
+	private XmlNamespaceManager xmlNamespaceManager;
 	//protected String[] nameTypes = { "order", "suborder", "superfamily", "family", "subfamily", "tribe", "subtribe", "genus", "subgenus", 
 	//		"section", "subsection", "series", "species", "subspecies", "variety", "forma", "unranked" };
 	protected ArrayList<String> nameTypes = new ArrayList<String>();
 	protected Set<String> allLabels = new HashSet<String>();
-	private XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager();
-	
-	public XmlModelFileCreator() {
+
+		
+	@Inject
+	public XmlModelFileCreator(XmlNamespaceManager xmlNamespaceManager, BracketChecker bracketChecker) {
+		this.xmlNamespaceManager = xmlNamespaceManager;
+		this.bracketChecker = bracketChecker;
 		this.allLabels.addAll(Arrays.asList(fields));
 		for(Rank rank : Rank.values())
 			this.allLabels.add(rank.name().toLowerCase() + " name");

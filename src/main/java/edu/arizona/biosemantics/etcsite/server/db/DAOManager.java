@@ -3,6 +3,8 @@ package edu.arizona.biosemantics.etcsite.server.db;
 import java.io.IOException;
 import java.util.List;
 
+import com.google.inject.Inject;
+
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 
@@ -29,6 +31,7 @@ public class DAOManager {
 	private VisualizationConfigurationDAO visualizationConfigurationDAO;
 	private CaptchaDAO captchaDAO;
 	
+	@Inject
 	public DAOManager() {
 		configurationDAO = new ConfigurationDAO();
 		userDAO = new UserDAO();

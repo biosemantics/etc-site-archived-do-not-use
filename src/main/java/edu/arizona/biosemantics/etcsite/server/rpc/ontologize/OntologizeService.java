@@ -25,6 +25,7 @@ import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.common.taxonomy.Rank;
@@ -69,19 +70,32 @@ import edu.arizona.biosemantics.oto2.ontologize.shared.rpc.toontology.CreateOnto
 
 public class OntologizeService extends RemoteServiceServlet implements IOntologizeService {
 	
-	private IFileService fileService = new FileService();
-	private IFileFormatService fileFormatService = new FileFormatService();
-	private IFilePermissionService filePermissionService = new FilePermissionService();
-	private IFileAccessService fileAccessService = new FileAccessService();
-	private DAOManager daoManager = new DAOManager();
-	private Emailer emailer = new Emailer();
-	private edu.arizona.biosemantics.oto2.ontologize.shared.rpc.ICollectionService collectionService = 
-			new edu.arizona.biosemantics.oto2.ontologize.server.rpc.CollectionService();
-	private edu.arizona.biosemantics.oto2.ontologize.shared.rpc.toontology.IToOntologyService toOntologyService = 
-			new edu.arizona.biosemantics.oto2.ontologize.server.rpc.ToOntologyService();
-	private edu.arizona.biosemantics.oto2.ontologize.shared.rpc.IContextService contextService = 
-			new edu.arizona.biosemantics.oto2.ontologize.server.rpc.ContextService();
+	private IFileService fileService;
+	private IFileFormatService fileFormatService;
+	private IFilePermissionService filePermissionService;
+	private IFileAccessService fileAccessService;
+	private Emailer emailer;
+	private edu.arizona.biosemantics.oto2.ontologize.shared.rpc.ICollectionService collectionService;
+	private edu.arizona.biosemantics.oto2.ontologize.shared.rpc.toontology.IToOntologyService toOntologyService;
+	private edu.arizona.biosemantics.oto2.ontologize.shared.rpc.IContextService contextService;
+	private DAOManager daoManager;
 
+	@Inject
+	public OntologizeService(FileService fileService, FileFormatService fileFormatService, FilePermissionService filePermissionService, 
+			FileAccessService fileAccessService, 
+			edu.arizona.biosemantics.oto2.ontologize.server.rpc.CollectionService collectionService,
+			edu.arizona.biosemantics.oto2.ontologize.server.rpc.ContextService contextService,
+			DAOManager daoManager, Emailer emailer) {
+		this.fileService = fileService;
+		this.fileFormatService = fileFormatService;
+		this.filePermissionService = filePermissionService;
+		this.fileAccessService = fileAccessService;
+		this.collectionService = collectionService;
+		this.contextService = contextService;
+		this.daoManager = daoManager;
+		this.emailer = emailer;
+	}
+	
 	@Override
 	public Task startWithOntologyCreation(AuthenticationToken token, String taskName, String input, String taxonGroup, 
 			String ontologyPrefix) throws OntologizeException {

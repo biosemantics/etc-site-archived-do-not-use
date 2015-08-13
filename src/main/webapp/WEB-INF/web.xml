@@ -5,220 +5,6 @@
 	version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
 	<display-name>etcsite</display-name>
 
-	<!-- Servlets -->
-	<servlet>
-		<servlet-name>authenticationServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.auth.AuthenticationService</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>fileServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.file.FileService</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>fileAccessServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.file.access.FileAccessService</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>fileSearchServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.file.search.FileSearchService</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>taskServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.task.TaskService</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>semanticMarkupServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup.SemanticMarkupService</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>matrixGenerationServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration.MatrixGenerationService</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>fileFormatServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.file.format.FileFormatService</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>userServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.user.UserService</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>setupServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.setup.SetupService</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>pipelineServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.pipeline.PipelineService</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>visualizationServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.visualization.VisualizationService</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>taxonomyComparisonServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison.TaxonomyComparisonService</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>ontologizeServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.ontologize.OntologizeService</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>treeGenerationServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.rpc.treegeneration.TreeGenerationService</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>kaptchaServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.KaptchaServlet</servlet-class>
-		<!-- <servlet-class>com.google.code.kaptcha.servlet.KaptchaServlet</servlet-class> -->
-	</servlet>
-
-	<!-- http://www.gwtproject.org/doc/latest/DevGuideServerCommunication.html#DevGuideImplementingServices 
-		-> Common pitfalls: for url-pattern help -->
-	<servlet-mapping>
-		<servlet-name>authenticationServlet</servlet-name>
-		<url-pattern>/etcsite/auth</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>fileServlet</servlet-name>
-		<url-pattern>/etcsite/file</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>fileSearchServlet</servlet-name>
-		<url-pattern>/etcsite/fileSearch</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>fileAccessServlet</servlet-name>
-		<url-pattern>/etcsite/fileAccess</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>taskServlet</servlet-name>
-		<url-pattern>/etcsite/task</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>semanticMarkupServlet</servlet-name>
-		<url-pattern>/etcsite/semanticMarkup</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>matrixGenerationServlet</servlet-name>
-		<url-pattern>/etcsite/matrixGeneration</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>fileFormatServlet</servlet-name>
-		<url-pattern>/etcsite/fileFormat</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>userServlet</servlet-name>
-		<url-pattern>/etcsite/user</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>setupServlet</servlet-name>
-		<url-pattern>/etcsite/setup</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>visualizationServlet</servlet-name>
-		<url-pattern>/etcsite/visualization</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>treeGenerationServlet</servlet-name>
-		<url-pattern>/etcsite/treeGeneration</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>taxonomyComparisonServlet</servlet-name>
-		<url-pattern>/etcsite/taxonomyComparison</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>ontologizeServlet</servlet-name>
-		<url-pattern>/etcsite/ontologize</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>kaptchaServlet</servlet-name>
-		<url-pattern>/etcsite/captcha/*</url-pattern>
-	</servlet-mapping>
-
-
-	<servlet>
-		<servlet-name>ontologize_collectionServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.oto2.ontologize.server.rpc.CollectionService</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>ontologize_collectionServlet</servlet-name>
-		<url-pattern>/etcsite/ontologize_collection</url-pattern>
-	</servlet-mapping>
-	
-	<servlet>
-		<servlet-name>ontologize_toOntologyServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.oto2.ontologize.server.rpc.ToOntologyService</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>ontologize_toOntologyServlet</servlet-name>
-		<url-pattern>/etcsite/ontologize_toOntology</url-pattern>
-	</servlet-mapping>
-	
-	<servlet>
-		<servlet-name>ontologize_contextServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.oto2.ontologize.server.rpc.ContextService</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>ontologize_contextServlet</servlet-name>
-		<url-pattern>/etcsite/ontologize_context</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>oto_collectionServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>oto_collectionServlet</servlet-name>
-		<url-pattern>/etcsite/oto_collection</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>oto_communityServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.oto2.oto.server.rpc.CommunityService</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>oto_communityServlet</servlet-name>
-		<url-pattern>/etcsite/oto_community</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>oto_contextServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.oto2.oto.server.rpc.ContextService</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>oto_contextServlet</servlet-name>
-		<url-pattern>/etcsite/oto_context</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>oto_ontologyServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.oto2.oto.server.rpc.OntologyService</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>oto_ontologyServlet</servlet-name>
-		<url-pattern>/etcsite/oto_ontology</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>KeyGenerationServlet</servlet-name>
-		<servlet-class>edu.ucdavis.cs.cfgproject.server.rpc.KeyGenerationService</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>KeyGenerationServlet</servlet-name>
-		<url-pattern>/etcsite/keyGeneration</url-pattern>
-	</servlet-mapping>
-	
-		<servlet>
-		<servlet-name>EulerAlignmentServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.euler.alignment.server.EulerAlignmentService</servlet-class>
-	</servlet>
-	
-	<servlet-mapping>
-		<servlet-name>EulerAlignmentServlet</servlet-name>
-		<url-pattern>/etcsite/alignment</url-pattern>
-	</servlet-mapping>
-
 	<servlet>
 		<servlet-name>Jersey Web Application</servlet-name>
 		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
@@ -237,46 +23,6 @@
 		<url-pattern>/rest/*</url-pattern>
 	</servlet-mapping>
 
-	<servlet>
-		<servlet-name>googleServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.GoogleAuthenticationServlet</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>googleServlet</servlet-name>
-		<url-pattern>/googleauth</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>pdfServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.PDFServlet</servlet-class>
-	</servlet>
-		<servlet-mapping>
-		<servlet-name>pdfServlet</servlet-name>
-		<url-pattern>*.gpdf</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>downloadServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.DownloadServlet</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>downloadServlet</servlet-name>
-		<url-pattern>*.dld</url-pattern>
-	</servlet-mapping>
-	
-	<servlet>
-		<servlet-name>helpServlet</servlet-name>
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.HelpServlet</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>helpServlet</servlet-name>
-		<url-pattern>/help</url-pattern>
-	</servlet-mapping>
-
-
 	<context-param>
 		<!-- max size of the upload request -->
 		<param-name>maxSize</param-name>
@@ -293,26 +39,6 @@
 		<param-name>noDataTimeout</param-name>
 		<param-value>60000</param-value>
   	</context-param>
-
-	<servlet>
-		<servlet-name>uploadServlet</servlet-name>
-		<!-- This is the default servlet, it puts files in session -->
-		<servlet-class>edu.arizona.biosemantics.etcsite.server.upload.UploadServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>uploadServlet</servlet-name>
-		<url-pattern>*.gupld</url-pattern>
-	</servlet-mapping>
-
-
-	<servlet>
-		<servlet-name>remoteLoggingServiceImpl</servlet-name>
-		<servlet-class>com.google.gwt.libideas.logging.server.RemoteLoggingServiceImpl</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>remoteLoggingServiceImpl</servlet-name>
-		<url-pattern>/etcsite/logging</url-pattern>
-	</servlet-mapping>
 
 	<listener>
 		<listener-class>
@@ -332,7 +58,21 @@
 	<listener>
         <listener-class>org.quartz.ee.servlet.QuartzInitializerListener</listener-class>
     </listener>
-
+    
+    <listener>
+    	<listener-class>edu.arizona.biosemantics.etcsite.server.GuiceServletConfig</listener-class>
+	</listener>
+	
+	<filter>
+	    <filter-name>guiceFilter</filter-name>
+	    <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
+	</filter>
+	
+	<filter-mapping>
+	    <filter-name>guiceFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
+    
 	<!-- Default page to serve -->
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>

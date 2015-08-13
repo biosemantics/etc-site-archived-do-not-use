@@ -12,15 +12,21 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.common.validation.key.KeyElementValidator;
 import edu.arizona.biosemantics.common.validation.key.KeyValidationException;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
+import edu.arizona.biosemantics.etcsite.server.db.FilesInUseDAO;
+import edu.arizona.biosemantics.etcsite.server.db.ShareDAO;
+import edu.arizona.biosemantics.etcsite.server.db.TasksOutputFilesDAO;
+import edu.arizona.biosemantics.etcsite.server.db.UserDAO;
 import edu.arizona.biosemantics.etcsite.server.process.file.XmlNamespaceManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.format.FileFormatService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.permission.FilePermissionService;
+import edu.arizona.biosemantics.etcsite.server.rpc.task.TaskService;
 import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.Share;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
@@ -45,14 +51,25 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDen
 public class FileService extends RemoteServiceServlet implements IFileService {
 
 	private static final long serialVersionUID = -9193602268703418530L;
-	private IFilePermissionService filePermissionService = new FilePermissionService();
+	private FilePermissionService filePermissionService;
 	@SuppressWarnings("unused")
-	private IFileFormatService fileFormatService = new FileFormatService();
+	private IFileFormatService fileFormatService;
 	private SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MM-dd-yyyy");
-	private	XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager();
-	private FileNameNormalizer fileNameNormalizer = new FileNameNormalizer();
+	private	XmlNamespaceManager xmlNamespaceManager;
+	private FileNameNormalizer fileNameNormalizer;
+	private TaskService taskService;
+	private DAOManager daoManager;
 	
-	private DAOManager daoManager = new DAOManager();
+	@Inject
+	public FileService(FileFormatService fileFormatService, FilePermissionService filePermissionService, TaskService taskService, 
+			DAOManager daoManager, FileNameNormalizer fileNameNormalizer, XmlNamespaceManager xmlNamespaceManager) {
+		this.fileFormatService = fileFormatService;
+		this.filePermissionService = filePermissionService;
+		this.taskService = taskService;
+		this.daoManager = daoManager;
+		this.fileNameNormalizer = fileNameNormalizer;
+		this.xmlNamespaceManager = xmlNamespaceManager;
+	}
 	
 	@Override
 	protected void doUnexpectedFailure(Throwable t) {
@@ -457,7 +474,8 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		boolean permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
 		if(!permissionResult)
 			throw new PermissionDeniedException();
-		DirectoryDownload directoryDownload = new DirectoryDownload(authenticationToken, filePath);
+		DirectoryDownload directoryDownload = new DirectoryDownload(authenticationToken, filePath, taskService, this, 
+				filePermissionService, daoManager);
 		boolean result;
 		try {
 			result = directoryDownload.execute();

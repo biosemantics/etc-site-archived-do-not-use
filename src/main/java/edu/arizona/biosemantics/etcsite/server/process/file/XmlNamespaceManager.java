@@ -16,6 +16,8 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
+import com.google.inject.Inject;
+
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
@@ -30,6 +32,7 @@ public class XmlNamespaceManager {
 	private Map<FileTypeEnum, String> fileTypeSchemaMap = new HashMap<FileTypeEnum, String>(); 
 	private Map<String, FileTypeEnum> schemaFileTypeMap = new HashMap<String, FileTypeEnum>(); 
 	
+	@Inject
 	public XmlNamespaceManager() {
 		for(String schema : Configuration.taxonDescriptionSchemaFileWeb) {
 			fileTypeSchemaMap.put(FileTypeEnum.TAXON_DESCRIPTION, schema);

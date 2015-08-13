@@ -24,17 +24,22 @@ public class DirectoryDownload {
 
 	private String filePath;
 	private AuthenticationToken authenticationToken;
-	private IFilePermissionService filePermissionService = new FilePermissionService();
-	private ITaskService taskService = new TaskService();
-	private IFileService fileService = new FileService();
+	private IFilePermissionService filePermissionService;
+	private ITaskService taskService;
+	private IFileService fileService;
 	private String error = "";
 	private String zipFilepath = "";
-	private DAOManager daoManager = new DAOManager();
+	private DAOManager daoManager;
 	
-	public DirectoryDownload(AuthenticationToken authenticationToken, String filePath) {
+	public DirectoryDownload(AuthenticationToken authenticationToken, String filePath, TaskService taskService, FileService fileService, 
+			FilePermissionService filePermissionService, DAOManager daoManager) {
 		super();
 		this.filePath = filePath;
 		this.authenticationToken = authenticationToken;
+		this.taskService = taskService;
+		this.fileService = fileService;
+		this.filePermissionService = filePermissionService;
+		this.daoManager = daoManager;
 	}
 
 	public boolean execute() throws ZipDirectoryFailedException, CopyFilesFailedException, PermissionDeniedException, FileDeleteFailedException, CreateDirectoryFailedException {
@@ -142,7 +147,6 @@ public class DirectoryDownload {
 	
 	private void gatherShared(String destination) throws CopyFilesFailedException, PermissionDeniedException, FileDeleteFailedException, CreateDirectoryFailedException {
 		cleanup(destination);
-		ITaskService taskService = new TaskService();
 		List<Task> sharedTasks = taskService.getSharedWithTasks(authenticationToken);
 		for(Task task : sharedTasks) {
 			String taskDestination = destination + File.separator + new FileNameNormalizer().normalize(task.getName());

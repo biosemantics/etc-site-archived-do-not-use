@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.inject.Inject;
+
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 
@@ -19,7 +21,13 @@ import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 @SuppressWarnings("serial")
 public class KaptchaServlet extends HttpServlet implements Servlet {
 	
-	private DAOManager daoManager = new DAOManager();
+	private DAOManager daoManager;
+	
+	@Inject
+	public KaptchaServlet(DAOManager daoManager) {
+		this.daoManager = daoManager;
+	}
+	
 	
 	@Override
 	public void init(ServletConfig conf) {

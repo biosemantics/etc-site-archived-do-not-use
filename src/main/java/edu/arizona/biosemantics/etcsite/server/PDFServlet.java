@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.inject.Inject;
+
 import edu.arizona.biosemantics.etcsite.server.rpc.auth.AuthenticationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
@@ -19,7 +21,12 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationService;
 public class PDFServlet extends HttpServlet implements Servlet {
 
 	private static final long serialVersionUID = 1L;
-	private IAuthenticationService authenticationService = new AuthenticationService();
+	private IAuthenticationService authenticationService;
+
+	@Inject
+	public PDFServlet(AuthenticationService authenticationService) {
+		this.authenticationService = authenticationService;
+	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		int userID = Integer.parseInt(request.getParameter("userID"));

@@ -37,6 +37,7 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.common.taxonomy.Rank;
@@ -94,25 +95,39 @@ import edu.arizona.biosemantics.oto2.oto.shared.rpc.ICollectionService;
 public class SemanticMarkupService extends RemoteServiceServlet implements ISemanticMarkupService  {
 
 	private static final long serialVersionUID = -7871896158610489838L;
-	private ICollectionService collectionService = new CollectionService();
-	private IFileAccessService fileAccessService = new FileAccessService();
-	private IFileService fileService = new FileService();
-	private IFileFormatService fileFormatService = new FileFormatService();
-	private IFilePermissionService filePermissionService = new FilePermissionService();
-	private IUserService userService = new UserService();
+	private ICollectionService collectionService;
+	private IFileAccessService fileAccessService;
+	private IFileService fileService;
+	private IFileFormatService fileFormatService;;
+	private IFilePermissionService filePermissionService;
+	private IUserService userService;
 	private BracketValidator bracketValidator = new BracketValidator();
 	private ListeningExecutorService executorService;
 	private Map<Integer, ListenableFuture<LearnResult>> activeLearnFutures = new HashMap<Integer, ListenableFuture<LearnResult>>();
 	private Map<Integer, ListenableFuture<ParseResult>> activeParseFutures = new HashMap<Integer, ListenableFuture<ParseResult>>();
 	private Map<Integer, Learn> activeLearns = new HashMap<Integer, Learn>();
 	private Map<Integer, Parse> activeParses = new HashMap<Integer, Parse>();
-	private DAOManager daoManager = new DAOManager();
-	private Emailer emailer = new Emailer();
-	private ICollectionService otoCollectionService = new CollectionService();
-	private edu.arizona.biosemantics.oto2.ontologize.shared.rpc.ICollectionService ontologizeCollectionService = 
-			new edu.arizona.biosemantics.oto2.ontologize.server.rpc.CollectionService();
+	private DAOManager daoManager;
+	private Emailer emailer;
+	private ICollectionService otoCollectionService;
+	private edu.arizona.biosemantics.oto2.ontologize.shared.rpc.ICollectionService ontologizeCollectionService;
 	
-	public SemanticMarkupService() {
+	@Inject
+	public SemanticMarkupService(CollectionService collectionService, FileAccessService fileAccessService, FileService fileService, 
+			FileFormatService fileFormatService, FilePermissionService filePermissionService, UserService userService, 
+			DAOManager daoManager, Emailer emailer, 
+			edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService otoCollectionService, 
+			edu.arizona.biosemantics.oto2.ontologize.server.rpc.CollectionService ontologizeCollectionService) {
+		this.collectionService = collectionService;
+		this.fileAccessService = fileAccessService; 
+		this.fileService = fileService;
+		this.fileFormatService = fileFormatService;
+		this.filePermissionService = filePermissionService;
+		this.userService = userService;
+		this.daoManager = daoManager;
+		this.emailer = emailer;
+		this.otoCollectionService = otoCollectionService;
+		this.ontologizeCollectionService = ontologizeCollectionService;
 		executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(Configuration.maxActiveSemanticMarkup));
 	}
 	
@@ -237,7 +252,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			}
 			String bioportalUserId = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalUserId();
 			String bioportalAPIKey = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalAPIKey();
-			final Learn learn = new ExtraJvmLearn(taxonGroup, useEmptyGlossary, input, tablePrefix, source, operator);
+			final Learn learn = new ExtraJvmLearn(daoManager, taxonGroup, useEmptyGlossary, input, tablePrefix, source, operator);
 			//final Learn learn = new InJvmLearn(taxonGroup, useEmptyGlossary, input, tablePrefix, source, operator);
 			activeLearns.put(config.getConfiguration().getId(), learn);
 			final ListenableFuture<LearnResult> futureResult = executorService.submit(learn);

@@ -29,6 +29,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
@@ -55,9 +56,17 @@ public class FileSearchService extends RemoteServiceServlet implements IFileSear
 
 	private static final long serialVersionUID = -6550101274590336948L;
 
-	private IFileAccessService fileAccessService = new FileAccessService();
-	private IFileService fileService = new FileService();
-	private XMLFileFormatter xmlFileFormatter = new XMLFileFormatter();
+	private IFileAccessService fileAccessService;
+	private IFileService fileService;
+	private XMLFileFormatter xmlFileFormatter;
+	
+	@Inject
+	public FileSearchService(FileService fileService, FileAccessService fileAccessService, 
+			XMLFileFormatter xmlFileFormatter) {
+		this.fileService = fileService;
+		this.fileAccessService = fileAccessService;
+		this.xmlFileFormatter = xmlFileFormatter;
+	}
 	
 	@Override
 	protected void doUnexpectedFailure(Throwable t) {

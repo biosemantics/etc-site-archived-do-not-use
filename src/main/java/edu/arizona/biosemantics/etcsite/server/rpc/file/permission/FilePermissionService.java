@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
@@ -20,7 +21,12 @@ public class FilePermissionService extends RemoteServiceServlet implements IFile
 
 	private static final long serialVersionUID = 7670782397695216737L;
 
-	private DAOManager daoManager = new DAOManager();
+	private DAOManager daoManager;
+	
+	@Inject
+	public FilePermissionService(DAOManager daoManager) {
+		this.daoManager = daoManager;
+	}
 	
 	@Override
 	protected void doUnexpectedFailure(Throwable t) {

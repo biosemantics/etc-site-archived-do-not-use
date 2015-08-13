@@ -26,6 +26,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
@@ -64,17 +65,23 @@ import edu.arizona.biosemantics.euler.io.TaxonomyFileReader;
 public class TaxonomyComparisonService extends RemoteServiceServlet implements ITaxonomyComparisonService {
 	
 	private String tempFiles = Configuration.tempFiles + File.separator + "taxonomyComparison";
-	private IFileService fileService = new FileService();
+	private IFileService fileService;
 	//private IFileFormatService fileFormatService = new FileFormatService();
 	//private IFileAccessService fileAccessService = new FileAccessService();
-	private IFilePermissionService filePermissionService = new FilePermissionService();
+	private IFilePermissionService filePermissionService;
 	private ListeningExecutorService executorService;
 	private Map<Integer, ListenableFuture<Void>> activeProcessFutures = new HashMap<Integer, ListenableFuture<Void>>();
 	private Map<Integer, MIRGeneration> activeProcess = new HashMap<Integer, MIRGeneration>();
-	private DAOManager daoManager = new DAOManager();
-	private Emailer emailer = new Emailer();
+	private DAOManager daoManager;
+	private Emailer emailer;
 	
-	public TaxonomyComparisonService() {
+	@Inject
+	public TaxonomyComparisonService(FileService fileService, FilePermissionService filePermissionService, 
+			DAOManager daoManager, Emailer emailer) {
+		this.fileService = fileService;
+		this.filePermissionService = filePermissionService;
+		this.daoManager = daoManager;
+		this.emailer = emailer;
 		executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(Configuration.maxActiveTaxonomyComparison));
 		File taxonomyComparisonCache = new File(Configuration.tempFiles, "taxonomyComparison");
 		if(!taxonomyComparisonCache.exists())

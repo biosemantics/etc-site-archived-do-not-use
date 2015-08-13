@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.inject.Inject;
+
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.rpc.auth.AuthenticationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationResult;
@@ -20,8 +22,13 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationService;
 public class DownloadServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 6688917446498637833L;
-	private IAuthenticationService authenticationService = new AuthenticationService();
+	private IAuthenticationService authenticationService;
 
+	@Inject
+	public DownloadServlet(AuthenticationService authenticationService) {
+		this.authenticationService = authenticationService;
+	}
+	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) {
 		int userID = Integer.parseInt(request.getParameter("userID"));

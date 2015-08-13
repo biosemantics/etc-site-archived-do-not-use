@@ -9,6 +9,7 @@ import java.util.List;
 import au.com.bytecode.opencsv.CSVParser;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
@@ -40,13 +41,20 @@ import edu.ucdavis.cs.cfgproject.shared.model.TaxonMatrix;
 
 public class TreeGenerationService extends RemoteServiceServlet implements ITreeGenerationService {
 	
-	private IFileService fileService = new FileService();
-	private IFileFormatService fileFormatService = new FileFormatService();
-	private IFileAccessService fileAccessService = new FileAccessService();
-	private IFilePermissionService filePermissionService = new FilePermissionService();
-	private DAOManager daoManager = new DAOManager();
+	private IFileService fileService;
+	private IFileFormatService fileFormatService;
+	private IFileAccessService fileAccessService;
+	private IFilePermissionService filePermissionService;
+	private DAOManager daoManager;
 	private CSVReader reader = new CSVReader(CSVParser.DEFAULT_SEPARATOR, '|', CSVParser.DEFAULT_QUOTE_CHARACTER, 
 			CSVParser.DEFAULT_ESCAPE_CHARACTER);
+	
+	@Inject
+	public TreeGenerationService(FileService fileService, FileFormatService fileFormatService, FileAccessService fileAccessService) {
+		this.fileService = fileService;
+		this.fileFormatService = fileFormatService;
+		this.fileAccessService = fileAccessService;
+	}
 	
 	@Override
 	protected void doUnexpectedFailure(Throwable t) {

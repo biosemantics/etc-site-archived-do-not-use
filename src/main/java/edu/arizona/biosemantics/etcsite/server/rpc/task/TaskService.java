@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
@@ -29,13 +30,42 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.treegeneration.ITreeGeneratio
 public class TaskService extends RemoteServiceServlet implements ITaskService {
 
 	private static final long serialVersionUID = -3080921351813858330L;
-	private IMatrixGenerationService matrixGenerationService = new MatrixGenerationService();
-	private ISemanticMarkupService semanticMarkupService = new SemanticMarkupService();
-	private ITreeGenerationService treeGenerationService = new TreeGenerationService();
-	private ITaxonomyComparisonService taxonomyComparisonService = new TaxonomyComparisonService();
-	private IOntologizeService ontologizeService = new OntologizeService();
+	private IMatrixGenerationService matrixGenerationService;
+	private ISemanticMarkupService semanticMarkupService;
+	private ITreeGenerationService treeGenerationService;
+	private ITaxonomyComparisonService taxonomyComparisonService;
+	private IOntologizeService ontologizeService;
 	
-	private DAOManager daoManager = new DAOManager();
+	private DAOManager daoManager;
+	
+	@Inject
+	public TaskService(DAOManager daoManager) {
+		this.daoManager = daoManager;
+	}
+	
+	public void setMatrixGenerationService(
+			IMatrixGenerationService matrixGenerationService) {
+		this.matrixGenerationService = matrixGenerationService;
+	}
+
+	public void setSemanticMarkupService(
+			ISemanticMarkupService semanticMarkupService) {
+		this.semanticMarkupService = semanticMarkupService;
+	}
+
+	public void setTreeGenerationService(
+			ITreeGenerationService treeGenerationService) {
+		this.treeGenerationService = treeGenerationService;
+	}
+
+	public void setTaxonomyComparisonService(
+			ITaxonomyComparisonService taxonomyComparisonService) {
+		this.taxonomyComparisonService = taxonomyComparisonService;
+	}
+
+	public void setOntologizeService(IOntologizeService ontologizeService) {
+		this.ontologizeService = ontologizeService;
+	}
 	
 	@Override
 	protected void doUnexpectedFailure(Throwable t) {

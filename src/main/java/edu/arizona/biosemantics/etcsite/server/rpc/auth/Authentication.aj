@@ -4,8 +4,16 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 
+import com.google.inject.Inject;
+
 import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.etcsite.server.Emailer;
+import edu.arizona.biosemantics.etcsite.server.db.CaptchaDAO;
+import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
+import edu.arizona.biosemantics.etcsite.server.db.PasswordResetRequestDAO;
+import edu.arizona.biosemantics.etcsite.server.db.UserDAO;
 import edu.arizona.biosemantics.etcsite.server.rpc.task.TaskService;
+import edu.arizona.biosemantics.etcsite.server.rpc.user.UserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationFailedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
@@ -23,7 +31,9 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationService;
 @Aspect 
 public class Authentication {
 
-	private IAuthenticationService authenticationService = new AuthenticationService();	
+	private UserDAO userDAO = new UserDAO();
+	//can't inject into aspect per guice constructor injection; hence construct minimal 'custom' authentication service
+	private IAuthenticationService authenticationService = new AuthenticationService(null, userDAO, null, null, null);	
 	
 	//@Around("execution(RPCResult edu.arizona.biosemantics.etcsite.server.rpc..*(..)) && args(authenticationToken, ..) && " +
 	//		"!within(edu.arizona.biosemantics.etcsite.server.rpc.AuthenticationService) && !within(edu.arizona.biosemantics.etcsite.server.rpc.Authentication)")

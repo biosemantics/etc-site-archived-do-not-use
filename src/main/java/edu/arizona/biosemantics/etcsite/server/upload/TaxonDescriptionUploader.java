@@ -36,11 +36,19 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.inject.Inject;
+
 public class TaxonDescriptionUploader extends Uploader {
 
-	private ContentValidatorProvider contentValidatorProvider = new ContentValidatorProvider();
-	private XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager();
+	private ContentValidatorProvider contentValidatorProvider;
+	private XmlNamespaceManager xmlNamespaceManager;
 
+	@Inject
+	public TaxonDescriptionUploader(XmlNamespaceManager xmlNamespaceManager, ContentValidatorProvider contentValidatorProvider) {
+		this.xmlNamespaceManager = xmlNamespaceManager;
+		this.contentValidatorProvider = contentValidatorProvider;
+	}
+	
 	@Override
 	protected UploadResult uploadSingleFile(ShortUser shortUser, FileItem item, String targetPath, FileTypeEnum fileType) {
 		File file = new File(targetPath + File.separator + item.getName());

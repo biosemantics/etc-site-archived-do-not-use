@@ -129,8 +129,11 @@
 			<artifactId>guice-assistedinject</artifactId>
 			<version>4.0-beta</version>
 		</dependency>
-
-		
+		<dependency>
+			<groupId>com.google.inject.extensions</groupId>
+			<artifactId>guice-servlet</artifactId>
+			<version>4.0-beta</version>
+		</dependency>		
 		
 		<dependency>
 			<groupId>com.google.gwt.inject</groupId>

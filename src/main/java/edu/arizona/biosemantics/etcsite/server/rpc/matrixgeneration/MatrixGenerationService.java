@@ -1,5 +1,3 @@
-
-
 package edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration;
 
 import java.io.BufferedInputStream;
@@ -39,6 +37,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.common.taxonomy.Rank;
@@ -47,6 +46,7 @@ import edu.arizona.biosemantics.common.taxonomy.TaxonIdentification;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Emailer;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
+import edu.arizona.biosemantics.etcsite.server.db.TaxonGroupDAO;
 import edu.arizona.biosemantics.etcsite.server.rpc.auth.AdminAuthenticationToken;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.FileService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.access.FileAccessService;
@@ -87,17 +87,26 @@ import edu.arizona.biosemantics.matrixreview.shared.model.core.Value;
 
 public class MatrixGenerationService extends RemoteServiceServlet implements IMatrixGenerationService  {
 	
-	private IFileService fileService = new FileService();
-	private IFileFormatService fileFormatService = new FileFormatService();
-	private IFileAccessService fileAccessService = new FileAccessService();
-	private IFilePermissionService filePermissionService = new FilePermissionService();
+	private IFileService fileService;
+	private IFileFormatService fileFormatService;
+	private IFileAccessService fileAccessService;
+	private IFilePermissionService filePermissionService;
+	private Emailer emailer;
 	private ListeningExecutorService executorService;
 	private Map<Integer, ListenableFuture<Void>> activeProcessFutures = new HashMap<Integer, ListenableFuture<Void>>();
 	private Map<Integer, MatrixGeneration> activeProcess = new HashMap<Integer, MatrixGeneration>();
-	private DAOManager daoManager = new DAOManager();
-	private Emailer emailer = new Emailer();
+	private DAOManager daoManager;
 	
-	public MatrixGenerationService() {
+	@Inject
+	public MatrixGenerationService(FileService fileService, FileFormatService fileFormatService, FileAccessService fileAccessService, 
+			FilePermissionService filePermissionService, Emailer emailer, 
+			DAOManager daoManager) {
+		this.daoManager = daoManager;
+		this.fileService = fileService;
+		this.fileFormatService = fileFormatService;
+		this.fileAccessService = fileAccessService;
+		this.filePermissionService = filePermissionService;
+		this.emailer = emailer;
 		executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(Configuration.maxActiveMatrixGeneration));
 	}
 	

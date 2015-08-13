@@ -23,11 +23,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Emailer;
+import edu.arizona.biosemantics.etcsite.server.db.CaptchaDAO;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
+import edu.arizona.biosemantics.etcsite.server.db.PasswordResetRequestDAO;
+import edu.arizona.biosemantics.etcsite.server.db.UserDAO;
 import edu.arizona.biosemantics.etcsite.server.rpc.user.UserService;
 import edu.arizona.biosemantics.etcsite.shared.model.Captcha;
 import edu.arizona.biosemantics.etcsite.shared.model.PasswordResetRequest;
@@ -57,11 +61,20 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	private SecretKey key;
 	private Cipher encryptCipher;
 	private Cipher decryptCipher;
-	private DAOManager daoManager = new DAOManager();
-	private Emailer emailer = new Emailer();
-	private IUserService userService = new UserService();
+	private Emailer emailer;
+	private UserService userService;
+	private UserDAO userDAO;
+	private CaptchaDAO captchaDAO;
+	private PasswordResetRequestDAO passwordResetRequestDAO;
 	
-	public AuthenticationService() {
+	@Inject
+	public AuthenticationService(UserService userService, UserDAO userDAO, CaptchaDAO captchaDAO, 
+			PasswordResetRequestDAO passwordResetRequestDAO,Emailer emailer) {
+		this.userService = userService;
+		this.emailer = emailer;
+		this.userDAO = userDAO;
+		this.captchaDAO = captchaDAO;
+		this.passwordResetRequestDAO = passwordResetRequestDAO;
 		try {
 			key = KeyGenerator.getInstance("DES").generateKey();
 			encryptCipher = Cipher.getInstance("DES");
@@ -87,7 +100,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	
 	@Override
 	public AuthenticationResult login(String email, String password) {
-		User user = daoManager.getUserDAO().getUser(email);
+		User user = userDAO.getUser(email);
 		if(user != null && BCrypt.checkpw(password, user.getPassword())) {
 			String sessionId = generateSessionId(user);
 			return new AuthenticationResult(true, sessionId, new ShortUser(user));
@@ -139,7 +152,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 					//create an account for this user if they do not have one yet.	
 					String dummyPassword = Configuration.secret + ":" + id;
 					
-					User user = daoManager.getUserDAO().getUser(openIdProviderId);
+					User user = userDAO.getUser(openIdProviderId);
 					boolean registerNew = user == null;
 					if (registerNew) {
 						user = addUser(firstName, lastName, openIdProviderId, dummyPassword, "google");
@@ -177,7 +190,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 			if(colonIndex == -1)
 				return null;
 			int userId = Integer.parseInt(completeString.substring(0, colonIndex));
-			User user = daoManager.getUserDAO().getUser(userId);
+			User user = userDAO.getUser(userId);
 			return user;
 		}
 		return null;
@@ -186,21 +199,21 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	@Override
 	public void requestPasswordResetCode(int captchaId, String captchaSolution, String email) 
 			throws IncorrectCaptchaSolutionException, NoSuchUserException, OpenPasswordResetRequestException {
-		if (!daoManager.getCaptchaDAO().isValidSolution(captchaId, captchaSolution))
+		if (!captchaDAO.isValidSolution(captchaId, captchaSolution))
 			throw new IncorrectCaptchaSolutionException();
 	
-		User user = daoManager.getUserDAO().getUser(email);
+		User user = userDAO.getUser(email);
 		if (user == null)
 			throw new NoSuchUserException();
 		
-		PasswordResetRequest oldRequest = daoManager.getPasswordResetRequestDAO().get(user);
+		PasswordResetRequest oldRequest = passwordResetRequestDAO.get(user);
 		if (oldRequest != null) {
 			if ((new Date()).getTime() - oldRequest.getRequestTime().getTime() < RESET_PASSWORD_MINIMUM_WAIT_TIME_SECONDS * 1000)
 				throw new OpenPasswordResetRequestException();
-			daoManager.getPasswordResetRequestDAO().remove(user);
+			passwordResetRequestDAO.remove(user);
 		}
 		String authenticationCode = generatePasswordResetCode();
-		daoManager.getPasswordResetRequestDAO().insert(user, authenticationCode);
+		passwordResetRequestDAO.insert(user, authenticationCode);
 		String expireTime = RESET_PASSWORD_HOURS_BEFORE_EXPIRE + (RESET_PASSWORD_HOURS_BEFORE_EXPIRE == 1 ? " hour" : " hours");
 		String bodyText = Configuration.passwordResetBody.replace("<openidproviderid>", email).replace("<code>", authenticationCode).replace("<expire>", expireTime);
 		emailer.sendEmail(email, Configuration.passwordResetSubject, bodyText);
@@ -209,11 +222,11 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	
 	@Override
 	public void resetPassword(String email, String code, String newPassword) throws NoSuchUserException, InvalidPasswordResetException {
-		User user = daoManager.getUserDAO().getUser(email);
+		User user = userDAO.getUser(email);
 		if (user == null)
 			throw new NoSuchUserException();
 		
-		PasswordResetRequest request = daoManager.getPasswordResetRequestDAO().get(user);
+		PasswordResetRequest request = passwordResetRequestDAO.get(user);
 		if (request == null)
 			throw new InvalidPasswordResetException();
 			
@@ -223,13 +236,13 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 			
 		String encryptedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
 		user.setPassword(encryptedPassword);
-		daoManager.getUserDAO().update(user);
-		daoManager.getPasswordResetRequestDAO().remove(user);
+		userDAO.update(user);
+		passwordResetRequestDAO.remove(user);
 	}
 	
 	@Override
 	public Captcha createCaptcha() {
-		Captcha captcha = daoManager.getCaptchaDAO().insert();
+		Captcha captcha = captchaDAO.insert();
 		return captcha;
 	}	
 	
@@ -259,14 +272,14 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 				throw new RegistrationFailedException(e.getMessage());
 			}	
 		}
-		User user = daoManager.getUserDAO().getUser(email);
+		User user = userDAO.getUser(email);
 		return user;
 	}
 
 	@Override
 	public AuthenticationResult signupUser(int captchaId, String captchaSolution,
 			String firstName, String lastName, String email, String password) throws CaptchaException, RegistrationFailedException {
-		if (!daoManager.getCaptchaDAO().isValidSolution(captchaId, captchaSolution)){
+		if (!captchaDAO.isValidSolution(captchaId, captchaSolution)){
 			throw new CaptchaException();
 		}
 		addUser(firstName, lastName, email, password, null);

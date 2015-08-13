@@ -8,13 +8,14 @@ import org.aspectj.lang.annotation.Aspect;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
+import edu.arizona.biosemantics.etcsite.server.db.TaskDAO;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkupException;
 
 @Aspect
 public class FailTask {
-
-	private DAOManager daoManager = new DAOManager();
+	
+	private TaskDAO taskDAO = new TaskDAO();
 	
 	@Around("execution(public * edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup.SemanticMarkupService.*(..) "
 			+ "throws SemanticMarkupException)")
@@ -38,7 +39,7 @@ public class FailTask {
 		if(task != null) {
 			task.setFailed(true);
 			task.setFailedTime(new Date());
-			daoManager.getTaskDAO().updateTask(task);
+			taskDAO.updateTask(task);
 		}
 	}
 

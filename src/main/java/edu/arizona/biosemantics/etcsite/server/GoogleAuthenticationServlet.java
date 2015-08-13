@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
@@ -32,9 +33,15 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserNotFoundException;
 public class GoogleAuthenticationServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 6688917446498637833L;
-	private IAuthenticationService authenticationService = new AuthenticationService();
-	private IUserService userService = new UserService();
+	private IAuthenticationService authenticationService;
+	private IUserService userService;
 
+	@Inject
+	public GoogleAuthenticationServlet(AuthenticationService authenticationService, UserService userService) {
+		this.authenticationService = authenticationService;
+		this.userService = userService;
+	}
+	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		/*int userID = Integer.parseInt(request.getParameter("userID"));
