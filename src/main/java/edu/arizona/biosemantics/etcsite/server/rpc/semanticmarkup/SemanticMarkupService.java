@@ -86,6 +86,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkup
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserNotFoundException;
 import edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService;
+import edu.arizona.biosemantics.oto2.oto.server.rpc.ContextService;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Collection;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Context;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Label;
@@ -111,13 +112,15 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	private Emailer emailer;
 	private ICollectionService otoCollectionService;
 	private edu.arizona.biosemantics.oto2.ontologize.shared.rpc.ICollectionService ontologizeCollectionService;
+	private ToOTOSender otoSender;
 	
 	@Inject
 	public SemanticMarkupService(CollectionService collectionService, FileAccessService fileAccessService, FileService fileService, 
 			FileFormatService fileFormatService, FilePermissionService filePermissionService, UserService userService, 
 			DAOManager daoManager, Emailer emailer, 
 			edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService otoCollectionService, 
-			edu.arizona.biosemantics.oto2.ontologize.server.rpc.CollectionService ontologizeCollectionService) {
+			edu.arizona.biosemantics.oto2.ontologize.server.rpc.CollectionService ontologizeCollectionService,
+			ToOTOSender otoSender) {
 		this.collectionService = collectionService;
 		this.fileAccessService = fileAccessService; 
 		this.fileService = fileService;
@@ -128,6 +131,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		this.emailer = emailer;
 		this.otoCollectionService = otoCollectionService;
 		this.ontologizeCollectionService = ontologizeCollectionService;
+		this.otoSender = otoSender;
 		executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(Configuration.maxActiveSemanticMarkup));
 	}
 	
@@ -1053,7 +1057,6 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		SemanticMarkupConfiguration config = getSemanticMarkupConfiguration(task);
 		User user = daoManager.getUserDAO().getUser(token.getUserId());
 		Collection collection = collectionService.get(config.getOtoUploadId(), config.getOtoSecret());
-		ToOTOSender otoSender = new ToOTOSender();
 		otoSender.send(task, config, user, collection);
 		config.setOtoCreatedDataset(true);
 		daoManager.getSemanticMarkupConfigurationDAO().updateSemanticMarkupConfiguration(config);

@@ -14,12 +14,10 @@ import edu.arizona.biosemantics.etcsite.shared.model.DatasetPrefix;
 
 public class SemanticMarkupDBDAO {
 
-	private SomeInflector someInflector;
+	private SingularPluralProvider singularPluralProvider = new SingularPluralProvider();
 
-	public SemanticMarkupDBDAO() throws IOException {
-		SingularPluralProvider singularPluralProvider = new SingularPluralProvider();
-		WordNetPOSKnowledgeBase wordNetPOSKnowledgeBase = new WordNetPOSKnowledgeBase(Configuration.charaparser_wordnet, false);
-		someInflector = new SomeInflector(wordNetPOSKnowledgeBase, singularPluralProvider.getSingulars(), singularPluralProvider.getPlurals());
+	public SemanticMarkupDBDAO() {
+		
 	}
 	
 	public DatasetPrefix getDatasetPrefix(String prefix) {
@@ -113,29 +111,36 @@ public class SemanticMarkupDBDAO {
 		//
 		//assumption newName will be singular if term was singular; newName will be plural if term was plural;
 		//otherwise it will be considered a "user error"
-		if(!someInflector.isPlural(term)) {
-			String singular = newName;
-			String plural = someInflector.getPlural(newName);
-			
-			try(Query query = new Query("UPDATE " + Configuration.charaparser_databaseName + "." + prefix + "_" + "singularplural SET singular=?, plural=? WHERE singular=?")) {
-				query.setParameter(1, singular);
-				query.setParameter(2, plural);
-				query.setParameter(3, term);
-				query.execute();
-			} catch(QueryException e) {
-				log(LogLevel.ERROR, "Couldn't update singularplural for rename of term", e);
+		
+		
+		try(WordNetPOSKnowledgeBase wordNetPOSKnowledgeBase = new WordNetPOSKnowledgeBase(Configuration.charaparser_wordnet, false)) {
+			SomeInflector someInflector = new SomeInflector(wordNetPOSKnowledgeBase, singularPluralProvider.getSingulars(), singularPluralProvider.getPlurals());
+			if(!someInflector.isPlural(term)) {
+				String singular = newName;
+				String plural = someInflector.getPlural(newName);
+				
+				try(Query query = new Query("UPDATE " + Configuration.charaparser_databaseName + "." + prefix + "_" + "singularplural SET singular=?, plural=? WHERE singular=?")) {
+					query.setParameter(1, singular);
+					query.setParameter(2, plural);
+					query.setParameter(3, term);
+					query.execute();
+				} catch(QueryException e) {
+					log(LogLevel.ERROR, "Couldn't update singularplural for rename of term", e);
+				}
+			} else {
+				String singular = someInflector.getSingular(newName);
+				String plural = newName;
+				try(Query query = new Query("UPDATE " + Configuration.charaparser_databaseName + "." + prefix + "_" + "singularplural SET singular=?, plural=? WHERE plural=?")) {
+					query.setParameter(1, singular);
+					query.setParameter(2, plural);
+					query.setParameter(3, term);
+					query.execute();
+				} catch(QueryException e) {
+					log(LogLevel.ERROR, "Couldn't update singularplural for rename of term", e);
+				}
 			}
-		} else {
-			String singular = someInflector.getSingular(newName);
-			String plural = newName;
-			try(Query query = new Query("UPDATE " + Configuration.charaparser_databaseName + "." + prefix + "_" + "singularplural SET singular=?, plural=? WHERE plural=?")) {
-				query.setParameter(1, singular);
-				query.setParameter(2, plural);
-				query.setParameter(3, term);
-				query.execute();
-			} catch(QueryException e) {
-				log(LogLevel.ERROR, "Couldn't update singularplural for rename of term", e);
-			}
+		} catch (Exception e) {
+			log(LogLevel.ERROR, "Could not load WordNetPOSKnowledgeBase.", e);
 		}
 		
 		try(Query query = new Query("UPDATE " + Configuration.charaparser_databaseName + "." + prefix + "_" + "permanentglossary SET term=? WHERE term=?")) {

@@ -35,11 +35,7 @@ public class DAOManager {
 	public DAOManager() {
 		configurationDAO = new ConfigurationDAO();
 		userDAO = new UserDAO();
-		try {
-			semanticMarkupDBDAO = new SemanticMarkupDBDAO();
-		} catch (IOException e) {
-			log(LogLevel.ERROR, "Could not instantiate SemanticMarkupDBDAO", e);
-		}
+		semanticMarkupDBDAO = new SemanticMarkupDBDAO();
 		taxonGroupDAO = new TaxonGroupDAO();
 		passwordResetRequestDAO = new PasswordResetRequestDAO();
 		tasksOutputFilesDAO = new TasksOutputFilesDAO();

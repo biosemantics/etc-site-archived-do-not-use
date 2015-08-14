@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import com.google.inject.Inject;
+
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
@@ -84,7 +86,12 @@ public class ToOTOSender {
 			"width"
 			}));
 	
-	private IContextService contextService = new ContextService();
+	private ContextService contextService;
+	
+	@Inject
+	public ToOTOSender(ContextService contextService) {
+		this.contextService = contextService;
+	}
 	
 	public void send(Task task, SemanticMarkupConfiguration config, User user, Collection collection) throws Exception {
 		try(OTOClient otoClient = new OTOClient(edu.arizona.biosemantics.etcsite.server.Configuration.otoUrl)) {

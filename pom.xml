@@ -133,7 +133,7 @@
 			<groupId>com.google.inject.extensions</groupId>
 			<artifactId>guice-servlet</artifactId>
 			<version>4.0-beta</version>
-		</dependency>		
+		</dependency>
 		
 		<dependency>
 			<groupId>com.google.gwt.inject</groupId>
@@ -215,7 +215,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>semantic-markup</artifactId>
-			<version>0.1.150-SNAPSHOT</version>
+			<version>0.1.151-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>app</artifactId>
@@ -230,7 +230,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.90-SNAPSHOT</version>
+		  <version>0.0.92-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		  <exclusions>
 		  	<exclusion>
@@ -242,19 +242,19 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.90-SNAPSHOT</version>
+		  <version>0.0.92-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize</artifactId>
-		  <version>0.0.26-SNAPSHOT</version>
+		  <version>0.0.28-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize</artifactId>
-		  <version>0.0.26-SNAPSHOT</version>
+		  <version>0.0.28-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
@@ -296,7 +296,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>ling</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
+			<version>0.0.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.gwtquery</groupId>
