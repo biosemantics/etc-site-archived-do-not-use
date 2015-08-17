@@ -5,10 +5,8 @@ import java.util.List;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.JavaZipper;
-import edu.arizona.biosemantics.etcsite.server.Zipper;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.permission.FilePermissionService;
-import edu.arizona.biosemantics.etcsite.server.rpc.task.TaskService;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.CopyFilesFailedException;
@@ -18,25 +16,22 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.ZipDirectoryFailedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.IFilePermissionService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDeniedException;
-import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskService;
 
 public class DirectoryDownload {
 
 	private String filePath;
 	private AuthenticationToken authenticationToken;
 	private IFilePermissionService filePermissionService;
-	private ITaskService taskService;
 	private IFileService fileService;
 	private String error = "";
 	private String zipFilepath = "";
 	private DAOManager daoManager;
 	
-	public DirectoryDownload(AuthenticationToken authenticationToken, String filePath, TaskService taskService, FileService fileService, 
-			FilePermissionService filePermissionService, DAOManager daoManager) {
+	public DirectoryDownload(AuthenticationToken authenticationToken, String filePath, IFileService fileService, 
+			IFilePermissionService filePermissionService, DAOManager daoManager) {
 		super();
 		this.filePath = filePath;
 		this.authenticationToken = authenticationToken;
-		this.taskService = taskService;
 		this.fileService = fileService;
 		this.filePermissionService = filePermissionService;
 		this.daoManager = daoManager;
@@ -147,7 +142,7 @@ public class DirectoryDownload {
 	
 	private void gatherShared(String destination) throws CopyFilesFailedException, PermissionDeniedException, FileDeleteFailedException, CreateDirectoryFailedException {
 		cleanup(destination);
-		List<Task> sharedTasks = taskService.getSharedWithTasks(authenticationToken);
+		List<Task> sharedTasks = daoManager.getTaskDAO().getSharedWithTasks(authenticationToken.getUserId());
 		for(Task task : sharedTasks) {
 			String taskDestination = destination + File.separator + new FileNameNormalizer().normalize(task.getName());
 			this.gatherShare(task, taskDestination);
@@ -201,13 +196,10 @@ public class DirectoryDownload {
 	//TODO: add some security for the task really being shared with the user
 	//add some general task permission check service
 	private Task getTaskFromFilePath(String filePath) {
-		System.out.println("1" + filePath);
+		/*System.out.println("1" + filePath);
 		System.out.println("2" + filePath.lastIndexOf("."));
-		System.out.println("3" + filePath.substring(filePath.lastIndexOf(".") + 1));
+		System.out.println("3" + filePath.substring(filePath.lastIndexOf(".") + 1)); */
 		int taskId = Integer.parseInt(filePath.substring(filePath.lastIndexOf(".") + 1));
-		daoManager.getTaskDAO().getTask(taskId);
-		Task task = new Task();
-		task.setId(taskId);
-		return taskService.getTask(authenticationToken, task);
+		return daoManager.getTaskDAO().getTask(taskId);
 	}
 }

@@ -47,21 +47,22 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.ZipDirectoryFailedExcept
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.format.IFileFormatService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.IFilePermissionService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDeniedException;
+import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskService;
 
 public class FileService extends RemoteServiceServlet implements IFileService {
 
 	private static final long serialVersionUID = -9193602268703418530L;
-	private FilePermissionService filePermissionService;
+	private IFilePermissionService filePermissionService;
 	@SuppressWarnings("unused")
 	private IFileFormatService fileFormatService;
 	private SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MM-dd-yyyy");
 	private	XmlNamespaceManager xmlNamespaceManager;
 	private FileNameNormalizer fileNameNormalizer;
-	private TaskService taskService;
+	private ITaskService taskService;
 	private DAOManager daoManager;
 	
 	@Inject
-	public FileService(FileFormatService fileFormatService, FilePermissionService filePermissionService, TaskService taskService, 
+	public FileService(IFileFormatService fileFormatService, IFilePermissionService filePermissionService, ITaskService taskService, 
 			DAOManager daoManager, FileNameNormalizer fileNameNormalizer, XmlNamespaceManager xmlNamespaceManager) {
 		this.fileFormatService = fileFormatService;
 		this.filePermissionService = filePermissionService;
@@ -474,7 +475,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		boolean permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
 		if(!permissionResult)
 			throw new PermissionDeniedException();
-		DirectoryDownload directoryDownload = new DirectoryDownload(authenticationToken, filePath, taskService, this, 
+		DirectoryDownload directoryDownload = new DirectoryDownload(authenticationToken, filePath, this, 
 				filePermissionService, daoManager);
 		boolean result;
 		try {

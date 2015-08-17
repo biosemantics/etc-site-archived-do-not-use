@@ -50,10 +50,13 @@ public class TreeGenerationService extends RemoteServiceServlet implements ITree
 			CSVParser.DEFAULT_ESCAPE_CHARACTER);
 	
 	@Inject
-	public TreeGenerationService(FileService fileService, FileFormatService fileFormatService, FileAccessService fileAccessService) {
+	public TreeGenerationService(IFileService fileService, IFileFormatService fileFormatService, 
+			IFileAccessService fileAccessService, IFilePermissionService filePermissionservice, DAOManager daoManager) {
 		this.fileService = fileService;
 		this.fileFormatService = fileFormatService;
 		this.fileAccessService = fileAccessService;
+		this.filePermissionService = filePermissionservice;
+		this.daoManager = daoManager;
 	}
 	
 	@Override

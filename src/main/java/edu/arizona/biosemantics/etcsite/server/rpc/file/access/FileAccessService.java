@@ -46,7 +46,7 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 	//private IFileFormatService fileFormatService = new FileFormatService();
 	
 	@Inject
-	public FileAccessService(FilePermissionService filePermissionService) {
+	public FileAccessService(IFilePermissionService filePermissionService) {
 		this.filePermissionService = filePermissionService;
 	}
 	

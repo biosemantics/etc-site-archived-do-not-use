@@ -61,7 +61,7 @@ public class FileSearchService extends RemoteServiceServlet implements IFileSear
 	private XMLFileFormatter xmlFileFormatter;
 	
 	@Inject
-	public FileSearchService(FileService fileService, FileAccessService fileAccessService, 
+	public FileSearchService(IFileService fileService, IFileAccessService fileAccessService, 
 			XMLFileFormatter xmlFileFormatter) {
 		this.fileService = fileService;
 		this.fileAccessService = fileAccessService;

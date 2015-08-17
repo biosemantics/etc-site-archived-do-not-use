@@ -115,11 +115,11 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	private ToOTOSender otoSender;
 	
 	@Inject
-	public SemanticMarkupService(CollectionService collectionService, FileAccessService fileAccessService, FileService fileService, 
-			FileFormatService fileFormatService, FilePermissionService filePermissionService, UserService userService, 
+	public SemanticMarkupService(ICollectionService collectionService, IFileAccessService fileAccessService, IFileService fileService, 
+			IFileFormatService fileFormatService, IFilePermissionService filePermissionService, IUserService userService, 
 			DAOManager daoManager, Emailer emailer, 
-			edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService otoCollectionService, 
-			edu.arizona.biosemantics.oto2.ontologize.server.rpc.CollectionService ontologizeCollectionService,
+			edu.arizona.biosemantics.oto2.oto.shared.rpc.ICollectionService otoCollectionService, 
+			edu.arizona.biosemantics.oto2.ontologize.shared.rpc.ICollectionService ontologizeCollectionService,
 			ToOTOSender otoSender) {
 		this.collectionService = collectionService;
 		this.fileAccessService = fileAccessService; 

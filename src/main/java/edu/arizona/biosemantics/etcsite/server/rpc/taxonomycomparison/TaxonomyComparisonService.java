@@ -76,7 +76,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	private Emailer emailer;
 	
 	@Inject
-	public TaxonomyComparisonService(FileService fileService, FilePermissionService filePermissionService, 
+	public TaxonomyComparisonService(IFileService fileService, IFilePermissionService filePermissionService, 
 			DAOManager daoManager, Emailer emailer) {
 		this.fileService = fileService;
 		this.filePermissionService = filePermissionService;

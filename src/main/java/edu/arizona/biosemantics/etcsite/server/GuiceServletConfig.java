@@ -11,6 +11,7 @@ import edu.arizona.biosemantics.etcsite.server.rpc.auth.AuthenticationService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.FileService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.access.FileAccessService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.format.FileFormatService;
+import edu.arizona.biosemantics.etcsite.server.rpc.file.permission.FilePermissionService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.search.FileSearchService;
 import edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration.MatrixGenerationService;
 import edu.arizona.biosemantics.etcsite.server.rpc.ontologize.OntologizeService;
@@ -36,6 +37,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
 				serve("/etcsite/file").with(FileService.class);
 				serve("/etcsite/fileAccess").with(FileAccessService.class);
 				serve("/etcsite/fileSearch").with(FileSearchService.class);
+				serve("/etcsite/filePermission").with(FilePermissionService.class);
 				serve("/etcsite/task").with(TaskService.class);
 				serve("/etcsite/semanticMarkup").with(SemanticMarkupService.class);
 				serve("/etcsite/fileFormat").with(FileFormatService.class);
@@ -61,7 +63,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
 				serve("*.dld").with(DownloadServlet.class);
 				serve("/help").with(HelpServlet.class);
 				serve("*.gupld").with(UploadServlet.class);
-				serve("etcsite/logging").with(RemoteLoggingServiceImpl.class);
+				serve("/etcsite/logging").with(RemoteLoggingServiceImpl.class);
 			}
 			
 		}, new ETCSiteModule());

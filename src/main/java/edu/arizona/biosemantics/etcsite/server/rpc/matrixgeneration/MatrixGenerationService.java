@@ -98,8 +98,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	private DAOManager daoManager;
 	
 	@Inject
-	public MatrixGenerationService(FileService fileService, FileFormatService fileFormatService, FileAccessService fileAccessService, 
-			FilePermissionService filePermissionService, Emailer emailer, 
+	public MatrixGenerationService(IFileService fileService, IFileFormatService fileFormatService, IFileAccessService fileAccessService, 
+			IFilePermissionService filePermissionService, Emailer emailer, 
 			DAOManager daoManager) {
 		this.daoManager = daoManager;
 		this.fileService = fileService;

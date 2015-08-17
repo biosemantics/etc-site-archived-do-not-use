@@ -81,10 +81,12 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 	private DAOManager daoManager;
 
 	@Inject
-	public OntologizeService(FileService fileService, FileFormatService fileFormatService, FilePermissionService filePermissionService, 
-			FileAccessService fileAccessService, 
-			edu.arizona.biosemantics.oto2.ontologize.server.rpc.CollectionService collectionService,
-			edu.arizona.biosemantics.oto2.ontologize.server.rpc.ContextService contextService,
+	public OntologizeService(IFileService fileService, IFileFormatService fileFormatService, 
+			IFilePermissionService filePermissionService, 
+			IFileAccessService fileAccessService, 
+			edu.arizona.biosemantics.oto2.ontologize.shared.rpc.ICollectionService collectionService,
+			edu.arizona.biosemantics.oto2.ontologize.shared.rpc.IContextService contextService,
+			edu.arizona.biosemantics.oto2.ontologize.shared.rpc.toontology.IToOntologyService toOntologyService,
 			DAOManager daoManager, Emailer emailer) {
 		this.fileService = fileService;
 		this.fileFormatService = fileFormatService;
@@ -92,6 +94,7 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 		this.fileAccessService = fileAccessService;
 		this.collectionService = collectionService;
 		this.contextService = contextService;
+		this.toOntologyService = toOntologyService;
 		this.daoManager = daoManager;
 		this.emailer = emailer;
 	}

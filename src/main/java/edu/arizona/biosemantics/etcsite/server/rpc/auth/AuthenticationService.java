@@ -62,14 +62,14 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	private Cipher encryptCipher;
 	private Cipher decryptCipher;
 	private Emailer emailer;
-	private UserService userService;
+	private IUserService userService;
 	private UserDAO userDAO;
 	private CaptchaDAO captchaDAO;
 	private PasswordResetRequestDAO passwordResetRequestDAO;
 	
 	@Inject
-	public AuthenticationService(UserService userService, UserDAO userDAO, CaptchaDAO captchaDAO, 
-			PasswordResetRequestDAO passwordResetRequestDAO,Emailer emailer) {
+	public AuthenticationService(IUserService userService, UserDAO userDAO, CaptchaDAO captchaDAO, 
+			PasswordResetRequestDAO passwordResetRequestDAO, Emailer emailer) {
 		this.userService = userService;
 		this.emailer = emailer;
 		this.userDAO = userDAO;

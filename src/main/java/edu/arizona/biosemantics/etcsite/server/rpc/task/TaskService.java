@@ -35,36 +35,21 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	private ITreeGenerationService treeGenerationService;
 	private ITaxonomyComparisonService taxonomyComparisonService;
 	private IOntologizeService ontologizeService;
-	
 	private DAOManager daoManager;
-	
+		
 	@Inject
-	public TaskService(DAOManager daoManager) {
-		this.daoManager = daoManager;
-	}
-	
-	public void setMatrixGenerationService(
-			IMatrixGenerationService matrixGenerationService) {
+	public TaskService(IMatrixGenerationService matrixGenerationService,
+			ISemanticMarkupService semanticMarkupService,
+			ITreeGenerationService treeGenerationService,
+			ITaxonomyComparisonService taxonomyComparisonService,
+			IOntologizeService ontologizeService, DAOManager daoManager) {
+		super();
 		this.matrixGenerationService = matrixGenerationService;
-	}
-
-	public void setSemanticMarkupService(
-			ISemanticMarkupService semanticMarkupService) {
 		this.semanticMarkupService = semanticMarkupService;
-	}
-
-	public void setTreeGenerationService(
-			ITreeGenerationService treeGenerationService) {
 		this.treeGenerationService = treeGenerationService;
-	}
-
-	public void setTaxonomyComparisonService(
-			ITaxonomyComparisonService taxonomyComparisonService) {
 		this.taxonomyComparisonService = taxonomyComparisonService;
-	}
-
-	public void setOntologizeService(IOntologizeService ontologizeService) {
 		this.ontologizeService = ontologizeService;
+		this.daoManager = daoManager;
 	}
 	
 	@Override

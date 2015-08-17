@@ -42,7 +42,7 @@ public class FileFormatService extends RemoteServiceServlet implements IFileForm
 	private XmlModelFileCreator xmlModelFileCreator;
 	
 	@Inject
-	public FileFormatService(UserService userService, FileAccessService fileAccessService, CSVValidator csvValidator, 
+	public FileFormatService(IUserService userService, IFileAccessService fileAccessService, CSVValidator csvValidator, 
 			XmlNamespaceManager xmlNamespaceManager, @Named("TaxonDescription")XMLValidator taxonDescriptionValidator, 
 			@Named("MarkedUpTaxonDescription")XMLValidator markedUpTaxonDescriptionValidator, 
 			XmlModelFileCreator xmlModelFileCreator) {
