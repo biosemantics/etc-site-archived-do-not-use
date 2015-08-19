@@ -45,11 +45,11 @@ public class HomeMainView extends Composite implements IHomeMainView {
 		presenter.onVisualization();
 	}
 	
-	@UiHandler("pipelineButton")
+	/*@UiHandler("pipelineButton")
 	public void onPipeline(ClickEvent event) {
 		presenter.onPipeline();
 	} 
-	
+	*/
 	@UiHandler("ontologizeButton")
 	public void onOntologize(ClickEvent event) {
 		presenter.onOntologize();

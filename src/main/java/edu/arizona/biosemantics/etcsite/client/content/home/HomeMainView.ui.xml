@@ -283,11 +283,11 @@
 			<div class="{style.visualizationButtonText}">Begin Visualization</div>
 		</g:HTML>
 		
-		<div class="{style.orText}"></div>
+		<!-- <div class="{style.orText}"></div>
 		<g:HTML ui:field="pipelineButton">
 			<div class="{style.pipelineButton}"><img src="images/ButtonGray.gif" width="200px" height="50px"/></div>
 			<div class="{style.pipelineButtonText}">Begin New Pipeline</div>
-		</g:HTML>
+		</g:HTML> -->
 
 	</g:HTMLPanel>
 </ui:UiBinder> 
