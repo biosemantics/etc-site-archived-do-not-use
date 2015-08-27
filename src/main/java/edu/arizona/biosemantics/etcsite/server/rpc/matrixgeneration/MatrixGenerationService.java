@@ -304,13 +304,13 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		String outputDirectory = config.getOutput();			
 		String outputDirectoryParentResult;
 		try {
-			outputDirectoryParentResult = fileService.getParent(authenticationToken, outputDirectory);
+			outputDirectoryParentResult = fileService.getParent(new AdminAuthenticationToken(), outputDirectory);
 		} catch (PermissionDeniedException e) {
 			throw new MatrixGenerationException(task);
 		}
 		String outputDirectoryNameResult;
 		try {
-			outputDirectoryNameResult = fileService.getFileName(authenticationToken, outputDirectory);
+			outputDirectoryNameResult = fileService.getFileName(new AdminAuthenticationToken(), outputDirectory);
 		} catch (PermissionDeniedException e) {
 			throw new MatrixGenerationException(task);
 		}
@@ -318,7 +318,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		//find a suitable destination filePath
 		String createDirectoryResult;
 		try {
-			createDirectoryResult = fileService.createDirectory(authenticationToken, outputDirectoryParentResult, 
+			createDirectoryResult = fileService.createDirectory(new AdminAuthenticationToken(), outputDirectoryParentResult, 
 				outputDirectoryNameResult, true);
 		} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
 			throw new MatrixGenerationException(task);
@@ -338,7 +338,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			throw new MatrixGenerationException(task);
 		}
 		try {
-			fileAccessService.setFileContent(authenticationToken, 
+			fileAccessService.setFileContent(new AdminAuthenticationToken(), 
 					createDirectoryResult + File.separator + "Matrix.csv", csvContent);
 		} catch (SetFileContentFailedException | PermissionDeniedException e) {
 			throw new MatrixGenerationException(task);

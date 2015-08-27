@@ -583,11 +583,11 @@ public class Alerter {
 		final TextArea textArea = new TextArea();
 		panel.add(textArea);
 		textArea.setValue(message);
-		textArea.setEnabled(false);
+		textArea.setEnabled(true);
 		dialog.setPredefinedButtons(PredefinedButton.CLOSE);
 		dialog.add(panel);
 		dialog.setBodyBorder(false);
-		dialog.setHeadingText("Import Articulations");
+		dialog.setHeadingText("Upload Failed");
 		dialog.setWidth(600);
 		dialog.setHeight(400);
 		dialog.setHideOnButtonClick(true);

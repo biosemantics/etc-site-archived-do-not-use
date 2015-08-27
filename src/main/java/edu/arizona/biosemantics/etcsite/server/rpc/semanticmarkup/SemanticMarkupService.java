@@ -393,13 +393,13 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		String outputDirectory = config.getOutput();			
 		String outputDirectoryParent;
 		try {
-			outputDirectoryParent = fileService.getParent(authenticationToken, outputDirectory);
+			outputDirectoryParent = fileService.getParent(new AdminAuthenticationToken(), outputDirectory);
 		} catch (PermissionDeniedException e) {
 			throw new SemanticMarkupException(task);
 		}
 		String outputDirectoryName;
 		try {
-			outputDirectoryName = fileService.getFileName(authenticationToken, outputDirectory);
+			outputDirectoryName = fileService.getFileName(new AdminAuthenticationToken(), outputDirectory);
 		} catch (PermissionDeniedException e) {
 			throw new SemanticMarkupException(task);
 		}
@@ -407,7 +407,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		//find a suitable destination filePath
 		String createDirectoy;
 		try {
-			createDirectoy = fileService.createDirectory(authenticationToken, outputDirectoryParent, 
+			createDirectoy = fileService.createDirectory(new AdminAuthenticationToken(), outputDirectoryParent, 
 					outputDirectoryName, true);
 		} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
 			throw new SemanticMarkupException(task);
