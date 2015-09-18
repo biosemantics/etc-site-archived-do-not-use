@@ -2,13 +2,13 @@ package edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.TaxonomyComparisonException;
-import edu.arizona.biosemantics.euler.Euler;
+import edu.arizona.biosemantics.euler2.EulerShow;
 
 public class InJvmInputVisualization implements InputVisualization {
 
 	private String inputFile;
 	private String workingDir;
-	private String outputDir;
+	private String outputDir; // This was used by the old Euler but is not now.
 	
 	private boolean executedSuccessfully = false;
 	
@@ -22,11 +22,9 @@ public class InJvmInputVisualization implements InputVisualization {
 	public Void call() throws TaxonomyComparisonException {
 		try {
 			log(LogLevel.DEBUG, "Running euler input viz: input " + inputFile + " ; workingDir " + workingDir + " ; output " + outputDir);
-			Euler euler = new Euler();
-			euler.setInputFile(inputFile);
+			EulerShow euler = new EulerShow();
 			euler.setWorkingDir(workingDir);
-			euler.setOutputDir(outputDir);
-			euler.setInputVisualization(true);
+			euler.setName("iv");
 			euler.run();
 			executedSuccessfully = true;
 		} catch(Throwable e) {
