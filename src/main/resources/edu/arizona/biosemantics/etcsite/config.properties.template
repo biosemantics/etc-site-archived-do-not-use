@@ -40,6 +40,7 @@ matrixgeneration_classpath= #Need extra classpath because of dependency conflict
 
 #Taxonomy Comparison
 maxActiveTaxonomyComparison=4
+taxonomyComparisonTask_maxRunningTimeMinutes=5
 
 #Captcha
 captcha_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/captcha

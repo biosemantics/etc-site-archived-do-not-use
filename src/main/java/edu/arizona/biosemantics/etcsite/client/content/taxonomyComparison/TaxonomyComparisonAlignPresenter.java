@@ -158,7 +158,12 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 					onSave();
 					TaskStageEnum failedTaskStageEnum = TaskStageEnum.valueOf(failedTask.getTaskStage().getTaskStage());
 					//if(failedTaskStageEnum.equals(TaskStageEnum.ANALYZE)) {
-						MessageBox alert = Alerter.failedToRunTaxonomyComparison(null);
+						MessageBox alert;
+						if (failedTask.isTooLong()){
+							alert = Alerter.taxonomyComparisonTookTooLong(null);
+						} else {
+							alert = Alerter.failedToRunTaxonomyComparison(null);
+						}
 						alert.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
 							@Override
 							public void onSelect(SelectEvent event) {
