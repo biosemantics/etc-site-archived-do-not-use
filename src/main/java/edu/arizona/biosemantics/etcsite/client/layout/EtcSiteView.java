@@ -14,6 +14,7 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -23,7 +24,7 @@ import com.sencha.gxt.widget.core.client.Composite;
 
 import edu.arizona.biosemantics.etcsite.client.common.ImageLabel;
 
-public class EtcSiteView extends Composite implements IEtcSiteView {
+public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResize {
 
 	private static EtcSiteUiBinder uiBinder = GWT.create(EtcSiteUiBinder.class);
 
@@ -237,6 +238,13 @@ public class EtcSiteView extends Composite implements IEtcSiteView {
 			taskManager.setImage("images/TaskManager_notification.gif");
 		else
 			taskManager.setImage("images/TaskManager.gif");
+	}
+
+	@Override
+	public void onResize() {
+		dockLayoutPanel.onResize();
+		contentPanel.onResize();
+		helpPanel.onResize();
 	}
 	
 }

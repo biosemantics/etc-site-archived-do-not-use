@@ -7,6 +7,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -15,7 +17,7 @@ import edu.arizona.biosemantics.etcsite.client.content.ontologize.IOntologizeBui
 import edu.arizona.biosemantics.oto2.ontologize.client.Ontologize;
 import edu.arizona.biosemantics.oto2.oto.client.Oto;
 
-public class OntologizeBuildView extends Composite implements IOntologizeBuildView {
+public class OntologizeBuildView extends Composite implements IOntologizeBuildView, RequiresResize {
 
 	private static OntologyBuildUiBinder uiBinder = GWT
 			.create(OntologyBuildUiBinder.class);
@@ -25,7 +27,7 @@ public class OntologizeBuildView extends Composite implements IOntologizeBuildVi
 	}
 	
 	@UiField
-	SimplePanel ontologizePanel;
+	SimpleLayoutPanel ontologizePanel;
 	
 	private Presenter presenter;
 	private Ontologize ontologize = new Ontologize();
@@ -62,6 +64,11 @@ public class OntologizeBuildView extends Composite implements IOntologizeBuildVi
 				Authentication.getInstance().getEmail() + ")");
 		
 		ontologize.loadCollection(uploadId, secret);
+	}
+
+	@Override
+	public void onResize() {
+		((RequiresResize)ontologize.getView()).onResize();
 	}
 	
 }
