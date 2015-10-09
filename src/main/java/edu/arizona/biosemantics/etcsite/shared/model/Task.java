@@ -15,6 +15,7 @@ public class Task implements Serializable, Comparable<Task> {
 	private boolean resumable;
 	private boolean complete;
 	private boolean failed;
+	private boolean tooLong;
 	private Date completed;
 	private Date created;
 	private Date failedTime;
@@ -22,7 +23,7 @@ public class Task implements Serializable, Comparable<Task> {
 	public Task() { }
 	
 	public Task(int id, String name, TaskType taskType, TaskStage taskStage, AbstractTaskConfiguration taskConfiguration, 
-			TinyUser user, boolean resumable, boolean complete, Date completed, boolean failed, Date failedTime, Date created) {
+			TinyUser user, boolean resumable, boolean complete, Date completed, boolean failed, Date failedTime, Date created, boolean tooLong) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -36,6 +37,7 @@ public class Task implements Serializable, Comparable<Task> {
 		this.failed = failed;
 		this.failedTime = failedTime;
 		this.created = created;
+		this.tooLong = tooLong;
 	}
 
 	public int getId() {
@@ -118,6 +120,14 @@ public class Task implements Serializable, Comparable<Task> {
 		this.failed = failed;
 	}
 	
+	public boolean isTooLong() {
+		return tooLong;
+	}
+
+	public void setTooLong(boolean tooLong) {
+		this.tooLong = tooLong;
+	}
+	
 	public Date getFailedTime() {
 		return failedTime;
 	}
@@ -156,5 +166,4 @@ public class Task implements Serializable, Comparable<Task> {
 			return true;
 		return false;
 	}
-
 }

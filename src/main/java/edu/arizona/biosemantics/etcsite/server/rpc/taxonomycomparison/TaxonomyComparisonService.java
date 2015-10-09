@@ -21,9 +21,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.ListeningScheduledExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
@@ -66,7 +70,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	//private IFileFormatService fileFormatService = new FileFormatService();
 	//private IFileAccessService fileAccessService = new FileAccessService();
 	private IFilePermissionService filePermissionService;
-	private ListeningExecutorService executorService;
+	private ListeningScheduledExecutorService executorService;
 	private Map<Integer, ListenableFuture<Void>> activeProcessFutures = new HashMap<Integer, ListenableFuture<Void>>();
 	private Map<Integer, MIRGeneration> activeProcess = new HashMap<Integer, MIRGeneration>();
 	private DAOManager daoManager;
@@ -79,7 +83,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		this.filePermissionService = filePermissionService;
 		this.daoManager = daoManager;
 		this.emailer = emailer;
-		executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(Configuration.maxActiveTaxonomyComparison));
+		executorService = MoreExecutors.listeningDecorator(Executors.newScheduledThreadPool(Configuration.maxActiveTaxonomyComparison));
 		File taxonomyComparisonCache = new File(Configuration.tempFiles, "taxonomyComparison");
 		if(!taxonomyComparisonCache.exists())
 			taxonomyComparisonCache.mkdirs();			
@@ -259,6 +263,12 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			//final MIRGeneration mirGeneration = new DummyMIRGeneration(eulerInputFile, outputDir);
 			activeProcess.put(config.getConfiguration().getId(), mirGeneration);
 			final ListenableFuture<Void> futureResult = executorService.submit(mirGeneration);
+			executorService.schedule(new Runnable() {
+				public void run() {
+					futureResult.cancel(true);
+					log(LogLevel.ERROR, "Input visualization took too long and was canceled.");
+				}
+			}, Configuration.taxonomyComparisonTask_maxRunningTimeMinutes, TimeUnit.MINUTES);
 			this.activeProcessFutures.put(config.getConfiguration().getId(), futureResult);
 			futureResult.addListener(new Runnable() {
 			    	public void run() {	
@@ -280,12 +290,14 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 				     		} else {
 				     			task.setFailed(true);
 								task.setFailedTime(new Date());
+								task.setTooLong(futureResult.isCancelled());
 								daoManager.getTaskDAO().updateTask(task);
 				     		}
 			     		} catch(Throwable t) {
 			     			log(LogLevel.ERROR, t.getMessage()+"\n"+org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(t));
 			     			task.setFailed(true);
 							task.setFailedTime(new Date());
+							
 							daoManager.getTaskDAO().updateTask(task);
 			     		}
 			     	}

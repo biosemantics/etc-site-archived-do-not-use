@@ -260,6 +260,7 @@ public class TaskDAO {
 		boolean failed = result.getBoolean(10);
 		Date failedTime = result.getTimestamp(11);
 		Date created = result.getTimestamp(12);
+		boolean tooLong = result.getBoolean(13);
 		TinyUser user = userDAO.getTinyUser(userId);
 		TaskStage taskStage = taskStageDAO.getTaskStage(taskStageId);
 		Configuration configuration = configurationDAO.getConfiguration(configurationId);
@@ -278,26 +279,27 @@ public class TaskDAO {
 			OntologizeTaskStage ontologizeTaskStage = taskStageDAO.getOntologizeTaskStage(taskStageId);
 			OntologizeConfiguration ontologizeConfiguration = ontologizeConfigurationDAO.getOntologizeConfiguration(configurationId);
 			return new Task(id, name, taskType, ontologizeTaskStage, ontologizeConfiguration, user, resumable, 
-					complete, completed, failed, failedTime, created);
+					complete, completed, failed, failedTime, created, tooLong);
 		case MATRIX_GENERATION:
 			MatrixGenerationTaskStage matrixGenerationTaskStage = taskStageDAO.getMatrixGenerationTaskStage(taskStageId);
 			MatrixGenerationConfiguration matrixGenerationConfiguration = matrixGenerationConfigurationDAO.getMatrixGenerationConfiguration(configurationId);
 			return new Task(id, name, taskType, matrixGenerationTaskStage, matrixGenerationConfiguration, user, 
-					resumable, complete, completed, failed, failedTime, created);
+					resumable, complete, completed, failed, failedTime, created, tooLong);
 		case SEMANTIC_MARKUP:
 			SemanticMarkupTaskStage semanticMarkupTaskStage = taskStageDAO.getSemanticMarkupTaskStage(taskStageId);
 			SemanticMarkupConfiguration semanticMarkupConfiguration = semanticMarkupConfigurationDAO.getSemanticMarkupConfiguration(configurationId);
 			return new Task(id, name, taskType, semanticMarkupTaskStage, semanticMarkupConfiguration, user, 
-					resumable, complete, completed, failed, failedTime, created);
+					resumable, complete, completed, failed, failedTime, created, tooLong);
 		case TAXONOMY_COMPARISON:
 			TaxonomyComparisonTaskStage taxonomyComparisonTaskStage = taskStageDAO.getTaxonomyComparisonTaskStage(taskStageId);
 			TaxonomyComparisonConfiguration taxonomyComparisonConfiguration = taxonomyComparisonConfigurationDAO.getTaxonomyComparisonConfiguration(configurationId);
 			return new Task(id, name, taskType, taxonomyComparisonTaskStage, taxonomyComparisonConfiguration, user, 
-					resumable, complete, completed, failed, failedTime, created);
+					resumable, complete, completed, failed, failedTime, created, tooLong);
 		case TREE_GENERATION:
 			TreeGenerationTaskStage treeGenerationTaskStage = taskStageDAO.getTreeGenerationTaskStage(taskStageId);
 			TreeGenerationConfiguration treeGenerationConfiguration = treeGenerationConfigurationDAO.getTreeGenerationConfiguration(configurationId);
-			return new Task(id, name, taskType, treeGenerationTaskStage, treeGenerationConfiguration, user, resumable, complete, completed, failed, failedTime, created);
+			return new Task(id, name, taskType, treeGenerationTaskStage, treeGenerationConfiguration, user, 
+					resumable, complete, completed, failed, failedTime, created, tooLong);
 		case VISUALIZATION:
 			break;
 		default:
@@ -309,8 +311,8 @@ public class TaskDAO {
 	public Task addTask(Task task) {
 		Task result = null;
 		try(Query query = new Query("INSERT INTO `etcsite_tasks` (`name`, `tasktype`, `taskstage`, `configuration`, "
-				+ "`user`, `resumable`, `complete`, `failed`) VALUES " +
-				"(?, ?, ?, ?, ?, ?, ?, ?)")) {
+				+ "`user`, `resumable`, `complete`, `failed`, `toolong`) VALUES " +
+				"(?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
 			query.setParameter(1, task.getName());
 			query.setParameter(2, task.getTaskType().getId());
 			query.setParameter(3, task.getTaskStage().getId());
@@ -319,6 +321,7 @@ public class TaskDAO {
 			query.setParameter(6, task.isResumable());
 			query.setParameter(7, task.isComplete());
 			query.setParameter(8, task.isFailed());
+			query.setParameter(9, task.isTooLong());
 			query.execute();
 			ResultSet generatedKeys = query.getGeneratedKeys();
 	        if (generatedKeys.next()) {
@@ -342,8 +345,9 @@ public class TaskDAO {
 		Date completed = task.getCompleted();
 		boolean failed = task.isFailed();
 		Date failedTime = task.getFailedTime();
+		boolean tooLong = task.isTooLong();
 		String sql = "UPDATE etcsite_tasks SET name = ?, tasktype = ?, taskstage=?, configuration=?, user=?, resumable=?, complete=?, "
-				+ "completed=?, failed=?, failedtime=? WHERE id = ?";
+				+ "completed=?, failed=?, failedtime=?, toolong=? WHERE id = ?";
 		try(Query query = new Query(sql)) {
 			query.setParameter(1, name);
 			query.setParameter(2, taskTypeId);
@@ -355,7 +359,9 @@ public class TaskDAO {
 			query.setParameter(8, (completed==null? null : new Timestamp(completed.getTime())));
 			query.setParameter(9, failed);
 			query.setParameter(10, (failedTime==null? null : new Timestamp(failedTime.getTime())));
-			query.setParameter(11, id);
+			query.setParameter(11, tooLong);
+			query.setParameter(12, id);
+			
 			
 			//Query query = new Query("UPDATE tasks SET name = '" + name + "',  tasktype=" + taskTypeId + ", taskstage=" + taskStageId + ", configuration=" + configurationId + 
 			//		", user=" + userId + ", resumable=" + resumable + ", complete=" + complete + ", completed=" + (completed==null? completed : completed.getTime()) + " WHERE id = " + id);

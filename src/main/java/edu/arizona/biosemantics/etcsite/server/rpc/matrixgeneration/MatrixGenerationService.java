@@ -510,21 +510,24 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			throw new MatrixGenerationException(task);
 		}
 		
-		String[] characters = new String[model.getTaxonMatrix().getCharacterCount() + 1];
+		int columns = model.getTaxonMatrix().getCharacterCount() + 1;
+		String[] characters = new String[columns];
 		List<Character> flatCharacters = model.getTaxonMatrix().getFlatCharacters();
-		int columns = flatCharacters.size() + 1;
 		characters[0] = "Taxa/Characters";
-		for(int i=0; i<flatCharacters.size(); i++) {
-			characters[i+1] = flatCharacters.get(i).toString();
+		int i=1;
+		for(Character character : flatCharacters) {
+			if(model.getTaxonMatrix().isVisiblyContained(character)) 
+				characters[i++] = character.toString();
 		}
 		try(CSVWriter csvWriter = new CSVWriter(new FileWriter(file))) {
 			csvWriter.writeNext(characters);
 			for(Taxon taxon : model.getTaxonMatrix().getFlatTaxa()) {
 				String[] line = new String[columns];
 				line[0] = taxon.getFullName();
-				for(int i=0; i<flatCharacters.size(); i++) {
-					Character character = flatCharacters.get(i);
-					line[i+1] = model.getTaxonMatrix().getValue(taxon, character).toString();
+				i = 1;
+				for(Character character : flatCharacters) {
+					if(model.getTaxonMatrix().isVisiblyContained(character)) 
+						line[i++] = model.getTaxonMatrix().getValue(taxon, character).toString();
 				}
 				csvWriter.writeNext(line);
 			}

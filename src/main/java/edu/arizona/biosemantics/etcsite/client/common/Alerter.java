@@ -329,6 +329,10 @@ public class Alerter {
 		return showAlert("Taxonomy Comparison", "Failed to run Taxonomy Comparison.", caught);
 	}
 	
+	public static MessageBox taxonomyComparisonTookTooLong(Throwable caught) {
+		return showAlert("Taxonomy Comparison", "Your task is taking too long to run. \nYou may have too few articulations, or you may have used \ntoo many conjuctions in your articulations. \nPlease review your articulations and try again.", caught);
+	}
+	
 	public static MessageBox failedToRunMirGeneration(Throwable caught) {
 		return showAlert("Taxonomy Comparison", "Failed to run Mir Generatino.", caught);
 	}

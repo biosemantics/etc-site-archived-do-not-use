@@ -205,6 +205,7 @@ CREATE TABLE IF NOT EXISTS `etcsite_tasks` (
   `failed` tinyint(1) DEFAULT NULL,
   `failedtime` timestamp NULL DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `toolong` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `taskstages_tasks_CON` (`taskstage`),
