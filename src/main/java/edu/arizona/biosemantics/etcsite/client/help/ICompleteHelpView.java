@@ -2,16 +2,14 @@ package edu.arizona.biosemantics.etcsite.client.help;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface IHelpView {
+public interface ICompleteHelpView extends IsWidget {
 
 	public interface Presenter {
+
+		void onGetStart();
 		
 	}
 
-	IsWidget asWidget();
-
 	void setPresenter(Presenter presenter);
-
-	void setContent(IsWidget content);
 	
 }

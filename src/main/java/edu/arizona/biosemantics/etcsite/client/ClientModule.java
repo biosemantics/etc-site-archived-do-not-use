@@ -303,7 +303,11 @@ public class ClientModule extends AbstractGinModule {
 		bind(IProcessingView.class).to(ProcessingView.class);
 		bind(IProcessingView.Presenter.class).to(ProcessingPresenter.class);
 		
-		bind(edu.arizona.biosemantics.etcsite.client.help.IHelpView.class).to(edu.arizona.biosemantics.etcsite.client.help.HelpView2.class);
+		bind(edu.arizona.biosemantics.etcsite.client.help.IHelpView.class).to(edu.arizona.biosemantics.etcsite.client.help.HelpView.class);
+		bind(edu.arizona.biosemantics.etcsite.client.help.IHelpSemanticMarkupView.class).to(edu.arizona.biosemantics.etcsite.client.help.HelpSemanticMarkupView.class);
+		bind(edu.arizona.biosemantics.etcsite.client.help.IHelpHomeView.class).to(edu.arizona.biosemantics.etcsite.client.help.HelpHomeView.class);
+		bind(edu.arizona.biosemantics.etcsite.client.help.ICompleteHelpView.class).to(edu.arizona.biosemantics.etcsite.client.help.CompleteHelpView.class);
+		
 		bind(ISampleView.class).to(SampleView.class).in(Singleton.class);
 		
 		//activites, places, eventbus

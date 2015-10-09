@@ -1,7 +1,6 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" 
-	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.common"
 	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container">
 	<!-- xmlns:ma="urn:import:edu.arizona.biosemantics.matrixreview.client" -->
 	<ui:style>
@@ -103,28 +102,16 @@
 		<g:north size='30'>
 			<g:HTMLPanel>
 				<div style="padding-left: 20px; padding-top: 5px; float: left">
-					<my:ImageLabel ui:field="menu" imagePath="images/Menu.gif" imageWidth="20px" imageHeight="20px" text="Menu" systemFolder="false"></my:ImageLabel>
-				</div>
-				
-				<div style="padding-right: 10px; padding-top: 5px; float: right">
-					<my:ImageLabel ui:field="help" imagePath="images/Help.gif" imageWidth="20px" imageHeight="20px" text="Help" systemFolder="false"></my:ImageLabel>
-				</div>
-				
-				<div style="padding-right: 10px; padding-top: 5px; float: right">
-					<my:ImageLabel ui:field="loginLogout" imagePath="images/login.gif" imageWidth="20px" imageHeight="20px" text="Login" systemFolder="false"></my:ImageLabel>
+					<b>Menu</b>
 				</div>
 			</g:HTMLPanel>
 		</g:north>
 		<g:east size='0'>
 			<g:VerticalPanel ui:field="eastPanel" styleName="{style.eastPanel} ">
-			    <g:Button ui:field = "openInNewWindowButton">open in new window</g:Button>
-					<g:ScrollPanel ui:field="helpPanel" styleName="{style.helpPanel}">
-					
-					</g:ScrollPanel>	
-				
+			    <!--  no east panel -->
 			</g:VerticalPanel>
 		</g:east>
-		<g:west size='0'>
+		<g:west size='200'>
 			<!-- FocusPanel for mouse events to animate menu, HTMLPanel doesn't support 
 					those -->
 			<g:FocusPanel ui:field="navigationPanel" styleName="{style.navigationPanel}">
@@ -132,12 +119,14 @@
 				<g:HTMLPanel>
 					<div style="">
 						<div>
-							<my:ImageLabel styleName="{style.navEntry}" ui:field="homeMenu" imagePath="images/Home.gif" imageWidth="20px" imageHeight="20px" text="Home" systemFolder="false"></my:ImageLabel>
+						    <b>Home</b>
+<!-- 							<my:ImageLabel styleName="{style.navEntry}" ui:field="homeMenu" imagePath="images/Home.gif" imageWidth="20px" imageHeight="20px" text="Home" systemFolder="false"></my:ImageLabel> -->
 						</div>
 						<div>
-							<my:ImageLabel styleName="{style.navEntry}" ui:field="about" imagePath="images/About.gif" imageWidth="20px" imageHeight="20px" text="About" systemFolder="false"></my:ImageLabel>
+						    <b>Text Capture</b>
+<!-- 							<my:ImageLabel styleName="{style.navEntry}" ui:field="about" imagePath="images/About.gif" imageWidth="20px" imageHeight="20px" text="About" systemFolder="false"></my:ImageLabel> -->
 						</div>
-						<div>
+						<!-- <div>
 							<my:ImageLabel styleName="{style.navEntry}" ui:field="news" imagePath="images/News.gif" imageWidth="20px" imageHeight="20px" text="News" systemFolder="false"></my:ImageLabel>
 						</div>					
 						<div>
@@ -148,10 +137,10 @@
 						</div>
 						<div>
 							<my:ImageLabel styleName="{style.navEntry}" ui:field="account" imagePath="images/Settings.gif" imageWidth="20px" imageHeight="20px" text="My Account" systemFolder="false"></my:ImageLabel>
-						</div>
+						</div> -->
 					</div>
 					<hr style="height:1px; border:none; color:#dddddd; background-color:#dddddd;" width="100%" noshade="noshade"></hr>
-					<div style="">
+					<!-- <div style="">
 						<div>
 							<my:ImageLabel styleName="{style.navEntry}" ui:field="textCapture" imagePath="images/SemanticMarkup.gif" imageWidth="20px" imageHeight="20px" text="Text Capture" systemFolder="false"></my:ImageLabel>
 						</div>
@@ -176,7 +165,7 @@
 						<div>
 							<my:ImageLabel styleName="{style.navEntry}" ui:field="sample" imagePath="images/Folder.gif" imageWidth="20px" imageHeight="20px" text="Sample" systemFolder="false"></my:ImageLabel>
 						</div>
-					</div>
+					</div> -->
 				</g:HTMLPanel>
 			</g:FocusPanel>
 		</g:west>
