@@ -13,6 +13,7 @@ import com.sencha.gxt.widget.core.client.Dialog;
 
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
+import edu.arizona.biosemantics.etcsitehelp.shared.help.Help;
 
 public class HelpDialog extends Dialog {
 	
@@ -23,15 +24,15 @@ public class HelpDialog extends Dialog {
 	private TextButton okButton = this.getButton(PredefinedButton.OK);
 	
 	private boolean dontShowPopup;
-	private String type;
+	private Help help;
 	private String title;
 	private HTML htmlString = new HTML("<HTML><Body>"
 			+ "<h4><B> For Instructions Click On</h4><Br> &"
 			+ "nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src = 'images/Help.gif' height = '35px' width = '35px' align='middle'/>"
 			+ "<Br> &nbsp;<h4><B> at Top Right Corner</Br></Br></BODY></HTML>");
 
-	public HelpDialog(String type, String title) {
-		this.type = type;
+	public HelpDialog(Help help, String title) {
+		this.help = help;
 		this.title = title;
 
 		layout();
@@ -60,7 +61,7 @@ public class HelpDialog extends Dialog {
 			public void onSelect(SelectEvent event) {
 				if (dontShowCheckBox.getValue()) {
 					userService.setProfile(Authentication.getInstance()
-							.getToken(), type, dontShowPopup,
+							.getToken(), help, dontShowPopup,
 							new AsyncCallback<Void>() {
 								@Override
 								public void onFailure(Throwable caught) {
@@ -78,7 +79,7 @@ public class HelpDialog extends Dialog {
 
 
 	public void showIfDesired() { 
-		userService.isProfile(Authentication.getInstance().getToken(), type,
+		userService.isProfile(Authentication.getInstance().getToken(), help,
 				new AsyncCallback<Boolean>() {
 					@Override
 					public void onSuccess(Boolean result) {

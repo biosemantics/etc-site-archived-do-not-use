@@ -6,7 +6,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.User;
+import edu.arizona.biosemantics.etcsite.shared.model.User.EmailPreference;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsitehelp.shared.help.Help;
 
 public interface IUserServiceAsync {
 
@@ -36,8 +38,12 @@ public interface IUserServiceAsync {
 
 	public void saveOTOAccount(AuthenticationToken token, String googleCode, AsyncCallback<edu.arizona.biosemantics.oto.model.User> callback);
 
-	public void isProfile(AuthenticationToken token,String type, AsyncCallback<Boolean> callback);
+	public void isProfile(AuthenticationToken token, Help help, AsyncCallback<Boolean> callback);
 	
-	public void setProfile(AuthenticationToken token,String type,boolean dontShowPopup,AsyncCallback<Void> callback);
+	public void setProfile(AuthenticationToken token, Help help, boolean dontShowPopup, AsyncCallback<Void> callback);
+	
+	public void isProfile(AuthenticationToken token, EmailPreference emailPreferences, AsyncCallback<Boolean> callback);
+	
+	public void setProfile(AuthenticationToken token, EmailPreference emailPreferences, boolean dontShowPopup, AsyncCallback<Void> callback);
 
 }

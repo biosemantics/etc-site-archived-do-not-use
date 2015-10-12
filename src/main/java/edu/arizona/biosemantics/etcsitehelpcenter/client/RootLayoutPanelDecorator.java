@@ -1,11 +1,11 @@
-package edu.arizona.biosemantics.etcsite.help;
+package edu.arizona.biosemantics.etcsitehelpcenter.client;
 
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.inject.Inject;
 
-import edu.arizona.biosemantics.etcsite.help.layout.IEtcSiteHelpView;
+import edu.arizona.biosemantics.etcsitehelpcenter.client.layout.IEtcSiteHelpView;
 
-public class HelpRootLayoutPanelDecorator {
+public class RootLayoutPanelDecorator {
 
 	private IEtcSiteHelpView etcSiteHelpView;
 	/*private MyActivityManager contentActivityManager;
@@ -13,7 +13,7 @@ public class HelpRootLayoutPanelDecorator {
 	private ActivityManager helpActivityManager;
 */
 	@Inject
-	public HelpRootLayoutPanelDecorator(IEtcSiteHelpView.Presenter etcSiteHelpPresenter 
+	public RootLayoutPanelDecorator(IEtcSiteHelpView.Presenter etcSiteHelpPresenter 
 			/*@Named("Content")MyActivityManager contentActivityManager,
 			@Named("Help")ActivityManager helpActivityManager,
 			PlaceHistoryHandler placeHistoryHandler*/) {

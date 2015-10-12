@@ -227,7 +227,7 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 
 	@Override
 	public void onOpenHelpInNewWindow() {
-		String href = Window.Location.createUrlBuilder().setPath("instructions.html").buildString(); 
+		String href = Window.Location.createUrlBuilder().setPath("etcsitehelpcenter.html").buildString(); 
 		Window.open(href, "_blank", "");
 		
 		//TODO redirect to a help servlet, that creates a "help html" page depending on the paramaeter that determines *which* help;

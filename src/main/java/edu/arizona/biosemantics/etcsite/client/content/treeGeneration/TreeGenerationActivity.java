@@ -14,12 +14,12 @@ import edu.arizona.biosemantics.etcsite.client.common.HelpDialog;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
-import edu.arizona.biosemantics.etcsite.shared.help.Help;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.treegeneration.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
+import edu.arizona.biosemantics.etcsitehelp.shared.help.Help;
 
 public class TreeGenerationActivity extends MyAbstractActivity {
 
@@ -28,7 +28,7 @@ public class TreeGenerationActivity extends MyAbstractActivity {
 	private ITreeGenerationInputView.Presenter inputPresenter;
 	private ITreeGenerationViewView.Presenter viewPresenter;
 	private AcceptsOneWidget panel;
-	private HelpDialog helpDialog = new HelpDialog(Help.Type.WELCOME.getKey(), "Key Generation");
+	private HelpDialog helpDialog = new HelpDialog(Help.WELCOME, "Key Generation");
 
 	@Inject
 	public TreeGenerationActivity(ITaskServiceAsync taskService,

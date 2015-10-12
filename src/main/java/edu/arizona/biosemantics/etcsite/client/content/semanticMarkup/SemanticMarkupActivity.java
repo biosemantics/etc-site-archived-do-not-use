@@ -15,12 +15,12 @@ import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupInputView.Presenter;
-import edu.arizona.biosemantics.etcsite.shared.help.Help;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
+import edu.arizona.biosemantics.etcsitehelp.shared.help.Help;
 @SuppressWarnings("unused")
 public class SemanticMarkupActivity extends MyAbstractActivity {
 
@@ -33,7 +33,7 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 	private ISemanticMarkupParseView.Presenter parsePresenter;
 	private ISemanticMarkupOutputView.Presenter outputPresenter;
 	private AcceptsOneWidget panel;
-	private HelpDialog helpDialog = new HelpDialog(Help.Type.WELCOME.getKey(), "Text Capture");
+	private HelpDialog helpDialog = new HelpDialog(Help.WELCOME, "Text Capture");
 
 	@Inject
 	public SemanticMarkupActivity(

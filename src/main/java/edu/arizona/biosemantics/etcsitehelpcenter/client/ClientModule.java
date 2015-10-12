@@ -1,13 +1,14 @@
-package edu.arizona.biosemantics.etcsite.help;
+package edu.arizona.biosemantics.etcsitehelpcenter.client;
 
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.inject.Singleton;
 
-import edu.arizona.biosemantics.etcsite.help.layout.EtcSiteHelpPresenter;
-import edu.arizona.biosemantics.etcsite.help.layout.EtcSiteHelpView;
-import edu.arizona.biosemantics.etcsite.help.layout.IEtcSiteHelpView;
+import edu.arizona.biosemantics.etcsitehelp.shared.rpc.help.IHelpServiceAsync;
+import edu.arizona.biosemantics.etcsitehelpcenter.client.layout.EtcSiteHelpPresenter;
+import edu.arizona.biosemantics.etcsitehelpcenter.client.layout.EtcSiteHelpView;
+import edu.arizona.biosemantics.etcsitehelpcenter.client.layout.IEtcSiteHelpView;
 
-public class HelpModule extends AbstractGinModule {
+public class ClientModule extends AbstractGinModule {
 	
 	//convention: don't set view as singleton, unless for good reason. 
 	//A view should in the general case be a widget, which can only be attached to one parent at a time.
@@ -39,6 +40,7 @@ public class HelpModule extends AbstractGinModule {
 		bind(EventBus.class).annotatedWith(Names.named("AnnotationReview")).to(SimpleEventBus.class).in(Singleton.class);
 		*/
 		//services
+		bind(IHelpServiceAsync.class).in(Singleton.class);
 		
 		//misc
 		

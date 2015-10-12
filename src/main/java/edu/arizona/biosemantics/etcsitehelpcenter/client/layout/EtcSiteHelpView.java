@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.help.layout;
+package edu.arizona.biosemantics.etcsitehelpcenter.client.layout;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -13,9 +13,9 @@ import com.sencha.gxt.widget.core.client.Composite;
 
 public class EtcSiteHelpView extends Composite implements IEtcSiteHelpView {
 
-	private static EtcSiteHelpUiBinder uiBinder = GWT.create(EtcSiteHelpUiBinder.class);
+	private static CompleteHelpUiBinder uiBinder = GWT.create(CompleteHelpUiBinder.class);
 
-	interface EtcSiteHelpUiBinder extends UiBinder<Widget, EtcSiteHelpView> {
+	interface CompleteHelpUiBinder extends UiBinder<Widget, EtcSiteHelpView> {
 	}
 	
 	

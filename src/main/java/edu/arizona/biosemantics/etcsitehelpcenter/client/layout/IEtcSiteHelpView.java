@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.help.layout;
+package edu.arizona.biosemantics.etcsitehelpcenter.client.layout;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
