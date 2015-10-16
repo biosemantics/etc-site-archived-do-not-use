@@ -24,7 +24,7 @@ import edu.arizona.biosemantics.etcsite.server.db.Query.QueryException;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.TinyUser;
 import edu.arizona.biosemantics.etcsite.shared.model.User;
-import edu.arizona.biosemantics.etcsite.shared.model.User.EmailPreferences;
+import edu.arizona.biosemantics.etcsite.shared.model.User.EmailPreference;
 
 public class UserDAO {
 	

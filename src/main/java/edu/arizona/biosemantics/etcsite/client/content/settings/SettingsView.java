@@ -28,7 +28,7 @@ import com.sencha.gxt.widget.core.client.form.Radio;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
-import edu.arizona.biosemantics.etcsite.shared.model.User.EmailPreferences;
+import edu.arizona.biosemantics.etcsite.shared.model.User.EmailPreference;
 
 public class SettingsView extends Composite implements ISettingsView {
 
@@ -404,10 +404,10 @@ public class SettingsView extends Composite implements ISettingsView {
 			semanticMarkupEmail.setValue(true);
 			taxonomyComparisonEmail.setValue(true);
 		} else {
-			matrixGenerationEmail.setValue(user.getProfileValue(EmailPreferences.MATRIX_GENERATION.getKey()));
-			treeGenerationEmail.setValue(user.getProfileValue(EmailPreferences.TREE_GENERATION.getKey()));
-			semanticMarkupEmail.setValue(user.getProfileValue(EmailPreferences.TEXT_CAPTURE.getKey()));
-			taxonomyComparisonEmail.setValue(user.getProfileValue(EmailPreferences.TAXONOMY_COMPARISON.getKey()));
+			matrixGenerationEmail.setValue(user.getProfileValue(EmailPreference.MATRIX_GENERATION.getKey()));
+			treeGenerationEmail.setValue(user.getProfileValue(EmailPreference.TREE_GENERATION.getKey()));
+			semanticMarkupEmail.setValue(user.getProfileValue(EmailPreference.TEXT_CAPTURE.getKey()));
+			taxonomyComparisonEmail.setValue(user.getProfileValue(EmailPreference.TAXONOMY_COMPARISON.getKey()));
 		}
 
 		if (user.getOtoAccountEmail() != null
@@ -456,13 +456,13 @@ public class SettingsView extends Composite implements ISettingsView {
 		user.setEmail(email.getText());
 		user.setFirstName(firstName.getText());
 		user.setLastName(lastName.getText());		
-		user.setProfileValue(EmailPreferences.MATRIX_GENERATION.getKey()
+		user.setProfileValue(EmailPreference.MATRIX_GENERATION.getKey()
 				.toString(), matrixGenerationEmail.getValue());
-		user.setProfileValue(EmailPreferences.TEXT_CAPTURE.getKey().toString(),
+		user.setProfileValue(EmailPreference.TEXT_CAPTURE.getKey().toString(),
 				semanticMarkupEmail.getValue());
-		user.setProfileValue(EmailPreferences.TAXONOMY_COMPARISON.getKey()
+		user.setProfileValue(EmailPreference.TAXONOMY_COMPARISON.getKey()
 				.toString(), taxonomyComparisonEmail.getValue());
-		user.setProfileValue(EmailPreferences.TREE_GENERATION.getKey()
+		user.setProfileValue(EmailPreference.TREE_GENERATION.getKey()
 				.toString(), treeGenerationEmail.getValue());
 		return user;
 	}

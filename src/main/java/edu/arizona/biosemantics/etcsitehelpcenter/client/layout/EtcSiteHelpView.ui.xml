@@ -1,0 +1,204 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" 
+	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container">
+	<!-- xmlns:ma="urn:import:edu.arizona.biosemantics.matrixreview.client" -->
+	<ui:style>
+		.headerPanel {
+		/*display: none; only for while loading*/
+		/*background-color:green; */
+		}
+		.top {
+		/*background-image: url(images/Header.gif); */
+		background-size: 100% 100%;
+		/* width: 100%; */
+		height: 30px;
+		}
+		.etcLogo {
+		background-image: url('images/ETCLogo.gif');
+		background-size: 100% 100%;
+		height: 73px;
+		width: 500px;
+		position: absolute;
+		top: 50px;
+		left: 50%;
+		margin-left: -250px;
+		}
+		.menu {
+
+		}
+
+		.scrollPanel {
+
+		}
+
+		.contentPanel {
+			padding-top:20px;
+			/*border: #dddddd solid 1px; removed menu from content border upon Hongs request */
+		}
+
+		.footerPanel {
+		background-image:url('images/Footer.gif');
+		background-size: 100% 100%;
+		width: 100%;
+		height:80px;
+		}
+		.footerText {
+		position:absolute;
+		left:50%;
+		margin-left: -450px;
+		top:10px;
+		}
+		.collaboratorsText {
+		position:absolute;
+		top: 25px;
+		left:50%;
+		margin-left: -120px;
+		}
+		.footerLogo1 {
+		background-image:url('images/CharaparserLogo.gif');
+		background-size: 100% 100%;
+		width: 254px;
+		height: 54px;
+		position:absolute;
+		top:5px;
+		left:50%;
+		margin-left: -30px;
+		}
+		.footerLogo2 {
+		background-image:url('images/CharaparserLogo.gif');
+		background-size: 100% 100%;
+		width: 254px;
+		height: 54px;
+		position:absolute;
+		top:5px;
+		left:50%;
+		margin-left: 210px;
+		}
+		.helpPanel {
+			padding-top:10px;
+		}
+		.eastPanel {
+			padding-top:20px;
+			padding-right:20px;
+			padding-left:20px;
+			padding-bottom:20px;
+			width: 100%;
+		}
+		.navigationPanel {
+		}
+		.navEntry {
+			padding-top:20px;
+			padding-left:20px;
+			cursor:pointer;
+		}
+		.helpButton{
+	width:100px;
+
+	}
+	</ui:style>
+
+	<g:DockLayoutPanel unit='PX' ui:field='dockLayoutPanel'>
+		<g:north size='30'>
+			<g:HTMLPanel>
+				<div style="padding-left: 20px; padding-top: 5px; float: left">
+					<b>Menu</b>
+				</div>
+			</g:HTMLPanel>
+		</g:north>
+		<g:east size='0'>
+			<g:VerticalPanel ui:field="eastPanel" styleName="{style.eastPanel} ">
+			    <!--  no east panel -->
+			</g:VerticalPanel>
+		</g:east>
+		<g:west size='200'>
+			<!-- FocusPanel for mouse events to animate menu, HTMLPanel doesn't support 
+					those -->
+			<g:FocusPanel ui:field="navigationPanel" styleName="{style.navigationPanel}">
+				<!-- HTMLPanel for multiple child widgets html-like layed out -->
+				<g:HTMLPanel>
+					<div style="">
+						<div>
+						    <b>Home</b>
+<!-- 							<my:ImageLabel styleName="{style.navEntry}" ui:field="homeMenu" imagePath="images/Home.gif" imageWidth="20px" imageHeight="20px" text="Home" systemFolder="false"></my:ImageLabel> -->
+						</div>
+						<div>
+						    <b>Text Capture</b>
+<!-- 							<my:ImageLabel styleName="{style.navEntry}" ui:field="about" imagePath="images/About.gif" imageWidth="20px" imageHeight="20px" text="About" systemFolder="false"></my:ImageLabel> -->
+						</div>
+						<!-- <div>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="news" imagePath="images/News.gif" imageWidth="20px" imageHeight="20px" text="News" systemFolder="false"></my:ImageLabel>
+						</div>					
+						<div>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="taskManager" imagePath="images/TaskManager.gif" imageWidth="20px" imageHeight="20px" text="Task Manager" systemFolder="false"></my:ImageLabel>
+						</div>
+						<div>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="fileManager" imagePath="images/FileManager.gif" imageWidth="20px" imageHeight="20px" text="File Manager" systemFolder="false"></my:ImageLabel>
+						</div>
+						<div>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="account" imagePath="images/Settings.gif" imageWidth="20px" imageHeight="20px" text="My Account" systemFolder="false"></my:ImageLabel>
+						</div> -->
+					</div>
+					<hr style="height:1px; border:none; color:#dddddd; background-color:#dddddd;" width="100%" noshade="noshade"></hr>
+					<!-- <div style="">
+						<div>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="textCapture" imagePath="images/SemanticMarkup.gif" imageWidth="20px" imageHeight="20px" text="Text Capture" systemFolder="false"></my:ImageLabel>
+						</div>
+						<div>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="ontologize" imagePath="images/Ontologize.gif" imageWidth="20px" imageHeight="20px" text="Ontology Building" systemFolder="false"></my:ImageLabel>
+						</div>
+						<div>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="matrixGeneration" imagePath="images/MatrixGeneration.gif" imageWidth="20px" imageHeight="20px" text="Matrix Generation" systemFolder="false"></my:ImageLabel>
+						</div>
+						<div>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="treeGeneration" imagePath="images/TreeGeneration.gif" imageWidth="20px" imageHeight="20px" text="Key Generation" systemFolder="false"></my:ImageLabel>
+						</div>
+						<div>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="taxonomyComparison" imagePath="images/TaxonomyComparison.gif" imageWidth="20px" imageHeight="20px" text="Taxonomy Comparison" systemFolder="false"></my:ImageLabel>
+						</div>
+						<div>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="visualization" imagePath="images/Visualization_unselected.gif" imageWidth="20px" imageHeight="20px" text="Visualization" systemFolder="false"></my:ImageLabel>
+						</div>
+					</div>
+					<hr style="height:1px; border:none; color:#dddddd; background-color:#dddddd;" width="100%" noshade="noshade"></hr>
+					<div style="">
+						<div>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="sample" imagePath="images/Folder.gif" imageWidth="20px" imageHeight="20px" text="Sample" systemFolder="false"></my:ImageLabel>
+						</div>
+					</div> -->
+				</g:HTMLPanel>
+			</g:FocusPanel>
+		</g:west>
+		<g:center>
+			<!-- content widget will be added to contentPanel -->
+			<!-- Since the integration of MatrixReviewView (GXT-based), ScrollPanel can't be inserted at this location anymore because it 
+			break the sizing of the grid. 
+			Appears to be somewhat related to: 
+			- http://www.sencha.com/forum/showthread.php?264676-Sizing-issues-using-GXT-widgets-in-existing-GWT-code-base 
+			- http://stackoverflow.com/questions/15283402/gxt-grid-in-contentpanel-messes-up-borderlayout
+			
+			Because of this, each content widget is itself responsible to wrap itself in a scrollpanel if necessary
+			-->
+			<!-- <g:ScrollPanel styleName="{style.scrollPanel}" ui:field="contentScrollPanel"> -->
+			<g:SimpleLayoutPanel styleName="{style.contentPanel}" ui:field="contentPanel">
+				<!-- <ma:MatrixReviewView ui:field="matrix"></ma:MatrixReviewView> -->
+			</g:SimpleLayoutPanel>
+			<!-- </g:ScrollPanel> -->
+		</g:center>
+		<g:south size='0'>
+			<!-- the footer in a simple panel -->
+			<g:HTMLPanel styleName="{style.footerPanel}">
+				<div class="{style.footerText}">
+					School of Information Resources and Library Science
+					<br />
+					1515 East First Street
+					<br />
+					Tucson, AZ 85719
+				</div>
+				<div class="{style.collaboratorsText}">Collaborators:</div>
+				<div class="{style.footerLogo1}"></div>
+				<div class="{style.footerLogo2}"></div>
+			</g:HTMLPanel>
+		</g:south>
+	</g:DockLayoutPanel>
+</ui:UiBinder> 

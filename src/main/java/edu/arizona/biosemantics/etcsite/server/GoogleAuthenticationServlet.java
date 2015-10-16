@@ -22,7 +22,6 @@ import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
 import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsPlace;
 import edu.arizona.biosemantics.etcsite.server.rpc.auth.AuthenticationService;
 import edu.arizona.biosemantics.etcsite.server.rpc.user.UserService;
-import edu.arizona.biosemantics.etcsite.shared.help.Help;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.CreateOTOAccountException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;

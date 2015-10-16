@@ -14,13 +14,13 @@ import edu.arizona.biosemantics.etcsite.client.common.HelpDialog;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
-import edu.arizona.biosemantics.etcsite.shared.help.Help;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonServiceAsync;
+import edu.arizona.biosemantics.etcsitehelp.shared.help.Help;
 import edu.arizona.biosemantics.euler.alignment.client.event.model.LoadModelEvent;
 import edu.arizona.biosemantics.euler.alignment.shared.model.Model;
 
@@ -35,7 +35,7 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 	private TaskStageEnum currentTaskStage;
 	private Model currentModel;
 	private Task currentTask;
-	private HelpDialog helpDialog = new HelpDialog(Help.Type.WELCOME.getKey(), "Taxonomy Comparison");
+	private HelpDialog helpDialog = new HelpDialog(Help.WELCOME, "Taxonomy Comparison");
 
 	@Inject
 	public TaxonomyComparisonActivity(ITaskServiceAsync taskService, 

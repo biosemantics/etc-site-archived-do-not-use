@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class User implements Serializable {
 
-	public static enum EmailPreferences {
+	public static enum EmailPreference {
 		TEXT_CAPTURE, MATRIX_GENERATION, TREE_GENERATION, TAXONOMY_COMPARISON, VISUALIZATION, PIPELINE;
 
 		public String getKey() {

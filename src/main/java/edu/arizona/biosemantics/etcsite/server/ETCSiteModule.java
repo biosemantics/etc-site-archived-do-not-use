@@ -43,11 +43,14 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyC
 import edu.arizona.biosemantics.etcsite.shared.rpc.treegeneration.ITreeGenerationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.visualization.IVisualizationService;
+import edu.arizona.biosemantics.etcsitehelp.server.rpc.help.HelpService;
+import edu.arizona.biosemantics.etcsitehelp.shared.rpc.help.IHelpService;
 
 public class ETCSiteModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
+		bind(HelpService.class).in(Scopes.SINGLETON);
 		bind(AuthenticationService.class).in(Scopes.SINGLETON);
 		bind(MatrixGenerationService.class).in(Scopes.SINGLETON);
 		bind(FileService.class).in(Scopes.SINGLETON);
@@ -77,11 +80,10 @@ public class ETCSiteModule extends AbstractModule {
 		bind(GoogleAuthenticationServlet.class).in(Scopes.SINGLETON);
 		bind(PDFServlet.class).in(Scopes.SINGLETON);
 		bind(DownloadServlet.class).in(Scopes.SINGLETON);
-		bind(HelpServlet.class).in(Scopes.SINGLETON);
 		bind(UploadServlet.class).in(Scopes.SINGLETON);
 		bind(RemoteLoggingServiceImpl.class).in(Scopes.SINGLETON);
 		
-		
+		bind(IHelpService.class).to(HelpService.class).in(Scopes.SINGLETON);
 		bind(IFileService.class).to(FileService.class).in(Scopes.SINGLETON);
 		bind(IAuthenticationService.class).to(AuthenticationService.class).in(Scopes.SINGLETON);
 		bind(IMatrixGenerationService.class).to(MatrixGenerationService.class).in(Scopes.SINGLETON);

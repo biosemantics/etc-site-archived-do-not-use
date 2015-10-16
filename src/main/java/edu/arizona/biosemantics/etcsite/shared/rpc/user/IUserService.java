@@ -8,9 +8,11 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.User;
+import edu.arizona.biosemantics.etcsite.shared.model.User.EmailPreference;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.CaptchaException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.RegistrationFailedException;
+import edu.arizona.biosemantics.etcsitehelp.shared.help.Help;
 
 @RemoteServiceRelativePath("user")
 public interface IUserService extends RemoteService {
@@ -39,7 +41,11 @@ public interface IUserService extends RemoteService {
 	
 	public edu.arizona.biosemantics.oto.model.User saveOTOAccount(AuthenticationToken token, String googleCode) throws UserNotFoundException, InvalidOTOAccountException, OTOException;
 	
-	public void setProfile(AuthenticationToken token,String type,boolean dontShowPopup);
-
-	public boolean isProfile(AuthenticationToken token, String type);
+	public boolean isProfile(AuthenticationToken token, Help help);
+	
+	public void setProfile(AuthenticationToken token, Help help, boolean dontShowPopup);
+	
+	public boolean isProfile(AuthenticationToken token, EmailPreference emailPreferences);
+	
+	public void setProfile(AuthenticationToken token, EmailPreference emailPreferences, boolean dontShowPopup);
 }

@@ -31,7 +31,7 @@ import com.sencha.gxt.widget.core.client.form.Radio;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
-import edu.arizona.biosemantics.etcsite.shared.model.User.EmailPreferences;
+import edu.arizona.biosemantics.etcsite.shared.model.User.EmailPreference;
 
 public class SampleView extends Composite implements ISampleView {
 

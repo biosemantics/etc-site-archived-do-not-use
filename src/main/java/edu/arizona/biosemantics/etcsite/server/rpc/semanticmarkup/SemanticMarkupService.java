@@ -883,7 +883,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	
 	private void sendFinishedLearningTermsEmail(Task task) {
 		User user = daoManager.getUserDAO().getUser(task.getUser().getId());
-		if (user.getProfileValue(User.EmailPreferences.TEXT_CAPTURE.getKey())) {
+		if (user.getProfileValue(User.EmailPreference.TEXT_CAPTURE.getKey())) {
 			String subject = Configuration.finishedSemanticMarkupLearnSubject.replace("<taskname>", task.getName());
 			String body = Configuration.finishedSemanticMarkupLearnBody.replace("<taskname>", task.getName());
 			emailer.sendEmail(user.getEmail(), subject, body);
@@ -892,7 +892,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	
 	private void sendFinishedParsingEmail(Task task) {
 		User user = daoManager.getUserDAO().getUser(task.getUser().getId());
-		if (user.getProfileValue(User.EmailPreferences.TEXT_CAPTURE.getKey())) {
+		if (user.getProfileValue(User.EmailPreference.TEXT_CAPTURE.getKey())) {
 			String subject = Configuration.finishedSemanticMarkupParseSubject.replace("<taskname>", task.getName());
 			String body = Configuration.finishedSemanticMarkupParseBody.replace("<taskname>", task.getName());
 			emailer.sendEmail(user.getEmail(), subject, body);

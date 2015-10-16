@@ -9,17 +9,16 @@ import com.google.inject.Inject;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
-import edu.arizona.biosemantics.etcsite.shared.help.Help;
-import edu.arizona.biosemantics.etcsite.shared.help.Help.Type;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.client.help.IHelpView.Presenter;
+import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 
 public class HelpSemanticMarkupActivity extends MyAbstractActivity implements Presenter {
 	
 	private IHelpView view;
+	private IHelpSemanticMarkupView semanticMarkupView;
 
 	@Inject
-	public HelpSemanticMarkupActivity(IHelpView view, 
+	public HelpSemanticMarkupActivity(IHelpView view, IHelpSemanticMarkupView semanticMarkupView,  
 			PlaceController placeController, 
 			IAuthenticationServiceAsync authenticationService, 
 			ILoginView.Presenter loginPresenter, 
@@ -27,12 +26,13 @@ public class HelpSemanticMarkupActivity extends MyAbstractActivity implements Pr
 			IResetPasswordView.Presenter resetPasswordPresenter) {
 		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter);
 		this.view = view;
+		this.semanticMarkupView = semanticMarkupView;
 	}
 	
 	@Override
 	public void start(final AcceptsOneWidget panel, EventBus eventBus) {
 		view.setPresenter(this);
-		view.setContent(Help.getHelp(Type.TEXT_CAPTURE_INPUT));
+		view.setContent(semanticMarkupView.asWidget());
 		panel.setWidget(view.asWidget());
 	}
 

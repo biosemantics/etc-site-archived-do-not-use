@@ -1,0 +1,226 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout">
+	<ui:style>
+		.padding{
+			padding-top: 10px;
+			padding-bottom: 10px;
+		}
+		.header{
+			font-size: 24px;
+			font-weight: bold;
+			color: #339900;
+		}
+		.bioName{
+			font-size: 14px;
+			font-weight: bold;
+		}
+		.bioPosition{
+			font-style: italic;
+			padding-left: 4px;
+		}
+		.image {
+			width:100px;
+			height:100px;
+		}
+		.bold {
+			font-weight: bold;
+		}
+		.clickable {
+			cursor:pointer;
+		}
+	</ui:style>
+	
+	<g:ScrollPanel>
+	<lay:CenteredContentPanel>
+		<g:VerticalPanel>
+		    <g:Label styleName="{style.header}">About ETC Toolkit</g:Label>
+		    <g:Label>&nbsp;</g:Label>
+		    <g:HTMLPanel>
+		    <g:InlineLabel>The ETC toolbox consists of a set of software tools that can be used as a pipeline that takes clean textual morphological descriptions and outputs taxon-character matrices for taxon concept or phylogenetic analysis. The tools may also be used separately if their required input in the correct format is available. The tools are produced through a collaborative project (NSF DBI-1147266) between the University of Arizona and University of California at Davis and with collaboration from the project Next Generation Phenomics for the Tree of Life sponsored by NSF’s Assembling, Visualizing and Analysing the Tree of Life program (NSF DEB-1208567). For more information about the project, see </g:InlineLabel>
+		    <g:Anchor href="http://taxonconceptexplorer.org/pub/Main_Page" target="_blank">http://taxonconceptexplorer.org/pub/Main_Page.</g:Anchor>
+		    </g:HTMLPanel>
+
+		    <g:VerticalPanel styleName="{style.padding}">
+		    <g:InlineLabel styleName="{style.bold}">What is a taxon concept?</g:InlineLabel>    
+		    <g:Label>&nbsp;</g:Label>
+		    <g:InlineLabel>“A taxonomic [or taxon] concept is the underlying meaning, or referential extension, of a scientific name as stated by a particular author in a particular publication. It represents the author’s view of how the name is supposed to reach out to objects in nature” (Franz, 2008). In the simplest form, a taxon concept may be expressed as "taxon_name according to the_author". In a sense, a taxon concept attaches a meaning to a scientific name. The ETC project aims to provide a collection of software tools for biologists to explore the relationships among taxon concepts based on the physical characters of the taxa in question, however, each individual tool may also be used outside of the context of taxon concepts. </g:InlineLabel>
+		    </g:VerticalPanel>
+		    
+		     <g:VerticalPanel styleName="{style.padding}">
+		    <g:InlineLabel styleName="{style.bold}">How to start?</g:InlineLabel>  
+		    <g:FlowPanel>
+		    <g:InlineLabel>The&nbsp;</g:InlineLabel>
+		    <g:Anchor ui:field="getStartAnchor" styleName="{style.clickable}">Getting Started</g:Anchor>
+		     <g:InlineLabel>&nbsp;page contains helpful information for new users.</g:InlineLabel>
+		     </g:FlowPanel>
+		    </g:VerticalPanel>
+		    
+		    <g:Label text="&nbsp;"/>
+		    
+		    <g:HTMLPanel>
+		    
+		    <table style="width:100%">	    
+		    <tr>
+			    <td valign="top" style="width:50%">
+			    	<g:HTMLPanel>
+				   		<g:Label styleName="{style.header}" text="&nbsp;Developer Team"/>
+				   		
+						<hr noshade="noshade" width="110%"/>
+						<table style="padding:5px">
+							<tr>
+								<td> 
+									<g:Image url="images/staffthomas.jpg" styleName="{style.image}"/>
+								</td>
+								<td valign="top" style="padding-left:20px; padding-top:10px">
+									<table>
+										<tr><g:Label styleName="{style.bioName}" text="Thomas Rodenhausen"/></tr>
+										<tr><g:Label styleName="{style.bioPosition}" text="Lead Developer"/></tr>
+										<!-- <tr>&nbsp;</tr>
+										<tr><g:Label text="Bio goes here!"/></tr> -->
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td> 
+									<g:Image url="images/staffhong.jpg" styleName="{style.image}"/>
+								</td>
+								<td valign="top" style="padding-left:20px; padding-top:10px">
+									<table>
+										<tr><g:Label styleName="{style.bioName}" text="Hong Cui"/></tr>
+										<tr><g:Label styleName="{style.bioPosition}" text="Assistant Developer"/></tr>
+										<!-- <tr>&nbsp;</tr>
+										<tr><g:Label text="Bio goes here!"/></tr> -->
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td> 
+									<g:Image url="images/staffshizhuo.jpg" styleName="{style.image}"/>
+								</td>
+								<td valign="top" style="padding-left:20px; padding-top:10px">
+									<table>
+										<tr><g:Label styleName="{style.bioName}" text="Shizhuo Yu"/></tr>
+										<tr><g:Label styleName="{style.bioPosition}" text="Assistant Developer"/></tr>
+										<tr><g:Label styleName="{style.bioPosition}" text="PhD Student, University of California, Davis"/></tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+						
+						<g:Label styleName="{style.header}" text="&nbsp;Developer Team (Past)"/>
+						<hr noshade="noshade" width="110%"/>
+						<table style="padding:5px">
+							<tr>
+								<td> 
+									<g:Image url="images/staffelvis.jpg" styleName="{style.image}"/>
+								</td>
+								<td valign="top" style="padding-left:20px; padding-top:10px">
+									<table>
+										<tr><g:Label styleName="{style.bioName}" text="Elvis Hsin-Hui Wu"/></tr>
+										<tr><g:Label styleName="{style.bioPosition}" text="Assistant Developer"/></tr>
+										<!-- <tr>&nbsp;</tr>
+										<tr><g:Label text="Bio goes here!"/></tr> -->
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td> 
+									<g:Image url="images/stafffengqiong.jpg" styleName="{style.image}"/>
+								</td>
+								<td valign="top" style="padding-left:20px; padding-top:10px">
+									<table>
+										<tr><g:Label styleName="{style.bioName}" text="Fengqiong Huang"/></tr>
+										<tr><g:Label styleName="{style.bioPosition}" text="Developer"/></tr>
+										<!-- <tr>&nbsp;</tr>
+										<tr><g:Label text="Bio goes here!"/></tr> -->
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td> 
+									<g:Image url="images/staffandrew.jpg" styleName="{style.image}"/>
+								</td>
+								<td valign="top" style="padding-left:20px; padding-top:10px">
+									<table>
+										<tr><g:Label styleName="{style.bioName}" text="Andrew Stockton"/></tr>
+										<tr><g:Label styleName="{style.bioPosition}" text="Assistant Developer"/></tr>
+										<!-- <tr>&nbsp;</tr>
+										<tr><g:Label text="Bio goes here!"/></tr> -->
+									</table>
+								</td>
+							</tr>
+						</table>
+					</g:HTMLPanel>
+					
+				</td>
+				<td valign="top">
+			    	<g:HTMLPanel>
+				   		<g:Label styleName="{style.header}" text="&nbsp;&nbsp;Senior Personnel"/>
+					
+						<hr noshade="noshade" width="110%"/>
+						<table style="padding:5px">
+							<tr>
+								<td> 
+									<g:Image url="images/staffhong.jpg" styleName="{style.image}"/>
+								</td>
+								<td valign="top" style="padding-left:20px; padding-top:10px">
+									<table>
+										<tr><g:Label styleName="{style.bioName}" text="Hong Cui"/></tr>
+										<tr><g:Label styleName="{style.bioPosition}" text="PI"/></tr>
+										<tr><g:Label styleName="{style.bioPosition}" text="Associate Professor, University of Arizona"/></tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td> 
+									<g:Image url="images/staffbertram.jpg" styleName="{style.image}"/>
+								</td>
+								<td valign="top" style="padding-left:20px; padding-top:10px">
+									<table>
+										<tr><g:Label styleName="{style.bioName}" text="Bertram Ludaescher"/></tr>
+										<tr><g:Label styleName="{style.bioPosition}" text="Co-PI"/></tr>
+										<tr><g:Label styleName="{style.bioPosition}" text="Professor, University of Illinois (formerly University of California at Davis)"/></tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td> 
+									<g:Image url="images/staffjames.jpg" styleName="{style.image}"/>
+								</td>
+								<td valign="top" style="padding-left:20px; padding-top:10px">
+									<table>
+										<tr><g:Label styleName="{style.bioName}" text="James Macklin"/></tr>
+										<tr><g:Label styleName="{style.bioPosition}" text="Co-PI"/></tr>
+										<tr><g:Label styleName="{style.bioPosition}" text="Senior Research Scientist, Agriculture Agri-Food Canada"/></tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td> 
+									<g:Image url="images/staffrobert.jpg" styleName="{style.image}"/>
+								</td>
+								<td valign="top" style="padding-left:20px; padding-top:10px">
+									<table>
+										<tr><g:Label styleName="{style.bioName}" text="Robert A. Morris"/></tr>
+										<tr><g:Label styleName="{style.bioPosition}" text="Consultant"/></tr>
+										<tr><g:Label styleName="{style.bioPosition}" text="Professor Emeritus, University of Massachusetts-Boston"/></tr>
+									</table>
+								</td>
+							</tr>
+							
+						</table>
+					</g:HTMLPanel>
+					
+				</td>
+			</tr>
+			</table>
+				
+			</g:HTMLPanel>
+		    
+		</g:VerticalPanel>
+		</lay:CenteredContentPanel>
+		</g:ScrollPanel> 
+	
+</ui:UiBinder> 

@@ -1,6 +1,5 @@
 package edu.arizona.biosemantics.etcsite.server;
 
-//import com.google.gwt.logging.server.RemoteLoggingServiceImpl;
 import com.google.gwt.logging.server.RemoteLoggingServiceImpl;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -23,6 +22,7 @@ import edu.arizona.biosemantics.etcsite.server.rpc.treegeneration.TreeGeneration
 import edu.arizona.biosemantics.etcsite.server.rpc.user.UserService;
 import edu.arizona.biosemantics.etcsite.server.rpc.visualization.VisualizationService;
 import edu.arizona.biosemantics.etcsite.server.upload.UploadServlet;
+import edu.arizona.biosemantics.etcsitehelp.server.rpc.help.HelpService;
 
 public class GuiceServletConfig extends GuiceServletContextListener {
 
@@ -33,6 +33,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
 				-> Common pitfalls: for url-pattern help */
 			@Override
 			protected void configureServlets() {
+				serve("/help").with(HelpService.class);
 				serve("/etcsite/auth").with(AuthenticationService.class);
 				serve("/etcsite/file").with(FileService.class);
 				serve("/etcsite/fileAccess").with(FileAccessService.class);
@@ -61,7 +62,6 @@ public class GuiceServletConfig extends GuiceServletContextListener {
 				serve("/googleauth").with(GoogleAuthenticationServlet.class);
 				serve("*.gpdf").with(PDFServlet.class);
 				serve("*.dld").with(DownloadServlet.class);
-				serve("/help").with(HelpServlet.class);
 				serve("*.gupld").with(UploadServlet.class);
 				serve("/etcsite/logging").with(RemoteLoggingServiceImpl.class);
 			}

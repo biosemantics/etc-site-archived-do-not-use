@@ -117,20 +117,7 @@
 		</g:north>
 		<g:east size='0'>
 			<g:VerticalPanel ui:field="eastPanel" styleName="{style.eastPanel} ">
-				<g:cell horizontalAlignment="ALIGN_CENTER" verticalAlignment="ALIGN_MIDDLE">
-					<g:Button ui:field="helpButton" text="Open in new Window" styleName="{style.helpButton} " />
-				</g:cell>
-				<g:cell><g:HTML>&nbsp;</g:HTML> </g:cell>
-				<g:cell horizontalAlignment="ALIGN_CENTER" verticalAlignment="ALIGN_MIDDLE">
-					<g:Button ui:field="hlpInstructionsCategory" text="Short Instructions" styleName="{style.helpButton} "/>
-				</g:cell>
-				
-				<g:cell><g:HTML>&nbsp;</g:HTML> </g:cell>
-				<g:cell horizontalAlignment="ALIGN_CENTER" verticalAlignment="ALIGN_MIDDLE">
-					<g:Button ui:field="hlpInstructionsCategory2" text="Required fields" styleName="{style.helpButton} "/>
-				</g:cell>
-				
-				 
+			    <g:Button ui:field = "openInNewWindowButton">open in new window</g:Button>
 					<g:ScrollPanel ui:field="helpPanel" styleName="{style.helpPanel}">
 					
 					</g:ScrollPanel>	

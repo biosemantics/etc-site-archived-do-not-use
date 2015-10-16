@@ -4,20 +4,16 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.Composite;
@@ -30,6 +26,9 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 
 	interface EtcSiteUiBinder extends UiBinder<Widget, EtcSiteView> {
 	}
+	
+	@UiField
+	Button openInNewWindowButton;
 	
 	@UiField
 	VerticalPanel eastPanel;
@@ -132,12 +131,11 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 	
 	@UiHandler("help")
 	void onHelpClick(ClickEvent e) {
-		/* Disabled for now
 		Double size = dockLayoutPanel.getWidgetSize(eastPanel);
 		if(size == 400) 
 			setHelpSize(0, true);
 		else
-			setHelpSize(400, true);*/
+			setHelpSize(400, true);
 	}
 	
 	@UiHandler("homeMenu")
@@ -200,16 +198,17 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 		presenter.onVisualization();
 	}
 	
+	@UiHandler("openInNewWindowButton")
+	void onOpenClick(ClickEvent e){
+		presenter.onOpenHelpInNewWindow();
+	}
+	
 	@UiHandler("sample")
 	void onSampleInput1(ClickEvent e) {
 		presenter.onSample();
 	}
 	
-	@UiHandler("helpButton") 
-	void onHelpButtonClick(ClickEvent e) {
-		presenter.onOpenHelpInNewWindow();
-	}
-
+	
 	@Override
 	public void setLogin() {
 		loginLogout.setText("Login");

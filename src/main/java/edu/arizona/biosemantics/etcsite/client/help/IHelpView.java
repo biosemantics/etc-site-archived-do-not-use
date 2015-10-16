@@ -12,6 +12,6 @@ public interface IHelpView {
 
 	void setPresenter(Presenter presenter);
 
-	void setContent(String html);
+	void setContent(IsWidget content);
 	
 }
