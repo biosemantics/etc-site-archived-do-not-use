@@ -57,7 +57,13 @@ public class SemanticMarkupLearnPresenter implements ISemanticMarkupLearnView.Pr
 					Task failedTask = failedTasksEvent.getTasks().get(task.getId());
 					TaskStageEnum failedTaskStageEnum = TaskStageEnum.valueOf(failedTask.getTaskStage().getTaskStage());
 					if(failedTaskStageEnum.equals(TaskStageEnum.LEARN_TERMS)) {
-						MessageBox alert = Alerter.failedToLearn(null);
+						MessageBox alert;
+						if (failedTask.isTooLong()){
+							alert = Alerter.semanticMarkupTookTooLong(null);
+						} else {
+							alert = Alerter.failedToLearn(null);
+						}
+							
 						alert.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
 							@Override
 							public void onSelect(SelectEvent event) {

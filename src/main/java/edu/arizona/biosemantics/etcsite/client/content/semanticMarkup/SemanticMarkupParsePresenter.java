@@ -55,7 +55,12 @@ public class SemanticMarkupParsePresenter implements ISemanticMarkupParseView.Pr
 					Task failedTask = failedTasksEvent.getTasks().get(task.getId());
 					TaskStageEnum failedTaskStageEnum = TaskStageEnum.valueOf(failedTask.getTaskStage().getTaskStage());
 					if(failedTaskStageEnum.equals(TaskStageEnum.PARSE_TEXT)) {
-						MessageBox alert = Alerter.failedToParse(null);
+						MessageBox alert;
+						if (failedTask.isTooLong()){
+							alert = Alerter.semanticMarkupTookTooLong(null);
+						} else {
+							alert = Alerter.failedToParse(null);
+						}
 						alert.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
 							@Override
 							public void onSelect(SelectEvent event) {

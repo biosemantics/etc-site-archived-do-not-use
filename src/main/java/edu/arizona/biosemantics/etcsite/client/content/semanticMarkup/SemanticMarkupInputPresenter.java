@@ -1,23 +1,31 @@
 package edu.arizona.biosemantics.etcsite.client.content.semanticMarkup;
 
+import java.util.List;
+
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.Inject;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileImageLabelTreeItem;
 import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView;
+import edu.arizona.biosemantics.etcsite.client.common.files.ManagableFileTreePresenter;
 import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView.Presenter;
 import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePresenter.ISelectListener;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
+import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.Description;
 
 public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Presenter {
 
@@ -65,6 +73,31 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 			return;
 		}
 		
+		// Check to see if input is too big.
+		semanticMarkupService.shouldWarnUserLargeInput(Authentication.getInstance().getToken(), inputFile, new AsyncCallback<Boolean>() {
+			@Override
+			public void onSuccess(Boolean warnUser) {
+				if (warnUser){
+					final MessageBox box = Alerter.semanticMarkupWarnUserTooManyWords();
+					box.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
+						@Override
+						public void onSelect(SelectEvent event) {
+							startSemanticMarkup();
+						}
+					});
+				}
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+			}
+		});
+		
+		
+	}
+	
+	private void startSemanticMarkup(){
 		final MessageBox box = Alerter.startLoading();
 		semanticMarkupService.start(Authentication.getInstance().getToken(), 
 				view.getTaskName(), inputFile, view.getGlossaryName(), view.isEmptyGlossarySelected(), new AsyncCallback<Task>() {

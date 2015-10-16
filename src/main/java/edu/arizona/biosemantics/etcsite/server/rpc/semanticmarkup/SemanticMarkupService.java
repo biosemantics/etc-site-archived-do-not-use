@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.jdom2.Document;
@@ -34,6 +35,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.ListeningScheduledExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -99,11 +101,11 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	private ICollectionService collectionService;
 	private IFileAccessService fileAccessService;
 	private IFileService fileService;
-	private IFileFormatService fileFormatService;;
+	private IFileFormatService fileFormatService;
 	private IFilePermissionService filePermissionService;
 	private IUserService userService;
 	private BracketValidator bracketValidator = new BracketValidator();
-	private ListeningExecutorService executorService;
+	private ListeningScheduledExecutorService executorService;
 	private Map<Integer, ListenableFuture<LearnResult>> activeLearnFutures = new HashMap<Integer, ListenableFuture<LearnResult>>();
 	private Map<Integer, ListenableFuture<ParseResult>> activeParseFutures = new HashMap<Integer, ListenableFuture<ParseResult>>();
 	private Map<Integer, Learn> activeLearns = new HashMap<Integer, Learn>();
@@ -132,7 +134,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		this.otoCollectionService = otoCollectionService;
 		this.ontologizeCollectionService = ontologizeCollectionService;
 		this.otoSender = otoSender;
-		executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(Configuration.maxActiveSemanticMarkup));
+		executorService = MoreExecutors.listeningDecorator(Executors.newScheduledThreadPool(Configuration.maxActiveSemanticMarkup));
 	}
 	
 	@Override
@@ -142,6 +144,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	    log(LogLevel.ERROR, "Unexpected failure", t);
 	    super.doUnexpectedFailure(t);
 	}
+	
+	
 	
 	@Override
 	public Task start(AuthenticationToken authenticationToken, String taskName, String filePath, String taxonGroup, boolean useEmptyGlossary) throws SemanticMarkupException {
@@ -227,6 +231,13 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		return result;
 	}
 	
+	public static void main(String[] args) throws Exception {
+		final Learn learn = new InJvmLearn(new DAOManager(), null
+				, "Plant", false, 
+				"/home/biosemantics/workspace2015/etc-site/users/1/CoolFiles", "test" + ('a' + (int)(Math.random()*26)) + ('a' + (int)(Math.random()*26)), "", "");
+		learn.call();
+	}
+	
 	@Override
 	public LearnInvocation learn(final AuthenticationToken authenticationToken, final Task task) throws SemanticMarkupException {
 		String numberOfSentences = getNumberOfSentences();
@@ -257,9 +268,16 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			String bioportalUserId = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalUserId();
 			String bioportalAPIKey = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalAPIKey();
 			final Learn learn = new ExtraJvmLearn(daoManager, taxonGroup, useEmptyGlossary, input, tablePrefix, source, operator);
-			//final Learn learn = new InJvmLearn(taxonGroup, useEmptyGlossary, input, tablePrefix, source, operator);
+			//final Learn learn = new InJvmLearn(daoManager, fileService, taxonGroup, useEmptyGlossary, input, tablePrefix, source, operator);
 			activeLearns.put(config.getConfiguration().getId(), learn);
 			final ListenableFuture<LearnResult> futureResult = executorService.submit(learn);
+			executorService.schedule(new Runnable() {
+				public void run() {
+					futureResult.cancel(true);
+					log(LogLevel.ERROR,
+							"Semantic markup took too long and was canceled. (Learn step)");
+				}
+			}, Configuration.semanticMarkup_learnStep_maxRunningTimeMinutes, TimeUnit.MINUTES);
 			activeLearnFutures.put(config.getConfiguration().getId(), futureResult);
 			futureResult.addListener(new Runnable() {
 			     	public void run() {
@@ -299,6 +317,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				     		} else {
 				     			task.setFailed(true);
 								task.setFailedTime(new Date());
+								task.setTooLong(futureResult.isCancelled());
 								daoManager.getTaskDAO().updateTask(task);
 				     		}
 			     		} catch(Throwable t) {
@@ -354,6 +373,13 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			//final Parse parse = new InJvmParse(taxonGroup, useEmptyGlossary, input, tablePrefix, source, operator);
 			activeParses.put(config.getConfiguration().getId(), parse);
 			final ListenableFuture<ParseResult> futureResult = executorService.submit(parse);
+			executorService.schedule(new Runnable() {
+				public void run() {
+					futureResult.cancel(true);
+					log(LogLevel.ERROR,
+							"Semantic markup took too long and was canceled. (Parse step)");
+				}
+			}, Configuration.semanticMarkup_parseStep_maxRunningTimeMinutes, TimeUnit.MINUTES);
 			activeParseFutures.put(config.getConfiguration().getId(), futureResult);
 			futureResult.addListener(new Runnable() {
 				@Override
@@ -373,6 +399,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 						} else {
 							task.setFailed(true);
 							task.setFailedTime(new Date());
+							task.setTooLong(futureResult.isCancelled());
 							daoManager.getTaskDAO().updateTask(task);
 						}
 					} catch(Throwable t) {
@@ -1076,4 +1103,17 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		return result;
 	}
 
+	@Override
+	public boolean shouldWarnUserLargeInput(AuthenticationToken token, String inputFile) {
+		int numWords = 0;
+		
+		File inputDir = new File(inputFile);
+		for (File file: inputDir.listFiles()){
+			for (Description description : getDescriptions(token, file.getAbsolutePath())){
+				numWords += description.getContent().split(" ").length;
+			}
+		}
+		
+		return numWords > Configuration.semanticMarkup_numberOfWordsToWarnUser;
+	}
 }

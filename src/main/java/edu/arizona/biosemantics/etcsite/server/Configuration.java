@@ -45,6 +45,9 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.shared.Confi
 	public static String charaparser_xms;
 	public static String charaparser_xmx;
 	public static String charaparser_ontologies;
+	public static int semanticMarkup_numberOfWordsToWarnUser;
+	public static int semanticMarkup_learnStep_maxRunningTimeMinutes;
+	public static int semanticMarkup_parseStep_maxRunningTimeMinutes;
 	
 	/** Matrix Generation **/
 	public static String matrixGeneration_tempFileBase;
@@ -141,6 +144,9 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.shared.Confi
 			charaparser_xms = properties.getProperty("charaparser_xms");
 			charaparser_xmx = properties.getProperty("charaparser_xmx");
 			charaparser_ontologies = properties.getProperty("charaparser_ontologies");
+			semanticMarkup_numberOfWordsToWarnUser = Integer.valueOf(properties.getProperty("semanticMarkup_numberOfWordsToWarnUser"));
+			semanticMarkup_learnStep_maxRunningTimeMinutes = Integer.valueOf(properties.getProperty("semanticMarkup_learnStep_maxRunningTimeMinutes"));
+			semanticMarkup_parseStep_maxRunningTimeMinutes = Integer.valueOf(properties.getProperty("semanticMarkup_parseStep_maxRunningTimeMinutes"));
 			
 			matrixGeneration_tempFileBase = properties.getProperty("matrixGeneration_tempFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			maxActiveMatrixGeneration = Integer.parseInt(properties.getProperty("maxActiveMatrixGeneration"));

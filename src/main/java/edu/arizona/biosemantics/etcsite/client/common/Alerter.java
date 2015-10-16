@@ -280,9 +280,25 @@ public class Alerter {
 	public static MessageBox failedToGetTask(Throwable caught) {
 		return showAlert("Get Task", "Failed to get task.", caught);
 	}
+	
+	public static MessageBox semanticMarkupTooManyFilesWarning() {
+		return showConfirm("Semantic Markup", "Your input has more than <x> files. It is recommended that you remove some files and try again. You can try to run the task with this data, but there is no guarantee your task will finish.");
+	}
 
 	public static MessageBox failedToStartSemanticMarkup(Throwable caught) {
 		return showAlert("Start Text Capture", "Failed to start text capture.", caught);
+	}
+	
+	public static MessageBox semanticMarkupWarnUserTooManyWords() {
+		MessageBox box = new MessageBox("Semantic Markup", "Your task has too many words. You may try to run this task, but there is no guarantee that it will finish. Are you sure you want to continue?");
+        box.setPredefinedButtons(PredefinedButton.YES, PredefinedButton.CANCEL);
+        box.setIcon(MessageBox.ICONS.question());
+        box.show();
+        return box;
+	}
+	
+	public static MessageBox semanticMarkupTookTooLong(Throwable caught) {
+		return showAlert("Semantic Markup", "Your task is taking too long to run. Please check your data and try again.", caught);
 	}
 	
 	public static MessageBox failedToStartTreeGeneration(Throwable caught) {
