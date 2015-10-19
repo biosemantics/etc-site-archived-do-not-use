@@ -274,6 +274,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			executorService.schedule(new Runnable() {
 				public void run() {
 					futureResult.cancel(true);
+					learn.destroy();
 					log(LogLevel.ERROR,
 							"Semantic markup took too long and was canceled. (Learn step)");
 				}
@@ -315,12 +316,14 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 									}
 				     			}
 				     		} else {
+				     			learn.destroy();
 				     			task.setFailed(true);
 								task.setFailedTime(new Date());
 								task.setTooLong(futureResult.isCancelled());
 								daoManager.getTaskDAO().updateTask(task);
 				     		}
 			     		} catch(Throwable t) {
+			     			learn.destroy();
 				     		task.setFailed(true);
 							task.setFailedTime(new Date());
 							daoManager.getTaskDAO().updateTask(task);
@@ -376,6 +379,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			executorService.schedule(new Runnable() {
 				public void run() {
 					futureResult.cancel(true);
+					parse.destroy();
 					log(LogLevel.ERROR,
 							"Semantic markup took too long and was canceled. (Parse step)");
 				}
@@ -397,12 +401,14 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 								sendFinishedParsingEmail(task);	
 							}
 						} else {
+							parse.destroy();
 							task.setFailed(true);
 							task.setFailedTime(new Date());
 							task.setTooLong(futureResult.isCancelled());
 							daoManager.getTaskDAO().updateTask(task);
 						}
 					} catch(Throwable t) {
+						parse.destroy();
 			     		task.setFailed(true);
 						task.setFailedTime(new Date());
 						daoManager.getTaskDAO().updateTask(task);
