@@ -280,10 +280,6 @@ public class Alerter {
 	public static MessageBox failedToGetTask(Throwable caught) {
 		return showAlert("Get Task", "Failed to get task.", caught);
 	}
-	
-	public static MessageBox semanticMarkupTooManyFilesWarning() {
-		return showConfirm("Semantic Markup", "Your input has more than <x> files. It is recommended that you remove some files and try again. You can try to run the task with this data, but there is no guarantee your task will finish.");
-	}
 
 	public static MessageBox failedToStartSemanticMarkup(Throwable caught) {
 		return showAlert("Start Text Capture", "Failed to start text capture.", caught);
@@ -298,7 +294,7 @@ public class Alerter {
 	}
 	
 	public static MessageBox semanticMarkupTookTooLong(Throwable caught) {
-		return showAlert("Semantic Markup", "Your task is taking too long to run. Please check your data and try again.", caught);
+		return showAlert("Semantic Markup", "Your task took too long and was canceled. Please check your data and try again.", caught);
 	}
 	
 	public static MessageBox failedToStartTreeGeneration(Throwable caught) {
