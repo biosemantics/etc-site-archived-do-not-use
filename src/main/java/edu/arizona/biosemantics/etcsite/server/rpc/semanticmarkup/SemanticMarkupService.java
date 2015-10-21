@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.io.FileUtils;
 import org.jdom2.Document;
@@ -271,14 +272,20 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			//final Learn learn = new InJvmLearn(daoManager, fileService, taxonGroup, useEmptyGlossary, input, tablePrefix, source, operator);
 			activeLearns.put(config.getConfiguration().getId(), learn);
 			final ListenableFuture<LearnResult> futureResult = executorService.submit(learn);
-			executorService.schedule(new Runnable() {
-				public void run() {
-					futureResult.cancel(true);
-					learn.destroy();
-					log(LogLevel.ERROR,
-							"Semantic markup took too long and was canceled. (Learn step)");
-				}
-			}, Configuration.semanticMarkup_learnStep_maxRunningTimeMinutes, TimeUnit.MINUTES);
+			try {
+				futureResult.get(Configuration.semanticMarkup_learnStep_maxRunningTimeMinutes, TimeUnit.MINUTES);
+			} catch (InterruptedException e2) {
+				e2.printStackTrace();
+			} catch (ExecutionException e2) {
+				e2.printStackTrace();
+			} catch (TimeoutException e2) {
+				// Task took too long. 
+				futureResult.cancel(true);
+				learn.destroy();
+				log(LogLevel.ERROR,
+						"Semantic markup took too long and was canceled. (Learn step)");
+			}
+			
 			activeLearnFutures.put(config.getConfiguration().getId(), futureResult);
 			futureResult.addListener(new Runnable() {
 			     	public void run() {
@@ -376,14 +383,20 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			//final Parse parse = new InJvmParse(taxonGroup, useEmptyGlossary, input, tablePrefix, source, operator);
 			activeParses.put(config.getConfiguration().getId(), parse);
 			final ListenableFuture<ParseResult> futureResult = executorService.submit(parse);
-			executorService.schedule(new Runnable() {
-				public void run() {
-					futureResult.cancel(true);
-					parse.destroy();
-					log(LogLevel.ERROR,
-							"Semantic markup took too long and was canceled. (Parse step)");
-				}
-			}, Configuration.semanticMarkup_parseStep_maxRunningTimeMinutes, TimeUnit.MINUTES);
+			try {
+				futureResult.get(Configuration.semanticMarkup_parseStep_maxRunningTimeMinutes, TimeUnit.MINUTES);
+			} catch (InterruptedException e2) {
+				e2.printStackTrace();
+			} catch (ExecutionException e2) {
+				e2.printStackTrace();
+			} catch (TimeoutException e2) {
+				// Task took too long. 
+				futureResult.cancel(true);
+				parse.destroy();
+				log(LogLevel.ERROR,
+						"Semantic markup took too long and was canceled. (Parse step)");
+			}
+			
 			activeParseFutures.put(config.getConfiguration().getId(), futureResult);
 			futureResult.addListener(new Runnable() {
 				@Override
