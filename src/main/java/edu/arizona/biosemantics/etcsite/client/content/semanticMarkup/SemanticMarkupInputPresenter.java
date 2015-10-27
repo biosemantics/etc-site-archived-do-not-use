@@ -85,6 +85,8 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 							startSemanticMarkup();
 						}
 					});
+				} else {
+					startSemanticMarkup();
 				}
 			}
 
