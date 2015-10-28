@@ -10,7 +10,6 @@ import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.HelpDialog;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
@@ -28,7 +27,6 @@ public class TreeGenerationActivity extends MyAbstractActivity {
 	private ITreeGenerationInputView.Presenter inputPresenter;
 	private ITreeGenerationViewView.Presenter viewPresenter;
 	private AcceptsOneWidget panel;
-	private HelpDialog helpDialog = new HelpDialog(Help.WELCOME, "Key Generation");
 
 	@Inject
 	public TreeGenerationActivity(ITaskServiceAsync taskService,
@@ -51,7 +49,6 @@ public class TreeGenerationActivity extends MyAbstractActivity {
 	public void start(final AcceptsOneWidget panel, EventBus eventBus) {
 		this.panel = panel;
 		this.setStepWidget();
-		//helpDialog.show();
 	}
 
 	@Override

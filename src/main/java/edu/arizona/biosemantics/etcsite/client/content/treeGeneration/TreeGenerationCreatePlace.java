@@ -38,5 +38,9 @@ public class TreeGenerationCreatePlace extends TreeGenerationPlace {
 		}
 
 	}
+	@Override
+	public String toString(){
+		return "TreeGenerationCreatePlace";
+	}
 
 }

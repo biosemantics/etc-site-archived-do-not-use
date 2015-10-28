@@ -1,16 +1,23 @@
 package edu.arizona.biosemantics.etcsitehelpcenter.client.layout;
 
+import java.util.HashMap;
+
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.SimpleLayoutPanel;
+
+import edu.arizona.biosemantics.etcsitehelp.shared.help.Help;
+import edu.arizona.biosemantics.etcsitehelp.shared.help.HelpContent;
 
 public interface IEtcSiteHelpView extends IsWidget {
 
 	public interface Presenter {
 
 		IEtcSiteHelpView getView();
+		
+		void populateHelpContent(Help hepl);
 	}
 	
-	void setContent(IsWidget content);
 	void setPresenter(Presenter presenter);
-	SimpleLayoutPanel getContentContainer();
+	void addContent(JsArray<HelpContent> contents);
+
 }

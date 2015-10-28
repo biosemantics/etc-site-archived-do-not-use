@@ -1,7 +1,5 @@
 package edu.arizona.biosemantics.etcsite.client;
 
-import com.google.gwt.activity.shared.ActivityManager;
-import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.activity.shared.MyActivityManager;
 import com.google.gwt.activity.shared.MyActivityMapper;
 import com.google.gwt.event.shared.HandlerManager;
@@ -162,11 +160,12 @@ import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenera
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationViewView;
 import edu.arizona.biosemantics.etcsite.client.content.user.IUserSelectView;
 import edu.arizona.biosemantics.etcsite.client.content.user.IUsersView;
-import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectPresenter2;
 import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectView;
 import edu.arizona.biosemantics.etcsite.client.content.user.UsersPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.user.UsersView;
+import edu.arizona.biosemantics.etcsite.client.help.HelpPresenter;
+import edu.arizona.biosemantics.etcsite.client.help.IHelpView;
 import edu.arizona.biosemantics.etcsite.client.layout.ContentActivityManagerProvider;
 import edu.arizona.biosemantics.etcsite.client.layout.ContentActivityMapper;
 import edu.arizona.biosemantics.etcsite.client.layout.EtcSitePresenter;
@@ -192,6 +191,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyC
 import edu.arizona.biosemantics.etcsite.shared.rpc.treegeneration.ITreeGenerationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.visualization.IVisualizationServiceAsync;
+import edu.arizona.biosemantics.etcsitehelp.shared.rpc.help.IHelpServiceAsync;
 
 public class ClientModule extends AbstractGinModule {
 	
@@ -303,10 +303,8 @@ public class ClientModule extends AbstractGinModule {
 		bind(IProcessingView.class).to(ProcessingView.class);
 		bind(IProcessingView.Presenter.class).to(ProcessingPresenter.class);
 		
-		bind(edu.arizona.biosemantics.etcsite.client.help.IHelpView.class).to(edu.arizona.biosemantics.etcsite.client.help.HelpView.class);
-		bind(edu.arizona.biosemantics.etcsite.client.help.IHelpSemanticMarkupView.class).to(edu.arizona.biosemantics.etcsite.client.help.HelpSemanticMarkupView.class);
-		bind(edu.arizona.biosemantics.etcsite.client.help.IHelpHomeView.class).to(edu.arizona.biosemantics.etcsite.client.help.HelpHomeView.class);
-		bind(edu.arizona.biosemantics.etcsite.client.help.ICompleteHelpView.class).to(edu.arizona.biosemantics.etcsite.client.help.CompleteHelpView.class);
+		bind(edu.arizona.biosemantics.etcsite.client.help.IHelpView.class).to(edu.arizona.biosemantics.etcsite.client.help.HelpView.class).in(Singleton.class);
+		bind(IHelpView.Presenter.class).to(HelpPresenter.class).in(Singleton.class);
 		
 		bind(ISampleView.class).to(SampleView.class).in(Singleton.class);
 		
@@ -317,9 +315,9 @@ public class ClientModule extends AbstractGinModule {
 			to(ContentActivityMapper.class).in(Singleton.class);
 		bind(MyActivityManager.class).annotatedWith(Names.named("Content")).
 			toProvider(ContentActivityManagerProvider.class).in(Singleton.class);
-		bind(ActivityManager.class).annotatedWith(Names.named("Help")).
+		bind(MyActivityManager.class).annotatedWith(Names.named("Help")).
 			toProvider(HelpActivityManagerProvider.class).in(Singleton.class);
-		bind(ActivityMapper.class).annotatedWith(Names.named("Help")).
+		bind(MyActivityMapper.class).annotatedWith(Names.named("Help")).
 			to(HelpActivityMapper.class).in(Singleton.class);
 		bind(Place.class).annotatedWith(Names.named("DefaultPlace")).to(HomePlace.class);
 		
@@ -347,6 +345,7 @@ public class ClientModule extends AbstractGinModule {
 		bind(ITreeGenerationServiceAsync.class).in(Singleton.class);
 		bind(ITaxonomyComparisonServiceAsync.class).in(Singleton.class);
 		bind(IOntologizeServiceAsync.class).in(Singleton.class);
+		bind(IHelpServiceAsync.class).in(Singleton.class);
 		
 		//misc
 		bind(FilePathShortener.class).in(Singleton.class);

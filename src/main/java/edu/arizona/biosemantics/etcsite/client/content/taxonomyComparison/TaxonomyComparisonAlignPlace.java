@@ -32,5 +32,9 @@ public class TaxonomyComparisonAlignPlace extends TaxonomyComparisonPlace {
 		}
 
 	}
+	@Override
+	public String toString(){
+		return "TaxonomyComparisonAlignPlace";
+	}
 
 }

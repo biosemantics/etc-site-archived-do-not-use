@@ -42,6 +42,12 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
+		<repository>
+     		<id>sonatype</id>
+     		<url>http://oss.sonatype.org/content/repositories/snapshots</url>
+     		<snapshots><enabled>true</enabled></snapshots>
+     		<releases><enabled>false</enabled></releases>
+ 		</repository>
 	</repositories>
 
 	<!-- Created from archetype -->
@@ -453,6 +459,12 @@
 		  <artifactId>oto-model</artifactId>
 		  <version>0.0.3-SNAPSHOT</version>
 		  <classifier>sources</classifier>
+		</dependency>
+		<dependency>
+    		<groupId>org.gwtbootstrap3</groupId>
+    		<artifactId>gwtbootstrap3</artifactId>
+    		<version>0.9.1</version>
+    		<scope>provided</scope>
 		</dependency>
 	</dependencies>
 

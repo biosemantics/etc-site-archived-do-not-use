@@ -38,5 +38,8 @@ public class TaxonomyComparisonCreatePlace extends TaxonomyComparisonPlace {
 		}
 
 	}
-
+	@Override
+	public String toString(){
+		return "TaxonomyComparisonCreatePlace";
+	}
 }

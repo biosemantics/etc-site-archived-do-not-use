@@ -1,10 +1,15 @@
 package edu.arizona.biosemantics.etcsitehelpcenter.client.layout;
 
-import com.google.gwt.safehtml.shared.SafeHtml;
+import java.util.HashMap;
+
+import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsonUtils;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsitehelp.shared.help.Help;
+import edu.arizona.biosemantics.etcsitehelp.shared.help.HelpContent;
 import edu.arizona.biosemantics.etcsitehelp.shared.rpc.help.IHelpServiceAsync;
 
 public class EtcSiteHelpPresenter implements IEtcSiteHelpView.Presenter {
@@ -19,10 +24,73 @@ public class EtcSiteHelpPresenter implements IEtcSiteHelpView.Presenter {
 		this.view = view;
 		this.helpService = helpService;
 		view.setPresenter(this);
-		//this.placeController = placeController;
-		
-		//use help service to retrieve help contents
-		helpService.getHelp(Help.WELCOME, new AsyncCallback<SafeHtml>() {
+		String helpPlace = Window.Location.getParameter("HelpPlace");
+		if(helpPlace != null && helpPlace != ""){
+			populateHelpContent(getHelpOfPlace(helpPlace));
+		}else{
+			populateHelpContent(Help.GETTING_STARTED);
+		}
+	}
+	
+	private Help getHelpOfPlace(String helpPlace) {
+		switch(helpPlace){
+		case "HomePlace":
+		case "AboutPlace":
+		case "NewsPlace":
+		case "GettingStartedPlace":
+			return Help.GETTING_STARTED;
+		case "FileManagerPlace":
+			return Help.FILE_MANAGER;
+		case "TaskManagerPlace":
+			return Help.TASK_MANAGER;
+		case "SettingsPlace":
+			return Help.MY_ACCOUNT;
+		case "SemanticMarkupCreatePlace":
+		case "SemanticMarkupInputPlace":
+			return Help.TEXT_CAPTURE_INPUT;
+		case "SemanticMarkupLearnPlace":
+			return Help.TEXT_CAPTURE_LEARN;
+		case "SemanticMarkupParsePlace":
+			return Help.TEXT_CAPTURE_PARSE;
+		case "SemanticMarkupPreprocessPlace":
+			return Help.TEXT_CAPTURE_PREPROCESS;
+		case "SemanticMarkupReviewPlace":
+			return Help.TEXT_CAPTURE_REVIEW;
+		case "SemanticMarkupOutputPlace":
+			return Help.TEXT_CAPTURE_OUTPUT;
+		case "MatrixGenerationCreatePlace":
+		case "MatrixGenerationInputPlace":
+			return Help.MATRIX_GENERATION_INPUT;
+		case "MatrixGenerationProcessPlace":
+			return Help.MATRIX_GENERATION_PROCESS;
+		case "MatrixGenerationReviewPlace":
+			return Help.MATRIX_GENERATION_REVIEW;
+		case "MatrixGenerationOutputPlace":
+			return Help.MATRIX_GENERATION_OUTPUT;
+		case "OntologizeCreatePlace":
+		case "OntologizeInputPlace":
+			return Help.ONTOLOGY_BUILDING_INPUT;
+		case "OntologizeBuildPlace":
+			return Help.ONTOLOGY_BUILDING_BUILD;
+		case "OntologizeOutputPlace":
+			return Help.ONTOLOGY_BUILDING_OUTPUT;
+		case "TaxonomyComparisonCreatePlace":
+		case "TaxonomyComparisonInputPlace":
+			return Help.TAXONOMY_COMPARISON_INPUT;
+		case "TaxonomyComparisonAlignPlace":
+			return Help.TAXONOMY_COMPARISON_ALIGN;
+		case "TreeGenerationCreatePlace":
+		case "TreeGenerationInputPlace":
+			return Help.TREE_GENERATION_INPUT;
+		case "TreeGenerationViewPlace":
+			return Help.TREE_GENERATION_VIEW;
+		default:
+			return Help.GETTING_STARTED;
+		}
+	}
+
+	public void populateHelpContent(Help help){
+		helpService.getHelp(help, new AsyncCallback<String>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -30,14 +98,20 @@ public class EtcSiteHelpPresenter implements IEtcSiteHelpView.Presenter {
 			}
 
 			@Override
-			public void onSuccess(SafeHtml result) {
-				System.out.println(result.asString());
+			public void onSuccess(String result) {
+				setHelpContent(JsonUtils.<JsArray<HelpContent>>safeEval(result));
 			}
 			
 		});
 	}
 
 	
+	protected void setHelpContent(JsArray<HelpContent> contents) {
+		// TODO Auto-generated method stub
+		view.addContent(contents);
+	}
+
+
 	@Override
 	public IEtcSiteHelpView getView() {
 		return view;

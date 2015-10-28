@@ -18,5 +18,9 @@ public class TaskManagerPlace extends Place  {
 		}
 
 	}
+	@Override
+	public String toString(){
+		return "TaskManagerPlace";
+	}
 
 }

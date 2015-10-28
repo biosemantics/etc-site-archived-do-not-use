@@ -38,5 +38,8 @@ public class TaxonomyComparisonInputPlace extends TaxonomyComparisonPlace {
 		}
 
 	}
-
+	@Override
+	public String toString(){
+		return "TaxonomyComparisonInputPlace";
+	}
 }

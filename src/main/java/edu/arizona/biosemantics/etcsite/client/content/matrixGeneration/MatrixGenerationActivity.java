@@ -10,7 +10,6 @@ import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.HelpDialog;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
@@ -20,7 +19,6 @@ import edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageE
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
-import edu.arizona.biosemantics.etcsitehelp.shared.help.Help;
 import edu.arizona.biosemantics.matrixreview.client.event.LoadModelEvent;
 import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 
@@ -37,8 +35,7 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 	private TaskStageEnum currentTaskStage;
 	private Model currentModel;
 	private Task currentTask;
-	private HelpDialog helpDialog = new HelpDialog(Help.WELCOME, "Matrix Generation");
-
+	
 	@Inject
 	public MatrixGenerationActivity(ITaskServiceAsync taskService, 
 			IMatrixGenerationServiceAsync matrixGenerationService,
@@ -72,7 +69,6 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 	public void start(final AcceptsOneWidget panel, EventBus eventBus) {
 		this.panel = panel;
 		this.setStepWidget();
-		//helpDialog.showIfDesired();
 	}
 
 	@Override

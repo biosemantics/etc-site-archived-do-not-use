@@ -38,5 +38,8 @@ public class OntologizeCreatePlace extends OntologizePlace {
 		}
 
 	}
-
+	@Override
+	public String toString(){
+		return "OntologizeCreatePlace";
+	}
 }

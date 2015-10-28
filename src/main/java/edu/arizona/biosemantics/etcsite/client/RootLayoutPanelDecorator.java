@@ -1,6 +1,5 @@
 package edu.arizona.biosemantics.etcsite.client;
 
-import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.activity.shared.MyActivityManager;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -14,12 +13,12 @@ public class RootLayoutPanelDecorator {
 	private IEtcSiteView etcSiteView;
 	private MyActivityManager contentActivityManager;
 	private PlaceHistoryHandler placeHistoryHandler;
-	private ActivityManager helpActivityManager;
+	private MyActivityManager helpActivityManager;
 
 	@Inject
 	public RootLayoutPanelDecorator(IEtcSiteView.Presenter etcSitePresenter, 
 			@Named("Content")MyActivityManager contentActivityManager,
-			@Named("Help")ActivityManager helpActivityManager,
+			@Named("Help")MyActivityManager helpActivityManager,
 			PlaceHistoryHandler placeHistoryHandler) {
 		this.etcSiteView = etcSitePresenter.getView(); 
 		this.helpActivityManager = helpActivityManager;

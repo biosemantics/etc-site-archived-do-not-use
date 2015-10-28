@@ -5,21 +5,17 @@
 	xmlns:gxt="urn:import:com.sencha.gxt.widget.core.client"
     xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container">
 	
-	<ui:style>
-		.clickable {
-			cursor:pointer;
+	<ui:style type="edu.arizona.biosemantics.etcsite.client.help.HelpView.HelpStyle">
+		.subPanel{
+			padding: 5px;
 		}
-		.html {
-			width: 100%;
+		.helpPanel {
+			padding-top:5px;
 		}
 	</ui:style>
 	<ui:with type="com.sencha.gxt.widget.core.client.ContentPanel.ContentPanelAppearance" field="contentPanelAppearance" />
-	<g:VerticalPanel>
-	<g:Button ui:field = "openButton">Open in new window</g:Button>
-	<gxt:ContentPanel ui:field="panel" appearance="{contentPanelAppearance}" bodyBorder="false" headingText="Help/Instructions" pixelSize="360, 550" >
-	
-	    
-  </gxt:ContentPanel>
-  </g:VerticalPanel>
+	<gxt:ContentPanel ui:field="panel" appearance="{contentPanelAppearance}" bodyBorder="false" headingText="Help/Instructions">
+			    
+  	</gxt:ContentPanel>
 </ui:UiBinder> 
 	

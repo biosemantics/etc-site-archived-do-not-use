@@ -3,9 +3,7 @@ package edu.arizona.biosemantics.etcsite.client.content.home;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 
-import edu.arizona.biosemantics.etcsite.client.help.HelpHomePlace;
-
-public class HomePlace extends Place implements HelpHomePlace {
+public class HomePlace extends Place{
 
 	public static class Tokenizer implements PlaceTokenizer<HomePlace> {
 
@@ -21,4 +19,8 @@ public class HomePlace extends Place implements HelpHomePlace {
 
 	}
 	
+	@Override
+	public String toString(){
+		return "HomePlace";
+	}
 }
