@@ -231,12 +231,14 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				     		} else {
 				     			task.setFailed(true);
 								task.setFailedTime(new Date());
+								matrixGeneration.destroy();
 								daoManager.getTaskDAO().updateTask(task);
 				     		}
 			     		} catch(Throwable t) {
 			     			log(LogLevel.ERROR, t.getMessage()+"\n"+org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(t));
 			     			task.setFailed(true);
 							task.setFailedTime(new Date());
+							matrixGeneration.destroy();
 							daoManager.getTaskDAO().updateTask(task);
 			     		}
 			     	}
