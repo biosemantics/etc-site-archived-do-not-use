@@ -54,7 +54,12 @@ public class MatrixGenerationProcessPresenter implements IMatrixGenerationProces
 					Task failedTask = failedTasksEvent.getTasks().get(task.getId());
 					TaskStageEnum failedtaskStageEnum = TaskStageEnum.valueOf(failedTask.getTaskStage().getTaskStage());
 					if(failedtaskStageEnum.equals(TaskStageEnum.PROCESS)) {
-						MessageBox alert = Alerter.failedToGenerateMatrix(null);
+						MessageBox alert;
+						if (failedTask.isTooLong()){
+							alert = Alerter.matrixGenerationTookTooLong(null);
+						} else {
+							alert = Alerter.failedToGenerateMatrix(null);
+						}
 						alert.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
 							@Override
 							public void onSelect(SelectEvent event) {

@@ -55,6 +55,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.shared.Confi
 	public static String matrixgeneration_xms;
 	public static String matrixgeneration_xmx;
 	public static String matrixgeneration_classpath;
+	public static int matrixGeneration_maxRunningTimeMinutes;
 	
 	/** Taxonomy Comparison **/
 	public static int maxActiveTaxonomyComparison;
@@ -153,6 +154,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.shared.Confi
 			matrixgeneration_xms = properties.getProperty("matrixgeneration_xms");
 			matrixgeneration_xmx = properties.getProperty("matrixgeneration_xmx");
 			matrixgeneration_classpath = properties.getProperty("matrixgeneration_classpath");
+			matrixGeneration_maxRunningTimeMinutes = Integer.valueOf(properties.getProperty("matrixGeneration_maxRunningTimeMinutes"));
 			
 			maxActiveTaxonomyComparison = Integer.parseInt(properties.getProperty("maxActiveTaxonomyComparison"));
 			taxonomyComparisonTask_maxRunningTimeMinutes = Integer.parseInt(properties.getProperty("taxonomyComparisonTask_maxRunningTimeMinutes"));

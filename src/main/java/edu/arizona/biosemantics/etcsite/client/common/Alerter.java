@@ -58,7 +58,7 @@ public class Alerter {
 	}
 
 	public static MessageBox failedToCreateTaxonDescription(Throwable caught) {
-		return showAlert("Create Taxon Description", "Failed to create taxon description.", caught);
+		return showAlert("Create Taxon Description", "Failed to creatc taxon description.", caught);
 	}
 	
 	public static MessageBox failedToSendToOto(Throwable caught) {
@@ -295,6 +295,10 @@ public class Alerter {
 	
 	public static MessageBox semanticMarkupTookTooLong(Throwable caught) {
 		return showAlert("Semantic Markup", "Your task took too long and was canceled. Please check your data and try again.", caught);
+	}
+	
+	public static MessageBox matrixGenerationTookTooLong(Throwable caught) {
+		return showAlert("Matrix Generation", "Your task took too long and was canceled. Please check your data and try again.", caught);
 	}
 	
 	public static MessageBox failedToStartTreeGeneration(Throwable caught) {

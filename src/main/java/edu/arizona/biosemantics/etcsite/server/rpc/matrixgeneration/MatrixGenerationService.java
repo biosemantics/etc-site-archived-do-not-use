@@ -20,7 +20,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -210,7 +213,22 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			//final MatrixGeneration matrixGeneration = new InJvmMatrixGeneration(input, taxonGroup, outputFile, inheritValues, generateAbsentPresent, true);
 			activeProcess.put(config.getConfiguration().getId(), matrixGeneration);
 			final ListenableFuture<Void> futureResult = executorService.submit(matrixGeneration);
+			
 			this.activeProcessFutures.put(config.getConfiguration().getId(), futureResult);
+			try {
+				futureResult.get(Configuration.matrixGeneration_maxRunningTimeMinutes, TimeUnit.MINUTES);
+			} catch (InterruptedException e2) {
+				e2.printStackTrace();
+			} catch (ExecutionException e2) {
+				e2.printStackTrace();
+			} catch (TimeoutException e2) {
+				// Task took too long. 
+				futureResult.cancel(true);
+				matrixGeneration.destroy();
+				log(LogLevel.ERROR,
+						"Matrix generation took too long and was canceled.");
+			}
+			
 			futureResult.addListener(new Runnable() {
 			     	public void run() {	
 			     		try {
@@ -231,6 +249,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				     		} else {
 				     			task.setFailed(true);
 								task.setFailedTime(new Date());
+								task.setTooLong(futureResult.isCancelled());
 								matrixGeneration.destroy();
 								daoManager.getTaskDAO().updateTask(task);
 				     		}
