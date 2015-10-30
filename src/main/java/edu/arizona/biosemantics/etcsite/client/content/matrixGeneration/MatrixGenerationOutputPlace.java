@@ -32,5 +32,8 @@ public class MatrixGenerationOutputPlace extends MatrixGenerationPlace {
 		}
 
 	}
-
+	@Override
+	public String toString(){
+		return "MatrixGenerationOutputPlace";
+	}
 }

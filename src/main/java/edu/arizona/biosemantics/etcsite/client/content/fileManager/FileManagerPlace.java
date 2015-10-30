@@ -18,4 +18,9 @@ public class FileManagerPlace extends Place {
 		}
 
 	}
+	
+	@Override
+	public String toString(){
+		return "FileManagerPlace";
+	}
 }

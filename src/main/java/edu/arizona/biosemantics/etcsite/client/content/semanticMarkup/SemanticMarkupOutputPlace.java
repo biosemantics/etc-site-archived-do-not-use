@@ -33,5 +33,8 @@ public class SemanticMarkupOutputPlace extends SemanticMarkupPlace {
 		}
 
 	}
-
+	@Override
+	public String toString(){
+		return "SemanticMarkupOutputPlace";
+	}
 }

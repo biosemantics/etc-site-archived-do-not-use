@@ -38,5 +38,8 @@ public class TreeGenerationInputPlace extends TreeGenerationPlace {
 		}
 
 	}
-
+	@Override
+	public String toString(){
+		return "TreeGenerationInputPlace";
+	}
 }

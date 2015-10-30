@@ -32,5 +32,8 @@ public class OntologizeOutputPlace extends OntologizePlace {
 		}
 
 	}
-
+	@Override
+	public String toString(){
+		return "OntologizeOutputPlace";
+	}
 }

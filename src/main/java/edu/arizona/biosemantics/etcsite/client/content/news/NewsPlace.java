@@ -18,5 +18,8 @@ public class NewsPlace extends Place {
 		}
 
 	}
-
+	@Override
+	public String toString(){
+		return "NewsPlace";
+	}
 }

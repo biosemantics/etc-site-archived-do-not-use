@@ -10,17 +10,14 @@ import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.HelpDialog;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
-import edu.arizona.biosemantics.etcsite.client.content.ontologize.IOntologizeOutputView.Presenter;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.ontologize.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
-import edu.arizona.biosemantics.etcsitehelp.shared.help.Help;
 
 public class OntologizeActivity extends MyAbstractActivity {
 
@@ -30,7 +27,6 @@ public class OntologizeActivity extends MyAbstractActivity {
 	private IOntologizeBuildView.Presenter buildPresenter;
 	private IOntologizeOutputView.Presenter outputPresenter;
 	private AcceptsOneWidget panel;
-	private HelpDialog helpDialog = new HelpDialog(Help.WELCOME, "Ontology Building");
 
 	@Inject
 	public OntologizeActivity(ITaskServiceAsync taskService,
@@ -55,7 +51,6 @@ public class OntologizeActivity extends MyAbstractActivity {
 	public void start(final AcceptsOneWidget panel, EventBus eventBus) {
 		this.panel = panel;
 		this.setStepWidget();
-		//helpDialog.show();
 	}
 
 	@Override

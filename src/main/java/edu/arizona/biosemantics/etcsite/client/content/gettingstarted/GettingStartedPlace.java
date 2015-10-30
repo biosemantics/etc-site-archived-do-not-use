@@ -19,4 +19,9 @@ public class GettingStartedPlace extends Place {
 
 	}
 	
+	@Override
+	public String toString(){
+		return "GettingStartedPlace";
+	}
+	
 }

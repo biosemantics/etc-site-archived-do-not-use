@@ -37,4 +37,8 @@ public class MatrixGenerationCreatePlace extends MatrixGenerationPlace{
 
 	}
 	
+	@Override
+	public String toString(){
+		return "MatrixGenerationCreatePlace";
+	}
 }

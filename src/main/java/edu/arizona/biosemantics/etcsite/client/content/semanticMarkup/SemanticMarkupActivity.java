@@ -10,7 +10,6 @@ import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.HelpDialog;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
@@ -33,7 +32,6 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 	private ISemanticMarkupParseView.Presenter parsePresenter;
 	private ISemanticMarkupOutputView.Presenter outputPresenter;
 	private AcceptsOneWidget panel;
-	private HelpDialog helpDialog = new HelpDialog(Help.WELCOME, "Text Capture");
 
 	@Inject
 	public SemanticMarkupActivity(
@@ -65,7 +63,6 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 	public void start(final AcceptsOneWidget panel, EventBus eventBus) {
 		this.panel = panel;
 		this.setStepWidget();
-		//helpDialog.showIfDesired();
 	}
 	
 	@Override

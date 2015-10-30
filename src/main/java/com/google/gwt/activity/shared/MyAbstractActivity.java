@@ -1,17 +1,10 @@
 package com.google.gwt.activity.shared;
 
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import edu.arizona.biosemantics.etcsite.client.common.Alerter;
-import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
-import edu.arizona.biosemantics.etcsite.client.common.ILoginView.ILoginListener;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
-import edu.arizona.biosemantics.etcsite.client.common.IRegisterView.IRegisterListener;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
-import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView.IResetPasswordListener;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 
 public abstract class MyAbstractActivity implements MyActivity {

@@ -1,18 +1,20 @@
 package edu.arizona.biosemantics.etcsite.client.help;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.core.client.JsArray;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.ContentPanel.ContentPanelAppearance;
-import com.sencha.gxt.widget.core.client.Window;
+import com.sencha.gxt.widget.core.client.container.AccordionLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.AccordionLayoutContainer.AccordionLayoutAppearance;
+
+import edu.arizona.biosemantics.etcsitehelp.shared.help.HelpContent;
 
 public class HelpView extends Composite implements IHelpView {
 
@@ -20,14 +22,20 @@ public class HelpView extends Composite implements IHelpView {
 
 	interface HelpHomeViewUiBinder extends UiBinder<Widget, HelpView> {
 	}
+	
+	interface HelpStyle extends CssResource{
+		String subPanel();
+	}
 
 	private Presenter presenter;
 	
 	@UiField
 	ContentPanel panel;
 	
-	@UiField
-	Button openButton;
+	@UiField HelpStyle style;
+	
+	AccordionLayoutAppearance appearance;
+
 	
 	@UiFactory
 	public ContentPanel createContentPanel(ContentPanelAppearance appearance) {
@@ -35,7 +43,9 @@ public class HelpView extends Composite implements IHelpView {
 	}
 	
 	public HelpView() {
+		appearance = GWT.<AccordionLayoutAppearance> create(AccordionLayoutAppearance.class);
 		initWidget(uiBinder.createAndBindUi(this));
+		
 	}
 
 	@Override
@@ -43,21 +53,24 @@ public class HelpView extends Composite implements IHelpView {
 		this.presenter = presenter;
 	}
 	
-	@UiHandler("openButton")
-	public void onOpenButton(ClickEvent e){
-		Window newWindow = new Window();
-		newWindow.setMaximizable(true);
-		newWindow.setHeadingText("Help/Instructions");
-		newWindow.setWidth("500");
-		newWindow.setHeight("500");
-		newWindow.add(panel.getWidget().asWidget());
-		newWindow.show();
-	}
-	
-	@Override
-	public void setContent(IsWidget content) {
-		panel.add(content);
-	}
 
+	public void addContent(JsArray<HelpContent> contents){
+		AccordionLayoutContainer newAccordion = new AccordionLayoutContainer();
+		for(int i=0;i<contents.length();i++){
+			HTML htmlContent = new HTML(contents.get(i).getContent());
+			htmlContent.setStyleName(style.subPanel());
+			ContentPanel subPanel = new ContentPanel(appearance);
+			subPanel.setHeadingHtml(contents.get(i).getTitle());
+			subPanel.add(htmlContent);
+			
+			if(newAccordion.getWidgetCount() == 0){
+				newAccordion.add(subPanel);
+			}else{
+				newAccordion.insert(subPanel, newAccordion.getWidgetCount());
+			}
+		}
+		panel.add(newAccordion);
+	}
+		
 	
 }

@@ -32,5 +32,8 @@ public class SemanticMarkupLearnPlace extends SemanticMarkupPlace {
 		}
 
 	}
-	
+	@Override
+	public String toString(){
+		return "SemanticMarkupLearnPlace";
+	}
 }

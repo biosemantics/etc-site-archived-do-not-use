@@ -28,15 +28,21 @@
 		.menu {
 
 		}
-
+		.contentPanel {
+			padding-top:20px;
+		}
+		.eastPanel {
+			padding: 5px;
+			width: 100%;
+		}
+		.helpPanel {
+			padding-top:5px;
+		}
 		.scrollPanel {
 
 		}
 
-		.contentPanel {
-			padding-top:20px;
-			/*border: #dddddd solid 1px; removed menu from content border upon Hongs request */
-		}
+		
 
 		.footerPanel {
 		background-image:url('images/Footer.gif');
@@ -77,13 +83,10 @@
 		margin-left: 210px;
 		}
 		.helpPanel {
-			padding-top:10px;
+			padding-top:5px;
 		}
 		.eastPanel {
-			padding-top:20px;
-			padding-right:20px;
-			padding-left:20px;
-			padding-bottom:20px;
+			padding: 5px;
 			width: 100%;
 		}
 		.navigationPanel {
@@ -117,7 +120,7 @@
 		</g:north>
 		<g:east size='0'>
 			<g:VerticalPanel ui:field="eastPanel" styleName="{style.eastPanel} ">
-			    <g:Button ui:field = "openInNewWindowButton">open in new window</g:Button>
+			    <g:Button ui:field = "openInNewWindowButton">Open help in new window</g:Button>
 					<g:ScrollPanel ui:field="helpPanel" styleName="{style.helpPanel}">
 					
 					</g:ScrollPanel>	
@@ -192,7 +195,6 @@
 			-->
 			<!-- <g:ScrollPanel styleName="{style.scrollPanel}" ui:field="contentScrollPanel"> -->
 			<g:SimpleLayoutPanel styleName="{style.contentPanel}" ui:field="contentPanel">
-				<!-- <ma:MatrixReviewView ui:field="matrix"></ma:MatrixReviewView> -->
 			</g:SimpleLayoutPanel>
 			<!-- </g:ScrollPanel> -->
 		</g:center>

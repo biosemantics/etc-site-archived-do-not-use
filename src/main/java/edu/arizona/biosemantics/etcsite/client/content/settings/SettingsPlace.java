@@ -43,5 +43,8 @@ public class SettingsPlace extends Place implements RequiresAuthenticationPlace 
 		}
 
 	}
-
+	@Override
+	public String toString(){
+		return "SettingsPlace";
+	}
 }

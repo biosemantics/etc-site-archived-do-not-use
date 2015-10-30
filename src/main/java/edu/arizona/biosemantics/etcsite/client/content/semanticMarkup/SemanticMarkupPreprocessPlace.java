@@ -32,5 +32,9 @@ public class SemanticMarkupPreprocessPlace extends SemanticMarkupPlace {
 		}
 
 	}
+	@Override
+	public String toString(){
+		return "SemanticMarkupPreprocessPlace";
+	}
 	
 }

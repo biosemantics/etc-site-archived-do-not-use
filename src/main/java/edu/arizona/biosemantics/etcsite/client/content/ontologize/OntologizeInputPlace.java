@@ -38,5 +38,8 @@ public class OntologizeInputPlace extends OntologizePlace {
 		}
 
 	}
-
+	@Override
+	public String toString(){
+		return "OntologizeInputPlace";
+	}
 }

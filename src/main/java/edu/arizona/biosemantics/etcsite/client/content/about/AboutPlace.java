@@ -18,5 +18,10 @@ public class AboutPlace extends Place {
 		}
 
 	}
+	
+	@Override
+	public String toString(){
+		return "AboutPlace";
+	}
 
 }

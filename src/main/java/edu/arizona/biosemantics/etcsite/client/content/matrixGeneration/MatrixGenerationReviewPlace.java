@@ -33,5 +33,8 @@ public class MatrixGenerationReviewPlace extends MatrixGenerationPlace {
 		}
 
 	}
-
+	@Override
+	public String toString(){
+		return "MatrixGenerationReviewPlace";
+	}
 }
