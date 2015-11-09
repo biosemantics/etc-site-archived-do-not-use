@@ -175,20 +175,32 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			for(File child : childFiles) {
 				String childPath = child.getAbsolutePath();
 				permissionResult = filePermissionService.hasReadPermission(authenticationToken, childPath);
-				if(!permissionResult)
+				if (!permissionResult)
 					throw new PermissionDeniedException();
-				else {
-					String name = child.getName();
-					FileTypeEnum fileType = getFileType(authenticationToken, child.getAbsolutePath());
-					if(fileType != null && !filter(fileType, fileFilter)) {
-						String displayPath = childPath.replace(Configuration.fileBase + File.separator + authenticationToken.getUserId(), "");
-						Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(name, child.getAbsolutePath(), displayPath, fileType, 
-								authenticationToken.getUserId(), false, child.isDirectory(), true));
-						fileTree.addChild(childTree);
-						if(child.isDirectory()) {
-							decorateOwnedTree(authenticationToken, childTree, fileFilter, childPath);
-						}
+				String name = child.getName();
+
+				FileTypeEnum fileType = null;
+				if (fileFilter != null) { // Call getFileType only if we have not received a null fileFilter, since it is slow.
+					fileType = getFileType(authenticationToken,
+							child.getAbsolutePath());
+					if (fileType == null || filter(fileType, fileFilter)) {
+						continue;
 					}
+				}
+
+				if (fileType == null) // Indicates that function received a null fileFilter. 
+					fileType = child.isDirectory() ? FileTypeEnum.DIRECTORY : FileTypeEnum.PLAIN_TEXT;
+
+				String displayPath = childPath.replace(Configuration.fileBase
+						+ File.separator + authenticationToken.getUserId(), "");
+				Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(
+						name, child.getAbsolutePath(), displayPath, fileType,
+						authenticationToken.getUserId(), false,
+						child.isDirectory(), true));
+				fileTree.addChild(childTree);
+				if (child.isDirectory()) {
+					decorateOwnedTree(authenticationToken, childTree,
+							fileFilter, childPath);
 				}
 			}
 		}

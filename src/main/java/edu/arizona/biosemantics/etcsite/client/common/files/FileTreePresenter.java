@@ -46,11 +46,11 @@ public class FileTreePresenter implements IFileTreeView.Presenter {
 		view.clear();
 		
 		final MessageBox box = Alerter.startLoading();
-		this.fileService.getUsersFiles(Authentication.getInstance().getToken(), FileFilter.ALL, 
+		this.fileService.getUsersFiles(Authentication.getInstance().getToken(), fileFilter == null ? null : FileFilter.ALL,
 				new AsyncCallback<Tree<FileInfo>>() {
 				@Override
 				public void onSuccess(Tree<FileInfo> result) {
-					decorate(result, selectionPath, retainedStates, fileFilter);
+					decorate(result, selectionPath, retainedStates, fileFilter == null ? FileFilter.ALL : fileFilter);
 					Alerter.stopLoading(box);
 				}
 				@Override
