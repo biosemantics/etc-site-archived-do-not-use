@@ -27,10 +27,10 @@ public class InJvmLearn implements Learn {
 	private String operator;
 	private boolean executedSuccessfully = false;
 	private boolean useEmptyGlossary;
-	private FileService fileService;
+	private IFileService fileService;
 	private DAOManager daoManager;
 
-	public InJvmLearn(DAOManager daoManager, FileService fileService, String config, boolean useEmptyGlossary, String input, String tablePrefix,
+	public InJvmLearn(DAOManager daoManager, IFileService fileService, String config, boolean useEmptyGlossary, String input, String tablePrefix,
 			String source, String operator) {
 		this.fileService = fileService;
 		this.config = config;
