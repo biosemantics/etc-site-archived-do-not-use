@@ -73,7 +73,8 @@ public class XmlModelFileCreator {
 
 	public String copyAuthorityAndDate(String normalizedText) {
 		String result = "";
-		String authorityDate = "unspecified, unspecified";
+		String authorityDate = null;
+		int lineNumber = 1;
 		for(String line : normalizedText.split("\n")) {
 			line = line.trim();
 			if(line.contains("name:") || line.contains("name :")){
@@ -81,10 +82,14 @@ public class XmlModelFileCreator {
 				if(newAuthorityDate!=null){
 					authorityDate = newAuthorityDate;
 				}else{
+					if(authorityDate == null){
+						return "ERROR";
+					}
 					line = line.concat(" "+authorityDate);
 				}
 			}
 			result = result.concat(line+"\n");
+			lineNumber++;
 		}
 		return result;
 	}
@@ -205,6 +210,18 @@ public class XmlModelFileCreator {
 			treatment.append(key + ": " + value + "\n");
 		}
 		return treatment.toString();
+	}
+
+	public boolean isAuthorityDateAvailable(String normalizedText) {
+		for(String line : normalizedText.split("\n")) {
+			line = line.trim();
+			if(line.contains("name:") || line.contains("name :")){
+				String authorityDate = getAuthorityDate(line);
+				if(authorityDate == null)
+					return false;
+			}
+		}
+		return true;
 	}
 
 }

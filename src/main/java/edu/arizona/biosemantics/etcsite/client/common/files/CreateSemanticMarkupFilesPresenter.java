@@ -350,6 +350,15 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 		String normalizedText = xmlModelFileCreator.normalizeText(text);
 		if(view.isCopyCheckBox()){
 			normalizedText = xmlModelFileCreator.copyAuthorityAndDate(normalizedText);
+			if(normalizedText.equals("ERROR")){
+				Alerter.inputError("Authority and Date values are missing for taxon names.");
+				return;
+			}
+		}else{
+			if(!xmlModelFileCreator.isAuthorityDateAvailable(normalizedText)){
+				Alerter.inputError("Authority and Date values are missing for taxon names.");
+				return;
+			}
 		}
 		final List<String> treatments = xmlModelFileCreator.getTreatmentTexts(batchSourceDocumentInfoMap, normalizedText);
 		

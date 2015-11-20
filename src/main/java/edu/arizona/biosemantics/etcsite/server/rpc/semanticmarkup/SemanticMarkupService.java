@@ -469,10 +469,10 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	}
 	
 	@Override
-	public boolean isValidInput(AuthenticationToken authenticationToken, String filePath) throws SemanticMarkupException {
+	public String checkValidInput(AuthenticationToken authenticationToken, String filePath) throws SemanticMarkupException {
 		boolean readPermission = filePermissionService.hasReadPermission(authenticationToken, filePath);
 		if(!readPermission) 
-			return false;
+			return "File access denied";
 		boolean isDirectory;
 		try {
 			isDirectory = fileService.isDirectory(authenticationToken, filePath);
@@ -480,7 +480,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			throw new SemanticMarkupException();
 		}
 		if(!isDirectory)
-			return false;
+			return "Invalid input selection: Selection should be directory";
 		List<String> files;
 		try {
 			files = fileService.getDirectoriesFiles(authenticationToken, filePath);
@@ -488,7 +488,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			throw new SemanticMarkupException();
 		}
 		if(files.isEmpty())
-			return false;
+			return "Invalid input directory: No files found in the folder.";
 		for(String file : files) {
 			boolean validResult;
 			try {
@@ -497,9 +497,9 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				throw new SemanticMarkupException();
 			}
 			if(!validResult)
-				return false;
+				return "Invalid input: Error in taxon description";
 		}
-		return true;
+		return "valid";
 	}
 
 	@Override
