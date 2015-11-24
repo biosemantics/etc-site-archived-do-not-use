@@ -314,8 +314,15 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	  
 	@UiHandler("previewButton")
 	public void onPreview(ClickEvent event) {
-		  this.presenter.setPreviewText(getBatchSourceDocumentInfo(), this.batchArea.getText());
-		  batchCreateCards.setActiveWidget(previewPanel);
+		if(!batchArea.getText().equals("")){
+			this.presenter.setPreviewText(getBatchSourceDocumentInfo(), this.batchArea.getText());
+			if(!previewArea.getText().equals("")){
+				batchCreateCards.setActiveWidget(previewPanel);  
+			}
+		}else{
+			Alerter.inputError("No input text provided.");
+		}
+		
 	}
 	  
 	@UiHandler("returnButton")

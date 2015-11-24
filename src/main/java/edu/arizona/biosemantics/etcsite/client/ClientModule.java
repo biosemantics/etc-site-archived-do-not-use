@@ -164,8 +164,6 @@ import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectPresenter2
 import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectView;
 import edu.arizona.biosemantics.etcsite.client.content.user.UsersPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.user.UsersView;
-import edu.arizona.biosemantics.etcsite.client.help.HelpPresenter;
-import edu.arizona.biosemantics.etcsite.client.help.IHelpView;
 import edu.arizona.biosemantics.etcsite.client.layout.ContentActivityManagerProvider;
 import edu.arizona.biosemantics.etcsite.client.layout.ContentActivityMapper;
 import edu.arizona.biosemantics.etcsite.client.layout.EtcSitePresenter;
@@ -304,7 +302,6 @@ public class ClientModule extends AbstractGinModule {
 		bind(IProcessingView.Presenter.class).to(ProcessingPresenter.class);
 		
 		bind(edu.arizona.biosemantics.etcsite.client.help.IHelpView.class).to(edu.arizona.biosemantics.etcsite.client.help.HelpView.class).in(Singleton.class);
-		bind(IHelpView.Presenter.class).to(HelpPresenter.class).in(Singleton.class);
 		
 		bind(ISampleView.class).to(SampleView.class).in(Singleton.class);
 		
