@@ -16,7 +16,7 @@ public interface ISemanticMarkupServiceAsync extends IHasTasksServiceAsync {
 
 	public void start(AuthenticationToken authenticationToken, String taskName, String filePath, String taxonGroup, boolean emptyGlossary, AsyncCallback<Task> callback);
 	
-	public void isValidInput(AuthenticationToken authenticationToken, String filePath, AsyncCallback<Boolean> callback);
+	public void checkValidInput(AuthenticationToken authenticationToken, String filePath, AsyncCallback<String> callback);
 	
 	public void preprocess(AuthenticationToken authenticationToken, Task semanticMarkupTask, AsyncCallback<List<PreprocessedDescription>> callback);
 

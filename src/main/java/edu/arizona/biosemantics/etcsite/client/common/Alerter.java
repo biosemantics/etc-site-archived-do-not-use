@@ -58,7 +58,7 @@ public class Alerter {
 	}
 
 	public static MessageBox failedToCreateTaxonDescription(Throwable caught) {
-		return showAlert("Create Taxon Description", "Failed to creatc taxon description.", caught);
+		return showAlert("Create Taxon Description", "Failed to create taxon description.", caught);
 	}
 	
 	public static MessageBox failedToSendToOto(Throwable caught) {

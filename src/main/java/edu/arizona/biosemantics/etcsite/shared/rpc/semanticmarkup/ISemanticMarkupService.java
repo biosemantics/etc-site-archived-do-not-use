@@ -19,7 +19,7 @@ public interface ISemanticMarkupService extends RemoteService, IHasTasksService 
 
 	public Task start(AuthenticationToken authenticationToken, String taskName, String filePath, String taxonGroup, boolean emptyGlossary) throws SemanticMarkupException;
 	
-	public boolean isValidInput(AuthenticationToken authenticationToken, String filePath) throws SemanticMarkupException;
+	public String checkValidInput(AuthenticationToken authenticationToken, String filePath) throws SemanticMarkupException;
 	
 	public List<PreprocessedDescription> preprocess(AuthenticationToken authenticationToken, Task semanticMarkupTask);
 	

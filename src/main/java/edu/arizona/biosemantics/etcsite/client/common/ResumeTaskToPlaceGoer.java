@@ -9,16 +9,35 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
-import com.sencha.gxt.widget.core.client.box.MessageBox;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 import edu.arizona.biosemantics.etcsite.client.common.TaskSelectDialog.ISelectListener;
+import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationCreatePlace;
+import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPlace;
+import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationOutputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationPlace;
+import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationProcessPlace;
+import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationReviewPlace;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeBuildPlace;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeCreatePlace;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizePlace;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupCreatePlace;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPlace;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupLearnPlace;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupOutputPlace;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupParsePlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupPlace;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupPreprocessPlace;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupReviewPlace;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonAlignPlace;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonCreatePlace;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonPlace;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationCreatePlace;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationPlace;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationViewPlace;
+import edu.arizona.biosemantics.etcsite.client.content.visualization.VisualizationPlace;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
@@ -72,8 +91,8 @@ public class ResumeTaskToPlaceGoer implements ToPlaceGoer {
 							taskDialog.show(result, new ISelectListener() {
 								@Override
 								public void onSelect(List<Task> selection) {
-									hasTaskPlace.setTask(selection.get(0));
-									doGoTo(hasTaskPlace, nextToPlaceGoers);
+									HasTaskPlace taskPlace = getTaskPlace(selection.get(0));
+									doGoTo(taskPlace, nextToPlaceGoers);
 								}
 								@Override
 								public void onCancel() {
@@ -138,6 +157,75 @@ public class ResumeTaskToPlaceGoer implements ToPlaceGoer {
 			placeController.goTo(newPlace);
 		else
 			nextToPlaceGoers.removeFirst().goTo(newPlace, nextToPlaceGoers);
+	}
+	
+	private HasTaskPlace getTaskPlace(Task task){
+		String taskStage = task.getTaskStage().getDisplayName();
+		String taskType = task.getTaskType().getTaskTypeEnum().displayName();
+		switch(taskType){
+		case "Text Capture":
+			switch(taskStage){
+			case "Create Input":
+				return new SemanticMarkupCreatePlace(task);
+			case "Input":
+				return new SemanticMarkupInputPlace(task);
+			case "Preprocess Text":
+				return new SemanticMarkupPreprocessPlace(task);
+			case "Learn Terms":
+				return new SemanticMarkupLearnPlace(task);
+			case "Review Terms":
+				return new SemanticMarkupReviewPlace(task);
+			case "Parse Text":
+				return new SemanticMarkupParsePlace(task);
+			case "Output":
+				return new SemanticMarkupOutputPlace(task);
+			}
+		case "Ontology Building":
+			switch(taskStage){
+			case "Create Input":
+				return new OntologizeCreatePlace(task);
+			case "Input":
+				return new OntologizeInputPlace(task);
+			case "Build":
+				return new OntologizeBuildPlace(task);
+			}
+		case "Matrix Generation":
+			switch(taskStage){
+			case "Create/Select Input":
+				return new MatrixGenerationCreatePlace(task);
+			case "Input":
+				return new MatrixGenerationInputPlace(task);
+			case "Process":
+				return new MatrixGenerationProcessPlace(task);
+			case "Review":
+				return new MatrixGenerationReviewPlace(task);
+			case "Output":
+				return new MatrixGenerationOutputPlace(task);
+			}
+		case "Key Generation":
+			switch(taskStage){
+			case "Create Input":
+				return new TreeGenerationCreatePlace(task);
+			case "Input":
+				return new TreeGenerationInputPlace(task);
+			case "View":
+				return new TreeGenerationViewPlace(task);
+			}
+		case "Taxonomy Comparison":
+			switch(taskStage){
+			case "Create Input":
+				return new TaxonomyComparisonCreatePlace(task);
+			case "Input":
+				return new TaxonomyComparisonInputPlace(task);
+			case "Align":
+			case "Analyze": 
+			case "Analyze Complete":
+				return new TaxonomyComparisonAlignPlace(task);
+			}
+		case "Visualization":
+			return new VisualizationPlace(task);
+		}
+		return null;
 	}
 
 }

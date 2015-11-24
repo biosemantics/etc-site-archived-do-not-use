@@ -33,7 +33,9 @@ import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.file.Tree;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.CopyFilesFailedException;
@@ -175,20 +177,32 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			for(File child : childFiles) {
 				String childPath = child.getAbsolutePath();
 				permissionResult = filePermissionService.hasReadPermission(authenticationToken, childPath);
-				if(!permissionResult)
+				if (!permissionResult)
 					throw new PermissionDeniedException();
-				else {
-					String name = child.getName();
-					FileTypeEnum fileType = getFileType(authenticationToken, child.getAbsolutePath());
-					if(fileType != null && !filter(fileType, fileFilter)) {
-						String displayPath = childPath.replace(Configuration.fileBase + File.separator + authenticationToken.getUserId(), "");
-						Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(name, child.getAbsolutePath(), displayPath, fileType, 
-								authenticationToken.getUserId(), false, child.isDirectory(), true));
-						fileTree.addChild(childTree);
-						if(child.isDirectory()) {
-							decorateOwnedTree(authenticationToken, childTree, fileFilter, childPath);
-						}
+				String name = child.getName();
+
+				FileTypeEnum fileType = null;
+				if (fileFilter != null) { // Call getFileType only if we have not received a null fileFilter, since it is slow.
+					fileType = getFileType(authenticationToken,
+							child.getAbsolutePath());
+					if (fileType == null || filter(fileType, fileFilter)) {
+						continue;
 					}
+				}
+
+				if (fileType == null) // Indicates that function received a null fileFilter. 
+					fileType = child.isDirectory() ? FileTypeEnum.DIRECTORY : FileTypeEnum.PLAIN_TEXT;
+
+				String displayPath = childPath.replace(Configuration.fileBase
+						+ File.separator + authenticationToken.getUserId(), "");
+				Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(
+						name, child.getAbsolutePath(), displayPath, fileType,
+						authenticationToken.getUserId(), false,
+						child.isDirectory(), true));
+				fileTree.addChild(childTree);
+				if (child.isDirectory()) {
+					decorateOwnedTree(authenticationToken, childTree,
+							fileFilter, childPath);
 				}
 			}
 		}
@@ -327,7 +341,11 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		idealFolderName = fileNameNormalizer.normalize(idealFolderName);
 		
 		File dir = new File(filePath);
-		dir.mkdirs();
+        if(dir.isFile()) {
+        	dir = dir.getParentFile();
+        	filePath = dir.getAbsolutePath();
+        }
+        dir.mkdirs();
 		
 		boolean permissionResult = filePermissionService.hasWritePermission(authenticationToken, filePath);
 		if(!permissionResult)
@@ -729,6 +747,71 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 					authenticationToken.getUserId(), false, child.isDirectory(), true));
 		}
 		return allSharedFolders;
+	}
+	
+	@Override
+	public List<FileTreeItem> getFiles(AuthenticationToken authenticationToken, FolderTreeItem folderTreeItem, FileFilter fileFilter) throws PermissionDeniedException {
+		List<FileTreeItem> result = new LinkedList<FileTreeItem>();
+		String filePath = Configuration.fileBase + File.separator + authenticationToken.getUserId();
+		if(folderTreeItem != null)
+			filePath = folderTreeItem.getFilePath();
+		
+		 boolean permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
+	        if(!permissionResult)
+	            throw new PermissionDeniedException();
+	        else {
+	            File file = new File(filePath);
+	            File[] childFiles = file.listFiles();
+	            Arrays.sort(childFiles);
+	            for(File child : childFiles) {
+	                String childPath = child.getAbsolutePath();
+	                permissionResult = filePermissionService.hasReadPermission(authenticationToken, childPath);
+	                if(!permissionResult)
+	                    throw new PermissionDeniedException();
+	                 String name = child.getName();
+	                 String displayPath = childPath.replace(Configuration.fileBase + File.separator + authenticationToken.getUserId(), "");
+	                 
+	                 boolean filter = false; 
+	                 FileTypeEnum fileType = FileTypeEnum.PLAIN_TEXT;
+	                 if(fileFilter != null) {
+	                	 fileType = getFileType(authenticationToken, child.getAbsolutePath());
+	                	 filter = filter(fileType, fileFilter);
+	                 }
+	                	 
+	                 if(!filter) 
+	                	 if(child.isDirectory())
+	                		 result.add(new FolderTreeItem(name, child.getAbsolutePath(), displayPath, fileType,
+	                				 authenticationToken.getUserId(), false, child.isDirectory(), true));
+	                	 else
+			              	 result.add(new FileTreeItem(name, child.getAbsolutePath(), displayPath, fileType,
+			              			 authenticationToken.getUserId(), false, child.isDirectory(), true));
+	                 
+	                 
+	                 
+	                 /*if (fileFilter == null){
+	                     String displayPath = childPath.replace(Configuration.fileBase + File.separator + authenticationToken.getUserId(), "");
+	                     Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(name, child.getAbsolutePath(), displayPath, child.isDirectory() ? FileTypeEnum.DIRECTORY : FileTypeEnum.PLAIN_TEXT,
+	                             authenticationToken.getUserId(), false, child.isDirectory(), true));
+	                     fileTree.addChild(childTree);
+	                     if(child.isDirectory()) {
+	                         decorateOwnedTree(authenticationToken, childTree, fileFilter, childPath);
+	                     }
+	                 } else {
+	                     FileTypeEnum fileType = getFileType(authenticationToken, child.getAbsolutePath());
+	                     if(fileType != null && !filter(fileType, fileFilter)) {
+	                         String displayPath = childPath.replace(Configuration.fileBase + File.separator + authenticationToken.getUserId(), "");
+	                         Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(name, child.getAbsolutePath(), displayPath, fileType,
+	                                 authenticationToken.getUserId(), false, child.isDirectory(), true));
+	                         fileTree.addChild(childTree);
+	                         if(child.isDirectory()) {
+	                             decorateOwnedTree(authenticationToken, childTree, fileFilter, childPath);
+	                         }
+	                     }
+	                 }*/
+	            }
+	        }
+		
+		return result;
 	}
 
 }
