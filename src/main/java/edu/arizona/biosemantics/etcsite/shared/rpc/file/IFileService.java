@@ -3,12 +3,15 @@ package edu.arizona.biosemantics.etcsite.shared.rpc.file;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.file.Tree;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDeniedException;
@@ -71,4 +74,7 @@ public interface IFileService extends RemoteService {
 	public List<FileInfo> getAllSharedFolders(AuthenticationToken authenticationToken);
 	
 	public FileInfo getOwnedRootFolder(AuthenticationToken authenticationToken);
+	
+	public List<FileTreeItem> getFiles(AuthenticationToken authenticationToken, FolderTreeItem folderTreeItem, FileFilter fileFilter) throws PermissionDeniedException;
+
 }

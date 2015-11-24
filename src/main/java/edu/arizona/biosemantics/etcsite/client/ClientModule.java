@@ -31,12 +31,9 @@ import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkup
 import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkupFilesDialogView;
 import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkupFilesPresenter;
 import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkupFilesView;
-import edu.arizona.biosemantics.etcsite.client.common.files.DnDFileTreePresenter;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileContentPresenter;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileContentView;
-import edu.arizona.biosemantics.etcsite.client.common.files.FileDragDropHandler;
 import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
-import edu.arizona.biosemantics.etcsite.client.common.files.FileTreeDecorator;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileTreePresenter;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileTreeView;
 import edu.arizona.biosemantics.etcsite.client.common.files.ICreateSemanticMarkupFilesDialogView;
@@ -164,7 +161,7 @@ import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectPresenter2
 import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectView;
 import edu.arizona.biosemantics.etcsite.client.content.user.UsersPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.user.UsersView;
-import edu.arizona.biosemantics.etcsite.client.help.HelpPresenter;
+import edu.arizona.biosemantics.etcsite.client.help.HelpActivity;
 import edu.arizona.biosemantics.etcsite.client.help.IHelpView;
 import edu.arizona.biosemantics.etcsite.client.layout.ContentActivityManagerProvider;
 import edu.arizona.biosemantics.etcsite.client.layout.ContentActivityMapper;
@@ -304,7 +301,7 @@ public class ClientModule extends AbstractGinModule {
 		bind(IProcessingView.Presenter.class).to(ProcessingPresenter.class);
 		
 		bind(edu.arizona.biosemantics.etcsite.client.help.IHelpView.class).to(edu.arizona.biosemantics.etcsite.client.help.HelpView.class).in(Singleton.class);
-		bind(IHelpView.Presenter.class).to(HelpPresenter.class).in(Singleton.class);
+		bind(IHelpView.Presenter.class).to(HelpActivity.class).in(Singleton.class);
 		
 		bind(ISampleView.class).to(SampleView.class).in(Singleton.class);
 		
@@ -378,11 +375,11 @@ public class ClientModule extends AbstractGinModule {
 		private IFileTreeView fileTreeView;
 		
 		@Inject
-		public FileManagerPresenterProvider(IFileServiceAsync fileService, FileTreeDecorator fileTreeDecorator, FileDragDropHandler
-				fileDragDropHandler, ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter,
+		public FileManagerPresenterProvider(IFileServiceAsync fileService,
+				ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter,
 				PlaceController placeController) {
 			fileTreeView = new FileTreeView();
-			fileTreePresenter = new DnDFileTreePresenter(fileTreeView, fileService, fileTreeDecorator, fileDragDropHandler);
+			fileTreePresenter = new FileTreePresenter(fileTreeView);
 			managableFileTreeView = new ManagableFileTreeView(fileTreePresenter);			
 			managableFileTreePresenter = new ManagableFileTreePresenter(managableFileTreeView, fileTreePresenter, fileService, 
 						createSemanticMarkupFilesDialogPresenter);
@@ -406,10 +403,10 @@ public class ClientModule extends AbstractGinModule {
 		private IFileTreeView fileTreeView;
 		
 		@Inject
-		public FileManagerDialogPresenterProvider(IFileServiceAsync fileService, FileTreeDecorator fileTreeDecorator, FileDragDropHandler
-				fileDragDropHandler, ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter) {
+		public FileManagerDialogPresenterProvider(IFileServiceAsync fileService,
+				ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter) {
 			fileTreeView = new FileTreeView();
-			fileTreePresenter = new DnDFileTreePresenter(fileTreeView, fileService, fileTreeDecorator, fileDragDropHandler);
+			fileTreePresenter = new FileTreePresenter(fileTreeView);
 			managableFileTreeView = new ManagableFileTreeView(fileTreePresenter);			
 			managableFileTreePresenter = new ManagableFileTreePresenter(managableFileTreeView, fileTreePresenter, fileService, 
 					createSemanticMarkupFilesDialogPresenter);
@@ -432,10 +429,9 @@ public class ClientModule extends AbstractGinModule {
 		private IFileTreeView fileTreeView;
 		
 		@Inject
-		public SelectableFileTreePresenterProvider(IFileServiceAsync fileService, FileTreeDecorator fileTreeDecorator, FileDragDropHandler
-				fileDragDropHandler) {
+		public SelectableFileTreePresenterProvider(IFileServiceAsync fileService) {
 			fileTreeView = new FileTreeView();
-			fileTreePresenter = new FileTreePresenter(fileTreeView, fileService, fileTreeDecorator);
+			fileTreePresenter = new FileTreePresenter(fileTreeView);
 			selectableFileTreeView = new SelectableFileTreeView(fileTreePresenter);
 			selectableFileTreePresenter = new SelectableFileTreePresenter(selectableFileTreeView, fileTreePresenter);
 		}

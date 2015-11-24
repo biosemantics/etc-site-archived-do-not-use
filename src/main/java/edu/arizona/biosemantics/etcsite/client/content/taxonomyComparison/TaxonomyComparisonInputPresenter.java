@@ -1,5 +1,7 @@
 package edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison;
 
+import java.util.List;
+
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -7,7 +9,6 @@ import com.sencha.gxt.widget.core.client.box.MessageBox;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.files.FileImageLabelTreeItem;
 import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView;
@@ -15,6 +16,7 @@ import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePr
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonServiceAsync;
 
 public class TaxonomyComparisonInputPresenter implements ITaxonomyComparisonInputView.Presenter {
@@ -90,11 +92,12 @@ public class TaxonomyComparisonInputPresenter implements ITaxonomyComparisonInpu
 		selectableFileTreePresenter.show("Select input", FileFilter.DIRECTORY, new ISelectListener() {
 			@Override
 			public void onSelect() {
-				FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
-				if (selection != null) {
-					inputFile = selection.getFileInfo().getFilePath();
-					String shortendPath = filePathShortener.shorten(selection.getFileInfo(), Authentication.getInstance().getUserId());
-					if(selection.getFileInfo().isSystemFile()){
+				List<FileTreeItem> selections = fileTreePresenter.getView().getSelection();
+				if (selections.size() == 1) {
+					FileTreeItem selection = selections.get(0);
+					inputFile = selection.getFilePath();
+					String shortendPath = filePathShortener.shorten(selection, Authentication.getInstance().getUserId());
+					if(selection.isSystemFile()){
 						Alerter.systemFolderNotAllowedInputForTask();
 					}else if(selection.getText().contains(" 0 file")){
 						Alerter.emptyFolder();
@@ -104,7 +107,7 @@ public class TaxonomyComparisonInputPresenter implements ITaxonomyComparisonInpu
 					else{
 						view.setFilePath(shortendPath);
 						view.setEnabledNext(true);			
-						if(selection.getFileInfo().getOwnerUserId() != Authentication.getInstance().getUserId()) {
+						if(selection.getOwnerUserId() != Authentication.getInstance().getUserId()) {
 							Alerter.sharedInputForTask();
 							fileManagerDialogPresenter.hide();
 						} else {

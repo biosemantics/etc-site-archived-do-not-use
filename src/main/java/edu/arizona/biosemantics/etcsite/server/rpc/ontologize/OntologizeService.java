@@ -463,7 +463,7 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 	
 		try {
 			ontology = toOntologyService.createOntology(collection, ontology, createFile);
-		} catch (CreateOntologyException e) {
+		} catch (Exception e) {
 			throw new OntologizeException();
 		}
 		

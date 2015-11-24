@@ -544,7 +544,7 @@ public class Alerter {
 		return alert;
 	}
 
-	private static MessageBox showInfo(String title, String message) {
+	public static MessageBox showInfo(String title, String message) {
 		InfoMessageBox info = new InfoMessageBox(title, message);
 		info.show();
 		return info;

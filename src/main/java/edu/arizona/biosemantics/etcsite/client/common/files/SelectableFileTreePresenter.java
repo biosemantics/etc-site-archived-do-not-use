@@ -40,7 +40,7 @@ public class SelectableFileTreePresenter implements ISelectableFileTreeView.Pres
 		dialog.setTitle(title);
 		dialog.show();
 		this.fileFilter = fileFilter;
-		fileTreePresenter.refresh(fileFilter);
+		fileTreePresenter.getView().refresh(fileFilter);
 	}
 	
 	@Override

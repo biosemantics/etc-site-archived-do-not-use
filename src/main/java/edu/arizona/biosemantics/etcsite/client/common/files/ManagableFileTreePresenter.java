@@ -1,6 +1,8 @@
 
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
+import java.util.List;
+
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
@@ -15,14 +17,17 @@ import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.box.PromptMessageBox;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
+import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkupFilesDialogPresenter.ICloseHandler;
-import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView.IFileTreeSelectionListener;
 import edu.arizona.biosemantics.etcsite.shared.Configuration;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
 import gwtupload.client.BaseUploadStatus;
 import gwtupload.client.IFileInput.ButtonFileInput;
@@ -32,7 +37,7 @@ import gwtupload.client.IUploader;
 import gwtupload.client.IUploader.OnFinishUploaderHandler;
 import gwtupload.client.IUploader.OnStartUploaderHandler;
 
-public class ManagableFileTreePresenter implements IManagableFileTreeView.Presenter, IFileTreeSelectionListener {
+public class ManagableFileTreePresenter implements IManagableFileTreeView.Presenter, SelectionChangedHandler<FileTreeItem> {
 
 	private IFileServiceAsync fileService;
 	private IManagableFileTreeView view;
@@ -53,7 +58,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		this.view = view;
 		this.view.setPresenter(this);
 		this.fileTreePresenter = fileTreePresenter;
-		fileTreePresenter.addSelectionListener(this);
+		fileTreePresenter.getView().addSelectionChangeHandler(this);
 		this.createSemanticMarkupFilesDialogPresenter = createSemanticMarkupFilesDialogPresenter;
 		
 		defaultServletPath = view.getUploader().getServletPath();
@@ -87,14 +92,14 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	@Override
 	public void refresh(FileFilter fileFilter) {
 		this.fileFilter = fileFilter;
-		fileTreePresenter.refresh(fileFilter);
+		fileTreePresenter.getView().refresh(fileFilter);
 		//setInputFileMultiple();
 	}
 	
 	@Override
 	public void onCreateSemanticMarkupFiles() {
-		final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
-		if(selection != null && selection.getFileInfo().isAllowsNewFiles()) {
+		final List<FileTreeItem> selection = fileTreePresenter.getView().getSelection();
+		if(selection.size() == 1) {
 			createSemanticMarkupFilesDialogPresenter.setCloseHandler(new ICloseHandler() {
 				@Override
 				public void onClose(int filesCreated) {
@@ -102,17 +107,17 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 						refresh(FileFilter.ALL);
 				}
 			});
-			createSemanticMarkupFilesDialogPresenter.show(fileTreePresenter.getSelectedItem().getFileInfo().getFilePath());
+			createSemanticMarkupFilesDialogPresenter.show(fileTreePresenter.getView().getSelection().get(0).getFilePath());
 		}
 		else
 			Alerter.noDestinationSelected();
 	}
-	
+
 	@Override
 	public void onCreate() {
-		final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
-		if(selection != null && selection.getFileInfo().isAllowsNewFolders()) {
-			int level = getLevel(selection);
+		final List<FileTreeItem> selection = fileTreePresenter.getView().getSelection();
+		if(selection.size() == 1) {
+			int level = fileTreePresenter.getView().getDepth(selection.get(0));
 			if(level < Configuration.fileManagerMaxDepth) {
 				 final PromptMessageBox box = new PromptMessageBox("Create folder", "Folder name:");
 				 box.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
@@ -139,50 +144,26 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 			Alerter.invalidParentDirectory();
 		}
 	}
-	
-	private int getLevel(TreeItem item) {
-		int result = 0;
-		while(item.getParentItem() != null) {
-			result++;
-			item = item.getParentItem();
-		}
-		return result;
-	}
-	
-	private void createDirectory(final String folderName){
-		final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
-		final String selectionPath = selection.getFileInfo().getFilePath();
-		fileService.isDirectory(Authentication.getInstance().getToken(), selectionPath, new AsyncCallback<Boolean>() {
-			@Override
-			public void onSuccess(Boolean result) {
-				String newDirectoryParent = selectionPath;
-				if(!result)
-					newDirectoryParent = getParent(selection);
-				if(newDirectoryParent != null) {
-					fileService.createDirectory(Authentication.getInstance().getToken(), newDirectoryParent, folderName, false,
-							new AsyncCallback<String>() {
-								@Override
-								public void onSuccess(String result) {
-									fileTreePresenter.refresh(fileFilter);
-								}
 
-								@Override
-								public void onFailure(Throwable caught) {
-									Alerter.failedToCreateDirectory(caught);
-								}
-					});
-				}
-			}
-			@Override
-			public void onFailure(Throwable caught) {
-				Alerter.failedToIsDirectory(caught);
-			}
+	private void createDirectory(final String folderName){
+		final List<FileTreeItem> selection = fileTreePresenter.getView().getSelection();
+		final String selectionPath = selection.get(0).getFilePath();
+		fileService.createDirectory(Authentication.getInstance().getToken(), selectionPath, folderName, false,
+				new AsyncCallback<String>() {
+					@Override
+					public void onSuccess(String result) {
+						fileTreePresenter.getView().refresh(fileFilter);
+					}
+					@Override
+					public void onFailure(Throwable caught) {
+						Alerter.failedToCreateDirectory(caught);
+					}
 		});
 	}
 	
-	private void renameFile(final FileImageLabelTreeItem selection, final String newName){
-		if(selection.getFileImageLabel().getFileInfo().getFileType().equals(FileTypeEnum.DIRECTORY)) {
-			fileService.renameFile(Authentication.getInstance().getToken(), selection.getFileInfo().getFilePath(), 
+	private void renameFile(final FileTreeItem selection, final String newName){
+		if(selection instanceof FolderTreeItem) {
+			fileService.renameFile(Authentication.getInstance().getToken(), selection.getFilePath(), 
 				newName, new AsyncCallback<Void>() {
 					@Override
 					public void onFailure(Throwable caught) {
@@ -190,19 +171,19 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 					}
 					@Override
 					public void onSuccess(Void result) {
-						fileTreePresenter.refresh(fileFilter);
-						selection.getFileInfo().setName(newName);
+						fileTreePresenter.getView().refresh(fileFilter);
+						selection.setName(newName);
 					}
 			});
 		} else {
-			final String newFileName = selection.getFileInfo().getExtension().isEmpty() ? 
-					newName : newName + "." + selection.getFileInfo().getExtension();
-			fileService.renameFile(Authentication.getInstance().getToken(), selection.getFileInfo().getFilePath(), 
+			final String newFileName = selection.getExtension().isEmpty() ? 
+					newName : newName + "." + selection.getExtension();
+			fileService.renameFile(Authentication.getInstance().getToken(), selection.getFilePath(), 
 					newFileName, new AsyncCallback<Void>() {
 				@Override
 				public void onSuccess(Void result) {
-					fileTreePresenter.refresh(fileFilter);
-					selection.getFileInfo().setName(newFileName);
+					fileTreePresenter.getView().refresh(fileFilter);
+					selection.setName(newFileName);
 				}
 				@Override
 				public void onFailure(Throwable caught) {
@@ -214,9 +195,10 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 
 	@Override
 	public void onRename() {
-		final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
+		final List<FileTreeItem> selections = fileTreePresenter.getView().getSelection();
 		//don't allow rename of root node
-		if(selection != null && !selection.getFileInfo().isSystemFile()) {
+		if(selections.size() == 1 && !selections.get(0).isSystemFile()) {
+			final FileTreeItem selection = selections.get(0);
 			final PromptMessageBox box = new PromptMessageBox("Rename", "New name:");
 			box.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
 				@Override
@@ -229,33 +211,33 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 				@Override
 				public void onKeyPress(KeyPressEvent event) {
 					if(event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER){
-						renameFile(selection,box.getValue());
+						renameFile(selection, box.getValue());
 						box.hide();
 					}
 				}
 			});
-			 box.getTextField().setValue(selection.getFileInfo().getName(false));
+			 box.getTextField().setValue(selection.getName(false));
 			 box.show();
 		} else {
 			Alerter.invalidFileName();
 		}
 	}
-	
 
 	@Override
 	public void onDelete() {
-		final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
-		if(selection != null && !selection.getFileInfo().isSystemFile()) {
+		final List<FileTreeItem> selections = fileTreePresenter.getView().getSelection();
+		if(selections.size() == 1 && !selections.get(0).isSystemFile()) {
+			final FileTreeItem selection = selections.get(0);
 			MessageBox delete = Alerter.sureToDelete(selection.getText());
 			delete.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
 				@Override
 				public void onSelect(SelectEvent event) {
-					fileService.deleteFile(Authentication.getInstance().getToken(), selection.getFileInfo().getFilePath(), new AsyncCallback<Void>(){
+					fileService.deleteFile(Authentication.getInstance().getToken(), selection.getFilePath(), new AsyncCallback<Void>(){
 						@Override
 						public void onSuccess(Void result) {
 							ManagableFileTreePresenter.this.initActions();
-							fileTreePresenter.clearSelection();
-							fileTreePresenter.refresh(fileFilter);
+							fileTreePresenter.getView().setSelection(null);
+							fileTreePresenter.getView().refresh(fileFilter);
 						}
 						@Override
 						public void onFailure(Throwable caught) {
@@ -271,34 +253,38 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 
 	@Override
 	public void onDownload() {
-		final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
-		if(selection != null) { 
-			final String selectionPath = selection.getFileInfo().getFilePath();
-			if(selectionPath != null) {
-				final MessageBox box = Alerter.startLoading();
-				fileService.getDownloadPath(Authentication.getInstance().getToken(), selectionPath, new AsyncCallback<String>() {
-					@Override
-					public void onSuccess(String result) {
-						//target=" + result.getData() + "&directory=yes
-						Alerter.stopLoading(box);
-						Window.open("download.dld?target=" + URL.encodeQueryString(result) + 
-								"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
-								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()), "_blank", "");
-						/*Window.Location.replace("/etcsite/download?target=" + URL.encodeQueryString(result) + 
-								"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
-								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()));*/
-						
-						/*Window.open("/etcsite/download/?target=" + result.getData() + "&username=" + Authentication.getInstance().getUsername() + "&" + 
-								"sessionID=" + Authentication.getInstance().getSessionID()
-								, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes"); */
-					}
-
-					@Override
-					public void onFailure(Throwable caught) {
-						Alerter.failedToGetDownloadPath(caught);
-						Alerter.stopLoading(box);
-					}
-				});
+		final List<FileTreeItem> selections = fileTreePresenter.getView().getSelection();
+		if(selections.isEmpty()) {  
+			if(selections.size() == 1) {
+				final String selectionPath = selections.get(0).getFilePath();
+				if(selectionPath != null) {
+					final MessageBox box = Alerter.startLoading();
+					fileService.getDownloadPath(Authentication.getInstance().getToken(), selectionPath, new AsyncCallback<String>() {
+						@Override
+						public void onSuccess(String result) {
+							//target=" + result.getData() + "&directory=yes
+							Alerter.stopLoading(box);
+							Window.open("download.dld?target=" + URL.encodeQueryString(result) + 
+									"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
+									"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()), "_blank", "");
+							/*Window.Location.replace("/etcsite/download?target=" + URL.encodeQueryString(result) + 
+									"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
+									"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()));*/
+							
+							/*Window.open("/etcsite/download/?target=" + result.getData() + "&username=" + Authentication.getInstance().getUsername() + "&" + 
+									"sessionID=" + Authentication.getInstance().getSessionID()
+									, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes"); */
+						}
+	
+						@Override
+						public void onFailure(Throwable caught) {
+							Alerter.failedToGetDownloadPath(caught);
+							Alerter.stopLoading(box);
+						}
+					});
+				} else {
+					Alerter.notDownloadable();
+				}
 			} else {
 				Alerter.notDownloadable();
 			}
@@ -318,7 +304,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		public void onFinish(IUploader uploader) {	
 			if (uploader.getStatus() == Status.SUCCESS) {
 				fileUploadHandler.keyValidateUploadedFiles(targetUploadDirectory);
-				fileTreePresenter.refresh(fileFilter);
+				fileTreePresenter.getView().refresh(fileFilter);
 			}
 			
 			serverResponse = fileUploadHandler.parseServerResponse(uploader);
@@ -335,43 +321,21 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	public class OnStartUploadHandler implements OnStartUploaderHandler {
 		@Override
 		public void onStart(final IUploader uploader) {
-			final FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
-			if(selection.getFileInfo().getFileType().equals(FileTypeEnum.DIRECTORY)) {
-				targetUploadDirectory = selection.getFileInfo().getFilePath();
+			final List<FileTreeItem> selections = fileTreePresenter.getView().getSelection();
+			if(selections.size() == 1) {
+				targetUploadDirectory = selections.get(0).getFilePath();
+				fileUploadHandler.setServletPathOfUploader(uploader, view.getFormat(), targetUploadDirectory);
+				/*
+				 * Creation of directories directly inside of the upload target should not be possible (possible name clash)
+				 * Rename of target and files directly inside of target should not be possible (target no longer available, name clash)
+				 * Delete of target should not be possible (target no longer available)
+				 */
+				
+				// for now, just disable all of the others:
+				disableManagement();
 			} else {
-				String newFilePath = getParent(selection);
-				targetUploadDirectory = newFilePath;
-			
+				uploader.cancel();
 			}
-			fileUploadHandler.setServletPathOfUploader(uploader, view.getFormat(), targetUploadDirectory);
-			/*
-			 * Creation of directories directly inside of the upload target should not be possible (possible name clash)
-			 * Rename of target and files directly inside of target should not be possible (target no longer available, name clash)
-			 * Delete of target should not be possible (target no longer available)
-			 */
-			
-			// for now, just disable all of the others:
-			disableManagement();
-		}
-	}
-	
-	private String getParent(FileImageLabelTreeItem selection) {
-		TreeItem parentItem = selection.getParentItem();
-		if(parentItem != null && parentItem instanceof FileImageLabelTreeItem) {
-			FileImageLabelTreeItem parentFileTreeItem = (FileImageLabelTreeItem)parentItem;
-			if(parentFileTreeItem.getFileInfo().getFilePath() == null) {
-				return this.getParent(parentFileTreeItem);
-			}
-			return parentFileTreeItem.getFileInfo().getFilePath();
-		}
-		return null;
-	}
-	
-	@Override
-	public void onSelect(FileImageLabelTreeItem selectedItem) {
-		if(selectedItem != null) {
-			setSystemFile(selectedItem.getFileInfo().isSystemFile());
-			setAllowsChildren(selectedItem.getFileInfo().isAllowsNewFiles(), selectedItem.getFileInfo().isAllowsNewFolders());
 		}
 	}
 
@@ -471,6 +435,34 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		}
 
 	}
+
+	@Override
+	public void onSelectionChanged(SelectionChangedEvent<FileTreeItem> event) {
+		List<FileTreeItem> selection = event.getSelection();
+		boolean systemFile = false;
+		for(FileTreeItem item : event.getSelection()) {
+			if(item.isSystemFile())
+				systemFile = true;
+		}
+		boolean allowsNewFiles = selection.size() > 1;
+		boolean allowsNewFolders = selection.size() > 1;
+		setAllowsChildren(allowsNewFiles, allowsNewFolders);
+		setSystemFile(systemFile);
+		
+		setInputFileMultiple();
+	}
+	
+	public static native void setInputFileMultiple() /*-{
+	    var inputs, index;
+	    inputs = $doc.getElementsByTagName("input");    
+	    //alert("get "+inputs.length+" inputs");
+	    for (index = 0; index < inputs.length; ++index) {
+	        if(inputs[index].getAttribute("type") == "file" && inputs[index].getAttribute("class") == "gwt-FileUpload") {
+	            inputs[index].setAttribute("multiple", "multiple");
+	            //alert("set multiple in setInputFileMultiple");
+	        }
+	    }
+	}-*/;
 
 
 }
