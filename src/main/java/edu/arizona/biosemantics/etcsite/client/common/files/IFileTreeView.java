@@ -1,29 +1,30 @@
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
+import java.util.List;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.Style.SelectionMode;
+import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
 
 public interface IFileTreeView extends IsWidget {
-	
-	public interface Presenter extends IFileTreeSelectionListener {
-		FileImageLabelTreeItem getSelectedItem();
-		void clearSelection();
-		void refresh(FileFilter fileFilter);
-		void addSelectionListener(IFileTreeSelectionListener listener);
+		
+	public interface Presenter {
 		IFileTreeView getView();
 	}
 	  
 	void setPresenter(Presenter presenter);
 	Widget asWidget();
-	void clear();
-	int getItemCount();
-	FileImageLabelTreeItem getItem(int i);
-	void addItem(FileImageLabelTreeItem root);
-	void setSelectedItem(FileImageLabelTreeItem root);
-	
-	public interface IFileTreeSelectionListener {
-		void onSelect(FileImageLabelTreeItem selectedItem);
-	}
+	void setSelection(List<FileTreeItem> selection);
+	int getDepth(FileTreeItem fileTreeItem);
+	void refresh(FileFilter fileFilter);
+	void refresh(FileTreeItem fileTreeItem, FileFilter fileFilter);
+	List<FileTreeItem> getSelection();
+	void setSelectionMode(SelectionMode selectionMode);
+	void addSelectionChangeHandler(SelectionChangedHandler<FileTreeItem> handler);
+	void refreshParent(FileTreeItem selection, FileFilter fileFilter);
+
 }

@@ -8,6 +8,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.file.Tree;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 
@@ -65,5 +67,7 @@ public interface IFileServiceAsync {
 
 	void getAllSharedFolders(AuthenticationToken authenticationToken,
 			AsyncCallback<List<FileInfo>> callback);
+
+	public void getFiles(AuthenticationToken authenticationToken, FolderTreeItem folderTreeItem, FileFilter fileFilter, AsyncCallback<List<FileTreeItem>> callback);
 
 }

@@ -1,5 +1,7 @@
 package edu.arizona.biosemantics.etcsite.client.content.ontologize;
 
+import java.util.List;
+
 import com.google.gwt.http.client.URL;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
@@ -13,7 +15,6 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.files.FileImageLabelTreeItem;
 import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView;
@@ -21,6 +22,7 @@ import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePr
 import edu.arizona.biosemantics.etcsite.shared.model.OntologizeConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.ontologize.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ontologize.IOntologizeServiceAsync;
@@ -132,11 +134,12 @@ public class OntologizeBuildPresenter implements IOntologizeBuildView.Presenter 
 			@Override
 			public void onSelect() {
 				final MessageBox box = Alerter.startLoading();
-				FileImageLabelTreeItem selection = selectableFileTreePresenter.getFileTreePresenter().getSelectedItem();
-				if (selection != null) {
-					String inputFile = selection.getFileInfo().getFilePath();
-					String shortendPath = filePathShortener.shorten(selection.getFileInfo(), Authentication.getInstance().getUserId());
-					if(selection.getFileInfo().isSystemFile()){
+				List<FileTreeItem> selections = selectableFileTreePresenter.getFileTreePresenter().getView().getSelection();
+				if (selections.size() == 1) {
+					FileTreeItem selection = selections.get(0);
+					String inputFile = selection.getFilePath();
+					String shortendPath = filePathShortener.shorten(selection, Authentication.getInstance().getUserId());
+					if(selection.isSystemFile()){
 						Alerter.systemFolderNotAllowedInputForTask();
 						Alerter.stopLoading(box);
 					} else if(selection.getText().contains(" 0 file")) {

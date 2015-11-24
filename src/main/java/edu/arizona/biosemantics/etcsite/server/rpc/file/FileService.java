@@ -33,7 +33,9 @@ import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.file.Tree;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.CopyFilesFailedException;
@@ -339,7 +341,11 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		idealFolderName = fileNameNormalizer.normalize(idealFolderName);
 		
 		File dir = new File(filePath);
-		dir.mkdirs();
+        if(dir.isFile()) {
+        	dir = dir.getParentFile();
+        	filePath = dir.getAbsolutePath();
+        }
+        dir.mkdirs();
 		
 		boolean permissionResult = filePermissionService.hasWritePermission(authenticationToken, filePath);
 		if(!permissionResult)
@@ -741,6 +747,159 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 					authenticationToken.getUserId(), false, child.isDirectory(), true));
 		}
 		return allSharedFolders;
+	}
+	
+	@Override
+	public List<FileTreeItem> getFiles(AuthenticationToken authenticationToken, FolderTreeItem folderTreeItem, FileFilter fileFilter) throws PermissionDeniedException {		
+		if(folderTreeItem == null)
+			return createRootFiles(authenticationToken, fileFilter);
+		else if(folderTreeItem.getFilePath().equals("Shared"))
+			return createSharedFolders(authenticationToken, fileFilter);
+		else if(folderTreeItem.getFilePath().startsWith("Share.")) 
+			return createSharedTaskFolder(authenticationToken, folderTreeItem, fileFilter);
+		else if(folderTreeItem.getFilePath().startsWith("Share.Output."))
+			return createSharedOutputTaskFolder(authenticationToken, folderTreeItem, fileFilter);
+		else if(folderTreeItem.getFilePath().startsWith("Share.Input.")) 
+			return createSharedInputTaskFolder(authenticationToken, folderTreeItem, fileFilter);
+		else 
+			return createFilesByPath(authenticationToken, folderTreeItem, fileFilter);
+	}
+
+	private List<FileTreeItem> createSharedInputTaskFolder(AuthenticationToken authenticationToken, FolderTreeItem folderTreeItem, FileFilter fileFilter) throws PermissionDeniedException {
+		List<FileTreeItem> result = new LinkedList<FileTreeItem>();
+		int shareId = Integer.parseInt(folderTreeItem.getFilePath().replace("Share.Input.", ""));
+		Share share = daoManager.getShareDAO().getShare(shareId);
+		int shareOwnerUserId = share.getTask().getUser().getId();
+		AbstractTaskConfiguration taskConfiguration = share.getTask().getConfiguration();
+		List<String> inputFiles = taskConfiguration.getInputs();
+		for(String input : inputFiles) {
+			File child = new File(input);
+			if(child.exists()) {
+				Boolean permissionResult = filePermissionService.hasReadPermission(authenticationToken, input);
+				if(!permissionResult)
+					throw new PermissionDeniedException();
+				else {
+					String displayPath = share.getTask().getName() + File.separator + "Input" + File.separator + child.getName();
+	                boolean filter = false; 
+	                FileTypeEnum fileType = FileTypeEnum.PLAIN_TEXT;
+	                if(fileFilter != null) {
+	                	fileType = getFileType(authenticationToken, child.getAbsolutePath());
+	                	filter = filter(fileType, fileFilter);
+	                }
+	                	 
+	                if(!filter) 
+	                	result.add(new FileTreeItem(child.getName(), child.getAbsolutePath(), displayPath, fileType, shareOwnerUserId, false, false, false));					
+				}
+			}
+		}
+		return result;
+	}
+
+	private List<FileTreeItem> createSharedOutputTaskFolder(AuthenticationToken authenticationToken, FolderTreeItem folderTreeItem, FileFilter fileFilter) throws PermissionDeniedException {
+		List<FileTreeItem> result = new LinkedList<FileTreeItem>();
+		int shareId = Integer.parseInt(folderTreeItem.getFilePath().replace("Share.Input.", ""));
+		Share share = daoManager.getShareDAO().getShare(shareId);
+		int shareOwnerUserId = share.getTask().getUser().getId();
+		List<String> outputs = daoManager.getTasksOutputFilesDAO().getOutputs(share.getTask());
+		for(String output : outputs) {
+			File child = new File(output);
+			if(child.exists()) {
+				Boolean permissionResult = filePermissionService.hasReadPermission(authenticationToken, output);
+				if(!permissionResult)
+					throw new PermissionDeniedException();
+				else {
+					String displayPath = share.getTask().getName() + File.separator + "Output" + File.separator + child.getName();
+					boolean filter = false; 
+	                FileTypeEnum fileType = FileTypeEnum.PLAIN_TEXT;
+	                if(fileFilter != null) {
+	                	fileType = getFileType(authenticationToken, child.getAbsolutePath());
+	                	filter = filter(fileType, fileFilter);
+	                }
+	                	 
+	                if(!filter) 
+	                	result.add(new FileTreeItem(child.getName(), child.getAbsolutePath(), displayPath, fileType, shareOwnerUserId, false, false, false));
+					
+				}
+			}
+		}
+		return result;
+	}
+
+	private List<FileTreeItem> createSharedTaskFolder(AuthenticationToken authenticationToken, FolderTreeItem folderTreeItem, FileFilter fileFilter) {
+		List<FileTreeItem> result = new LinkedList<FileTreeItem>();
+		int shareId = Integer.parseInt(folderTreeItem.getFilePath().replace("Share.", ""));
+		Share share = daoManager.getShareDAO().getShare(shareId);
+		int shareOwnerUserId = share.getTask().getUser().getId();
+		FileTreeItem output = new FileTreeItem("Output", "Share.Output." + share.getId(), 
+				"Output", FileTypeEnum.DIRECTORY, shareOwnerUserId, false, false, false);
+		FileTreeItem input = new FileTreeItem("Input", "Share.Input." + share.getId(), "Input", 
+				FileTypeEnum.DIRECTORY, shareOwnerUserId, false, false, false);
+		result.add(input);
+		result.add(output);
+		return result;
+	}
+
+	private List<FileTreeItem> createSharedFolders(AuthenticationToken authenticationToken, FileFilter fileFilter) {
+		List<FileTreeItem> result = new LinkedList<FileTreeItem>();
+		ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
+		List<Share> shares = daoManager.getShareDAO().getSharesOfInvitee(user);
+		
+		for(Share share : shares) {
+			int shareOwnerUserId = share.getTask().getUser().getId();
+			result.add(new FileTreeItem(share.getTask().getName(), "Share." + share.getId(), share.getTask().getName(), FileTypeEnum.DIRECTORY, 
+					shareOwnerUserId, false, false, false));
+		}
+		return result;
+	}
+
+	private List<FileTreeItem> createRootFiles(AuthenticationToken authenticationToken, FileFilter fileFilter) {
+		List<FileTreeItem> result = new LinkedList<FileTreeItem>();
+		result.add(new FolderTreeItem("Owned", Configuration.fileBase + File.separator + authenticationToken.getUserId(), "Owned", FileTypeEnum.DIRECTORY,
+				 authenticationToken.getUserId(), true, false, true));
+		result.add(new FolderTreeItem("Shared", "Shared", "Shared", FileTypeEnum.DIRECTORY,
+				 authenticationToken.getUserId(), true, false, false));
+		return result;
+	}
+
+	private List<FileTreeItem> createFilesByPath(AuthenticationToken authenticationToken, FolderTreeItem folderTreeItem, FileFilter fileFilter) throws PermissionDeniedException {
+		List<FileTreeItem> result = new LinkedList<FileTreeItem>();
+		String filePath = Configuration.fileBase + File.separator + authenticationToken.getUserId();
+		if(folderTreeItem != null)
+			filePath = folderTreeItem.getFilePath();
+		
+		 boolean permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
+	        if(!permissionResult)
+	            throw new PermissionDeniedException();
+	        else {
+	            File file = new File(filePath);
+	            File[] childFiles = file.listFiles();
+	            Arrays.sort(childFiles);
+	            for(File child : childFiles) {
+	                String childPath = child.getAbsolutePath();
+	                permissionResult = filePermissionService.hasReadPermission(authenticationToken, childPath);
+	                if(!permissionResult)
+	                    throw new PermissionDeniedException();
+	                 String name = child.getName();
+	                 String displayPath = childPath.replace(Configuration.fileBase + File.separator + authenticationToken.getUserId(), "");
+	                 
+	                 boolean filter = false; 
+	                 FileTypeEnum fileType = FileTypeEnum.PLAIN_TEXT;
+	                 if(fileFilter != null) {
+	                	 fileType = getFileType(authenticationToken, child.getAbsolutePath());
+	                	 filter = filter(fileType, fileFilter);
+	                 }
+	                	 
+	                 if(!filter) 
+	                	 if(child.isDirectory())
+	                		 result.add(new FolderTreeItem(name, child.getAbsolutePath(), displayPath, fileType,
+	                				 authenticationToken.getUserId(), false, child.isDirectory(), true));
+	                	 else
+			              	 result.add(new FileTreeItem(name, child.getAbsolutePath(), displayPath, fileType,
+			              			 authenticationToken.getUserId(), false, child.isDirectory(), true));
+	            }
+	        }
+		
+		return result;
 	}
 
 }
