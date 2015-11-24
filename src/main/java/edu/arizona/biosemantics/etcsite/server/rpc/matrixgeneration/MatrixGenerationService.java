@@ -18,12 +18,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -49,12 +45,7 @@ import edu.arizona.biosemantics.common.taxonomy.TaxonIdentification;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Emailer;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
-import edu.arizona.biosemantics.etcsite.server.db.TaxonGroupDAO;
 import edu.arizona.biosemantics.etcsite.server.rpc.auth.AdminAuthenticationToken;
-import edu.arizona.biosemantics.etcsite.server.rpc.file.FileService;
-import edu.arizona.biosemantics.etcsite.server.rpc.file.access.FileAccessService;
-import edu.arizona.biosemantics.etcsite.server.rpc.file.format.FileFormatService;
-import edu.arizona.biosemantics.etcsite.server.rpc.file.permission.FilePermissionService;
 import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
@@ -190,7 +181,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		if(activeProcessFutures.containsKey(config.getConfiguration().getId())) {
 			return task;
 		} else {
-			final TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION);
 			TaskStage taskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.PROCESS.toString());
 			task.setTaskStage(taskStage);
 			task.setResumable(false);
@@ -215,7 +205,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			final ListenableFuture<Void> futureResult = executorService.submit(matrixGeneration);
 			
 			this.activeProcessFutures.put(config.getConfiguration().getId(), futureResult);
-			try {
+			/*try {
 				futureResult.get(Configuration.matrixGeneration_maxRunningTimeMinutes, TimeUnit.MINUTES);
 			} catch (InterruptedException e2) {
 				e2.printStackTrace();
@@ -227,7 +217,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				matrixGeneration.destroy();
 				log(LogLevel.ERROR,
 						"Matrix generation took too long and was canceled.");
-			}
+			}*/
 			
 			futureResult.addListener(new Runnable() {
 			     	public void run() {	
@@ -308,8 +298,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	
 	@Override
 	public Task completeReview(AuthenticationToken authenticationToken, Task task) throws MatrixGenerationException {
-		final MatrixGenerationConfiguration config = getMatrixGenerationConfiguration(task);
-		final TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION);
 		TaskStage taskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.OUTPUT.toString());
 		task.setTaskStage(taskStage);
 		task.setResumable(true);
@@ -445,7 +433,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	
 	@Override
 	public Task goToTaskStage(AuthenticationToken authenticationToken, Task task, TaskStageEnum taskStageEnum) {
-		TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION);
 		TaskStage taskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(taskStageEnum.toString());
 		task.setTaskStage(taskStage);
 		task.setResumable(true);
@@ -456,29 +443,31 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 	
 	@Override
-	public boolean isValidInput(AuthenticationToken authenticationToken, String filePath) {//TODO pass specific error messages to the users 
+	public String checkInputValid(AuthenticationToken authenticationToken, String filePath) {//TODO pass specific error messages to the users 
 		boolean readPermission = filePermissionService.hasReadPermission(authenticationToken, filePath);
 		if(!readPermission)
-			return false;
+			return "File Access Denied";
 		boolean isDirectory = true;
 		try {
 			isDirectory = fileService.isDirectory(authenticationToken, filePath);
 		} catch (PermissionDeniedException e) {
-			return false;
+			return "File Access Denied";
 		}
 		if(!isDirectory)
-			return false;
+			return "Invalid input: Input should be directory";
 		List<String> files;
 		try {
 			files = fileService.getDirectoriesFiles(authenticationToken, filePath);
 		} catch (PermissionDeniedException e) {
-			return false;
+			return "Access Denied";
 		}
 		if(files.isEmpty())
-			return false;
+			return "Invalid Input: Folder contains no files";
 		
 		//extra validation, since a valid taxon description is automatically also a valid marked up taxon description according to 
 		//the schema. Check for min. 1 statement
+		HashMap<String, String> taxonNames = new HashMap<String, String>();
+		String taxonNameErrors = "";
 		boolean statementFound = false;
 		for(String file : files) {
 			boolean valid;
@@ -486,12 +475,12 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				valid = fileFormatService.isValidMarkedupTaxonDescription(authenticationToken, filePath + File.separator + file);
 			} catch (PermissionDeniedException | GetFileContentFailedException e) {
 				log(LogLevel.ERROR, "validation of "+file+ " threw exceptions");
-				return false;
+				return "Access Denied: Validation exception";
 			}
 
 			if(!valid){
 				log(LogLevel.ERROR, file+ " is not valid");
-				return false;
+				return "File validation failed for "+ file;
 			}
 			SAXBuilder saxBuilder = new SAXBuilder();
 			Document document;
@@ -499,7 +488,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				document = saxBuilder.build(new File(filePath + File.separator + file));
 			} catch (JDOMException | IOException e) {
 				log(LogLevel.ERROR, "SAXBuilder cannot build "+(filePath + File.separator + file)+ ".");
-				return false;
+				return "XML format error in file " + file;
 			}
 			XPathFactory xPathFactory = XPathFactory.instance();
 			XPathExpression<Element> xPathExpression = 
@@ -510,9 +499,28 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			}
 			if(!statementFound){
 				log(LogLevel.ERROR, "no statement found in file "+file+ ".");
+				return "Input files should have at least one \\<statement\\>. Not found in "+ file;
+			}
+			XPathExpression<Element> taxonNameMatcher = 
+					xPathFactory.compile("/bio:treatment/taxon_identification[@status=\"ACCEPTED\"]/taxon_name", Filters.element(), 
+							null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
+			List<Element> taxonNameElements = taxonNameMatcher.evaluate(document);
+			String taxon = "";
+			for(Element taxonName: taxonNameElements){
+				taxon += taxonName.getText()+"_";
+			}
+			Element lastElement = taxonNameElements.get(taxonNameElements.size()-1);
+			taxon += lastElement.getAttributeValue("authority") + "_" + lastElement.getAttributeValue("date");
+			if(taxonNames.containsKey(taxon)){
+				taxonNameErrors += "( " + taxonNames.get(taxon) + " , " + file + " ), ";
+			}else{
+				taxonNames.put(taxon,  file);
 			}
 		}
-		return statementFound;
+		if(!taxonNameErrors.equals("")){
+			return "Taxon names, authority, date should be unique. There are duplicates in files " + taxonNameErrors;
+		}
+		return "valid";
 	}
 
 	@Override
@@ -742,9 +750,9 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			
 				String[] line = new String[matrix.getCharacterCount() + 1];
 				line[0] = "Name";
-				
-				for(int i=1; i<=matrix.getCharacterCount(); i++) {
-					line[i] = matrix.getFlatCharacters().get(i - 1).toString();
+				ArrayList<Character> sortedArray = sortCharacters(matrix.getFlatCharacters());
+				for(int i=1; i<=sortedArray.size(); i++) {
+					line[i] = sortedArray.get(i - 1).toString();
 				}
 				writer.writeNext(line);
 				
@@ -753,7 +761,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 					line[0] = getTaxonName(taxon);
 					
 					for(int j=1; j<matrix.getCharacterCount(); j++) {
-						Character character = matrix.getFlatCharacters().get(j - 1);
+						Character character = sortedArray.get(j - 1);
 						line[j] = matrix.getValue(taxon, character).toString();
 					}
 					writer.writeNext(line);
@@ -763,6 +771,77 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				return result;
 			}
 		}
+	}
+
+	private ArrayList<Character> sortCharacters(List<Character> flatCharacters) {
+		ArrayList<Character> sortedArray = new ArrayList<Character>();
+		ArrayList<String> sortedOrgans = new ArrayList<String>();
+		HashMap<String, ArrayList<Character>> organsMap = new HashMap<String, ArrayList<Character>>();
+		for(Character character: flatCharacters){
+			String organ = character.getOrgan().toString();
+			if(!sortedOrgans.contains(organ))
+				sortedOrgans = insertOrgan(organ, sortedOrgans);
+			if(organsMap.containsKey(organ)){
+				organsMap = insertCharacter(organ, character, organsMap);
+			}else{
+				ArrayList<Character> subList = new ArrayList<Character>();
+				subList.add(character);
+				organsMap.put(organ, subList);
+			}
+		}
+		for(String organ : sortedOrgans){
+			sortedArray.addAll(organsMap.get(organ));
+		}
+		
+		return sortedArray;
+	}
+
+	private HashMap<String, ArrayList<Character>> insertCharacter(String organ, Character character,
+			HashMap<String, ArrayList<Character>> organsMap) {
+		// TODO Auto-generated method stub
+		ArrayList<Character> subList = organsMap.get(organ);
+		if(subList.isEmpty()){
+			subList.add(character);
+			organsMap.put(organ, subList);
+			return organsMap;
+		}
+		boolean success = false;
+		int index = 0;
+		for(Character characterItem: subList){
+			if(character.getName().compareTo(characterItem.getName()) < 0){
+				subList.add(index, character);
+				success = true;
+				break;
+			}
+			index ++;
+		}
+		if(!success){
+			subList.add(character);
+		}
+		organsMap.put(organ, subList);
+		return organsMap;
+	}
+
+	private ArrayList<String> insertOrgan(String organ, ArrayList<String> sortedOrgans) {
+		// TODO Auto-generated method stub
+		if(sortedOrgans.isEmpty()){
+			sortedOrgans.add(organ);
+			return sortedOrgans;
+		}
+		boolean success = false;
+		int index=0;
+		for(String sortedOrgan: sortedOrgans){
+			if(organ.compareTo(sortedOrgan) < 0){
+				sortedOrgans.add(index, organ);
+				success = true;
+				break;
+			}
+			index++;
+		}
+		if(!success){
+			sortedOrgans.add(organ);
+		}
+		return sortedOrgans;
 	}
 
 	private String getTaxonName(Taxon taxon) {

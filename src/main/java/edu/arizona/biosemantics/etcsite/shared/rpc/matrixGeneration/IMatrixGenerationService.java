@@ -26,7 +26,7 @@ public interface IMatrixGenerationService extends RemoteService, IHasTasksServic
 	
 	public Task goToTaskStage(AuthenticationToken authenticationToken, Task task, TaskStageEnum review);
 
-	public boolean isValidInput(AuthenticationToken authenticationToken,
+	public String checkInputValid(AuthenticationToken authenticationToken,
 			String filePath);
 	
 	public String outputMatrix(AuthenticationToken token, Task task, Model model) throws MatrixGenerationException;

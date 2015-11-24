@@ -42,11 +42,11 @@ public class MatrixGenerationCreatePresenter implements MatrixGenerationCreateVi
 			@Override
 			public void validate(String inputFolderPath) {
 				final MessageBox box = Alerter.startLoading();
-				matrixGenerationService.isValidInput(Authentication.getInstance().getToken(), inputFolderPath, new AsyncCallback<Boolean>() {
+				matrixGenerationService.checkInputValid(Authentication.getInstance().getToken(), inputFolderPath, new AsyncCallback<String>() {
 					@Override
-					public void onSuccess(Boolean result) {
-						if(!result) {
-							Alerter.invalidInputDirectory();
+					public void onSuccess(String result) {
+						if(!result.equals("valid")) {
+							Alerter.inputError(result);
 							Alerter.stopLoading(box);
 						} else {
 							placeController.goTo(new MatrixGenerationInputPlace());
