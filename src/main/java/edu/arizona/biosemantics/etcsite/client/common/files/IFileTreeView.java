@@ -21,8 +21,10 @@ public interface IFileTreeView extends IsWidget {
 	void setSelection(List<FileTreeItem> selection);
 	int getDepth(FileTreeItem fileTreeItem);
 	void refresh(FileFilter fileFilter);
+	void refresh(FileTreeItem fileTreeItem, FileFilter fileFilter);
 	List<FileTreeItem> getSelection();
 	void setSelectionMode(SelectionMode selectionMode);
 	void addSelectionChangeHandler(SelectionChangedHandler<FileTreeItem> handler);
+	void refreshParent(FileTreeItem selection, FileFilter fileFilter);
 
 }

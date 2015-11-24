@@ -8,6 +8,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
@@ -35,24 +36,19 @@ public class FileTreeView extends Composite implements IFileTreeView {
 	private VerticalLayoutContainer container;
 
 	private Presenter presenter;
-	private final IFileServiceAsync fileService = GWT.create(IFileService.class);
+	private final IFileServiceAsync fileService;
  
 	private Tree<FileTreeItem, String> tree;
 
 	private FileFilter fileFilter;
 
-	public FileTreeView() {
+	@Inject
+	public FileTreeView(final IFileServiceAsync fileService) {
+		this.fileService = fileService;
 		RpcProxy<FileTreeItem, List<FileTreeItem>> proxy = new RpcProxy<FileTreeItem, List<FileTreeItem>>() {
 			@Override
 			public void load(FileTreeItem loadConfig, AsyncCallback<List<FileTreeItem>> callback) {
-				fileService.getFiles(Authentication.getInstance().getToken(), (FolderTreeItem)loadConfig, getFileFilter(), callback);
-			}
-		};
-		TreeLoader<FileTreeItem> loader = new TreeLoader<FileTreeItem>(
-				proxy) {
-			@Override
-			public boolean hasChildren(FileTreeItem parent) {
-				return parent instanceof FolderTreeItem;
+				fileService.getFiles(Authentication.getInstance().getToken(), (FolderTreeItem)loadConfig, fileFilter, callback);
 			}
 		};
 		TreeStore<FileTreeItem> store = new TreeStore<FileTreeItem>(
@@ -62,9 +58,6 @@ public class FileTreeView extends Composite implements IFileTreeView {
 						return item.getPath();
 					}
 				});
-		loader.addLoadHandler(new ChildTreeStoreBinding<FileTreeItem>(
-				store));
-
 		tree = new Tree<FileTreeItem, String>(
 				store, new ValueProvider<FileTreeItem, String>() {
 					@Override
@@ -82,9 +75,15 @@ public class FileTreeView extends Composite implements IFileTreeView {
 						return "name";
 					}
 				});
+		TreeLoader<FileTreeItem> loader = new TreeLoader<FileTreeItem>(proxy) {
+			@Override
+			public boolean hasChildren(FileTreeItem parent) {
+				return parent instanceof FolderTreeItem;
+			}
+		};
+		loader.addLoadHandler(new ChildTreeStoreBinding<FileTreeItem>(store));
 		tree.setLoader(loader);
-		TreeStateHandler<FileTreeItem> stateHandler = new TreeStateHandler<FileTreeItem>(
-				tree);
+		TreeStateHandler<FileTreeItem> stateHandler = new TreeStateHandler<FileTreeItem>(tree);
 		stateHandler.loadState();
 		
 		tree.getSelectionModel().setSelectionMode(SelectionMode.MULTI);
@@ -92,10 +91,6 @@ public class FileTreeView extends Composite implements IFileTreeView {
 		container.setHeight(400);
 		container.add(tree);
 		container.getScrollSupport().setScrollMode(ScrollMode.AUTOY);
-	}
-
-	protected FileFilter getFileFilter() {
-		return fileFilter;
 	}
 
 	@Override
@@ -125,6 +120,12 @@ public class FileTreeView extends Composite implements IFileTreeView {
 		this.fileFilter = fileFilter;
 		tree.refresh(null);
 	}
+	
+	@Override
+	public void refresh(FileTreeItem fileTreeItem, FileFilter fileFilter) {
+		this.fileFilter = fileFilter;
+		tree.refresh(fileTreeItem);
+	}
 
 	@Override
 	public List<FileTreeItem> getSelection() {
@@ -139,6 +140,12 @@ public class FileTreeView extends Composite implements IFileTreeView {
 	@Override
 	public void addSelectionChangeHandler(SelectionChangedHandler<FileTreeItem> handler) {
 		tree.getSelectionModel().addSelectionChangedHandler(handler);
+	}
+
+	@Override
+	public void refreshParent(FileTreeItem selection, FileFilter fileFilter) {
+		this.fileFilter = fileFilter;
+		tree.refresh(tree.getStore().getParent(selection));
 	}
 	
 }

@@ -146,13 +146,13 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	}
 
 	private void createDirectory(final String folderName){
-		final List<FileTreeItem> selection = fileTreePresenter.getView().getSelection();
-		final String selectionPath = selection.get(0).getFilePath();
+		final FileTreeItem selection = fileTreePresenter.getView().getSelection().get(0);
+		final String selectionPath = selection.getFilePath();
 		fileService.createDirectory(Authentication.getInstance().getToken(), selectionPath, folderName, false,
 				new AsyncCallback<String>() {
 					@Override
 					public void onSuccess(String result) {
-						fileTreePresenter.getView().refresh(fileFilter);
+						fileTreePresenter.getView().refresh(selection, fileFilter);
 					}
 					@Override
 					public void onFailure(Throwable caught) {
@@ -171,7 +171,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 					}
 					@Override
 					public void onSuccess(Void result) {
-						fileTreePresenter.getView().refresh(fileFilter);
+						fileTreePresenter.getView().refresh(selection, fileFilter);
 						selection.setName(newName);
 					}
 			});
@@ -182,7 +182,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 					newFileName, new AsyncCallback<Void>() {
 				@Override
 				public void onSuccess(Void result) {
-					fileTreePresenter.getView().refresh(fileFilter);
+					fileTreePresenter.getView().refresh(selection, fileFilter);
 					selection.setName(newFileName);
 				}
 				@Override
@@ -195,60 +195,51 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 
 	@Override
 	public void onRename() {
-		final List<FileTreeItem> selections = fileTreePresenter.getView().getSelection();
+		final FileTreeItem selection = fileTreePresenter.getView().getSelection().get(0);
 		//don't allow rename of root node
-		if(selections.size() == 1 && !selections.get(0).isSystemFile()) {
-			final FileTreeItem selection = selections.get(0);
-			final PromptMessageBox box = new PromptMessageBox("Rename", "New name:");
-			box.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
-				@Override
-				public void onSelect(SelectEvent event) {
-					renameFile(selection, box.getValue());
-				}
-			 });
-			box.getTextField().addKeyPressHandler(new KeyPressHandler() {
-				
-				@Override
-				public void onKeyPress(KeyPressEvent event) {
-					if(event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER){
+		final PromptMessageBox box = new PromptMessageBox("Rename", "New name:");
+		box.getButton(PredefinedButton.OK).addSelectHandler(
+				new SelectHandler() {
+					@Override
+					public void onSelect(SelectEvent event) {
 						renameFile(selection, box.getValue());
-						box.hide();
 					}
+				});
+		box.getTextField().addKeyPressHandler(new KeyPressHandler() {
+
+			@Override
+			public void onKeyPress(KeyPressEvent event) {
+				if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
+					renameFile(selection, box.getValue());
+					box.hide();
 				}
-			});
-			 box.getTextField().setValue(selection.getName(false));
-			 box.show();
-		} else {
-			Alerter.invalidFileName();
-		}
+			}
+		});
+		box.getTextField().setValue(selection.getName(false));
+		box.show();
 	}
 
 	@Override
 	public void onDelete() {
-		final List<FileTreeItem> selections = fileTreePresenter.getView().getSelection();
-		if(selections.size() == 1 && !selections.get(0).isSystemFile()) {
-			final FileTreeItem selection = selections.get(0);
-			MessageBox delete = Alerter.sureToDelete(selection.getText());
-			delete.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
-				@Override
-				public void onSelect(SelectEvent event) {
-					fileService.deleteFile(Authentication.getInstance().getToken(), selection.getFilePath(), new AsyncCallback<Void>(){
-						@Override
-						public void onSuccess(Void result) {
-							ManagableFileTreePresenter.this.initActions();
-							fileTreePresenter.getView().setSelection(null);
-							fileTreePresenter.getView().refresh(fileFilter);
-						}
-						@Override
-						public void onFailure(Throwable caught) {
-							Alerter.failedToDeleteFile(caught);
-						}
-					});
-				}
-			});
-		} else {
-			Alerter.invalidFileToDelete();
-		}
+		final FileTreeItem selection = fileTreePresenter.getView().getSelection().get(0);
+		MessageBox delete = Alerter.sureToDelete(selection.getText());
+		delete.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				fileService.deleteFile(Authentication.getInstance().getToken(), selection.getFilePath(), new AsyncCallback<Void>(){
+					@Override
+					public void onSuccess(Void result) {
+						ManagableFileTreePresenter.this.initActions();
+						fileTreePresenter.getView().refreshParent(selection, fileFilter);
+						fileTreePresenter.getView().setSelection(null);
+					}
+					@Override
+					public void onFailure(Throwable caught) {
+						Alerter.failedToDeleteFile(caught);
+					}
+				});
+			}
+		});
 	}
 
 	@Override
@@ -340,8 +331,11 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	}
 
 	private void initActions() {
-		setAllowsChildren(false, false);
-		setSystemFile(true);
+		view.setEnabledCreateDirectory(false);
+		view.setEnabledUpload(false);
+		view.setEnabledCreateSemanticMarkupFiles(false);
+		view.setEnabledRename(false);
+		view.setEnabledDelete(false);
 	}
 	
 	private void disableManagement() {
@@ -359,27 +353,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		view.setEnabledUpload(true);
 		view.setEnabledCreateSemanticMarkupFiles(true);
 	}
-	
-	private void setSystemFile(boolean systemFile) {
-		view.setEnabledRename(!systemFile);
-		view.setEnabledDelete(!systemFile);
-	}	
-	
-	private void setAllowsChildren(boolean allowsNewFiles, boolean allowNewFolders) {
-		view.setEnabledCreateDirectory(allowNewFolders);
-		
-		/*if(allowsNewChildren) {
-			display.getUploader().getFileInput().getWidget().getElement().removeAttribute("aria-hidden");
-			display.getAddButton().getElement().removeAttribute("aria-hidden");
-		} else {
-			display.getUploader().getFileInput().getWidget().getElement().setAttribute("aria-hidden", "true");
-			display.getAddButton().getElement().setAttribute("aria-hidden", "true");
-		}*/
-		view.setEnabledUpload(allowsNewFiles);
-		view.setEnabledCreateSemanticMarkupFiles(allowsNewFiles);
-	}
-	
-	
+			
 	
 	/**
 	 * There are only workarounds known to style the button inside of a input file element.
@@ -438,16 +412,21 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 
 	@Override
 	public void onSelectionChanged(SelectionChangedEvent<FileTreeItem> event) {
-		List<FileTreeItem> selection = event.getSelection();
-		boolean systemFile = false;
-		for(FileTreeItem item : event.getSelection()) {
-			if(item.isSystemFile())
-				systemFile = true;
-		}
-		boolean allowsNewFiles = selection.size() > 1;
-		boolean allowsNewFolders = selection.size() > 1;
-		setAllowsChildren(allowsNewFiles, allowsNewFolders);
-		setSystemFile(systemFile);
+		List<FileTreeItem> selections = event.getSelection();
+		boolean singleSelection = selections.size() == 1;
+		boolean nonZeroSelection = !selections.isEmpty();
+		FileTreeItem firstItem = event.getSelection().get(0);
+		
+		boolean anySystemFile = false;
+		for(FileTreeItem selection : selections) 
+			if(selection.isSystemFile())
+				anySystemFile = true;
+		
+		view.setEnabledCreateDirectory(singleSelection && firstItem.isAllowsNewFolders());
+		view.setEnabledUpload(singleSelection && firstItem.isAllowsNewFiles() && firstItem.isAllowsNewFolders());
+		view.setEnabledCreateSemanticMarkupFiles(singleSelection && firstItem.isAllowsNewFiles());
+		view.setEnabledRename(singleSelection && !firstItem.isSystemFile());
+		view.setEnabledDelete(nonZeroSelection && !anySystemFile);
 		
 		setInputFileMultiple();
 	}

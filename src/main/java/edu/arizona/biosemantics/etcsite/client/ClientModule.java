@@ -378,7 +378,7 @@ public class ClientModule extends AbstractGinModule {
 		public FileManagerPresenterProvider(IFileServiceAsync fileService,
 				ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter,
 				PlaceController placeController) {
-			fileTreeView = new FileTreeView();
+			fileTreeView = new FileTreeView(fileService);
 			fileTreePresenter = new FileTreePresenter(fileTreeView);
 			managableFileTreeView = new ManagableFileTreeView(fileTreePresenter);			
 			managableFileTreePresenter = new ManagableFileTreePresenter(managableFileTreeView, fileTreePresenter, fileService, 
@@ -405,7 +405,7 @@ public class ClientModule extends AbstractGinModule {
 		@Inject
 		public FileManagerDialogPresenterProvider(IFileServiceAsync fileService,
 				ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter) {
-			fileTreeView = new FileTreeView();
+			fileTreeView = new FileTreeView(fileService);
 			fileTreePresenter = new FileTreePresenter(fileTreeView);
 			managableFileTreeView = new ManagableFileTreeView(fileTreePresenter);			
 			managableFileTreePresenter = new ManagableFileTreePresenter(managableFileTreeView, fileTreePresenter, fileService, 
@@ -430,7 +430,7 @@ public class ClientModule extends AbstractGinModule {
 		
 		@Inject
 		public SelectableFileTreePresenterProvider(IFileServiceAsync fileService) {
-			fileTreeView = new FileTreeView();
+			fileTreeView = new FileTreeView(fileService);
 			fileTreePresenter = new FileTreePresenter(fileTreeView);
 			selectableFileTreeView = new SelectableFileTreeView(fileTreePresenter);
 			selectableFileTreePresenter = new SelectableFileTreePresenter(selectableFileTreeView, fileTreePresenter);
