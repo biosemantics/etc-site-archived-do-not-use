@@ -780,9 +780,15 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 					throw new PermissionDeniedException();
 				else {
 					String displayPath = share.getTask().getName() + File.separator + "Input" + File.separator + child.getName();
-					FileTreeItem fileTreeItem = new FileTreeItem(child.getName(), child.getAbsolutePath(), displayPath, 
-							getFileType(authenticationToken, input), shareOwnerUserId, false, false, false);
-					result.add(fileTreeItem);
+	                boolean filter = false; 
+	                FileTypeEnum fileType = FileTypeEnum.PLAIN_TEXT;
+	                if(fileFilter != null) {
+	                	fileType = getFileType(authenticationToken, child.getAbsolutePath());
+	                	filter = filter(fileType, fileFilter);
+	                }
+	                	 
+	                if(!filter) 
+	                	result.add(new FileTreeItem(child.getName(), child.getAbsolutePath(), displayPath, fileType, shareOwnerUserId, false, false, false));					
 				}
 			}
 		}
@@ -803,9 +809,16 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 					throw new PermissionDeniedException();
 				else {
 					String displayPath = share.getTask().getName() + File.separator + "Output" + File.separator + child.getName();
-					FileTreeItem fileTreeItem = new FileTreeItem(child.getName(), child.getAbsolutePath(), displayPath, 
-							getFileType(authenticationToken, output), shareOwnerUserId, false, false, false);
-					result.add(fileTreeItem);
+					boolean filter = false; 
+	                FileTypeEnum fileType = FileTypeEnum.PLAIN_TEXT;
+	                if(fileFilter != null) {
+	                	fileType = getFileType(authenticationToken, child.getAbsolutePath());
+	                	filter = filter(fileType, fileFilter);
+	                }
+	                	 
+	                if(!filter) 
+	                	result.add(new FileTreeItem(child.getName(), child.getAbsolutePath(), displayPath, fileType, shareOwnerUserId, false, false, false));
+					
 				}
 			}
 		}
@@ -883,29 +896,6 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	                	 else
 			              	 result.add(new FileTreeItem(name, child.getAbsolutePath(), displayPath, fileType,
 			              			 authenticationToken.getUserId(), false, child.isDirectory(), true));
-	                 
-	                 
-	                 
-	                 /*if (fileFilter == null){
-	                     String displayPath = childPath.replace(Configuration.fileBase + File.separator + authenticationToken.getUserId(), "");
-	                     Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(name, child.getAbsolutePath(), displayPath, child.isDirectory() ? FileTypeEnum.DIRECTORY : FileTypeEnum.PLAIN_TEXT,
-	                             authenticationToken.getUserId(), false, child.isDirectory(), true));
-	                     fileTree.addChild(childTree);
-	                     if(child.isDirectory()) {
-	                         decorateOwnedTree(authenticationToken, childTree, fileFilter, childPath);
-	                     }
-	                 } else {
-	                     FileTypeEnum fileType = getFileType(authenticationToken, child.getAbsolutePath());
-	                     if(fileType != null && !filter(fileType, fileFilter)) {
-	                         String displayPath = childPath.replace(Configuration.fileBase + File.separator + authenticationToken.getUserId(), "");
-	                         Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(name, child.getAbsolutePath(), displayPath, fileType,
-	                                 authenticationToken.getUserId(), false, child.isDirectory(), true));
-	                         fileTree.addChild(childTree);
-	                         if(child.isDirectory()) {
-	                             decorateOwnedTree(authenticationToken, childTree, fileFilter, childPath);
-	                         }
-	                     }
-	                 }*/
 	            }
 	        }
 		
