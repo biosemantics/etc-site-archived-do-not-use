@@ -7,9 +7,9 @@ public class FolderTreeItem extends FileTreeItem {
 		
 	}
 
-	public FolderTreeItem(String name, String path, String displayPath, FileTypeEnum type, int ownerUserId, boolean isSystemFile, 
+	public FolderTreeItem(String id, String name, String path, String displayPath, FileTypeEnum type, int ownerUserId, boolean isSystemFile, 
 			  boolean isAllowsNewFiles, boolean isAllowsNewFolders) { 
-		super(name, path, displayPath, type, ownerUserId, isSystemFile, isAllowsNewFiles, isAllowsNewFolders);
+		super(id, name, path, displayPath, type, ownerUserId, isSystemFile, isAllowsNewFiles, isAllowsNewFolders);
 	}
 
 }
