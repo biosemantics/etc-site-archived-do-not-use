@@ -77,4 +77,6 @@ public interface IFileService extends RemoteService {
 	
 	public List<FileTreeItem> getFiles(AuthenticationToken authenticationToken, FolderTreeItem folderTreeItem, FileFilter fileFilter) throws PermissionDeniedException;
 
+	public void deleteFiles(AuthenticationToken token, List<FileTreeItem> selection) throws PermissionDeniedException, FileDeleteFailedException;
+	
 }

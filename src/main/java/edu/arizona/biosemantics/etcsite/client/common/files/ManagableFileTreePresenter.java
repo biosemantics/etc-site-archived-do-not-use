@@ -1,7 +1,10 @@
 
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
@@ -44,6 +47,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	private IFileTreeView.Presenter fileTreePresenter;
 	private FileFilter fileFilter;
 	private String defaultServletPath;
+	private FileTreeItem targetFileTreeItem;
 	private String targetUploadDirectory;
 	private ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter;
 	private FileUploadHandler fileUploadHandler;
@@ -89,28 +93,24 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		initActions();
 	}
 	
-	@Override
+	/*@Override
 	public void refresh(FileFilter fileFilter) {
 		this.fileFilter = fileFilter;
 		fileTreePresenter.getView().refresh(fileFilter);
 		//setInputFileMultiple();
-	}
+	}*/
 	
 	@Override
 	public void onCreateSemanticMarkupFiles() {
-		final List<FileTreeItem> selection = fileTreePresenter.getView().getSelection();
-		if(selection.size() == 1) {
-			createSemanticMarkupFilesDialogPresenter.setCloseHandler(new ICloseHandler() {
-				@Override
-				public void onClose(int filesCreated) {
-					if(filesCreated > 0)
-						refresh(FileFilter.ALL);
-				}
-			});
-			createSemanticMarkupFilesDialogPresenter.show(fileTreePresenter.getView().getSelection().get(0).getFilePath());
-		}
-		else
-			Alerter.noDestinationSelected();
+		final FileTreeItem selection = fileTreePresenter.getView().getSelection().get(0);
+		createSemanticMarkupFilesDialogPresenter.setCloseHandler(new ICloseHandler() {
+			@Override
+			public void onClose(int filesCreated) {
+				if(filesCreated > 0)
+					fileTreePresenter.getView().refreshChildren(selection, fileFilter);
+			}
+		});
+		createSemanticMarkupFilesDialogPresenter.show(fileTreePresenter.getView().getSelection().get(0).getFilePath());
 	}
 
 	@Override
@@ -152,7 +152,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 				new AsyncCallback<String>() {
 					@Override
 					public void onSuccess(String result) {
-						fileTreePresenter.getView().refresh(selection, fileFilter);
+						fileTreePresenter.getView().refreshChildren(selection, fileFilter);
 					}
 					@Override
 					public void onFailure(Throwable caught) {
@@ -171,7 +171,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 					}
 					@Override
 					public void onSuccess(Void result) {
-						fileTreePresenter.getView().refresh(selection, fileFilter);
+						fileTreePresenter.getView().refreshChildren(fileTreePresenter.getView().getParent(selection), fileFilter);
 						selection.setName(newName);
 					}
 			});
@@ -182,7 +182,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 					newFileName, new AsyncCallback<Void>() {
 				@Override
 				public void onSuccess(Void result) {
-					fileTreePresenter.getView().refresh(selection, fileFilter);
+					fileTreePresenter.getView().refreshChildren(fileTreePresenter.getView().getParent(selection), fileFilter);
 					selection.setName(newFileName);
 				}
 				@Override
@@ -221,17 +221,22 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 
 	@Override
 	public void onDelete() {
-		final FileTreeItem selection = fileTreePresenter.getView().getSelection().get(0);
-		MessageBox delete = Alerter.sureToDelete(selection.getText());
+		final List<FileTreeItem> selection = new LinkedList<FileTreeItem>(fileTreePresenter.getView().getSelection());
+		MessageBox delete = Alerter.sureToDelete(getDeleteText(selection));
 		delete.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
 			@Override
 			public void onSelect(SelectEvent event) {
-				fileService.deleteFile(Authentication.getInstance().getToken(), selection.getFilePath(), new AsyncCallback<Void>(){
+				final MessageBox box = Alerter.startLoading();
+				fileService.deleteFiles(Authentication.getInstance().getToken(), selection, new AsyncCallback<Void>(){
 					@Override
 					public void onSuccess(Void result) {
 						ManagableFileTreePresenter.this.initActions();
-						fileTreePresenter.getView().refreshParent(selection, fileFilter);
-						fileTreePresenter.getView().setSelection(null);
+						Set<FileTreeItem> parents = new HashSet<FileTreeItem>();
+						for(FileTreeItem item : selection)
+							parents.add(fileTreePresenter.getView().getParent(item));
+						for(FileTreeItem parent : parents)
+							fileTreePresenter.getView().refreshChildren(parent, fileFilter);
+						Alerter.stopLoading(box);
 					}
 					@Override
 					public void onFailure(Throwable caught) {
@@ -240,6 +245,11 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 				});
 			}
 		});
+	}
+
+	private String getDeleteText(List<FileTreeItem> selection) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -295,7 +305,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		public void onFinish(IUploader uploader) {	
 			if (uploader.getStatus() == Status.SUCCESS) {
 				fileUploadHandler.keyValidateUploadedFiles(targetUploadDirectory);
-				fileTreePresenter.getView().refresh(fileFilter);
+				fileTreePresenter.getView().refreshChildren(targetFileTreeItem, fileFilter);
 			}
 			
 			serverResponse = fileUploadHandler.parseServerResponse(uploader);
@@ -314,6 +324,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		public void onStart(final IUploader uploader) {
 			final List<FileTreeItem> selections = fileTreePresenter.getView().getSelection();
 			if(selections.size() == 1) {
+				targetFileTreeItem = selections.get(0);
 				targetUploadDirectory = selections.get(0).getFilePath();
 				fileUploadHandler.setServletPathOfUploader(uploader, view.getFormat(), targetUploadDirectory);
 				/*

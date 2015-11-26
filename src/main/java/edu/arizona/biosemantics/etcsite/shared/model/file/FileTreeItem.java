@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class FileTreeItem implements Serializable {
 	
+	private String id;
 	private String name;
 	private String path;
 	private String displayPath;
@@ -17,7 +18,8 @@ public class FileTreeItem implements Serializable {
 		
 	}
 	
-	public FileTreeItem(String name, String path, String displayPath, FileTypeEnum type, int ownerUserId, boolean isSystemFile, boolean isAllowsNewFiles, boolean isAllowsNewFolders) { 
+	public FileTreeItem(String id, String name, String path, String displayPath, FileTypeEnum type, int ownerUserId, boolean isSystemFile, boolean isAllowsNewFiles, boolean isAllowsNewFolders) { 
+		this.id = id;
 		this.name = name;
 		this.path = path;
 		this.displayPath = displayPath;
@@ -77,6 +79,10 @@ public class FileTreeItem implements Serializable {
 			return name;
 		else
 			return name.substring(0, name.lastIndexOf("."));
+	}
+
+	public String getId() {
+		return id;
 	}
 
 }

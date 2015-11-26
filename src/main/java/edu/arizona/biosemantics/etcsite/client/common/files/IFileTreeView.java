@@ -18,13 +18,17 @@ public interface IFileTreeView extends IsWidget {
 	  
 	void setPresenter(Presenter presenter);
 	Widget asWidget();
+	
 	void setSelection(List<FileTreeItem> selection);
-	int getDepth(FileTreeItem fileTreeItem);
-	void refresh(FileFilter fileFilter);
-	void refresh(FileTreeItem fileTreeItem, FileFilter fileFilter);
 	List<FileTreeItem> getSelection();
 	void setSelectionMode(SelectionMode selectionMode);
 	void addSelectionChangeHandler(SelectionChangedHandler<FileTreeItem> handler);
-	void refreshParent(FileTreeItem selection, FileFilter fileFilter);
+	
+	FileTreeItem getParent(FileTreeItem fileTreeItem);
+	int getDepth(FileTreeItem fileTreeItem);
+	
+	void refresh(FileFilter fileFilter);
+	void refreshChildren(FileTreeItem fileTreeItem, FileFilter fileFilter);
+	//void refresh(FileTreeItem selection, FileFilter fileFilter);
 
 }

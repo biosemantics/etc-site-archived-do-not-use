@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 
@@ -788,11 +789,21 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	                }
 	                	 
 	                if(!filter) 
-	                	result.add(new FileTreeItem(child.getName(), child.getAbsolutePath(), displayPath, fileType, shareOwnerUserId, false, false, false));					
+	                	result.add(createFileTreeItem(child.getName(), child.getAbsolutePath(), displayPath, fileType, shareOwnerUserId, false, false, false));					
 				}
 			}
 		}
 		return result;
+	}
+
+	private FileTreeItem createFileTreeItem(String name, String path, String displayPath, FileTypeEnum fileType, int shareOwnerUserId, boolean isSystemFile, 
+			boolean isAllowsNewFiles, boolean isAllowsNewFolders) {
+		return new FileTreeItem(UUID.randomUUID().toString(), name, path, displayPath, fileType, shareOwnerUserId, isSystemFile, isAllowsNewFiles, isAllowsNewFolders); 
+	}
+	
+	private FolderTreeItem createFolderTreeItem(String name, String path, String displayPath, FileTypeEnum fileType, int shareOwnerUserId, boolean isSystemFile, 
+			boolean isAllowsNewFiles, boolean isAllowsNewFolders) {
+		return new FolderTreeItem(UUID.randomUUID().toString(), name, path, displayPath, fileType, shareOwnerUserId, isSystemFile, isAllowsNewFiles, isAllowsNewFolders); 
 	}
 
 	private List<FileTreeItem> createSharedOutputTaskFolder(AuthenticationToken authenticationToken, FolderTreeItem folderTreeItem, FileFilter fileFilter) throws PermissionDeniedException {
@@ -817,7 +828,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	                }
 	                	 
 	                if(!filter) 
-	                	result.add(new FileTreeItem(child.getName(), child.getAbsolutePath(), displayPath, fileType, shareOwnerUserId, false, false, false));
+	                	result.add(createFileTreeItem(child.getName(), child.getAbsolutePath(), displayPath, fileType, shareOwnerUserId, false, false, false));
 					
 				}
 			}
@@ -830,9 +841,9 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		int shareId = Integer.parseInt(folderTreeItem.getFilePath().replace("Share.", ""));
 		Share share = daoManager.getShareDAO().getShare(shareId);
 		int shareOwnerUserId = share.getTask().getUser().getId();
-		FileTreeItem output = new FileTreeItem("Output", "Share.Output." + share.getId(), 
+		FileTreeItem output = createFolderTreeItem("Output", "Share.Output." + share.getId(), 
 				"Output", FileTypeEnum.DIRECTORY, shareOwnerUserId, false, false, false);
-		FileTreeItem input = new FileTreeItem("Input", "Share.Input." + share.getId(), "Input", 
+		FileTreeItem input = createFolderTreeItem("Input", "Share.Input." + share.getId(), "Input", 
 				FileTypeEnum.DIRECTORY, shareOwnerUserId, false, false, false);
 		result.add(input);
 		result.add(output);
@@ -846,7 +857,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		
 		for(Share share : shares) {
 			int shareOwnerUserId = share.getTask().getUser().getId();
-			result.add(new FileTreeItem(share.getTask().getName(), "Share." + share.getId(), share.getTask().getName(), FileTypeEnum.DIRECTORY, 
+			result.add(createFolderTreeItem(share.getTask().getName(), "Share." + share.getId(), share.getTask().getName(), FileTypeEnum.DIRECTORY, 
 					shareOwnerUserId, false, false, false));
 		}
 		return result;
@@ -854,9 +865,9 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 
 	private List<FileTreeItem> createRootFiles(AuthenticationToken authenticationToken, FileFilter fileFilter) {
 		List<FileTreeItem> result = new LinkedList<FileTreeItem>();
-		result.add(new FolderTreeItem("Owned", Configuration.fileBase + File.separator + authenticationToken.getUserId(), "Owned", FileTypeEnum.DIRECTORY,
+		result.add(createFolderTreeItem("Owned", Configuration.fileBase + File.separator + authenticationToken.getUserId(), "Owned", FileTypeEnum.DIRECTORY,
 				 authenticationToken.getUserId(), true, false, true));
-		result.add(new FolderTreeItem("Shared", "Shared", "Shared", FileTypeEnum.DIRECTORY,
+		result.add(createFolderTreeItem("Shared", "Shared", "Shared", FileTypeEnum.DIRECTORY,
 				 authenticationToken.getUserId(), true, false, false));
 		return result;
 	}
@@ -891,15 +902,22 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	                	 
 	                 if(!filter) 
 	                	 if(child.isDirectory())
-	                		 result.add(new FolderTreeItem(name, child.getAbsolutePath(), displayPath, fileType,
+	                		 result.add(createFolderTreeItem(name, child.getAbsolutePath(), displayPath, fileType,
 	                				 authenticationToken.getUserId(), false, child.isDirectory(), true));
 	                	 else
-			              	 result.add(new FileTreeItem(name, child.getAbsolutePath(), displayPath, fileType,
+			              	 result.add(createFileTreeItem(name, child.getAbsolutePath(), displayPath, fileType,
 			              			 authenticationToken.getUserId(), false, child.isDirectory(), true));
 	            }
 	        }
 		
 		return result;
+	}
+
+	@Override
+	public void deleteFiles(AuthenticationToken token, List<FileTreeItem> fileTreeItems) throws PermissionDeniedException, FileDeleteFailedException {
+		for(FileTreeItem fileTreeItem : fileTreeItems) {
+			this.deleteFile(token, fileTreeItem.getFilePath());
+		}
 	}
 
 }

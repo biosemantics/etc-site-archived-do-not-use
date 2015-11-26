@@ -70,4 +70,6 @@ public interface IFileServiceAsync {
 
 	public void getFiles(AuthenticationToken authenticationToken, FolderTreeItem folderTreeItem, FileFilter fileFilter, AsyncCallback<List<FileTreeItem>> callback);
 
+	public void deleteFiles(AuthenticationToken token, List<FileTreeItem> selection, AsyncCallback<Void> asyncCallback);
+
 }
