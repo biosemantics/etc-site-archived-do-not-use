@@ -3,7 +3,6 @@ package edu.arizona.biosemantics.etcsite.client.common.files;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -192,7 +191,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	private int filesCreated;
 	private String destinationFilePath;
 	private XmlModelFileCreator xmlModelFileCreator = new XmlModelFileCreator();
-	
+	private String wrongTaxonNameError = "Taxon name input should be of the form: Name Authority, Date.  If authority or date value is not known provide 'unknown' as the value in corresponding place(s)";
 	@Inject
 	public CreateSemanticMarkupFilesPresenter(ICreateSemanticMarkupFilesView view, IFileServiceAsync fileService, 
 			IFileAccessServiceAsync fileAccessService, IFileFormatServiceAsync fileFormatService) {
@@ -221,6 +220,11 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 			String name = taxonIdentificationEntry.getValue().trim();
 			if(rank != null && !name.isEmpty()){
 				textBuilder.append(rank + " name: " + name + "\n");
+				if(!xmlModelFileCreator.validateName(name)){
+					Alerter.inputError(wrongTaxonNameError);
+					view.hideProgress();
+					return;	
+				}
 			}
 		}
 		textBuilder.append("strain number: " + view.getStrainNumber().trim() + "\n");
@@ -346,20 +350,20 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	@Override
 	public void setPreviewText(LinkedHashMap<String, String> batchSourceDocumentInfoMap, String text) {
 		String returnString = "";
-		
+		view.setPreviewText("");
 		String normalizedText = xmlModelFileCreator.normalizeText(text);
 		if(view.isCopyCheckBox()){
 			normalizedText = xmlModelFileCreator.copyAuthorityAndDate(normalizedText);
 			if(normalizedText.equals("ERROR")){
-				Alerter.inputError("Authority and Date values are missing for taxon names.");
-				return;
-			}
-		}else{
-			if(!xmlModelFileCreator.isAuthorityDateAvailable(normalizedText)){
-				Alerter.inputError("Authority and Date values are missing for taxon names.");
+				Alerter.inputError("Authority and date values are missing for taxon names. Unable to copy values. ");
 				return;
 			}
 		}
+		if(!xmlModelFileCreator.validateTaxonNames(normalizedText)){
+			Alerter.inputError(wrongTaxonNameError);
+			return;
+		}
+		
 		final List<String> treatments = xmlModelFileCreator.getTreatmentTexts(batchSourceDocumentInfoMap, normalizedText);
 		
 		for (String treatment : treatments) {

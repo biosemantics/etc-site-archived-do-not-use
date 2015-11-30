@@ -70,6 +70,26 @@ public class XmlModelFileCreator {
 		result.add(atreatment); //replace all non-visible characters proceeding/trailing the treatment.
 		return result;
 	}
+	
+	public boolean validateName(String name) {
+		if(!name.contains(",")){
+			return false;
+		}else{
+			String names[] = name.split(",");
+			if(names.length != 2){
+				return false;
+			}
+			String nameAuthority = names[0].trim();
+			String date = names[1].trim();
+			if(date.contains(" ")){
+				return false;
+			}
+			if(!nameAuthority.contains(" ")){
+				return false;
+			}
+		}
+		return true;
+	}
 
 	public String copyAuthorityAndDate(String normalizedText) {
 		String result = "";
@@ -96,10 +116,10 @@ public class XmlModelFileCreator {
 
 	private String getAuthorityDate(String line) {
 		String colonSplits[] = line.split(":");
-		if(colonSplits.length>1){
+		if(colonSplits.length > 1){
 			colonSplits[1] = colonSplits[1].trim();
 			String names[] = colonSplits[1].split(" ", 2);
-			if(names.length>1){
+			if(names.length > 1){
 				return names[1];
 			}
 		}
@@ -212,13 +232,14 @@ public class XmlModelFileCreator {
 		return treatment.toString();
 	}
 
-	public boolean isAuthorityDateAvailable(String normalizedText) {
+
+	public boolean validateTaxonNames(String normalizedText) {
 		for(String line : normalizedText.split("\n")) {
 			line = line.trim();
 			if(line.contains("name:") || line.contains("name :")){
-				String authorityDate = getAuthorityDate(line);
-				if(authorityDate == null)
+				if(!validateName(line.split(":")[1].trim())){
 					return false;
+				}
 			}
 		}
 		return true;
