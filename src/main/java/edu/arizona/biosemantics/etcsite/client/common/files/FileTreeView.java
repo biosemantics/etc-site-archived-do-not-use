@@ -57,7 +57,7 @@ public class FileTreeView extends Composite implements IFileTreeView {
 		RpcProxy<FileTreeItem, List<FileTreeItem>> proxy = new RpcProxy<FileTreeItem, List<FileTreeItem>>() {
 			@Override
 			public void load(FileTreeItem loadConfig, AsyncCallback<List<FileTreeItem>> callback) {
-				if(loadConfig instanceof FolderTreeItem) 
+				if(loadConfig == null || loadConfig instanceof FolderTreeItem) 
 					fileService.getFiles(Authentication.getInstance().getToken(), (FolderTreeItem)loadConfig, fileFilter, callback);
 			}
 		};

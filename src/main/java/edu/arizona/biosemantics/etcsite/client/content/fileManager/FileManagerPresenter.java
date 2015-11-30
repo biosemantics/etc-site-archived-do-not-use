@@ -36,7 +36,7 @@ public class FileManagerPresenter implements IFileManagerView.Presenter {
     
     @Override
     public void refresh() {
-        //managableFileTreePresenter.refresh(null);
+        managableFileTreePresenter.refresh(null);
     }
 
 }

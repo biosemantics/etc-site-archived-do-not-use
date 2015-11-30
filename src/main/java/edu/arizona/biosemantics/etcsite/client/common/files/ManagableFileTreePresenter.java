@@ -14,6 +14,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TreeItem;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
@@ -93,12 +94,12 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		initActions();
 	}
 	
-	/*@Override
+	@Override
 	public void refresh(FileFilter fileFilter) {
 		this.fileFilter = fileFilter;
 		fileTreePresenter.getView().refresh(fileFilter);
 		//setInputFileMultiple();
-	}*/
+	}
 	
 	@Override
 	public void onCreateSemanticMarkupFiles() {

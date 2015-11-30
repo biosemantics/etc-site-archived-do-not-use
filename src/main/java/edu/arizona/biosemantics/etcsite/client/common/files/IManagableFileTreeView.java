@@ -21,7 +21,7 @@ public interface IManagableFileTreeView extends IsWidget {
 
 		IManagableFileTreeView getView();
 		
-		//void refresh(FileFilter fileFilter);
+		void refresh(FileFilter fileFilter);
 
 		void onCreateSemanticMarkupFiles();
 
