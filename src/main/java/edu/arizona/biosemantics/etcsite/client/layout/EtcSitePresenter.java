@@ -3,6 +3,7 @@ package edu.arizona.biosemantics.etcsite.client.layout;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+import com.google.gwt.http.client.URL;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -227,13 +228,7 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 
 	@Override
 	public void onOpenHelpInNewWindow() {
-		String href = Window.Location.createUrlBuilder().setPath("etcsitehelpcenter.html").setParameter("HelpPlace", placeController.getWhere().toString()).buildString(); 
-		Window.open(href, "_blank", "");
-		
-		//TODO redirect to a help servlet, that creates a "help html" page depending on the paramaeter that determines *which* help;
-		//Help will be created from a static html string not from that help.html file, otherwise it can't be used easily in client side gwt code
-		//Window.open("instructions.html", "_blank", "");
-		
+		Window.open("etcsitehelpcenter.html?HelpPlace=" + placeController.getWhere().toString(), "_blank", "");	
 	}
 	
 	@Override
