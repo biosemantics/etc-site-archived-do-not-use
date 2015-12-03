@@ -66,7 +66,6 @@ import edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection;
 import edu.arizona.biosemantics.oto2.ontologize.shared.model.Context;
 import edu.arizona.biosemantics.oto2.ontologize.shared.model.Ontology;
 import edu.arizona.biosemantics.oto2.ontologize.shared.model.Term;
-import edu.arizona.biosemantics.oto2.ontologize.shared.rpc.toontology.CreateOntologyException;
 
 public class OntologizeService extends RemoteServiceServlet implements IOntologizeService {
 	
@@ -636,10 +635,18 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 		return statementFound;	
 	}
 	
-	
+	private void createOntologyFile(AuthenticationToken token, Task task) throws Exception {
+		final OntologizeConfiguration config = this.getOntologizeConfiguration(task);
+		Collection collection = new Collection();
+		collection.setId(config.getOntologizeCollectionId());
+		collection.setSecret(config.getOntologizeCollectionSecret());
+		collection.setTaxonGroup(edu.arizona.biosemantics.common.biology.TaxonGroup.valueFromDisplayName(config.getTaxonGroup().getName()));
+		toOntologyService.storeLocalOntologiesToFile(collection);
+	}
 	
 	@Override
-	public String downloadOntologize(AuthenticationToken token, Task task) throws OntologizeException {
+	public String downloadOntologize(AuthenticationToken token, Task task) throws Exception {
+		createOntologyFile(token, task);
 		final OntologizeConfiguration config = this.getOntologizeConfiguration(task);
 		
 		String zipSource = Configuration.compressedFileBase + File.separator + token.getUserId() + File.separator + "ontologize" + 
@@ -711,7 +718,9 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 	}
 
 	@Override
-	public Task output(AuthenticationToken token, Task task) throws OntologizeException {
+	public Task output(AuthenticationToken token, Task task) throws Exception {
+		this.createOntologyFile(token, task);
+		
 		OntologizeConfiguration config = getOntologizeConfiguration(task);
 		config.setOutput(config.getInput() + "_output_by_OB_task_" + task.getName());
 			

@@ -34,20 +34,20 @@
 			<id>playground-snapshots</id>
 			<url>http://128.196.105.149:8081/nexus/content/repositories/snapshots/</url>
 		</repository>
-		<repository>
+		<!-- <repository>
 			<id>google-maven-snapshot-repository</id>
 			<name>Google Maven Snapshot Repository</name>
 			<url>https://m2repos.googlecode.com/svn/nexus</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
-		</repository>
-		<repository>
+		</repository>-->
+		<!-- <repository>
      		<id>sonatype</id>
      		<url>http://oss.sonatype.org/content/repositories/snapshots</url>
      		<snapshots><enabled>true</enabled></snapshots>
      		<releases><enabled>false</enabled></releases>
- 		</repository>
+ 		</repository> -->
 	</repositories>
 
 	<!-- Created from archetype -->
@@ -104,12 +104,12 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics</groupId>
 		  <artifactId>gxt</artifactId>
-		  <version>0.0.10-SNAPSHOT</version>
+		  <version>0.0.11-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics</groupId>
 		  <artifactId>gxt</artifactId>
-		  <version>0.0.10-SNAPSHOT</version>
+		  <version>0.0.11-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency> 
 		<dependency>
@@ -221,7 +221,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>semantic-markup</artifactId>
-			<version>0.1.151-SNAPSHOT</version>
+			<version>0.1.156b-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>app</artifactId>
@@ -236,7 +236,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.94-SNAPSHOT</version>
+		  <version>0.0.95-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		  <exclusions>
 		  	<exclusion>
@@ -248,19 +248,19 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.94-SNAPSHOT</version>
+		  <version>0.0.95-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize</artifactId>
-		  <version>0.0.29-SNAPSHOT</version>
+		  <version>0.1.9-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize</artifactId>
-		  <version>0.0.29-SNAPSHOT</version>
+		  <version>0.1.9-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>

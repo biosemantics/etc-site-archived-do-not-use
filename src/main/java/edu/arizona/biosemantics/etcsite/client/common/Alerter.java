@@ -332,6 +332,10 @@ public class Alerter {
 	public static MessageBox failedToSaveOto(Throwable caught) {
 		return showAlert("Save Term Organization", "Failed to save term organization.", caught);
 	}
+	
+	public static MessageBox failedToSaveOntologize(Throwable caught) {
+		return showAlert("Download Ontology", "Failed to download ontology.", caught);
+	}
 
 	public static MessageBox failedToCompleteReview(Throwable caught) {
 		return showAlert("Complete Matrix Review", "Failed to complete matrix review.", caught);

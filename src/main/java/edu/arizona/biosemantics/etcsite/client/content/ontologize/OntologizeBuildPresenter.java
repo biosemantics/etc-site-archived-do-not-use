@@ -65,7 +65,7 @@ public class OntologizeBuildPresenter implements IOntologizeBuildView.Presenter 
 					}
 					@Override
 					public void onFailure(Throwable caught) {
-						Alerter.failedToSaveOto(caught);
+						Alerter.failedToSaveOntologize(caught);
 					}
 				});
 			}
