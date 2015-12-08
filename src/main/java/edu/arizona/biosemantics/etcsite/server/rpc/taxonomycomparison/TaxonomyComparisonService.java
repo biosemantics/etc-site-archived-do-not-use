@@ -258,8 +258,9 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 				log(LogLevel.ERROR, "Couldn't set up output directory", e);
 				throw new TaxonomyComparisonException(task);
 			}
-				
-			final MIRGeneration mirGeneration = new InJvmMIRGeneration(eulerInputFile, workingDir, outputDir);
+
+			final MIRGeneration mirGeneration = new ExtraJvmMIRGeneration(eulerInputFile, workingDir);
+			//final MIRGeneration mirGeneration = new InJvmMIRGeneration(eulerInputFile, workingDir);
 			//final MIRGeneration mirGeneration = new DummyMIRGeneration(eulerInputFile, outputDir);
 			activeProcess.put(config.getConfiguration().getId(), mirGeneration);
 			final ListenableFuture<Void> futureResult = executorService.submit(mirGeneration);
@@ -374,8 +375,9 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			log(LogLevel.ERROR, "Couldn't set up output directory", e);
 			throw new TaxonomyComparisonException(task);
 		}
-		
-		InputVisualization inputVisualization = new InJvmInputVisualization(eulerInputFile, baseDir.getAbsolutePath(), outputDir);
+
+		InputVisualization inputVisualization = new ExtraJvmInputVisualization(eulerInputFile, baseDir.getAbsolutePath());
+		//InputVisualization inputVisualization = new InJvmInputVisualization(eulerInputFile, baseDir.getAbsolutePath());
 		//InputVisualization inputVisualization = new DummyInputVisualization(eulerInputFile, outputDir);
 		try {
 			inputVisualization.call();
