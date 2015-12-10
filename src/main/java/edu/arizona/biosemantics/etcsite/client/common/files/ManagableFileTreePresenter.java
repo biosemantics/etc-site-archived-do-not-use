@@ -52,6 +52,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	private String targetUploadDirectory;
 	private ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter;
 	private FileUploadHandler fileUploadHandler;
+	private String uploadFileType;
 	
 	@SuppressWarnings("deprecation")
 	@Inject
@@ -91,6 +92,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	    view.setStatusWidget(statusWidget.getWidget());
 		view.getUploader().setFileInput(new MyFileInput(view.getAddButton()));
 		fileUploadHandler = new FileUploadHandler(this, fileService);
+		uploadFileType = "";
 		initActions();
 	}
 	
@@ -305,7 +307,10 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		@Override
 		public void onFinish(IUploader uploader) {	
 			if (uploader.getStatus() == Status.SUCCESS) {
-				fileUploadHandler.keyValidateUploadedFiles(targetUploadDirectory);
+				if(uploadFileType.equals(FileTypeEnum.TAXON_DESCRIPTION.displayName()) || 
+						uploadFileType.equals(FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION.displayName())){
+					fileUploadHandler.keyValidateUploadedFiles(targetUploadDirectory);
+				}
 				fileTreePresenter.getView().refreshChildren(targetFileTreeItem, fileFilter);
 			}
 			
@@ -327,6 +332,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 			if(selections.size() == 1) {
 				targetFileTreeItem = selections.get(0);
 				targetUploadDirectory = selections.get(0).getFilePath();
+				uploadFileType = view.getFormat();
 				fileUploadHandler.setServletPathOfUploader(uploader, view.getFormat(), targetUploadDirectory);
 				/*
 				 * Creation of directories directly inside of the upload target should not be possible (possible name clash)
