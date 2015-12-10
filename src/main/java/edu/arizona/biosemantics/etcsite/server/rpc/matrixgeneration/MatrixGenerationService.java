@@ -466,8 +466,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		
 		//extra validation, since a valid taxon description is automatically also a valid marked up taxon description according to 
 		//the schema. Check for min. 1 statement
-		HashMap<String, String> taxonNames = new HashMap<String, String>();
-		String taxonNameErrors = "";
 		boolean statementFound = false;
 		for(String file : files) {
 			boolean valid;
@@ -501,24 +499,10 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				log(LogLevel.ERROR, "no statement found in file "+file+ ".");
 				return "Input files should have at least one \\<statement\\>. Not found in "+ file;
 			}
-			XPathExpression<Element> taxonNameMatcher = 
-					xPathFactory.compile("/bio:treatment/taxon_identification[@status=\"ACCEPTED\"]/taxon_name", Filters.element(), 
-							null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
-			List<Element> taxonNameElements = taxonNameMatcher.evaluate(document);
-			String taxon = "";
-			for(Element taxonName: taxonNameElements){
-				taxon += taxonName.getText()+"_";
-			}
-			Element lastElement = taxonNameElements.get(taxonNameElements.size()-1);
-			taxon += lastElement.getAttributeValue("authority") + "_" + lastElement.getAttributeValue("date");
-			if(taxonNames.containsKey(taxon)){
-				taxonNameErrors += "( " + taxonNames.get(taxon) + " , " + file + " ), ";
-			}else{
-				taxonNames.put(taxon,  file);
-			}
 		}
-		if(!taxonNameErrors.equals("")){
-			return "Taxon names, authority, date should be unique. There are duplicates in files " + taxonNameErrors;
+		String result = fileService.validateTaxonNames(authenticationToken, filePath);
+		if(!result.equals("success")){
+			return result;
 		}
 		return "valid";
 	}

@@ -1,11 +1,5 @@
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
-import edu.arizona.biosemantics.etcsite.client.common.Alerter;
-import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
-import gwtupload.client.IUploader;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,10 +11,15 @@ import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
+import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
+import gwtupload.client.IUploader;
+
 public class FileUploadHandler {
 	
 	//private static final int MAX_FILES_TO_REPORT_FAILED = 20;
-	private static final String NEWLINE = "\n";
+	//private static final String NEWLINE = "\n";
 	
 	List<String> uploadedFiles;
 	String serverResponse;
@@ -172,11 +171,32 @@ public class FileUploadHandler {
 				}else{
 					if(serverResponse == null || serverResponse.isEmpty()){
 						Alerter.fileManagerMessage("File(s) uploaded successfully.");
+					}else{
+						Alerter.fileManagerMessage(serverResponse);
 					}
 				}
 			}
 		});
+	}
+	
+	public void validateTaxonNames(String targetUploadDirectory){
+		fileService.validateTaxonNames(Authentication.getInstance().getToken(), targetUploadDirectory, new AsyncCallback<String>() {
 
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(String result) {
+				if(!result.equals("success")){
+					serverResponse = result;
+				}else{
+					serverResponse = "";
+				}
+			}
+		});
 	}
 	
 	public void setServletPathOfUploader(IUploader uploader, String fileType, String targetUploadDirectory){

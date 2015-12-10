@@ -64,6 +64,7 @@ public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.P
 			@Override
 			public void handle(FileUploadHandler fileUploadHandler,	IUploader uploader, String uploadDirectory) {
 				if (uploader.getStatus() == Status.SUCCESS) {
+					fileUploadHandler.validateTaxonNames(uploadDirectory);
 					fileUploadHandler.keyValidateUploadedFiles(uploadDirectory);
 				}
 			}

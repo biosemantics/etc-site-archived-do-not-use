@@ -499,6 +499,10 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			if(!validResult)
 				return "Invalid input: Error in taxon description";
 		}
+		String result = fileService.validateTaxonNames(authenticationToken, filePath);
+		if(!result.equals("success")){
+			return result;
+		}
 		return "valid";
 	}
 

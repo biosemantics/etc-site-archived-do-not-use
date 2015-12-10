@@ -13,8 +13,6 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.TreeItem;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
@@ -309,6 +307,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 			if (uploader.getStatus() == Status.SUCCESS) {
 				if(uploadFileType.equals(FileTypeEnum.TAXON_DESCRIPTION.displayName()) || 
 						uploadFileType.equals(FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION.displayName())){
+					fileUploadHandler.validateTaxonNames(targetUploadDirectory);
 					fileUploadHandler.keyValidateUploadedFiles(targetUploadDirectory);
 				}
 				fileTreePresenter.getView().refreshChildren(targetFileTreeItem, fileFilter);

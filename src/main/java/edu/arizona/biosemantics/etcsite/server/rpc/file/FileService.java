@@ -20,14 +20,8 @@ import edu.arizona.biosemantics.common.validation.key.KeyElementValidator;
 import edu.arizona.biosemantics.common.validation.key.KeyValidationException;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
-import edu.arizona.biosemantics.etcsite.server.db.FilesInUseDAO;
-import edu.arizona.biosemantics.etcsite.server.db.ShareDAO;
-import edu.arizona.biosemantics.etcsite.server.db.TasksOutputFilesDAO;
-import edu.arizona.biosemantics.etcsite.server.db.UserDAO;
+import edu.arizona.biosemantics.etcsite.server.process.file.TaxonNameValidator;
 import edu.arizona.biosemantics.etcsite.server.process.file.XmlNamespaceManager;
-import edu.arizona.biosemantics.etcsite.server.rpc.file.format.FileFormatService;
-import edu.arizona.biosemantics.etcsite.server.rpc.file.permission.FilePermissionService;
-import edu.arizona.biosemantics.etcsite.server.rpc.task.TaskService;
 import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.Share;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
@@ -918,6 +912,17 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		for(FileTreeItem fileTreeItem : fileTreeItems) {
 			this.deleteFile(token, fileTreeItem.getFilePath());
 		}
+	}
+	
+	@Override
+	public String validateTaxonNames(AuthenticationToken authenticationToken,
+			String directory) {
+		String result = "success";
+		TaxonNameValidator nameValidator = new TaxonNameValidator();
+		if(!nameValidator.validate(new File(directory).listFiles())){
+			result = nameValidator.getInvalidMessage();
+		}
+		return result;
 	}
 
 }
