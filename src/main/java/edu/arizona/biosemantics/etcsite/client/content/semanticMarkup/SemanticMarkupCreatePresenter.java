@@ -36,6 +36,7 @@ public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.P
 		this.view = view;
 		this.fileManagerDialogPresenter = fileManagerDialogPresenter;
 		this.inputCreatePresenter = inputCreatePresenter;
+		this.inputCreatePresenter.setNextButtonName("Next Step in Text Capture");
 		view.setPresenter(this);
 		inputCreatePresenter.setInputValidator(new IInputCreateView.InputValidator() {
 			@Override

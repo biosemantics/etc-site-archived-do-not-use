@@ -74,9 +74,10 @@
 								href="http://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupInput.xsd"
 								target="_blank" styleName="{style.padding}">format</g:Anchor>
 							<g:InlineLabel styleName="DescriptionFont">
-			            	. Choose one of the following methods to provide the input and Click Next.
+			            	. Choose one of the following methods to provide the input.
 							</g:InlineLabel>
 						</g:FlowPanel>
+						<g:InlineLabel styleName="DescriptionFont">&nbsp;</g:InlineLabel>
 						<g:FlowPanel>
 						    <g:InlineLabel styleName="DescriptionFont">
 			            	 To View, Edit or Delete the created or uploaded files, go to&nbsp; 

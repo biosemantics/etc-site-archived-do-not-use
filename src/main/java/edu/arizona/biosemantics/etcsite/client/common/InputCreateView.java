@@ -40,12 +40,14 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	
 	@UiField RadioButton createFilesRadio;
 	@UiField VerticalPanel createPanel;
+	@UiField VerticalPanel dummyCreatePanel;
 	@UiField RadioButton createFolderForCreateFilesRadio;
 	@UiField Button createFolderForCreateFilesButton;
 	@UiField TextBox createFolderForCreateFilesTextBox;
 	@UiField RadioButton selectFolderForCreateFilesRadio;
 	@UiField(provided=true) ComboBox<FileInfo> selectFolderForCreateFilesComboBox;
 	@UiField Button createFilesButton;
+	@UiField RadioButton dummyCreateFilesRadio;
 	
 	@UiField RadioButton uploadRadio;
 	@UiField VerticalPanel uploadPanel;
@@ -89,6 +91,9 @@ public class InputCreateView extends Composite implements IInputCreateView {
 		
 		createFolderForCreateFilesTextBox.getElement().setPropertyString("placeholder", "Enter New Folder Name Here");
 		createFolderForUploadTextBox.getElement().setPropertyString("placeholder", "Enter New Folder Name Here");
+		
+		verticalPanel.remove(0);
+		verticalPanel.remove(0);
 	}
 
 	@Override
@@ -99,6 +104,16 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	@UiHandler("createFilesRadio")
 	public void onCreateRadio(ClickEvent event){
 		createPanel.setVisible(true);
+		dummyCreatePanel.setVisible(false);
+		uploadPanel.setVisible(false);
+		selectPanel.setVisible(false);
+		createFolderForUploadTextBox.setValue(null);
+	}
+	
+	@UiHandler("dummyCreateFilesRadio")
+	public void onDummyCreateRadio(ClickEvent event){
+		createPanel.setVisible(false);
+		dummyCreatePanel.setVisible(true);
 		uploadPanel.setVisible(false);
 		selectPanel.setVisible(false);
 		createFolderForUploadTextBox.setValue(null);
@@ -107,6 +122,7 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	@UiHandler("uploadRadio")
 	public void onUploadRadio(ClickEvent event){
 		createPanel.setVisible(false);
+		dummyCreatePanel.setVisible(false);
 		uploadPanel.setVisible(true);
 		selectPanel.setVisible(false);
 		createFolderForCreateFilesTextBox.setValue(null);
@@ -115,6 +131,7 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	@UiHandler("selectExistingFolderRadio")
 	public void onSelectRadio(ClickEvent event){
 		createPanel.setVisible(false);
+		dummyCreatePanel.setVisible(false);
 		uploadPanel.setVisible(false);
 		selectPanel.setVisible(true);
 		createFolderForCreateFilesTextBox.setValue(null);
@@ -267,10 +284,21 @@ public class InputCreateView extends Composite implements IInputCreateView {
 		verticalPanel.remove(0);
 		verticalPanel.remove(0);
 	}
+	
+	@Override
+	public void addDummyCreateFiles() {
+		verticalPanel.insert(dummyCreatePanel, 0);
+		verticalPanel.insert(dummyCreateFilesRadio, 0);
+	}
 
 	@Override
 	public boolean isSelectFolderForCreateFiles() {
 		return this.selectFolderForCreateFilesRadio.getValue();
+	}
+
+	@Override
+	public void setNextButtonName(String str) {
+		nextButton.setText(str);
 	}
 	
 }

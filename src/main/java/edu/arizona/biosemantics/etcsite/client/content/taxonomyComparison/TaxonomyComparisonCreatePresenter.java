@@ -55,6 +55,7 @@ public class TaxonomyComparisonCreatePresenter implements TaxonomyComparisonCrea
 		
 		this.inputCreatePresenter = inputCreatePresenter;
 		this.inputCreatePresenter.disableCreateFiles();
+		this.inputCreatePresenter.setNextButtonName("Next Step in Taxonomy Comparison");
 		inputCreatePresenter.setInputValidator(new InputValidator() {
 			@Override
 			public void validate(String inputFolderPath) {
