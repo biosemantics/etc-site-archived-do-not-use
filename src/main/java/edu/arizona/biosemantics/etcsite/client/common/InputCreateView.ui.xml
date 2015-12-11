@@ -51,15 +51,23 @@
 	</ui:style>
 	<g:VerticalPanel styleName="{style.subMenuEntry}">
 	    <g:VerticalPanel spacing="20" ui:field="verticalPanel">
+	    	
+	    	<g:RadioButton ui:field="dummyCreateFilesRadio" name="selectInputMethod" styleName="{style.radioPadding}">Create Files</g:RadioButton>
+	        <g:VerticalPanel styleName = "{style.margin15}" ui:field="dummyCreatePanel" visible="false">
+	        	<g:InlineLabel>
+	                If you do not have an input folder ready, please run the Text Capture tool first to generate it.
+	            </g:InlineLabel>
+	        </g:VerticalPanel>
+	    
 	        <g:RadioButton ui:field="createFilesRadio" name="selectInputMethod" styleName="{style.radioPadding}">Create Files</g:RadioButton>
 	        <g:VerticalPanel styleName = "{style.margin15}" ui:field="createPanel" visible="false">
 	            <g:InlineLabel>
-	                Create/Choose a folder to save the files.
+	                1: Create/Choose a folder to save the files.
 	            </g:InlineLabel>
 	            <g:Grid cellSpacing="5">
 	                <g:row>
 	                    <g:customCell>
-	                    	<g:RadioButton name="createFileFolder" ui:field="createFolderForCreateFilesRadio" styleName="{style.radioPadding}">Create New Folder</g:RadioButton>    
+	                    	<g:RadioButton name="createFileFolder" ui:field="createFolderForCreateFilesRadio" styleName="{style.radioPadding}">Create New Folder</g:RadioButton>
 	                    </g:customCell>
 	                    <g:customCell>
 	                    	<g:TextBox enabled="false" ui:field="createFolderForCreateFilesTextBox"></g:TextBox>    
@@ -70,7 +78,7 @@
 	                </g:row>
 	                <g:row>
 	                    <g:customCell>
-	                    	<g:RadioButton name="createFileFolder" ui:field="selectFolderForCreateFilesRadio" styleName="{style.radioPadding}">Select an Existing Folder</g:RadioButton>    
+		                    <g:RadioButton name="createFileFolder" ui:field="selectFolderForCreateFilesRadio" styleName="{style.radioPadding}">Select an Existing Folder</g:RadioButton>
 	                    </g:customCell>
 	                    <g:customCell>
 	                    	<form:ComboBox ui:field="selectFolderForCreateFilesComboBox"></form:ComboBox>
@@ -79,7 +87,10 @@
 	                </g:row>
 	                <g:row>
 	                    <g:customCell>
-	                    	<g:Button ui:field="createFilesButton" enabled="false">Create Files</g:Button> 
+	                    	<g:HorizontalPanel>
+		                    	<g:InlineLabel>2:&nbsp;</g:InlineLabel>
+		                    	<g:Button ui:field="createFilesButton" enabled="false">Create Files</g:Button> 
+		                    </g:HorizontalPanel>
 	                    </g:customCell>
 	                    <g:cell></g:cell>
 	                </g:row>
@@ -88,7 +99,7 @@
 	        <g:RadioButton name="selectInputMethod" ui:field="uploadRadio" styleName="{style.radioPadding}">Upload Files</g:RadioButton>
 	        <g:VerticalPanel styleName = "{style.margin15}" ui:field="uploadPanel" visible="false">
 	            <g:InlineLabel>
-	                Choose/Create a folder to upload files into.
+	                1: Create/Choose a folder to upload files into.
 	            </g:InlineLabel>
 	            <g:Grid cellSpacing="5">
 	                <g:row>
@@ -112,9 +123,13 @@
 	                    </g:customCell>
 	                </g:row>
 	            </g:Grid>
+	            <g:InlineLabel>2:&nbsp;</g:InlineLabel>
 	  					<up:SingleUploader ui:field="uploader" type="BUTTON" autoSubmit="true" avoidRepeatFiles="false"/>
 	  					<!-- validExtensions="xml" -->
-	  				 	<g:Button ui:field="uploadButton" title="Select a parent folder before uploading one or more files">Upload Files</g:Button>
+	  				 	<g:HorizontalPanel>
+		                   	<g:Button ui:field="uploadButton" title="Select a parent folder before uploading one or more files">Upload Files</g:Button>
+		                </g:HorizontalPanel>
+	  				 	
 	  				 	<g:SimplePanel addStyleNames="GWTUpld" ui:field="statusWidgetContainer"></g:SimplePanel>
 	        </g:VerticalPanel>
 	        <g:HorizontalPanel spacing="5">

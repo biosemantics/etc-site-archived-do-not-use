@@ -34,6 +34,8 @@ public class OntologizeCreatePresenter implements OntologizeCreateView.Presenter
 		
 		this.inputCreatePresenter = inputCreatePresenter;
 		this.inputCreatePresenter.disableCreateFiles();
+		this.inputCreatePresenter.addDummyCreateFiles();
+		this.inputCreatePresenter.setNextButtonName("Next Step in Ontology Building");
 		inputCreatePresenter.setInputValidator(new InputValidator() {
 			@Override
 			public void validate(String inputFolderPath) {

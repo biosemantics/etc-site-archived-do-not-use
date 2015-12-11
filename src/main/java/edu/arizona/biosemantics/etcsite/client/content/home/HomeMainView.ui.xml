@@ -240,8 +240,20 @@
 		<div class="{style.matrixGenerationImage} {style.actionImage}"></div>
 		<div class="{style.matrixGenerationText} {style.actionText}"></div>
 		<div class="{style.matrixGenerationDescription} {style.actionDescription} ">
-			Generates taxon-character matrices from semantic marked-up descriptions of organisms. The matrices can be used to create specimen identification keys, or be downloaded
+			<g:InlineLabel>Matrix Generation takes an output folder of Text Capture as input. 
+			Input files must be in English and conform to
+			</g:InlineLabel>
+			
+			<g:Anchor
+				href="http://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupOutput.xsd"
+				target="_blank">this format.
+			</g:Anchor>
+			
+			<g:InlineLabel>
+			The matrices 
+			can be used to create specimen identification keys, or be downloaded
 			 and used with other matrix analysis tools. 
+			 </g:InlineLabel>
 		</div>
 		<div class="{style.matrixGenerationArrow} {style.actionArrow}"></div>
 		<g:HTML ui:field="matrixGenerationButton">

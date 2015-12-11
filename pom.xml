@@ -34,14 +34,14 @@
 			<id>playground-snapshots</id>
 			<url>http://128.196.105.149:8081/nexus/content/repositories/snapshots/</url>
 		</repository>
-		<!-- <repository>
+		<repository>
 			<id>google-maven-snapshot-repository</id>
 			<name>Google Maven Snapshot Repository</name>
 			<url>https://m2repos.googlecode.com/svn/nexus</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
-		</repository>-->
+		</repository>
 		<!-- <repository>
      		<id>sonatype</id>
      		<url>http://oss.sonatype.org/content/repositories/snapshots</url>
