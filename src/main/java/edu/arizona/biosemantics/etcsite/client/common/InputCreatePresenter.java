@@ -321,6 +321,11 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 	}
 	
 	@Override
+	public void addDummyCreateFiles() {
+		view.addDummyCreateFiles();
+	}
+	
+	@Override
 	public void setUploadCompleteHandler(UploadCompleteHandler handler) {
 		this.uploadCompleteHandler = handler;
 	}
@@ -329,5 +334,10 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 	public void setUploadFileType(FileTypeEnum uploadFileType) {
 		this.uploadFileType = uploadFileType;
 	}
-	
+
+	@Override
+	public void setNextButtonName(String str) {
+		view.setNextButtonName(str);
+	}
+
 }

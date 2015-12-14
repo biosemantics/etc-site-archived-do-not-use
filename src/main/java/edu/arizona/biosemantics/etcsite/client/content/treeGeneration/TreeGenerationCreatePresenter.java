@@ -34,6 +34,7 @@ public class TreeGenerationCreatePresenter implements TreeGenerationCreateView.P
 		
 		this.inputCreatePresenter = inputCreatePresenter;
 		this.inputCreatePresenter.disableCreateFiles();
+		this.inputCreatePresenter.setNextButtonName("Next Step in Key Generation");
 		inputCreatePresenter.setInputValidator(new InputValidator() {
 			@Override
 			public void validate(String inputFolderPath) {

@@ -47,6 +47,10 @@ public interface IInputCreateView extends IsWidget {
 		IInputCreateView getView();
 
 		void disableCreateFiles();
+		
+		void addDummyCreateFiles();
+		
+		void setNextButtonName(String str);
 
 		void refreshFolders();
 
@@ -87,7 +91,11 @@ public interface IInputCreateView extends IsWidget {
 	boolean isCreateFolderForUpload();
 
 	void removeCreateFiles();
+	
+	void addDummyCreateFiles();
 
 	boolean isSelectFolderForCreateFiles();
+
+	void setNextButtonName(String str);	
 
 }

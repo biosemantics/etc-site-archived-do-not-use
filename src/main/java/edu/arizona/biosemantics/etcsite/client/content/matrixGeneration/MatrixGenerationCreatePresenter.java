@@ -38,6 +38,8 @@ public class MatrixGenerationCreatePresenter implements MatrixGenerationCreateVi
 		view.setPresenter(this);
 		this.inputCreatePresenter = inputCreatePresenter;
 		this.inputCreatePresenter.disableCreateFiles();
+		this.inputCreatePresenter.addDummyCreateFiles();
+		this.inputCreatePresenter.setNextButtonName("Next Step in Matrix Generation");
 		inputCreatePresenter.setInputValidator(new InputValidator() {
 			@Override
 			public void validate(String inputFolderPath) {
