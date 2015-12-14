@@ -200,6 +200,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 
 	@Override
 	public void saveOTOAccount(AuthenticationToken authenticationToken, boolean share, String email, String password) throws InvalidOTOAccountException, OTOException {
+		log(LogLevel.DEBUG, "here: " + email + " " + password);
 		User user = userDAO.getUser(authenticationToken.getUserId());
 		
 		if(share) {
@@ -208,7 +209,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 				edu.arizona.biosemantics.oto.model.User otoUser = new edu.arizona.biosemantics.oto.model.User();
 				otoUser.setUserEmail(email);
 				otoUser.setPassword(password);
-				Future<String> tokenResult = otoClient.getUserAuthenticationToken(otoUser);
+				Future<String> tokenResult = otoClient.getUserAuthenticationToken(otoUser); 
 				String token = tokenResult.get();
 				if(token != null && !token.isEmpty()) {
 					user.setOtoAccountEmail(otoUser.getUserEmail());
@@ -268,6 +269,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		GoogleUser googleUser;
 		try {
 			googleUser = getGoogleUserFromAccessToken(googleCode);
+			log(LogLevel.DEBUG, "Google user: " + googleUser.toString());
 		} catch (Exception e) {
 			throw new CreateOTOAccountException(e);
 		}
@@ -280,7 +282,7 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		}
 		
 		edu.arizona.biosemantics.oto.model.User otoUser = new edu.arizona.biosemantics.oto.model.User();
-		String dummyPassword = Configuration.otoSecret + googleUser.getId();
+		String dummyPassword = Configuration.otoSecret + ":" + googleUser.getId();
 		otoUser.setUserEmail(googleUser.getEmail());
 		otoUser.setFirstName(googleUser.getFirstName());
 		otoUser.setLastName(googleUser.getLastName());
@@ -421,6 +423,12 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		User user = userDAO.getUser(token.getUserId());
 		user.setProfileValue(EmailPreference.class + "_" + emailPreference.toString(), dontShowPopup);
 		userDAO.update(user);
+	}
+
+	@Override
+	public boolean hasLinkedOTOAccount(AuthenticationToken token) {
+		User user = userDAO.getUser(token.getUserId());
+		return user.hasOTOAuthenticationTokenAndEmail();
 	}
 
 }

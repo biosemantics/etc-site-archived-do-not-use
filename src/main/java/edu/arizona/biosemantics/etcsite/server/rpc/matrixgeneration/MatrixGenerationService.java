@@ -527,7 +527,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	public String outputMatrix(AuthenticationToken authenticationToken, Task task, Model model) throws MatrixGenerationException {
 		final MatrixGenerationConfiguration config = getMatrixGenerationConfiguration(task);
 		
-		String path = Configuration.tempFiles + 
+		String path = Configuration.matrixReview_tempFileBase + 
 				File.separator + "matrix-review" + File.separator + authenticationToken.getUserId() +
 				File.separator + "matrix_task-" + task.getName() + ".csv";
 		File file = new File(path);

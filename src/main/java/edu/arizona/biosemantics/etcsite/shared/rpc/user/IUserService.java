@@ -48,4 +48,6 @@ public interface IUserService extends RemoteService {
 	public boolean isProfile(AuthenticationToken token, EmailPreference emailPreferences);
 	
 	public void setProfile(AuthenticationToken token, EmailPreference emailPreferences, boolean dontShowPopup);
+	
+	public boolean hasLinkedOTOAccount(AuthenticationToken token);
 }
