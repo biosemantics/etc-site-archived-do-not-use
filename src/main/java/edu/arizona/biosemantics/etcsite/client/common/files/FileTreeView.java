@@ -5,6 +5,8 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
@@ -52,7 +54,7 @@ public class FileTreeView extends Composite implements IFileTreeView {
 	private TreeStateHandler<FileTreeItem> stateHandler;
 
 	@Inject
-	public FileTreeView(final IFileServiceAsync fileService) {
+	public FileTreeView(final IFileServiceAsync fileService, final IFileContentView.Presenter fileContentPresenter) {
 		this.fileService = fileService;
 		RpcProxy<FileTreeItem, List<FileTreeItem>> proxy = new RpcProxy<FileTreeItem, List<FileTreeItem>>() {
 			@Override
@@ -84,7 +86,14 @@ public class FileTreeView extends Composite implements IFileTreeView {
 					public String getPath() {
 						return "name";
 					}
-				});
+				}) {
+			 @Override
+			    protected void onDoubleClick(Event event) {
+			        TreeNode<FileTreeItem> node = findNode(event.getEventTarget().<Element> cast());
+			        fileContentPresenter.show(node.getModel());
+			        super.onDoubleClick(event);
+			   }
+		};
 		loader = new TreeLoader<FileTreeItem>(proxy) {
 			@Override
 			public boolean hasChildren(FileTreeItem parent) {

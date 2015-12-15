@@ -76,10 +76,12 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 		}
 		
 		// Check to see if input is too big.
-		semanticMarkupService.shouldWarnUserLargeInput(Authentication.getInstance().getToken(), inputFile, new AsyncCallback<Boolean>() {
+		final MessageBox box = Alerter.startLoading();
+		semanticMarkupService.isLargeInput(Authentication.getInstance().getToken(), inputFile, new AsyncCallback<Boolean>() {
 			@Override
-			public void onSuccess(Boolean warnUser) {
-				if (warnUser){
+			public void onSuccess(Boolean largeInput) {
+				Alerter.stopLoading(box);
+				if (largeInput){
 					final MessageBox box = Alerter.semanticMarkupWarnUserTooManyWords();
 					box.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
 						@Override
@@ -95,6 +97,7 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
+				Alerter.stopLoading(box);
 			}
 		});
 		

@@ -418,8 +418,41 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	public Task output(AuthenticationToken authenticationToken, Task task) throws SemanticMarkupException {	
 		final SemanticMarkupConfiguration config = getSemanticMarkupConfiguration(task);
 		config.setOutput(config.getInput() + "_output_by_TC_task_" + task.getName());
+		config.setOutputTermReview(config.getInput() + "_outputTR_by_TC_task_" + task.getName());
+		String createDirectory = getOutputDirectory(config.getOutput(), task);
+		String createTermReviewDirectory = getOutputDirectory(config.getOutputTermReview(), task);
+		copyCharaparserOutput(createDirectory, task);
+		saveOto(authenticationToken, createTermReviewDirectory, task);
 		
-		String outputDirectory = config.getOutput();			
+		//update task
+		config.setOutput(createDirectory);
+		config.setOutputTermReview(createTermReviewDirectory);
+		daoManager.getSemanticMarkupConfigurationDAO().updateSemanticMarkupConfiguration(config);
+		task.setResumable(false);
+		task.setComplete(true);
+		task.setCompleted(new Date());
+		daoManager.getTaskDAO().updateTask(task);
+		daoManager.getTasksOutputFilesDAO().addOutput(task, createDirectory);
+		daoManager.getTasksOutputFilesDAO().addOutput(task, createTermReviewDirectory);
+		return task;
+	}
+
+	private void copyCharaparserOutput(String createDirectory, Task task) throws SemanticMarkupException {
+		//copy the output files to the directory
+		String charaParserOutputDirectory = Configuration.charaparser_tempFileBase + File.separator + task.getId() + File.separator + "out";		
+		try {
+			fileService.deleteFile(new AdminAuthenticationToken(), charaParserOutputDirectory + File.separator + "config.txt");
+		} catch (PermissionDeniedException | FileDeleteFailedException e) {
+			throw new SemanticMarkupException(task);
+		}
+		try {
+			fileService.copyFiles(new AdminAuthenticationToken(), charaParserOutputDirectory, createDirectory);
+		} catch (CopyFilesFailedException | PermissionDeniedException e) {
+			throw new SemanticMarkupException(task);
+		}
+	}
+
+	private String getOutputDirectory(String outputDirectory, Task task) throws SemanticMarkupException {
 		String outputDirectoryParent;
 		try {
 			outputDirectoryParent = fileService.getParent(new AdminAuthenticationToken(), outputDirectory);
@@ -434,40 +467,16 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		}
 		
 		//find a suitable destination filePath
-		String createDirectoy;
+		String createDirectory;
 		try {
-			createDirectoy = fileService.createDirectory(new AdminAuthenticationToken(), outputDirectoryParent, 
+			createDirectory = fileService.createDirectory(new AdminAuthenticationToken(), outputDirectoryParent, 
 					outputDirectoryName, true);
 		} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
 			throw new SemanticMarkupException(task);
 		}
-		
-		//copy the output files to the directory
-		String charaParserOutputDirectory = Configuration.charaparser_tempFileBase + File.separator + task.getId() + File.separator + "out";		
-		try {
-			fileService.deleteFile(new AdminAuthenticationToken(), charaParserOutputDirectory + File.separator + "config.txt");
-		} catch (PermissionDeniedException | FileDeleteFailedException e) {
-			throw new SemanticMarkupException(task);
-		}
-		try {
-			fileService.copyFiles(new AdminAuthenticationToken(), charaParserOutputDirectory, createDirectoy);
-		} catch (CopyFilesFailedException | PermissionDeniedException e) {
-			throw new SemanticMarkupException(task);
-		}
-		
-		//update task
-		config.setOutput(createDirectoy);
-		daoManager.getSemanticMarkupConfigurationDAO().updateSemanticMarkupConfiguration(config);
-		task.setResumable(false);
-		task.setComplete(true);
-		task.setCompleted(new Date());
-		daoManager.getTaskDAO().updateTask(task);
-		
-		daoManager.getTasksOutputFilesDAO().addOutput(task, createDirectoy);
-		
-		return task;
+		return createDirectory;
 	}
-	
+
 	@Override
 	public String checkValidInput(AuthenticationToken authenticationToken, String filePath) throws SemanticMarkupException {
 		boolean readPermission = filePermissionService.hasReadPermission(authenticationToken, filePath);
@@ -504,25 +513,9 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 
 	@Override
 	public String saveOto(AuthenticationToken authenticationToken, Task task) throws SemanticMarkupException {
-		final SemanticMarkupConfiguration config = getSemanticMarkupConfiguration(task);
-		int uploadId = config.getOtoUploadId();
-		String secret = config.getOtoSecret();
-		
-		Collection collection;
-		try {
-			collection = otoCollectionService.get(uploadId, secret);
-		} catch (Exception e) {
-			log(LogLevel.ERROR, "Couldn't get oto collection", e);
-			throw new SemanticMarkupException(task);
-		}
-		
 		String zipSource = Configuration.compressedFileBase + File.separator + authenticationToken.getUserId() + File.separator + "oto2" + 
 				File.separator + task.getId() + File.separator + task.getName() + "_term_review";
-		File file = new File(zipSource);
-		file.mkdirs();
-		createCategorizationFile(task, collection, zipSource);
-		createSynonymFile(task, collection, zipSource);
-		createCategoriesFile(task, collection, zipSource);
+		saveOto(authenticationToken, zipSource, task);
 		
 		String zipFilePath = zipSource + ".zip";
 		JavaZipper zipper = new JavaZipper();
@@ -536,6 +529,26 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		throw new SemanticMarkupException("Saving failed");
 	}
 	
+	private void saveOto(AuthenticationToken authenticationToken, String destination, Task task) throws SemanticMarkupException {
+		final SemanticMarkupConfiguration config = getSemanticMarkupConfiguration(task);
+		int uploadId = config.getOtoUploadId();
+		String secret = config.getOtoSecret();
+		
+		Collection collection;
+		try {
+			collection = otoCollectionService.get(uploadId, secret);
+		} catch (Exception e) {
+			log(LogLevel.ERROR, "Couldn't get oto collection", e);
+			throw new SemanticMarkupException(task);
+		}
+		
+		File file = new File(destination);
+		file.mkdirs();
+		createCategorizationFile(task, collection, destination);
+		createSynonymFile(task, collection, destination);
+		createCategoriesFile(task, collection, destination);
+	}
+
 	@Override
 	public void importOto(Task task, String termCategorization, String synonymy) throws SemanticMarkupException {
 		final SemanticMarkupConfiguration config = getSemanticMarkupConfiguration(task);
@@ -1115,7 +1128,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	}
 
 	@Override
-	public boolean shouldWarnUserLargeInput(AuthenticationToken token, String inputFile) {
+	public boolean isLargeInput(AuthenticationToken token, String inputFile) {
 		int numWords = 0;
 		
 		File inputDir = new File(inputFile);

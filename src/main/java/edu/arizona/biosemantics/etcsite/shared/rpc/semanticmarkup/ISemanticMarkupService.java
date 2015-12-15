@@ -47,6 +47,6 @@ public interface ISemanticMarkupService extends RemoteService, IHasTasksService 
 	
 	public void sendToOto(AuthenticationToken token, Task task) throws Exception;
 
-	public boolean shouldWarnUserLargeInput(AuthenticationToken token, String inputFile);
+	public boolean isLargeInput(AuthenticationToken token, String inputFile);
 	
 }

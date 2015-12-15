@@ -45,6 +45,6 @@ public interface ISemanticMarkupServiceAsync extends IHasTasksServiceAsync {
 	
 	public void sendToOto(AuthenticationToken token, Task task,	AsyncCallback<Void> callback);
 
-	public void shouldWarnUserLargeInput(AuthenticationToken token, String inputFile, AsyncCallback<Boolean> asyncCallback);
+	public void isLargeInput(AuthenticationToken token, String inputFile, AsyncCallback<Boolean> asyncCallback);
 	
 }

@@ -46,10 +46,11 @@ public class SemanticMarkupConfigurationDAO {
 		String otoSecret = result.getString(7);
 		boolean otoCreatedDataset = result.getBoolean(8);
 		String output = result.getString(9);
+		String outputTermReview = result.getString(10);
 		Configuration configuration = configurationDAO.getConfiguration(configurationId);
 		TaxonGroup taxonGroup = taxonGroupDAO.getTaxonGroup(taxonGroupId);
 		return new SemanticMarkupConfiguration(configuration, input, numberOfInputFiles, taxonGroup, useEmptyGlossary, 
-				otoUploadId, otoSecret, otoCreatedDataset, output);
+				otoUploadId, otoSecret, otoCreatedDataset, output, outputTermReview);
 	}
 
 	public SemanticMarkupConfiguration addSemanticMarkupConfiguration(SemanticMarkupConfiguration semanticMarkupConfiguration) {

@@ -248,15 +248,20 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		});
 	}
 
-	private String getDeleteText(List<FileTreeItem> selection) {
-		// TODO Auto-generated method stub
-		return null;
+	private String getDeleteText(List<FileTreeItem> items) {
+		String result = "";
+		for(FileTreeItem item : items) {
+			result += item.getName(true) + ", ";
+		}
+		if(!result.isEmpty())
+			return result.substring(0, result.length() - 2);
+		return result;
 	}
 
 	@Override
 	public void onDownload() {
 		final List<FileTreeItem> selections = fileTreePresenter.getView().getSelection();
-		if(selections.isEmpty()) {  
+		if(!selections.isEmpty()) {  
 			if(selections.size() == 1) {
 				final String selectionPath = selections.get(0).getFilePath();
 				if(selectionPath != null) {

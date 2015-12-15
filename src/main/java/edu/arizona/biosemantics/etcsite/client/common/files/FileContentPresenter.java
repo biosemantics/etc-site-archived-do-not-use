@@ -9,6 +9,7 @@ import com.sencha.gxt.widget.core.client.box.MessageBox;
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.access.IFileAccessServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.format.IFileFormatServiceAsync;
@@ -18,7 +19,7 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 	private IFileContentView view;
 	private IFileAccessServiceAsync fileAccessService;
 	private IFileFormatServiceAsync fileFormatService;
-	private FileInfo currentFileInfo;
+	private FileTreeItem currentFileTreeItem;
 	private FileTypeEnum fileType; 
 	private String currentXmlSchema;
 	private Dialog dialog;
@@ -44,14 +45,14 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 		dialog.add(view);
 	}
 
-	public void show(FileInfo fileInfo) {
-		this.currentFileInfo = fileInfo;
+	public void show(FileTreeItem fileTreeItem) {
+		this.currentFileTreeItem = fileTreeItem;
 		//this.dialogBox.setText("File Content of "+path);
 		this.dialog.show();
 		final MessageBox box = Alerter.startLoading();
 		fileType = FileTypeEnum.getEnum(view.getFormat());
 		fileAccessService.getFileContent(Authentication.getInstance().getToken(), 
-				currentFileInfo.getFilePath(), fileType, new FileContentCallback(true, box));
+				currentFileTreeItem.getFilePath(), fileType, new FileContentCallback(true, box));
 	}
 	
 	@Override
@@ -60,7 +61,7 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 		fileType = FileTypeEnum.getEnum(format);
 		fileAccessService.getFileContent(
 				Authentication.getInstance().getToken(), 
-				currentFileInfo.getFilePath(), fileType, new FileContentCallback(false, box));
+				currentFileTreeItem.getFilePath(), fileType, new FileContentCallback(false, box));
 	}
 	
 	@Override
@@ -78,11 +79,11 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 					Alerter.notSavedInvalidXmlContent();
 				}else{
 					//user could have possibly manipulated the schema url
-					fileFormatService.setSchema(Authentication.getInstance().getToken(), view.getText(), currentFileInfo.getFileType(), 
+					fileFormatService.setSchema(Authentication.getInstance().getToken(), view.getText(), currentFileTreeItem.getFileType(), 
 							new AsyncCallback<String>() {
 						@Override
 						public void onSuccess(String result) {
-							fileAccessService.setFileContent(Authentication.getInstance().getToken(), currentFileInfo.getFilePath(), 
+							fileAccessService.setFileContent(Authentication.getInstance().getToken(), currentFileTreeItem.getFilePath(), 
 									result, new FileContentSaveCallback());
 						}
 						@Override
@@ -102,8 +103,8 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 	
 	@Override
 	public void onEdit(){
-		if(currentFileInfo.isEditable()) {
-			fileFormatService.getSchema(Authentication.getInstance().getToken(), currentFileInfo.getFilePath(), new AsyncCallback<String>() {
+		if(currentFileTreeItem.isEditable()) {
+			fileFormatService.getSchema(Authentication.getInstance().getToken(), currentFileTreeItem.getFilePath(), new AsyncCallback<String>() {
 				@Override
 				public void onSuccess(String result) {
 					currentXmlSchema = result;

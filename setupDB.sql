@@ -101,6 +101,8 @@ CREATE TABLE IF NOT EXISTS `etcsite_ontologizeconfigurations` (
 CREATE TABLE IF NOT EXISTS `etcsite_matrixgenerationconfigurations` (
   `configuration` bigint(20) unsigned DEFAULT NULL,
   `input` varchar(200) DEFAULT NULL,
+  `input_term_review` varchar(200) DEFAULT NULL,
+  `input_ontology` varchar(200) DEFAULT NULL,
   `taxon_group` bigint(20) unsigned DEFAULT NULL,
   `output` varchar(200) DEFAULT NULL,
   `inheritvalues` tinyint(1) DEFAULT NULL,
@@ -152,6 +154,7 @@ CREATE TABLE IF NOT EXISTS `etcsite_semanticmarkupconfigurations` (
   `oto_secret` varchar(100) DEFAULT NULL,
   `oto_created_dataset` tinyint(1) DEFAULT NULL,
   `output` varchar(200) DEFAULT NULL,
+  `output_term_review` varchar(200) DEFAULT NULL,
   KEY `configurations_semanticmarkupconfigurations_CON` (`configuration`),
   KEY `taxon_group_semanticmarkupconfigurations_CON` (`taxon_group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

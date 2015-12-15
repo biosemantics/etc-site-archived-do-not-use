@@ -113,20 +113,38 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 	
 	@Override
-	public Task start(AuthenticationToken authenticationToken, String taskName, String input, String taxonGroup, boolean inheritValues, boolean generateAbsentPresent) throws MatrixGenerationException {	
-		boolean isShared = filePermissionService.isSharedFilePath(authenticationToken.getUserId(), input);
-		String fileName = null;
+	public Task start(AuthenticationToken authenticationToken, String taskName, String input, String inputTermReview, String inputOntology,
+			String taxonGroup, boolean inheritValues, boolean generateAbsentPresent) throws MatrixGenerationException {
+		boolean isSharedInput = filePermissionService.isSharedFilePath(authenticationToken.getUserId(), input);
+		boolean isSharedInputTermReview = filePermissionService.isSharedFilePath(authenticationToken.getUserId(), inputTermReview);
+		boolean isSharedInputOntology = filePermissionService.isSharedFilePath(authenticationToken.getUserId(), inputOntology);
+		
+		String inputFileName = null;
 		try {
-			fileName = fileService.getFileName(authenticationToken, input);
+			inputFileName = fileService.getFileName(authenticationToken, input);
 		} catch (PermissionDeniedException e) {
-			log(LogLevel.ERROR, "Permission denied to read "+fileName);
+			log(LogLevel.ERROR, "Permission denied to read " + input);
 			throw new MatrixGenerationException();
 		}
-		if(isShared) {
+		String inputTermReviewFileName = null;
+		try {
+			inputTermReviewFileName = fileService.getFileName(authenticationToken, inputTermReview);
+		} catch (PermissionDeniedException e) {
+			log(LogLevel.ERROR, "Permission denied to read " + inputTermReview);
+			throw new MatrixGenerationException();
+		}
+		String inputOntologyFileName = null;
+		try {
+			inputOntologyFileName = fileService.getFileName(authenticationToken, inputOntology);
+		} catch (PermissionDeniedException e) {
+			log(LogLevel.ERROR, "Permission denied to read " + inputOntology);
+			throw new MatrixGenerationException();
+		}
+		if(isSharedInput) {
 			String destination;
 			try {
 				destination = fileService.createDirectory(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUserId(), 
-						fileName, true);
+						inputFileName, true);
 			} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
 				throw new MatrixGenerationException();
 			}
@@ -137,9 +155,41 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			}
 			input = destination;
 		}
+		if(isSharedInputTermReview) {
+			String destination;
+			try {
+				destination = fileService.createDirectory(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUserId(), 
+						inputTermReviewFileName, true);
+			} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
+				throw new MatrixGenerationException();
+			}
+			try {
+				fileService.copyFiles(authenticationToken, inputTermReview, destination);
+			} catch (CopyFilesFailedException | PermissionDeniedException e) {
+				throw new MatrixGenerationException();
+			}
+			inputTermReview = destination;
+		}
+		if(isSharedInputOntology) {
+			String destination;
+			try {
+				destination = fileService.createDirectory(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUserId(), 
+						inputOntologyFileName, true);
+			} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
+				throw new MatrixGenerationException();
+			}
+			try {
+				fileService.copyFiles(authenticationToken, inputOntology, destination);
+			} catch (CopyFilesFailedException | PermissionDeniedException e) {
+				throw new MatrixGenerationException();
+			}
+			inputOntology = destination;
+		}
 		
 		MatrixGenerationConfiguration config = new MatrixGenerationConfiguration();
-		config.setInput(input);	
+		config.setInput(input);
+		config.setInputTermReview(inputTermReview);
+		config.setInputOntology(inputOntology);
 		TaxonGroup group = daoManager.getTaxonGroupDAO().getTaxonGroup(taxonGroup);
 		config.setTaxonGroup(group);
 		config.setOutput(config.getInput() + "_output_by_MG_task_" + taskName);
@@ -186,7 +236,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			task.setResumable(false);
 			daoManager.getTaskDAO().updateTask(task);
 			
-			String input = config.getInput();			
+			String input = config.getInput();
+			String inputOntology = config.getInputOntology();
 			try {
 				fileService.createDirectory(new AdminAuthenticationToken(), Configuration.matrixGeneration_tempFileBase, String.valueOf(task.getId()), false);
 			} catch (PermissionDeniedException | CreateDirectoryFailedException e1) {
@@ -199,8 +250,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			boolean generateAbsentPresent = config.isGenerateAbsentPresent();
 			
 			
-			final MatrixGeneration matrixGeneration = new ExtraJvmMatrixGeneration(input, taxonGroup, outputFile, inheritValues, generateAbsentPresent, true);
-			//final MatrixGeneration matrixGeneration = new InJvmMatrixGeneration(input, taxonGroup, outputFile, inheritValues, generateAbsentPresent, true);
+			final MatrixGeneration matrixGeneration = new ExtraJvmMatrixGeneration(input, inputOntology, taxonGroup, outputFile, inheritValues, generateAbsentPresent, true);
+			//final MatrixGeneration matrixGeneration = new InJvmMatrixGeneration(input, inputOntology, taxonGroup, outputFile, inheritValues, generateAbsentPresent, true);
 			activeProcess.put(config.getConfiguration().getId(), matrixGeneration);
 			final ListenableFuture<Void> futureResult = executorService.submit(matrixGeneration);
 			
