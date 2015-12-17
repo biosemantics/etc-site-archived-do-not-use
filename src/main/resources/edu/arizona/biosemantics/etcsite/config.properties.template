@@ -55,6 +55,7 @@ captcha_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/captcha
 
 #File Management
 fileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/users
+profiles=
 compressedFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/compressedFiles
 tempFiles=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp
 etcFiles=

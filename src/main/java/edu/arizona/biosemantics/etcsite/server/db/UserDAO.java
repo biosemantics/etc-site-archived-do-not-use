@@ -29,7 +29,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.User.EmailPreference;
 public class UserDAO {
 	
 	public UserDAO() {
-		File profilesDir = new File(Configuration.etcFiles + File.separator + "profiles");
+		File profilesDir = new File(Configuration.profiles);
 		profilesDir.mkdir();
 	}
 
