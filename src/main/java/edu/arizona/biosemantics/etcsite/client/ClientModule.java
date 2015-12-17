@@ -377,8 +377,8 @@ public class ClientModule extends AbstractGinModule {
 		@Inject
 		public FileManagerPresenterProvider(IFileServiceAsync fileService,
 				ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter,
-				PlaceController placeController) {
-			fileTreeView = new FileTreeView(fileService);
+				PlaceController placeController, IFileContentView.Presenter fileContentPresenter) {
+			fileTreeView = new FileTreeView(fileService, fileContentPresenter);
 			fileTreePresenter = new FileTreePresenter(fileTreeView);
 			managableFileTreeView = new ManagableFileTreeView(fileTreePresenter);			
 			managableFileTreePresenter = new ManagableFileTreePresenter(managableFileTreeView, fileTreePresenter, fileService, 
@@ -404,8 +404,9 @@ public class ClientModule extends AbstractGinModule {
 		
 		@Inject
 		public FileManagerDialogPresenterProvider(IFileServiceAsync fileService,
-				ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter) {
-			fileTreeView = new FileTreeView(fileService);
+				ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter, 
+				IFileContentView.Presenter fileContentPresenter) {
+			fileTreeView = new FileTreeView(fileService, fileContentPresenter);
 			fileTreePresenter = new FileTreePresenter(fileTreeView);
 			managableFileTreeView = new ManagableFileTreeView(fileTreePresenter);			
 			managableFileTreePresenter = new ManagableFileTreePresenter(managableFileTreeView, fileTreePresenter, fileService, 
@@ -429,8 +430,8 @@ public class ClientModule extends AbstractGinModule {
 		private IFileTreeView fileTreeView;
 		
 		@Inject
-		public SelectableFileTreePresenterProvider(IFileServiceAsync fileService) {
-			fileTreeView = new FileTreeView(fileService);
+		public SelectableFileTreePresenterProvider(IFileServiceAsync fileService, IFileContentView.Presenter fileContentPresenter) {
+			fileTreeView = new FileTreeView(fileService, fileContentPresenter);
 			fileTreePresenter = new FileTreePresenter(fileTreeView);
 			selectableFileTreeView = new SelectableFileTreeView(fileTreePresenter);
 			selectableFileTreePresenter = new SelectableFileTreePresenter(selectableFileTreeView, fileTreePresenter);

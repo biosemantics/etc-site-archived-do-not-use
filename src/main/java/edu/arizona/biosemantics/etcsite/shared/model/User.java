@@ -235,4 +235,9 @@ public class User implements Serializable {
 		this.profile = profile;
 	}
 	
+	public boolean hasOTOAuthenticationTokenAndEmail() {
+		return this.otoAccountEmail != null && this.otoAuthenticationToken != null && 
+				!this.otoAccountEmail.isEmpty() && !this.otoAuthenticationToken.isEmpty();
+	}
+	
 }

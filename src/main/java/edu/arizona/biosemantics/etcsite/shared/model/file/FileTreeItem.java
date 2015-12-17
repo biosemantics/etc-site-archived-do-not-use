@@ -85,4 +85,18 @@ public class FileTreeItem implements Serializable {
 		return id;
 	}
 
+	public boolean isEditable() {
+		boolean result = true;
+		//result &= !isSystemFile();
+		result &= name.endsWith(".xml");
+		//result &= !name.endsWith(".mx");
+		//result &= !name.endsWith(".nxs");
+		//result &= !name.endsWith(".nex");
+		return result;
+	}
+
+	public FileTypeEnum getFileType() {
+		return type;
+	}
+
 }

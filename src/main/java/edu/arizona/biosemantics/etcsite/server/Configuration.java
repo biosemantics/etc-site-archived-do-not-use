@@ -56,10 +56,12 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.shared.Confi
 	public static String matrixgeneration_xmx;
 	public static String matrixgeneration_classpath;
 	public static int matrixGeneration_maxRunningTimeMinutes;
+	public static String matrixReview_tempFileBase;
 	
 	/** Taxonomy Comparison **/
 	public static int maxActiveTaxonomyComparison;
 	public static int taxonomyComparisonTask_maxRunningTimeMinutes;
+	public static String taxonomyComparison_tempFileBase;
 	public static String taxonomyComparison_xms;
 	public static String taxonomyComparison_xmx;
 	
@@ -157,15 +159,16 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.shared.Confi
 			matrixgeneration_xmx = properties.getProperty("matrixgeneration_xmx");
 			matrixgeneration_classpath = properties.getProperty("matrixgeneration_classpath");
 			matrixGeneration_maxRunningTimeMinutes = Integer.valueOf(properties.getProperty("matrixGeneration_maxRunningTimeMinutes"));
+			matrixReview_tempFileBase = properties.getProperty("matrixReview_tempFileBase");
 			taxonomyComparison_xms = properties.getProperty("taxonomyComparison_xms");
 			taxonomyComparison_xmx = properties.getProperty("taxonomyComparison_xmx");
+			taxonomyComparison_tempFileBase = properties.getProperty("taxonomyComparison_tempFileBase");
 			
 			maxActiveTaxonomyComparison = Integer.parseInt(properties.getProperty("maxActiveTaxonomyComparison"));
 			taxonomyComparisonTask_maxRunningTimeMinutes = Integer.parseInt(properties.getProperty("taxonomyComparisonTask_maxRunningTimeMinutes"));
 			
 			fileBase = properties.getProperty("fileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			compressedFileBase = properties.getProperty("compressedFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
-			tempFiles = properties.getProperty("tempFiles").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			etcFiles= properties.getProperty("etcFiles").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			
 			xPathObjectModel = properties.getProperty("xPathObjectModel");

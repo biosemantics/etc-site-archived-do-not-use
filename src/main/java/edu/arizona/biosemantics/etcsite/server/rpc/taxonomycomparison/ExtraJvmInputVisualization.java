@@ -14,9 +14,11 @@ public class ExtraJvmInputVisualization extends ExtraJvmCallable<Void> implement
 			try {
 				String workingDir = args[0];
 				String inputFile = args[1];
+				String outputDirectory = args[2];
 				EulerShow euler = new EulerShow();
 				euler.setWorkingDir(workingDir);
 				euler.setInputFile(inputFile);
+				euler.setOutputDirectory(outputDirectory);
 				euler.setName("iv");
 				euler.run();
 			} catch (Throwable t) {
@@ -28,10 +30,12 @@ public class ExtraJvmInputVisualization extends ExtraJvmCallable<Void> implement
 
 	private String workingDir;
 	private String inputFile;
+	private String outputDirectory;
 	
-	public ExtraJvmInputVisualization(String inputFile, String workingDir) {
+	public ExtraJvmInputVisualization(String inputFile, String outputDirectory, String workingDir) {
 		this.workingDir = workingDir;
 		this.inputFile = inputFile;
+		this.outputDirectory = outputDirectory;
 		
 		this.setArgs(createArgs());
 		if(!Configuration.taxonomyComparison_xms.isEmpty()) 
@@ -48,7 +52,7 @@ public class ExtraJvmInputVisualization extends ExtraJvmCallable<Void> implement
 	}
 	
 	private String[] createArgs() {
-		String[] args = { workingDir, inputFile };
+		String[] args = { workingDir, inputFile, outputDirectory };
 		return args;
 	}
 

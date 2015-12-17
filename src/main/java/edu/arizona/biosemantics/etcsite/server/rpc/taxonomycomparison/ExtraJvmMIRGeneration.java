@@ -16,13 +16,16 @@ public class ExtraJvmMIRGeneration extends ExtraJvmCallable<Void> implements MIR
 			try {
 				String workingDir = args[0];
 				String inputFile = args[1];
+				String outputDirectory = args[2];
 				EulerAlign euler = new EulerAlign();
 				euler.setInputFile(inputFile);
 				euler.setWorkingDir(workingDir);
 				euler.setReasoner(Reasoner.GRINGO);
+				euler.setOutputDirectory(outputDirectory);
 				euler.run();
 				EulerShow show = new EulerShow();
 				show.setWorkingDir(workingDir);
+				show.setOutputDirectory(outputDirectory);
 				show.setName("pw"); // Generate possible worlds pdfs.
 				show.run();
 				show.setName("sv"); // Generate aggregate pdfs.
@@ -36,10 +39,12 @@ public class ExtraJvmMIRGeneration extends ExtraJvmCallable<Void> implements MIR
 
 	private String workingDir;
 	private String inputFile;
+	private String outputDirectory;
 	
-	public ExtraJvmMIRGeneration(String inputFile, String workingDir) {
+	public ExtraJvmMIRGeneration(String inputFile, String outputDirectory, String workingDir) {
 		this.workingDir = workingDir;
 		this.inputFile = inputFile;
+		this.outputDirectory = outputDirectory;
 		
 		this.setArgs(createArgs());
 		if(!Configuration.taxonomyComparison_xms.isEmpty()) 
@@ -56,7 +61,7 @@ public class ExtraJvmMIRGeneration extends ExtraJvmCallable<Void> implements MIR
 	}
 	
 	private String[] createArgs() {
-		String[] args = { workingDir, inputFile };
+		String[] args = { workingDir, inputFile, outputDirectory };
 		return args;
 	}
 

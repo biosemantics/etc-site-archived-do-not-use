@@ -15,12 +15,12 @@ public class SemanticMarkupConfiguration extends AbstractTaskConfiguration imple
 	private String otoSecret;
 	private boolean otoCreatedDataset;
 	private String output;
+	private String outputTermReview;
 	
 	public SemanticMarkupConfiguration() { }
 	
 	public SemanticMarkupConfiguration(Configuration configuration, String input, int numberOfInputFiles, TaxonGroup taxonGroup, 
-			boolean useEmptyGlossary, int otoUploadId, String otoSecret, boolean otoCreatedDataset, 
-			String output) {
+			boolean useEmptyGlossary, int otoUploadId, String otoSecret, boolean otoCreatedDataset, String output, String outputTermReview) {
 		super(configuration);
 		this.input = input;
 		this.numberOfInputFiles = numberOfInputFiles;
@@ -30,6 +30,7 @@ public class SemanticMarkupConfiguration extends AbstractTaskConfiguration imple
 		this.otoSecret = otoSecret;
 		this.otoCreatedDataset = otoCreatedDataset;
 		this.output = output;
+		this.outputTermReview = outputTermReview;
 	}
 
 	public void setUseEmptyGlossary(boolean useEmptyGlossary) {
@@ -107,7 +108,16 @@ public class SemanticMarkupConfiguration extends AbstractTaskConfiguration imple
 	public List<String> getOutputs() {
 		List<String> result = new LinkedList<String>();
 		result.add(this.getOutput());
+		result.add(this.getOutputTermReview());
 		return result;
+	}
+
+	public String getOutputTermReview() {
+		return this.outputTermReview;
+	}
+	
+	public void setOutputTermReview(String outputTermReview) {
+		this.outputTermReview = outputTermReview;
 	}
 
 }

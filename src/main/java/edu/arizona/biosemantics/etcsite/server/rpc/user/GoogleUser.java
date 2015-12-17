@@ -38,6 +38,9 @@ public class GoogleUser {
 		this.email = email;
 	}
 	
+	public String toString() {
+		return id + " " + firstName + " " + lastName + " " + email;
+	}
 	
 	
 }

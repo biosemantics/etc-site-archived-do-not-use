@@ -469,6 +469,9 @@ public class Alerter {
 		return showAlert("Input Directory", "Please select a valid input directory.");
 	}
 
+	public static MessageBox selectValidInputOntology() {
+		return showAlert("Input Ontology Directory", "Please select a valid ontology directory.");
+	}
 
 	public static MessageBox invalidInputDirectory() {
 		return showAlert("Input Directory", "Input directory is not valid. Please select a valid input directory.");
@@ -661,5 +664,6 @@ public class Alerter {
 	public static MessageBox selectATask() {
 		return showAlert("Select a task", "Select a task to resume.");
 	}
+
 
 }

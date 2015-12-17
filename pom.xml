@@ -89,6 +89,11 @@
 		</dependency>
 
 		<!-- mine -->
+		<!--<dependency>
+		  <groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
+		  <artifactId>enhance</artifactId>
+		  <version>0.0.4-SNAPSHOT</version>
+		</dependency> -->
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
@@ -236,7 +241,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.95-SNAPSHOT</version>
+		  <version>0.0.96-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		  <exclusions>
 		  	<exclusion>
@@ -248,19 +253,19 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.95-SNAPSHOT</version>
+		  <version>0.0.96-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize</artifactId>
-		  <version>0.1.11-SNAPSHOT</version>
+		  <version>0.1.12-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize</artifactId>
-		  <version>0.1.11-SNAPSHOT</version>
+		  <version>0.1.12-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
@@ -420,7 +425,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.euler</groupId>
 			<artifactId>euler2</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
+			<version>0.0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.euler</groupId>

@@ -880,27 +880,49 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	            File[] childFiles = file.listFiles();
 	            Arrays.sort(childFiles);
 	            for(File child : childFiles) {
-	                String childPath = child.getAbsolutePath();
+	                String childPath = child.getAbsolutePath(); 
 	                permissionResult = filePermissionService.hasReadPermission(authenticationToken, childPath);
 	                if(!permissionResult)
 	                    throw new PermissionDeniedException();
-	                 String name = child.getName();
-	                 String displayPath = childPath.replace(Configuration.fileBase + File.separator + authenticationToken.getUserId(), "");
-	                 
-	                 boolean filter = false; 
-	                 FileTypeEnum fileType = FileTypeEnum.PLAIN_TEXT;
-	                 if(fileFilter != null) {
-	                	 fileType = getFileType(authenticationToken, child.getAbsolutePath());
-	                	 filter = filter(fileType, fileFilter);
-	                 }
-	                	 
-	                 if(!filter) 
-	                	 if(child.isDirectory())
-	                		 result.add(createFolderTreeItem(name, child.getAbsolutePath(), displayPath, fileType,
-	                				 authenticationToken.getUserId(), false, child.isDirectory(), true));
-	                	 else
-			              	 result.add(createFileTreeItem(name, child.getAbsolutePath(), displayPath, fileType,
-			              			 authenticationToken.getUserId(), false, child.isDirectory(), true));
+
+	            	String name = child.getName();
+	            	if(child.isDirectory()) {
+		            	int directories = child.listFiles(new java.io.FileFilter() {
+							@Override
+							public boolean accept(File file) {
+								return file.isDirectory();
+							}
+		            	}).length;
+		            	
+		            	int files = child.listFiles(new java.io.FileFilter() {
+							@Override
+							public boolean accept(File file) {
+								return file.isFile();
+							}
+		            	}).length;
+		            	name = child.getName() + " [" + files + " files, " + directories + " directories]";
+	            	}
+				String displayPath = childPath.replace(Configuration.fileBase + File.separator + authenticationToken.getUserId(), "");
+
+				boolean filter = false;
+				FileTypeEnum fileType = FileTypeEnum.PLAIN_TEXT;
+				if (fileFilter != null) {
+					fileType = getFileType(authenticationToken,
+							child.getAbsolutePath());
+					filter = filter(fileType, fileFilter);
+				}
+
+				if (!filter)
+					if (child.isDirectory())
+						result.add(createFolderTreeItem(name,
+								child.getAbsolutePath(), displayPath, fileType,
+								authenticationToken.getUserId(), false,
+								child.isDirectory(), true));
+					else
+						result.add(createFileTreeItem(name,
+								child.getAbsolutePath(), displayPath, fileType,
+								authenticationToken.getUserId(), false,
+								child.isDirectory(), true));
 	            }
 	        }
 		

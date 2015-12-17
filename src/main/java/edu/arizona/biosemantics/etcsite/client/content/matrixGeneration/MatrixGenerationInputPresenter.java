@@ -28,6 +28,7 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 	private IFileTreeView.Presenter fileTreePresenter;
 	private FilePathShortener filePathShortener;
 	private String inputFile;
+	private String ontologyInputFile;
 	private IFileManagerDialogView.Presenter fileManagerDialogPresenter;
 	
 	@Inject
@@ -48,8 +49,13 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 		this.fileManagerDialogPresenter = fileManagerDialogPresenter;
 	}
 	
-	@Override
-	public void onInputSelect() {
+	private static interface InputSetter {
+		
+		public void set(String input);
+		
+	}
+	
+	private void showInput(final InputSetter inputSetter) {
 		selectableFileTreePresenter.show("Select input", FileFilter.DIRECTORY, new ISelectListener() {
 			@Override
 			public void onSelect() {
@@ -66,8 +72,7 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 						Alerter.containSubFolder();
 					}
 					else{
-						view.setFilePath(shortendPath);
-						view.setEnabledNext(true);			
+						inputSetter.set(shortendPath);
 						if(selection.getOwnerUserId() != Authentication.getInstance().getUserId()) {
 							Alerter.sharedInputForTask();
 							fileManagerDialogPresenter.hide();
@@ -79,11 +84,51 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 			}
 		});
 	}
+	
+	@Override
+	public void onInputSelect() {
+		showInput(new InputSetter() {
+			@Override
+			public void set(String input) {
+				view.setFilePath(input);	
+				if(view.hasInput() && view.hasOntologyPath() && view.hasTermReview())
+					view.setEnabledNext(true);
+			}
+		});
+	}
+	
+	@Override
+	public void onTermReviewInput() {
+		showInput(new InputSetter() {
+			@Override
+			public void set(String input) {
+				view.setTermReviewPath(input);	
+				if(view.hasInput() && view.hasOntologyPath() && view.hasTermReview())
+					view.setEnabledNext(true);
+			}
+		});
+	}
+	
+	@Override
+	public void onOntologyInput() {
+		showInput(new InputSetter() {
+			@Override
+			public void set(String input) {
+				view.setOntologyPath(input);
+				if(view.hasInput() && view.hasOntologyPath() && view.hasTermReview())
+					view.setEnabledNext(true);
+			}
+		});
+	}
 
 	@Override
 	public void onNext() {
-		if (inputFile == null || inputFile.equals("")){
+		if (inputFile == null || inputFile.isEmpty()) {
 			Alerter.selectValidInputDirectory();
+			return;
+		}
+		if(ontologyInputFile == null || ontologyInputFile.isEmpty()) {
+			Alerter.selectValidInputOntology();
 			return;
 		}
 		if (view.getTaskName() == null || view.getTaskName().equals("")){
@@ -93,7 +138,8 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 		
 		final MessageBox box = Alerter.startLoading();
 		matrixGenerationService.start(Authentication.getInstance().getToken(), 
-			view.getTaskName(), inputFile, view.getTaxonGroup(), view.isInheritValues(), view.isGenerateAbsentPresent(), new AsyncCallback<Task>() {
+			view.getTaskName(), inputFile, ontologyInputFile,
+				view.getTaxonGroup(), view.isInheritValues(), view.isGenerateAbsentPresent(), new AsyncCallback<Task>() {
 			@Override
 			public void onSuccess(Task result) {
 				placeController.goTo(new MatrixGenerationProcessPlace(result));
@@ -115,5 +161,7 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 	public void setSelectedFolder(String fullPath, String shortendPath) {
 		inputFile = fullPath;
 		view.setFilePath(shortendPath);
+		view.setEnabledNext(false);
 	}
+
 }

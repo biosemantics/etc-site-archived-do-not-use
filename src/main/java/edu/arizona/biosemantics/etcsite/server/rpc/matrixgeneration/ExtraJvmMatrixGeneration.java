@@ -34,7 +34,7 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements 
 	private boolean inferCharactersFromOntologies;
 	private String taxonGroup;
 
-	public ExtraJvmMatrixGeneration(String inputDir, String taxonGroup, String outputFile, boolean inheritValues, 
+	public ExtraJvmMatrixGeneration(String inputDir, String inputOntology, String taxonGroup, String outputFile, boolean inheritValues, 
 			boolean generateAbsentPresent, boolean inferCharactersFromOntologies) {
 		this.inputDir = inputDir;
 		this.taxonGroup = taxonGroup;
@@ -99,7 +99,7 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements 
 	
 	public static void main(String[] args) throws Exception {
 		//MatrixGeneration mg = new MatrixGeneration("C:/test/users/1070/input_2", "C:/test/temp/matrixGeneration/124/Matrix.mx");
-		ExtraJvmMatrixGeneration mg = new ExtraJvmMatrixGeneration("C:/test/Test_mmm", "PLANT", "C:/test/Test_mmm.mx", true, 
+		ExtraJvmMatrixGeneration mg = new ExtraJvmMatrixGeneration("C:/test/Test_mmm", "", "PLANT", "C:/test/Test_mmm.mx", true, 
 				true, true);
 		mg.call();
 		

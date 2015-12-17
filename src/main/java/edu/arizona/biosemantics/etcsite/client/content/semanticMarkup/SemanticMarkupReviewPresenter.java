@@ -18,6 +18,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
 import edu.arizona.biosemantics.oto2.oto.client.event.ImportEvent;
 import edu.arizona.biosemantics.oto2.oto.client.event.SaveEvent;
 import edu.arizona.biosemantics.oto2.oto.client.event.SaveEvent.SaveHandler;
@@ -31,10 +32,11 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 	private ISemanticMarkupServiceAsync semanticMarkupService;
 	private IFileServiceAsync fileService;
 	private EventBus otoEventBus;
+	private IUserServiceAsync userService;
 	
 	@Inject
 	public SemanticMarkupReviewPresenter(final ISemanticMarkupReviewView view, 
-			final ISemanticMarkupServiceAsync semanticMarkupService,
+			final ISemanticMarkupServiceAsync semanticMarkupService, final IUserServiceAsync userService,
 			IFileServiceAsync fileService,
 			PlaceController placeController, 
 			final ImportOtoPresenter importOtoPresenter) {
@@ -94,24 +96,33 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 		this.placeController = placeController;
 		this.semanticMarkupService = semanticMarkupService;
 		this.fileService = fileService;
+		this.userService = userService;
 	}
 
 	@Override
-	public void setTask(Task task) {
-		semanticMarkupService.review(Authentication.getInstance().getToken(), 
-				task, new AsyncCallback<Task>() {
-			@Override
-			public void onSuccess(Task task) {
-				SemanticMarkupConfiguration configuration = (SemanticMarkupConfiguration)task.getConfiguration();
-				view.setReview(configuration.getOtoUploadId(), 
-						configuration.getOtoSecret());
-				view.setEnabledSendToOto(!configuration.isOtoCreatedDataset());
-				SemanticMarkupReviewPresenter.this.task = task;
-			}
-
+	public void setTask(final Task task) {
+		userService.hasLinkedOTOAccount(Authentication.getInstance().getToken(), new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToReview(caught);
+			}
+			@Override
+			public void onSuccess(final Boolean hasLinkedOTOAccount) {
+				semanticMarkupService.review(Authentication.getInstance().getToken(), 
+						task, new AsyncCallback<Task>() {
+					@Override
+					public void onSuccess(Task task) {
+						SemanticMarkupConfiguration configuration = (SemanticMarkupConfiguration)task.getConfiguration();
+						view.setReview(configuration.getOtoUploadId(), 
+								configuration.getOtoSecret());
+						view.setEnabledSendToOto(!configuration.isOtoCreatedDataset() && hasLinkedOTOAccount);
+						SemanticMarkupReviewPresenter.this.task = task;
+					}
+					@Override
+					public void onFailure(Throwable caught) {
+						Alerter.failedToReview(caught);
+					}
+				});
 			}
 		});
 	}

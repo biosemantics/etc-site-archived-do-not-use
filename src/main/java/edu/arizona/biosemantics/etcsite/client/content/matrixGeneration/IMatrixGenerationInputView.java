@@ -9,6 +9,8 @@ public interface IMatrixGenerationInputView extends IsWidget {
 		IMatrixGenerationInputView getView();
 		void setSelectedFolder(String fullPath, String shortendPath);
 		void onInputSelect();
+		void onOntologyInput();
+		void onTermReviewInput();
 	}
 	  
 	void setPresenter(Presenter presenter);
@@ -19,5 +21,10 @@ public interface IMatrixGenerationInputView extends IsWidget {
 	boolean isInheritValues();
 	boolean isGenerateAbsentPresent();
 	String getTaxonGroup();
+	void setOntologyPath(String text);
+	boolean hasOntologyPath();
+	boolean hasInput();
+	void setTermReviewPath(String text);
+	boolean hasTermReview();
 
 }
