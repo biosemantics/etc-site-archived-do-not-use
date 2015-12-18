@@ -16,10 +16,11 @@ public class MatrixGenerationConfiguration extends AbstractTaskConfiguration imp
 
 	public MatrixGenerationConfiguration () { }
 	
-	public MatrixGenerationConfiguration(Configuration configuration, String input, String inputOntology, TaxonGroup taxonGroup, String output, boolean inheritValues, boolean generateAbsentPresent) {
+	public MatrixGenerationConfiguration(Configuration configuration, String input, String inputTermReview, String inputOntology, TaxonGroup taxonGroup, String output, boolean inheritValues, boolean generateAbsentPresent) {
 		super(configuration);
 		this.input = input;
 		this.inputOntology = inputOntology;
+		this.inputTermReview = inputTermReview;
 		this.taxonGroup = taxonGroup;
 		this.output = output;
 		this.inheritValues = inheritValues;

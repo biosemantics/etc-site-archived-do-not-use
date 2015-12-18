@@ -238,6 +238,22 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			
 			String input = config.getInput();
 			String inputOntology = config.getInputOntology();
+			String inputTermReview = config.getInputTermReview();
+			String categoryTerm = "";
+			String synonym = "";
+			try {
+				List<String> files = fileService.getDirectoriesFiles(authenticationToken, inputTermReview);
+				for(String file : files) {
+					if(file.startsWith("category_term-")) {
+						categoryTerm = file;
+					}	
+					if(file.startsWith("category_mainterm_synonymterm-")) {
+						synonym = file;
+					}
+				}
+			} catch(PermissionDeniedException e) {
+				throw new MatrixGenerationException(task);
+			}
 			try {
 				fileService.createDirectory(new AdminAuthenticationToken(), Configuration.matrixGeneration_tempFileBase, String.valueOf(task.getId()), false);
 			} catch (PermissionDeniedException | CreateDirectoryFailedException e1) {
@@ -250,8 +266,9 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			boolean generateAbsentPresent = config.isGenerateAbsentPresent();
 			config.getInputTermReview();
 			
-			final MatrixGeneration matrixGeneration = new ExtraJvmMatrixGeneration(input, inputOntology, "", "", taxonGroup, outputFile, inheritValues, generateAbsentPresent, true);
-			//final MatrixGeneration matrixGeneration = new InJvmMatrixGeneration(input, inputOntology, taxonGroup, outputFile, inheritValues, generateAbsentPresent, true);
+			//final MatrixGeneration matrixGeneration = new ExtraJvmMatrixGeneration(input, inputOntology, categoryTerm, synonym, taxonGroup, outputFile, inheritValues, generateAbsentPresent, true);
+			final MatrixGeneration matrixGeneration = new InJvmMatrixGeneration(input, inputOntology, categoryTerm, synonym, taxonGroup, outputFile, inheritValues, generateAbsentPresent, true, 
+					getTempDir(task));
 			activeProcess.put(config.getConfiguration().getId(), matrixGeneration);
 			final ListenableFuture<Void> futureResult = executorService.submit(matrixGeneration);
 			
@@ -956,8 +973,12 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		return mtrixGenerationConfiguration;
 	}
 
+	private String getTempDir(Task task) {
+		return Configuration.matrixGeneration_tempFileBase + File.separator + task.getId();
+	}
+	
 	private String getOutputFile(Task task) {
-		return  Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "Matrix.ser";
+		return Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "Matrix.ser";
 	}
 	
 	/*private TaxonMatrix createSampleMatrix() {

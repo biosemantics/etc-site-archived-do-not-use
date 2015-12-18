@@ -25,6 +25,7 @@ import edu.arizona.biosemantics.common.ling.transform.ITokenizer;
 import edu.arizona.biosemantics.common.ling.transform.lib.SomeInflector;
 import edu.arizona.biosemantics.common.ling.transform.lib.WhitespaceTokenizer;
 import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
 import edu.arizona.biosemantics.matrixgeneration.CLIMain;
 import edu.arizona.biosemantics.oto.client.oto.OTOClient;
@@ -34,7 +35,6 @@ import edu.arizona.biosemantics.oto.model.TermSynonym;
 import edu.arizona.biosemantics.oto.model.lite.Decision;
 import edu.arizona.biosemantics.oto.model.lite.Download;
 import edu.arizona.biosemantics.oto.model.lite.Synonym;
-import edu.arizona.biosemantics.semanticmarkup.enhance.config.Configuration;
 import edu.arizona.biosemantics.semanticmarkup.enhance.know.KnowsSynonyms.SynonymSet;
 import edu.arizona.biosemantics.semanticmarkup.enhance.know.lib.CSVKnowsPartOf;
 import edu.arizona.biosemantics.semanticmarkup.enhance.know.lib.CSVKnowsSynonyms;
@@ -59,9 +59,10 @@ public class InJvmMatrixGeneration implements MatrixGeneration {
 	private String termReviewTermCategorization;
 	
 	private boolean executedSuccessfully = false;
+	private String tempDir;
 	
 	public InJvmMatrixGeneration(String inputDir, String inputOntology, String termReviewTermCategorization, String termReviewSynonyms,
-			String taxonGroup, String outputFile, boolean inheritValues, boolean generateAbsentPresent, boolean inferCharactersFromOntologies) {
+			String taxonGroup, String outputFile, boolean inheritValues, boolean generateAbsentPresent, boolean inferCharactersFromOntologies, String tempDir) {
 		this.inputDir = inputDir;
 		this.inputOntology = inputOntology;
 		this.termReviewTermCategorization = termReviewTermCategorization;
@@ -71,17 +72,17 @@ public class InJvmMatrixGeneration implements MatrixGeneration {
 		this.inheritValues = inheritValues;
 		this.generateAbsentPresent = generateAbsentPresent;
 		this.inferCharactersFromOntologies = inferCharactersFromOntologies;
+		this.tempDir = tempDir;
 	}
 	
 	@Override
 	public Void call() throws MatrixGenerationException {
 		try {
-			Enhance enhance = new Enhance(TaxonGroup.valueFromDisplayName(taxonGroup), termReviewTermCategorization, termReviewSynonyms);
+			Enhance enhance = new Enhance(TaxonGroup.valueOf(taxonGroup), inputDir, tempDir, termReviewTermCategorization, termReviewSynonyms);
 			enhance.run();
 			
-			
 			List<String> argList = new LinkedList<String>();
-			addArg(argList, "input", inputDir);
+			addArg(argList, "input", tempDir);
 			addArg(argList, "output", outputFile);
 			if(inheritValues) {
 				//addArg(argList, "up_taxonomy_inheritance");

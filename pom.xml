@@ -89,11 +89,37 @@
 		</dependency>
 
 		<!-- mine -->
-		<!--<dependency>
+		<dependency>
 		  <groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 		  <artifactId>enhance</artifactId>
-		  <version>0.0.4-SNAPSHOT</version>
-		</dependency> -->
+		  <version>0.0.9-SNAPSHOT</version>
+		  <exclusions>
+		  	<exclusion>
+		  		<artifactId>owlapi-tools</artifactId>
+		  		<groupId>net.sourceforge.owlapi</groupId>
+		  	</exclusion>
+		  	<exclusion>
+		  		<artifactId>owlapi-apibinding</artifactId>
+		  		<groupId>net.sourceforge.owlapi</groupId>
+		  	</exclusion>
+		  	<exclusion>
+		  		<artifactId>owlapi-api</artifactId>
+		  		<groupId>net.sourceforge.owlapi</groupId>
+		  	</exclusion>
+		  	<exclusion>
+		  		<artifactId>owlapi-impl</artifactId>
+		  		<groupId>net.sourceforge.owlapi</groupId>
+		  	</exclusion>
+		  	<exclusion>
+		  		<artifactId>owlapi-parsers</artifactId>
+		  		<groupId>net.sourceforge.owlapi</groupId>
+		  	</exclusion>
+		  	<exclusion>
+		  		<artifactId>oto-common</artifactId>
+		  		<groupId>edu.arizona.biosemantics.oto</groupId>
+		  	</exclusion>
+		  </exclusions>
+		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
@@ -259,13 +285,13 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize</artifactId>
-		  <version>0.1.12-SNAPSHOT</version>
+		  <version>0.1.13-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize</artifactId>
-		  <version>0.1.12-SNAPSHOT</version>
+		  <version>0.1.13-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
@@ -307,7 +333,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>ling</artifactId>
-			<version>0.0.9-SNAPSHOT</version>
+			<version>0.0.11-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.gwtquery</groupId>

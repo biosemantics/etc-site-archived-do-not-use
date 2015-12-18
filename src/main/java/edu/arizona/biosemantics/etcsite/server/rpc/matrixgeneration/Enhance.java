@@ -90,10 +90,14 @@ public class Enhance {
 	private GlossaryBasedCharacterKnowledgeBase characterKnowledgeBase;
 	private Set<String> possessionTerms = getWordSet("with|has|have|having|possess|possessing|consist_of");
 	private Set<String> durations;
+	private String input;
+	private String output;
 	
-	public Enhance(TaxonGroup taxonGroup, String termReviewTermCategorization, String termReviewSynonyms) throws IOException, InterruptedException, ExecutionException {
+	public Enhance(TaxonGroup taxonGroup, String input, String output, String termReviewTermCategorization, String termReviewSynonyms) throws IOException, InterruptedException, ExecutionException {
 		this.taxonGroup = taxonGroup;
-
+		this.input = input;
+		this.output = output;
+		
 		initGlossary(glossary, inflector, taxonGroup, termReviewTermCategorization, termReviewSynonyms);
 		
 		renames = new HashMap<String, String>();
@@ -150,7 +154,7 @@ public class Enhance {
 		run.addTransformer(new CollapseBiologicalEntities());
 		run.addTransformer(new CollapseCharacters());
 		
-		run.run(new File("in"), new File("out"));
+		run.run(new File(input), new File(output));
 	}
 
 
@@ -171,69 +175,74 @@ public class Enhance {
 	private void addTermReviewGlossary(IGlossary glossary,	IInflector inflector, String termReviewTermCategorization,	String termReviewSynonyms) throws IOException {
 		List<Synonym> synonyms = new LinkedList<Synonym>();
 		Set<String> hasSynonym = new HashSet<String>();
-		try(CSVReader reader = new CSVReader(new FileReader(termReviewSynonyms))) {
-			List<String[]> lines = reader.readAll();
-			int i=0;
-			for(String[] line : lines) {
-				synonyms.add(new Synonym(String.valueOf(i), line[1], line[0], line[2]));
-				hasSynonym.add(line[1]);
-			}	
+		
+		if(termReviewSynonyms != null && new File(termReviewSynonyms).exists()) {
+			try(CSVReader reader = new CSVReader(new FileReader(termReviewSynonyms))) {
+				List<String[]> lines = reader.readAll();
+				int i=0;
+				for(String[] line : lines) {
+					synonyms.add(new Synonym(String.valueOf(i), line[1], line[0], line[2]));
+					hasSynonym.add(line[1]);
+				}	
+			}
 		}
 		
-		try(CSVReader reader = new CSVReader(new FileReader(termReviewTermCategorization))) {
-			List<String[]> lines = reader.readAll();
-			List<Decision> decisions = new LinkedList<Decision>();
-			int i=0;
-			for(String[] line : lines) {
-				decisions.add(new Decision(String.valueOf(i), line[1], line[0], hasSynonym.contains(line[1]), ""));
-			}
-			Download download = new Download(true, decisions, synonyms);
-			
-			//add syn set of term_category
-			HashSet<Term> dsyns = new HashSet<Term>();
-			if(download != null) {
-				for(Synonym termSyn: download.getSynonyms()){
-					//Hong TODO need to add category info to synonym entry in OTOLite
-					//if(termSyn.getCategory().compareTo("structure")==0){
-					if(termSyn.getCategory().matches("structure|taxon_name|substance")){
-						//take care of singular and plural forms
-						String syns = ""; 
-						String synp = "";
-						String terms = "";
-						String termp = "";
-						if(inflector.isPlural(termSyn.getSynonym().replaceAll("_",  "-"))){
-							synp = termSyn.getSynonym().replaceAll("_",  "-");
-							syns = inflector.getSingular(synp);					
-						}else{
-							syns = termSyn.getSynonym().replaceAll("_",  "-");
-							synp = inflector.getPlural(syns);
-						}
-			
-						if(inflector.isPlural(termSyn.getTerm().replaceAll("_",  "-"))){
-							termp = termSyn.getTerm().replaceAll("_",  "-");
-							terms = inflector.getSingular(termp);					
-						}else{
-							terms = termSyn.getTerm().replaceAll("_",  "-");
-							termp = inflector.getPlural(terms);
-						}
-						//glossary.addSynonym(syns, termSyn.getCategory(), terms);
-						//glossary.addSynonym(synp, termSyn.getCategory(), termp);
-						//dsyns.add(new Term(syns, termSyn.getCategory());
-						//dsyns.add(new Term(synp, termSyn.getCategory());
-						glossary.addSynonym(syns, termSyn.getCategory(), terms);
-						glossary.addSynonym(synp,termSyn.getCategory(), termp);
-						dsyns.add(new Term(syns, termSyn.getCategory()));
-						dsyns.add(new Term(synp, termSyn.getCategory()));
-					}else{//forking_1 and forking are syns 5/5/14 hong test, shouldn't _1 have already been removed?
-						glossary.addSynonym(termSyn.getSynonym().replaceAll("_",  "-"), termSyn.getCategory(), termSyn.getTerm());
-						dsyns.add(new Term(termSyn.getSynonym().replaceAll("_",  "-"), termSyn.getCategory()));
-					}					
+		if(termReviewTermCategorization != null && new File(termReviewTermCategorization).exists()) {
+			try(CSVReader reader = new CSVReader(new FileReader(termReviewTermCategorization))) {
+				List<String[]> lines = reader.readAll();
+				List<Decision> decisions = new LinkedList<Decision>();
+				int i=0;
+				for(String[] line : lines) {
+					decisions.add(new Decision(String.valueOf(i), line[1], line[0], hasSynonym.contains(line[1]), ""));
 				}
-			
-				//term_category from OTO, excluding dsyns
-				for(Decision decision : download.getDecisions()) {
-					if(!dsyns.contains(new Term(decision.getTerm().replaceAll("_",  "-"), decision.getCategory())))//calyx_tube => calyx-tube
-						glossary.addEntry(decision.getTerm().replaceAll("_",  "-"), decision.getCategory());  
+				Download download = new Download(true, decisions, synonyms);
+				
+				//add syn set of term_category
+				HashSet<Term> dsyns = new HashSet<Term>();
+				if(download != null) {
+					for(Synonym termSyn: download.getSynonyms()){
+						//Hong TODO need to add category info to synonym entry in OTOLite
+						//if(termSyn.getCategory().compareTo("structure")==0){
+						if(termSyn.getCategory().matches("structure|taxon_name|substance")){
+							//take care of singular and plural forms
+							String syns = ""; 
+							String synp = "";
+							String terms = "";
+							String termp = "";
+							if(inflector.isPlural(termSyn.getSynonym().replaceAll("_",  "-"))){
+								synp = termSyn.getSynonym().replaceAll("_",  "-");
+								syns = inflector.getSingular(synp);					
+							}else{
+								syns = termSyn.getSynonym().replaceAll("_",  "-");
+								synp = inflector.getPlural(syns);
+							}
+				
+							if(inflector.isPlural(termSyn.getTerm().replaceAll("_",  "-"))){
+								termp = termSyn.getTerm().replaceAll("_",  "-");
+								terms = inflector.getSingular(termp);					
+							}else{
+								terms = termSyn.getTerm().replaceAll("_",  "-");
+								termp = inflector.getPlural(terms);
+							}
+							//glossary.addSynonym(syns, termSyn.getCategory(), terms);
+							//glossary.addSynonym(synp, termSyn.getCategory(), termp);
+							//dsyns.add(new Term(syns, termSyn.getCategory());
+							//dsyns.add(new Term(synp, termSyn.getCategory());
+							glossary.addSynonym(syns, termSyn.getCategory(), terms);
+							glossary.addSynonym(synp,termSyn.getCategory(), termp);
+							dsyns.add(new Term(syns, termSyn.getCategory()));
+							dsyns.add(new Term(synp, termSyn.getCategory()));
+						}else{//forking_1 and forking are syns 5/5/14 hong test, shouldn't _1 have already been removed?
+							glossary.addSynonym(termSyn.getSynonym().replaceAll("_",  "-"), termSyn.getCategory(), termSyn.getTerm());
+							dsyns.add(new Term(termSyn.getSynonym().replaceAll("_",  "-"), termSyn.getCategory()));
+						}					
+					}
+				
+					//term_category from OTO, excluding dsyns
+					for(Decision decision : download.getDecisions()) {
+						if(!dsyns.contains(new Term(decision.getTerm().replaceAll("_",  "-"), decision.getCategory())))//calyx_tube => calyx-tube
+							glossary.addEntry(decision.getTerm().replaceAll("_",  "-"), decision.getCategory());  
+					}
 				}
 			}
 		}
