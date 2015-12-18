@@ -1,7 +1,5 @@
 package edu.arizona.biosemantics.etcsite.client.content.treeGeneration;
 
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -9,25 +7,15 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import com.sencha.gxt.data.shared.LabelProvider;
-import com.sencha.gxt.data.shared.ListStore;
-import com.sencha.gxt.data.shared.ModelKeyProvider;
-import com.sencha.gxt.widget.core.client.form.ComboBox;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
 
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
-import gwtupload.client.Uploader;
 
 public class TreeGenerationCreateView extends Composite implements ITreeGenerationCreateView{
 
@@ -41,16 +29,30 @@ public class TreeGenerationCreateView extends Composite implements ITreeGenerati
 	private ITreeGenerationCreateView.Presenter presenter;
 	
 	@UiField Anchor fileManagerAnchor;
+	@UiField Anchor sampleFileAnchor;
 
+	//@UiField DialogBox sampleFilePopup;
+	
 	@UiField(provided=true) 
 	IInputCreateView inputCreateView;
+	
+	
+	private String sampleMessageContent = "<textarea readonly cols=\"150\">\"Name\",\"coloration of apex\",\"prominence of apex\",\"shape of apex\",\"size of apex\"\n\"SPECIES=amabilis:author=etc.,date=1900\",\"\",\"exposed\",\"sharp-pointed | prominently notched | globose | rounded\",\"small\"\n\"SPECIES=balsamea:author=etc.,date=1900\",\"brown\",\"exposed\",\"acute | conic | slightly notched - rounded | sharp-pointed | round - obtuse\",\"small\"</textarea>";
+	
 	
 	@Inject
 	public TreeGenerationCreateView(@Named("TreeGeneration")IInputCreateView.Presenter inputCreatePresenter) {		
 		this.inputCreateView = inputCreatePresenter.getView();
+	//	setUpDialog();
 		initWidget(uiBinder.createAndBindUi(this));		
 		fileManagerAnchor.getElement().getStyle().setCursor(Cursor.POINTER);
+		sampleFileAnchor.getElement().getStyle().setCursor(Cursor.POINTER);
 	}
+	/*
+	private void setUpDialog() {
+        samplePopup = new Modal();
+    }*/
+
 
 	@Override
 	public void setPresenter(Presenter presenter) {
@@ -60,6 +62,12 @@ public class TreeGenerationCreateView extends Composite implements ITreeGenerati
 	@Override
 	public IInputCreateView getInputCreateView() {
 		return inputCreateView;
+	}
+	
+	@UiHandler("sampleFileAnchor")
+	public void onSample(ClickEvent event){
+		MessageBox popUpMessageBox = new MessageBox("Sample Input File", sampleMessageContent);
+		popUpMessageBox.show();
 	}
 		
 }

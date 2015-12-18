@@ -72,4 +72,7 @@ public interface IFileServiceAsync {
 
 	public void deleteFiles(AuthenticationToken token, List<FileTreeItem> selection, AsyncCallback<Void> asyncCallback);
 
+	void validateTaxonNames(AuthenticationToken authenticationToken,
+			String directory, AsyncCallback<String> callback);
+
 }

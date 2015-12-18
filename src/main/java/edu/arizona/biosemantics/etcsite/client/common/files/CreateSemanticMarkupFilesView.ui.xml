@@ -4,7 +4,8 @@
 	xmlns:form='urn:import:com.sencha.gxt.widget.core.client.form'
 	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
     xmlns:button="urn:import:com.sencha.gxt.widget.core.client.button"
-    xmlns:gxt="urn:import:com.sencha.gxt.widget.core.client">
+    xmlns:gxt="urn:import:com.sencha.gxt.widget.core.client"
+    >
 	<ui:style>
 		.instruction {
 			padding: 10px;

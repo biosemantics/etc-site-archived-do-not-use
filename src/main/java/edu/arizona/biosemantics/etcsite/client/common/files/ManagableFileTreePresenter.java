@@ -13,8 +13,6 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.TreeItem;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
@@ -52,6 +50,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	private String targetUploadDirectory;
 	private ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter;
 	private FileUploadHandler fileUploadHandler;
+	private String uploadFileType;
 	
 	@SuppressWarnings("deprecation")
 	@Inject
@@ -91,6 +90,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	    view.setStatusWidget(statusWidget.getWidget());
 		view.getUploader().setFileInput(new MyFileInput(view.getAddButton()));
 		fileUploadHandler = new FileUploadHandler(this, fileService);
+		uploadFileType = "";
 		initActions();
 	}
 	
@@ -310,14 +310,18 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		@Override
 		public void onFinish(IUploader uploader) {	
 			if (uploader.getStatus() == Status.SUCCESS) {
-				fileUploadHandler.keyValidateUploadedFiles(targetUploadDirectory);
+				if(uploadFileType.equals(FileTypeEnum.TAXON_DESCRIPTION.displayName()) || 
+						uploadFileType.equals(FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION.displayName())){
+					fileUploadHandler.validateTaxonDescriptionFiles(targetUploadDirectory);
+				}
 				fileTreePresenter.getView().refreshChildren(targetFileTreeItem, fileFilter);
 			}
-			
-			serverResponse = fileUploadHandler.parseServerResponse(uploader);
-			if(serverResponse != null && !serverResponse.isEmpty())
-				Alerter.failedToUpload(serverResponse);
-			
+			if(!uploadFileType.equals(FileTypeEnum.TAXON_DESCRIPTION.displayName()) && 
+						!uploadFileType.equals(FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION.displayName())){
+				serverResponse = fileUploadHandler.parseServerResponse(uploader);
+				if(serverResponse != null && !serverResponse.isEmpty())
+					Alerter.failedToUpload(serverResponse);
+			}
 			uploader.setServletPath(defaultServletPath);
 			enableManagement();
 		}
@@ -332,6 +336,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 			if(selections.size() == 1) {
 				targetFileTreeItem = selections.get(0);
 				targetUploadDirectory = selections.get(0).getFilePath();
+				uploadFileType = view.getFormat();
 				fileUploadHandler.setServletPathOfUploader(uploader, view.getFormat(), targetUploadDirectory);
 				/*
 				 * Creation of directories directly inside of the upload target should not be possible (possible name clash)

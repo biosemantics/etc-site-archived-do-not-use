@@ -68,7 +68,7 @@ public class MatrixGenerationCreatePresenter implements MatrixGenerationCreateVi
 			@Override
 			public void handle(FileUploadHandler fileUploadHandler,IUploader uploader, String uploadDirectory) {
 				if (uploader.getStatus() == Status.SUCCESS) {
-					fileUploadHandler.keyValidateUploadedFiles(uploadDirectory);
+					fileUploadHandler.validateTaxonDescriptionFiles(uploadDirectory);
 				}
 			}
 		});

@@ -3,7 +3,6 @@ package edu.arizona.biosemantics.etcsite.shared.rpc.file;
 import java.util.HashMap;
 import java.util.List;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -66,6 +65,8 @@ public interface IFileService extends RemoteService {
 		ZipDirectoryFailedException;
 	
 	public HashMap<String,String> validateKeys(AuthenticationToken authenticationToken, String directory, List<String> uploadedFiles);
+	
+	public String validateTaxonNames(AuthenticationToken authenticationToken, String directory);
 
 	public void deleteUploadedFiles(AuthenticationToken token, String uploadedDirectory, List<String> uploadedFiles) throws PermissionDeniedException, FileDeleteFailedException;
 
