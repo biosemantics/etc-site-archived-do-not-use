@@ -10,8 +10,8 @@ import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 
 public interface IMatrixGenerationServiceAsync extends IHasTasksServiceAsync {
 
-	public void start(AuthenticationToken authenticationToken, String taskName, String taxonGroup, String input, String ontologyInput,
-			boolean inheritValues, boolean generateAbsentPresent, AsyncCallback<Task> callback);
+	public void start(AuthenticationToken authenticationToken, String taskName, String input, String inputTermReview, String inputOntology,
+			String taxonGroup, boolean inheritValues, boolean generateAbsentPresent, AsyncCallback<Task> callback);
 	
 	public void process(AuthenticationToken authenticationToken,  Task task, AsyncCallback<Task> callback);
 	

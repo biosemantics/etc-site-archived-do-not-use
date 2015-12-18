@@ -29,6 +29,7 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 	private FilePathShortener filePathShortener;
 	private String inputFile;
 	private String ontologyInputFile;
+	private String termReviewInputFile;
 	private IFileManagerDialogView.Presenter fileManagerDialogPresenter;
 	
 	@Inject
@@ -51,7 +52,7 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 	
 	private static interface InputSetter {
 		
-		public void set(String input);
+		public void set(String input, String filePath);
 		
 	}
 	
@@ -62,7 +63,6 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 				List<FileTreeItem> selections = fileTreePresenter.getView().getSelection();
 				if (selections.size() == 1) {
 					FileTreeItem selection = selections.get(0);
-					inputFile = selection.getFilePath();
 					String shortendPath = filePathShortener.shorten(selection, Authentication.getInstance().getUserId());
 					if(selection.isSystemFile()){
 						Alerter.systemFolderNotAllowedInputForTask();
@@ -72,7 +72,7 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 						Alerter.containSubFolder();
 					}
 					else{
-						inputSetter.set(shortendPath);
+						inputSetter.set(shortendPath, selection.getFilePath());
 						if(selection.getOwnerUserId() != Authentication.getInstance().getUserId()) {
 							Alerter.sharedInputForTask();
 							fileManagerDialogPresenter.hide();
@@ -89,7 +89,8 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 	public void onInputSelect() {
 		showInput(new InputSetter() {
 			@Override
-			public void set(String input) {
+			public void set(String input, String filePath) {
+				inputFile = filePath;
 				view.setFilePath(input);	
 				if(view.hasInput() && view.hasOntologyPath() && view.hasTermReview())
 					view.setEnabledNext(true);
@@ -101,7 +102,8 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 	public void onTermReviewInput() {
 		showInput(new InputSetter() {
 			@Override
-			public void set(String input) {
+			public void set(String input, String filePath) {
+				termReviewInputFile = filePath;
 				view.setTermReviewPath(input);	
 				if(view.hasInput() && view.hasOntologyPath() && view.hasTermReview())
 					view.setEnabledNext(true);
@@ -113,7 +115,8 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 	public void onOntologyInput() {
 		showInput(new InputSetter() {
 			@Override
-			public void set(String input) {
+			public void set(String input, String filePath) {
+				ontologyInputFile = filePath;
 				view.setOntologyPath(input);
 				if(view.hasInput() && view.hasOntologyPath() && view.hasTermReview())
 					view.setEnabledNext(true);
@@ -138,7 +141,7 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 		
 		final MessageBox box = Alerter.startLoading();
 		matrixGenerationService.start(Authentication.getInstance().getToken(), 
-			view.getTaskName(), inputFile, ontologyInputFile,
+			view.getTaskName(), inputFile, ontologyInputFile, termReviewInputFile,
 				view.getTaxonGroup(), view.isInheritValues(), view.isGenerateAbsentPresent(), new AsyncCallback<Task>() {
 			@Override
 			public void onSuccess(Task result) {

@@ -1,21 +1,32 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.ExtraJvmCallable;
-import edu.arizona.biosemantics.etcsite.shared.model.TaxonGroup;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
+import edu.arizona.biosemantics.common.biology.TaxonGroup;
 
 public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements MatrixGeneration {
 
 	public static class MainWrapper {
 		
 		public static void main(String[] args) {
+			String taxonGroup = args[0];
+			String termReviewTermCategorization = args[1];
+			String termReviewSynonyms = args[2];
+			String[] matrixGenerationArgs = Arrays.copyOfRange(args, 3, args.length);		
+			
 			try {
-				edu.arizona.biosemantics.matrixgeneration.CLIMain.main(args);
+				Enhance enhance = new Enhance(TaxonGroup.valueFromDisplayName(taxonGroup), termReviewTermCategorization, termReviewSynonyms);
+				enhance.run();
+				
+				edu.arizona.biosemantics.matrixgeneration.CLIMain.main(matrixGenerationArgs);
 			} catch (Throwable t) {
 				System.out.println("ExtraJvmMatrixGeneration failed with throwable "+t.getMessage());
 				System.out.println(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(t));
@@ -33,10 +44,16 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements 
 	private boolean generateAbsentPresent;
 	private boolean inferCharactersFromOntologies;
 	private String taxonGroup;
+	private String inputOntology;
+	private String termReviewTermCategorization;
+	private String termReviewSynonyms;
 
-	public ExtraJvmMatrixGeneration(String inputDir, String inputOntology, String taxonGroup, String outputFile, boolean inheritValues, 
-			boolean generateAbsentPresent, boolean inferCharactersFromOntologies) {
+	public ExtraJvmMatrixGeneration(String inputDir, String inputOntology, String termReviewTermCategorization, String termReviewSynonyms, 
+			String taxonGroup, String outputFile, boolean inheritValues, boolean generateAbsentPresent, boolean inferCharactersFromOntologies) {
 		this.inputDir = inputDir;
+		this.inputOntology = inputOntology;
+		this.termReviewTermCategorization = termReviewTermCategorization;
+		this.termReviewSynonyms = termReviewSynonyms;
 		this.taxonGroup = taxonGroup;
 		this.outputFile = outputFile;
 		this.inheritValues = inheritValues;
@@ -74,8 +91,10 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements 
 		}
 		addArg(argList, "taxon_group", taxonGroup);
 		addArg(argList, "output_format", "serialize");
-		
-		String[] args = argList.toArray(new String[argList.size()]);
+
+		String[] argsEnhance = new String[] { taxonGroup, termReviewTermCategorization, termReviewSynonyms};
+		String[] argsMatrixGeneration = argList.toArray(new String[argList.size()]);
+		String[] args = ArrayUtils.addAll(argsEnhance, argsMatrixGeneration);
 		return args;
 	}
 
@@ -97,13 +116,13 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements 
 		return null;
 	}
 	
-	public static void main(String[] args) throws Exception {
+	/*public static void main(String[] args) throws Exception {
 		//MatrixGeneration mg = new MatrixGeneration("C:/test/users/1070/input_2", "C:/test/temp/matrixGeneration/124/Matrix.mx");
 		ExtraJvmMatrixGeneration mg = new ExtraJvmMatrixGeneration("C:/test/Test_mmm", "", "PLANT", "C:/test/Test_mmm.mx", true, 
 				true, true);
 		mg.call();
 		
-	}
+	}*/
 
 
 }

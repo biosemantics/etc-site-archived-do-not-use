@@ -248,9 +248,9 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			
 			boolean inheritValues = config.isInheritValues();
 			boolean generateAbsentPresent = config.isGenerateAbsentPresent();
+			config.getInputTermReview();
 			
-			
-			final MatrixGeneration matrixGeneration = new ExtraJvmMatrixGeneration(input, inputOntology, taxonGroup, outputFile, inheritValues, generateAbsentPresent, true);
+			final MatrixGeneration matrixGeneration = new ExtraJvmMatrixGeneration(input, inputOntology, "", "", taxonGroup, outputFile, inheritValues, generateAbsentPresent, true);
 			//final MatrixGeneration matrixGeneration = new InJvmMatrixGeneration(input, inputOntology, taxonGroup, outputFile, inheritValues, generateAbsentPresent, true);
 			activeProcess.put(config.getConfiguration().getId(), matrixGeneration);
 			final ListenableFuture<Void> futureResult = executorService.submit(matrixGeneration);

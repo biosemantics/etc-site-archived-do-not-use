@@ -67,6 +67,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.shared.Confi
 	
 	/** File Management **/
 	public static String fileBase;
+	public static String profiles;
 	public static String compressedFileBase;
 	public static String tempFiles;
 	public static String etcFiles;
@@ -111,6 +112,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.shared.Confi
 	public static String otoUrl;
 	public static String otoSecret;
 	public static String secret;
+
 
 	
 	static {		
@@ -168,6 +170,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.shared.Confi
 			taxonomyComparisonTask_maxRunningTimeMinutes = Integer.parseInt(properties.getProperty("taxonomyComparisonTask_maxRunningTimeMinutes"));
 			
 			fileBase = properties.getProperty("fileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
+			profiles = properties.getProperty("profiles").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			compressedFileBase = properties.getProperty("compressedFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			etcFiles= properties.getProperty("etcFiles").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			

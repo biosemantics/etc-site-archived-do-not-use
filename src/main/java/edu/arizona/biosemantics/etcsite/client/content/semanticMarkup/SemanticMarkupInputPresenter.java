@@ -81,7 +81,7 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 			@Override
 			public void onSuccess(Boolean largeInput) {
 				Alerter.stopLoading(box);
-				if (largeInput){
+				if(largeInput) {
 					final MessageBox box = Alerter.semanticMarkupWarnUserTooManyWords();
 					box.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
 						@Override
