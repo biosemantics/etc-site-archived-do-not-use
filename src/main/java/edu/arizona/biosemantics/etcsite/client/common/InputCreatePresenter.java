@@ -235,7 +235,7 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 				if(uploadCompleteHandler != null)
 					uploadCompleteHandler.handle(fileUploadHandler, uploader, targetUploadDirectory);
 				uploader.setServletPath(defaultServletPath);
-				Alerter.successfullyUploadedFiles();
+				//Alerter.successfullyUploadedFiles();
 			}
 		}
 	

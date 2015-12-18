@@ -312,16 +312,16 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 			if (uploader.getStatus() == Status.SUCCESS) {
 				if(uploadFileType.equals(FileTypeEnum.TAXON_DESCRIPTION.displayName()) || 
 						uploadFileType.equals(FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION.displayName())){
-					fileUploadHandler.validateTaxonNames(targetUploadDirectory);
-					fileUploadHandler.keyValidateUploadedFiles(targetUploadDirectory);
+					fileUploadHandler.validateTaxonDescriptionFiles(targetUploadDirectory);
 				}
 				fileTreePresenter.getView().refreshChildren(targetFileTreeItem, fileFilter);
 			}
-			
-			serverResponse = fileUploadHandler.parseServerResponse(uploader);
-			if(serverResponse != null && !serverResponse.isEmpty())
-				Alerter.failedToUpload(serverResponse);
-			
+			if(!uploadFileType.equals(FileTypeEnum.TAXON_DESCRIPTION.displayName()) && 
+						!uploadFileType.equals(FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION.displayName())){
+				serverResponse = fileUploadHandler.parseServerResponse(uploader);
+				if(serverResponse != null && !serverResponse.isEmpty())
+					Alerter.failedToUpload(serverResponse);
+			}
 			uploader.setServletPath(defaultServletPath);
 			enableManagement();
 		}
