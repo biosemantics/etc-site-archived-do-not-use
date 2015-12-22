@@ -110,7 +110,7 @@
 				</div>
 				
 				<div style="padding-right: 10px; padding-top: 5px; float: right">
-					<my:ImageLabel ui:field="help" imagePath="images/Help.gif" imageWidth="20px" imageHeight="20px" text="Help" systemFolder="false"></my:ImageLabel>
+					<my:ImageLabel ui:field="help" imagePath="images/Help.gif" imageWidth="20px" imageHeight="20px" text="Show Help" systemFolder="false"></my:ImageLabel>
 				</div>
 				
 				<div style="padding-right: 10px; padding-top: 5px; float: right">
@@ -170,14 +170,14 @@
 						<div>
 							<my:ImageLabel styleName="{style.navEntry}" ui:field="taxonomyComparison" imagePath="images/TaxonomyComparison.gif" imageWidth="20px" imageHeight="20px" text="Taxonomy Comparison" systemFolder="false"></my:ImageLabel>
 						</div>
-						<div>
+						<!-- <div>
 							<my:ImageLabel styleName="{style.navEntry}" ui:field="visualization" imagePath="images/Visualization_unselected.gif" imageWidth="20px" imageHeight="20px" text="Visualization" systemFolder="false"></my:ImageLabel>
-						</div>
+						</div>-->
 					</div>
 					<hr style="height:1px; border:none; color:#dddddd; background-color:#dddddd;" width="100%" noshade="noshade"></hr>
 					<div style="">
 						<div>
-							<my:ImageLabel styleName="{style.navEntry}" ui:field="sample" imagePath="images/Folder.gif" imageWidth="20px" imageHeight="20px" text="Sample" systemFolder="false"></my:ImageLabel>
+							<my:ImageLabel styleName="{style.navEntry}" ui:field="sample" imagePath="images/Folder.gif" imageWidth="20px" imageHeight="20px" text="Sample Test Data" systemFolder="false"></my:ImageLabel>
 						</div>
 					</div>
 				</g:HTMLPanel>
