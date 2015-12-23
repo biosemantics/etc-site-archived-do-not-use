@@ -199,10 +199,10 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 		presenter.onTaxonomyComparison();
 	}
 	
-	@UiHandler("visualization")
+	/*@UiHandler("visualization")
 	void onVisualizationClick(ClickEvent e) {
 		presenter.onVisualization();
-	}
+	}*/
 	
 	@UiHandler("openInNewWindowButton")
 	void onOpenClick(ClickEvent e){

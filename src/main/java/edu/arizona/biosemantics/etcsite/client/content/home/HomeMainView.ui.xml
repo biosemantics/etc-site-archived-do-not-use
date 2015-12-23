@@ -204,7 +204,7 @@
 		    position: absolute;
 		    top: 730px;
 		    left: 775px;
-		}
+		} 
 		.clickable {
 			cursor: pointer;
 		}
@@ -228,8 +228,7 @@
 		<div class="{style.ontologizeImage} {style.actionImage}"></div>
 		<div class="{style.ontologizeText} {style.actionText}"></div>
 		<div class="{style.ontologizeDescription} {style.actionDescription} ">
-			Allows to build ontologies from the anatomy and quality descriptive terminology identified by text capture. Built ontologies are available 
-			in OWL format.  
+			Allows to build taxon specific ontologies using the anatomical and character terms identified by Text Capture. Ontologies are optional for Matrix Generation, but having them help to generate less sparse matrices. 
 		</div>
 		<div class="{style.ontologizeArrow} {style.actionArrow}"></div>
 		<g:HTML ui:field="ontologizeButton">
@@ -240,20 +239,8 @@
 		<div class="{style.matrixGenerationImage} {style.actionImage}"></div>
 		<div class="{style.matrixGenerationText} {style.actionText}"></div>
 		<div class="{style.matrixGenerationDescription} {style.actionDescription} ">
-			<g:InlineLabel>Matrix Generation takes an output folder of Text Capture as input. 
-			Input files must be in English and conform to
-			</g:InlineLabel>
-			
-			<g:Anchor
-				href="http://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupOutput.xsd"
-				target="_blank">this format.
-			</g:Anchor>
-			
-			<g:InlineLabel>
-			The matrices 
-			can be used to create specimen identification keys, or be downloaded
+			Generates taxon-character matrices from semantically marked-up descriptions of organisms. The matrices can be used to create specimen identification keys, or be downloaded
 			 and used with other matrix analysis tools. 
-			 </g:InlineLabel>
 		</div>
 		<div class="{style.matrixGenerationArrow} {style.actionArrow}"></div>
 		<g:HTML ui:field="matrixGenerationButton">
@@ -264,7 +251,7 @@
 		<div class="{style.treeGenerationImage} {style.actionImage}"></div>
 		<div class="{style.treeGenerationText} {style.actionText}"></div>
 		<div class="{style.treeGenerationDescription} {style.actionDescription}">
-			Generates interactive identification keys from taxon-character matrices, using an information entropy based method which treats character polymorphisms gracefully.  
+			Generates an interactive identification key from a taxon-character matrix, using an information entropy based method which treats character polymorphisms gracefully.  
 		</div>
 		<div class="{style.treeGenerationArrow} {style.actionArrow}"></div>
 		<g:HTML ui:field="treeGenerationButton">
@@ -275,31 +262,31 @@
 		<div class="{style.taxonomyComparisonImage} {style.actionImage}"></div>
 		<div class="{style.taxonomyComparisonText} {style.actionText}"></div>
 		<div class="{style.taxonomyComparisonDescription} {style.actionDescription} {}">
-			How do two given taxonomies differ? The taxonomy comparison tool takes user-provided relationships between taxa (e.g. =, >) and optionally 
-			a result from Key Generation, and performs logic reasoning to identify conflicts and/or ambiguity and finally align two taxonomies.
+			How do two related taxonomies taxonomies differ? The taxonomy comparison tool takes user-provided relationships between taxa (e.g. =, >) and optionally 
+			output from Matrix/Key Generation (under-development), and performs logic reasoning to identify conflicts and/or ambiguities and finally align two taxonomies.
 		</div>
 		<div class="{style.taxonomyComparisonArrow} {style.actionArrow}"></div>
 		<g:HTML ui:field="taxonomyComparisonButton">
 			<div class="{style.taxonomyComparisonButton} {style.actionButton} {style.clickable}"><img src="images/ButtonGreen.gif" width="200px" height="50px"/></div>
 			<div class="{style.taxonomyComparisonButtonText}">Begin Taxonomy Comparison</div>
 		</g:HTML>
-		
-		<div class="{style.visualizationImage} {style.actionImage}"></div>
+
+		<!--<div class="{style.visualizationImage} {style.actionImage}"></div>
 		<div class="{style.visualizationText} {style.actionText}"></div>
 		<div class="{style.visualizationDescription} {style.actionDescription}">Integrates
 			relationships among taxa and relationships between character and taxa in a visual way to facilitate taxon concept comparison and analysis.
 		</div>
-		<div class="{style.visualizationArrow} {style.actionArrow}"></div>
-		<g:HTML ui:field="visualizationButton">
+		<div class="{style.visualizationArrow} {style.actionArrow}"></div> -->
+		<!--<g:HTML ui:field="visualizationButton">
 			<div class="{style.visualizationButton} {style.actionButton} {style.clickable}"><img src="images/ButtonGray.gif" width="200px" height="50px"/></div>
 			<div class="{style.visualizationButtonText}">Begin Visualization</div>
-		</g:HTML>
-		
-		<!-- <div class="{style.orText}"></div>
+		</g:HTML>-->
+        
+		<!--   <div class="{style.orText}"></div>
 		<g:HTML ui:field="pipelineButton">
 			<div class="{style.pipelineButton}"><img src="images/ButtonGray.gif" width="200px" height="50px"/></div>
 			<div class="{style.pipelineButtonText}">Begin New Pipeline</div>
-		</g:HTML> -->
+		</g:HTML>--> 
 
 	</g:HTMLPanel>
 </ui:UiBinder> 

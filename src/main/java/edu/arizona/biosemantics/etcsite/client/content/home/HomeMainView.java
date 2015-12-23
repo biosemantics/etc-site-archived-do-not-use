@@ -40,12 +40,12 @@ public class HomeMainView extends Composite implements IHomeMainView {
 		presenter.onTaxonomyComparison();
 	}
 	
-	@UiHandler("visualizationButton")
+	/*@UiHandler("visualizationButton")
 	public void onVisualization(ClickEvent event) {
 		presenter.onVisualization();
-	}
+	} 
 	
-	/*@UiHandler("pipelineButton")
+	@UiHandler("pipelineButton")
 	public void onPipeline(ClickEvent event) {
 		presenter.onPipeline();
 	} 
