@@ -24,11 +24,9 @@ import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 
 public class XmlNamespaceManager {
 
-	private SAXBuilder sax = new SAXBuilder();
 	private Namespace bioNamespace = Namespace.getNamespace("bio", Configuration.targetNamespace);
 	private Namespace xsiNamespace = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-	private XMLOutputter xmlOutputter = new XMLOutputter(Format.getPrettyFormat());
-
+	
 	private Map<FileTypeEnum, String> fileTypeSchemaMap = new HashMap<FileTypeEnum, String>(); 
 	private Map<String, FileTypeEnum> schemaFileTypeMap = new HashMap<String, FileTypeEnum>(); 
 	
@@ -54,6 +52,7 @@ public class XmlNamespaceManager {
 	public String getSchema(File file) {
 		Document doc = null;
 		try {
+			SAXBuilder sax = new SAXBuilder();
 			doc = sax.build(file);
 		} catch (JDOMException | IOException e) {
 			log(LogLevel.ERROR, "Couldn't build xml document", e);
@@ -74,6 +73,7 @@ public class XmlNamespaceManager {
 	
 	public String getSchema(String fileContent) {
 		try (StringReader reader = new StringReader(fileContent)) {
+			SAXBuilder sax = new SAXBuilder();
 			Document doc = sax.build(reader);
 			return getSchema(doc);
 		} catch (JDOMException | IOException e) {
@@ -85,6 +85,7 @@ public class XmlNamespaceManager {
 	public void setXmlSchema(File file, FileTypeEnum fileTypeEnum) {
 		Document doc = null;
 		try {
+			SAXBuilder sax = new SAXBuilder();
 			doc = sax.build(file);
 		} catch (JDOMException | IOException e) {
 			log(LogLevel.ERROR, "Couldn't build xml document", e);
@@ -93,6 +94,7 @@ public class XmlNamespaceManager {
 			setXmlSchema(doc, fileTypeEnum);
 			try(FileOutputStream fileOutputStream = new FileOutputStream(file)) {
 				try {
+					XMLOutputter xmlOutputter = new XMLOutputter(Format.getPrettyFormat());
 					xmlOutputter.output(doc, fileOutputStream);
 				} catch (IOException e) {
 					log(LogLevel.ERROR, "Couldn't output xml document to file", e);
@@ -116,6 +118,7 @@ public class XmlNamespaceManager {
 		try(StringReader reader = new StringReader(content)) {
 			Document doc = null;
 			try {
+				SAXBuilder sax = new SAXBuilder();
 				doc = sax.build(reader);
 			} catch (JDOMException | IOException e) {
 				log(LogLevel.ERROR, "Couldn't build xml document", e);
@@ -125,6 +128,7 @@ public class XmlNamespaceManager {
 				
 				try(StringWriter stringWriter = new StringWriter()) {
 					try {
+						XMLOutputter xmlOutputter = new XMLOutputter(Format.getPrettyFormat());
 						xmlOutputter.output(doc, stringWriter);
 					} catch (IOException e) {
 						log(LogLevel.ERROR, "Couldn't output xml document", e);
@@ -143,6 +147,7 @@ public class XmlNamespaceManager {
 	public void removeXmlSchema(File file) {
 		Document doc = null;
 		try {
+			SAXBuilder sax = new SAXBuilder();
 			doc = sax.build(file);
 		} catch (JDOMException | IOException e) {
 			log(LogLevel.ERROR, "Couldn't build xml document", e);
@@ -155,6 +160,7 @@ public class XmlNamespaceManager {
 			rootElement.removeAttribute("schemaLocation", xsiNamespace);
 			try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
 				try {
+					XMLOutputter xmlOutputter = new XMLOutputter(Format.getPrettyFormat());
 					xmlOutputter.output(doc, fileOutputStream);
 				} catch (IOException e) {
 					log(LogLevel.ERROR, "Couldn't output xml document", e);
