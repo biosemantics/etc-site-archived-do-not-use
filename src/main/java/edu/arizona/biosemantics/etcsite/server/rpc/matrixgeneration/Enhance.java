@@ -12,6 +12,8 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+
 import au.com.bytecode.opencsv.CSVReader;
 import edu.arizona.biosemantics.common.biology.TaxonGroup;
 import edu.arizona.biosemantics.common.ling.know.ICharacterKnowledgeBase;
@@ -92,11 +94,18 @@ public class Enhance {
 	private Set<String> durations;
 	private String input;
 	private String output;
+	private String ontology;
+	private String termReviewTermCategorization;
+	private String termReviewSynonyms;
 	
-	public Enhance(TaxonGroup taxonGroup, String input, String output, String termReviewTermCategorization, String termReviewSynonyms) throws IOException, InterruptedException, ExecutionException {
-		this.taxonGroup = taxonGroup;
+	public Enhance(String input, String output, String ontology, 
+			String termReviewTermCategorization, String termReviewSynonyms, TaxonGroup taxonGroup) throws IOException, InterruptedException, ExecutionException {
 		this.input = input;
 		this.output = output;
+		this.ontology = ontology;
+		this.termReviewTermCategorization = termReviewTermCategorization;
+		this.termReviewSynonyms = termReviewSynonyms;
+		this.taxonGroup = taxonGroup;
 		
 		initGlossary(glossary, inflector, taxonGroup, termReviewTermCategorization, termReviewSynonyms);
 		
@@ -113,10 +122,10 @@ public class Enhance {
 		
 	}
 	
-	public void run() {
+	public void run() throws OWLOntologyCreationException {
 		Run run = new Run();
-		KnowsPartOf knowsPartOf = new OWLOntologyKnowsPartOf(inflector);
-		KnowsSynonyms knowsSynonyms = new OWLOntologyKnowsSynonyms(inflector);
+		KnowsPartOf knowsPartOf = new OWLOntologyKnowsPartOf(ontology, inflector);
+		KnowsSynonyms knowsSynonyms = new OWLOntologyKnowsSynonyms(ontology, inflector);
 		RemoveNonSpecificBiologicalEntitiesByRelations transformer1 = new RemoveNonSpecificBiologicalEntitiesByRelations(
 				knowsPartOf, knowsSynonyms, tokenizer, new CollapseBiologicalEntityToName());
 		RemoveNonSpecificBiologicalEntitiesByBackwardConnectors transformer2 = new RemoveNonSpecificBiologicalEntitiesByBackwardConnectors(

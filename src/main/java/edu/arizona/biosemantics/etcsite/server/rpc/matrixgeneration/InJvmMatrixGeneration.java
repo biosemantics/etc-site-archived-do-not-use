@@ -49,36 +49,40 @@ import edu.arizona.biosemantics.semanticmarkup.enhance.transform.SimpleRemoveSyn
 public class InJvmMatrixGeneration implements MatrixGeneration {
 	
 	private String inputDir;
+	private String tempDir;
+	private String inputOntology;
+	private String termReviewSynonyms;
+	private String termReviewTermCategorization;
 	private String taxonGroup;
+	
 	private String outputFile;	
 	private boolean inheritValues;
 	private boolean generateAbsentPresent;
 	private boolean inferCharactersFromOntologies;
-	private String inputOntology;
-	private String termReviewSynonyms;
-	private String termReviewTermCategorization;
 	
 	private boolean executedSuccessfully = false;
-	private String tempDir;
 	
-	public InJvmMatrixGeneration(String inputDir, String inputOntology, String termReviewTermCategorization, String termReviewSynonyms,
-			String taxonGroup, String outputFile, boolean inheritValues, boolean generateAbsentPresent, boolean inferCharactersFromOntologies, String tempDir) {
+	public InJvmMatrixGeneration(String inputDir, String tempDir, String inputOntology, 
+			String termReviewTermCategorization, String termReviewSynonyms, String taxonGroup, 
+			String outputFile, boolean inheritValues, boolean generateAbsentPresent, boolean inferCharactersFromOntologies) {
 		this.inputDir = inputDir;
+		this.tempDir = tempDir;
 		this.inputOntology = inputOntology;
 		this.termReviewTermCategorization = termReviewTermCategorization;
 		this.termReviewSynonyms = termReviewSynonyms;
 		this.taxonGroup = taxonGroup;
+		
 		this.outputFile = outputFile;
 		this.inheritValues = inheritValues;
 		this.generateAbsentPresent = generateAbsentPresent;
 		this.inferCharactersFromOntologies = inferCharactersFromOntologies;
-		this.tempDir = tempDir;
 	}
 	
 	@Override
 	public Void call() throws MatrixGenerationException {
 		try {
-			Enhance enhance = new Enhance(TaxonGroup.valueOf(taxonGroup), inputDir, tempDir, termReviewTermCategorization, termReviewSynonyms);
+			Enhance enhance = new Enhance(inputDir, tempDir, inputOntology, 
+					termReviewTermCategorization, termReviewSynonyms, TaxonGroup.valueOf(taxonGroup));
 			enhance.run();
 			
 			List<String> argList = new LinkedList<String>();

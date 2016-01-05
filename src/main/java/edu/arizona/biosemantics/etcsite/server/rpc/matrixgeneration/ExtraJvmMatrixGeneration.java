@@ -17,13 +17,17 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements 
 	public static class MainWrapper {
 		
 		public static void main(String[] args) {
-			String taxonGroup = args[0];
-			String termReviewTermCategorization = args[1];
-			String termReviewSynonyms = args[2];
-			String[] matrixGenerationArgs = Arrays.copyOfRange(args, 3, args.length);		
+			String inputDir = args[0];
+			String tempDir = args[1];
+			String inputOntology = args[2];
+			String termReviewTermCategorization = args[3];
+			String termReviewSynonyms = args[4];
+			String taxonGroup = args[5];
+			String[] matrixGenerationArgs = Arrays.copyOfRange(args, 6, args.length);		
 			
 			try {
-				Enhance enhance = new Enhance(TaxonGroup.valueFromDisplayName(taxonGroup), termReviewTermCategorization, termReviewSynonyms);
+				Enhance enhance = new Enhance(inputDir, tempDir, inputOntology, 
+						termReviewTermCategorization, termReviewSynonyms, TaxonGroup.valueOf(taxonGroup));
 				enhance.run();
 				
 				edu.arizona.biosemantics.matrixgeneration.CLIMain.main(matrixGenerationArgs);
@@ -35,26 +39,31 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements 
 				System.exit(-1);
 			}
 		}
-		
 	}
 	
 	private String inputDir;
+	private String tempDir;
+	private String inputOntology;
+	private String termReviewTermCategorization;
+	private String termReviewSynonyms;
+	private String taxonGroup;
+	
 	private String outputFile;
 	private boolean inheritValues;
 	private boolean generateAbsentPresent;
 	private boolean inferCharactersFromOntologies;
-	private String taxonGroup;
-	private String inputOntology;
-	private String termReviewTermCategorization;
-	private String termReviewSynonyms;
 
-	public ExtraJvmMatrixGeneration(String inputDir, String inputOntology, String termReviewTermCategorization, String termReviewSynonyms, 
-			String taxonGroup, String outputFile, boolean inheritValues, boolean generateAbsentPresent, boolean inferCharactersFromOntologies) {
+	public ExtraJvmMatrixGeneration(String inputDir, String tempDir, 
+			String inputOntology, String termReviewTermCategorization, String termReviewSynonyms, 
+			String taxonGroup, String outputFile, boolean inheritValues, boolean generateAbsentPresent, 
+			boolean inferCharactersFromOntologies) {
 		this.inputDir = inputDir;
+		this.tempDir = tempDir;
 		this.inputOntology = inputOntology;
 		this.termReviewTermCategorization = termReviewTermCategorization;
 		this.termReviewSynonyms = termReviewSynonyms;
 		this.taxonGroup = taxonGroup;
+		
 		this.outputFile = outputFile;
 		this.inheritValues = inheritValues;
 		this.generateAbsentPresent = generateAbsentPresent;
@@ -92,7 +101,8 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements 
 		addArg(argList, "taxon_group", taxonGroup);
 		addArg(argList, "output_format", "serialize");
 
-		String[] argsEnhance = new String[] { taxonGroup, termReviewTermCategorization, termReviewSynonyms};
+		String[] argsEnhance = new String[] { inputDir, tempDir, inputOntology, 
+				termReviewTermCategorization, termReviewSynonyms, taxonGroup};
 		String[] argsMatrixGeneration = argList.toArray(new String[argList.size()]);
 		String[] args = ArrayUtils.addAll(argsEnhance, argsMatrixGeneration);
 		return args;
