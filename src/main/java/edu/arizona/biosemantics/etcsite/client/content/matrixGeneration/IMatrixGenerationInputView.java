@@ -26,5 +26,6 @@ public interface IMatrixGenerationInputView extends IsWidget {
 	boolean hasInput();
 	void setTermReviewPath(String text);
 	boolean hasTermReview();
+	boolean hasTaskName();
 
 }

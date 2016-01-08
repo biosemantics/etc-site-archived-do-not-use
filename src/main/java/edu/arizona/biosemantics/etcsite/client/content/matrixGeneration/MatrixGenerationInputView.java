@@ -155,4 +155,9 @@ public class MatrixGenerationInputView extends Composite implements IMatrixGener
 	public boolean hasTermReview() {
 		return !this.inputTermReviewLabel.getText().trim().isEmpty();
 	}
+
+	@Override
+	public boolean hasTaskName() {
+		return !taskNameTextBox.getValue().trim().isEmpty();
+	}
 }

@@ -92,12 +92,15 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 			public void set(String input, String filePath) {
 				inputFile = filePath;
 				view.setFilePath(input);	
-				if(view.hasInput() && view.hasOntologyPath() && view.hasTermReview())
-					view.setEnabledNext(true);
+				//view.setEnabledNext(isInputComplete());
 			}
 		});
 	}
 	
+	protected boolean isInputComplete() {
+		return view.hasInput() && view.hasOntologyPath() && view.hasTermReview() && view.hasTaskName();
+	}
+
 	@Override
 	public void onTermReviewInput() {
 		showInput(new InputSetter() {
@@ -105,8 +108,7 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 			public void set(String input, String filePath) {
 				termReviewInputFile = filePath;
 				view.setTermReviewPath(input);	
-				if(view.hasInput() && view.hasOntologyPath() && view.hasTermReview())
-					view.setEnabledNext(true);
+				//view.setEnabledNext(isInputComplete());
 			}
 		});
 	}
@@ -118,8 +120,7 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 			public void set(String input, String filePath) {
 				ontologyInputFile = filePath;
 				view.setOntologyPath(input);
-				if(view.hasInput() && view.hasOntologyPath() && view.hasTermReview())
-					view.setEnabledNext(true);
+				//view.setEnabledNext(isInputComplete());
 			}
 		});
 	}
@@ -130,10 +131,10 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 			Alerter.selectValidInputDirectory();
 			return;
 		}
-		if(ontologyInputFile == null || ontologyInputFile.isEmpty()) {
+		/*if(ontologyInputFile == null || ontologyInputFile.isEmpty()) {
 			Alerter.selectValidInputOntology();
 			return;
-		}
+		}*/
 		if (view.getTaskName() == null || view.getTaskName().equals("")){
 			Alerter.selectTaskName();
 			return;
@@ -141,7 +142,7 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 		
 		final MessageBox box = Alerter.startLoading();
 		matrixGenerationService.start(Authentication.getInstance().getToken(), 
-			view.getTaskName(), inputFile, ontologyInputFile, termReviewInputFile,
+			view.getTaskName(), inputFile, termReviewInputFile, ontologyInputFile,
 				view.getTaxonGroup(), view.isInheritValues(), view.isGenerateAbsentPresent(), new AsyncCallback<Task>() {
 			@Override
 			public void onSuccess(Task result) {
@@ -164,7 +165,11 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 	public void setSelectedFolder(String fullPath, String shortendPath) {
 		inputFile = fullPath;
 		view.setFilePath(shortendPath);
-		view.setEnabledNext(false);
+		view.setOntologyPath("");
+		view.setTermReviewPath("");
+		this.ontologyInputFile = "";
+		this.termReviewInputFile = "";
+		//view.setEnabledNext(false);
 	}
 
 }

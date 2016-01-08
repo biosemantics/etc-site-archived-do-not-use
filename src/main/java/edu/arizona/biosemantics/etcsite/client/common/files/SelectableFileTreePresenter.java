@@ -23,7 +23,7 @@ public class SelectableFileTreePresenter implements ISelectableFileTreeView.Pres
 		dialog.setBodyBorder(false);
 		dialog.setHeadingText("Create Files");
 		dialog.setPixelSize(-1, -1);
-		dialog.setMinWidth(0);
+		dialog.setMinWidth(500);
 		dialog.setMinHeight(0);
 	    dialog.setResizable(true);
 	    dialog.setShadow(true);

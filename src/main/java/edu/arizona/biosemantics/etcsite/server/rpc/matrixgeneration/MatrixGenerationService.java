@@ -88,7 +88,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	private Emailer emailer;
 	private ListeningExecutorService executorService;
 	private Map<Integer, ListenableFuture<Void>> activeProcessFutures = new HashMap<Integer, ListenableFuture<Void>>();
-	private Map<Integer, MatrixGeneration> activeProcess = new HashMap<Integer, MatrixGeneration>();
+	private Map<Integer, MatrixGeneration> activeMatrixGenerationProcess = new HashMap<Integer, MatrixGeneration>();
+	private Map<Integer, Enhance> activeEnhanceProcess = new HashMap<Integer, Enhance>();
 	private DAOManager daoManager;
 	
 	@Inject
@@ -116,28 +117,11 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	public Task start(AuthenticationToken authenticationToken, String taskName, String input, String inputTermReview, String inputOntology,
 			String taxonGroup, boolean inheritValues, boolean generateAbsentPresent) throws MatrixGenerationException {
 		boolean isSharedInput = filePermissionService.isSharedFilePath(authenticationToken.getUserId(), input);
-		boolean isSharedInputTermReview = filePermissionService.isSharedFilePath(authenticationToken.getUserId(), inputTermReview);
-		boolean isSharedInputOntology = filePermissionService.isSharedFilePath(authenticationToken.getUserId(), inputOntology);
-		
 		String inputFileName = null;
 		try {
 			inputFileName = fileService.getFileName(authenticationToken, input);
 		} catch (PermissionDeniedException e) {
 			log(LogLevel.ERROR, "Permission denied to read " + input);
-			throw new MatrixGenerationException();
-		}
-		String inputTermReviewFileName = null;
-		try {
-			inputTermReviewFileName = fileService.getFileName(authenticationToken, inputTermReview);
-		} catch (PermissionDeniedException e) {
-			log(LogLevel.ERROR, "Permission denied to read " + inputTermReview);
-			throw new MatrixGenerationException();
-		}
-		String inputOntologyFileName = null;
-		try {
-			inputOntologyFileName = fileService.getFileName(authenticationToken, inputOntology);
-		} catch (PermissionDeniedException e) {
-			log(LogLevel.ERROR, "Permission denied to read " + inputOntology);
 			throw new MatrixGenerationException();
 		}
 		if(isSharedInput) {
@@ -155,37 +139,57 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			}
 			input = destination;
 		}
-		if(isSharedInputTermReview) {
-			String destination;
-			try {
-				destination = fileService.createDirectory(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUserId(), 
-						inputTermReviewFileName, true);
-			} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
-				throw new MatrixGenerationException();
-			}
-			try {
-				fileService.copyFiles(authenticationToken, inputTermReview, destination);
-			} catch (CopyFilesFailedException | PermissionDeniedException e) {
-				throw new MatrixGenerationException();
-			}
-			inputTermReview = destination;
-		}
-		if(isSharedInputOntology) {
-			String destination;
-			try {
-				destination = fileService.createDirectory(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUserId(), 
-						inputOntologyFileName, true);
-			} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
-				throw new MatrixGenerationException();
-			}
-			try {
-				fileService.copyFiles(authenticationToken, inputOntology, destination);
-			} catch (CopyFilesFailedException | PermissionDeniedException e) {
-				throw new MatrixGenerationException();
-			}
-			inputOntology = destination;
-		}
 		
+		if(this.isEnhanceAndMatrixGeneration(inputTermReview, inputOntology)) {
+			boolean isSharedInputTermReview = filePermissionService.isSharedFilePath(authenticationToken.getUserId(), inputTermReview);
+			String inputTermReviewFileName = null;
+			try {
+				inputTermReviewFileName = fileService.getFileName(authenticationToken, inputTermReview);
+			} catch (PermissionDeniedException e) {
+				log(LogLevel.ERROR, "Permission denied to read " + inputTermReview);
+				throw new MatrixGenerationException();
+			}
+			if(isSharedInputTermReview) {
+				String destination;
+				try {
+					destination = fileService.createDirectory(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUserId(), 
+							inputTermReviewFileName, true);
+				} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
+					throw new MatrixGenerationException();
+				}
+				try {
+					fileService.copyFiles(authenticationToken, inputTermReview, destination);
+				} catch (CopyFilesFailedException | PermissionDeniedException e) {
+					throw new MatrixGenerationException();
+				}
+				inputTermReview = destination;
+			}
+		
+			boolean isSharedInputOntology = filePermissionService.isSharedFilePath(authenticationToken.getUserId(), inputOntology);
+			String inputOntologyFileName = null;
+			try {
+				inputOntologyFileName = fileService.getFileName(authenticationToken, inputOntology);
+			} catch (PermissionDeniedException e) {
+				log(LogLevel.ERROR, "Permission denied to read " + inputOntology);
+				throw new MatrixGenerationException();
+			}
+			if(isSharedInputOntology) {
+				String destination;
+				try {
+					destination = fileService.createDirectory(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUserId(), 
+							inputOntologyFileName, true);
+				} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
+					throw new MatrixGenerationException();
+				}
+				try {
+					fileService.copyFiles(authenticationToken, inputOntology, destination);
+				} catch (CopyFilesFailedException | PermissionDeniedException e) {
+					throw new MatrixGenerationException();
+				}
+				inputOntology = destination;
+			}
+		}
+				
 		MatrixGenerationConfiguration config = new MatrixGenerationConfiguration();
 		config.setInput(input);
 		config.setInputTermReview(inputTermReview);
@@ -222,113 +226,176 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		}
 		return task;
 	}
-	
+
 	@Override
-	public Task process(final AuthenticationToken authenticationToken, final Task task) throws MatrixGenerationException {
+	public Task process(final AuthenticationToken token, final Task task) throws MatrixGenerationException {
 		final MatrixGenerationConfiguration config = getMatrixGenerationConfiguration(task);
 		
-		//browser back button may invoke another "learn"
+		//browser back button may invoke another "process"
 		if(activeProcessFutures.containsKey(config.getConfiguration().getId())) {
 			return task;
-		} else {
+		} else {			
 			TaskStage taskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.PROCESS.toString());
 			task.setTaskStage(taskStage);
 			task.setResumable(false);
 			daoManager.getTaskDAO().updateTask(task);
 			
-			String input = config.getInput();
-			String inputOntology = config.getInputOntology();
-			String inputTermReview = config.getInputTermReview();
-			String categoryTerm = "";
-			String synonym = "";
-			try {
-				List<String> files = fileService.getDirectoriesFiles(authenticationToken, inputTermReview);
-				for(String file : files) {
-					if(file.startsWith("category_term-")) {
-						categoryTerm = file;
-					}	
-					if(file.startsWith("category_mainterm_synonymterm-")) {
-						synonym = file;
-					}
-				}
-			} catch(PermissionDeniedException e) {
-				throw new MatrixGenerationException(task);
-			}
 			try {
 				fileService.createDirectory(new AdminAuthenticationToken(), Configuration.matrixGeneration_tempFileBase, String.valueOf(task.getId()), false);
 			} catch (PermissionDeniedException | CreateDirectoryFailedException e1) {
 				throw new MatrixGenerationException(task);
 			}
-			final String outputFile = getOutputFile(task);
-			String taxonGroup = config.getTaxonGroup().getName().toUpperCase();
 			
-			boolean inheritValues = config.isInheritValues();
-			boolean generateAbsentPresent = config.isGenerateAbsentPresent();
-			config.getInputTermReview();
-			
-			//final MatrixGeneration matrixGeneration = new ExtraJvmMatrixGeneration(input, 
-			//	getTempDir(task), inputOntology, categoryTerm, synonym, taxonGroup, 
-			//	outputFile, inheritValues, generateAbsentPresent, true);
-			final MatrixGeneration matrixGeneration = new InJvmMatrixGeneration(input, 
-					getTempDir(task), inputOntology, categoryTerm, synonym, taxonGroup, 
-					outputFile, inheritValues, generateAbsentPresent, true);
-			activeProcess.put(config.getConfiguration().getId(), matrixGeneration);
-			final ListenableFuture<Void> futureResult = executorService.submit(matrixGeneration);
-			
-			this.activeProcessFutures.put(config.getConfiguration().getId(), futureResult);
-			/*try {
-				futureResult.get(Configuration.matrixGeneration_maxRunningTimeMinutes, TimeUnit.MINUTES);
-			} catch (InterruptedException e2) {
-				e2.printStackTrace();
-			} catch (ExecutionException e2) {
-				e2.printStackTrace();
-			} catch (TimeoutException e2) {
-				// Task took too long. 
-				futureResult.cancel(true);
-				matrixGeneration.destroy();
-				log(LogLevel.ERROR,
-						"Matrix generation took too long and was canceled.");
-			}*/
-			
-			futureResult.addListener(new Runnable() {
-			     	public void run() {	
-			     		try {
-				     		MatrixGeneration matrixGeneration = activeProcess.remove(config.getConfiguration().getId());
-				    		ListenableFuture<Void> futureResult = activeProcessFutures.remove(config.getConfiguration().getId());
-				     		if(matrixGeneration.isExecutedSuccessfully()) {
-				     			if(!futureResult.isCancelled()) {
-									TaskStage newTaskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.REVIEW.toString());
-									task.setTaskStage(newTaskStage);
-									task.setResumable(true);
-									daoManager.getTaskDAO().updateTask(task);
-									
-									// send an email to the user who owns the task.
-									sendFinishedGeneratingMatrixEmail(task);
-									
-									loadMatrixFromProcessOutput(authenticationToken, task);
-				     			}
-				     		} else {
-				     			task.setFailed(true);
-								task.setFailedTime(new Date());
-								task.setTooLong(futureResult.isCancelled());
-								matrixGeneration.destroy();
-								daoManager.getTaskDAO().updateTask(task);
-				     		}
-			     		} catch(Throwable t) {
-			     			log(LogLevel.ERROR, t.getMessage()+"\n"+org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(t));
-			     			task.setFailed(true);
-							task.setFailedTime(new Date());
-							matrixGeneration.destroy();
-							daoManager.getTaskDAO().updateTask(task);
-			     		}
-			     	}
-			     }, executorService);
+			if(isEnhanceAndMatrixGeneration(config.getInputTermReview(), config.getInputOntology())) {
+				doEnhanceAndMatrixGeneration(token, task, config);
+			} else {
+				doMatrixGeneration(token, task, config, config.getInput());
+			}
 			
 			return task;
 		}
 	}
 
-	
+	private boolean isEnhanceAndMatrixGeneration(String inputTermReview, String inputOntology) {
+		return inputTermReview != null && inputOntology != null && 
+				!inputTermReview.isEmpty() && !inputOntology.isEmpty();
+	}
+
+	private void doEnhanceAndMatrixGeneration(final AuthenticationToken token,  final Task task, final MatrixGenerationConfiguration config) throws MatrixGenerationException {
+		String input = config.getInput();
+		String inputOntology = config.getInputOntology();
+		String ontologyFile = "";
+		String inputTermReview = config.getInputTermReview();
+		String categoryTerm = "";
+		String synonym = "";
+		String taxonGroup = config.getTaxonGroup().getName().toUpperCase();
+		
+		try {
+			List<String> files = fileService.getDirectoriesFiles(token, inputOntology);
+			for(String file : files) {
+				if(file.endsWith(".owl") && !file.startsWith("module.")) {
+					ontologyFile = inputOntology + File.separator + file;
+				}	
+			}
+		} catch(PermissionDeniedException e) {
+			throw new MatrixGenerationException(task);
+		}
+		try {
+			List<String> files = fileService.getDirectoriesFiles(token, inputTermReview);
+			for(String file : files) {
+				if(file.startsWith("category_term-")) {
+					categoryTerm = inputOntology + File.separator + file;
+				}	
+				if(file.startsWith("category_mainterm_synonymterm-")) {
+					synonym = inputOntology + File.separator + file;
+				}
+			}
+		} catch(PermissionDeniedException e) {
+			throw new MatrixGenerationException(task);
+		}
+		
+		
+		final String enhanceDir = this.getTempDir(task) + File.separator + "enhance";
+		final Enhance enhance = new ExtraJvmEnhance(input, enhanceDir, ontologyFile, categoryTerm, synonym, taxonGroup);
+		//final Enhance enhance = new InJvmEnhance(input, enhanceDir, ontologyFile, categoryTerm, synonym, taxonGroup);
+		
+		activeEnhanceProcess.put(config.getConfiguration().getId(), enhance);
+		final ListenableFuture<Void> futureResult = executorService.submit(enhance);
+		this.activeProcessFutures.put(config.getConfiguration().getId(), futureResult);
+		
+		/*try {
+			futureResult.get(Configuration.matrixGeneration_maxRunningTimeMinutes, TimeUnit.MINUTES);
+		} catch (InterruptedException e2) {
+			e2.printStackTrace();
+		} catch (ExecutionException e2) {
+			e2.printStackTrace();
+		} catch (TimeoutException e2) {
+			// Task took too long. 
+			futureResult.cancel(true);
+			matrixGeneration.destroy();
+			log(LogLevel.ERROR,
+					"Matrix generation took too long and was canceled.");
+		}*/
+		
+		futureResult.addListener(new Runnable() {
+		     	public void run() {	
+		     		try {
+		     			Enhance enhance = activeEnhanceProcess.remove(config.getConfiguration().getId());
+		     			ListenableFuture<Void> futureResult = activeProcessFutures.remove(config.getConfiguration().getId());
+		     			if(enhance.isExecutedSuccessfully()) {
+		     				if(!futureResult.isCancelled()) {
+		     					doMatrixGeneration(token, task, config, enhanceDir);
+		     				}
+		     			} else {
+			     			task.setFailed(true);
+							task.setFailedTime(new Date());
+							task.setTooLong(futureResult.isCancelled());
+							enhance.destroy();
+							daoManager.getTaskDAO().updateTask(task);
+			     		}
+		     		} catch(Throwable t) {
+		     			log(LogLevel.ERROR, t.getMessage()+"\n"+org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(t));
+		     			task.setFailed(true);
+						task.setFailedTime(new Date());
+						enhance.destroy();
+						daoManager.getTaskDAO().updateTask(task);
+		     		}
+		     	}
+		     }, executorService);
+		
+	}
+
+	private void doMatrixGeneration(final AuthenticationToken token, final Task task, final MatrixGenerationConfiguration config, 
+			String inputDir) {
+		String outputFile = getOutputFile(task);
+		String taxonGroup = config.getTaxonGroup().getName().toUpperCase();
+		boolean inheritValues = config.isInheritValues();
+		boolean generateAbsentPresent = config.isGenerateAbsentPresent();
+		
+		final MatrixGeneration matrixGeneration = new ExtraJvmMatrixGeneration(inputDir, taxonGroup, 
+				outputFile, inheritValues, generateAbsentPresent, true);
+		//final MatrixGeneration matrixGeneration = new InJvmMatrixGeneration(inputDir, taxonGroup, 
+		//		outputFile, inheritValues, generateAbsentPresent, true);
+		
+		activeMatrixGenerationProcess.put(config.getConfiguration().getId(), matrixGeneration);
+		ListenableFuture<Void> futureResult = executorService.submit(matrixGeneration);
+		activeProcessFutures.put(config.getConfiguration().getId(), futureResult);
+			
+		futureResult.addListener(new Runnable() {
+	     	public void run() {	
+	     		try {
+	     			MatrixGeneration matrixGeneration = activeMatrixGenerationProcess.remove(config.getConfiguration().getId());
+		    		ListenableFuture<Void> futureResult = activeProcessFutures.remove(config.getConfiguration().getId());
+		     		if(matrixGeneration.isExecutedSuccessfully()) {
+		     			if(!futureResult.isCancelled()) {
+							TaskStage newTaskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.REVIEW.toString());
+							task.setTaskStage(newTaskStage);
+							task.setResumable(true);
+							daoManager.getTaskDAO().updateTask(task);
+							
+							// send an email to the user who owns the task.
+							sendFinishedGeneratingMatrixEmail(task);
+							
+							loadMatrixFromProcessOutput(token, task);
+		     			}
+		     		} else {
+		     			task.setFailed(true);
+						task.setFailedTime(new Date());
+						task.setTooLong(futureResult.isCancelled());
+						matrixGeneration.destroy();
+						daoManager.getTaskDAO().updateTask(task);
+		     		}
+		     	} catch(Throwable t) {
+     			log(LogLevel.ERROR, t.getMessage()+"\n"+org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(t));
+     			task.setFailed(true);
+				task.setFailedTime(new Date());
+				matrixGeneration.destroy();
+				daoManager.getTaskDAO().updateTask(task);
+     		}
+	    	}
+	     }, executorService);
+	}
+
 	@Override
 	public Model loadMatrixFromProcessOutput(AuthenticationToken token, Task task) throws MatrixGenerationException {
 		final MatrixGenerationConfiguration config = getMatrixGenerationConfiguration(task);
@@ -478,8 +545,11 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 					ListenableFuture<Void> processFuture = this.activeProcessFutures.get(config.getConfiguration().getId());
 					processFuture.cancel(true);
 				}
-				if(activeProcess.containsKey(config.getConfiguration().getId())) {
-					activeProcess.get(config.getConfiguration().getId()).destroy();
+				if(activeMatrixGenerationProcess.containsKey(config.getConfiguration().getId())) {
+					activeMatrixGenerationProcess.get(config.getConfiguration().getId()).destroy();
+				}
+				if(activeEnhanceProcess.containsKey(config.getConfiguration().getId())) {
+					activeEnhanceProcess.get(config.getConfiguration().getId()).destroy();
 				}
 				break;
 			case OUTPUT:
@@ -632,8 +702,11 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	@Override
 	public void destroy() {
 		this.executorService.shutdownNow();
-		for(MatrixGeneration matrixGeneration : activeProcess.values()) {
+		for(MatrixGeneration matrixGeneration : activeMatrixGenerationProcess.values()) {
 			matrixGeneration.destroy();
+		}
+		for(Enhance enhance : activeEnhanceProcess.values()) {
+			enhance.destroy();
 		}
 		super.destroy();
 	}
