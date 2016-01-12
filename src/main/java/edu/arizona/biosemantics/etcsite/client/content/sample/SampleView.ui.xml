@@ -18,11 +18,11 @@
 
 	<lay:CenteredContentPanel>
 		<g:VerticalPanel>
-		    <g:Label styleName="{style.header}">Sample Input</g:Label>
+		    <g:Label styleName="{style.header}">Sample Test Data</g:Label>
 		    <g:TextArea ui:field="textArea" styleName="{style.textArea}"/>
 		    <g:HTMLPanel>
 				    <div style="font-weight: bold">Brief video tutorials (Please wait a moment for the video to load)</div>
-			    	<div style="font-weight: bold">Introduction</div>
+			    	<div style="font-weight: bold">How to use the sample data:</div>
 				    <object ui:field="objectElement1">
 			            <param ui:field="movieParamElement1" name="movie"/>
 			            <param ui:field="qualityParamElement1" name="quality"/>
