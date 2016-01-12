@@ -38,15 +38,17 @@ public class MatrixGenerationCreatePresenter implements MatrixGenerationCreateVi
 		view.setPresenter(this);
 		this.inputCreatePresenter = inputCreatePresenter;
 		this.inputCreatePresenter.disableCreateFiles();
+		this.inputCreatePresenter.addDummyCreateFiles();
+		this.inputCreatePresenter.setNextButtonName("Next Step in Matrix Generation");
 		inputCreatePresenter.setInputValidator(new InputValidator() {
 			@Override
 			public void validate(String inputFolderPath) {
 				final MessageBox box = Alerter.startLoading();
-				matrixGenerationService.isValidInput(Authentication.getInstance().getToken(), inputFolderPath, new AsyncCallback<Boolean>() {
+				matrixGenerationService.checkInputValid(Authentication.getInstance().getToken(), inputFolderPath, new AsyncCallback<String>() {
 					@Override
-					public void onSuccess(Boolean result) {
-						if(!result) {
-							Alerter.invalidInputDirectory();
+					public void onSuccess(String result) {
+						if(!result.equals("valid")) {
+							Alerter.inputError(result);
 							Alerter.stopLoading(box);
 						} else {
 							placeController.goTo(new MatrixGenerationInputPlace());
@@ -66,7 +68,7 @@ public class MatrixGenerationCreatePresenter implements MatrixGenerationCreateVi
 			@Override
 			public void handle(FileUploadHandler fileUploadHandler,IUploader uploader, String uploadDirectory) {
 				if (uploader.getStatus() == Status.SUCCESS) {
-					fileUploadHandler.keyValidateUploadedFiles(uploadDirectory);
+					fileUploadHandler.validateTaxonDescriptionFiles(uploadDirectory);
 				}
 			}
 		});

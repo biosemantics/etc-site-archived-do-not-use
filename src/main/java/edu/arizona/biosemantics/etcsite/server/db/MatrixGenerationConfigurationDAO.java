@@ -38,13 +38,15 @@ public class MatrixGenerationConfigurationDAO {
 	private MatrixGenerationConfiguration createMatrixGenerationConfiguration(ResultSet result) throws SQLException {
 		int configurationId = result.getInt(1);
 		String input = result.getString(2);
-		int taxonGroupId = result.getInt(3);
-		String output = result.getString(4);
-		boolean inheritValues = result.getBoolean(5);
-		boolean generateAbsentPresent = result.getBoolean(6);
+		String inputTermReview = result.getString(3);
+		String inputOntology = result.getString(4);
+		int taxonGroupId = result.getInt(5);
+		String output = result.getString(6);
+		boolean inheritValues = result.getBoolean(7);
+		boolean generateAbsentPresent = result.getBoolean(8);
 		Configuration configuration = configurationDAO.getConfiguration(configurationId);
 		TaxonGroup taxonGroup = taxonGroupDAO.getTaxonGroup(taxonGroupId);
-		return new MatrixGenerationConfiguration(configuration, input, taxonGroup, output, inheritValues, generateAbsentPresent);
+		return new MatrixGenerationConfiguration(configuration, input, inputTermReview, inputOntology, taxonGroup, output, inheritValues, generateAbsentPresent);
 	}
 
 	public MatrixGenerationConfiguration addMatrixGenerationConfiguration(MatrixGenerationConfiguration matrixGenerationConfiguration) {
@@ -55,13 +57,15 @@ public class MatrixGenerationConfigurationDAO {
 			while(generatedKeys.next()) {
 				Configuration configuration = configurationDAO.getConfiguration(generatedKeys.getInt(1));
 				try (Query matrixGenerationQuery = new Query("INSERT INTO `etcsite_matrixgenerationconfigurations` " +
-						"(`configuration`, `input`, `taxon_group`, `output`, `inheritvalues`, `generateabsentpresent`) VALUES (?, ?, ?, ?, ?, ?)")) {
+						"(`configuration`, `input`, `input_term_review`, `input_ontology`, `taxon_group`, `output`, `inheritvalues`, `generateabsentpresent`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
 					matrixGenerationQuery.setParameter(1, configuration.getId());
 					matrixGenerationQuery.setParameter(2, matrixGenerationConfiguration.getInput());
-					matrixGenerationQuery.setParameter(3, matrixGenerationConfiguration.getTaxonGroup().getId());
-					matrixGenerationQuery.setParameter(4, matrixGenerationConfiguration.getOutput());
-					matrixGenerationQuery.setParameter(5, matrixGenerationConfiguration.isInheritValues());
-					matrixGenerationQuery.setParameter(6, matrixGenerationConfiguration.isGenerateAbsentPresent());
+					matrixGenerationQuery.setParameter(3, matrixGenerationConfiguration.getInputTermReview());
+					matrixGenerationQuery.setParameter(4, matrixGenerationConfiguration.getInputOntology());
+					matrixGenerationQuery.setParameter(5, matrixGenerationConfiguration.getTaxonGroup().getId());
+					matrixGenerationQuery.setParameter(6, matrixGenerationConfiguration.getOutput());
+					matrixGenerationQuery.setParameter(7, matrixGenerationConfiguration.isInheritValues());
+					matrixGenerationQuery.setParameter(8, matrixGenerationConfiguration.isGenerateAbsentPresent());
 					matrixGenerationQuery.execute();
 				}
 				result = this.getMatrixGenerationConfiguration(generatedKeys.getInt(1));
@@ -75,18 +79,22 @@ public class MatrixGenerationConfigurationDAO {
 	public void updateMatrixGenerationConfiguration(MatrixGenerationConfiguration matrixGenerationConfiguration) {
 		Configuration configuration = matrixGenerationConfiguration.getConfiguration();
 		String input = matrixGenerationConfiguration.getInput();
+		String inputTermReview = matrixGenerationConfiguration.getInputTermReview();
+		String inputOntology = matrixGenerationConfiguration.getInputOntology();
 		int taxonGroupId = matrixGenerationConfiguration.getTaxonGroup().getId();
 		String output = matrixGenerationConfiguration.getOutput();
 		boolean inheritValues = matrixGenerationConfiguration.isInheritValues();
 		boolean generateAbsentPresent = matrixGenerationConfiguration.isGenerateAbsentPresent();
-		try (Query query = new Query("UPDATE etcsite_matrixgenerationconfigurations SET input = ?, taxon_group = ?, output = ?, "
+		try (Query query = new Query("UPDATE etcsite_matrixgenerationconfigurations SET input = ?, input_term_review = ?, input_ontology = ?, taxon_group = ?, output = ?, "
 				+ "inheritvalues = ?, generateabsentpresent = ? WHERE configuration = ?")) {
 			query.setParameter(1, input);
-			query.setParameter(2, taxonGroupId);
-			query.setParameter(3, output);
-			query.setParameter(4, inheritValues);
-			query.setParameter(5, generateAbsentPresent);
-			query.setParameter(6, configuration.getId());
+			query.setParameter(2, inputTermReview);
+			query.setParameter(3, inputOntology);
+			query.setParameter(4, taxonGroupId);
+			query.setParameter(5, output);
+			query.setParameter(6, inheritValues);
+			query.setParameter(7, generateAbsentPresent);
+			query.setParameter(8, configuration.getId());
 			query.execute();
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't update matrix generation configuration", e);

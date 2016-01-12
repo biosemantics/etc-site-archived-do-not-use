@@ -113,6 +113,9 @@ public abstract class Uploader {
 	}
 	
 	public List<UploadResult> upload(ShortUser shortUser, List<FileItem> items, String targetPath, FileTypeEnum fileType) {
+		File targetFile = new File(targetPath);
+		if(targetFile.isFile())
+			targetPath = targetFile.getParent();
 		List<UploadResult> result = new LinkedList<UploadResult>();		
 		for (FileItem item : items) {
 			if (!item.isFormField()) {	

@@ -39,4 +39,5 @@ public interface ISettingsView extends IsWidget {
 	boolean isTreeGenerationEmailChecked();
 	boolean isTextCaptureEmailChecked();
 	boolean isTaxonomyComparisonEmailChecked();
+	boolean isLinkedOTOAccount();
 }

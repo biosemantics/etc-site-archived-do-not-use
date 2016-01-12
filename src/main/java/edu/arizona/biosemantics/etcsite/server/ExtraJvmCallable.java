@@ -1,5 +1,6 @@
 package edu.arizona.biosemantics.etcsite.server;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
 import java.util.LinkedList;
@@ -94,6 +95,7 @@ public abstract class ExtraJvmCallable<T> implements Callable<T>, Task {
 			processBuilder.redirectOutput(Redirect.INHERIT);
 			
 			try {
+				File workingdirectory = processBuilder.directory();
 				process = processBuilder.start();
 				exitStatus = process.waitFor();
 			} catch(IOException | InterruptedException e) {

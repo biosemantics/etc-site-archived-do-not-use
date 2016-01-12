@@ -77,6 +77,7 @@
 			            		. Choose one of the following methods to provide the input and Click Next.
 			            	</g:InlineLabel>
 						</g:FlowPanel>
+						<g:InlineLabel styleName="DescriptionFont">&nbsp;</g:InlineLabel>
 						<g:FlowPanel>
 							<g:InlineLabel>
 			            		 To View, Edit or Delete the created or uploaded files, go to&nbsp; 

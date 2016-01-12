@@ -512,6 +512,11 @@ public class SettingsView extends Composite implements ISettingsView {
 		otoVerticalInner.remove(newOTOAccountFieldSet);
 		otoVerticalInner.forceLayout();
 	}
+	
+	@Override
+	public boolean isLinkedOTOAccount() {
+		return otoShareCheckBox.getValue() && (otoVerticalInner.getWidget(otoVerticalInner.getWidgetCount() -1)).equals(otoAccountEmailFieldLabel);
+	}
 
 	@Override
 	public String getCurrentPassword() {

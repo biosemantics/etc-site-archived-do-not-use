@@ -8,22 +8,21 @@ public class InJvmInputVisualization implements InputVisualization {
 
 	private String inputFile;
 	private String workingDir;
-	private String outputDir; // This was used by the old Euler but is not now.
 	
 	private boolean executedSuccessfully = false;
 	
-	public InJvmInputVisualization(String inputFile, String workingDir, String ouputDir) {
+	public InJvmInputVisualization(String inputFile, String workingDir) {
 		this.inputFile = inputFile;
 		this.workingDir = workingDir;
-		this.outputDir = ouputDir;
 	}
 	
 	@Override
 	public Void call() throws TaxonomyComparisonException {
 		try {
-			log(LogLevel.DEBUG, "Running euler input viz: input " + inputFile + " ; workingDir " + workingDir + " ; output " + outputDir);
+			log(LogLevel.DEBUG, "Running euler input viz: input " + inputFile + " ; workingDir " + workingDir);
 			EulerShow euler = new EulerShow();
 			euler.setWorkingDir(workingDir);
+			euler.setInputFile(inputFile);
 			euler.setName("iv");
 			euler.run();
 			executedSuccessfully = true;

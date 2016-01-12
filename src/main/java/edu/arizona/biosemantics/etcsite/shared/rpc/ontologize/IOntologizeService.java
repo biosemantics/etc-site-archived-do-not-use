@@ -17,7 +17,7 @@ public interface IOntologizeService extends RemoteService, IHasTasksService {
 			throws OntologizeException;
 
 	String downloadOntologize(AuthenticationToken token, Task task)
-			throws OntologizeException;
+			throws Exception;
 
 	Task startWithOntologySelection(AuthenticationToken token, String taskName, String inputFile, String taxonGroup, 
 			String ontologyFile) throws OntologizeException;
@@ -32,7 +32,7 @@ public interface IOntologizeService extends RemoteService, IHasTasksService {
 
 	boolean isValidOntology(AuthenticationToken authenticationToken, String ontologyPath);
 	
-	Task output(AuthenticationToken token, Task task) throws OntologizeException;
+	Task output(AuthenticationToken token, Task task) throws Exception;
 	
 	void addInput(AuthenticationToken token, Task task, String inputFile) throws OntologizeException;
 	

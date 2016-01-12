@@ -46,4 +46,6 @@ public interface IUserServiceAsync {
 	
 	public void setProfile(AuthenticationToken token, EmailPreference emailPreferences, boolean dontShowPopup, AsyncCallback<Void> callback);
 
+	public void hasLinkedOTOAccount(AuthenticationToken token, AsyncCallback<Boolean> asyncCallback);
+
 }

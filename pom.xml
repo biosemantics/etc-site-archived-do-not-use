@@ -42,12 +42,12 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
-		<repository>
+		<!-- <repository>
      		<id>sonatype</id>
      		<url>http://oss.sonatype.org/content/repositories/snapshots</url>
      		<snapshots><enabled>true</enabled></snapshots>
      		<releases><enabled>false</enabled></releases>
- 		</repository>
+ 		</repository> -->
 	</repositories>
 
 	<!-- Created from archetype -->
@@ -90,6 +90,33 @@
 
 		<!-- mine -->
 		<dependency>
+		  <groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
+		  <artifactId>enhance</artifactId>
+		  <version>0.0.11-SNAPSHOT</version>
+		  <exclusions>
+		  	<exclusion>
+		  		<artifactId>owlapi-tools</artifactId>
+		  		<groupId>net.sourceforge.owlapi</groupId>
+		  	</exclusion>
+		  	<exclusion>
+		  		<artifactId>owlapi-apibinding</artifactId>
+		  		<groupId>net.sourceforge.owlapi</groupId>
+		  	</exclusion>
+		  	<exclusion>
+		  		<artifactId>owlapi-api</artifactId>
+		  		<groupId>net.sourceforge.owlapi</groupId>
+		  	</exclusion>
+		  	<exclusion>
+		  		<artifactId>owlapi-impl</artifactId>
+		  		<groupId>net.sourceforge.owlapi</groupId>
+		  	</exclusion>
+		  	<exclusion>
+		  		<artifactId>owlapi-parsers</artifactId>
+		  		<groupId>net.sourceforge.owlapi</groupId>
+		  	</exclusion>
+		  </exclusions>
+		</dependency>
+		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
 		  <version>0.0.45-SNAPSHOT</version>
@@ -104,12 +131,12 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics</groupId>
 		  <artifactId>gxt</artifactId>
-		  <version>0.0.10-SNAPSHOT</version>
+		  <version>0.0.11-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics</groupId>
 		  <artifactId>gxt</artifactId>
-		  <version>0.0.10-SNAPSHOT</version>
+		  <version>0.0.11-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency> 
 		<dependency>
@@ -221,7 +248,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>semantic-markup</artifactId>
-			<version>0.1.151-SNAPSHOT</version>
+			<version>0.1.164-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>app</artifactId>
@@ -236,7 +263,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.94-SNAPSHOT</version>
+		  <version>0.0.96-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		  <exclusions>
 		  	<exclusion>
@@ -248,19 +275,19 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.94-SNAPSHOT</version>
+		  <version>0.0.96-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize</artifactId>
-		  <version>0.0.29-SNAPSHOT</version>
+		  <version>0.1.14-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize</artifactId>
-		  <version>0.0.29-SNAPSHOT</version>
+		  <version>0.1.14-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
@@ -302,7 +329,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>ling</artifactId>
-			<version>0.0.5-SNAPSHOT</version>
+			<version>0.0.11-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.gwtquery</groupId>
@@ -420,7 +447,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.euler</groupId>
 			<artifactId>euler2</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>0.0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.euler</groupId>

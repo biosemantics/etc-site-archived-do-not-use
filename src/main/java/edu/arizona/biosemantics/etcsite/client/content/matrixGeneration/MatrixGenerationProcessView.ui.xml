@@ -38,8 +38,8 @@
 					<g:Image styleName="{style.playImage}" ui:field="playImage" url='images/play.png'></g:Image>
 					<g:VerticalPanel>
 					    <g:InlineLabel>A taxon-by-character matrix has been generated.</g:InlineLabel>
-						<g:InlineLabel>In the next step, you will review the matrix. If the matrix is large, it is best to review it segement by segement. </g:InlineLabel>
-						<g:InlineLabel>Please read the Instructions in the Review interface when it loads after clicking on the "Next Step in Matrix Generation" buttom below.</g:InlineLabel>
+						<g:InlineLabel>In the next step, you will review the matrix. If the matrix is large, it is best to review it segment by segment. </g:InlineLabel>
+						<g:InlineLabel>Please read the Instructions in the Review interface when it loads after clicking on the "Next Step in Matrix Generation" button below.</g:InlineLabel>
 				</g:VerticalPanel>
 				</g:HorizontalPanel>
 				<g:VerticalPanel ui:field="nonResumablePanel">

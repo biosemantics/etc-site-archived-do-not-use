@@ -39,8 +39,6 @@ public class OntologizeCreateView extends Composite implements IOntologizeCreate
 	}
 
 	private IOntologizeCreateView.Presenter presenter;
-	
-	@UiField Anchor fileManagerAnchor;
 
 	@UiField(provided=true) 
 	IInputCreateView inputCreateView;
@@ -49,7 +47,6 @@ public class OntologizeCreateView extends Composite implements IOntologizeCreate
 	public OntologizeCreateView(@Named("Ontologize")IInputCreateView.Presenter inputCreatePresenter) {		
 		this.inputCreateView = inputCreatePresenter.getView();
 		initWidget(uiBinder.createAndBindUi(this));		
-		fileManagerAnchor.getElement().getStyle().setCursor(Cursor.POINTER);
 	}
 
 	@Override

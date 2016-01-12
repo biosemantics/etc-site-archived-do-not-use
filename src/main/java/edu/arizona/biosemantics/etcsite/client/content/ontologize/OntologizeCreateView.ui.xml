@@ -65,27 +65,11 @@
 							</g:InlineLabel>
 							<g:InlineLabel styleName="{style.DescriptionFont}">
 								Ontology Building takes as input a folder output by the Text
-								Capture tool or a folder containing a XML files which
-								conform to this&nbsp;
+								Capture tool or a folder containing XML files conforming to &nbsp;
 							</g:InlineLabel>
 							<g:Anchor
 								href="http://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupOutput.xsd"
-								target="_blank" styleName="{style.padding}">format</g:Anchor>
-						</g:FlowPanel>
-						<g:InlineLabel>&nbsp;
-						</g:InlineLabel>
-						<g:FlowPanel>
-							<g:InlineLabel styleName="{style.bold} {style.DescriptionFont}">1.&nbsp;
-							</g:InlineLabel>
-							<g:InlineLabel styleName="{style.DescriptionFont}">
-								If you do not have the input ready, please run the Text Capture
-								tool first to generate it, or upload a folder here.
-							</g:InlineLabel>
-						</g:FlowPanel>
-						<g:FlowPanel>
-							<g:InlineLabel>To Edit, Delete or View uploaded file, go to &nbsp;
-							</g:InlineLabel>
-							<g:Anchor ui:field="fileManagerAnchor" styleName="{style.DescriptionFont}">File Manager</g:Anchor>
+								target="_blank" styleName="{style.DescriptionFont}"> this format.</g:Anchor>
 						</g:FlowPanel>
 					</g:VerticalPanel>
 					<my2:IInputCreateView ui:field="inputCreateView"></my2:IInputCreateView>

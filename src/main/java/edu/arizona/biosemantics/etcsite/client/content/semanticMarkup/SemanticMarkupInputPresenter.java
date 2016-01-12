@@ -2,6 +2,8 @@ package edu.arizona.biosemantics.etcsite.client.content.semanticMarkup;
 
 import java.util.List;
 
+import org.eclipse.jdt.internal.codeassist.select.SelectionScanner;
+
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -13,7 +15,6 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.files.FileImageLabelTreeItem;
 import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.common.files.ManagableFileTreePresenter;
@@ -23,6 +24,7 @@ import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerD
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.Description;
@@ -74,10 +76,12 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 		}
 		
 		// Check to see if input is too big.
-		semanticMarkupService.shouldWarnUserLargeInput(Authentication.getInstance().getToken(), inputFile, new AsyncCallback<Boolean>() {
+		final MessageBox box = Alerter.startLoading();
+		semanticMarkupService.isLargeInput(Authentication.getInstance().getToken(), inputFile, new AsyncCallback<Boolean>() {
 			@Override
-			public void onSuccess(Boolean warnUser) {
-				if (warnUser){
+			public void onSuccess(Boolean largeInput) {
+				Alerter.stopLoading(box);
+				if(largeInput) {
 					final MessageBox box = Alerter.semanticMarkupWarnUserTooManyWords();
 					box.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
 						@Override
@@ -93,6 +97,7 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 			@Override
 			public void onFailure(Throwable caught) {
 				caught.printStackTrace();
+				Alerter.stopLoading(box);
 			}
 		});
 		
@@ -135,11 +140,12 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 		selectableFileTreePresenter.show("Select input", FileFilter.DIRECTORY, new ISelectListener() {
 			@Override
 			public void onSelect() {
-				FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
-				if (selection != null) {
-					inputFile = selection.getFileInfo().getFilePath();
-					String shortendPath = filePathShortener.shorten(selection.getFileInfo(), Authentication.getInstance().getUserId());
-					if(selection.getFileInfo().isSystemFile()){
+				List<FileTreeItem> selections = fileTreePresenter.getView().getSelection();
+				if (selections.size() == 1) {
+					FileTreeItem selection = selections.get(0);
+					inputFile = selection.getFilePath();
+					String shortendPath = filePathShortener.shorten(selection, Authentication.getInstance().getUserId());
+					if(selection.isSystemFile()){
 						Alerter.systemFolderNotAllowedInputForTask();
 					}else if(selection.getText().contains(" 0 file")){
 						Alerter.emptyFolder();
@@ -147,7 +153,7 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 						view.setInput(shortendPath);
 						view.setEnabledNext(true);	
 						
-						if(selection.getFileInfo().getOwnerUserId() != Authentication.getInstance().getUserId()) {
+						if(selection.getOwnerUserId() != Authentication.getInstance().getUserId()) {
 							Alerter.sharedInputForTask();
 							fileManagerDialogPresenter.hide();
 						} else {

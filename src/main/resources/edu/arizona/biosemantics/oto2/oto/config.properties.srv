@@ -9,7 +9,7 @@ database_minConnectionsPerPartition=10
 database_maxConnectionsPerPartition=20
 
 #Temporary Storage
-files = /var/lib/etcsite/oto2
+files = /var/lib/etcsite/data/textCapture/oto2
 
 #Bioportal
 bioportalUrl=http://data.bioontology.org
@@ -18,4 +18,4 @@ bioportalApiKey=7ae4743f-edb1-4308-9221-c879d3bd55c7
 #OTO
 otoClientUrl=http://biosemantics.arizona.edu:8080/OTO/
 
-wordNetSource=/var/lib/etcsite/wordnet/wn31/dict
+wordNetSource=/var/lib/etcsite/resources/shared/wordnet/wn31/dict

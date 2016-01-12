@@ -41,16 +41,21 @@ matrixgeneration_xms=
 matrixgeneration_xmx=2048m
 matrixgeneration_classpath= #Need extra classpath because of dependency conflict owlapi 3 vs 4 (matrix generation needs 3 for elk reasoner, rest of etcsite uses 4)
 matrixGeneration_maxRunningTimeMinutes=
+matrixReview_tempFileBase=
 
 #Taxonomy Comparison
 maxActiveTaxonomyComparison=4
 taxonomyComparisonTask_maxRunningTimeMinutes=5
+taxonomyComparison_tempFileBase=
+taxonomyComparison_xms=
+taxonomyComparison_xmx=2048m
 
 #Captcha
 captcha_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/captcha
 
 #File Management
 fileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/users
+profiles=
 compressedFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/compressedFiles
 tempFiles=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp
 etcFiles=

@@ -14,6 +14,7 @@ import com.google.inject.Inject;
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.shared.model.TaxonGroup;
 import edu.arizona.biosemantics.etcsite.shared.model.User;
 import edu.arizona.biosemantics.oto.client.oto.OTOClient;
 import edu.arizona.biosemantics.oto.model.CategorizeTerms;
@@ -100,7 +101,7 @@ public class ToOTOSender {
 			createTerms(datasetName, otoClient, config, user, collection);
 			createCategorizations(datasetName, otoClient, user, collection);
 		} catch (InterruptedException | ExecutionException e) {
-			log(LogLevel.ERROR, "Couldnt' set description upon rename term", e);
+			log(LogLevel.ERROR, "Could not send terms to OTO", e);
 			throw new Exception("Could not send terms to OTO.");
 		}
 	}	
@@ -255,6 +256,20 @@ public class ToOTOSender {
 			termContexts.add(new TermContext(term.getTerm(), ""));
 		for(TypedContext context : contexts) 
 			termContexts.add(new TermContext(term.getTerm(), context.getText()));
+	}
+	
+	public static void main(String[] args) throws Exception {
+		ToOTOSender sender = new ToOTOSender(null);
+		Task task = new Task();
+		task.setName("my_name");
+		SemanticMarkupConfiguration config = new SemanticMarkupConfiguration();
+		TaxonGroup taxonGroup = new TaxonGroup(-1, "PLANT", null);
+		config.setTaxonGroup(taxonGroup);
+		User user = new User();
+		user.setOtoAuthenticationToken("m0bMEBFatNZp1C3nv7Nx4g==");
+		user.setOtoAccountEmail("test-thomas9@gmail.com");
+		Collection collection = new Collection();
+		sender.send(task, config, user, collection);
 	}
 	
 }

@@ -50,6 +50,9 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 	
 	@UiField
 	ImageLabel taskManager;
+	
+	@UiField
+	ImageLabel help;
 		
 	private Presenter presenter;
 	
@@ -132,10 +135,13 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 	@UiHandler("help")
 	void onHelpClick(ClickEvent e) {
 		Double size = dockLayoutPanel.getWidgetSize(eastPanel);
-		if(size == 400) 
+		if(size == 400){
 			setHelpSize(0, true);
-		else
+			help.setText("Show Help");
+		}else{
 			setHelpSize(400, true);
+			help.setText("Hide Help");
+		}
 	}
 	
 	@UiHandler("homeMenu")

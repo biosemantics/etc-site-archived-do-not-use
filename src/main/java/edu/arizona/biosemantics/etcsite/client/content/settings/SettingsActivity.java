@@ -219,9 +219,19 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 				public void onSuccess(edu.arizona.biosemantics.oto.model.User result) {
 					view.setOTOAccount(result.getUserEmail(), result.getPassword());
 					view.setLinkedOTOAccount(email);
-					//populateUserData();
-					Alerter.stopLoading(box);
-					Alerter.successfullyCreatedOTOAccount();
+					userService.saveOTOAccount(Authentication.getInstance().getToken(), true, email, password, new AsyncCallback<Void>() {
+						@Override
+						public void onFailure(Throwable caught) {
+							Alerter.stopLoading(box);
+							Alerter.failedToCreateOTOAccount(caught);
+						}
+						@Override
+						public void onSuccess(Void result) {
+							//populateUserData();
+							Alerter.stopLoading(box);
+							Alerter.successfullyCreatedOTOAccount();
+						}
+					});
 				}
 			});
 		}
@@ -229,25 +239,29 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 
 	@Override
 	public void onSaveOTOAccount(final boolean share, final String email, final String password) {
-		final MessageBox box = Alerter.startLoading();
-		userService.saveOTOAccount(Authentication.getInstance().getToken(), share, email, password, new AsyncCallback<Void>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				Alerter.stopLoading(box);
-				if(caught instanceof InvalidOTOAccountException) {
-					Alerter.invalidOTOAccount(caught);
-				} else {
-					Alerter.failedToSaveOTOAccount(caught);
+		if(!view.isLinkedOTOAccount()) {
+			final MessageBox box = Alerter.startLoading();
+			userService.saveOTOAccount(Authentication.getInstance().getToken(), share, email, password, new AsyncCallback<Void>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					Alerter.stopLoading(box);
+					if(caught instanceof InvalidOTOAccountException) {
+						Alerter.invalidOTOAccount(caught);
+					} else {
+						Alerter.failedToSaveOTOAccount(caught);
+					}
 				}
-			}
-			@Override
-			public void onSuccess(Void result) {
-				if(share)
-					view.setLinkedOTOAccount(email);
-				Alerter.stopLoading(box);
-				Alerter.savedSuccessfully();
-			} 
-		});
+				@Override
+				public void onSuccess(Void result) {
+					if(share)
+						view.setLinkedOTOAccount(email);
+					Alerter.stopLoading(box);
+					Alerter.savedSuccessfully();
+				} 
+			});
+		} else {
+			Alerter.savedSuccessfully();
+		}
 	}
 
 	@Override

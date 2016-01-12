@@ -11,12 +11,16 @@ public class MatrixGenerationConfiguration extends AbstractTaskConfiguration imp
 	private boolean inheritValues;
 	private boolean generateAbsentPresent;
 	private TaxonGroup taxonGroup;
+	private String inputOntology;
+	private String inputTermReview;
 
 	public MatrixGenerationConfiguration () { }
 	
-	public MatrixGenerationConfiguration(Configuration configuration, String input, TaxonGroup taxonGroup, String output, boolean inheritValues, boolean generateAbsentPresent) {
+	public MatrixGenerationConfiguration(Configuration configuration, String input, String inputTermReview, String inputOntology, TaxonGroup taxonGroup, String output, boolean inheritValues, boolean generateAbsentPresent) {
 		super(configuration);
 		this.input = input;
+		this.inputOntology = inputOntology;
+		this.inputTermReview = inputTermReview;
 		this.taxonGroup = taxonGroup;
 		this.output = output;
 		this.inheritValues = inheritValues;
@@ -59,6 +63,8 @@ public class MatrixGenerationConfiguration extends AbstractTaskConfiguration imp
 	public List<String> getInputs() {
 		List<String> result = new LinkedList<String>();
 		result.add(this.getInput());
+		result.add(this.getInputOntology());
+		result.add(this.getInputTermReview());
 		return result;
 	}
 
@@ -75,6 +81,22 @@ public class MatrixGenerationConfiguration extends AbstractTaskConfiguration imp
 
 	public TaxonGroup getTaxonGroup() {
 		return taxonGroup;
+	}
+
+	public void setInputOntology(String inputOntology) {
+		this.inputOntology = inputOntology;
+	}
+	
+	public String getInputOntology() {
+		return inputOntology;
+	}
+
+	public void setInputTermReview(String inputTermReview) {
+		this.inputTermReview = inputTermReview;
+	}
+	
+	public String getInputTermReview() {
+		return inputTermReview;
 	}
 		
 }

@@ -23,7 +23,7 @@ public class SelectableFileTreePresenter implements ISelectableFileTreeView.Pres
 		dialog.setBodyBorder(false);
 		dialog.setHeadingText("Create Files");
 		dialog.setPixelSize(-1, -1);
-		dialog.setMinWidth(0);
+		dialog.setMinWidth(500);
 		dialog.setMinHeight(0);
 	    dialog.setResizable(true);
 	    dialog.setShadow(true);
@@ -37,10 +37,10 @@ public class SelectableFileTreePresenter implements ISelectableFileTreeView.Pres
 	
 	public void show(String title, FileFilter fileFilter, ISelectListener listener) {
 		this.currentListener = listener;
-		dialog.setTitle(title);
+		dialog.setHeadingText(title);
 		dialog.show();
 		this.fileFilter = fileFilter;
-		fileTreePresenter.refresh(fileFilter);
+		fileTreePresenter.getView().refresh(fileFilter);
 	}
 	
 	@Override

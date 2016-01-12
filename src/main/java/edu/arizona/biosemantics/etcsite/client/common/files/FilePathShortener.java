@@ -4,6 +4,7 @@ import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.ServerSetup;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
 
 public class FilePathShortener {
 
@@ -39,16 +40,16 @@ public class FilePathShortener {
 		return result;
 	}
 
-	public String shorten(FileInfo fileInfo, int viewerUserId) {
+	public String shorten(FileTreeItem fileTreeItem, int viewerUserId) {
 		String seperator = ServerSetup.getInstance().getSetup().getSeperator();
 		
-		String result = fileInfo.getFilePath();
-		int ownerUserId = fileInfo.getOwnerUserId();
+		String result = fileTreeItem.getFilePath();
+		int ownerUserId = fileTreeItem.getOwnerUserId();
 		if(ownerUserId == viewerUserId) {
-			result = fileInfo.getDisplayFilePath();
+			result = fileTreeItem.getDisplayFilePath();
 			result = "OWNED" + seperator + result;
 		} else {
-			result = fileInfo.getDisplayFilePath();
+			result = fileTreeItem.getDisplayFilePath();
 			result = "SHARED" + seperator + result;
 		}
 		

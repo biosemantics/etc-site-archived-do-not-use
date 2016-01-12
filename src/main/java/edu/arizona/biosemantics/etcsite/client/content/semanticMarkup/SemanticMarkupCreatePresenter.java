@@ -36,19 +36,20 @@ public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.P
 		this.view = view;
 		this.fileManagerDialogPresenter = fileManagerDialogPresenter;
 		this.inputCreatePresenter = inputCreatePresenter;
+		this.inputCreatePresenter.setNextButtonName("Next Step in Text Capture");
 		view.setPresenter(this);
 		inputCreatePresenter.setInputValidator(new IInputCreateView.InputValidator() {
 			@Override
 			public void validate(String inputFolderPath) {
 				final MessageBox box = Alerter.startLoading();
-				semanticMarkupService.isValidInput(Authentication.getInstance().getToken(), inputFolderPath, new AsyncCallback<Boolean>() {
+				semanticMarkupService.checkValidInput(Authentication.getInstance().getToken(), inputFolderPath, new AsyncCallback<String>() {
 					@Override
-					public void onSuccess(Boolean result) {
-						if(!result) {
-							Alerter.invalidInputDirectory();
+					public void onSuccess(String result) {
+						if(result.equals("valid")) {
+							placeController.goTo(new SemanticMarkupInputPlace());
 							Alerter.stopLoading(box);
 						} else {
-							placeController.goTo(new SemanticMarkupInputPlace());
+							Alerter.inputError(result);
 							Alerter.stopLoading(box);
 						}
 					}
@@ -64,7 +65,7 @@ public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.P
 			@Override
 			public void handle(FileUploadHandler fileUploadHandler,	IUploader uploader, String uploadDirectory) {
 				if (uploader.getStatus() == Status.SUCCESS) {
-					fileUploadHandler.keyValidateUploadedFiles(uploadDirectory);
+					fileUploadHandler.validateTaxonDescriptionFiles(uploadDirectory);
 				}
 			}
 		});

@@ -1,11 +1,5 @@
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
-import edu.arizona.biosemantics.etcsite.client.common.Alerter;
-import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
-import gwtupload.client.IUploader;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,38 +11,49 @@ import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
+import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
+import gwtupload.client.IUploader;
+
 public class FileUploadHandler {
 	
 	//private static final int MAX_FILES_TO_REPORT_FAILED = 20;
-	private static final String NEWLINE = "\n";
+	//private static final String NEWLINE = "\n";
 	
 	List<String> uploadedFiles;
-	String serverResponse;
+	String uploadServerResponse;
+	String keyValidationServerResponse;
+	String taxonNameValidationServerResponse;
 	ManagableFileTreePresenter presenter;
 	private IFileServiceAsync fileService;
 
 	public FileUploadHandler(IFileServiceAsync fileService) {
 		uploadedFiles = null;
-		serverResponse = null;
+		uploadServerResponse = null;
+		keyValidationServerResponse = null;
+		taxonNameValidationServerResponse = null;
 		presenter = null;
 		this.fileService = fileService;
 	}
 	
 	public FileUploadHandler(ManagableFileTreePresenter presenter, IFileServiceAsync fileService) {
 		uploadedFiles = null;
-		serverResponse = null;
+		uploadServerResponse = null;
+		keyValidationServerResponse = null;
+		taxonNameValidationServerResponse = null;
 		this.presenter = presenter;
 		this.fileService = fileService;
 	}
 	
 	public String parseServerResponse(IUploader uploader){
-		serverResponse = uploader.getServerMessage().getMessage();
+		uploadServerResponse = uploader.getServerMessage().getMessage();
 		uploadedFiles = uploader.getFileInput().getFilenames();
-		if (serverResponse != null && !serverResponse.isEmpty()) {
-			//serverResponse = serverResponse.replaceAll("\n", "<br>");
-			if (serverResponse.contains("#")) { // # is used in response only
+		if (uploadServerResponse != null && !uploadServerResponse.isEmpty()) {
+			//uploadServerResponse = uploadServerResponse.replaceAll("\n", "<br>");
+			if (uploadServerResponse.contains("#")) { // # is used in response only
 												// when there are errors
-				String responseStrings[] = serverResponse.split("#");
+				String responseStrings[] = uploadServerResponse.split("#");
 				for(int i=0; i<responseStrings.length; i++)
 					responseStrings[i] = responseStrings[i].trim();
 				
@@ -57,48 +62,48 @@ public class FileUploadHandler {
 				String invalidFormatFiles[] = responseStrings[3].isEmpty() ? new String[] { } : responseStrings[3].split("\n");
 				String invalidEncodingFiles[] = responseStrings[4].isEmpty() ? new String[] { } : responseStrings[4].split("\\|");
 				
-				serverResponse = responseStrings[0] + "\n";
+				uploadServerResponse = responseStrings[0] + "\n";
 				
 				int reportedUploadFailedFiles = 0;
 				
 				if (invalidEncodingFiles.length > 0) {
-					serverResponse += "\nFollowing files have an invalid encoding. You can only upload UTF-8 encoded files.\n";
+					uploadServerResponse += "\nFollowing files have an invalid encoding. You can only upload UTF-8 encoded files.\n";
 					
 					for (int i = 0; /*reportedUploadFailedFiles < MAX_FILES_TO_REPORT_FAILED &&*/ i < invalidEncodingFiles.length; i++) {
-						serverResponse += invalidEncodingFiles[i] + "\n";
+						uploadServerResponse += invalidEncodingFiles[i] + "\n";
 						reportedUploadFailedFiles++;
 					}
 				}
 				
 				if (invalidFormatFiles.length > 0) {
-					serverResponse += "\nFollowing files have format errors\n";
+					uploadServerResponse += "\nFollowing files have format errors\n";
 					
 					for (int i = 0; /*reportedUploadFailedFiles < MAX_FILES_TO_REPORT_FAILED &&*/ i < invalidFormatFiles.length; i++) {
-						serverResponse += invalidFormatFiles[i] + "\n";
+						uploadServerResponse += invalidFormatFiles[i] + "\n";
 						reportedUploadFailedFiles++;
 					}
 				}
 				
 				if(existingFiles.length > 0) {
-					serverResponse += "\nFollowing files already exist in the folder\n";
+					uploadServerResponse += "\nFollowing files already exist in the folder\n";
 					
 					for (int i = 0; /*reportedUploadFailedFiles < MAX_FILES_TO_REPORT_FAILED &&*/ i < existingFiles.length; i++) {
-						serverResponse += existingFiles[i] + "\n";
+						uploadServerResponse += existingFiles[i] + "\n";
 						reportedUploadFailedFiles++;
 					}
 				}	
 				
 				if (writeFailedFiles.length > 0) {
-					serverResponse += "\nFollowing files could not be written\n";
+					uploadServerResponse += "\nFollowing files could not be written\n";
 					
 					for (int i = 0; /*reportedUploadFailedFiles < MAX_FILES_TO_REPORT_FAILED &&*/ i < writeFailedFiles.length; i++) {
-						serverResponse += writeFailedFiles[i] + "\n";
+						uploadServerResponse += writeFailedFiles[i] + "\n";
 						reportedUploadFailedFiles++;
 					}
 				}
 				
 				//if(writeFailedFiles.length + existingFiles.length + invalidFormatFiles.length + invalidEncodingFiles.length > MAX_FILES_TO_REPORT_FAILED)
-				//	serverResponse += "and so on.\n";
+				//	uploadServerResponse += "and so on.\n";
 				
 				//remove all failed upload files
 				for (int i = 0; i < writeFailedFiles.length; i++) {
@@ -116,7 +121,7 @@ public class FileUploadHandler {
 			}
 
 		}
-		return serverResponse;
+		return uploadServerResponse;
 	}
 	
 	public void keyValidateUploadedFiles(final String targetUploadDirectory) {
@@ -124,7 +129,17 @@ public class FileUploadHandler {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				Alerter.inputError("Key Validation Failed.");
+				
+				String errorMessage = "";
+				if(uploadServerResponse != null){
+					errorMessage += uploadServerResponse;
+				}
+				keyValidationServerResponse = "Key Validation Failed.";
+				if(taxonNameValidationServerResponse != null){
+					errorMessage += taxonNameValidationServerResponse;
+				}
+				errorMessage += keyValidationServerResponse;
+				Alerter.inputError(errorMessage);
 			}
 
 			@Override
@@ -142,13 +157,16 @@ public class FileUploadHandler {
 						errorMessage += errorsInFile.replace("\n", "<br>")+"<br>";
 						allowedErrorCounts--;
 					}
+					if(taxonNameValidationServerResponse != null){
+						errorMessage = taxonNameValidationServerResponse + errorMessage;
+					}
 					MessageBox box = Alerter.showKeyValidationResult(infoMessage, errorMessage);
 					/*box.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
 					
 						@Override
 						public void onSelect(SelectEvent event) {
-							if(serverResponse != null){
-								Alerter.fileManagerMessage(serverResponse);
+							if(uploadServerResponse != null){
+								Alerter.fileManagerMessage(uploadServerResponse);
 							}
 						}
 					}); */
@@ -170,13 +188,43 @@ public class FileUploadHandler {
 					});
 					box.show();
 				}else{
-					if(serverResponse == null || serverResponse.isEmpty()){
+					String showMessage = "";
+					if((uploadServerResponse == null || uploadServerResponse.isEmpty()) && (taxonNameValidationServerResponse == null || taxonNameValidationServerResponse.isEmpty())){
 						Alerter.fileManagerMessage("File(s) uploaded successfully.");
+					}else{
+						if(uploadServerResponse != null){
+							showMessage += uploadServerResponse;
+						}
+						if(taxonNameValidationServerResponse != null){
+							showMessage += taxonNameValidationServerResponse;
+						}
+						Alerter.fileManagerMessage(showMessage);
 					}
 				}
 			}
 		});
+	}
+	
+	public void validateTaxonNames(final String targetUploadDirectory){
+		taxonNameValidationServerResponse = null;
+		fileService.validateTaxonNames(Authentication.getInstance().getToken(), targetUploadDirectory, new AsyncCallback<String>() {
 
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				keyValidateUploadedFiles(targetUploadDirectory);
+			}
+
+			@Override
+			public void onSuccess(String result) {
+				if(!result.equals("success")){
+					taxonNameValidationServerResponse = result;
+				}else{
+					taxonNameValidationServerResponse = "";
+				}
+				keyValidateUploadedFiles(targetUploadDirectory);
+			}
+		});
 	}
 	
 	public void setServletPathOfUploader(IUploader uploader, String fileType, String targetUploadDirectory){
@@ -188,6 +236,10 @@ public class FileUploadHandler {
 		fileNames.add("Uploading, please wait...");
 		uploader.getStatusWidget().setFileNames(fileNames);
 		uploader.setServletPath(uploader.getServletPath() + "&target=" + URL.encodeQueryString(targetUploadDirectory));
+	}
+
+	public void validateTaxonDescriptionFiles(String uploadDirectory) {
+		validateTaxonNames(uploadDirectory);
 	}
 
 }

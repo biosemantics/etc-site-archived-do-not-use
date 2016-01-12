@@ -9,11 +9,11 @@ import com.google.web.bindery.event.shared.EventBus;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.files.FileImageLabelTreeItem;
 import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePresenter.ISelectListener;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.file.search.Search;
 import edu.arizona.biosemantics.etcsite.shared.model.file.search.SearchResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
@@ -66,10 +66,11 @@ public class SearchPresenter implements ISearchView.Presenter {
 		selectableFileTreePresenter.show("Select File", FileFilter.DIRECTORY, new ISelectListener() {
 			@Override
 			public void onSelect() {
-				FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
-				if(selection != null) {
-					SearchPresenter.this.input = selection.getFileInfo().getFilePath();
-					SearchPresenter.this.view.setInput(selection.getFileInfo().getFilePath());
+				List<FileTreeItem> selections = fileTreePresenter.getView().getSelection();
+				if(selections.size() == 1) {
+					FileTreeItem selection = selections.get(0);
+					SearchPresenter.this.input = selection.getFilePath();
+					SearchPresenter.this.view.setInput(selection.getFilePath());
 					SearchPresenter.this.view.setEnabled(true);
 				}
 			}

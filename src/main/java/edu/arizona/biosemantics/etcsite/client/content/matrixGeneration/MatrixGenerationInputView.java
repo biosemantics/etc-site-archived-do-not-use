@@ -37,6 +37,12 @@ public class MatrixGenerationInputView extends Composite implements IMatrixGener
 	Button nextButton;
 	
 	@UiField
+	Label inputOntologyLabel;
+
+	@UiField
+	Label inputTermReviewLabel;
+	
+	@UiField
 	CheckBox inheritValuesBox;
 	
 	@UiField
@@ -69,6 +75,26 @@ public class MatrixGenerationInputView extends Composite implements IMatrixGener
 	public void onSearchClick(ClickEvent event) {
 		presenter.onNext();
     }
+	
+	@UiHandler("inputOntologyButton")
+	public void onOntologyButton(ClickEvent event) {
+		presenter.onOntologyInput();
+	}
+	
+	@UiHandler("inputTermReviewButton")
+	public void onTermReviewButton(ClickEvent event) {
+		presenter.onTermReviewInput();
+	}
+	
+	@Override
+	public void setTermReviewPath(String text) {
+		this.inputTermReviewLabel.setText(text);
+	}
+	
+	@Override
+	public void setOntologyPath(String text) {
+		this.inputOntologyLabel.setText(text);
+	}
 
 	@Override
 	public String getTaskName() {
@@ -113,5 +139,25 @@ public class MatrixGenerationInputView extends Composite implements IMatrixGener
 	@Override
 	public String getTaxonGroup() {
 		return glossaryListBox.getItemText(glossaryListBox.getSelectedIndex());
+	}
+
+	@Override
+	public boolean hasOntologyPath() {
+		return !this.inputOntologyLabel.getText().trim().isEmpty();
+	}
+
+	@Override
+	public boolean hasInput() {
+		return !this.inputLabel.getText().trim().isEmpty();
+	}
+
+	@Override
+	public boolean hasTermReview() {
+		return !this.inputTermReviewLabel.getText().trim().isEmpty();
+	}
+
+	@Override
+	public boolean hasTaskName() {
+		return !taskNameTextBox.getValue().trim().isEmpty();
 	}
 }

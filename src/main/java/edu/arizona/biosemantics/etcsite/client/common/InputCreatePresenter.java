@@ -12,7 +12,6 @@ import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView.InputValidator;
 import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView.UploadCompleteHandler;
-import edu.arizona.biosemantics.etcsite.client.common.files.FileImageLabelTreeItem;
 import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileUploadHandler;
 import edu.arizona.biosemantics.etcsite.client.common.files.ICreateSemanticMarkupFilesDialogView;
@@ -23,6 +22,7 @@ import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePr
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.CreateDirectoryFailedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
@@ -235,7 +235,7 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 				if(uploadCompleteHandler != null)
 					uploadCompleteHandler.handle(fileUploadHandler, uploader, targetUploadDirectory);
 				uploader.setServletPath(defaultServletPath);
-				Alerter.successfullyUploadedFiles();
+				//Alerter.successfullyUploadedFiles();
 			}
 		}
 	
@@ -266,18 +266,19 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 	public void onSelectExistingFolder() {
 		selectableFileTreePresenter.show("Select input", FileFilter.DIRECTORY, new ISelectListener() {
 			@Override
-			public void onSelect() {
-				FileImageLabelTreeItem selection = fileTreePresenter.getSelectedItem();
-				if (selection != null) {
-					inputFolderPath = selection.getFileInfo().getFilePath();
-					inputFolderShortenedPath = filePathShortener.shorten(selection.getFileInfo(), Authentication.getInstance().getUserId());
-					if(selection.getFileInfo().isSystemFile()){
+			public void onSelect()  {
+				List<FileTreeItem> selections = fileTreePresenter.getView().getSelection();
+				if (selections.size() == 1) {
+					FileTreeItem selection = selections.get(0);
+					inputFolderPath = selection.getFilePath();
+					inputFolderShortenedPath = filePathShortener.shorten(selection, Authentication.getInstance().getUserId());
+					if(selection.isSystemFile()){
 						Alerter.systemFolderNotAllowedInputForTask();
-					}else if(selection.getText().contains(" 0 file")){
+					} else if(selection.getText().contains(" 0 file")) {
 						Alerter.emptyFolder();
-					}else{
+					} else {
 						view.setSelectedExistingFolder(inputFolderShortenedPath);
-						if(selection.getFileInfo().getOwnerUserId() != Authentication.getInstance().getUserId()) {
+						if(selection.getOwnerUserId() != Authentication.getInstance().getUserId()) {
 							Alerter.sharedInputForTask();
 							fileManagerDialogPresenter.hide();
 						} else {
@@ -320,6 +321,11 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 	}
 	
 	@Override
+	public void addDummyCreateFiles() {
+		view.addDummyCreateFiles();
+	}
+	
+	@Override
 	public void setUploadCompleteHandler(UploadCompleteHandler handler) {
 		this.uploadCompleteHandler = handler;
 	}
@@ -328,5 +334,10 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 	public void setUploadFileType(FileTypeEnum uploadFileType) {
 		this.uploadFileType = uploadFileType;
 	}
-	
+
+	@Override
+	public void setNextButtonName(String str) {
+		view.setNextButtonName(str);
+	}
+
 }

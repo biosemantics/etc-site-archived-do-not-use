@@ -350,14 +350,15 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 			String rank = nameType.replaceFirst(" name$", "");
 			String nameString = data.get(nameType).get(0).trim();
 			String name = nameString;
-			String authority = null;
-			String ndate = null;
-			if(nameString.contains(" ")){
-				name = nameString.substring(0, nameString.indexOf(" ")); //first word
-				String authorityStr = nameString.substring(nameString.indexOf(" ")).trim();
-				if(authorityStr.contains(",")){//, separates authority and date
-					authority = authorityStr.substring(0, authorityStr.indexOf(",")).trim();
-					ndate = authorityStr.substring(authorityStr.indexOf(",")+1).trim();
+			String authority = "unknown";
+			String ndate = "unknown";
+			if(nameString.contains(",")){
+				String dateSplits[] = nameString.split(",");
+				ndate = dateSplits[1].trim();
+				String nameSplits[] = dateSplits[0].trim().split(" ");
+				name = nameSplits[0];
+				if(nameSplits.length > 1){
+					authority = nameSplits[1];
 				}
 			}
 			Element element = new Element("taxon_name");

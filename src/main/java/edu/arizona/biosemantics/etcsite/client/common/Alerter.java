@@ -58,7 +58,7 @@ public class Alerter {
 	}
 
 	public static MessageBox failedToCreateTaxonDescription(Throwable caught) {
-		return showAlert("Create Taxon Description", "Failed to creatc taxon description.", caught);
+		return showAlert("Create Taxon Description", "Failed to create taxon description.", caught);
 	}
 	
 	public static MessageBox failedToSendToOto(Throwable caught) {
@@ -332,6 +332,10 @@ public class Alerter {
 	public static MessageBox failedToSaveOto(Throwable caught) {
 		return showAlert("Save Term Organization", "Failed to save term organization.", caught);
 	}
+	
+	public static MessageBox failedToSaveOntologize(Throwable caught) {
+		return showAlert("Download Ontology", "Failed to download ontology.", caught);
+	}
 
 	public static MessageBox failedToCompleteReview(Throwable caught) {
 		return showAlert("Complete Matrix Review", "Failed to complete matrix review.", caught);
@@ -465,6 +469,9 @@ public class Alerter {
 		return showAlert("Input Directory", "Please select a valid input directory.");
 	}
 
+	public static MessageBox selectValidInputOntology() {
+		return showAlert("Input Ontology Directory", "Please select a valid ontology directory.");
+	}
 
 	public static MessageBox invalidInputDirectory() {
 		return showAlert("Input Directory", "Input directory is not valid. Please select a valid input directory.");
@@ -544,7 +551,7 @@ public class Alerter {
 		return alert;
 	}
 
-	private static MessageBox showInfo(String title, String message) {
+	public static MessageBox showInfo(String title, String message) {
 		InfoMessageBox info = new InfoMessageBox(title, message);
 		info.show();
 		return info;
@@ -657,5 +664,6 @@ public class Alerter {
 	public static MessageBox selectATask() {
 		return showAlert("Select a task", "Select a task to resume.");
 	}
+
 
 }

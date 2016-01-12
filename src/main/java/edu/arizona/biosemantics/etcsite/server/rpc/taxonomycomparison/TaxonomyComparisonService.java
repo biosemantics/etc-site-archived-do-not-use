@@ -65,7 +65,7 @@ import edu.arizona.biosemantics.euler.io.TaxonomyFileReader;
 
 public class TaxonomyComparisonService extends RemoteServiceServlet implements ITaxonomyComparisonService {
 	
-	private String tempFiles = Configuration.tempFiles + File.separator + "taxonomyComparison";
+	private String tempFiles = Configuration.taxonomyComparison_tempFileBase;
 	private IFileService fileService;
 	//private IFileFormatService fileFormatService = new FileFormatService();
 	//private IFileAccessService fileAccessService = new FileAccessService();
@@ -84,7 +84,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		this.daoManager = daoManager;
 		this.emailer = emailer;
 		executorService = MoreExecutors.listeningDecorator(Executors.newScheduledThreadPool(Configuration.maxActiveTaxonomyComparison));
-		File taxonomyComparisonCache = new File(Configuration.tempFiles, "taxonomyComparison");
+		File taxonomyComparisonCache = new File(Configuration.taxonomyComparison_tempFileBase);
 		if(!taxonomyComparisonCache.exists())
 			taxonomyComparisonCache.mkdirs();			
 	}
@@ -104,7 +104,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		try {
 			fileName = fileService.getFileName(authenticationToken, input);
 		} catch (PermissionDeniedException e) {
-			log(LogLevel.ERROR, "Permission denied to read "+fileName);
+			log(LogLevel.ERROR, "Permission denied to read " + fileName);
 			throw new TaxonomyComparisonException();
 		}
 		if(isShared) {
@@ -148,7 +148,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		try {
 			fileService.createDirectory(new AdminAuthenticationToken(), tempFiles, String.valueOf(task.getId()), false);
 			fileService.createDirectory(new AdminAuthenticationToken(), tempFiles + File.separator + task.getId(), "run", false);
-			fileService.createDirectory(new AdminAuthenticationToken(), tempFiles + File.separator + task.getId(), "inputVisualization", false); //inputVisualization directory unused after switch to euler2.
+			fileService.createDirectory(new AdminAuthenticationToken(), tempFiles + File.separator + task.getId(), "inputVisualization", false);
 		} catch(PermissionDeniedException | CreateDirectoryFailedException e) {
 			log(LogLevel.ERROR, "can not create cache directory.");
 			throw new TaxonomyComparisonException(task);
@@ -158,7 +158,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		try {
 			fileService.setInUse(authenticationToken, true, input, task);
 		} catch (PermissionDeniedException e) {
-			log(LogLevel.ERROR, "can not set file in use for "+input+ ".");
+			log(LogLevel.ERROR, "can not set file in use for " + input + ".");
 			throw new TaxonomyComparisonException(task);
 		}
 		return task;
@@ -258,15 +258,16 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 				log(LogLevel.ERROR, "Couldn't set up output directory", e);
 				throw new TaxonomyComparisonException(task);
 			}
-				
-			final MIRGeneration mirGeneration = new InJvmMIRGeneration(eulerInputFile, workingDir, outputDir);
+
+			final MIRGeneration mirGeneration = new ExtraJvmMIRGeneration(eulerInputFile, outputDir, workingDir);
+			//final MIRGeneration mirGeneration = new InJvmMIRGeneration(eulerInputFile, outputDir, workingDir);
 			//final MIRGeneration mirGeneration = new DummyMIRGeneration(eulerInputFile, outputDir);
 			activeProcess.put(config.getConfiguration().getId(), mirGeneration);
 			final ListenableFuture<Void> futureResult = executorService.submit(mirGeneration);
 			executorService.schedule(new Runnable() {
 				public void run() {
 					futureResult.cancel(true);
-					log(LogLevel.ERROR, "Input visualization took too long and was canceled.");
+					log(LogLevel.ERROR, "MIR Generation took too long and was canceled.");
 				}
 			}, Configuration.taxonomyComparisonTask_maxRunningTimeMinutes, TimeUnit.MINUTES);
 			this.activeProcessFutures.put(config.getConfiguration().getId(), futureResult);
@@ -347,17 +348,13 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 
 	@Override
 	public String getInputVisualization(AuthenticationToken token, Task task, Model model) throws TaxonomyComparisonException {
+		final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
 		final String eulerInputFile = tempFiles + File.separator + task.getId() + File.separator + "input.txt";
 		try {
 			writeEulerInput(eulerInputFile, model);
 		} catch(IOException e) {
 			log(LogLevel.ERROR, "Couldn't write euler input to file " , e);
 		}
-		
-		File runFile = new File(tempFiles + File.separator + task.getId() + File.separator + "run");
-		int runs = runFile.listFiles().length;
-		// Calls to euler2 will happen from directory baseDir. Output will be contained in subfolders of this directory.
-		File baseDir = new File(tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + String.valueOf(runs));
 		
 		final String workingDir = tempFiles + File.separator + task.getId() + File.separator + "inputVisualization";
 		final String outputDir = workingDir + File.separator + "out";
@@ -374,8 +371,9 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			log(LogLevel.ERROR, "Couldn't set up output directory", e);
 			throw new TaxonomyComparisonException(task);
 		}
-		
-		InputVisualization inputVisualization = new InJvmInputVisualization(eulerInputFile, baseDir.getAbsolutePath(), outputDir);
+
+		InputVisualization inputVisualization = new ExtraJvmInputVisualization(eulerInputFile, outputDir, workingDir);
+		//InputVisualization inputVisualization = new InJvmInputVisualization(eulerInputFile, outputDir, workingDir);
 		//InputVisualization inputVisualization = new DummyInputVisualization(eulerInputFile, outputDir);
 		try {
 			inputVisualization.call();
@@ -383,24 +381,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			log(LogLevel.ERROR, "Couldn't run input visualization", e);
 			throw new TaxonomyComparisonException(task);
 		}
-		
-		// Hacky way of finding the directory containing euler2 output, which will be in <baseDir>/<folder>/<folder-with-timestamp>/
-		// We can use this way until we have a way of knowing for sure what the output folder names will be.
-		File outputBaseDir = new File(baseDir.getAbsolutePath());
-		for (File file: outputBaseDir.listFiles()){
-			if (file.isDirectory() && !file.getName().equals("out")){
-				outputBaseDir = file;
-				break;
-			}
-		}
-		for (File file: outputBaseDir.listFiles()){
-			if (file.isDirectory()){
-				outputBaseDir = file;
-				break;
-			}
-		}
-			
-		File output = new File(outputBaseDir.getAbsolutePath() + File.separator + "0-Input" + File.separator + "input.pdf");
+		File output = new File(tempFiles + File.separator + task.getId() + File.separator + "inputVisualization" + File.separator + "out" + File.separator + "0-Input" + File.separator + "input.pdf");
 		return output.getAbsolutePath();
 	}
 
@@ -502,42 +483,11 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	private RunOutput getRunOutput(Task task) {
 		File runFile = new File(tempFiles + File.separator + task.getId() + File.separator + "run");
 		int runs = runFile.listFiles().length;
-		File baseDir = new File(tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + String.valueOf(runs));
-		
-		
-		// Hacky way of finding the directory containing euler2 output, which will be in <baseDir>/<folder>/<folder with timestamp>/
-		// We can use this way until we have a way of knowing for sure what the
-		// output folder names will be.
-		File outputBaseDir = new File(baseDir.getAbsolutePath());
-		for (File file : outputBaseDir.listFiles()) {
-			if (file.isDirectory() && !file.getName().equals("out")) {
-				outputBaseDir = file;
-				break;
-			}
-		}
-		for (File file : outputBaseDir.listFiles()) {
-			if (file.isDirectory()) {
-				outputBaseDir = file;
-				break;
-			}
-		}
-		
-		String aggregateUrl = null;
-		File possibleWorldDir = null;
-		for (File file: outputBaseDir.listFiles()){
-			if (file.isDirectory() && file.getName().equals("4-PWs")){
-				possibleWorldDir = file;
-			} else if (file.isDirectory() && file.getName().equals("5-Aggregates")){
-				aggregateUrl = file.getAbsolutePath() + File.separator + "input_regular_all.pdf";
-			}
-		}
-		
-		// Error checking - both possibleWorldDir and aggregateUrl should have values now.
-		if (possibleWorldDir == null || aggregateUrl == null){
-			return new RunOutput(RunOutputType.CONFLICT, null, "", "");
-		}
-		
-		
+		File possibleWorldDir = new File(tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + String.valueOf(runs) + 
+				File.separator + "out" + File.separator + "4-PWs");	
+		String aggregateUrl = tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + String.valueOf(runs) + 
+				File.separator + "out" + File.separator + "5-Aggregates" + File.separator + "input_regular_all.pdf";
+				
 		List<PossibleWorld> possibleWorldFiles = new LinkedList<PossibleWorld>();
 		for(File file : possibleWorldDir.listFiles()) 
 			if(file.isFile() && file.getName().endsWith(".pdf")) 
