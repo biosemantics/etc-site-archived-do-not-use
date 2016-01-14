@@ -41,7 +41,7 @@ public class TaskSelectDialog extends Dialog {
 		setMinHeight(0);
 	    setResizable(true);
 	    setShadow(true);
-	    setClosable(false);
+	    setClosable(true);
 		setHideOnButtonClick(true);
 		setWidth(250);
 		setHeight(300);
