@@ -174,6 +174,7 @@ public class FileTreeView extends Composite implements IFileTreeView {
 	@Override
 	public void refreshChildren(FileTreeItem fileTreeItem, FileFilter fileFilter) {
 		this.fileFilter = fileFilter;
+		
 		loader.loadChildren(fileTreeItem);
 	}
 	
