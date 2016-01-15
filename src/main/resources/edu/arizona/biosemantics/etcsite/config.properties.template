@@ -30,7 +30,7 @@ maxActiveSemanticMarkup=4
 charaparser_xms=
 charaparser_xmx=2048m
 charaparser_ontologies=
-semanticMarkup_numberOfWordsToWarnUser=
+semanticMarkup_numberOfWordsToWarnUser=50000
 semanticMarkup_learnStep_maxRunningTimeMinutes=
 semanticMarkup_parseStep_maxRunningTimeMinutes=
 
