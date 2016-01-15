@@ -220,7 +220,7 @@ public class SettingsView extends Composite implements ISettingsView {
 	    otonote.add(otolink, new HorizontalLayoutData(-1, -1));
 	    otonote.add(new Label("). The terms categorized on ETC site can be"),new HorizontalLayoutData(-1, -1));
 	    
-	    otoVertical.add(otonote,new VerticalLayoutData(1, 16));
+	    otoVertical.add(otonote,new VerticalLayoutData(1, 14));
 	    
 	    otoVertical.add(new Label(" directly imported into OTO with you as the owner of the term set. You and others can co-categorize the terms on OTO and help grow the consensus-based glossary/ontology for your group and improve the performance of biodiversity software applications including ETC tools."),new VerticalLayoutData(-1, 40));
 	    //)+ otolink +"). The terms categorized on ETC site can be directly imported into OTO with you as the owner of the term set. You and others can co-categorize the terms on OTO and help grow the consensus-based glossary/ontology for your group and improve the performance of biodiversity software applications including ETC tools."),new VerticalLayoutData(-1, 50));

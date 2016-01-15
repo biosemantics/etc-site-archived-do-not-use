@@ -167,7 +167,7 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 
 	@Override
 	public void onPasswordSave() {
-		if(view.getNewPassword().equals(view.getConfirmPassword())) {
+		if(!view.getNewPassword().equals(view.getConfirmPassword())) {
 			Alerter.passwordsDontMatch();
 			return;
 		}
