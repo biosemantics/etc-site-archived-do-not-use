@@ -105,15 +105,15 @@
 	<g:DockLayoutPanel unit='PX' ui:field='dockLayoutPanel'>
 		<g:north size='30'>
 			<g:HTMLPanel>
-				<div style="padding-left: 20px; padding-top: 5px; float: left">
+				<div style="padding-left: 20px; padding-top: 5px; cursor:pointer; float: left ">
 					<my:ImageLabel ui:field="menu" imagePath="images/Menu.gif" imageWidth="20px" imageHeight="20px" text="Menu" systemFolder="false"></my:ImageLabel>
 				</div>
 				
-				<div style="padding-right: 10px; padding-top: 5px; float: right">
+				<div style="padding-right: 10px; padding-top: 5px; cursor:pointer; float: right">
 					<my:ImageLabel ui:field="help" imagePath="images/Help.gif" imageWidth="20px" imageHeight="20px" text="Show Help" systemFolder="false"></my:ImageLabel>
 				</div>
 				
-				<div style="padding-right: 10px; padding-top: 5px; float: right">
+				<div style="padding-right: 10px; padding-top: 5px; cursor:pointer; float: right">
 					<my:ImageLabel ui:field="loginLogout" imagePath="images/login.gif" imageWidth="20px" imageHeight="20px" text="Login" systemFolder="false"></my:ImageLabel>
 				</div>
 			</g:HTMLPanel>

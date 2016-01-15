@@ -15,6 +15,7 @@
 			margin: auto;
 			width:950px
 		}
+	
 		.errorLabel {
 			color:red;
 		}
@@ -30,7 +31,9 @@
 	<lay:CenteredContentPanel>
 		<g:VerticalPanel>
 		    <g:Label styleName="{style.header}">Account Information</g:Label>
-		    <g:SimplePanel ui:field="panel" styleName="{style.panel}"/>
+		    <g:SimplePanel ui:field="panel" styleName="{style.panel}">
+		     
+		    </g:SimplePanel>
 		</g:VerticalPanel>
 	</lay:CenteredContentPanel>
 	</g:ScrollPanel>

@@ -8,7 +8,10 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DisclosurePanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -17,6 +20,8 @@ import com.google.gwt.widget.client.TextButton;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.core.client.util.ToggleGroup;
 import com.sencha.gxt.widget.core.client.container.AbstractHtmlLayoutContainer.HtmlData;
+import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
 import com.sencha.gxt.widget.core.client.container.HtmlLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
@@ -43,7 +48,8 @@ public class SettingsView extends Composite implements ISettingsView {
 	private Presenter presenter;
 	
 	private ShortUser user;
-
+    
+	private DisclosurePanel Otoexplanation = new DisclosurePanel("MOre");  
 
 	private TextField bioportalApiKey = new TextField();
 	private TextField bioportalUserId = new TextField();
@@ -70,7 +76,7 @@ public class SettingsView extends Composite implements ISettingsView {
 	private Radio hasNoOTOAccount = new Radio();
 	private ToggleGroup hasOTOAccountGroup = new ToggleGroup();
     private HorizontalPanel hasOTOAccountPanel = new HorizontalPanel();
-	private FieldLabel hasOtoAccountFieldLabel = new FieldLabel(hasOTOAccountPanel, "OTO Account available");
+	private FieldLabel hasOtoAccountFieldLabel = new FieldLabel(hasOTOAccountPanel, "Already have an OTO Account?");
 	
 	private FieldSet newOTOAccountFieldSet = new FieldSet();
 	private TextField otoNewEmail = new TextField();
@@ -97,6 +103,7 @@ public class SettingsView extends Composite implements ISettingsView {
 	private CheckBox taxonomyComparisonEmail = new CheckBox();
 	//private TextButton saveEmailPreferencesButton = new TextButton("Save");
 
+
 	private VerticalLayoutContainer otoVerticalInner;
 	
 	public SettingsView() {
@@ -109,7 +116,7 @@ public class SettingsView extends Composite implements ISettingsView {
 	    userInfoFieldSet.setCollapsible(true);
 	    VerticalLayoutContainer userInfoVertical = new VerticalLayoutContainer();
 	    userInfoFieldSet.add(userInfoVertical);
-	    userInfoVertical.add(new Label("* denotes required fields"));
+	    userInfoVertical.add(new Label("Note: * denotes required fields."), new VerticalLayoutData(1, 25));
 	    
 	    firstName.setAllowBlank(false);
 	    lastName.setAllowBlank(false);
@@ -120,26 +127,36 @@ public class SettingsView extends Composite implements ISettingsView {
 	    FieldLabel lastNameFieldLabel = new FieldLabel(lastName, "Last Name *");
 	    lastNameFieldLabel.setLabelWidth(200);
 	    userInfoVertical.add(lastNameFieldLabel, new VerticalLayoutData(1, -1));
-		email.setEnabled(false);
+		
+	    email.setEnabled(false);
 	    email.setAllowBlank(false);
-	    
-	    FieldLabel emailFieldLabel = new FieldLabel(email, "Email");
+	    FieldLabel emailFieldLabel = new FieldLabel(email, "Email *");
 	    emailFieldLabel.setLabelWidth(200);
 	    userInfoVertical.add(emailFieldLabel, new VerticalLayoutData(1, -1));
+	    
 	    FieldLabel affiliationFieldLabel = new FieldLabel(affiliation, "Affiliation");
 	    affiliationFieldLabel.setLabelWidth(200);
 	    userInfoVertical.add(affiliationFieldLabel, new VerticalLayoutData(1, -1));
+	    
+	    FieldSet bioportNotificationFieldSet = new FieldSet();
+	    VerticalLayoutContainer bioportNotificationVertical = new VerticalLayoutContainer();
+	    bioportNotificationFieldSet.setHeadingText("Bioportal connection");
+	    bioportNotificationFieldSet.add(bioportNotificationVertical);
+	    bioportNotificationVertical.add(new Label("Note: Needed for submitting ontology terms to Bioportal."),new VerticalLayoutData(1, 25));
+	    
 	    FieldLabel bioportalFieldLabel = new FieldLabel(bioportalUserId, "Bioportal User Id");
 	    bioportalFieldLabel.setLabelWidth(200);
-	    userInfoVertical.add(bioportalFieldLabel, new VerticalLayoutData(1, -1));
+	    bioportNotificationVertical.add(bioportalFieldLabel, new VerticalLayoutData(1, -1));
+	    
 	    FieldLabel bioportalApiKeyFieldLabel = new FieldLabel(bioportalApiKey, "Bioportal API Key");
 	    bioportalApiKeyFieldLabel.setLabelWidth(200);
-	    userInfoVertical.add(bioportalApiKeyFieldLabel, new VerticalLayoutData(1, -1));
+	    bioportNotificationVertical.add(bioportalApiKeyFieldLabel, new VerticalLayoutData(1, 28));
 	    
 	    FieldSet emailNotificationFieldSet = new FieldSet();
 	    emailNotificationFieldSet.setHeadingText("Email Notification");
 	    VerticalLayoutContainer emailNotificationVertical = new VerticalLayoutContainer();
 	    emailNotificationFieldSet.add(emailNotificationVertical);
+	    emailNotificationVertical.add(new Label("Note: Uncheck a box to disable the email notification function of a tool."),new VerticalLayoutData(1, 25));
 	    FieldLabel textCaptureFieldLabel = new FieldLabel(this.semanticMarkupEmail, "Text Capture Task");
 	    textCaptureFieldLabel.setLabelWidth(200);
 	    semanticMarkupEmail.setBoxLabel("");
@@ -156,6 +173,7 @@ public class SettingsView extends Composite implements ISettingsView {
 	    taxonomyComparisonFieldLabel.setLabelWidth(200);
 	    taxonomyComparisonEmail.setBoxLabel("");
 	    emailNotificationVertical.add(taxonomyComparisonFieldLabel, new VerticalLayoutData(1, -1));
+	    userInfoVertical.add(bioportNotificationFieldSet, new VerticalLayoutData(1, -1));
 	    userInfoVertical.add(emailNotificationFieldSet, new VerticalLayoutData(1, -1));
 	    
 	    userInfoVertical.add(saveButton, new VerticalLayoutData(1, -1));
@@ -168,7 +186,6 @@ public class SettingsView extends Composite implements ISettingsView {
 	    emailPreferencesFieldSet.add(emailPreferencesVertical);
 	    emailPreferencesVertical.add(new FieldLabel(this.matrixGenerationEmail, "Text Capture Task"), new VerticalLayoutData(1, -1));
 	    emailPreferencesVertical.add(new FieldLabel(this.matrixGenerationEmail, "Matrix Generation Task"), new VerticalLayoutData(1, -1));
-	    emailPreferencesVertical.add(new FieldLabel(this.treeGenerationEmail, "Key Generation Task"), new VerticalLayoutData(1, -1));
 	    emailPreferencesVertical.add(new FieldLabel(this.taxonomyComparisonEmail, "Taxonomy Comparison Task"), new VerticalLayoutData(1, -1));
 	    emailPreferencesVertical.add(saveEmailPreferencesButton, new VerticalLayoutData(1, -1));
 	    */
@@ -196,8 +213,18 @@ public class SettingsView extends Composite implements ISettingsView {
 	    otoVerticalInner = new VerticalLayoutContainer();
 	    otoVerticalInner.add(otoShareFieldLabel, new VerticalLayoutData(1, -1));
 	    otoShareFieldLabel.setLabelWidth(200);
-	    otoFieldSet.add(otoVertical);	  
-	    otoVertical.add(otoVerticalInner, new VerticalLayoutData(-1, -1));
+	    otoFieldSet.add(otoVertical);
+	    HorizontalLayoutContainer otonote = new HorizontalLayoutContainer();
+	    Anchor otolink = new Anchor("http://biosemantics.arizona.edu/OTO",false,"http://biosemantics.arizona.edu/OTO","_blank");
+	    otonote.add(new Label("OTO is a community consensus-promoting term categorization application ( "), new HorizontalLayoutData(-1, -1));
+	    otonote.add(otolink, new HorizontalLayoutData(-1, -1));
+	    otonote.add(new Label("). The terms categorized on ETC site can be"),new HorizontalLayoutData(-1, -1));
+	    
+	    otoVertical.add(otonote,new VerticalLayoutData(1, 14));
+	    
+	    otoVertical.add(new Label(" directly imported into OTO with you as the owner of the term set. You and others can co-categorize the terms on OTO and help grow the consensus-based glossary/ontology for your group and improve the performance of biodiversity software applications including ETC tools."),new VerticalLayoutData(-1, 40));
+	    //)+ otolink +"). The terms categorized on ETC site can be directly imported into OTO with you as the owner of the term set. You and others can co-categorize the terms on OTO and help grow the consensus-based glossary/ontology for your group and improve the performance of biodiversity software applications including ETC tools."),new VerticalLayoutData(-1, 50));
+	    otoVertical.add(otoVerticalInner, new VerticalLayoutData(1, -1));
 	    otoVertical.add(otoSaveButton, new VerticalLayoutData(1, -1));
 	    otoShareCheckBox.setBoxLabel("");
 	    
@@ -206,8 +233,10 @@ public class SettingsView extends Composite implements ISettingsView {
 	    vertical.add(userInfoFieldSet, layoutData);
 	    vertical.add(passwordFieldSet, layoutData);
 	    vertical.add(otoFieldSet, layoutData);
+
 	    //vertical.add(emailPreferencesFieldSet, layoutData);
 	    panel.add(vertical);
+
 
 	    hasOTOAccount.setBoxLabel("Yes");
 	    hasNoOTOAccount.setBoxLabel("No");
