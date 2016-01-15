@@ -26,7 +26,9 @@ public enum FileTypeEnum {
 	OWL_ONTOLOGY("OWL Ontology", true),
 	MATRIX("Input for Key Generation Tool", true), 
 	PLAIN_TEXT("Plain Text", true),
-	DIRECTORY("Directory", false);
+	DIRECTORY("Directory", false),
+	MATRIX_GENERATION_SERIALIZED_MODEL("Matrix Generation Serialized Model", false), 
+	CLEANTAX("Cleantax Taxonomy", true);
 	
     private String displayName;
     private boolean viewable;

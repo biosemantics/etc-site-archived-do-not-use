@@ -31,4 +31,6 @@ public interface IMatrixGenerationServiceAsync extends IHasTasksServiceAsync {
 	
 	public void loadMatrixFromProcessOutput(AuthenticationToken token, Task task, AsyncCallback<Model> callback);
 
+	public void publish(AuthenticationToken token, Task task, AsyncCallback<Void> asyncCallback);
+
 }

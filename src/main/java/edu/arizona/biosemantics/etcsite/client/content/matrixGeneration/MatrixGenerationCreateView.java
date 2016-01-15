@@ -26,7 +26,6 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 
 import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
 import gwtupload.client.Uploader;
 
 public class MatrixGenerationCreateView extends Composite implements IMatrixGenerationCreateView {

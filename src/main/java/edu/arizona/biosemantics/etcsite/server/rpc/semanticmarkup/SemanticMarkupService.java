@@ -149,7 +149,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				throw new SemanticMarkupException();
 			}
 			try {
-				fileService.copyFiles(authenticationToken, filePath, destinationResult);
+				fileService.copyDirectory(authenticationToken, filePath, destinationResult);
 			} catch (CopyFilesFailedException | PermissionDeniedException e) {
 				throw new SemanticMarkupException();
 			}
@@ -446,7 +446,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			throw new SemanticMarkupException(task);
 		}
 		try {
-			fileService.copyFiles(new AdminAuthenticationToken(), charaParserOutputDirectory, createDirectory);
+			fileService.copyDirectory(new AdminAuthenticationToken(), charaParserOutputDirectory, createDirectory);
 		} catch (CopyFilesFailedException | PermissionDeniedException e) {
 			throw new SemanticMarkupException(task);
 		}

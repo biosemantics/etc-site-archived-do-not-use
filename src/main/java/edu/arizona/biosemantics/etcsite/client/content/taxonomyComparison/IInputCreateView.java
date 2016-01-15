@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.client.common;
+package edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison;
 
 import java.util.List;
 
@@ -26,7 +26,9 @@ public interface IInputCreateView extends IsWidget {
 
 		void onNext();
 
-		void onSelectExistingFolder();
+		void onSelectExistingFolder1();
+		
+		void onSelectExistingFolder2();
 
 		void onFileManager();
 		
@@ -44,10 +46,6 @@ public interface IInputCreateView extends IsWidget {
 
 		IInputCreateView getView();
 
-		void disableCreateFiles();
-		
-		void addDummyCreateFiles();
-		
 		void setNextButtonName(String str);
 
 		void refreshFolders();
@@ -60,26 +58,21 @@ public interface IInputCreateView extends IsWidget {
 
 	void setOwnedFolders(List<FolderTreeItem> folders);
 
-	boolean isCreateFiles();
-	
 	Uploader getUploader();
 
 	Button getUploadButton();
 
 	FolderTreeItem getSelectedFolderForUpload();
 
-	void setStatusWidget(Widget widget);
 	
-	boolean isCreateFolderForCreateFiles();
-
 	boolean isSelectExistingFolder();
 
 	boolean isSelectFolderForUpload();
 
-	FolderTreeItem getSelectedFolderForCreateFiles();
+	void setSelectedExistingFolder1(String shortendPath);
 
-	void setSelectedExistingFolder(String shortendPath);
-
+	void setSelectedExistingFolder2(String shortendPath);
+	
 	void setNextButtonText(String text);
 
 	void setPresenter(Presenter presenter);
@@ -88,12 +81,10 @@ public interface IInputCreateView extends IsWidget {
 
 	boolean isCreateFolderForUpload();
 
-	void removeCreateFiles();
-	
-	void addDummyCreateFiles();
+	void setNextButtonName(String str);
 
-	boolean isSelectFolderForCreateFiles();
+	void setStatusWidget(Widget asWidget);
 
-	void setNextButtonName(String str);	
+	void setUploadedTaxonomies(String result);	
 
 }

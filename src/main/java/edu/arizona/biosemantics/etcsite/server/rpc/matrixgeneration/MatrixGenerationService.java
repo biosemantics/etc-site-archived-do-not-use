@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
+import org.apache.commons.io.FileUtils;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -35,6 +36,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 
@@ -133,7 +135,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				throw new MatrixGenerationException();
 			}
 			try {
-				fileService.copyFiles(authenticationToken, input, destination);
+				fileService.copyDirectory(authenticationToken, input, destination);
 			} catch (CopyFilesFailedException | PermissionDeniedException e) {
 				throw new MatrixGenerationException();
 			}
@@ -158,7 +160,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 					throw new MatrixGenerationException();
 				}
 				try {
-					fileService.copyFiles(authenticationToken, inputTermReview, destination);
+					fileService.copyDirectory(authenticationToken, inputTermReview, destination);
 				} catch (CopyFilesFailedException | PermissionDeniedException e) {
 					throw new MatrixGenerationException();
 				}
@@ -182,7 +184,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 					throw new MatrixGenerationException();
 				}
 				try {
-					fileService.copyFiles(authenticationToken, inputOntology, destination);
+					fileService.copyDirectory(authenticationToken, inputOntology, destination);
 				} catch (CopyFilesFailedException | PermissionDeniedException e) {
 					throw new MatrixGenerationException();
 				}
@@ -470,6 +472,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
 			throw new MatrixGenerationException(task);
 		}
+		config.setOutput(createDirectoryResult);
 			
 		String csvContent;
 		try {
@@ -478,6 +481,15 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			log(LogLevel.ERROR, "Couldn't get CSV from matrix", e);
 			throw new MatrixGenerationException(task);
 		}
+		
+		try {
+			fileService.copyFile(authenticationToken, 
+					Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "TaxonMatrix.ser", 
+					config.getOutput() + File.separator + "TaxonMatrix.ser");
+		} catch (CopyFilesFailedException e1) {
+			throw new MatrixGenerationException(task);
+		}
+		
 		try {
 			String createFileResult = 
 					fileService.createFile(new AdminAuthenticationToken(), createDirectoryResult, "Matrix.csv", true);
@@ -492,7 +504,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		}
 		
 		//update task
-		config.setOutput(createDirectoryResult);
 		task.setResumable(false);
 		task.setComplete(true);
 		task.setCompleted(new Date());
@@ -1136,5 +1147,14 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public void publish(AuthenticationToken token, Task task) throws Exception {
+		final MatrixGenerationConfiguration config = getMatrixGenerationConfiguration(task);
+		File outputDir = new File(config.getOutput());
+		File publicDir = new File(Configuration.publicFolder + File.separator + outputDir.getName());
+		fileService.copyDirectory(token, config.getOutput(), Configuration.publicFolder + File.separator + outputDir.getName());
+		FileUtils.copyDirectory(outputDir, publicDir);
 	}
 }

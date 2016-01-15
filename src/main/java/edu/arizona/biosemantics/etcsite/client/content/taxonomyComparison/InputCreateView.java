@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.client.common;
+package edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison;
 
 import java.util.List;
 
@@ -10,6 +10,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -37,18 +38,7 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	private ListStore<FolderTreeItem> ownedFoldersStore;
 	
 	@UiField VerticalPanel verticalPanel;
-	
-	@UiField RadioButton createFilesRadio;
-	@UiField VerticalPanel createPanel;
-	@UiField VerticalPanel dummyCreatePanel;
-	@UiField RadioButton createFolderForCreateFilesRadio;
-	@UiField Button createFolderForCreateFilesButton;
-	@UiField TextBox createFolderForCreateFilesTextBox;
-	@UiField RadioButton selectFolderForCreateFilesRadio;
-	@UiField(provided=true) ComboBox<FolderTreeItem> selectFolderForCreateFilesComboBox;
-	@UiField Button createFilesButton;
-	@UiField RadioButton dummyCreateFilesRadio;
-	
+		
 	@UiField RadioButton uploadRadio;
 	@UiField VerticalPanel uploadPanel;
 	@UiField RadioButton createFolderForUploadRadio;
@@ -59,11 +49,15 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	@UiField Button uploadButton;
 	@UiField Uploader uploader;
 	@UiField SimplePanel statusWidgetContainer;
+	@UiField InlineLabel uploadedTaxonomiesLabel;
 	
 	@UiField RadioButton selectExistingFolderRadio;
-	@UiField HorizontalPanel selectPanel;	
-	@UiField Button selectExistingFolderButton;
-	@UiField Label selectExistingFolderLabel;
+	@UiField HorizontalPanel selectPanel1;	
+	@UiField Button selectExistingFolderButton1;
+	@UiField Label selectExistingFolderLabel1;
+	@UiField HorizontalPanel selectPanel2;	
+	@UiField Button selectExistingFolderButton2;
+	@UiField Label selectExistingFolderLabel2;
 	
 	@UiField Button nextButton;	
 	
@@ -80,82 +74,35 @@ public class InputCreateView extends Composite implements IInputCreateView {
 				return item.getName(false);
 			}
 	    };
-	    selectFolderForCreateFilesComboBox = new ComboBox<FolderTreeItem>(ownedFoldersStore, nameLabelProvider);
-	    selectFolderForCreateFilesComboBox.setTriggerAction(TriggerAction.ALL);
 		selectFolderForUploadComboBox = new ComboBox<FolderTreeItem>(ownedFoldersStore, nameLabelProvider);
 		selectFolderForUploadComboBox.setTriggerAction(TriggerAction.ALL);
-		selectFolderForCreateFilesComboBox.setEnabled(false);
 		selectFolderForUploadComboBox.setEnabled(false);
 		
 		initWidget(uiBinder.createAndBindUi(this));
 		
-		createFolderForCreateFilesTextBox.getElement().setPropertyString("placeholder", "Enter New Folder Name Here");
 		createFolderForUploadTextBox.getElement().setPropertyString("placeholder", "Enter New Folder Name Here");
-		
-		verticalPanel.remove(0);
-		verticalPanel.remove(0);
+		uploadButton.setText("Upload Taxonomy Files into Folder");
 	}
 
 	@Override
 	public void setPresenter(IInputCreateView.Presenter presenter) {
 		this.presenter = presenter;
 	}
-	
-	@UiHandler("createFilesRadio")
-	public void onCreateRadio(ClickEvent event){
-		createPanel.setVisible(true);
-		dummyCreatePanel.setVisible(false);
-		uploadPanel.setVisible(false);
-		selectPanel.setVisible(false);
-		createFolderForUploadTextBox.setValue(null);
-	}
-	
-	@UiHandler("dummyCreateFilesRadio")
-	public void onDummyCreateRadio(ClickEvent event){
-		createPanel.setVisible(false);
-		dummyCreatePanel.setVisible(true);
-		uploadPanel.setVisible(false);
-		selectPanel.setVisible(false);
-		createFolderForUploadTextBox.setValue(null);
-	}
+
 	
 	@UiHandler("uploadRadio")
 	public void onUploadRadio(ClickEvent event){
-		createPanel.setVisible(false);
-		dummyCreatePanel.setVisible(false);
 		uploadPanel.setVisible(true);
-		selectPanel.setVisible(false);
-		createFolderForCreateFilesTextBox.setValue(null);
+		selectPanel1.setVisible(false);
+		selectPanel2.setVisible(false);
 	}
 	
 	@UiHandler("selectExistingFolderRadio")
 	public void onSelectRadio(ClickEvent event){
-		createPanel.setVisible(false);
-		dummyCreatePanel.setVisible(false);
 		uploadPanel.setVisible(false);
-		selectPanel.setVisible(true);
-		createFolderForCreateFilesTextBox.setValue(null);
+		selectPanel1.setVisible(true);
+		selectPanel2.setVisible(true);
 		createFolderForUploadTextBox.setValue(null);
-	}
-	
-	@UiHandler("createFolderForCreateFilesRadio")
-	public void onCreateFolderForCreateFilesRadio(ClickEvent event){
-		createFolderForCreateFilesTextBox.setEnabled(true);
-		selectFolderForCreateFilesComboBox.setEnabled(false);
-		createFilesButton.setEnabled(true);
-		createFolderForCreateFilesButton.setVisible(true);
-		createFilesButton.setText("Create Files in New Folder");
-		createFolderForUploadTextBox.setValue(null);
-	}
-	
-	@UiHandler("selectFolderForCreateFilesRadio")
-	public void onSelectFolderForCreateFilesRadio(ClickEvent event){
-		createFolderForCreateFilesTextBox.setEnabled(false);
-		selectFolderForCreateFilesComboBox.setEnabled(true);
-		createFolderForCreateFilesButton.setVisible(false);
-		createFilesButton.setEnabled(true);
-		createFilesButton.setText("Create Files in Selected Folder");
-		createFolderForCreateFilesTextBox.setValue(null);
 	}
 	
 	@UiHandler("createFolderForUploadRadio")
@@ -163,9 +110,7 @@ public class InputCreateView extends Composite implements IInputCreateView {
 		createFolderForUploadTextBox.setEnabled(true);
 		selectFolderForUploadComboBox.setEnabled(false);
 		uploadButton.setEnabled(true);
-		uploadButton.setText("Upload Files in New Folder");
 		createFolderForUploadButton.setVisible(true);
-		createFolderForCreateFilesTextBox.setValue(null);
 	}
 	
 	@UiHandler("selectFolderForUploadRadio")
@@ -174,24 +119,9 @@ public class InputCreateView extends Composite implements IInputCreateView {
 		selectFolderForUploadComboBox.setEnabled(true);
 		createFolderForUploadButton.setVisible(false);
 		uploadButton.setEnabled(true);
-		uploadButton.setText("Upload Files in Selected Folder");
 		createFolderForUploadTextBox.getElement().setPropertyString("placeholder", "Enter New Folder Name Here");
 	}
 	
-	@UiHandler("createFilesButton")
-	public void onCreateFiles(ClickEvent event){
-		if(this.isSelectFolderForCreateFiles()) {
-			presenter.createFiles(selectFolderForCreateFilesComboBox.getValue());
-		} else if(this.isCreateFolderForCreateFiles()) {
-			presenter.createFilesInNewFolder();
-		}
-	}
-	
-	@UiHandler("createFolderForCreateFilesButton")
-	public void onCreateNewFolderButton_create(ClickEvent event){
-		String folderName = createFolderForCreateFilesTextBox.getText();
-		presenter.createNewFolder(folderName);
-	}
 	
 	@UiHandler("createFolderForUploadButton")
 	public void onCreateNewFolderButton_upload(ClickEvent event){
@@ -204,9 +134,14 @@ public class InputCreateView extends Composite implements IInputCreateView {
 		presenter.onNext();
 	}
 	
-	@UiHandler("selectExistingFolderButton")
-	public void onSelectFolder(ClickEvent event) {
-		presenter.onSelectExistingFolder();
+	@UiHandler("selectExistingFolderButton1")
+	public void onSelectFolder1(ClickEvent event) {
+		presenter.onSelectExistingFolder1();
+	}
+	
+	@UiHandler("selectExistingFolderButton2")
+	public void onSelectFolder2(ClickEvent event) {
+		presenter.onSelectExistingFolder2();
 	}
 	
 	@Override
@@ -215,15 +150,10 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	}
 	
 	@Override
-	public boolean isCreateFiles() {
-		return createFilesRadio.getValue();
-	}
-	
-	@Override
 	public Uploader getUploader() {
 		return uploader;
 	}
-
+	
 	@Override
 	public Button getUploadButton() {
 		return uploadButton;
@@ -240,11 +170,6 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	}
 	
 	@Override
-	public boolean isCreateFolderForCreateFiles() {
-		return createFolderForCreateFilesRadio.getValue();
-	}
-	
-	@Override
 	public boolean isCreateFolderForUpload() {
 		return createFolderForUploadRadio.getValue();
 	}
@@ -255,18 +180,18 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	}
 
 	@Override
-	public FolderTreeItem getSelectedFolderForCreateFiles() {
-		return selectFolderForCreateFilesComboBox.getValue();
-	}
-
-	@Override
 	public FolderTreeItem getSelectedFolderForUpload() {
 		return selectFolderForUploadComboBox.getValue();
 	}
 
 	@Override
-	public void setSelectedExistingFolder(String shortendPath) {
-		selectExistingFolderLabel.setText(shortendPath);
+	public void setSelectedExistingFolder1(String shortendPath) {
+		selectExistingFolderLabel1.setText(shortendPath);
+	}
+	
+	@Override
+	public void setSelectedExistingFolder2(String shortendPath) {
+		selectExistingFolderLabel2.setText(shortendPath);
 	}
 	
 	@Override
@@ -280,25 +205,13 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	}
 
 	@Override
-	public void removeCreateFiles() {
-		verticalPanel.remove(0);
-		verticalPanel.remove(0);
-	}
-	
-	@Override
-	public void addDummyCreateFiles() {
-		verticalPanel.insert(dummyCreatePanel, 0);
-		verticalPanel.insert(dummyCreateFilesRadio, 0);
-	}
-
-	@Override
-	public boolean isSelectFolderForCreateFiles() {
-		return this.selectFolderForCreateFilesRadio.getValue();
-	}
-
-	@Override
 	public void setNextButtonName(String str) {
 		nextButton.setText(str);
+	}
+
+	@Override
+	public void setUploadedTaxonomies(String text) {
+		uploadedTaxonomiesLabel.setText(text);
 	}
 	
 }

@@ -343,7 +343,7 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 				throw new OntologizeException();
 			}
 			try {
-				fileService.copyFiles(token, ontology, destination);
+				fileService.copyDirectory(token, ontology, destination);
 			} catch (CopyFilesFailedException | PermissionDeniedException e) {
 				throw new OntologizeException();
 			}
@@ -408,7 +408,7 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 				throw new OntologizeException();
 			}
 			try {
-				fileService.copyFiles(token, input, destination);
+				fileService.copyDirectory(token, input, destination);
 			} catch (CopyFilesFailedException | PermissionDeniedException e) {
 				throw new OntologizeException();
 			}

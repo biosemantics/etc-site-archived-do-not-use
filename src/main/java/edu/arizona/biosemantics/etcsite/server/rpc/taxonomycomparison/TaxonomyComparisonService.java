@@ -44,6 +44,9 @@ import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
 import edu.arizona.biosemantics.etcsite.shared.model.TaxonomyComparisonConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.TinyUser;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.CopyFilesFailedException;
@@ -116,7 +119,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 				throw new TaxonomyComparisonException();
 			}
 			try {
-				fileService.copyFiles(authenticationToken, input, destination);
+				fileService.copyDirectory(authenticationToken, input, destination);
 			} catch (CopyFilesFailedException | PermissionDeniedException e) {
 				throw new TaxonomyComparisonException();
 			}
@@ -558,6 +561,37 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			}
 		}
 		return result;
+	}
+	
+	@Override
+	public List<String> getTaxonomies(AuthenticationToken token, FolderTreeItem folder) throws Exception {
+		List<String> result = new LinkedList<String>();
+		List<FileTreeItem> filesCleanTax = fileService.getFiles(token, folder, FileFilter.CLEANTAX);
+		for(FileTreeItem fileTreeItem : filesCleanTax) {
+			result.add(getRootNameFromCleantax(new File(fileTreeItem.getFilePath())));
+		}
+		List<FileTreeItem> filesMatrixGeneration = fileService.getFiles(token, folder, FileFilter.MATRIX_GENERATION_SERIALIZED_MODEL);
+		for(FileTreeItem fileTreeItem : filesMatrixGeneration) {
+			result.add(getRootNameFromMatrixGenerationModel(new File(fileTreeItem.getFilePath())));
+		}
+		return result;
+	}
+
+	private String getRootNameFromMatrixGenerationModel(File file) throws FileNotFoundException, ClassNotFoundException, IOException {
+		edu.arizona.biosemantics.matrixreview.shared.model.Model model = unserializeModel(file);
+		return model.getTaxonMatrix().getHierarchyRootTaxa().get(0).getName();
+	}
+	
+	private edu.arizona.biosemantics.matrixreview.shared.model.Model unserializeModel(File file) throws FileNotFoundException, IOException, ClassNotFoundException {
+		try(ObjectInput input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
+			edu.arizona.biosemantics.matrixreview.shared.model.Model model = (edu.arizona.biosemantics.matrixreview.shared.model.Model)input.readObject();
+			return model;
+		}
+	}
+
+	private String getRootNameFromCleantax(File file) throws Exception {
+		CleanTaxReader reader = new CleanTaxReader();
+		return reader.getRootName(file);
 	}
 	
 }

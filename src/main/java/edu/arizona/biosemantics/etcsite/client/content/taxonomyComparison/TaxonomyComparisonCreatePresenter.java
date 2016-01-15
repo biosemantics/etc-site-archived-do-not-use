@@ -12,8 +12,6 @@ import com.sencha.gxt.widget.core.client.box.MessageBox;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView;
-import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView.InputValidator;
 import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileUploadHandler;
 import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView;
@@ -21,10 +19,10 @@ import edu.arizona.biosemantics.etcsite.client.common.files.MyUploaderConstants;
 import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePresenter.ISelectListener;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView.Presenter;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.IInputCreateView.InputValidator;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.ITreeGenerationCreateView;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationInputPlace;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonServiceAsync;
@@ -41,12 +39,12 @@ public class TaxonomyComparisonCreatePresenter implements TaxonomyComparisonCrea
 
 	private ITaxonomyComparisonCreateView view;
 	private Presenter fileManagerDialogPresenter;
-	private edu.arizona.biosemantics.etcsite.client.common.IInputCreateView.Presenter inputCreatePresenter;
+	private IInputCreateView.Presenter inputCreatePresenter;
 
 	@Inject
 	public TaxonomyComparisonCreatePresenter(final PlaceController placeController, 
 			ITaxonomyComparisonCreateView view, 
-			@Named("TaxonomyComparison") IInputCreateView.Presenter inputCreatePresenter,
+			IInputCreateView.Presenter inputCreatePresenter,
 			final ITaxonomyComparisonServiceAsync taxonomyComparisonService,
 			IFileManagerDialogView.Presenter fileManagerDialogPresenter) {
 		this.view = view;
@@ -54,7 +52,6 @@ public class TaxonomyComparisonCreatePresenter implements TaxonomyComparisonCrea
 		this.fileManagerDialogPresenter = fileManagerDialogPresenter;
 		
 		this.inputCreatePresenter = inputCreatePresenter;
-		this.inputCreatePresenter.disableCreateFiles();
 		this.inputCreatePresenter.setNextButtonName("Next Step in Taxonomy Comparison");
 		inputCreatePresenter.setInputValidator(new InputValidator() {
 			@Override
@@ -80,7 +77,7 @@ public class TaxonomyComparisonCreatePresenter implements TaxonomyComparisonCrea
 				});
 			}
 		});
-		inputCreatePresenter.setUploadFileType(FileTypeEnum.PLAIN_TEXT);
+		inputCreatePresenter.setUploadFileType(FileTypeEnum.CLEANTAX);
 	}
 	
 	@Override

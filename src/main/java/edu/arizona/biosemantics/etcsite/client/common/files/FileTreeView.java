@@ -19,6 +19,7 @@ import com.sencha.gxt.data.client.loader.RpcProxy;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.TreeStore;
 import com.sencha.gxt.data.shared.loader.ChildTreeStoreBinding;
+import com.sencha.gxt.data.shared.loader.DataProxy;
 import com.sencha.gxt.data.shared.loader.LoadEvent;
 import com.sencha.gxt.data.shared.loader.LoadHandler;
 import com.sencha.gxt.data.shared.loader.TreeLoader;
@@ -38,31 +39,26 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
 
 public class FileTreeView extends Composite implements IFileTreeView {
 
-	private VerticalLayoutContainer container;
+	protected VerticalLayoutContainer container;
 
-	private Presenter presenter;
-	private final IFileServiceAsync fileService;
+	protected Presenter presenter;
+	protected final IFileServiceAsync fileService;
  
-	private Tree<FileTreeItem, String> tree;
+	protected Tree<FileTreeItem, String> tree;
 
-	private FileFilter fileFilter;
+	protected FileFilter fileFilter;
 
-	private TreeLoader<FileTreeItem> loader;
+	protected TreeLoader<FileTreeItem> loader;
 
-	private TreeStore<FileTreeItem> store;
+	protected TreeStore<FileTreeItem> store;
 
-	private TreeStateHandler<FileTreeItem> stateHandler;
+	protected TreeStateHandler<FileTreeItem> stateHandler;
+
+	protected DataProxy<FileTreeItem, List<FileTreeItem>> proxy;
 
 	@Inject
 	public FileTreeView(final IFileServiceAsync fileService, final IFileContentView.Presenter fileContentPresenter) {
 		this.fileService = fileService;
-		RpcProxy<FileTreeItem, List<FileTreeItem>> proxy = new RpcProxy<FileTreeItem, List<FileTreeItem>>() {
-			@Override
-			public void load(FileTreeItem loadConfig, AsyncCallback<List<FileTreeItem>> callback) {
-				if(loadConfig == null || loadConfig instanceof FolderTreeItem) 
-					fileService.getFiles(Authentication.getInstance().getToken(), (FolderTreeItem)loadConfig, fileFilter, callback);
-			}
-		};
 		store = new TreeStore<FileTreeItem>(
 				new ModelKeyProvider<FileTreeItem>() {
 					@Override
@@ -90,11 +86,12 @@ public class FileTreeView extends Composite implements IFileTreeView {
 			 @Override
 			    protected void onDoubleClick(Event event) {
 			        TreeNode<FileTreeItem> node = findNode(event.getEventTarget().<Element> cast());
-			        fileContentPresenter.show(node.getModel());
+			        if(fileContentPresenter != null)
+			        	fileContentPresenter.show(node.getModel());
 			        super.onDoubleClick(event);
 			   }
 		};
-		loader = new TreeLoader<FileTreeItem>(proxy) {
+		loader = new TreeLoader<FileTreeItem>(getProxy()) {
 			@Override
 			public boolean hasChildren(FileTreeItem parent) {
 				return parent instanceof FolderTreeItem;
@@ -118,6 +115,18 @@ public class FileTreeView extends Composite implements IFileTreeView {
 		container.setHeight(400);
 		container.add(tree);
 		container.getScrollSupport().setScrollMode(ScrollMode.AUTOY);
+	}
+
+	protected DataProxy<FileTreeItem, List<FileTreeItem>> getProxy() {
+		if(proxy == null)
+			proxy = new RpcProxy<FileTreeItem, List<FileTreeItem>>() {
+				@Override
+				public void load(FileTreeItem loadConfig, AsyncCallback<List<FileTreeItem>> callback) {
+					if(loadConfig == null || loadConfig instanceof FolderTreeItem) 
+						fileService.getFiles(Authentication.getInstance().getToken(), (FolderTreeItem)loadConfig, fileFilter, callback);
+				}
+			};
+		return proxy;
 	}
 
 	@Override

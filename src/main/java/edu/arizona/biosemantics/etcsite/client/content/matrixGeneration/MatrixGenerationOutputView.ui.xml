@@ -33,7 +33,8 @@
 			    	<g:InlineLabel>&nbsp;in the&nbsp;</g:InlineLabel>
 			    	<g:Anchor ui:field="fileManagerAnchor">File Manager</g:Anchor>
 			    	<g:InlineLabel>.</g:InlineLabel>	
-			    </g:FlowPanel>    
+			    </g:FlowPanel>
+			   <g:InlineLabel>Make your results publicly available for other users.</g:InlineLabel><g:Button ui:field="publishButton">Publish</g:Button>
 			</g:VerticalPanel>
 		</g:VerticalPanel>	
 	</lay:CenteredContentPanel>

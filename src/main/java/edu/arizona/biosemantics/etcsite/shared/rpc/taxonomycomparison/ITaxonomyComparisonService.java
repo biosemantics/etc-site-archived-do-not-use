@@ -1,9 +1,12 @@
 package edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison;
 
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
@@ -34,5 +37,7 @@ public interface ITaxonomyComparisonService extends RemoteService, IHasTasksServ
 	
 	public String exportArticulations(AuthenticationToken token, Task task, Model model) 
 			throws TaxonomyComparisonException;
+
+	public List<String> getTaxonomies(AuthenticationToken token, FolderTreeItem folder) throws Exception;
 	
 }

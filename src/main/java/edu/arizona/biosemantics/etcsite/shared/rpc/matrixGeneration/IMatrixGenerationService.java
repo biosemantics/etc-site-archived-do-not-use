@@ -1,5 +1,6 @@
 package edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -33,5 +34,7 @@ public interface IMatrixGenerationService extends RemoteService, IHasTasksServic
 	public String outputMatrix(AuthenticationToken token, Task task, Model model) throws MatrixGenerationException;
 
 	public Model loadMatrixFromProcessOutput(AuthenticationToken token, Task task) throws MatrixGenerationException;
+	
+	public void publish(AuthenticationToken token, Task task) throws Exception;
 
 }

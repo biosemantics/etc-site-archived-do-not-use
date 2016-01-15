@@ -11,6 +11,7 @@ public interface IMatrixGenerationOutputView extends IsWidget {
 		void setTask(Task task);
 		void onFileManager();
 		public IMatrixGenerationOutputView getView();
+		void onPublish();
 	}
 	  
 	void setPresenter(Presenter presenter);

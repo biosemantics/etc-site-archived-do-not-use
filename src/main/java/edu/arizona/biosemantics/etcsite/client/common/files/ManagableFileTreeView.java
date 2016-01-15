@@ -67,6 +67,8 @@ public class ManagableFileTreeView extends Composite implements IManagableFileTr
 		formatListBox.addItem(FileTypeEnum.TAXON_DESCRIPTION.displayName());
 		formatListBox.addItem(FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION.displayName());
 		formatListBox.addItem(FileTypeEnum.PLAIN_TEXT.displayName());
+		formatListBox.addItem(FileTypeEnum.CLEANTAX.displayName());
+		formatListBox.addItem(FileTypeEnum.OWL_ONTOLOGY.displayName());
 		initWidget(uiBinder.createAndBindUi(this));
 		/*UIObject fileInput = (UIObject)uploader.getFileInput();
 		Element fileInputElement = fileInput.getElement();

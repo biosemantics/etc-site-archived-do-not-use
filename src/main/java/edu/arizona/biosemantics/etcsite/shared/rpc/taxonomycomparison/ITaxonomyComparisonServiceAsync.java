@@ -1,8 +1,11 @@
 package edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison;
 
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
@@ -33,4 +36,6 @@ public interface ITaxonomyComparisonServiceAsync extends IHasTasksServiceAsync {
 	public void saveModel(AuthenticationToken token, Task task, Model model, AsyncCallback<Void> callback);
 
 	public void exportArticulations(AuthenticationToken token, Task task, Model model, AsyncCallback<String> callback);
+	
+	public void getTaxonomies(AuthenticationToken token, FolderTreeItem folder, AsyncCallback<List<String>> callback);
 }

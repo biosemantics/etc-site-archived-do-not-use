@@ -131,7 +131,7 @@ public class TreeGenerationService extends RemoteServiceServlet implements ITree
 				throw new TreeGenerationException();
 			}
 			try {
-				fileService.copyFiles(token, input, destination);
+				fileService.copyDirectory(token, input, destination);
 			} catch (CopyFilesFailedException | PermissionDeniedException e) {
 				throw new TreeGenerationException();
 			}

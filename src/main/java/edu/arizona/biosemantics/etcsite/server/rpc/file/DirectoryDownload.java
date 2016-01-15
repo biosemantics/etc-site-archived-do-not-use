@@ -122,7 +122,7 @@ public class DirectoryDownload {
 		File destinationFile = new File(destination);
 		fileService.deleteFile(authenticationToken, destination);
 		fileService.createDirectory(authenticationToken, destinationFile.getParent(), destinationFile.getName(), false);				
-		fileService.copyFiles(authenticationToken, file.getAbsolutePath(), destination);
+		fileService.copyDirectory(authenticationToken, file.getAbsolutePath(), destination);
 		return destination;
 	}
 	
@@ -137,7 +137,7 @@ public class DirectoryDownload {
 	private void gatherOwned(String destination) throws CopyFilesFailedException, PermissionDeniedException, FileDeleteFailedException, CreateDirectoryFailedException {
 		cleanup(destination);		
 		String source = Configuration.fileBase + File.separator + authenticationToken.getUserId();
-		fileService.copyFiles(authenticationToken, source, destination);
+		fileService.copyDirectory(authenticationToken, source, destination);
 	}
 	
 	private void gatherShared(String destination) throws CopyFilesFailedException, PermissionDeniedException, FileDeleteFailedException, CreateDirectoryFailedException {
@@ -164,7 +164,7 @@ public class DirectoryDownload {
 		for(String input : inputs) {
 			File inputFile = new File(input);
 			if(inputFile.exists()) {
-				fileService.copyFiles(authenticationToken, input, destination);
+				fileService.copyDirectory(authenticationToken, input, destination);
 			}
 		}
 	}
@@ -175,7 +175,7 @@ public class DirectoryDownload {
 		for(String output : outputs) {
 			File outputFile = new File(output);
 			if(outputFile.exists()) {
-				fileService.copyFiles(authenticationToken, output, destination);
+				fileService.copyDirectory(authenticationToken, output, destination);
 			}
 		}
 	}

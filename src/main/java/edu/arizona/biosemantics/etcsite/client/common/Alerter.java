@@ -665,5 +665,17 @@ public class Alerter {
 		return showAlert("Select a task", "Select a task to resume.");
 	}
 
+	public static MessageBox failedToGetTaxonomiesFromUploadedFiles(Throwable caught) {
+		return showAlert("Failed to get taxonomies", "Failed to get taxonomies from uploaded files.", caught);
+	}
+
+	public static MessageBox publishingFailed(Throwable caught) {
+		return showAlert("Failed to get taxonomies", "Failed to get taxonomies from uploaded files.", caught);
+	}
+
+	public static MessageBox publishSuccessful() {
+		return showInfo("Published sucessfully", "Published matrix successfully");
+	}
+
 
 }
