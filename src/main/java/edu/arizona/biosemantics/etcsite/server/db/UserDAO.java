@@ -180,6 +180,12 @@ public class UserDAO {
 		} catch (ClassNotFoundException | IOException e) {
 			log(LogLevel.ERROR, "Deserialization of user failed. Will instantiate default profile.", e);
 			Map<String, Boolean> defaultProfile = new HashMap<String, Boolean>();
+			defaultProfile.put(EmailPreference.TEXT_CAPTURE.getKey(), true);
+			defaultProfile.put(EmailPreference.MATRIX_GENERATION.getKey(), true);
+			defaultProfile.put(EmailPreference.TREE_GENERATION.getKey(), true);
+			defaultProfile.put(EmailPreference.TAXONOMY_COMPARISON.getKey(), true);
+			defaultProfile.put(EmailPreference.VISUALIZATION.getKey(), true);
+			defaultProfile.put(EmailPreference.PIPELINE.getKey(), true);
 			this.storeSerializedProfile(userId, defaultProfile);
 			return defaultProfile;
 		}
