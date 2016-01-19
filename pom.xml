@@ -219,9 +219,36 @@
 			<version>9.4</version>
 		</dependency>
 		<dependency>
+		  <groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
+		  <artifactId>enhance</artifactId>
+		  <version>0.0.13-SNAPSHOT</version>
+		  <exclusions>
+		  	<exclusion>
+		  		<artifactId>owlapi-tools</artifactId>
+		  		<groupId>net.sourceforge.owlapi</groupId>
+		  	</exclusion>
+		  	<exclusion>
+		  		<artifactId>owlapi-apibinding</artifactId>
+		  		<groupId>net.sourceforge.owlapi</groupId>
+		  	</exclusion>
+		  	<exclusion>
+		  		<artifactId>owlapi-api</artifactId>
+		  		<groupId>net.sourceforge.owlapi</groupId>
+		  	</exclusion>
+		  	<exclusion>
+		  		<artifactId>owlapi-impl</artifactId>
+		  		<groupId>net.sourceforge.owlapi</groupId>
+		  	</exclusion>
+		  	<exclusion>
+		  		<artifactId>owlapi-parsers</artifactId>
+		  		<groupId>net.sourceforge.owlapi</groupId>
+		  	</exclusion>
+		  </exclusions>
+		</dependency>
+		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>semantic-markup</artifactId>
-			<version>0.1.164-SNAPSHOT</version>
+			<version>0.1.166-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>app</artifactId>
@@ -262,6 +289,14 @@
 		  <artifactId>ontologize</artifactId>
 		  <version>0.1.14-SNAPSHOT</version>
 		  <classifier>sources</classifier>
+		  <exclusions>
+		  	<exclusion>
+		  		<artifactId>search</artifactId>
+		  		<groupId>
+		  			edu.arizona.biosemantics.common.ontology
+		  		</groupId>
+		  	</exclusion>
+		  </exclusions>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
@@ -297,6 +332,12 @@
 		  	<exclusion>
 		  		<artifactId>oto-common</artifactId>
 		  		<groupId>edu.arizona.biosemantics.oto</groupId>
+		  	</exclusion>
+		  	<exclusion>
+		  		<artifactId>search</artifactId>
+		  		<groupId>
+		  			edu.arizona.biosemantics.common.ontology
+		  		</groupId>
 		  	</exclusion>
 		  </exclusions>
 		</dependency>

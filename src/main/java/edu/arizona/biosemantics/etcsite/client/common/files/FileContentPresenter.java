@@ -76,7 +76,7 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 			@Override
 			public void onSuccess(Boolean result){
 				if(!result.booleanValue()){
-					Alerter.notSavedInvalidXmlContent();
+					Alerter.notSavedInvalidXmlContent(currentFileTreeItem.getFileType());
 				}else{
 					//user could have possibly manipulated the schema url
 					fileFormatService.setSchema(Authentication.getInstance().getToken(), view.getText(), currentFileTreeItem.getFileType(), 

@@ -51,7 +51,6 @@ public class HelpView extends Composite implements IHelpView, RequiresResize {
 	public HelpView() {
 		appearance = GWT.<AccordionLayoutAppearance> create(AccordionLayoutAppearance.class);
 		initWidget(uiBinder.createAndBindUi(this));
-		
 	}
 
 	@Override

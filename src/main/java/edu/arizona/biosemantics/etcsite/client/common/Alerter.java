@@ -12,6 +12,7 @@ import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.form.TextArea;
 
 import edu.arizona.biosemantics.etcsite.shared.Configuration;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
 import edu.arizona.biosemantics.oto2.oto.client.common.Alerter.InfoMessageBox;
@@ -395,9 +396,26 @@ public class Alerter {
 		return showAlert("Too many files", "Currently only uploads <= 50 files are allowed.");
 	}
 	
-	public static MessageBox notSavedInvalidXmlContent() {
-		return showAlert("Not saved", "Content is no longer valid against the <a href='https://raw.githubusercontent.com/biosemantics/schemas/master/consolidation_01272014/semanticMarkupInput.xsd' target='_blank'>input schema</a>. "
-							+ "correct the problems and try to save again.");
+	public static MessageBox notSavedInvalidXmlContent(FileTypeEnum fileTypeEnum) {
+		switch(fileTypeEnum) {
+		case DIRECTORY:
+			break;
+		case MARKED_UP_TAXON_DESCRIPTION:
+			return showAlert("Not saved", "Content is no longer valid against the <a href='https://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupOutput.xsd' target='_blank'>input schema</a>. "
+								+ "correct the problems and try to save again.");
+		case MATRIX:
+			break;
+		case OWL_ONTOLOGY:
+			break;
+		case PLAIN_TEXT:
+			break;
+		case TAXON_DESCRIPTION:
+			return showAlert("Not saved", "Content is no longer valid against the <a href='https://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupInput.xsd' target='_blank'>input schema</a>. "
+								+ "correct the problems and try to save again.");
+		default:
+			break;
+		}
+		return showAlert("Not saved", "Content is no longer valid.");
 	}
 
 	public static MessageBox fileNotEditable() {

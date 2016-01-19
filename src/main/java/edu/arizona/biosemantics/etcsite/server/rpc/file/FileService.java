@@ -910,12 +910,9 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 				String displayPath = childPath.replace(Configuration.fileBase + File.separator + authenticationToken.getUserId(), "");
 
 				boolean filter = false;
-				FileTypeEnum fileType = FileTypeEnum.PLAIN_TEXT;
-				if (fileFilter != null) {
-					fileType = getFileType(authenticationToken,
-							child.getAbsolutePath());
+				FileTypeEnum fileType = getFileType(authenticationToken, child.getAbsolutePath());
+				if(fileFilter != null)
 					filter = filter(fileType, fileFilter);
-				}
 
 				if (!filter)
 					if (child.isDirectory())
