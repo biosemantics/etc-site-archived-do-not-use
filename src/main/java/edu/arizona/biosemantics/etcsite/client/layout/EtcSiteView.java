@@ -14,9 +14,12 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.Composite;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 
 import edu.arizona.biosemantics.etcsite.client.common.ImageLabel;
 
@@ -31,10 +34,10 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 	Button openInNewWindowButton;
 	
 	@UiField
-	VerticalPanel eastPanel;
+	VerticalLayoutContainer eastPanel;
 	
 	@UiField
-	ScrollPanel helpPanel;
+	SimpleLayoutPanel helpPanel;
 	
 	@UiField
 	FocusPanel navigationPanel;
@@ -75,7 +78,8 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 		return this.contentPanel;
 	}
 	
-	public ScrollPanel getHelpContainer() {
+	@Override
+	public SimpleLayoutPanel getHelpContainer() {
 		return helpPanel;
 	}
 
@@ -136,10 +140,10 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 	void onHelpClick(ClickEvent e) {
 		Double size = dockLayoutPanel.getWidgetSize(eastPanel);
 		if(size == 400){
-			setHelpSize(0, true);
+			setHelpSize(0, false);
 			help.setText("Show Help");
 		}else{
-			setHelpSize(400, true);
+			setHelpSize(400, false);
 			help.setText("Hide Help");
 		}
 	}

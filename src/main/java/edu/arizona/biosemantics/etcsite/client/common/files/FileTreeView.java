@@ -90,7 +90,9 @@ public class FileTreeView extends Composite implements IFileTreeView {
 			 @Override
 			    protected void onDoubleClick(Event event) {
 			        TreeNode<FileTreeItem> node = findNode(event.getEventTarget().<Element> cast());
-			        fileContentPresenter.show(node.getModel());
+			        if(!(node.getModel() instanceof FolderTreeItem)) {
+				        fileContentPresenter.show(node.getModel());
+			        }
 			        super.onDoubleClick(event);
 			   }
 		};
