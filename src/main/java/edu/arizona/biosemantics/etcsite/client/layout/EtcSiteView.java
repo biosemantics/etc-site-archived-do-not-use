@@ -1,6 +1,8 @@
 package edu.arizona.biosemantics.etcsite.client.layout;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -15,6 +17,7 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.Composite;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
@@ -22,6 +25,7 @@ import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 
 import edu.arizona.biosemantics.etcsite.client.common.ImageLabel;
+import edu.arizona.biosemantics.etcsite.client.help.HelpActivity;
 
 public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResize {
 
@@ -58,8 +62,12 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 	ImageLabel help;
 		
 	private Presenter presenter;
+
+	private HelpActivity helpActivity;
 	
-	public EtcSiteView() {
+	@Inject
+	public EtcSiteView(HelpActivity helpActivity) {
+		this.helpActivity = helpActivity;
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 	
@@ -97,10 +105,23 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 		dockLayoutPanel.setWidgetSize(eastPanel, size);
 		if(animated)
 			dockLayoutPanel.animate(300);
+		
+		if(size == 0) 
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+				@Override
+				public void execute() {
+					helpActivity.getView().onHide();
+				}
+			});
+		else 
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+				@Override
+				public void execute() {
+					helpActivity.getView().onShow();
+				}
+			});
+		//helpActivity.getView().expandDefaultItem();
 	}
-	
-	
-	
 	
 	/*@UiHandler("menu")
 	void onMenuClick(ClickEvent e) {

@@ -17,5 +17,8 @@ public interface IHelpView {
 
 	void setPresenter(Presenter presenter);
 	void addContent(JsArray<HelpContent> contents);
+
+	void onHide();
+	void onShow();
 	
 }

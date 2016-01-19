@@ -39,6 +39,9 @@ public class HelpView extends Composite implements IHelpView, RequiresResize {
 	
 	AccordionLayoutAppearance appearance;
 
+	private AccordionLayoutContainer accordionLayoutContainer;
+
+	private boolean hidden = true;
 	
 	@UiFactory
 	public ContentPanel createContentPanel(ContentPanelAppearance appearance) {
@@ -58,7 +61,7 @@ public class HelpView extends Composite implements IHelpView, RequiresResize {
 	
 
 	public void addContent(JsArray<HelpContent> contents){
-		AccordionLayoutContainer newAccordion = new AccordionLayoutContainer();
+		accordionLayoutContainer = new AccordionLayoutContainer();
 		for(int i=0;i<contents.length();i++){
 			HTML htmlContent = new HTML(contents.get(i).getContent());
 			htmlContent.setStyleName(style.subPanel());
@@ -69,18 +72,38 @@ public class HelpView extends Composite implements IHelpView, RequiresResize {
 			flowLayoutContainer.add(htmlContent);
 			subPanel.add(flowLayoutContainer);
 			
-			if(newAccordion.getWidgetCount() == 0) {
-				newAccordion.add(subPanel);
+			if(accordionLayoutContainer.getWidgetCount() == 0) {
+				accordionLayoutContainer.add(subPanel);
 			} else {
-				newAccordion.insert(subPanel, newAccordion.getWidgetCount());
+				accordionLayoutContainer.insert(subPanel, accordionLayoutContainer.getWidgetCount());
 			}
 		}
-		panel.add(newAccordion);
+		if(!hidden)
+			accordionLayoutContainer.setActiveWidget(accordionLayoutContainer.getWidget(0));
+		panel.add(accordionLayoutContainer);
 	}
 
 	@Override
 	public void onResize() {
-		
+		//accordionLayoutContainer.setActiveWidget(null);
+		//accordionLayoutContainer.setActiveWidget(accordionLayoutContainer.getWidget(0));
+	}
+
+	@Override
+	public void onShow() {
+		this.hidden = false;
+		expandDefaultItem();
+	}
+	
+	@Override
+	public void onHide() {
+		this.hidden = true;
+	}
+
+	private void expandDefaultItem() {
+		Widget activeWidget = accordionLayoutContainer.getActiveWidget();
+		if(activeWidget == null)
+			accordionLayoutContainer.setActiveWidget(accordionLayoutContainer.getWidget(0));
 	}
 		
 	
