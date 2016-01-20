@@ -7,8 +7,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-import edu.arizona.biosemantics.etcsite.common.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.common.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FileFilter;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FileTreeItem;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FolderTreeItem;

@@ -1,7 +1,6 @@
 package edu.arizona.biosemantics.etcsite.filemanager.shared.model;
 
-import edu.arizona.biosemantics.etcsite.common.shared.model.FileTypeEnum;
-
+import edu.arizona.biosemantics.etcsite.core.shared.model.FileTypeEnum;
 
 public class FolderTreeItem extends FileTreeItem {
 	

@@ -39,6 +39,10 @@ public class Configuration {
 	public static String captcha_tempFileBase;
 
 	private static Properties properties;
+
+	public static String googleClientId;
+
+	public static String googleRedirectURI;
 	
 	static {		
 		try {

@@ -3,7 +3,7 @@ package edu.arizona.biosemantics.etcsite.filemanager.shared.rpc;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-import edu.arizona.biosemantics.etcsite.common.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FilePermissionType;
 
 @RemoteServiceRelativePath("filePermission")

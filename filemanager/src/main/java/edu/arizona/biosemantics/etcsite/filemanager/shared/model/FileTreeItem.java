@@ -2,7 +2,8 @@ package edu.arizona.biosemantics.etcsite.filemanager.shared.model;
 
 import java.io.Serializable;
 
-import edu.arizona.biosemantics.etcsite.common.shared.model.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.core.shared.model.FileTypeEnum;
+
 
 public class FileTreeItem implements Serializable {
 	

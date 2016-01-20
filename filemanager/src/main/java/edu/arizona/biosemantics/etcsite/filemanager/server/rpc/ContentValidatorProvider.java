@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.google.inject.Inject;
 
-import edu.arizona.biosemantics.etcsite.common.shared.model.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.core.shared.model.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.filemanager.server.Configuration;
 
 public class ContentValidatorProvider {

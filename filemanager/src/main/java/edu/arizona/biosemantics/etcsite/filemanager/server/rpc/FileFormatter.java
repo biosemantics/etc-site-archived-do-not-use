@@ -1,6 +1,6 @@
 package edu.arizona.biosemantics.etcsite.filemanager.server.rpc;
 
-import edu.arizona.biosemantics.etcsite.common.shared.model.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.core.shared.model.FileTypeEnum;
 
 public class FileFormatter {
 

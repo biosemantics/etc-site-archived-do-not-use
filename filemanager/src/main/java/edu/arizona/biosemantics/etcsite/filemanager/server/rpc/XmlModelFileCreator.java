@@ -26,7 +26,7 @@ import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.common.taxonomy.Rank;
-import edu.arizona.biosemantics.etcsite.common.shared.model.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.core.shared.model.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.model.BracketChecker;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.model.TaxonIdentificationEntry;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.model.XmlModelFile;

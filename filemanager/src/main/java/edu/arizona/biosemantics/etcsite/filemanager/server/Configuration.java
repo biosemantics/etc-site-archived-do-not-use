@@ -22,6 +22,7 @@ public class Configuration {
 	public static Set<String> taxonDescriptionSchemaFileWeb;
 	public static Set<String> markedUpTaxonDescriptionSchemaFileWeb;
 	public static String compressCommand;
+	public static String xPathObjectModel;
 	
 	static {		
 		try {

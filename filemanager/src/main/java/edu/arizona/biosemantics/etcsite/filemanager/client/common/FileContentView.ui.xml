@@ -1,0 +1,31 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.fileContent {
+			width: 800px;
+			height: 500px;
+		}
+		.padding{
+			padding-left:20px;
+		}
+		.longPadding{
+			padding-left:400px;
+		}
+
+
+	</ui:style>
+	<g:VerticalPanel>
+		 <g:HorizontalPanel>
+		    <g:Label>File type :</g:Label>
+		    <g:ListBox visibleItemCount="1" ui:field="formatListBox"/>
+	    	<g:HorizontalPanel styleName="{style.longPadding}"/>	    
+		    <g:Button ui:field="editButton" title="When edit xml, keep in mind each start tag needs a matching end tag. e.g., &lt;date&gt; matches &lt;/date&gt;, and xml is case sensitive.">Edit</g:Button>
+		   	<g:HorizontalPanel styleName="{style.padding}"/>
+		    <g:Button ui:field="saveButton">Save</g:Button>
+		
+		</g:HorizontalPanel>
+		<g:TextArea enabled="false" ui:field="textArea" styleName="{style.fileContent}"></g:TextArea>
+		
+	</g:VerticalPanel>
+</ui:UiBinder> 

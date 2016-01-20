@@ -2,7 +2,7 @@ package edu.arizona.biosemantics.etcsite.filemanager.shared.rpc;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import edu.arizona.biosemantics.etcsite.common.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FilePermissionType;
 
 public interface IFilePermissionServiceAsync {

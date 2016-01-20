@@ -12,10 +12,10 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
-import edu.arizona.biosemantics.etcsite.common.shared.model.FileTypeEnum;
-import edu.arizona.biosemantics.etcsite.common.shared.rpc.auth.AuthenticationToken;
-import edu.arizona.biosemantics.etcsite.common.shared.rpc.user.IUserService;
-import edu.arizona.biosemantics.etcsite.common.shared.rpc.user.UserNotFoundException;
+import edu.arizona.biosemantics.etcsite.core.shared.model.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.user.IUserService;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.user.UserNotFoundException;
 import edu.arizona.biosemantics.etcsite.filemanager.server.Configuration;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.model.XmlModelFile;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.GetFileContentFailedException;

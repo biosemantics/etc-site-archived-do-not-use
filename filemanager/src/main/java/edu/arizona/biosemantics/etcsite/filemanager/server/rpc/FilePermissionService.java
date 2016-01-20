@@ -7,12 +7,12 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
-import edu.arizona.biosemantics.etcsite.common.server.db.DAOManager;
-import edu.arizona.biosemantics.etcsite.common.shared.model.AbstractTaskConfiguration;
-import edu.arizona.biosemantics.etcsite.common.shared.model.Share;
-import edu.arizona.biosemantics.etcsite.common.shared.model.ShortUser;
-import edu.arizona.biosemantics.etcsite.common.shared.rpc.auth.AdminAuthenticationToken;
-import edu.arizona.biosemantics.etcsite.common.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.core.server.db.DAOManager;
+import edu.arizona.biosemantics.etcsite.core.shared.model.AbstractTaskConfiguration;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Share;
+import edu.arizona.biosemantics.etcsite.core.shared.model.ShortUser;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AdminAuthenticationToken;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.filemanager.server.Configuration;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FilePermissionType;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFilePermissionService;

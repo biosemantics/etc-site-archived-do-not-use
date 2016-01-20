@@ -3,9 +3,9 @@ package edu.arizona.biosemantics.etcsite.filemanager.server.rpc;
 import java.io.File;
 import java.util.List;
 
-import edu.arizona.biosemantics.etcsite.common.server.db.DAOManager;
-import edu.arizona.biosemantics.etcsite.common.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.common.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.core.server.db.DAOManager;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.filemanager.server.Configuration;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.CopyFilesFailedException;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.CreateDirectoryFailedException;
