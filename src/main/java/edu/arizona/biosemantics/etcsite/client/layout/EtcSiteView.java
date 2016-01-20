@@ -132,6 +132,11 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 			setNavigationSize(200, true);
 	}*/
 	
+	@UiHandler("getstarted")
+	public void onGetStarted(ClickEvent e) {
+		presenter.onGetStarted();
+	}
+	
 	@UiHandler("loginLogout")
 	public void onLoginLogout(ClickEvent e) {
 		presenter.onLoginLogout();

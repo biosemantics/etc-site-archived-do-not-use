@@ -41,6 +41,8 @@ public interface IEtcSiteView extends IsWidget {
 		void onSample();
 
 		void onOntologize();
+		
+		void onGetStarted();
 
 	}
 	
