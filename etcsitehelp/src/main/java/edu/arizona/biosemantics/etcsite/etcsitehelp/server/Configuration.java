@@ -20,7 +20,7 @@ public class Configuration {
 		try {
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
 			properties = new Properties(); 
-			properties.load(loader.getResourceAsStream("edu/arizona/biosemantics/etcsitehelp/config.properties"));
+			properties.load(loader.getResourceAsStream("edu/arizona/biosemantics/etcsite/etcsitehelp/config.properties"));
 			
 			helpFiles = properties.getProperty("helpFiles");				
 		} catch(Exception e) {
