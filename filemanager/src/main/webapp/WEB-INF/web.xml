@@ -7,7 +7,7 @@
   
   <servlet>
     <servlet-name>FileService</servlet-name>
-    <servlet-class>edu.arizona.biosemantics.etcsite.filemanager.server.rpc.FileService</servlet-class>
+    <servlet-class>edu.arizona.biosemantics.etcsite.filemanager.server.rpc.FileService2</servlet-class>
   </servlet>
   
   <servlet-mapping>
