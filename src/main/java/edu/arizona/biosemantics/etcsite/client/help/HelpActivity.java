@@ -11,6 +11,8 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
@@ -61,7 +63,11 @@ public class HelpActivity extends MyAbstractActivity implements Presenter{
 		private void setHelpContentWithPlace() {
 			Place place = placeController.getWhere();
 			getHelpContent(getHelpOfPlace(place.toString()));
-			panel.setWidget(helpView.asWidget());
+			
+			FlowLayoutContainer flowLayoutContainer = new FlowLayoutContainer();
+			flowLayoutContainer.setScrollMode(ScrollMode.AUTOY);
+			panel.setWidget(flowLayoutContainer);
+			flowLayoutContainer.add(helpView.asWidget());
 		}
 
 		public void getHelpContent(Help help){

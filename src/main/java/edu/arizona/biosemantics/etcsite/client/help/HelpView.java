@@ -8,15 +8,18 @@ import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.ContentPanel.ContentPanelAppearance;
 import com.sencha.gxt.widget.core.client.container.AccordionLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.AccordionLayoutContainer.AccordionLayoutAppearance;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 
 import edu.arizona.biosemantics.etcsitehelp.shared.help.HelpContent;
 
-public class HelpView extends Composite implements IHelpView {
+public class HelpView extends Composite implements IHelpView, RequiresResize {
 
 	private static HelpHomeViewUiBinder uiBinder = GWT.create(HelpHomeViewUiBinder.class);
 
@@ -36,6 +39,9 @@ public class HelpView extends Composite implements IHelpView {
 	
 	AccordionLayoutAppearance appearance;
 
+	private AccordionLayoutContainer accordionLayoutContainer;
+
+	private boolean hidden = true;
 	
 	@UiFactory
 	public ContentPanel createContentPanel(ContentPanelAppearance appearance) {
@@ -45,7 +51,6 @@ public class HelpView extends Composite implements IHelpView {
 	public HelpView() {
 		appearance = GWT.<AccordionLayoutAppearance> create(AccordionLayoutAppearance.class);
 		initWidget(uiBinder.createAndBindUi(this));
-		
 	}
 
 	@Override
@@ -55,21 +60,49 @@ public class HelpView extends Composite implements IHelpView {
 	
 
 	public void addContent(JsArray<HelpContent> contents){
-		AccordionLayoutContainer newAccordion = new AccordionLayoutContainer();
+		accordionLayoutContainer = new AccordionLayoutContainer();
 		for(int i=0;i<contents.length();i++){
 			HTML htmlContent = new HTML(contents.get(i).getContent());
 			htmlContent.setStyleName(style.subPanel());
 			ContentPanel subPanel = new ContentPanel(appearance);
 			subPanel.setHeadingHtml(contents.get(i).getTitle());
-			subPanel.add(htmlContent);
+			FlowLayoutContainer flowLayoutContainer = new FlowLayoutContainer();
+			flowLayoutContainer.setScrollMode(ScrollMode.AUTO);
+			flowLayoutContainer.add(htmlContent);
+			subPanel.add(flowLayoutContainer);
 			
-			if(newAccordion.getWidgetCount() == 0){
-				newAccordion.add(subPanel);
-			}else{
-				newAccordion.insert(subPanel, newAccordion.getWidgetCount());
+			if(accordionLayoutContainer.getWidgetCount() == 0) {
+				accordionLayoutContainer.add(subPanel);
+			} else {
+				accordionLayoutContainer.insert(subPanel, accordionLayoutContainer.getWidgetCount());
 			}
 		}
-		panel.add(newAccordion);
+		if(!hidden)
+			accordionLayoutContainer.setActiveWidget(accordionLayoutContainer.getWidget(0));
+		panel.add(accordionLayoutContainer);
+	}
+
+	@Override
+	public void onResize() {
+		//accordionLayoutContainer.setActiveWidget(null);
+		//accordionLayoutContainer.setActiveWidget(accordionLayoutContainer.getWidget(0));
+	}
+
+	@Override
+	public void onShow() {
+		this.hidden = false;
+		expandDefaultItem();
+	}
+	
+	@Override
+	public void onHide() {
+		this.hidden = true;
+	}
+
+	private void expandDefaultItem() {
+		Widget activeWidget = accordionLayoutContainer.getActiveWidget();
+		if(activeWidget == null)
+			accordionLayoutContainer.setActiveWidget(accordionLayoutContainer.getWidget(0));
 	}
 		
 	

@@ -101,6 +101,20 @@
 
 	}
 	</ui:style>
+	
+	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="margins">
+          <ui:attributes top="4" right="4" bottom="4" left="4" />
+     </ui:with>
+	
+	<ui:with type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData"
+          field="helpButtonLayoutData">
+          <ui:attributes width="1" height="-1" />
+    </ui:with>
+    
+    <ui:with type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData"
+          field="helpPanelLayoutData">
+          <ui:attributes width="-1" height="1" />
+    </ui:with>
 
 	<g:DockLayoutPanel unit='PX' ui:field='dockLayoutPanel'>
 		<g:north size='30'>
@@ -119,13 +133,15 @@
 			</g:HTMLPanel>
 		</g:north>
 		<g:east size='0'>
-			<g:VerticalPanel ui:field="eastPanel" styleName="{style.eastPanel} ">
-			    <g:Button ui:field = "openInNewWindowButton">Open help in new window</g:Button>
-					<g:ScrollPanel ui:field="helpPanel" styleName="{style.helpPanel}">
-					
-					</g:ScrollPanel>	
-				
-			</g:VerticalPanel>
+			<container:VerticalLayoutContainer ui:field="eastPanel" styleName="{style.eastPanel} ">
+				<container:child layoutData="{helpButtonLayoutData}">
+	            	<g:Button ui:field = "openInNewWindowButton">Open help in new window</g:Button>
+	          	</container:child>
+			    <container:child layoutData="{helpPanelLayoutData}">
+	            	<g:SimpleLayoutPanel ui:field="helpPanel" styleName="{style.helpPanel}">
+					</g:SimpleLayoutPanel>
+	          	</container:child>
+			</container:VerticalLayoutContainer>
 		</g:east>
 		<g:west size='0'>
 			<!-- FocusPanel for mouse events to animate menu, HTMLPanel doesn't support 

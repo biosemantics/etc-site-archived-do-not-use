@@ -6,8 +6,8 @@ secret=
 
 #Files
 targetNamespace=http://www.github.com/biosemantics
-taxonDescriptionSchemaFileWeb=http://raw.githubusercontent.com/biosemantics/schemas/0.0.1/semanticMarkupInput.xsd
-markedUpTaxonDescriptionSchemaFileWeb=http://raw.githubusercontent.com/biosemantics/schemas/0.0.1/semanticMarkupOutput.xsd
+taxonDescriptionSchemaFileWeb=https://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupInput.xsd
+markedUpTaxonDescriptionSchemaFileWeb=https://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupOutput.xsd
 
 #Database
 databaseName=
