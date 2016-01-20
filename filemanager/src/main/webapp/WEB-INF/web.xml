@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+              http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5"
+         xmlns="http://java.sun.com/xml/ns/javaee">
+  
+  <servlet>
+    <servlet-name>FileService</servlet-name>
+    <servlet-class>edu.arizona.biosemantics.etcsite.filemanager.server.rpc.FileService</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>FileService</servlet-name>
+    <url-pattern>/filemanager/fileService</url-pattern>
+  </servlet-mapping>
+  
+  <!-- Default page to serve -->
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+
+</web-app>
