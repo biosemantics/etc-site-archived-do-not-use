@@ -109,6 +109,56 @@
 			<artifactId>guice-servlet</artifactId>
 			<version>4.0-beta</version>
 		</dependency>
+		<dependency>
+			<groupId>edu.arizona.biosemantics.etcsite</groupId>
+			<artifactId>common</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.uwyn</groupId>
+			<artifactId>jhighlight</artifactId>
+			<version>1.0</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>servlet-api</artifactId>
+					<groupId>javax.servlet</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>edu.arizona.biosemantics.common</groupId>
+			<artifactId>taxonomy</artifactId>
+			<version>0.0.22-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>edu.arizona.biosemantics.common</groupId>
+			<artifactId>taxonomy</artifactId>
+			<version>0.0.22-SNAPSHOT</version>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
+		  <artifactId>matrix-review</artifactId>
+		  <version>0.0.45-SNAPSHOT</version>
+		  <classifier>classes</classifier>
+		</dependency>
+		<dependency>
+		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
+		  <artifactId>matrix-review</artifactId>
+		  <version>0.0.45-SNAPSHOT</version>
+		  <classifier>sources</classifier>
+		</dependency>
+		<dependency>
+			<groupId>edu.arizona.biosemantics.common</groupId>
+			<artifactId>validation</artifactId>
+			<version>0.0.4-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>edu.arizona.biosemantics.common</groupId>
+			<artifactId>validation</artifactId>
+			<version>0.0.4-SNAPSHOT</version>
+			<classifier>sources</classifier>
+		</dependency>
 	</dependencies>
 	<build>
 		<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>

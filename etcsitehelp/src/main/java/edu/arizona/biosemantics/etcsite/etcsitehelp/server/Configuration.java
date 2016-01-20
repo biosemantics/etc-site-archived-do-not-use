@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsitehelp.server;
+package edu.arizona.biosemantics.etcsite.etcsitehelp.server;
 
 import java.util.Properties;
 

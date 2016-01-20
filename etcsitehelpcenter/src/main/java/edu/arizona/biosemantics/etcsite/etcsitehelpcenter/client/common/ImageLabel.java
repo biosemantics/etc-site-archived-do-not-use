@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsitehelpcenter.client.common;
+package edu.arizona.biosemantics.etcsite.etcsitehelpcenter.client.common;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;

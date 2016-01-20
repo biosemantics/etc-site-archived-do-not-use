@@ -1,9 +1,9 @@
-package edu.arizona.biosemantics.etcsitehelpcenter.client;
+package edu.arizona.biosemantics.etcsite.etcsitehelpcenter.client;
 
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.inject.Inject;
 
-import edu.arizona.biosemantics.etcsitehelpcenter.client.layout.IEtcSiteHelpView;
+import edu.arizona.biosemantics.etcsite.etcsitehelpcenter.client.layout.IEtcSiteHelpView;
 
 public class RootLayoutPanelDecorator {
 

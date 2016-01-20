@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsitehelpcenter.client;
+package edu.arizona.biosemantics.etcsite.etcsitehelpcenter.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;

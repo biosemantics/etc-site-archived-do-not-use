@@ -1,12 +1,12 @@
-package edu.arizona.biosemantics.etcsitehelpcenter.client;
+package edu.arizona.biosemantics.etcsite.etcsitehelpcenter.client;
 
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.inject.Singleton;
 
-import edu.arizona.biosemantics.etcsitehelp.shared.rpc.help.IHelpServiceAsync;
-import edu.arizona.biosemantics.etcsitehelpcenter.client.layout.EtcSiteHelpPresenter;
-import edu.arizona.biosemantics.etcsitehelpcenter.client.layout.EtcSiteHelpView;
-import edu.arizona.biosemantics.etcsitehelpcenter.client.layout.IEtcSiteHelpView;
+import edu.arizona.biosemantics.etcsite.etcsitehelp.shared.rpc.help.IHelpServiceAsync;
+import edu.arizona.biosemantics.etcsite.etcsitehelpcenter.client.layout.EtcSiteHelpPresenter;
+import edu.arizona.biosemantics.etcsite.etcsitehelpcenter.client.layout.EtcSiteHelpView;
+import edu.arizona.biosemantics.etcsite.etcsitehelpcenter.client.layout.IEtcSiteHelpView;
 
 public class ClientModule extends AbstractGinModule {
 	

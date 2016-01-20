@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsitehelpcenter.client.layout;
+package edu.arizona.biosemantics.etcsite.etcsitehelpcenter.client.layout;
 
 import java.util.HashMap;
 
@@ -8,9 +8,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
-import edu.arizona.biosemantics.etcsitehelp.shared.help.Help;
-import edu.arizona.biosemantics.etcsitehelp.shared.help.HelpContent;
-import edu.arizona.biosemantics.etcsitehelp.shared.rpc.help.IHelpServiceAsync;
+import edu.arizona.biosemantics.etcsite.etcsitehelp.shared.help.Help;
+import edu.arizona.biosemantics.etcsite.etcsitehelp.shared.help.HelpContent;
+import edu.arizona.biosemantics.etcsite.etcsitehelp.shared.rpc.help.IHelpServiceAsync;
 
 public class EtcSiteHelpPresenter implements IEtcSiteHelpView.Presenter {
 

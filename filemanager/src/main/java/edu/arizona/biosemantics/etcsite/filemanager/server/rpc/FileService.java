@@ -17,8 +17,37 @@ import java.util.UUID;
 import org.apache.commons.io.FileUtils;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.inject.Inject;
 
+import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.common.validation.key.KeyElementValidator;
+import edu.arizona.biosemantics.common.validation.key.KeyValidationException;
+import edu.arizona.biosemantics.etcsite.common.server.db.DAOManager;
+import edu.arizona.biosemantics.etcsite.common.shared.model.AbstractTaskConfiguration;
+import edu.arizona.biosemantics.etcsite.common.shared.model.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.common.shared.model.Share;
+import edu.arizona.biosemantics.etcsite.common.shared.model.ShortUser;
+import edu.arizona.biosemantics.etcsite.common.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.common.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.common.shared.rpc.task.ITaskService;
+import edu.arizona.biosemantics.etcsite.filemanager.server.Configuration;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FileFilter;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FileNameNormalizer;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FileTreeItem;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FolderTreeItem;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.CopyFilesFailedException;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.CreateDirectoryFailedException;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.CreateFileFailedException;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.FileDeleteFailedException;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFileFormatService;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFilePermissionService;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFileService;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.MoveFileFailedException;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.PermissionDeniedException;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.RenameFileFailedException;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.ZipDirectoryFailedException;
+import edu.arizona.biosemantics.matrixreview.shared.model.Model;
+import edu.arizona.biosemantics.matrixreview.shared.model.core.Taxon;
 
 public class FileService extends RemoteServiceServlet implements IFileService {
 

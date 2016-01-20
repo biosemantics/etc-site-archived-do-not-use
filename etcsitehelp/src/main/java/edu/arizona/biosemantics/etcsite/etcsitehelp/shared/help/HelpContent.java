@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsitehelp.shared.help;
+package edu.arizona.biosemantics.etcsite.etcsitehelp.shared.help;
 
 import com.google.gwt.core.client.JavaScriptObject;
 

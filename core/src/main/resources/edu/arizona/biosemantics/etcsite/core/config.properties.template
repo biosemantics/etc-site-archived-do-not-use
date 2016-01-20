@@ -1,0 +1,16 @@
+#Database
+databaseName=etcsite
+databaseUser=termsuser
+databasePassword=termspassword
+databaseHost=localhost
+databasePort=3306
+database_partitionCount=2
+database_minConnectionsPerPartition=10
+database_maxConnectionsPerPartition=20
+
+#Captcha
+captcha_tempFileBase=C:/Users/rodenhausen/etcsite/cache/captcha
+
+#Charaparser
+charaparser_databaseName=etcsite_charaparser
+charaparser_wordnet=C:/gitEtc/charaparser/wordnet/wn31/dict

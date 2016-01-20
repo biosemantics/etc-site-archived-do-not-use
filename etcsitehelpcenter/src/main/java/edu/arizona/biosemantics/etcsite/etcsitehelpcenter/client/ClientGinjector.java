@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsitehelpcenter.client;
+package edu.arizona.biosemantics.etcsite.etcsitehelpcenter.client;
 
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;

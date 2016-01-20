@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsitehelpcenter.client.common;
+package edu.arizona.biosemantics.etcsite.etcsitehelpcenter.client.common;
 
 import com.google.gwt.user.client.ui.IsWidget;
 

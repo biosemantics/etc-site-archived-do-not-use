@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsitehelp.server.rpc.help;
+package edu.arizona.biosemantics.etcsite.etcsitehelp.server.rpc.help;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,9 +7,9 @@ import java.nio.file.Paths;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-import edu.arizona.biosemantics.etcsitehelp.server.Configuration;
-import edu.arizona.biosemantics.etcsitehelp.shared.help.Help;
-import edu.arizona.biosemantics.etcsitehelp.shared.rpc.help.IHelpService;
+import edu.arizona.biosemantics.etcsite.etcsitehelp.server.Configuration;
+import edu.arizona.biosemantics.etcsite.etcsitehelp.shared.help.Help;
+import edu.arizona.biosemantics.etcsite.etcsitehelp.shared.rpc.help.IHelpService;
 
 @SuppressWarnings("serial")
 public class HelpService extends RemoteServiceServlet implements IHelpService {

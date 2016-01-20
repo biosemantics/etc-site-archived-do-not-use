@@ -4,7 +4,7 @@
 	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
 	xmlns:gxt="urn:import:com.sencha.gxt.widget.core.client"
 	xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
-	xmlns:my="urn:import:edu.arizona.biosemantics.etcsitehelpcenter.client.common"
+	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.etcsitehelpcenter.client.common"
 	>
 	<!-- xmlns:ma="urn:import:edu.arizona.biosemantics.matrixreview.client" -->
 	<ui:style>
