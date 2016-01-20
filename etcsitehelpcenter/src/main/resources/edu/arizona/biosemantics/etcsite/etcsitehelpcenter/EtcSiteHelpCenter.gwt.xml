@@ -27,7 +27,7 @@
   <inherits name="com.google.gwt.place.Place"/>
   <inherits name='com.sencha.gxt.ui.GXT' />
   <inherits name='org.gwtbootstrap3.GwtBootstrap3' />
-  <inherits name='edu.arizona.biosemantics.etcsitehelp.EtcSiteHelp' />
+  <inherits name='edu.arizona.biosemantics.etcsite.etcsitehelp.EtcSiteHelp' />
   <!-- <inherits name='edu.arizona.biosemantics.matrixreview.Matrix_review'/>
   <inherits name='edu.arizona.biosemantics.common.log.Log'/>
   <inherits name='edu.arizona.biosemantics.common.taxonomy.Taxonomy'/>
@@ -47,7 +47,7 @@
   <inherits name='com.sencha.gxt.theme.blue.Blue' />  
   <!-- Load dinamically predefined styles in the library when the application starts -->
   <!-- Specify the app entry point class.                         -->
-  <entry-point class='edu.arizona.biosemantics.etcsitehelpcenter.client.Client'/>
+  <entry-point class='edu.arizona.biosemantics.etcsite.etcsitehelpcenter.client.Client'/>
 
   <!-- Specify the paths for translatable code                    -->
   <source path='client'/>

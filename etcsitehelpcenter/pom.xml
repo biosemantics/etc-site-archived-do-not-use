@@ -111,9 +111,16 @@
     		<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>edu.arizona.biosemantics.etcsite</groupId>
-    		<artifactId>etcsitehelp</artifactId>
-    		<version>0.0.1-SNAPSHOT</version>
+		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
+		  <artifactId>etcsitehelp</artifactId>
+		  <version>0.0.1-SNAPSHOT</version>
+		  <classifier>classes</classifier>
+		</dependency>
+		<dependency>
+		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
+		  <artifactId>etcsitehelp</artifactId>
+		  <version>0.0.1-SNAPSHOT</version>
+		  <classifier>sources</classifier>
 		</dependency>
 	</dependencies>
 	<build>
@@ -158,9 +165,9 @@
 				<version>1.7</version>
 				<configuration>
 					<proceedOnError>true</proceedOnError>
-					<complianceLevel>${java.version}</complianceLevel>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
+					<complianceLevel>1.7</complianceLevel>
+					<source>1.7</source>
+					<target>1.7</target>
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 				<dependencies>

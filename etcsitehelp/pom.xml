@@ -126,9 +126,9 @@
 				<version>1.7</version>
 				<configuration>
 					<proceedOnError>true</proceedOnError>
-					<complianceLevel>${java.version}</complianceLevel>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
+					<complianceLevel>1.7</complianceLevel>
+					<source>1.7</source>
+					<target>1.7</target>
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 				<dependencies>
