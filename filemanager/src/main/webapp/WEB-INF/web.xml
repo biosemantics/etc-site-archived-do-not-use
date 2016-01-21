@@ -4,16 +4,38 @@
               http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5"
          xmlns="http://java.sun.com/xml/ns/javaee">
+    <display-name>filemanager</display-name>
   
-  <servlet>
-    <servlet-name>FileService</servlet-name>
-    <servlet-class>edu.arizona.biosemantics.etcsite.filemanager.server.rpc.FileService2</servlet-class>
-  </servlet>
+  	<context-param>
+		<!-- max size of the upload request -->
+		<param-name>maxSize</param-name>
+		<param-value>31457280</param-value>
+	</context-param>
+	<context-param>
+		<!-- Useful in development mode to slow down the uploads in fast networks. 
+			Put the number of milliseconds to sleep in each block received in the server. 
+			false or 0, means don't use slow uploads -->
+		<param-name>slowUploads</param-name>
+		<param-value>0</param-value>
+	</context-param>
+	<context-param>
+		<param-name>noDataTimeout</param-name>
+		<param-value>60000</param-value>
+  	</context-param>
   
-  <servlet-mapping>
-    <servlet-name>FileService</servlet-name>
-    <url-pattern>/filemanager/fileService</url-pattern>
-  </servlet-mapping>
+    <listener>
+    	<listener-class>edu.arizona.biosemantics.etcsite.filemanager.server.GuiceServletConfig</listener-class>
+	</listener>
+		
+	<filter>
+	    <filter-name>guiceFilter</filter-name>
+	    <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
+	</filter>
+	
+	<filter-mapping>
+	    <filter-name>guiceFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
   
   <!-- Default page to serve -->
   <welcome-file-list>

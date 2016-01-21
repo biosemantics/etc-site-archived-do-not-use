@@ -29,7 +29,6 @@ import edu.arizona.biosemantics.etcsite.core.shared.model.Share;
 import edu.arizona.biosemantics.etcsite.core.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationToken;
-import edu.arizona.biosemantics.etcsite.core.shared.rpc.task.ITaskService;
 import edu.arizona.biosemantics.etcsite.filemanager.server.Configuration;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FileFilter;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FileNameNormalizer;
@@ -53,20 +52,17 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 
 	private static final long serialVersionUID = -9193602268703418530L;
 	private IFilePermissionService filePermissionService;
-	@SuppressWarnings("unused")
 	private IFileFormatService fileFormatService;
 	private SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MM-dd-yyyy");
 	private	XmlNamespaceManager xmlNamespaceManager;
 	private FileNameNormalizer fileNameNormalizer;
-	private ITaskService taskService;
 	private DAOManager daoManager;
 	
 	@Inject
-	public FileService(IFileFormatService fileFormatService, IFilePermissionService filePermissionService, ITaskService taskService, 
+	public FileService(IFileFormatService fileFormatService, IFilePermissionService filePermissionService, 
 			DAOManager daoManager, FileNameNormalizer fileNameNormalizer, XmlNamespaceManager xmlNamespaceManager) {
 		this.fileFormatService = fileFormatService;
 		this.filePermissionService = filePermissionService;
-		this.taskService = taskService;
 		this.daoManager = daoManager;
 		this.fileNameNormalizer = fileNameNormalizer;
 		this.xmlNamespaceManager = xmlNamespaceManager;

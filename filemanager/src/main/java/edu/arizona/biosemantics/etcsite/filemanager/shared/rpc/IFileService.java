@@ -13,7 +13,7 @@ import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FileFilter;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FileTreeItem;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FolderTreeItem;
 
-@RemoteServiceRelativePath("file")
+@RemoteServiceRelativePath("fileService")
 public interface IFileService extends RemoteService {
 	
 	public void deleteFile(AuthenticationToken authenticationToken, String filePath) throws PermissionDeniedException, 
