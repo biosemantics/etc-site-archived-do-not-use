@@ -4,10 +4,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.model.ontologize.TaskStageEnum;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.ontologize.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.IHasTasksService;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection;
 
 @RemoteServiceRelativePath("ontologize")

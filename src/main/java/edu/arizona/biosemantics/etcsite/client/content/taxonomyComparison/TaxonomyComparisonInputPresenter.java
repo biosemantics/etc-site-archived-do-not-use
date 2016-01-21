@@ -8,15 +8,15 @@ import com.google.inject.Inject;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
-import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
-import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView;
-import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView;
-import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePresenter.ISelectListener;
-import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
+import edu.arizona.biosemantics.etcsite.core.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.client.content.filemanager.IFileManagerDialogView;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.filemanager.client.common.FilePathShortener;
+import edu.arizona.biosemantics.etcsite.filemanager.client.common.IFileTreeView;
+import edu.arizona.biosemantics.etcsite.filemanager.client.common.ISelectableFileTreeView;
+import edu.arizona.biosemantics.etcsite.filemanager.client.common.SelectableFileTreePresenter.ISelectListener;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FileFilter;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FileTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonServiceAsync;
 
 public class TaxonomyComparisonInputPresenter implements ITaxonomyComparisonInputView.Presenter {

@@ -16,15 +16,15 @@ import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
-import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.core.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
-import edu.arizona.biosemantics.etcsite.client.common.ServerSetup;
-import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.user.InvalidOTOAccountException;
+import edu.arizona.biosemantics.etcsite.core.client.common.ServerSetup;
+import edu.arizona.biosemantics.etcsite.core.shared.model.ShortUser;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.IAuthenticationServiceAsync;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.user.IUserServiceAsync;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.user.InvalidOTOAccountException;
 
 public class SettingsActivity extends MyAbstractActivity implements ISettingsView.Presenter {
 

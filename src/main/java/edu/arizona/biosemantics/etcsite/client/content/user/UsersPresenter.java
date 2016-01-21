@@ -7,9 +7,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
-import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
-import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
+import edu.arizona.biosemantics.etcsite.core.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.core.shared.model.ShortUser;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.user.IUserServiceAsync;
 
 public class UsersPresenter implements IUsersView.Presenter {
 

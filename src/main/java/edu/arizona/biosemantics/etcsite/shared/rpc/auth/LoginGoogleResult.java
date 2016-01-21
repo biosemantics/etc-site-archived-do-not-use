@@ -2,6 +2,8 @@ package edu.arizona.biosemantics.etcsite.shared.rpc.auth;
 
 import java.io.Serializable;
 
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationResult;
+
 public class LoginGoogleResult implements Serializable {
 
 	private AuthenticationResult authenticationResult;

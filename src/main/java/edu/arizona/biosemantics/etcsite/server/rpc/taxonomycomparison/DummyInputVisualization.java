@@ -20,7 +20,7 @@ public class DummyInputVisualization implements InputVisualization {
 	public Void call() throws Exception {
 		File inputDir = new File(outputDir + File.separator + "0-input");
 		inputDir.mkdirs();
-		FileUtils.copyDirectory(new File(Configuration.etcFiles + File.separator + "eulerdummyInputVisualization"), inputDir);
+		FileUtils.copyDirectory(new File(edu.arizona.biosemantics.etcsite.core.server.Configuration.etcFiles + File.separator + "eulerdummyInputVisualization"), inputDir);
 		return null;
 	}
 

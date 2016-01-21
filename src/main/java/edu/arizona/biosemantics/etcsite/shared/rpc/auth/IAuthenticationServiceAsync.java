@@ -2,7 +2,10 @@ package edu.arizona.biosemantics.etcsite.shared.rpc.auth;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import edu.arizona.biosemantics.etcsite.shared.model.Captcha;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Captcha;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationResult;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.LoginGoogleResult;
 
 public interface IAuthenticationServiceAsync {
 	

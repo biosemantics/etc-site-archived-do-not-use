@@ -2,7 +2,7 @@ package edu.arizona.biosemantics.etcsite.client.content.treeGeneration;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
 
 public class TreeGenerationCreatePlace extends TreeGenerationPlace {
 

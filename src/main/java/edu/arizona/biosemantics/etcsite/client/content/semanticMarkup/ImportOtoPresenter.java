@@ -6,8 +6,8 @@ import com.google.inject.Inject;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
-import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupConfiguration;
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.semanticmarkup.SemanticMarkupConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.oto2.oto.client.Oto;
 //import edu.arizona.biosemantics.etcsite.server.rpc.FileFormatService;

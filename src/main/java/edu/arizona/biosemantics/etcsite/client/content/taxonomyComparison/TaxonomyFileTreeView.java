@@ -6,11 +6,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sencha.gxt.data.client.loader.RpcProxy;
 import com.sencha.gxt.data.shared.loader.DataProxy;
 
-import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.files.FileTreeView;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
+import edu.arizona.biosemantics.etcsite.core.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.filemanager.client.common.FileTreeView;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FileTreeItem;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FolderTreeItem;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFileServiceAsync;
 
 public class TaxonomyFileTreeView extends FileTreeView {
 

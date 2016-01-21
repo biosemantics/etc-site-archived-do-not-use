@@ -7,7 +7,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.biosemantics.etcsite.client.common.ImageLabel;
-import edu.arizona.biosemantics.etcsite.shared.model.ontologize.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.core.shared.model.ontologize.TaskStageEnum;
 
 public class SubMenu extends Composite {
 

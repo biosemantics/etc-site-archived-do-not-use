@@ -5,11 +5,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
-import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
-import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerPlace;
-import edu.arizona.biosemantics.etcsite.shared.model.OntologizeConfiguration;
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.client.content.filemanager.FileManagerPlace;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.ontologize.OntologizeConfiguration;
+import edu.arizona.biosemantics.etcsite.filemanager.client.common.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ontologize.IOntologizeServiceAsync;
 
 public class OntologizeOutputPresenter implements IOntologizeOutputView.Presenter {

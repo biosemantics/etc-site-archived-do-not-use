@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
+import edu.arizona.biosemantics.etcsite.core.shared.model.ShortUser;
 
 public class UserSelectView extends Composite implements IUserSelectView {
 

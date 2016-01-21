@@ -6,11 +6,11 @@ import com.google.inject.name.Named;
 import com.google.web.bindery.event.shared.EventBus;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
-import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.access.IFileAccessServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.format.IFileFormatServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.search.IFileSearchServiceAsync;
+import edu.arizona.biosemantics.etcsite.core.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.core.shared.model.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFileAccessServiceAsync;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFileFormatServiceAsync;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFileSearchServiceAsync;
 
 public class XMLEditorPresenter implements IXMLEditorView.Presenter {
 

@@ -3,7 +3,6 @@ package edu.arizona.biosemantics.etcsite.server;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -11,11 +10,10 @@ import javax.servlet.ServletContextListener;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
-import edu.arizona.biosemantics.etcsite.server.db.CaptchaDAO;
-import edu.arizona.biosemantics.etcsite.server.db.ConnectionPool;
-import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
-import edu.arizona.biosemantics.etcsite.server.db.PasswordResetRequestDAO;
-import edu.arizona.biosemantics.etcsite.server.db.Query;
+import edu.arizona.biosemantics.etcsite.core.server.db.CaptchaDAO;
+import edu.arizona.biosemantics.etcsite.core.server.db.ConnectionPool;
+import edu.arizona.biosemantics.etcsite.core.server.db.PasswordResetRequestDAO;
+import edu.arizona.biosemantics.etcsite.core.server.db.Query;
 
 public class ETCSiteServletContextListener implements ServletContextListener {
 
@@ -40,6 +38,9 @@ public class ETCSiteServletContextListener implements ServletContextListener {
 		
 		log(LogLevel.INFO, "Initializing etcsite context at context path: " + event.getServletContext().getContextPath());
 		log(LogLevel.INFO, "Configuration used " + Configuration.asString());
+		log(LogLevel.INFO, "Core Configuration used " + edu.arizona.biosemantics.etcsite.core.server.Configuration.asString());
+		log(LogLevel.INFO, "Filemanager Configuration used " + edu.arizona.biosemantics.etcsite.filemanager.server.Configuration.asString());
+		log(LogLevel.INFO, "Etcsitehelp Configuration used " + edu.arizona.biosemantics.etcsite.etcsitehelp.server.Configuration.asString());
 		
 		log(LogLevel.INFO, "Install Java logging to SLF4J");
 		SLF4JBridgeHandler.removeHandlersForRootLogger();
@@ -67,7 +68,7 @@ public class ETCSiteServletContextListener implements ServletContextListener {
 		}
 		
 		//set XPath objectmodel for XPath 2 supoprt (saxon)
-		System.setProperty("javax.xml.xpath.XPathFactory:" + Configuration.xPathObjectModel, "net.sf.saxon.xpath.XPathFactoryImpl");
+		System.setProperty("javax.xml.xpath.XPathFactory:" + edu.arizona.biosemantics.etcsite.filemanager.server.Configuration.xPathObjectModel, "net.sf.saxon.xpath.XPathFactoryImpl");
 	}
 
 	private void logEnvironmentVariables() {

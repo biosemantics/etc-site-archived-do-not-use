@@ -9,15 +9,15 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
-import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.core.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum;
-import edu.arizona.biosemantics.etcsite.shared.model.ontologize.TaskStageEnum;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.TaskTypeEnum;
+import edu.arizona.biosemantics.etcsite.core.shared.model.ontologize.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.IAuthenticationServiceAsync;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.task.ITaskServiceAsync;
 
 public class OntologizeActivity extends MyAbstractActivity {
 

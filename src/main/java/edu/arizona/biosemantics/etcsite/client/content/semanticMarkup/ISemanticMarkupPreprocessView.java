@@ -2,7 +2,7 @@ package edu.arizona.biosemantics.etcsite.client.content.semanticMarkup;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
 
 public interface ISemanticMarkupPreprocessView extends IsWidget {
 

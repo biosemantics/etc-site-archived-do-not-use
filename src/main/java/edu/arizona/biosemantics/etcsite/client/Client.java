@@ -7,9 +7,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
-import edu.arizona.biosemantics.etcsite.client.common.ServerSetup;
-import edu.arizona.biosemantics.etcsite.shared.model.Setup;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.setup.ISetupServiceAsync;
+import edu.arizona.biosemantics.etcsite.core.client.common.ServerSetup;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Setup;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.setup.ISetupServiceAsync;
 
 /**
  * Yet another test

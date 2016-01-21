@@ -21,39 +21,36 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.ListeningScheduledExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.etcsite.core.server.Emailer;
+import edu.arizona.biosemantics.etcsite.core.server.db.DAOManager;
+import edu.arizona.biosemantics.etcsite.core.shared.model.AbstractTaskConfiguration;
+import edu.arizona.biosemantics.etcsite.core.shared.model.ShortUser;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.TaskStage;
+import edu.arizona.biosemantics.etcsite.core.shared.model.TaskType;
+import edu.arizona.biosemantics.etcsite.core.shared.model.TinyUser;
+import edu.arizona.biosemantics.etcsite.core.shared.model.taxonomycomparison.TaxonomyComparisonConfiguration;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AdminAuthenticationToken;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FileFilter;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FileTreeItem;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FolderTreeItem;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.CopyFilesFailedException;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.CreateDirectoryFailedException;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFilePermissionService;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFileService;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.PermissionDeniedException;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
-import edu.arizona.biosemantics.etcsite.server.Emailer;
-import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
-import edu.arizona.biosemantics.etcsite.server.rpc.auth.AdminAuthenticationToken;
-import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
-import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
-import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
-import edu.arizona.biosemantics.etcsite.shared.model.TaxonomyComparisonConfiguration;
-import edu.arizona.biosemantics.etcsite.shared.model.TinyUser;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
-import edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison.TaskStageEnum;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.CopyFilesFailedException;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.CreateDirectoryFailedException;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.IFilePermissionService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDeniedException;
+import edu.arizona.biosemantics.etcsite.core.shared.model.taxonomycomparison.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.TaxonomyComparisonException;
 import edu.arizona.biosemantics.euler.alignment.shared.model.Model;
@@ -113,7 +110,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		if(isShared) {
 			String destination;
 			try {
-				destination = fileService.createDirectory(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUserId(), 
+				destination = fileService.createDirectory(authenticationToken, edu.arizona.biosemantics.etcsite.core.server.Configuration.fileBase + File.separator + authenticationToken.getUserId(), 
 						fileName, true);
 			} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
 				throw new TaxonomyComparisonException();
@@ -131,7 +128,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		config.setOutput(config.getInput() + "_output_by_TaxC_task_" + taskName);
 		config = daoManager.getTaxonomyComparisonConfigurationDAO().addTaxonomyComparisonConfiguration(config);
 		
-		edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum taskType = edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.TAXONOMY_COMPARISON;
+		edu.arizona.biosemantics.etcsite.core.shared.model.TaskTypeEnum taskType = edu.arizona.biosemantics.etcsite.core.shared.model.TaskTypeEnum.TAXONOMY_COMPARISON;
 		TaskType dbTaskType = daoManager.getTaskTypeDAO().getTaskType(taskType);
 		TaskStage taskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.INPUT.toString());
 		TinyUser user = daoManager.getUserDAO().getTinyUser(authenticationToken.getUserId());
@@ -232,7 +229,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		if(activeProcessFutures.containsKey(config.getConfiguration().getId())) {
 			return task;
 		} else {
-			final TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.TAXONOMY_COMPARISON);
+			final TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.core.shared.model.TaskTypeEnum.TAXONOMY_COMPARISON);
 			TaskStage taskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.ANALYZE.toString());
 			task.setTaskStage(taskStage);
 			task.setResumable(false);
@@ -395,7 +392,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		List<Task> tasks = daoManager.getTaskDAO().getOwnedTasks(user.getId());
 		for(Task task : tasks) {
 			if(task != null && task.isResumable() && !task.isFailed() && 
-					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.TAXONOMY_COMPARISON)) {
+					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.core.shared.model.TaskTypeEnum.TAXONOMY_COMPARISON)) {
 						return task;
 			}
 		}
@@ -508,7 +505,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 
 	@Override
 	public Task goToTaskStage(AuthenticationToken token, Task task, TaskStageEnum taskStageEnum) {
-		TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.TAXONOMY_COMPARISON);
+		TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.core.shared.model.TaskTypeEnum.TAXONOMY_COMPARISON);
 		TaskStage taskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(taskStageEnum.toString());
 		task.setTaskStage(taskStage);
 		task.setResumable(true);
@@ -556,7 +553,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		List<Task> tasks = daoManager.getTaskDAO().getResumableTasks(user.getId());
 		for(Task task : tasks) {
 			if(task != null && task.isResumable() && !task.isFailed() && 
-					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.TAXONOMY_COMPARISON)) {
+					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.core.shared.model.TaskTypeEnum.TAXONOMY_COMPARISON)) {
 				result.add(task);
 			}
 		}

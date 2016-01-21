@@ -6,9 +6,9 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.arizona.biosemantics.etcsite.client.common.files.FileUploadHandler;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
+import edu.arizona.biosemantics.etcsite.core.shared.model.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.filemanager.client.common.FileUploadHandler;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FolderTreeItem;
 import gwtupload.client.IUploader;
 import gwtupload.client.Uploader;
 

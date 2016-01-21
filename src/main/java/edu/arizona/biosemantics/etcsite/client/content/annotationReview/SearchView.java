@@ -20,17 +20,17 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.arizona.biosemantics.etcsite.shared.model.file.search.CharacterAttributeEnum;
-import edu.arizona.biosemantics.etcsite.shared.model.file.search.ElementAttributeValuesSearch;
-import edu.arizona.biosemantics.etcsite.shared.model.file.search.ElementEnum;
-import edu.arizona.biosemantics.etcsite.shared.model.file.search.ElementValuesSearch;
-import edu.arizona.biosemantics.etcsite.shared.model.file.search.ElementsSearch;
-import edu.arizona.biosemantics.etcsite.shared.model.file.search.NumericalsSearch;
-import edu.arizona.biosemantics.etcsite.shared.model.file.search.RelationAttributeEnum;
-import edu.arizona.biosemantics.etcsite.shared.model.file.search.Search;
-import edu.arizona.biosemantics.etcsite.shared.model.file.search.SearchTypeEnum;
-import edu.arizona.biosemantics.etcsite.shared.model.file.search.StructureAttributeEnum;
-import edu.arizona.biosemantics.etcsite.shared.model.file.search.XPathSearch;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.search.CharacterAttributeEnum;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.search.ElementAttributeValuesSearch;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.search.ElementEnum;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.search.ElementValuesSearch;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.search.ElementsSearch;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.search.NumericalsSearch;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.search.RelationAttributeEnum;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.search.Search;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.search.SearchTypeEnum;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.search.StructureAttributeEnum;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.search.XPathSearch;
 
 public class SearchView extends Composite implements ISearchView {
 

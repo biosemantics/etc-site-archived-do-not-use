@@ -22,7 +22,7 @@ import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 
-import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FolderTreeItem;
 import gwtupload.client.Uploader;
 
 public class InputCreateView extends Composite implements IInputCreateView {

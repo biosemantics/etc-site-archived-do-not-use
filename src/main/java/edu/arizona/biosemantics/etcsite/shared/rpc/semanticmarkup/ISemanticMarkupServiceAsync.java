@@ -4,13 +4,13 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.Description;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.LearnInvocation;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.PreprocessedDescription;
-import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.core.shared.model.semanticmarkup.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.IHasTasksServiceAsync;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationToken;
 
 public interface ISemanticMarkupServiceAsync extends IHasTasksServiceAsync {
 

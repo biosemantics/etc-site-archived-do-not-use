@@ -14,7 +14,7 @@ import com.sencha.gxt.widget.core.client.ContentPanel.ContentPanelAppearance;
 import com.sencha.gxt.widget.core.client.container.AccordionLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.AccordionLayoutContainer.AccordionLayoutAppearance;
 
-import edu.arizona.biosemantics.etcsitehelp.shared.help.HelpContent;
+import edu.arizona.biosemantics.etcsite.etcsitehelp.shared.help.HelpContent;
 
 public class HelpView extends Composite implements IHelpView {
 

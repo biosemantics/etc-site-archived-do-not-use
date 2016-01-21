@@ -6,23 +6,26 @@ import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 
-import edu.arizona.biosemantics.etcsite.server.rpc.auth.AuthenticationService;
-import edu.arizona.biosemantics.etcsite.server.rpc.file.FileService;
-import edu.arizona.biosemantics.etcsite.server.rpc.file.access.FileAccessService;
-import edu.arizona.biosemantics.etcsite.server.rpc.file.format.FileFormatService;
-import edu.arizona.biosemantics.etcsite.server.rpc.file.permission.FilePermissionService;
-import edu.arizona.biosemantics.etcsite.server.rpc.file.search.FileSearchService;
+import edu.arizona.biosemantics.etcsite.core.server.GoogleAuthenticationServlet;
+import edu.arizona.biosemantics.etcsite.core.server.rpc.auth.AuthenticationService;
+import edu.arizona.biosemantics.etcsite.core.server.rpc.setup.SetupService;
+import edu.arizona.biosemantics.etcsite.core.server.rpc.task.TaskService;
+import edu.arizona.biosemantics.etcsite.core.server.rpc.user.UserService;
+import edu.arizona.biosemantics.etcsite.etcsitehelp.server.rpc.help.HelpService;
+import edu.arizona.biosemantics.etcsite.filemanager.server.DownloadServlet;
+import edu.arizona.biosemantics.etcsite.filemanager.server.PDFServlet;
+import edu.arizona.biosemantics.etcsite.filemanager.server.rpc.FileAccessService;
+import edu.arizona.biosemantics.etcsite.filemanager.server.rpc.FileFormatService;
+import edu.arizona.biosemantics.etcsite.filemanager.server.rpc.FilePermissionService;
+import edu.arizona.biosemantics.etcsite.filemanager.server.rpc.FileSearchService;
+import edu.arizona.biosemantics.etcsite.filemanager.server.rpc.FileService;
+import edu.arizona.biosemantics.etcsite.filemanager.server.upload.UploadServlet;
 import edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration.MatrixGenerationService;
 import edu.arizona.biosemantics.etcsite.server.rpc.ontologize.OntologizeService;
 import edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup.SemanticMarkupService;
-import edu.arizona.biosemantics.etcsite.server.rpc.setup.SetupService;
-import edu.arizona.biosemantics.etcsite.server.rpc.task.TaskService;
 import edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison.TaxonomyComparisonService;
 import edu.arizona.biosemantics.etcsite.server.rpc.treegeneration.TreeGenerationService;
-import edu.arizona.biosemantics.etcsite.server.rpc.user.UserService;
 import edu.arizona.biosemantics.etcsite.server.rpc.visualization.VisualizationService;
-import edu.arizona.biosemantics.etcsite.server.upload.UploadServlet;
-import edu.arizona.biosemantics.etcsitehelp.server.rpc.help.HelpService;
 
 public class GuiceServletConfig extends GuiceServletContextListener {
 
@@ -35,7 +38,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
 			protected void configureServlets() {
 				serve("/help").with(HelpService.class);
 				serve("/etcsite/auth").with(AuthenticationService.class);
-				serve("/etcsite/file").with(FileService.class);
+				serve("/etcsite/fileService").with(FileService.class);
 				serve("/etcsite/fileAccess").with(FileAccessService.class);
 				serve("/etcsite/fileSearch").with(FileSearchService.class);
 				serve("/etcsite/filePermission").with(FilePermissionService.class);

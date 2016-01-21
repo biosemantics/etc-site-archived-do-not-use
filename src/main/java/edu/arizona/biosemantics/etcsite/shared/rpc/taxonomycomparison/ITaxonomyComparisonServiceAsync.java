@@ -4,11 +4,11 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
-import edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison.TaskStageEnum;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.taxonomycomparison.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.IHasTasksServiceAsync;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FolderTreeItem;
 import edu.arizona.biosemantics.euler.alignment.shared.model.Model;
 import edu.arizona.biosemantics.euler.alignment.shared.model.RunOutput;
 

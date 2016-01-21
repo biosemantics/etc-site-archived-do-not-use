@@ -11,9 +11,9 @@ import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.form.TextArea;
 
-import edu.arizona.biosemantics.etcsite.shared.Configuration;
-import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.user.IUserService;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.user.IUserServiceAsync;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.Configuration;
 import edu.arizona.biosemantics.oto2.oto.client.common.Alerter.InfoMessageBox;
 
 public class Alerter {

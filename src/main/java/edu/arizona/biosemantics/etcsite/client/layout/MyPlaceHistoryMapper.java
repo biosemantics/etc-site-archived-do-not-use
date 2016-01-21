@@ -5,7 +5,7 @@ import com.google.gwt.place.shared.WithTokenizers;
 
 import edu.arizona.biosemantics.etcsite.client.content.about.AboutPlace;
 import edu.arizona.biosemantics.etcsite.client.content.annotationReview.AnnotationReviewPlace;
-import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerPlace;
+import edu.arizona.biosemantics.etcsite.client.content.filemanager.FileManagerPlace;
 import edu.arizona.biosemantics.etcsite.client.content.gettingstarted.GettingStartedPlace;
 import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPlace;

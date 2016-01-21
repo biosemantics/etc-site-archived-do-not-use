@@ -10,23 +10,22 @@ import com.google.inject.Inject;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
-import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView.InputValidator;
 import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView.UploadCompleteHandler;
-import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
-import edu.arizona.biosemantics.etcsite.client.common.files.FileUploadHandler;
-import edu.arizona.biosemantics.etcsite.client.common.files.ICreateSemanticMarkupFilesDialogView;
-import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView;
-import edu.arizona.biosemantics.etcsite.client.common.files.MyUploaderConstants;
-import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkupFilesDialogPresenter.ICloseHandler;
-import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePresenter.ISelectListener;
-import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.CreateDirectoryFailedException;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
+import edu.arizona.biosemantics.etcsite.client.content.filemanager.IFileManagerDialogView;
+import edu.arizona.biosemantics.etcsite.core.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.core.shared.model.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.filemanager.client.common.FilePathShortener;
+import edu.arizona.biosemantics.etcsite.filemanager.client.common.FileUploadHandler;
+import edu.arizona.biosemantics.etcsite.filemanager.client.common.ICreateSemanticMarkupFilesDialogView;
+import edu.arizona.biosemantics.etcsite.filemanager.client.common.ISelectableFileTreeView;
+import edu.arizona.biosemantics.etcsite.filemanager.client.common.MyUploaderConstants;
+import edu.arizona.biosemantics.etcsite.filemanager.client.common.CreateSemanticMarkupFilesDialogPresenter.ICloseHandler;
+import edu.arizona.biosemantics.etcsite.filemanager.client.common.SelectableFileTreePresenter.ISelectListener;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FileFilter;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FileTreeItem;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FolderTreeItem;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFileServiceAsync;
 import gwtupload.client.BaseUploadStatus;
 import gwtupload.client.IFileInput.ButtonFileInput;
 import gwtupload.client.IUploadStatus;
@@ -40,8 +39,8 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 	
 	private IFileServiceAsync fileService;
 	private ICreateSemanticMarkupFilesDialogView.Presenter createSemanticMarkupFilesDialogPresenter;
-	private edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView.Presenter selectableFileTreePresenter;
-	private edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView.Presenter fileTreePresenter;
+	private edu.arizona.biosemantics.etcsite.filemanager.client.common.ISelectableFileTreeView.Presenter selectableFileTreePresenter;
+	private edu.arizona.biosemantics.etcsite.filemanager.client.common.IFileTreeView.Presenter fileTreePresenter;
 	private IFileManagerDialogView.Presenter fileManagerDialogPresenter;
 	private FilePathShortener filePathShortener;
 	

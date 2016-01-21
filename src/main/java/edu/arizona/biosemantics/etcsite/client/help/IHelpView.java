@@ -5,7 +5,7 @@ import java.util.HashMap;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.IsWidget;
 
-import edu.arizona.biosemantics.etcsitehelp.shared.help.HelpContent;
+import edu.arizona.biosemantics.etcsite.etcsitehelp.shared.help.HelpContent;
 
 public interface IHelpView {
 

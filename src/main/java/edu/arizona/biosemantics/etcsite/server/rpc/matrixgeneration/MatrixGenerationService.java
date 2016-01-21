@@ -36,7 +36,6 @@ import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 
@@ -44,31 +43,31 @@ import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.common.taxonomy.Rank;
 import edu.arizona.biosemantics.common.taxonomy.RankData;
 import edu.arizona.biosemantics.common.taxonomy.TaxonIdentification;
+import edu.arizona.biosemantics.etcsite.core.server.Emailer;
+import edu.arizona.biosemantics.etcsite.core.server.db.DAOManager;
+import edu.arizona.biosemantics.etcsite.core.shared.model.AbstractTaskConfiguration;
+import edu.arizona.biosemantics.etcsite.core.shared.model.ShortUser;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.TaskStage;
+import edu.arizona.biosemantics.etcsite.core.shared.model.TaskType;
+import edu.arizona.biosemantics.etcsite.core.shared.model.TaxonGroup;
+import edu.arizona.biosemantics.etcsite.core.shared.model.TinyUser;
+import edu.arizona.biosemantics.etcsite.core.shared.model.User;
+import edu.arizona.biosemantics.etcsite.core.shared.model.matrixgeneration.MatrixGenerationConfiguration;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AdminAuthenticationToken;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.CopyFilesFailedException;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.CreateDirectoryFailedException;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.CreateFileFailedException;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.GetFileContentFailedException;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFileAccessService;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFileFormatService;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFilePermissionService;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFileService;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.PermissionDeniedException;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.SetFileContentFailedException;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
-import edu.arizona.biosemantics.etcsite.server.Emailer;
-import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
-import edu.arizona.biosemantics.etcsite.server.rpc.auth.AdminAuthenticationToken;
-import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
-import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationConfiguration;
-import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
-import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
-import edu.arizona.biosemantics.etcsite.shared.model.TaxonGroup;
-import edu.arizona.biosemantics.etcsite.shared.model.TinyUser;
-import edu.arizona.biosemantics.etcsite.shared.model.User;
-import edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.CopyFilesFailedException;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.CreateDirectoryFailedException;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.CreateFileFailedException;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.access.GetFileContentFailedException;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.access.IFileAccessService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.access.SetFileContentFailedException;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.format.IFileFormatService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.IFilePermissionService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDeniedException;
+import edu.arizona.biosemantics.etcsite.core.shared.model.matrixgeneration.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
 import edu.arizona.biosemantics.matrixgeneration.model.raw.ColumnHead;
@@ -129,7 +128,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		if(isSharedInput) {
 			String destination;
 			try {
-				destination = fileService.createDirectory(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUserId(), 
+				destination = fileService.createDirectory(authenticationToken, edu.arizona.biosemantics.etcsite.core.server.Configuration.fileBase + File.separator + authenticationToken.getUserId(), 
 						inputFileName, true);
 			} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
 				throw new MatrixGenerationException();
@@ -154,7 +153,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			if(isSharedInputTermReview) {
 				String destination;
 				try {
-					destination = fileService.createDirectory(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUserId(), 
+					destination = fileService.createDirectory(authenticationToken, edu.arizona.biosemantics.etcsite.core.server.Configuration.fileBase + File.separator + authenticationToken.getUserId(), 
 							inputTermReviewFileName, true);
 				} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
 					throw new MatrixGenerationException();
@@ -178,7 +177,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			if(isSharedInputOntology) {
 				String destination;
 				try {
-					destination = fileService.createDirectory(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUserId(), 
+					destination = fileService.createDirectory(authenticationToken, edu.arizona.biosemantics.etcsite.core.server.Configuration.fileBase + File.separator + authenticationToken.getUserId(), 
 							inputOntologyFileName, true);
 				} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
 					throw new MatrixGenerationException();
@@ -203,7 +202,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		config.setGenerateAbsentPresent(generateAbsentPresent);
 		config = daoManager.getMatrixGenerationConfigurationDAO().addMatrixGenerationConfiguration(config);
 		
-		edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum taskType = edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION;
+		edu.arizona.biosemantics.etcsite.core.shared.model.TaskTypeEnum taskType = edu.arizona.biosemantics.etcsite.core.shared.model.TaskTypeEnum.MATRIX_GENERATION;
 		TaskType dbTaskType = daoManager.getTaskTypeDAO().getTaskType(taskType);
 		TaskStage taskStage = daoManager.getTaskStageDAO().getMatrixGenerationTaskStage(TaskStageEnum.INPUT.toString());
 		TinyUser user = daoManager.getUserDAO().getTinyUser(authenticationToken.getUserId());
@@ -520,7 +519,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		List<Task> tasks = daoManager.getTaskDAO().getOwnedTasks(user.getId());
 		for(Task task : tasks) {
 			if(task != null && task.isResumable() && !task.isFailed() && 
-					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION)) {
+					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.core.shared.model.TaskTypeEnum.MATRIX_GENERATION)) {
 						return task;
 			}
 		}
@@ -1142,7 +1141,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		List<Task> tasks = daoManager.getTaskDAO().getResumableTasks(user.getId());
 		for(Task task : tasks) {
 			if(task != null && task.isResumable() && !task.isFailed() && 
-					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.MATRIX_GENERATION)) {
+					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.core.shared.model.TaskTypeEnum.MATRIX_GENERATION)) {
 				result.add(task);
 			}
 		}
@@ -1153,8 +1152,8 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	public void publish(AuthenticationToken token, Task task) throws Exception {
 		final MatrixGenerationConfiguration config = getMatrixGenerationConfiguration(task);
 		File outputDir = new File(config.getOutput());
-		File publicDir = new File(Configuration.publicFolder + File.separator + outputDir.getName());
-		fileService.copyDirectory(token, config.getOutput(), Configuration.publicFolder + File.separator + outputDir.getName());
+		File publicDir = new File(edu.arizona.biosemantics.etcsite.filemanager.server.Configuration.publicFolder + File.separator + outputDir.getName());
+		fileService.copyDirectory(token, config.getOutput(), edu.arizona.biosemantics.etcsite.filemanager.server.Configuration.publicFolder + File.separator + outputDir.getName());
 		FileUtils.copyDirectory(outputDir, publicDir);
 	}
 }

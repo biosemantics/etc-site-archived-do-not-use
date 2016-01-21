@@ -3,10 +3,10 @@ package edu.arizona.biosemantics.etcsite.shared.rpc.ontologize;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.arizona.biosemantics.common.biology.TaxonGroup;
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.model.ontologize.TaskStageEnum;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.ontologize.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.IHasTasksServiceAsync;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ontologize.OntologizeException;
 import edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection;
 

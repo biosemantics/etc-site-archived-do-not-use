@@ -11,9 +11,10 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.CheckBox;
 import com.sencha.gxt.widget.core.client.Dialog;
 
-import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
-import edu.arizona.biosemantics.etcsitehelp.shared.help.Help;
+import edu.arizona.biosemantics.etcsite.core.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.user.IUserService;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.user.IUserServiceAsync;
+import edu.arizona.biosemantics.etcsite.etcsitehelp.shared.help.Help;
 
 public class HelpDialog extends Dialog {
 	

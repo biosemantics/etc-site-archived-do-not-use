@@ -3,7 +3,7 @@ package edu.arizona.biosemantics.etcsite.client.content.settings;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
+import edu.arizona.biosemantics.etcsite.core.shared.model.ShortUser;
 
 public interface ISettingsView extends IsWidget {
 

@@ -6,7 +6,7 @@ import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
 import edu.arizona.biosemantics.etcsite.client.event.ResumableTasksEvent.ResumableTasksEventHandler;
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
 
 public class ResumableTasksEvent extends GwtEvent<ResumableTasksEventHandler> {
 

@@ -34,7 +34,7 @@ import com.google.inject.name.Named;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 
-import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.core.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsPlace;
 import edu.arizona.biosemantics.etcsite.client.event.AuthenticationEvent;
 import edu.arizona.biosemantics.etcsite.client.event.AuthenticationEvent.AuthenticationEventType;

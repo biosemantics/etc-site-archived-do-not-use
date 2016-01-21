@@ -13,14 +13,14 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
-import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.core.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.AuthenticationPresenter;
 import edu.arizona.biosemantics.etcsite.client.common.AuthenticationToPlaceGoer;
 import edu.arizona.biosemantics.etcsite.client.common.RequiresAuthenticationPlace;
 import edu.arizona.biosemantics.etcsite.client.common.ResumeTaskToPlaceGoer;
 import edu.arizona.biosemantics.etcsite.client.common.ToPlaceGoer;
 import edu.arizona.biosemantics.etcsite.client.content.about.AboutPlace;
-import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerPlace;
+import edu.arizona.biosemantics.etcsite.client.content.filemanager.FileManagerPlace;
 import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.news.NewsPlace;
@@ -35,10 +35,10 @@ import edu.arizona.biosemantics.etcsite.client.content.visualization.Visualizati
 import edu.arizona.biosemantics.etcsite.client.event.AuthenticationEvent;
 import edu.arizona.biosemantics.etcsite.client.event.AuthenticationEvent.AuthenticationEventType;
 import edu.arizona.biosemantics.etcsite.client.event.ResumableTasksEvent;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationResult;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.LoginGoogleResult;
-import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationResult;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.IAuthenticationServiceAsync;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.LoginGoogleResult;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.task.ITaskServiceAsync;
 
 public class EtcSitePresenter implements IEtcSiteView.Presenter {
 

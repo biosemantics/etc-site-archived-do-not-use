@@ -25,11 +25,11 @@ import com.sencha.gxt.widget.core.client.form.DualListField.Mode;
 import com.sencha.gxt.widget.core.client.form.Validator;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
-import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.core.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.content.user.IUserSelectView.ISelectListener;
-import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
-import edu.arizona.biosemantics.etcsite.shared.model.ShortUserProperties;
-import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
+import edu.arizona.biosemantics.etcsite.core.shared.model.ShortUser;
+import edu.arizona.biosemantics.etcsite.core.shared.model.ShortUserProperties;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.user.IUserServiceAsync;
 
 public class UserSelectPresenter2 extends Dialog implements IUserSelectView.Presenter {
 	

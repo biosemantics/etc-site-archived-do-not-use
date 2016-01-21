@@ -6,7 +6,6 @@ import java.util.List;
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.ExtraJvmCallable;
-import edu.arizona.biosemantics.etcsite.shared.model.TaxonGroup;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
 
 public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements MatrixGeneration {

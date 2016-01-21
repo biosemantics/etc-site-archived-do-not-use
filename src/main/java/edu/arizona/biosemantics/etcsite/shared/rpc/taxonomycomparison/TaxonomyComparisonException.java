@@ -1,6 +1,6 @@
 package edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison;
 
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
 
 public class TaxonomyComparisonException extends Exception {
 

@@ -9,13 +9,13 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
-import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.core.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.model.process.semanticmarkup.BracketValidator;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.Description;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.PreprocessedDescription;
-import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.core.shared.model.semanticmarkup.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.BracketValidator;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkupException;
 

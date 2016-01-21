@@ -14,7 +14,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
 
-import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
+import edu.arizona.biosemantics.etcsite.core.shared.model.ShortUser;
 
 public class UsersView extends Composite implements IUsersView {
 

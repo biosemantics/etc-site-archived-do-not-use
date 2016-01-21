@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
-import edu.arizona.biosemantics.etcsite.server.process.file.IContentValidator;
+import edu.arizona.biosemantics.etcsite.filemanager.server.rpc.IContentValidator;
 
 public class CleanTaxReader implements IContentValidator {
 

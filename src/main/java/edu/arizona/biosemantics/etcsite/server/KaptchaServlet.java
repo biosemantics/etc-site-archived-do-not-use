@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
-import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
+import edu.arizona.biosemantics.etcsite.core.server.db.DAOManager;
 
 
 @SuppressWarnings("serial")

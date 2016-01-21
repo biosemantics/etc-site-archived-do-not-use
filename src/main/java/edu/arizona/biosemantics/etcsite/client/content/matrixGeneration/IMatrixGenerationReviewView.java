@@ -3,7 +3,7 @@ package edu.arizona.biosemantics.etcsite.client.content.matrixGeneration;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
 import edu.arizona.biosemantics.matrixreview.client.MatrixReviewView;
 import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 

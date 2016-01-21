@@ -4,7 +4,16 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-import edu.arizona.biosemantics.etcsite.shared.model.Captcha;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Captcha;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationResult;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.CaptchaException;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.IncorrectCaptchaSolutionException;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.InvalidPasswordResetException;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.LoginGoogleResult;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.NoSuchUserException;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.OpenPasswordResetRequestException;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.RegistrationFailedException;
 
 @RemoteServiceRelativePath("auth")
 public interface IAuthenticationService extends RemoteService {

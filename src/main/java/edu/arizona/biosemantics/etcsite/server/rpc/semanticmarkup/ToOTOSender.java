@@ -12,10 +12,10 @@ import java.util.concurrent.Future;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
-import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupConfiguration;
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.model.TaxonGroup;
-import edu.arizona.biosemantics.etcsite.shared.model.User;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.TaxonGroup;
+import edu.arizona.biosemantics.etcsite.core.shared.model.User;
+import edu.arizona.biosemantics.etcsite.core.shared.model.semanticmarkup.SemanticMarkupConfiguration;
 import edu.arizona.biosemantics.oto.client.oto.OTOClient;
 import edu.arizona.biosemantics.oto.model.CategorizeTerms;
 import edu.arizona.biosemantics.oto.model.CategoryBean;
@@ -30,7 +30,6 @@ import edu.arizona.biosemantics.oto2.oto.shared.model.Collection;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Label;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Term;
 import edu.arizona.biosemantics.oto2.oto.shared.model.TypedContext;
-import edu.arizona.biosemantics.oto2.oto.shared.rpc.IContextService;
 
 public class ToOTOSender {
 

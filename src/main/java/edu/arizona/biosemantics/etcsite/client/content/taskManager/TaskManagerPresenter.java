@@ -18,21 +18,21 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
-import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.core.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.content.user.IUserSelectView;
 import edu.arizona.biosemantics.etcsite.client.content.user.IUserSelectView.ISelectListener;
 import edu.arizona.biosemantics.etcsite.client.content.user.IUsersView;
 import edu.arizona.biosemantics.etcsite.client.event.FailedTasksEvent;
 import edu.arizona.biosemantics.etcsite.client.event.ResumableTasksEvent;
-import edu.arizona.biosemantics.etcsite.shared.model.Share;
-import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Share;
+import edu.arizona.biosemantics.etcsite.core.shared.model.ShortUser;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.semanticmarkup.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ontologize.IOntologizeService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ontologize.IOntologizeServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.task.ITaskServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.treegeneration.ITreeGenerationServiceAsync;
 
@@ -279,7 +279,7 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 			break;
 		case MATRIX_GENERATION:
 			matrixGenerationService.goToTaskStage(Authentication.getInstance().getToken(), taskData.getTask(), 
-					edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum.REVIEW, new AsyncCallback<Task>() {
+					edu.arizona.biosemantics.etcsite.core.shared.model.matrixgeneration.TaskStageEnum.REVIEW, new AsyncCallback<Task>() {
 				@Override
 				public void onSuccess(Task result) {
 					placeController.goTo(new edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationReviewPlace(result));
@@ -293,7 +293,7 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 			break;
 		case TREE_GENERATION:
 			treeGenerationService.goToTaskStage(Authentication.getInstance().getToken(), taskData.getTask(), 
-					edu.arizona.biosemantics.etcsite.shared.model.treegeneration.TaskStageEnum.VIEW, new AsyncCallback<Task>() {
+					edu.arizona.biosemantics.etcsite.core.shared.model.treegeneration.TaskStageEnum.VIEW, new AsyncCallback<Task>() {
 				@Override
 				public void onSuccess(Task result) {
 					placeController.goTo(new edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationViewPlace(result));
@@ -307,7 +307,7 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 			break;
 		case ONTOLOGIZE:
 			ontologizeService.goToTaskStage(Authentication.getInstance().getToken(), taskData.getTask(), 
-					edu.arizona.biosemantics.etcsite.shared.model.ontologize.TaskStageEnum.BUILD, new AsyncCallback<Task>() {
+					edu.arizona.biosemantics.etcsite.core.shared.model.ontologize.TaskStageEnum.BUILD, new AsyncCallback<Task>() {
 				@Override
 				public void onSuccess(Task result) {
 					placeController.goTo(new edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeBuildPlace(result));
@@ -322,7 +322,7 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 
 		case TAXONOMY_COMPARISON:
 			taxonomyComparisonService.goToTaskStage(Authentication.getInstance().getToken(), taskData.getTask(), 
-					edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison.TaskStageEnum.ALIGN ,new AsyncCallback<Task>() {
+					edu.arizona.biosemantics.etcsite.core.shared.model.taxonomycomparison.TaskStageEnum.ALIGN ,new AsyncCallback<Task>() {
 				@Override
 				public void onSuccess(Task result) {
 					placeController.goTo(new edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonAlignPlace(result));

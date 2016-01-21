@@ -8,18 +8,15 @@ import com.google.inject.name.Named;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
-import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.core.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView;
 import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView.UploadCompleteHandler;
-import edu.arizona.biosemantics.etcsite.client.common.files.FileUploadHandler;
-import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
+import edu.arizona.biosemantics.etcsite.client.content.filemanager.IFileManagerDialogView;
+import edu.arizona.biosemantics.etcsite.core.shared.model.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.filemanager.client.common.FileUploadHandler;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
 import gwtupload.client.IUploadStatus.Status;
 import gwtupload.client.IUploader;
-import gwtupload.client.Uploader;
 
 public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.Presenter {
 

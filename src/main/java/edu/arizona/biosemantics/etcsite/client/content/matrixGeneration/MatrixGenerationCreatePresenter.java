@@ -8,15 +8,15 @@ import com.google.inject.name.Named;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
-import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.core.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView;
 import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView.InputValidator;
 import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView.Presenter;
 import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView.UploadCompleteHandler;
-import edu.arizona.biosemantics.etcsite.client.common.files.FileUploadHandler;
-import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
+import edu.arizona.biosemantics.etcsite.client.content.filemanager.IFileManagerDialogView;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPlace;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.core.shared.model.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.filemanager.client.common.FileUploadHandler;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
 import gwtupload.client.IUploadStatus.Status;
 import gwtupload.client.IUploader;
@@ -24,7 +24,7 @@ import gwtupload.client.IUploader;
 public class MatrixGenerationCreatePresenter implements MatrixGenerationCreateView.Presenter {
 
 	private IMatrixGenerationCreateView view;
-	private edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView.Presenter fileManagerDialogPresenter;
+	private edu.arizona.biosemantics.etcsite.client.content.filemanager.IFileManagerDialogView.Presenter fileManagerDialogPresenter;
 	private IInputCreateView.Presenter inputCreatePresenter;
 
 	@Inject

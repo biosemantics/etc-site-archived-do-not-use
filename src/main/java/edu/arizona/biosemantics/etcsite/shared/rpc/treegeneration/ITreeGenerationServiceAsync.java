@@ -2,10 +2,10 @@ package edu.arizona.biosemantics.etcsite.shared.rpc.treegeneration;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.model.treegeneration.TaskStageEnum;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.treegeneration.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.IHasTasksServiceAsync;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationToken;
 import edu.ucdavis.cs.cfgproject.shared.model.TaxonMatrix;
 
 public interface ITreeGenerationServiceAsync extends IHasTasksServiceAsync {

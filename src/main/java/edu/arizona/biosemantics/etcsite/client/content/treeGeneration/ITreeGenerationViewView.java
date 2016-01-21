@@ -3,7 +3,7 @@ package edu.arizona.biosemantics.etcsite.client.content.treeGeneration;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
 import edu.ucdavis.cs.cfgproject.client.KeyView;
 
 public interface ITreeGenerationViewView extends IsWidget {

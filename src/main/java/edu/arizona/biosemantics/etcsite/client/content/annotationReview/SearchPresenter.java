@@ -8,16 +8,16 @@ import com.google.inject.name.Named;
 import com.google.web.bindery.event.shared.EventBus;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
-import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView;
-import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView;
-import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePresenter.ISelectListener;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
-import edu.arizona.biosemantics.etcsite.shared.model.file.search.Search;
-import edu.arizona.biosemantics.etcsite.shared.model.file.search.SearchResult;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.search.IFileSearchServiceAsync;
+import edu.arizona.biosemantics.etcsite.core.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.filemanager.client.common.IFileTreeView;
+import edu.arizona.biosemantics.etcsite.filemanager.client.common.ISelectableFileTreeView;
+import edu.arizona.biosemantics.etcsite.filemanager.client.common.SelectableFileTreePresenter.ISelectListener;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FileFilter;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.FileTreeItem;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.search.Search;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.model.search.SearchResult;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFileSearchServiceAsync;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFileServiceAsync;
 
 public class SearchPresenter implements ISearchView.Presenter {
 

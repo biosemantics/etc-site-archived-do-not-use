@@ -1,7 +1,7 @@
 package edu.arizona.biosemantics.etcsite.client.content.pipeline;
 
 import edu.arizona.biosemantics.etcsite.client.common.HasTaskPlace;
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
 
 public class PipelinePlace extends HasTaskPlace  {
 

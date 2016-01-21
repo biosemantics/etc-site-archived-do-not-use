@@ -3,8 +3,8 @@ package edu.arizona.biosemantics.etcsite.client.common;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CaptchaPanel;
 
-import edu.arizona.biosemantics.etcsite.shared.model.Captcha;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Captcha;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.IAuthenticationServiceAsync;
 
 public class CaptchaPresenter {
 	

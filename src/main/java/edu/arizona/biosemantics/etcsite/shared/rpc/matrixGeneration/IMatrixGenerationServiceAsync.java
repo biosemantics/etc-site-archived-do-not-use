@@ -2,10 +2,10 @@ package edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum;
-import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksServiceAsync;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.matrixgeneration.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.IHasTasksServiceAsync;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 
 public interface IMatrixGenerationServiceAsync extends IHasTasksServiceAsync {

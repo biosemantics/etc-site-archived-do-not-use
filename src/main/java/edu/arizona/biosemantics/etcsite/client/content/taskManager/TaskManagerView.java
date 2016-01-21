@@ -35,10 +35,10 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SelectionModel;
 
-import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum;
+import edu.arizona.biosemantics.etcsite.core.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.core.shared.model.ShortUser;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.TaskTypeEnum;
 
 public class TaskManagerView extends Composite implements ITaskManagerView, Handler {
 
@@ -474,23 +474,23 @@ public class TaskManagerView extends Composite implements ITaskManagerView, Hand
 			break;
 		case MATRIX_GENERATION:
 			this.rewindButton.setEnabled(true);
-			//this.rewindListBox.addItem(edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum.REVIEW.displayName());
+			//this.rewindListBox.addItem(edu.arizona.biosemantics.etcsite.core.shared.model.matrixgeneration.TaskStageEnum.REVIEW.displayName());
 			//this.rewindListBox.setEnabled(true);
 			break;
 		case SEMANTIC_MARKUP:
 			this.rewindButton.setEnabled(true);
 			//this.rewindListBox.addItem(
-			//		edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum.REVIEW_TERMS.displayName());
+			//		edu.arizona.biosemantics.etcsite.core.shared.model.semanticmarkup.TaskStageEnum.REVIEW_TERMS.displayName());
 			//this.rewindListBox.setEnabled(true);
 			break;
 		case TREE_GENERATION:
 			this.rewindButton.setEnabled(true);
-			//this.rewindListBox.addItem(edu.arizona.biosemantics.etcsite.shared.model.treegeneration.TaskStageEnum.VIEW.displayName());
+			//this.rewindListBox.addItem(edu.arizona.biosemantics.etcsite.core.shared.model.treegeneration.TaskStageEnum.VIEW.displayName());
 			//this.rewindListBox.setEnabled(true);
 			break;
 		case TAXONOMY_COMPARISON:
 			this.rewindButton.setEnabled(true);
-			//this.rewindListBox.addItem(edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison.TaskStageEnum.ALIGN.displayName());
+			//this.rewindListBox.addItem(edu.arizona.biosemantics.etcsite.core.shared.model.taxonomycomparison.TaskStageEnum.ALIGN.displayName());
 			//this.rewindListBox.setEnabled(true);
 		case VISUALIZATION:
 		default:

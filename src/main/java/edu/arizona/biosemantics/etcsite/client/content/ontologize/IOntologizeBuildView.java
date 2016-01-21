@@ -2,7 +2,7 @@ package edu.arizona.biosemantics.etcsite.client.content.ontologize;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
 import edu.arizona.biosemantics.oto2.ontologize.client.Ontologize;
 
 public interface IOntologizeBuildView extends IsWidget {

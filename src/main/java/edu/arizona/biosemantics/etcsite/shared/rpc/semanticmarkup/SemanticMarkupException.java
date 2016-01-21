@@ -1,6 +1,6 @@
 package edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup;
 
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
 
 public class SemanticMarkupException extends Exception {
 

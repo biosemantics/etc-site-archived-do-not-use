@@ -8,12 +8,12 @@ import com.google.inject.name.Named;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
-import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.core.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView;
 import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView.InputValidator;
-import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
-import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView.Presenter;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.client.content.filemanager.IFileManagerDialogView;
+import edu.arizona.biosemantics.etcsite.client.content.filemanager.IFileManagerDialogView.Presenter;
+import edu.arizona.biosemantics.etcsite.core.shared.model.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ontologize.IOntologizeServiceAsync;
 
 public class OntologizeCreatePresenter implements OntologizeCreateView.Presenter{

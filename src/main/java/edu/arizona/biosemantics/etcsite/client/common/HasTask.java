@@ -1,6 +1,6 @@
 package edu.arizona.biosemantics.etcsite.client.common;
 
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
 
 public interface HasTask {
 

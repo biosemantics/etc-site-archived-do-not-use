@@ -10,7 +10,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 import edu.arizona.biosemantics.etcsite.client.content.user.IUserSelectView.ISelectListener;
 import edu.arizona.biosemantics.etcsite.client.content.user.IUsersView.Presenter;
-import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
+import edu.arizona.biosemantics.etcsite.core.shared.model.ShortUser;
 
 public class UserSelectPresenter implements IUserSelectView.Presenter {
 

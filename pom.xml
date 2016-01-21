@@ -261,6 +261,12 @@
 			</exclusions>
 		</dependency>
 		<dependency>
+			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
+			<artifactId>semantic-markup</artifactId>
+			<version>0.1.165-SNAPSHOT</version>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
 		  <version>0.0.96-SNAPSHOT</version>
@@ -492,6 +498,48 @@
     		<artifactId>gwtbootstrap3</artifactId>
     		<version>0.9.1</version>
     		<scope>provided</scope>
+		</dependency>
+		<dependency>
+    		<groupId>edu.arizona.biosemantics.etcsite</groupId>
+    		<artifactId>etcsitehelp</artifactId>
+    		<version>0.0.2-SNAPSHOT</version>
+    		<classifier>classes</classifier>
+		</dependency>
+		<dependency>
+    		<groupId>edu.arizona.biosemantics.etcsite</groupId>
+    		<artifactId>etcsitehelp</artifactId>
+    		<version>0.0.2-SNAPSHOT</version>
+    		<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+    		<groupId>edu.arizona.biosemantics.etcsite</groupId>
+    		<artifactId>etcsitehelpcenter</artifactId>
+    		<version>0.0.2-SNAPSHOT</version>
+    		<classifier>classes</classifier>
+		</dependency>
+		<dependency>
+    		<groupId>edu.arizona.biosemantics.etcsite</groupId>
+    		<artifactId>core</artifactId>
+    		<version>0.0.4-SNAPSHOT</version>
+    		<classifier>classes</classifier>
+		</dependency>
+		<dependency>
+    		<groupId>edu.arizona.biosemantics.etcsite</groupId>
+    		<artifactId>core</artifactId>
+    		<version>0.0.4-SNAPSHOT</version>
+    		<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+    		<groupId>edu.arizona.biosemantics.etcsite</groupId>
+    		<artifactId>filemanager</artifactId>
+    		<version>0.0.3-SNAPSHOT</version>
+    		<classifier>classes</classifier>
+		</dependency>
+		<dependency>
+    		<groupId>edu.arizona.biosemantics.etcsite</groupId>
+    		<artifactId>filemanager</artifactId>
+    		<version>0.0.3-SNAPSHOT</version>
+		 	<classifier>sources</classifier>
 		</dependency>
 	</dependencies>
 

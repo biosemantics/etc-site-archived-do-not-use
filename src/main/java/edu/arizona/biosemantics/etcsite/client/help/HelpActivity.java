@@ -16,7 +16,7 @@ import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
 import edu.arizona.biosemantics.etcsite.client.content.about.AboutPlace;
-import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerPlace;
+import edu.arizona.biosemantics.etcsite.client.content.filemanager.FileManagerPlace;
 import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPlace;
@@ -32,11 +32,10 @@ import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMa
 import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
 import edu.arizona.biosemantics.etcsite.client.help.IHelpView.Presenter;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
-import edu.arizona.biosemantics.etcsitehelp.shared.help.Help;
-import edu.arizona.biosemantics.etcsitehelp.shared.help.HelpContent;
-import edu.arizona.biosemantics.etcsitehelp.shared.rpc.help.IHelpServiceAsync;
-
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.IAuthenticationServiceAsync;
+import edu.arizona.biosemantics.etcsite.etcsitehelp.shared.help.Help;
+import edu.arizona.biosemantics.etcsite.etcsitehelp.shared.help.HelpContent;
+import edu.arizona.biosemantics.etcsite.etcsitehelp.shared.rpc.help.IHelpServiceAsync;
 
 public class HelpActivity extends MyAbstractActivity implements Presenter{
 

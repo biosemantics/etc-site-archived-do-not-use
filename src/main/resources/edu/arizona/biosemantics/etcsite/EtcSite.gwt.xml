@@ -35,7 +35,9 @@
   <inherits name='edu.arizona.biosemantics.oto2.oto.Oto'/>
   <inherits name='edu.arizona.biosemantics.oto2.ontologize.Ontologize'/>
   <inherits name='edu.ucdavis.cs.cfgproject.CfgProject'/>
-  <inherits name='edu.arizona.biosemantics.etcsitehelp.EtcSiteHelp' />
+  <inherits name='edu.arizona.biosemantics.etcsite.etcsitehelp.EtcSiteHelp' />
+  <inherits name='edu.arizona.biosemantics.etcsite.filemanager.FileManager'/>
+  <inherits name='edu.arizona.biosemantics.etcsite.core.Core'/>
   
   <inherits name="gwtupload.GWTUpload"/>
    

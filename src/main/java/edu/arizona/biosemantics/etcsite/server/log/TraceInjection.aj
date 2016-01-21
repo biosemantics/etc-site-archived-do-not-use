@@ -13,7 +13,6 @@ public class TraceInjection {
 
 	@Before("within(edu.arizona.biosemantics.etcsite.server..*) && "
 			+ "!within(edu.arizona.biosemantics.etcsite.server.log..*) && "
-			+ "!within(edu.arizona.biosemantics.etcsite.server.db.Query) && "
 			+ "execution(public * *(..))")
 	public void trace(JoinPoint joinPoint) {
 		Signature sig = joinPoint.getSignature();

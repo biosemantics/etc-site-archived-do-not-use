@@ -1,7 +1,6 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.ontologize;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Collections;
@@ -30,36 +29,31 @@ import com.google.inject.Inject;
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.common.taxonomy.Rank;
 import edu.arizona.biosemantics.common.taxonomy.RankData;
+import edu.arizona.biosemantics.etcsite.core.server.Emailer;
+import edu.arizona.biosemantics.etcsite.core.server.db.DAOManager;
+import edu.arizona.biosemantics.etcsite.core.shared.model.AbstractTaskConfiguration;
+import edu.arizona.biosemantics.etcsite.core.shared.model.ShortUser;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.TaskStage;
+import edu.arizona.biosemantics.etcsite.core.shared.model.TaskType;
+import edu.arizona.biosemantics.etcsite.core.shared.model.TaxonGroup;
+import edu.arizona.biosemantics.etcsite.core.shared.model.TinyUser;
+import edu.arizona.biosemantics.etcsite.core.shared.model.ontologize.OntologizeConfiguration;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.filemanager.server.rpc.JavaZipper;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.CopyFilesFailedException;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.CreateDirectoryFailedException;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.GetFileContentFailedException;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFileAccessService;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFileFormatService;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFilePermissionService;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFileService;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.PermissionDeniedException;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
-import edu.arizona.biosemantics.etcsite.server.Emailer;
-import edu.arizona.biosemantics.etcsite.server.JavaZipper;
-import edu.arizona.biosemantics.etcsite.server.Zipper;
-import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
-import edu.arizona.biosemantics.etcsite.server.rpc.file.FileService;
-import edu.arizona.biosemantics.etcsite.server.rpc.file.access.FileAccessService;
-import edu.arizona.biosemantics.etcsite.server.rpc.file.format.FileFormatService;
-import edu.arizona.biosemantics.etcsite.server.rpc.file.permission.FilePermissionService;
 import edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup.MarkupResultReader;
 import edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup.MarkupResultReader.BiologicalEntity;
-import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
-import edu.arizona.biosemantics.etcsite.shared.model.OntologizeConfiguration;
-import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
-import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
-import edu.arizona.biosemantics.etcsite.shared.model.TaxonGroup;
-import edu.arizona.biosemantics.etcsite.shared.model.TinyUser;
-import edu.arizona.biosemantics.etcsite.shared.model.ontologize.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.core.shared.model.ontologize.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.Description;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.CopyFilesFailedException;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.CreateDirectoryFailedException;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.access.GetFileContentFailedException;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.access.IFileAccessService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.format.IFileFormatService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.IFilePermissionService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDeniedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ontologize.IOntologizeService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ontologize.OntologizeException;
 import edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection;
@@ -337,7 +331,7 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 		if(isShared) {
 			String destination;
 			try {
-				destination = fileService.createDirectory(token, Configuration.fileBase + File.separator + token.getUserId(), 
+				destination = fileService.createDirectory(token, edu.arizona.biosemantics.etcsite.core.server.Configuration.fileBase + File.separator + token.getUserId(), 
 						ontologyFileName, true);
 			} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
 				throw new OntologizeException();
@@ -402,7 +396,7 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 		if(isShared) {
 			String destination;
 			try {
-				destination = fileService.createDirectory(token, Configuration.fileBase + File.separator + token.getUserId(), 
+				destination = fileService.createDirectory(token, edu.arizona.biosemantics.etcsite.core.server.Configuration.fileBase + File.separator + token.getUserId(), 
 						inputFileName, true);
 			} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
 				throw new OntologizeException();
@@ -425,7 +419,7 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 		config.setOutput(config.getInput() + "_output_by_OB_task_" + taskName);
 		config = daoManager.getOntologizeConfigurationDAO().addOntologizeConfiguration(config);
 		
-		edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum taskType = edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.ONTOLOGIZE;
+		edu.arizona.biosemantics.etcsite.core.shared.model.TaskTypeEnum taskType = edu.arizona.biosemantics.etcsite.core.shared.model.TaskTypeEnum.ONTOLOGIZE;
 		TaskType dbTaskType = daoManager.getTaskTypeDAO().getTaskType(taskType);
 		TaskStage taskStage = daoManager.getTaskStageDAO().getOntologizeTaskStage(TaskStageEnum.INPUT.toString());
 		TinyUser user = daoManager.getUserDAO().getTinyUser(token.getUserId());
@@ -482,7 +476,7 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 		List<Task> tasks = daoManager.getTaskDAO().getOwnedTasks(user.getId());
 		for(Task task : tasks) {
 			if(task != null && task.isResumable() && !task.isFailed() && 
-					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.ONTOLOGIZE)) {
+					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.core.shared.model.TaskTypeEnum.ONTOLOGIZE)) {
 						return task;
 			}
 		}
@@ -496,7 +490,7 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 		List<Task> tasks = daoManager.getTaskDAO().getResumableTasks(user.getId());
 		for(Task task : tasks) {
 			if(task != null && task.isResumable() && !task.isFailed() && 
-					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.ONTOLOGIZE)) {
+					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.core.shared.model.TaskTypeEnum.ONTOLOGIZE)) {
 				result.add(task);
 			}
 		}
@@ -535,7 +529,7 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 
 	@Override
 	public Task goToTaskStage(AuthenticationToken token, Task task,	TaskStageEnum taskStageEnum) {
-		TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.ONTOLOGIZE);
+		TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.core.shared.model.TaskTypeEnum.ONTOLOGIZE);
 		TaskStage taskStage = daoManager.getTaskStageDAO().getOntologizeTaskStage(taskStageEnum.toString());
 		task.setTaskStage(taskStage);
 		task.setResumable(true);
@@ -649,7 +643,7 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 		createOntologyFile(token, task);
 		final OntologizeConfiguration config = this.getOntologizeConfiguration(task);
 		
-		String zipSource = Configuration.compressedFileBase + File.separator + token.getUserId() + File.separator + "ontologize" + 
+		String zipSource = edu.arizona.biosemantics.etcsite.filemanager.server.Configuration.compressedFileBase + File.separator + token.getUserId() + File.separator + "ontologize" + 
 				File.separator + task.getId() + File.separator + task.getName() + "_ontologies";
 		
 		File zipSourceFile = new File(zipSource);
@@ -690,7 +684,7 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 				}
 		}
 		
-		String zipFilePath = Configuration.compressedFileBase + File.separator + token.getUserId() + File.separator + 
+		String zipFilePath = edu.arizona.biosemantics.etcsite.filemanager.server.Configuration.compressedFileBase + File.separator + token.getUserId() + File.separator + 
 				"ontologize" + File.separator + task.getId() + File.separator + task.getName() + "_ontologies.zip";
 		JavaZipper zipper = new JavaZipper();
 		try {

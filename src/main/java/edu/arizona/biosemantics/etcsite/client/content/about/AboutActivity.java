@@ -12,9 +12,7 @@ import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
 import edu.arizona.biosemantics.etcsite.client.content.about.IAboutView.Presenter;
 import edu.arizona.biosemantics.etcsite.client.content.gettingstarted.GettingStartedPlace;
 import edu.arizona.biosemantics.etcsite.client.help.IHelpView;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
-import edu.arizona.biosemantics.etcsitehelp.shared.rpc.help.IHelpServiceAsync;
-
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.IAuthenticationServiceAsync;
 
 public class AboutActivity extends MyAbstractActivity implements Presenter {
 

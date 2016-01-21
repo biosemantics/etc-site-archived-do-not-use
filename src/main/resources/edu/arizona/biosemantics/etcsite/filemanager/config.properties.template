@@ -1,0 +1,11 @@
+targetNamespace=http://www.github.com/biosemantics
+taxonDescriptionSchemaFileWeb=http://raw.githubusercontent.com/biosemantics/schemas/0.0.1/semanticMarkupInput.xsd;https://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupOutput.xsd
+markedUpTaxonDescriptionSchemaFileWeb=http://raw.githubusercontent.com/biosemantics/schemas/0.0.1/semanticMarkupOutput.xsd;https://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupOutput.xsd
+taxonDescriptionSchemaFile=C:/gitEtc3/etc-site2/src/main/resources/edu/arizona/biosemantics/etcsite/server/rpc/io/semanticMarkupInput.xsd
+markedUpTaxonDescriptionSchemaFile=C:/gitEtc3/etc-site2/src/main/resources/edu/arizona/biosemantics/etcsite/server/rpc/io/semanticMarkupOutput.xsd
+compressedFileBase=../etcsite/temp/compressedFiles
+publicFolder=../etcsite/data/public
+xPathObjectModel=http://saxon.sf.net/jaxp/xpath/om
+compressCommand=C:/Windows/System32/zip.bat [sourceParent]\\[source] [destination]
+#compressCommand=tar [source.parent]/[source.filename] [destination]
+#compressCommand=tar -zcvf [destination] --directory=[source.parent] [source.filename]

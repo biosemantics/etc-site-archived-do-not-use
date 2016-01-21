@@ -13,27 +13,23 @@ import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
-import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
-import edu.arizona.biosemantics.etcsite.server.rpc.file.FileService;
-import edu.arizona.biosemantics.etcsite.server.rpc.file.access.FileAccessService;
-import edu.arizona.biosemantics.etcsite.server.rpc.file.format.FileFormatService;
-import edu.arizona.biosemantics.etcsite.server.rpc.file.permission.FilePermissionService;
-import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
-import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
-import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
-import edu.arizona.biosemantics.etcsite.shared.model.TinyUser;
-import edu.arizona.biosemantics.etcsite.shared.model.TreeGenerationConfiguration;
-import edu.arizona.biosemantics.etcsite.shared.model.treegeneration.TaskStageEnum;
-import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.CopyFilesFailedException;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.CreateDirectoryFailedException;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.access.IFileAccessService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.format.IFileFormatService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.IFilePermissionService;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDeniedException;
+import edu.arizona.biosemantics.etcsite.core.server.db.DAOManager;
+import edu.arizona.biosemantics.etcsite.core.shared.model.AbstractTaskConfiguration;
+import edu.arizona.biosemantics.etcsite.core.shared.model.ShortUser;
+import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.core.shared.model.TaskStage;
+import edu.arizona.biosemantics.etcsite.core.shared.model.TaskType;
+import edu.arizona.biosemantics.etcsite.core.shared.model.TinyUser;
+import edu.arizona.biosemantics.etcsite.core.shared.model.treegeneration.TreeGenerationConfiguration;
+import edu.arizona.biosemantics.etcsite.core.shared.model.treegeneration.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.CopyFilesFailedException;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.CreateDirectoryFailedException;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFileAccessService;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFileFormatService;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFilePermissionService;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFileService;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.PermissionDeniedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.treegeneration.ITreeGenerationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.treegeneration.TreeGenerationException;
 import edu.ucdavis.cs.cfgproject.server.CSVReader;
@@ -73,7 +69,7 @@ public class TreeGenerationService extends RemoteServiceServlet implements ITree
 		List<Task> tasks = daoManager.getTaskDAO().getOwnedTasks(user.getId());
 		for(Task task : tasks) {
 			if(task != null && task.isResumable() && !task.isFailed() && 
-					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.TREE_GENERATION)) {
+					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.core.shared.model.TaskTypeEnum.TREE_GENERATION)) {
 						return task;
 			}
 		}
@@ -125,7 +121,7 @@ public class TreeGenerationService extends RemoteServiceServlet implements ITree
 		if(isShared) {
 			String destination;
 			try {
-				destination = fileService.createDirectory(token, Configuration.fileBase + File.separator + token.getUserId(), 
+				destination = fileService.createDirectory(token, edu.arizona.biosemantics.etcsite.core.server.Configuration.fileBase + File.separator + token.getUserId(), 
 						fileName, true);
 			} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
 				throw new TreeGenerationException();
@@ -142,7 +138,7 @@ public class TreeGenerationService extends RemoteServiceServlet implements ITree
 		config.setInput(input);	
 		config = daoManager.getTreeGenerationConfigurationDAO().addTreeGenerationConfiguration(config);
 		
-		edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum taskType = edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.TREE_GENERATION;
+		edu.arizona.biosemantics.etcsite.core.shared.model.TaskTypeEnum taskType = edu.arizona.biosemantics.etcsite.core.shared.model.TaskTypeEnum.TREE_GENERATION;
 		TaskType dbTaskType = daoManager.getTaskTypeDAO().getTaskType(taskType);
 		TaskStage taskStage = daoManager.getTaskStageDAO().getTreeGenerationTaskStage(TaskStageEnum.INPUT.toString());
 		TinyUser user = daoManager.getUserDAO().getTinyUser(token.getUserId());
@@ -170,7 +166,7 @@ public class TreeGenerationService extends RemoteServiceServlet implements ITree
 	@Override
 	public TaxonMatrix view(AuthenticationToken authenticationToken, Task task) throws TreeGenerationException {
 		final TreeGenerationConfiguration config = getTreeGenerationConfiguration(task);
-		TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.TREE_GENERATION);
+		TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.core.shared.model.TaskTypeEnum.TREE_GENERATION);
 		TaskStage taskStage = daoManager.getTaskStageDAO().getTreeGenerationTaskStage(TaskStageEnum.VIEW.toString());
 		task.setTaskStage(taskStage);
 		task.setResumable(false);
@@ -200,7 +196,7 @@ public class TreeGenerationService extends RemoteServiceServlet implements ITree
 
 	@Override
 	public Task goToTaskStage(AuthenticationToken token, Task task,	TaskStageEnum taskStageEnum) {
-		TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.TREE_GENERATION);
+		TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.core.shared.model.TaskTypeEnum.TREE_GENERATION);
 		TaskStage taskStage = daoManager.getTaskStageDAO().getTreeGenerationTaskStage(taskStageEnum.toString());
 		task.setTaskStage(taskStage);
 		task.setResumable(true);
@@ -217,7 +213,7 @@ public class TreeGenerationService extends RemoteServiceServlet implements ITree
 		List<Task> tasks = daoManager.getTaskDAO().getResumableTasks(user.getId());
 		for(Task task : tasks) {
 			if(task != null && task.isResumable() && !task.isFailed() && 
-					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.TREE_GENERATION)) {
+					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.core.shared.model.TaskTypeEnum.TREE_GENERATION)) {
 				result.add(task);
 			}
 		}

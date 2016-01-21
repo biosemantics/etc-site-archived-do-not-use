@@ -24,9 +24,9 @@ public class DummyMIRGeneration implements MIRGeneration {
 		pwDir.mkdirs();
 		aggregateDir.mkdirs();
 		diagnosisDir.mkdirs();
-		FileUtils.copyDirectory(new File(Configuration.etcFiles + File.separator + "eulerdummyPWs"), pwDir);
-		FileUtils.copyDirectory(new File(Configuration.etcFiles + File.separator + "eulerdummyAggregate"), aggregateDir);
-		FileUtils.copyDirectory(new File(Configuration.etcFiles + File.separator + "eulerdummyDiagnosis"), diagnosisDir);
+		FileUtils.copyDirectory(new File(edu.arizona.biosemantics.etcsite.core.server.Configuration.etcFiles + File.separator + "eulerdummyPWs"), pwDir);
+		FileUtils.copyDirectory(new File(edu.arizona.biosemantics.etcsite.core.server.Configuration.etcFiles + File.separator + "eulerdummyAggregate"), aggregateDir);
+		FileUtils.copyDirectory(new File(edu.arizona.biosemantics.etcsite.core.server.Configuration.etcFiles + File.separator + "eulerdummyDiagnosis"), diagnosisDir);
 		
 		try {
 		    Thread.sleep(10000);
