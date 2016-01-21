@@ -76,7 +76,7 @@ public class FileTreeItem implements Serializable {
 	}
 	
 	public String getName(boolean includeExtension) {
-		if(isAllowsNewFiles() || isAllowsNewFolders())
+		if(this instanceof FolderTreeItem)
 			return name;
 		if(includeExtension)
 			return name;

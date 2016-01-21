@@ -26,7 +26,7 @@ public class ConnectionPool {
 		
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		Properties properties = new Properties(); 
-		properties.load(loader.getResourceAsStream("edu/arizona/biosemantics/etcsite/config.properties"));
+		properties.load(loader.getResourceAsStream("edu/arizona/biosemantics/etcsite/core/config.properties"));
 
 		String databaseName = properties.getProperty("databaseName");
 		String databaseUser = properties.getProperty("databaseUser");

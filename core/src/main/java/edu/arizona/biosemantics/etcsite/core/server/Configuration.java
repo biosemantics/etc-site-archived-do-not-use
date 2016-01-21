@@ -74,9 +74,9 @@ public class Configuration {
 			charaparser_databaseName = properties.getProperty("charaparser_databaseName");
 			charaparser_databaseName = properties.getProperty("charaparser_wordnet");
 			
-			fileBase = properties.getProperty("fileBase");
-			profiles = properties.getProperty("profiles");
-			etcFiles = properties.getProperty("etcFiles");
+			fileBase = properties.getProperty("fileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));;
+			profiles = properties.getProperty("profiles").replaceAll("/", Matcher.quoteReplacement(File.separator));;
+			etcFiles = properties.getProperty("etcFiles").replaceAll("/", Matcher.quoteReplacement(File.separator));;
 			
 			captcha_tempFileBase = properties.getProperty("captcha_tempFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));				
 			

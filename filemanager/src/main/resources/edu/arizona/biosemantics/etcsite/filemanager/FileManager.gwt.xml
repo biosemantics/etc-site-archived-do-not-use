@@ -24,7 +24,7 @@
   <inherits name='com.sencha.gxt.theme.blue.Blue' />
 
   <!-- Specify the app entry point class.                         -->
-  <entry-point class='edu.arizona.biosemantics.etcsite.filemanager.client.FileManager'/>
+  <!-- <entry-point class='edu.arizona.biosemantics.etcsite.filemanager.client.FileManager'/> -->
 
   <!-- Specify the paths for translatable code                    -->
   <source path='client'/>

@@ -8,6 +8,7 @@ import java.util.Set;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.core.server.db.DAOManager;
@@ -29,11 +30,11 @@ public class TaskService extends RemoteServiceServlet implements ITaskService {
 	private DAOManager daoManager;
 		
 	@Inject
-	public TaskService(IHasTasksService matrixGenerationService,
-			IHasTasksService semanticMarkupService,
-			IHasTasksService treeGenerationService,
-			IHasTasksService taxonomyComparisonService,
-			IHasTasksService ontologizeService, DAOManager daoManager) {
+	public TaskService(@Named("MatrixGeneration")IHasTasksService matrixGenerationService,
+			@Named("SemanticMarkup")IHasTasksService semanticMarkupService,
+			@Named("TreeGeneration")IHasTasksService treeGenerationService,
+			@Named("TaxonomyComparison")IHasTasksService taxonomyComparisonService,
+			@Named("Ontologize")IHasTasksService ontologizeService, DAOManager daoManager) {
 		super();
 		this.matrixGenerationService = matrixGenerationService;
 		this.semanticMarkupService = semanticMarkupService;

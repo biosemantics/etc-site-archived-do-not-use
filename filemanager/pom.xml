@@ -4,7 +4,7 @@
 	<groupId>edu.arizona.biosemantics.etcsite</groupId>
 	<artifactId>filemanager</artifactId>
 	<packaging>war</packaging>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<properties>
 		<gwtVersion>2.6.1</gwtVersion>
 		<maven.compiler.source>1.7</maven.compiler.source>
@@ -86,13 +86,13 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.etcsite</groupId>
 			<artifactId>core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.3-SNAPSHOT</version>
 			<classifier>classes</classifier>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.etcsite</groupId>
 			<artifactId>core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.3-SNAPSHOT</version>
 			<classifier>sources</classifier>
 		</dependency>
 		<dependency>
