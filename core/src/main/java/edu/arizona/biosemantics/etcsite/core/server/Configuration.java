@@ -16,6 +16,10 @@ public class Configuration {
 
 	private final static Logger logger = Logger.getLogger(Configuration.class);
 
+	private static Properties properties;
+	
+	public static String secret;
+	
 	/** Database **/
 	public static String databaseName;
 	public static String databaseUser;
@@ -38,17 +42,25 @@ public class Configuration {
 	/** Captcha **/
 	public static String captcha_tempFileBase;
 
-	private static Properties properties;
-
 	public static String googleClientId;
-
 	public static String googleRedirectURI;
+	public static String googleSecret;
+
+	public static String emailSMTPServer;
+	public static String emailSMTPPort;
+	protected static String emailAddress;
+	protected static String emailPassword;
+
+	public static String passwordResetBody;
+	public static String passwordResetSubject;
 	
 	static {		
 		try {
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
 			properties = new Properties(); 
-			properties.load(loader.getResourceAsStream("edu/arizona/biosemantics/etcsite/config.properties"));
+			properties.load(loader.getResourceAsStream("edu/arizona/biosemantics/etcsite/core/config.properties"));
+			
+			secret = properties.getProperty("secret");
 			
 			databaseName = properties.getProperty("databaseName");
 			databaseUser = properties.getProperty("databaseUser");
@@ -59,7 +71,27 @@ public class Configuration {
 			database_maxConnectionsPerPartition = Integer.valueOf(properties.getProperty("database_maxConnectionsPerPartition"));
 			database_partitionCount = Integer.valueOf(properties.getProperty("database_partitionCount"));
 			
+			charaparser_databaseName = properties.getProperty("charaparser_databaseName");
+			charaparser_databaseName = properties.getProperty("charaparser_wordnet");
+			
+			fileBase = properties.getProperty("fileBase");
+			profiles = properties.getProperty("profiles");
+			etcFiles = properties.getProperty("etcFiles");
+			
 			captcha_tempFileBase = properties.getProperty("captcha_tempFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));				
+			
+			googleRedirectURI = properties.getProperty("google_redirect_URI");
+			googleClientId = properties.getProperty("google_client_id");
+			googleSecret = properties.getProperty("google_secret");
+
+			emailSMTPServer = properties.getProperty("email_smtp_server");
+			emailSMTPPort = properties.getProperty("email_smtp_port");
+			emailAddress = properties.getProperty("email_address");
+			emailPassword = properties.getProperty("email_password");
+
+			passwordResetBody = properties.getProperty("password_reset_subject");
+			passwordResetSubject = properties.getProperty("password_reset_body");
+		
 		} catch(Exception e) {
 			logger.error("Couldn't read configuration", e);
 		}
