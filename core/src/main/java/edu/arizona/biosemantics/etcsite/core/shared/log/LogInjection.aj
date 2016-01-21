@@ -6,5 +6,5 @@ import edu.arizona.biosemantics.common.log.ILoggable;
 public aspect LogInjection extends AbstractLogInjection {
 	
 	declare parents : edu.arizona.biosemantics.etcsite.core.server..* implements ILoggable;
-	declare parents : edu.arizona.biosemantics.etcsite.common.shared..* implements ILoggable;
+	declare parents : edu.arizona.biosemantics.etcsite.core.shared..* implements ILoggable;
 }
