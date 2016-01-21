@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.filemanager.server.rpc;
+package edu.arizona.biosemantics.etcsite.filemanager.server.process;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -27,9 +27,9 @@ import com.google.inject.Inject;
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.common.taxonomy.Rank;
 import edu.arizona.biosemantics.etcsite.core.shared.model.FileTypeEnum;
-import edu.arizona.biosemantics.etcsite.filemanager.shared.model.BracketChecker;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.model.TaxonIdentificationEntry;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.model.XmlModelFile;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.process.BracketChecker;
 
 /*import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.i18n.shared.DateTimeFormat.PredefinedFormat;
@@ -37,7 +37,7 @@ import com.google.gwt.i18n.shared.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.XMLParser;*/
 
-public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.filemanager.shared.model.XmlModelFileCreator {
+public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.filemanager.shared.process.XmlModelFileCreator {
 
 	public String[] fields =  new String[] {"author", "year", "title", "doi", "full citation",
 			/*"order", "suborder", "superfamily", "family", "subfamily", "tribe", "subtribe", "genus", "subgenus", 

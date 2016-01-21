@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.filemanager.shared.model;
+package edu.arizona.biosemantics.etcsite.filemanager.shared.process;
 
 import java.util.HashMap;
 import java.util.HashSet;

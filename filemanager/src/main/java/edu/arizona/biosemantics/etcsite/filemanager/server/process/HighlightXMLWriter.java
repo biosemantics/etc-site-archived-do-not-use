@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.filemanager.server.rpc;
+package edu.arizona.biosemantics.etcsite.filemanager.server.process;
 
 import java.io.IOException;
 import java.io.Writer;

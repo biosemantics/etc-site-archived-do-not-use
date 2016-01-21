@@ -1,7 +1,7 @@
 package edu.arizona.biosemantics.etcsite.filemanager.server.upload;
 
-import edu.arizona.biosemantics.etcsite.filemanager.server.rpc.ContentValidatorProvider;
-import edu.arizona.biosemantics.etcsite.filemanager.server.rpc.XmlNamespaceManager;
+import edu.arizona.biosemantics.etcsite.filemanager.server.process.XmlNamespaceManager;
+import edu.arizona.biosemantics.etcsite.filemanager.server.process.validate.ContentValidatorProvider;
 
 public class MarkedUpTaxonDescriptionUploader extends TaxonDescriptionUploader {
 

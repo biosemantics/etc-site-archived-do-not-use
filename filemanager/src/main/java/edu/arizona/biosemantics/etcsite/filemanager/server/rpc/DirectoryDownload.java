@@ -7,6 +7,8 @@ import edu.arizona.biosemantics.etcsite.core.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.core.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.filemanager.server.Configuration;
+import edu.arizona.biosemantics.etcsite.filemanager.server.process.FileNameNormalizer;
+import edu.arizona.biosemantics.etcsite.filemanager.server.process.compress.JavaZipper;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.CopyFilesFailedException;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.CreateDirectoryFailedException;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.FileDeleteFailedException;

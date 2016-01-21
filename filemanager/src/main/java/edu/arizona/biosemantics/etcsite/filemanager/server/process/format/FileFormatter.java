@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.filemanager.server.rpc;
+package edu.arizona.biosemantics.etcsite.filemanager.server.process.format;
 
 import edu.arizona.biosemantics.etcsite.core.shared.model.FileTypeEnum;
 

@@ -21,10 +21,10 @@ import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.core.shared.model.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.core.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.filemanager.server.Configuration;
-import edu.arizona.biosemantics.etcsite.filemanager.server.rpc.ContentValidatorProvider;
-import edu.arizona.biosemantics.etcsite.filemanager.server.rpc.IContentValidator;
-import edu.arizona.biosemantics.etcsite.filemanager.server.rpc.JavaZipper;
-import edu.arizona.biosemantics.etcsite.filemanager.server.rpc.XmlNamespaceManager;
+import edu.arizona.biosemantics.etcsite.filemanager.server.process.XmlNamespaceManager;
+import edu.arizona.biosemantics.etcsite.filemanager.server.process.compress.JavaZipper;
+import edu.arizona.biosemantics.etcsite.filemanager.server.process.validate.ContentValidatorProvider;
+import edu.arizona.biosemantics.etcsite.filemanager.server.process.validate.IContentValidator;
 
 public class TaxonDescriptionUploader extends Uploader {
 

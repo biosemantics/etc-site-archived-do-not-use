@@ -5,8 +5,8 @@ import edu.arizona.biosemantics.etcsite.core.server.rpc.auth.AuthenticationServi
 import edu.arizona.biosemantics.etcsite.core.shared.model.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationResult;
 import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationToken;
-import edu.arizona.biosemantics.etcsite.filemanager.server.rpc.ContentValidatorProvider;
-import edu.arizona.biosemantics.etcsite.filemanager.server.rpc.XmlNamespaceManager;
+import edu.arizona.biosemantics.etcsite.filemanager.server.process.XmlNamespaceManager;
+import edu.arizona.biosemantics.etcsite.filemanager.server.process.validate.ContentValidatorProvider;
 import edu.arizona.biosemantics.etcsite.filemanager.server.upload.Uploader.UploadResult;
 import gwtupload.server.UploadAction;
 import gwtupload.shared.UConsts;

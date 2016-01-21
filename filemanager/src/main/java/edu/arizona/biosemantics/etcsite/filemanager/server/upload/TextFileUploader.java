@@ -18,7 +18,7 @@ import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.core.shared.model.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.core.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.filemanager.server.Configuration;
-import edu.arizona.biosemantics.etcsite.filemanager.server.rpc.JavaZipper;
+import edu.arizona.biosemantics.etcsite.filemanager.server.process.compress.JavaZipper;
 
 public class TextFileUploader extends Uploader {
 

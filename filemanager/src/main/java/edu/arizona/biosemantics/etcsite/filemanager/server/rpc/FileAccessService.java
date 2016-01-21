@@ -31,6 +31,8 @@ import com.google.inject.Inject;
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.core.shared.model.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.filemanager.server.process.MyXmlXhtmlRenderer;
+import edu.arizona.biosemantics.etcsite.filemanager.server.process.format.FileFormatter;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.GetFileContentFailedException;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFileAccessService;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFilePermissionService;

@@ -15,7 +15,7 @@ import edu.arizona.biosemantics.etcsite.core.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.model.DescriptionEntry;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.model.TaxonIdentificationEntry;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.model.XmlModelFile;
-import edu.arizona.biosemantics.etcsite.filemanager.shared.model.XmlModelFileCreator;
+import edu.arizona.biosemantics.etcsite.filemanager.shared.process.XmlModelFileCreator;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFileAccessServiceAsync;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFileFormatServiceAsync;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.rpc.IFileServiceAsync;

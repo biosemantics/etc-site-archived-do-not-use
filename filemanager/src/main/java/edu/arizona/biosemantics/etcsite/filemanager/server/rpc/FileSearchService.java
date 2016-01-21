@@ -34,6 +34,7 @@ import com.google.inject.Inject;
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.core.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.filemanager.server.Configuration;
+import edu.arizona.biosemantics.etcsite.filemanager.server.process.format.XMLFileFormatter;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.model.search.ElementAttributeValuesSearch;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.model.search.ElementValuesSearch;
 import edu.arizona.biosemantics.etcsite.filemanager.shared.model.search.ElementsSearch;

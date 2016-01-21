@@ -1,4 +1,6 @@
-package edu.arizona.biosemantics.etcsite.filemanager.server.rpc;
+package edu.arizona.biosemantics.etcsite.filemanager.server.process.format;
+
+import edu.arizona.biosemantics.etcsite.filemanager.server.process.validate.CSVValidator;
 
 
 public class CSVFileFormatter implements IFileFormatter {
