@@ -21,6 +21,7 @@ import edu.arizona.biosemantics.etcsite.client.common.ResumeTaskToPlaceGoer;
 import edu.arizona.biosemantics.etcsite.client.common.ToPlaceGoer;
 import edu.arizona.biosemantics.etcsite.client.content.about.AboutPlace;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerPlace;
+import edu.arizona.biosemantics.etcsite.client.content.gettingstarted.GettingStartedPlace;
 import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.news.NewsPlace;
@@ -165,6 +166,12 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 	public void onHome() {
 		placeController.goTo(new HomePlace());
 	}
+	
+	@Override
+	public void onGetStarted() {
+		placeController.goTo(new GettingStartedPlace());
+	}
+	
 
 	@Override
 	public void onAbout() {

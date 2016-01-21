@@ -128,6 +128,10 @@
 				</div>
 				
 				<div style="padding-right: 10px; padding-top: 5px; cursor:pointer; float: right">
+					<my:ImageLabel ui:field="getstarted" imagePath="images/GetStarted.gif" imageWidth="20px" imageHeight="20px" text="Get Started" systemFolder="false"></my:ImageLabel>
+				</div>
+				
+				<div style="padding-right: 10px; padding-top: 5px; cursor:pointer; float: right">
 					<my:ImageLabel ui:field="loginLogout" imagePath="images/login.gif" imageWidth="20px" imageHeight="20px" text="Login" systemFolder="false"></my:ImageLabel>
 				</div>
 			</g:HTMLPanel>
