@@ -73,7 +73,7 @@ public class DirectoryDownload {
 				File file = new File(filePath);
 				
 				String fileName = file.getName();
-				if(file.equals(new File(Configuration.fileBase + File.separator + authenticationToken.getUserId())))
+				if(file.equals(new File(edu.arizona.biosemantics.etcsite.core.server.Configuration.fileBase + File.separator + authenticationToken.getUserId())))
 					fileName = "Owned";
 					
 				if(file.exists()) {
@@ -134,7 +134,7 @@ public class DirectoryDownload {
 	
 	private void gatherOwned(String destination) throws CopyFilesFailedException, PermissionDeniedException, FileDeleteFailedException, CreateDirectoryFailedException {
 		cleanup(destination);		
-		String source = Configuration.fileBase + File.separator + authenticationToken.getUserId();
+		String source = edu.arizona.biosemantics.etcsite.core.server.Configuration.fileBase + File.separator + authenticationToken.getUserId();
 		fileService.copyDirectory(authenticationToken, source, destination);
 	}
 	

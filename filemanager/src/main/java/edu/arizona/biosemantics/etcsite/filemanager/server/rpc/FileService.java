@@ -739,7 +739,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 
 	private List<FileTreeItem> createRootFiles(AuthenticationToken authenticationToken, FileFilter fileFilter) {
 		List<FileTreeItem> result = new LinkedList<FileTreeItem>();
-		result.add(createFolderTreeItem("Owned", Configuration.fileBase + File.separator + authenticationToken.getUserId(), "Owned", FileTypeEnum.DIRECTORY,
+		result.add(createFolderTreeItem("Owned", edu.arizona.biosemantics.etcsite.core.server.Configuration.fileBase + File.separator + authenticationToken.getUserId(), "Owned", FileTypeEnum.DIRECTORY,
 				 authenticationToken.getUserId(), true, false, true));
 		result.add(createFolderTreeItem("Shared", "Shared", "Shared", FileTypeEnum.DIRECTORY,
 				 authenticationToken.getUserId(), true, false, false));
@@ -751,7 +751,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	private List<FileTreeItem> createFilesByPath(AuthenticationToken authenticationToken, FolderTreeItem folderTreeItem, FileFilter fileFilter, 
 			boolean isSystemFile, boolean allowNewFolders, boolean allowNewFiles) throws PermissionDeniedException {
 		List<FileTreeItem> result = new LinkedList<FileTreeItem>();
-		String filePath = Configuration.fileBase + File.separator + authenticationToken.getUserId();
+		String filePath = edu.arizona.biosemantics.etcsite.core.server.Configuration.fileBase + File.separator + authenticationToken.getUserId();
 		if(folderTreeItem != null)
 			filePath = folderTreeItem.getFilePath();
 		
@@ -785,7 +785,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		            	}).length;
 		            	name = child.getName() + " [" + files + " files, " + directories + " directories]";
 	            	}
-				String displayPath = childPath.replace(Configuration.fileBase + File.separator + authenticationToken.getUserId(), "");
+				String displayPath = childPath.replace(edu.arizona.biosemantics.etcsite.core.server.Configuration.fileBase + File.separator + authenticationToken.getUserId(), "");
 
 				boolean filter = false;
 				FileTypeEnum fileType = FileTypeEnum.PLAIN_TEXT;
@@ -871,7 +871,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	}
 
 	private List<FileTreeItem> createOwnedTaxonomies(AuthenticationToken token) {
-   		return createTaxonomies(new File(Configuration.fileBase + File.separator + token.getUserId()));
+   		return createTaxonomies(new File(edu.arizona.biosemantics.etcsite.core.server.Configuration.fileBase + File.separator + token.getUserId()));
 	}
 	
 	public List<FileTreeItem> createTaxonomies(File file) {

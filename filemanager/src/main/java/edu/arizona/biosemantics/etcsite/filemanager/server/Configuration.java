@@ -16,8 +16,7 @@ public class Configuration {
 
 	private final static Logger logger = Logger.getLogger(Configuration.class);
 	private static Properties properties;
-
-	public static String fileBase;
+	
 	public static String publicFolder;
 	public static String compressedFileBase;
 	public static String taxonDescriptionSchemaFile;
@@ -34,7 +33,6 @@ public class Configuration {
 			properties = new Properties(); 
 			properties.load(loader.getResourceAsStream("edu/arizona/biosemantics/etcsite/filemanager/config.properties"));
 			
-			fileBase = properties.getProperty("fileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			compressedFileBase = properties.getProperty("compressedFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			publicFolder = properties.getProperty("publicFolder").replaceAll("/", Matcher.quoteReplacement(File.separator));
 
