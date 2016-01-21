@@ -72,7 +72,7 @@ public class Configuration {
 			database_partitionCount = Integer.valueOf(properties.getProperty("database_partitionCount"));
 			
 			charaparser_databaseName = properties.getProperty("charaparser_databaseName");
-			charaparser_databaseName = properties.getProperty("charaparser_wordnet");
+			charaparser_wordnet = properties.getProperty("charaparser_wordnet");
 			
 			fileBase = properties.getProperty("fileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));;
 			profiles = properties.getProperty("profiles").replaceAll("/", Matcher.quoteReplacement(File.separator));;
