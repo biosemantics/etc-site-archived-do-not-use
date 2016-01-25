@@ -35,7 +35,7 @@
 	<g:ScrollPanel>
 	<my:CenteredContentPanel>
 		<g:HTMLPanel>
-		    <div class='content900pxCentered'>
+		    <div class='content900pxCentered' style="padding-top:15px">
 		        <div id='taskManagerContent'>
 		            <g:VerticalPanel>
 		            <g:FlowPanel><g:InlineLabel styleName="{style.bold}">

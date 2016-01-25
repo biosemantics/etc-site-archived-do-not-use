@@ -13,10 +13,13 @@
 		.bold {
 			font-weight: bold;
 		}
+		.header{
+			padding-top: 15px;
+        }
 
 	</ui:style>
 	<g:VerticalPanel>
-		<g:HorizontalPanel>
+		<g:HorizontalPanel styleName="{style.header}">
 		<!-- <my:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.TreeGenerationShort.gif" imageWidth="80px" imageHeight="20px" text="" />  -->
 		<g:InlineLabel styleName="{style.bold}">Ontology Building allows to build ontologies in OWL format from marked up taxon descriptions. 
 			It consists of the following steps:  

@@ -10,11 +10,14 @@
 	.descriptionFont{
 	font-size: 14px;	
     }
+    .header{
+	padding-top: 15px;	
+    }
 	</ui:style>
 	<g:ScrollPanel>
 		<lay:CenteredContentPanel>
 			<g:VerticalPanel>
-				<g:FlowPanel>
+				<g:FlowPanel styleName="{style.header}">
 					<g:InlineLabel styleName="{style.bold} {style.descriptionFont}">File Manager:&nbsp;</g:InlineLabel>
 					<g:InlineLabel styleName="{style.descriptionFont}">Files you own and shared with you are listed here, 
 					including the files used as input to different tasks/analyses and the files output by the software.</g:InlineLabel>
