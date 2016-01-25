@@ -66,23 +66,24 @@
 								REQUIREMENTS:&nbsp;
 							</g:InlineLabel>
 							<g:InlineLabel styleName="DescriptionFont">
-								Text Capture takes textual morphological descriptions of one or
-								more taxa as input. The input files, which must be in English and
-								conform to this&nbsp;
+								Text Capture takes textual morphological descriptions of one or more taxa as input. 
+								The input files must be in English and conform to this&nbsp;
 							</g:InlineLabel>
 							<g:Anchor
 								href="http://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupInput.xsd"
 								target="_blank" styleName="{style.padding}">format</g:Anchor>
 							<g:InlineLabel styleName="DescriptionFont">
-			            	. Choose one of the following methods to provide the input.
+			            	. To View, Edit or Delete the created or uploaded files, 
+							use&nbsp;
 							</g:InlineLabel>
+							<g:Anchor ui:field="fileManagerAnchor" styleName="DescriptionFont">File Manager.</g:Anchor>
 						</g:FlowPanel>
 						<g:InlineLabel styleName="DescriptionFont">&nbsp;</g:InlineLabel>
 						<g:FlowPanel>
 						    <g:InlineLabel styleName="DescriptionFont">
-			            	 To View, Edit or Delete the created or uploaded files, go to&nbsp; 
+			            	 Choose one of the following methods to provide the input.
 							</g:InlineLabel>
-							<g:Anchor ui:field="fileManagerAnchor" styleName="DescriptionFont">File Manager.</g:Anchor>
+							
 						</g:FlowPanel>
 					</g:VerticalPanel>
 					<my2:IInputCreateView ui:field="inputCreateView"></my2:IInputCreateView>
