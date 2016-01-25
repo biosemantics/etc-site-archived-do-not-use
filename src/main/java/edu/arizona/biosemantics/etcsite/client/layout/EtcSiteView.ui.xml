@@ -28,9 +28,6 @@
 		.menu {
 
 		}
-		.label {
-		color:gray;
-	    }
 		.contentPanel {
 			padding-top:20px;
 		}
@@ -44,9 +41,8 @@
 		.scrollPanel {
 
 		}
-		.htmlPanel {
-	        border-bottom: 1px groove gray;
-		}
+
+		
 
 		.footerPanel {
 		background-image:url('images/Footer.gif');
@@ -121,8 +117,8 @@
     </ui:with>
 
 	<g:DockLayoutPanel unit='PX' ui:field='dockLayoutPanel'>
-		<g:north size='35'>
-			<g:HTMLPanel addStyleNames="{style.htmlPanel}">
+		<g:north size='30'>
+			<g:HTMLPanel>
 				<div style="padding-left: 20px; padding-top: 5px; cursor:pointer; float: left ">
 					<my:ImageLabel ui:field="menu" imagePath="images/Menu.gif" imageWidth="20px" imageHeight="20px" text="Menu" systemFolder="false"></my:ImageLabel>
 				</div>
@@ -137,10 +133,6 @@
 				
 				<div style="padding-right: 10px; padding-top: 5px; cursor:pointer; float: right">
 					<my:ImageLabel ui:field="loginLogout" imagePath="images/login.gif" imageWidth="20px" imageHeight="20px" text="Login" systemFolder="false"></my:ImageLabel>
-				</div>
-				
-				<div style="padding-right: 12px; padding-top: 5px;  float: right">
-					<g:Label addStyleNames="{style.label}" ui:field="name" text="" ></g:Label>
 				</div>
 			</g:HTMLPanel>
 		</g:north>

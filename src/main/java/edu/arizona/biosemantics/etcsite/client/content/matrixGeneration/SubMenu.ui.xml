@@ -18,13 +18,10 @@
 			padding-top: 10px;
 			padding-bottom: 10px;
 		}
-		.header{
-			padding-top: 15px;
-        }
 
 	</ui:style>
 	<g:VerticalPanel>
-		<g:HorizontalPanel styleName="{style.header}">
+		<g:HorizontalPanel>
 			<!-- <my:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.MatrixGenerationShort.gif" imageWidth="80px" imageHeight="20px" text="" />-->
 			<g:InlineLabel styleName="{style.bold}">Matrix Generation generates taxon-character matrices from marked-up descriptions of organisms. It consists of the following steps: </g:InlineLabel>
 		</g:HorizontalPanel>

@@ -8,7 +8,6 @@
 			padding-bottom: 10px;
 		}
 		.header{
-	        padding-top:15px;
 			font-size: 24px;
 			font-weight: bold;
 			color: #339900;
@@ -32,8 +31,9 @@
 			cursor:pointer;
 		}
 	</ui:style>
+	
 	<g:ScrollPanel>
-	  <lay:CenteredContentPanel>
+	<lay:CenteredContentPanel>
 		<g:VerticalPanel>
 		    <g:Label styleName="{style.header}">About ETC Toolkit</g:Label>
 		    <g:Label>&nbsp;</g:Label>

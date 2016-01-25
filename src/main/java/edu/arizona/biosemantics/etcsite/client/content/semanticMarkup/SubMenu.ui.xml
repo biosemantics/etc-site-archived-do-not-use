@@ -10,11 +10,6 @@
 			padding-top: 10px;
 			padding-bottom:10px;
 		}
-		.header {
-	        padding-top:15px;
-
-	   
-        }
 		.bold {
 			font-weight: bold;
 			margin-left: 40px;
@@ -22,7 +17,7 @@
 
 	</ui:style>
 	<g:VerticalPanel>
-	<g:HorizontalPanel styleName="{style.header}">
+	<g:HorizontalPanel>
 		<!--  <my:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.SemanticMarkupShort.gif" imageWidth="65px" imageHeight="20px" text="" />-->
 		<g:InlineLabel styleName="{style.bold}">Text Capture captures characters from taxonomic descriptions. It consists of the following steps: </g:InlineLabel>
 	</g:HorizontalPanel>

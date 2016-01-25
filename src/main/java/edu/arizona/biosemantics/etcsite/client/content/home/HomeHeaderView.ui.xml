@@ -11,7 +11,7 @@
 		    font-size: 11px;
 			color:5E5E5E; 
 		    position: absolute;
-		    top: -8px;
+		    top: 10px;
 		    left: 0px;
 		}
 		.etcLogo {
