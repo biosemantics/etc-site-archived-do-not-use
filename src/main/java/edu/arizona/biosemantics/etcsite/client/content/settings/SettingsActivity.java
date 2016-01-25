@@ -21,6 +21,7 @@ import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
 import edu.arizona.biosemantics.etcsite.client.common.ServerSetup;
+import edu.arizona.biosemantics.etcsite.client.layout.IEtcSiteView;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
@@ -30,9 +31,11 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 
 	private IUserServiceAsync userService;
 	private ISettingsView view;
+	private IEtcSiteView.Presenter etcSitePresenter;
 
 	@Inject
-	public SettingsActivity(ISettingsView settingsView, 
+	public SettingsActivity(IEtcSiteView.Presenter etcSitePresenter,
+			ISettingsView settingsView, 
 			PlaceController placeController,
 			IAuthenticationServiceAsync authenticationService, 
 			ILoginView.Presenter loginPresenter, 
@@ -40,6 +43,7 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 			IResetPasswordView.Presenter resetPasswordPresenter, 
 			IUserServiceAsync userService) {
 		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter);
+		this.etcSitePresenter = etcSitePresenter;
 		this.view = settingsView;
 		this.userService = userService;
 	}
@@ -140,7 +144,7 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 	}
 
 	@Override
-	public void onSave() {
+	public void onSave() {                 
 		ShortUser user = view.getData();
 		
 		if(user.getFirstName().trim().isEmpty()) {
@@ -163,6 +167,8 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 					Alerter.failedToUpdateUser(caught);
 				}
 		});
+		etcSitePresenter.getView().setName(user.getFirstName());
+		
 	}
 
 	@Override

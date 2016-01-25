@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
@@ -24,6 +25,7 @@ import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 
+import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.ImageLabel;
 import edu.arizona.biosemantics.etcsite.client.help.HelpActivity;
 
@@ -60,6 +62,9 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 	
 	@UiField
 	ImageLabel help;
+	
+	@UiField(provided=true)
+	Label name;
 		
 	private Presenter presenter;
 
@@ -68,6 +73,7 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 	@Inject
 	public EtcSiteView(HelpActivity helpActivity) {
 		this.helpActivity = helpActivity;
+		name = new Label();
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 	
@@ -79,6 +85,7 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
+		
 	}
 
 	@Override
@@ -95,6 +102,7 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 	public void setNavigationSize(int size, boolean animated) {
 		//dockLayoutPanel.forceLayout(); //makes fast mouse movement not to collapse the menu without animation (for some reason)
 		dockLayoutPanel.setWidgetSize(navigationPanel, size);
+		
 		if(animated)
 			dockLayoutPanel.animate(300);
 	}
@@ -251,10 +259,17 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 		loginLogout.setImage("images/login.gif");
 	}
 
-	@Override
+	@Override 
 	public void setLogout() {
+		name.setText(Authentication.getInstance().getFirstName());
 		loginLogout.setText("Logout");
 		loginLogout.setImage("images/logout.gif");
+	}
+	
+	@Override
+	public void setName(String name) {
+		this.name.setText(name);
+
 	}
 
 	@Override
@@ -264,6 +279,7 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 
 	@Override
 	public boolean isLogout() {
+		name.setText("");
 		return loginLogout.getImage().endsWith("images/logout.gif");
 	}
 

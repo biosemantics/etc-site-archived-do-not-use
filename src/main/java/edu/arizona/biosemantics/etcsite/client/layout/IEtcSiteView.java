@@ -57,5 +57,6 @@ public interface IEtcSiteView extends IsWidget {
 	boolean isLogin();
 	boolean isLogout();
 	void setResumableTasks(boolean b);
+	void setName(String firstname);
 	
 }

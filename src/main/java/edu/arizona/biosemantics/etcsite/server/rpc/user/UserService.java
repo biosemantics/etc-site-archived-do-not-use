@@ -23,10 +23,12 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.etcsite.client.common.CookieVariable;
 import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsPlace;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
@@ -141,7 +143,6 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		User user = userDAO.getUser(authenticationToken.getUserId());
 		if(user == null)
 			throw new UserNotFoundException();			
-		
 		user.setAffiliation(shortUser.getAffiliation());
 		user.setBioportalAPIKey(shortUser.getBioportalApiKey());
 		user.setBioportalUserId(shortUser.getBioportalUserId());
@@ -149,8 +150,8 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		user.setFirstName(shortUser.getFirstName());
 		user.setLastName(shortUser.getLastName());
 		user.setProfile(shortUser.getProfile());
-		
 		userDAO.update(user);
+		
 		return userDAO.getShortUser(authenticationToken.getUserId());
 	}
 
