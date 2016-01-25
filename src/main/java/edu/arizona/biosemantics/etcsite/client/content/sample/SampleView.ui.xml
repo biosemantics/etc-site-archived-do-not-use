@@ -4,7 +4,7 @@
 	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout">
 	<ui:style>      
 		.header{
-			padding-top:20px;
+			padding-top:15px;
 			font-size: 24px;
 			font-weight: bold;
 			color: #339900;

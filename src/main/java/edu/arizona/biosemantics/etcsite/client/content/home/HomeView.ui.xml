@@ -15,7 +15,6 @@
 		}
 	</ui:style>
 	<!-- <ui:style field="ETCcss" src="~/src/main/webapp/etcsite.css"></ui:style> -->
-	 
 	<g:ScrollPanel>
 	<my:CenteredContentPanel>
 		<g:VerticalPanel styleName="{style.container}">
@@ -24,4 +23,5 @@
 		</g:VerticalPanel>
 	</my:CenteredContentPanel>
 	</g:ScrollPanel>
+	
 </ui:UiBinder> 

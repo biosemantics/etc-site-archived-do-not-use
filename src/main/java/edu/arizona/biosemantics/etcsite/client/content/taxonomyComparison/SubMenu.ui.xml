@@ -18,10 +18,13 @@
 			padding-top: 10px;
 			padding-bottom: 10px;
 		}
+		.header{
+			padding-top: 15px;
+        }
 
 	</ui:style>
 	<g:VerticalPanel>
-		<g:HorizontalPanel>
+		<g:HorizontalPanel styleName="{style.header}">
 			<g:InlineLabel styleName="{style.bold}">Taxonomy Comparison creates possible worlds by aligning taxonomies utilizing expert articulations. It consists of the following steps: </g:InlineLabel>
 		</g:HorizontalPanel>
 		<g:HorizontalPanel styleName="{style.subMenu}">
