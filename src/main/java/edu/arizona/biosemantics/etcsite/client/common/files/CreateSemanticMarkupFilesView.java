@@ -201,7 +201,7 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	private ProgressMessageBox progressBox;
 
 	public CreateSemanticMarkupFilesView() {
-        deleteRankButton = new Button(); 
+		
 		authorityDate="unknown,unknown";
 		
 	    ListStore<Rank> store = new ListStore<Rank>(new ModelKeyProvider<Rank>() {
