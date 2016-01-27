@@ -149,6 +149,9 @@
 										<g:customCell>
 										    <g:Button ui:field="authorityDateButton" visible="false">Use last used Authority and Date</g:Button>
 										</g:customCell>
+                                         <g:customCell>
+											<g:Button ui:field="deleteRankButton" visible="false"/>
+										</g:customCell>
 									</g:row>
 									<g:row>
 										<g:customCell>

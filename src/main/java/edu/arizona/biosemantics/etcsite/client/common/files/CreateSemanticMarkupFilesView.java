@@ -16,6 +16,8 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -117,6 +119,9 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	ComboBox<Rank> ranksCombo;
 	
 	@UiField
+	Button deleteRankButton;
+	
+	@UiField
 	Button addRankButton;
 
 	@UiField
@@ -196,7 +201,7 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	private ProgressMessageBox progressBox;
 
 	public CreateSemanticMarkupFilesView() {
-		
+        deleteRankButton = new Button(); 
 		authorityDate="unknown,unknown";
 		
 	    ListStore<Rank> store = new ListStore<Rank>(new ModelKeyProvider<Rank>() {
@@ -217,6 +222,7 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	    ranksCombo.setForceSelection(true);
 	    ranksCombo.setTriggerAction(TriggerAction.ALL);
 	    ranksCombo.setValue(Rank.LIFE);
+	    
 		
 	    ListStore<Description> descStore = new ListStore<Description>(new ModelKeyProvider<Description>() {
 			@Override
@@ -329,13 +335,19 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	public void onReturn(ClickEvent event) {
 		  batchCreateCards.setActiveWidget(batchPanel);
 	}
+	
+	/*@UiHandler("deleteRankButton")
+	public void ondeleteRank(ClickEvent event) {
+		ranksGrid.removeRow(ranksGrid.getCellForEvent(event).getRowIndex());
+	}*/
+	
 	 
 	@UiHandler("addRankButton")
 	public void onAddRank(ClickEvent event) {
 		if(currentRankIsStrain()) {
 			strainPanel.setVisible(true);
 		}
-		
+
 		Widget valueWidget = ranksGrid.getWidget(ranksGrid.getRowCount()-2, 1);
 		TextField tf = (TextField)valueWidget;
 		String tfValue = tf.getText();
@@ -347,14 +359,23 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		
 		int newRow = ranksGrid.insertRow(ranksGrid.getRowCount() - 1);
 		Label label = new Label(ranksCombo.getValue().name());
+		deleteRankButton = new Button("Remove");
+		deleteRankButton.addClickHandler(new ClickHandler() {
+	        public void onClick(ClickEvent event) {
+	        	ranksGrid.removeRow(ranksGrid.getCellForEvent(event).getRowIndex());
+	        	if(ranksGrid.getRowCount()==3) ranksGrid.remove(authorityDateButton);
+	        }
+	      });
 		ranksGrid.setWidget(newRow - 1, 0, label);
+		ranksGrid.setWidget(newRow - 1, 2, deleteRankButton);
 		ranksGrid.remove(authorityDateButton);
 		ranksGrid.setWidget(newRow, 0, ranksCombo);
 		ranksGrid.setWidget(newRow, 1, new TextField());
 		ranksCombo.setValue(Rank.values()[ranksCombo.getValue().getId() + 1]);
-		
+
 		ranksGrid.setWidget(newRow, 2, authorityDateButton);
 		authorityDateButton.setVisible(true);	
+			
 	}
 	
 	@UiHandler("addDescriptionButton")
@@ -533,6 +554,9 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		}
 		ranksCombo.setValue(Rank.LIFE);
 		ranksGrid.setWidget(1, 0, ranksCombo);
+		ranksGrid.setWidget(1, 2, deleteRankButton);
+		ranksGrid.remove(deleteRankButton);
+		authorityDateButton.setVisible(false);
 	}
 	
 	@Override
