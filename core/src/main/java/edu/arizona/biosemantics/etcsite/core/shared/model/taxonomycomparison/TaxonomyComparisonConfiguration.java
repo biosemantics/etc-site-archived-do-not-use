@@ -9,23 +9,32 @@ import edu.arizona.biosemantics.etcsite.core.shared.model.Configuration;
 
 public class TaxonomyComparisonConfiguration extends AbstractTaskConfiguration implements Serializable {
 
-	private String input;
+	private String cleanTaxInput;
+	private String modelInput1;
+	private String modelInput2;
 	private String output;
 	
 	public TaxonomyComparisonConfiguration() { }
 	
 
 	public TaxonomyComparisonConfiguration(Configuration configuration,
-			String input, String output) {
+			String cleanTaxInput, String modelInput1, String modelInput2, String output) {
 		super(configuration);
-		this.input = input;
+		this.cleanTaxInput = cleanTaxInput;
+		this.modelInput1 = modelInput1;
+		this.modelInput2 = modelInput2;
 		this.output = output;
 	}
 
 	@Override
 	public List<String> getInputs() {
 		List<String> result = new LinkedList<String>();
-		result.add(this.getInput());
+		if(this.hasCleanTaxInput())
+			result.add(this.getCleanTaxInput());
+		if(this.hasModelInputs()) {
+			result.add(this.getModelInput1());
+			result.add(this.getModelInput2());
+		}
 		return result;
 	}
 
@@ -35,14 +44,41 @@ public class TaxonomyComparisonConfiguration extends AbstractTaskConfiguration i
 		result.add(this.getOutput());
 		return result;
 	}
-
-	public String getInput() {
-		return input;
+	
+	public boolean hasCleanTaxInput() {
+		return cleanTaxInput != null && !cleanTaxInput.isEmpty();
+	}
+	
+	public boolean hasModelInputs() {
+		return this.modelInput1 != null && this.modelInput2 != null && 
+				!this.modelInput1.isEmpty() && !this.modelInput2.isEmpty();
 	}
 
-	public void setInput(String input) {
-		this.input = input;
+	public String getCleanTaxInput() {
+		return cleanTaxInput;
 	}
+
+	public void setCleanTaxInput(String cleanTaxInput) {
+		this.cleanTaxInput = cleanTaxInput;
+	}
+	
+	public String getModelInput1() {
+		return modelInput1;
+	}
+
+	public void setModelInput1(String modelInput1) {
+		this.modelInput1 = modelInput1;
+	}
+
+	public String getModelInput2() {
+		return modelInput2;
+	}
+
+
+	public void setModelInput2(String modelInput2) {
+		this.modelInput2 = modelInput2;
+	}
+
 
 	public String getOutput() {
 		return output;

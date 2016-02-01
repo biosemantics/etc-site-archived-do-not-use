@@ -31,10 +31,12 @@ public class TaxonomyComparisonConfigurationDAO {
 
 	private TaxonomyComparisonConfiguration createTaxonomyComparisonConfiguration(ResultSet result) throws SQLException {
 		int configurationId = result.getInt(1);
-		String input = result.getString(2);
+		String cleanTaxInput = result.getString(2);
+		String modelInput1 = result.getString(3);
+		String modelInput2 = result.getString(4);
 		String output = result.getString(3);
 		Configuration configuration = configurationDAO.getConfiguration(configurationId);
-		return  new TaxonomyComparisonConfiguration(configuration, input, output);
+		return new TaxonomyComparisonConfiguration(configuration, cleanTaxInput, modelInput1, modelInput2, output);
 	}
 
 	
@@ -47,10 +49,12 @@ public class TaxonomyComparisonConfigurationDAO {
 			while(generatedKeys.next()) {
 				Configuration configuration = configurationDAO.getConfiguration(generatedKeys.getInt(1));
 				try (Query taxonomyComparisonQuery = new Query("INSERT INTO `etcsite_taxonomycomparisonconfigurations` " +
-						"(`configuration`, `input`, `output`) VALUES (?, ?, ?)")) {
+						"(`configuration`, `cleantax_input`, `model_input1`, `model_input2`, `output`) VALUES (?, ?, ?, ?, ?)")) {
 					taxonomyComparisonQuery.setParameter(1, configuration.getId());
-					taxonomyComparisonQuery.setParameter(2, taxonomyComparisonConfiguration.getInput());
-					taxonomyComparisonQuery.setParameter(3, taxonomyComparisonConfiguration.getOutput());
+					taxonomyComparisonQuery.setParameter(2, taxonomyComparisonConfiguration.getCleanTaxInput());
+					taxonomyComparisonQuery.setParameter(3, taxonomyComparisonConfiguration.getModelInput1());
+					taxonomyComparisonQuery.setParameter(4, taxonomyComparisonConfiguration.getModelInput2());
+					taxonomyComparisonQuery.setParameter(5, taxonomyComparisonConfiguration.getOutput());
 					taxonomyComparisonQuery.execute();
 				}
 				result = this.getTaxonomyComparisonConfiguration(generatedKeys.getInt(1));
@@ -61,14 +65,18 @@ public class TaxonomyComparisonConfigurationDAO {
 		return result;
 	}
 	
-	public void updateTaxonomyComparisonQueryConfiguration(TaxonomyComparisonConfiguration txonomyComparisonConfiguration) {
-		Configuration configuration = txonomyComparisonConfiguration.getConfiguration();
-		String input = txonomyComparisonConfiguration.getInput();
-		String output = txonomyComparisonConfiguration.getOutput();
-		try (Query query = new Query("UPDATE etcsite_taxonomycomparisonconfigurations SET input = ?, output = ?, "
+	public void updateTaxonomyComparisonQueryConfiguration(TaxonomyComparisonConfiguration taxonomyComparisonConfiguration) {
+		Configuration configuration = taxonomyComparisonConfiguration.getConfiguration();
+		String cleanTaxInput = taxonomyComparisonConfiguration.getCleanTaxInput();
+		String modelInput1 = taxonomyComparisonConfiguration.getModelInput1();
+		String modelInput2 = taxonomyComparisonConfiguration.getModelInput2();
+		String output = taxonomyComparisonConfiguration.getOutput();
+		try (Query query = new Query("UPDATE etcsite_taxonomycomparisonconfigurations SET cleantax_input = ?, model_input1 = ?, model_input2 = ?, output = ?, "
 				+ "WHERE configuration = ?")) {
-			query.setParameter(1, input);
-			query.setParameter(2, output);
+			query.setParameter(1, cleanTaxInput);
+			query.setParameter(2, modelInput1);
+			query.setParameter(3, modelInput2);
+			query.setParameter(4, output);
 			query.setParameter(5, configuration.getId());
 			query.execute();
 		} catch(Exception e) {
