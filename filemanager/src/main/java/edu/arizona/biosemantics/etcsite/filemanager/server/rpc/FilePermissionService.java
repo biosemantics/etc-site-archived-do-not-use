@@ -51,8 +51,9 @@ public class FilePermissionService extends RemoteServiceServlet implements IFile
 			return true;
 		return false;
 	}
-
-	private boolean isPublicFilePath(String filePath) {
+	
+	@Override
+	public boolean isPublicFilePath(String filePath) {
 		return filePath.startsWith(Configuration.publicFolder);
 	}
 
@@ -114,5 +115,6 @@ public class FilePermissionService extends RemoteServiceServlet implements IFile
 		boolean result = containedInPath(ownedFilesDirectory, filePath) || containedInPath(compressedOwnedFilesDirectory, filePath);
 		return result;
 	}
+
 
 }
