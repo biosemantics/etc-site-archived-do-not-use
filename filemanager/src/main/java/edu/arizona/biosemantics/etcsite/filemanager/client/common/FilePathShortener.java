@@ -43,13 +43,19 @@ public class FilePathShortener {
 		String seperator = ServerSetup.getInstance().getSetup().getSeperator();
 		
 		String result = fileTreeItem.getFilePath();
-		int ownerUserId = fileTreeItem.getOwnerUserId();
-		if(ownerUserId == viewerUserId) {
-			result = fileTreeItem.getDisplayFilePath();
-			result = "OWNED" + seperator + result;
-		} else {
-			result = fileTreeItem.getDisplayFilePath();
-			result = "SHARED" + seperator + result;
+		String displayFilePath = fileTreeItem.getDisplayFilePath();
+		switch(fileTreeItem.getFileSource()) {
+		case OWNED:
+			result = "OWNED" + seperator + displayFilePath;
+			break;
+		case PUBLIC:
+			result = "PUBLIC" + seperator + displayFilePath;
+			break;
+		case SHARED:
+			result = "PUBLIC" + seperator + displayFilePath;
+		default:
+			result = displayFilePath;
+			break;
 		}
 		
 		result = result.replace(seperator + seperator, seperator);
