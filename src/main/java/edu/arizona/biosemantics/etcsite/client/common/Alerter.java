@@ -115,7 +115,7 @@ public class Alerter {
 	}
 
 	public static MessageBox failedToRegister(Throwable caught) {
-		return showAlert("Registration", "Failed to register.", caught);
+		return showAlert("Registration", caught.getMessage(), caught);
 	}
 
 	public static MessageBox failedToRequestPasswordResetCode(Throwable caught) {
