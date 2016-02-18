@@ -307,17 +307,20 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	public class OnFinishUploadHandler implements OnFinishUploaderHandler {
 		String serverResponse = null;
 		@Override
-		public void onFinish(IUploader uploader) {	
+		public void onFinish(IUploader uploader) {
+			serverResponse = fileUploadHandler.parseServerResponse(uploader);
 			if (uploader.getStatus() == Status.SUCCESS) {
+				// aggregate server response and display the result at the end of key validation for taxon_description
+				// and marked_up_taxon_description files
 				if(uploadFileType.equals(FileTypeEnum.TAXON_DESCRIPTION.displayName()) || 
 						uploadFileType.equals(FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION.displayName())){
 					fileUploadHandler.validateTaxonDescriptionFiles(targetUploadDirectory);
+				}else{
+					if(serverResponse != null && !serverResponse.isEmpty())
+						Alerter.failedToUpload(serverResponse);
 				}
 				fileTreePresenter.getView().refreshChildren(targetFileTreeItem, fileFilter);
-			}
-			if(!uploadFileType.equals(FileTypeEnum.TAXON_DESCRIPTION.displayName()) && 
-						!uploadFileType.equals(FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION.displayName())){
-				serverResponse = fileUploadHandler.parseServerResponse(uploader);
+			}else{
 				if(serverResponse != null && !serverResponse.isEmpty())
 					Alerter.failedToUpload(serverResponse);
 			}
