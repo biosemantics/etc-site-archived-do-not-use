@@ -9,6 +9,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
@@ -63,7 +64,12 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	@UiField RadioButton selectExistingFolderRadio;
 	@UiField HorizontalPanel selectPanel;	
 	@UiField Button selectExistingFolderButton;
-	@UiField Label selectExistingFolderLabel;
+	
+	@UiField
+	Grid fileGrid;
+
+	
+	@UiField TextBox fileDirectory;
 	
 	@UiField Button nextButton;	
 	
@@ -266,7 +272,10 @@ public class InputCreateView extends Composite implements IInputCreateView {
 
 	@Override
 	public void setSelectedExistingFolder(String shortendPath) {
-		selectExistingFolderLabel.setText(shortendPath);
+		fileDirectory.setText(shortendPath);
+		fileDirectory.setVisible(true);
+		fileGrid.setWidget(0, 0, fileDirectory);
+		fileGrid.setWidget(0,1,selectExistingFolderButton);
 	}
 	
 	@Override
