@@ -132,7 +132,7 @@
 								</g:Grid>
 							</g:VerticalPanel>
 							<g:VerticalPanel>
-								<g:Label styleName="{style.sub-heading}">Taxon Name Information * (Ranks must be in the order of high to low)</g:Label>
+								<g:Label styleName="{style.sub-heading}">Taxon Name Information * (Ranks must be in the order of high to low, use the token "unspecified" if the authority or the date can not be provided.)</g:Label>
 								<g:Grid ui:field="ranksGrid">
 									<g:row>
 										<g:cell>Rank*</g:cell>
