@@ -26,7 +26,7 @@ public class TaxonomyComparisonInputView extends Composite implements ITaxonomyC
 	TextBox taskNameTextBox;
 	
 	@UiField
-	Label inputLabel;
+	TextBox inputLabel;
 	
 	@UiField
 	Button nextButton;

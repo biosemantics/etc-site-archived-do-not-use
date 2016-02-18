@@ -30,7 +30,7 @@ public class OntologizeInputView extends Composite implements IOntologizeInputVi
 	TextBox taskNameTextBox;
 	
 	@UiField
-	Label inputLabel;
+	TextBox inputLabel;
 	
 	@UiField
 	ListBox glossaryListBox;

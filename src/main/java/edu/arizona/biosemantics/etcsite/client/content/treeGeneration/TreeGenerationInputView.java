@@ -25,7 +25,7 @@ public class TreeGenerationInputView extends Composite implements ITreeGeneratio
 	TextBox taskNameTextBox;
 	
 	@UiField
-	Label inputLabel;
+	TextBox inputLabel;
 	
 	@UiField
 	Button nextButton;
