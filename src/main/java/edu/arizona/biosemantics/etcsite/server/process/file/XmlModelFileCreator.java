@@ -471,17 +471,29 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		}
 		Collections.sort(taxonIdentificationEntries);
 		
+		/*based on the classification level "genus", if taxon has lower level information, the name would start with "genus" information,
+		  otherwise the taxon name would only keep the lowest level classification information*/
 		if(data.get("author") != null && !data.get("author").isEmpty() && data.get("year") != null && !data.get("year").isEmpty()) {
-			String filename = data.get("author").get(0) + data.get("year").get(0) + "_";
-			for (TaxonIdentificationEntry taxonIdentificationEntry : taxonIdentificationEntries) {
-				if (filename.matches(".*(_|^)" + taxonIdentificationEntry.getRank()	+ "(_|$).*"))
-					modelFile.appendError("Redundant rank '" + taxonIdentificationEntry.getRank() + "'");
-				filename += taxonIdentificationEntry.getRank() + "_" + taxonIdentificationEntry.getValue() + "_";
+			String filename = data.get("author").get(0);
+			TaxonIdentificationEntry lasttaxonIdentificationLastEntry =  taxonIdentificationEntries.get(taxonIdentificationEntries.size()-1);
+			Rank lowesttaxonIdentification=taxonIdentificationEntries.get(taxonIdentificationEntries.size()-1).getRank();
+			if(!Rank.equalOrBelowGenus(lowesttaxonIdentification)){
+				  filename += "_" + lasttaxonIdentificationLastEntry.getValue().substring(0,lasttaxonIdentificationLastEntry.getValue().indexOf(" ")) + "_";
 			}
-			if(data.containsKey("strain number") && !data.get("strain number").isEmpty() && !data.get("strain number").get(0).trim().isEmpty())
-				filename += "strain_" + data.get("strain number") + "_";
 			
-			filename = filename.replaceAll("_+", "_").replaceFirst("_$", ".xml");
+			else {
+				for (TaxonIdentificationEntry taxonIdentificationEntry : taxonIdentificationEntries) {
+					  if (filename.matches(".*(_|^)" + taxonIdentificationEntry.getRank()	+ "(_|$).*"))
+						 modelFile.appendError("Redundant rank '" + taxonIdentificationEntry.getRank() + "'");
+					  if(taxonIdentificationEntry.getRank().getId()>=Rank.GENUS.getId())
+					     filename += "_" + taxonIdentificationEntry.getValue().substring(0,taxonIdentificationEntry.getValue().indexOf(" ")) + "_";
+				}
+			}
+			
+			if(data.containsKey("strain number") && !data.get("strain number").isEmpty() && !data.get("strain number").get(0).trim().isEmpty())
+				filename +=  data.get("strain number") + "_";
+			
+			filename = filename.replaceAll("_+", "_").replaceFirst("_$","_"+data.get("year").get(0)+".xml");
 			return filename;
 		}
 		return "";
