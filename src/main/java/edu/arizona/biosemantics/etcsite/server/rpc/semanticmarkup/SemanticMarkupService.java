@@ -418,7 +418,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	public Task output(AuthenticationToken authenticationToken, Task task) throws SemanticMarkupException {	
 		final SemanticMarkupConfiguration config = getSemanticMarkupConfiguration(task);
 		config.setOutput(config.getInput() + "_output_by_TC_task_" + task.getName());
-		config.setOutputTermReview(config.getInput() + "_outputTR_by_TC_task_" + task.getName());
+		config.setOutputTermReview(config.getInput() + "_ReviewTerms_by_TC_task_" + task.getName());
 		String createDirectory = getOutputDirectory(config.getOutput(), task);
 		String createTermReviewDirectory = getOutputDirectory(config.getOutputTermReview(), task);
 		copyCharaparserOutput(createDirectory, task);
