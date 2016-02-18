@@ -110,11 +110,11 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 		if(!userDAO.hasUser(email)) {
 			User user = userDAO.insert(new User(encryptedPassword, firstName, lastName, email, "", "", "", "", ""));
 			if(user == null) {
-				throw new UserAddException("Adding user failed");
+				throw new UserAddException("Adding user failed!&nbsp; Please try again!");
 			}
 			return new ShortUser(user);
 		} else 
-			throw new UserAddException("Email already exists");
+			throw new UserAddException("Email already exists!");
 	}
 	
 	@Override

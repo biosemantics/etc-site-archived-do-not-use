@@ -30,7 +30,7 @@
 
 	<lay:CenteredContentPanel>
 		<g:VerticalPanel>
-		    <g:Label styleName="{style.header}">Account Information</g:Label>
+		    <g:Label styleName="{style.header}">My Account</g:Label>
 		    <g:SimplePanel ui:field="panel" styleName="{style.panel}">
 		     
 		    </g:SimplePanel>
