@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS `etcsite_configurations` (
 
 CREATE TABLE IF NOT EXISTS `etcsite_filesinuse` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `file` varchar(100) NOT NULL,
+  `file` varchar(200) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `file` (`file`)
@@ -317,8 +317,16 @@ INSERT INTO `etcsite_tasktypes` (`id`, `name`, `inputfiletype`, `inputtype`, `ou
 
 CREATE TABLE IF NOT EXISTS `etcsite_taxonomycomparisonconfigurations` (
   `configuration` bigint(20) unsigned DEFAULT NULL,
-  `input` varchar(200) DEFAULT NULL,
+  `taxon_group` bigint(20) unsigned DEFAULT NULL,
+  `cleantax_input` varchar(200) DEFAULT NULL,
+  `model_input1` varchar(200) DEFAULT NULL,
+  `model_input2` varchar(200) DEFAULT NULL,
+  `term_review1` varchar(200) DEFAULT NULL,
+  `term_review2` varchar(200) DEFAULT NULL,
+  `ontology` varchar(200) DEFAULT NULL,
   `output` varchar(200) DEFAULT NULL,
+  `alignment_collection_id` bigint(20) unsigned DEFAULT NULL,
+  `alignment_collection_secret` varchar(100) DEFAULT NULL,
   KEY `configurations_taxonomycomparisonconfigurations_CON` (`configuration`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

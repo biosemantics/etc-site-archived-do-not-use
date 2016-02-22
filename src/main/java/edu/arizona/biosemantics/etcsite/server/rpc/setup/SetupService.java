@@ -12,11 +12,16 @@ import org.apache.commons.io.IOUtils;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.etcsite.client.common.ServerSetup;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.shared.model.Setup;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.setup.ISetupService;
 
 public class SetupService extends RemoteServiceServlet implements ISetupService {
+	
+	public SetupService() {
+		ServerSetup.getInstance().setSetup(getSetup());
+	}
 	
 	@Override
 	protected void doUnexpectedFailure(Throwable t) {
@@ -32,6 +37,7 @@ public class SetupService extends RemoteServiceServlet implements ISetupService 
 		Setup setup = new Setup();
 		setup.setSeperator(seperator);
 		setup.setFileBase(Configuration.fileBase);
+		setup.setPublicFolder(Configuration.publicFolder);
 		setup.setGoogleClientId(Configuration.googleClientId);
 		setup.setGoogleRedirectURI(Configuration.googleRedirectURI);
 		return setup;

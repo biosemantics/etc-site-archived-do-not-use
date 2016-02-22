@@ -3,7 +3,6 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison"
 	xmlns:form='urn:import:com.sencha.gxt.widget.core.client.form'
-	xmlns:my2="urn:import:edu.arizona.biosemantics.etcsite.client.common"
 	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout"
 	xmlns:up="urn:import:gwtupload.client">
 	<ui:style>
@@ -81,7 +80,7 @@
 							<g:Anchor ui:field="fileManagerAnchor" styleName="{style.DescriptionFont}">File Manager</g:Anchor>
 						</g:FlowPanel>
 					</g:VerticalPanel>
-					<my2:IInputCreateView ui:field="inputCreateView"></my2:IInputCreateView>
+					<my:IInputCreateView ui:field="inputCreateView"></my:IInputCreateView>
 				</g:VerticalPanel>
 			</g:VerticalPanel>
 		</lay:CenteredContentPanel>

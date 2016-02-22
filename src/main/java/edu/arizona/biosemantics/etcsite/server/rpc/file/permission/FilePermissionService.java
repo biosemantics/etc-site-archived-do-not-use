@@ -46,6 +46,9 @@ public class FilePermissionService extends RemoteServiceServlet implements IFile
 		boolean sharedResult = isSharedFilePath(authenticationToken.getUserId(), filePath);
 		if(sharedResult) 
 			return true;
+		boolean publicResult = isPublicFilePath(filePath);
+		if(publicResult)
+			return true;
 		return false;
 	}
 
@@ -84,6 +87,11 @@ public class FilePermissionService extends RemoteServiceServlet implements IFile
 					return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public boolean isPublicFilePath(String filePath) {
+		return filePath.startsWith(Configuration.publicFolder);
 	}
 
 	private boolean containedInPath(String possibleParent, String filePath) {

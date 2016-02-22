@@ -198,7 +198,7 @@ public class FileUploadHandler {
 						if(taxonNameValidationServerResponse != null){
 							showMessage += taxonNameValidationServerResponse;
 						}
-						Alerter.fileManagerMessage(showMessage);
+						Alerter.failedToUpload(showMessage);
 					}
 				}
 			}

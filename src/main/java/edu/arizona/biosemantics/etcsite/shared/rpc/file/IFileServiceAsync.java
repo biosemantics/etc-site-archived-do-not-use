@@ -12,6 +12,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.file.Tree;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDeniedException;
 
 public interface IFileServiceAsync {
 
@@ -63,7 +64,7 @@ public interface IFileServiceAsync {
 			AsyncCallback<List<FileInfo>> callback);
 
 	void getOwnedRootFolder(AuthenticationToken authenticationToken,
-			AsyncCallback<FileInfo> callback);
+			AsyncCallback<FolderTreeItem> callback);
 
 	void getAllSharedFolders(AuthenticationToken authenticationToken,
 			AsyncCallback<List<FileInfo>> callback);
@@ -74,5 +75,12 @@ public interface IFileServiceAsync {
 
 	void validateTaxonNames(AuthenticationToken authenticationToken,
 			String directory, AsyncCallback<String> callback);
-
+	
+	public void getTaxonomies(AuthenticationToken token, FolderTreeItem loadConfig, AsyncCallback<List<FileTreeItem>> callback);
+	
+	public void copyFile(AuthenticationToken authenticationToken, String sourceFile, String destinationFile, AsyncCallback<Void> callback);
+	
+	public void copyDirectory(AuthenticationToken authenticationToken, String source, String destination, AsyncCallback<Void> callback);
+	
+	public void getTermReviewFileTreeItem(AuthenticationToken token, String matrixReviewModelPath, AsyncCallback<FileTreeItem> callback);
 }

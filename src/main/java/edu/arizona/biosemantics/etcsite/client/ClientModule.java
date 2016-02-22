@@ -146,6 +146,7 @@ import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.Taxono
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonCreateView;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonInputPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonInputView;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyFileTreeView;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.ITreeGenerationCreateView;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.ITreeGenerationInputView;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.ITreeGenerationViewView;
@@ -216,6 +217,8 @@ public class ClientModule extends AbstractGinModule {
 		bind(IFileManagerView.Presenter.class).toProvider(FileManagerPresenterProvider.class).in(Singleton.class);
 		bind(IFileManagerDialogView.Presenter.class).toProvider(FileManagerDialogPresenterProvider.class).in(Singleton.class);
 		bind(ISelectableFileTreeView.Presenter.class).toProvider(SelectableFileTreePresenterProvider.class).in(Singleton.class);
+		bind(ISelectableFileTreeView.Presenter.class).annotatedWith(Names.named("TaxonomySelection")).toProvider(
+				SelectableTaxonomyFileTreePresenterProvider.class).in(Singleton.class);
 		
 		bind(IUsersView.class).to(UsersView.class);
 		bind(IUsersView.Presenter.class).to(UsersPresenter.class).in(Singleton.class);
@@ -294,11 +297,15 @@ public class ClientModule extends AbstractGinModule {
 		bind(ITaxonomyComparisonInputView.class).to(TaxonomyComparisonInputView.class);
 		bind(ITaxonomyComparisonInputView.Presenter.class).to(TaxonomyComparisonInputPresenter.class);
 		bind(ITaxonomyComparisonCreateView.class).to(TaxonomyComparisonCreateView.class);
-		bind(ITaxonomyComparisonCreateView.Presenter.class).to(TaxonomyComparisonCreatePresenter.class);
+		bind(ITaxonomyComparisonCreateView.Presenter.class).to(TaxonomyComparisonCreatePresenter.class).in(Singleton.class);
 		bind(ITaxonomyComparisonAlignView.class).to(TaxonomyComparisonAlignView.class);
 		bind(ITaxonomyComparisonAlignView.Presenter.class).to(TaxonomyComparisonAlignPresenter.class);
 		bind(IProcessingView.class).to(ProcessingView.class);
 		bind(IProcessingView.Presenter.class).to(ProcessingPresenter.class);
+		bind(edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.IInputCreateView.class)
+		.to(edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.InputCreateView.class);
+		bind(edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.IInputCreateView.Presenter.class)
+		.to(edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.InputCreatePresenter.class).in(Singleton.class);
 		
 		bind(edu.arizona.biosemantics.etcsite.client.help.IHelpView.class).to(edu.arizona.biosemantics.etcsite.client.help.HelpView.class).in(Singleton.class);
 		bind(IHelpView.Presenter.class).to(HelpActivity.class).in(Singleton.class);
@@ -432,6 +439,28 @@ public class ClientModule extends AbstractGinModule {
 		@Inject
 		public SelectableFileTreePresenterProvider(IFileServiceAsync fileService, IFileContentView.Presenter fileContentPresenter) {
 			fileTreeView = new FileTreeView(fileService, fileContentPresenter);
+			fileTreePresenter = new FileTreePresenter(fileTreeView);
+			selectableFileTreeView = new SelectableFileTreeView(fileTreePresenter);
+			selectableFileTreePresenter = new SelectableFileTreePresenter(selectableFileTreeView, fileTreePresenter);
+		}
+		
+		@Override
+		public ISelectableFileTreeView.Presenter get() {
+			return selectableFileTreePresenter;
+		}
+		
+	}
+	
+	public static class SelectableTaxonomyFileTreePresenterProvider implements Provider<ISelectableFileTreeView.Presenter> {
+
+		private ISelectableFileTreeView selectableFileTreeView;
+		private ISelectableFileTreeView.Presenter selectableFileTreePresenter;
+		private IFileTreeView.Presenter fileTreePresenter;
+		private IFileTreeView fileTreeView;
+		
+		@Inject
+		public SelectableTaxonomyFileTreePresenterProvider(IFileServiceAsync fileService) {
+			fileTreeView = new TaxonomyFileTreeView(fileService);
 			fileTreePresenter = new FileTreePresenter(fileTreeView);
 			selectableFileTreeView = new SelectableFileTreeView(fileTreePresenter);
 			selectableFileTreePresenter = new SelectableFileTreePresenter(selectableFileTreeView, fileTreePresenter);

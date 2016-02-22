@@ -19,7 +19,8 @@ import edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison.TaskStag
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.IAuthenticationServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonServiceAsync;
-import edu.arizona.biosemantics.euler.alignment.client.event.model.LoadModelEvent;
+import edu.arizona.biosemantics.euler.alignment.client.event.model.LoadCollectionEvent;
+import edu.arizona.biosemantics.euler.alignment.shared.model.Collection;
 import edu.arizona.biosemantics.euler.alignment.shared.model.Model;
 
 public class TaxonomyComparisonActivity extends MyAbstractActivity {
@@ -31,7 +32,7 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 	private ITaxonomyComparisonAlignView.Presenter alignPresenter;
 	private AcceptsOneWidget panel;
 	private TaskStageEnum currentTaskStage;
-	private Model currentModel;
+	private Collection currentCollection;
 	private Task currentTask;
 
 	@Inject
@@ -51,10 +52,10 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 		this.createPresenter = createPresenter;
 		this.inputPresenter = inputPresenter;
 		this.alignPresenter = alignPresenter;
-		alignPresenter.getView().getEulerAlignmentView().getEventBus().addHandler(LoadModelEvent.TYPE, new LoadModelEvent.LoadModelEventHandler() {
+		alignPresenter.getView().getEulerAlignmentView().getEventBus().addHandler(LoadCollectionEvent.TYPE, new LoadCollectionEvent.LoadCollectionEventHandler() {
 			@Override
-			public void onLoad(LoadModelEvent event) {
-				currentModel = event.getModel();
+			public void onLoad(LoadCollectionEvent event) {
+				currentCollection = event.getCollection();
 			}
 		});
 	}
@@ -76,10 +77,12 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 			currentTask = ((TaxonomyComparisonPlace)place).getTask();
 		}
 		if(currentTask == null){
-			if(place instanceof TaxonomyComparisonInputPlace){
-				inputPresenter.setSelectedFolder(createPresenter.getInputFolderPath(), createPresenter.getInputFolderShortenedPath());
+			if(place instanceof TaxonomyComparisonInputPlace) {
+				if(createPresenter.isFromSerializedModel()) {
+					inputPresenter.setSelectedSerializedModels(createPresenter.getInputFolderPath1(), createPresenter.getInputFolderPath2());
+				}
 				panel.setWidget(inputPresenter.getView());
-			}else{
+			} else {
 				createPresenter.refresh();
 				panel.setWidget(createPresenter.getView());
 			}
@@ -141,7 +144,7 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 
 	public void onStop() {
 		alignPresenter.clearDialogs();
-		taxonomyComparisonService.saveModel(Authentication.getInstance().getToken(), currentTask, currentModel, new AsyncCallback<Void>() {
+		taxonomyComparisonService.saveCollection(Authentication.getInstance().getToken(), currentTask, currentCollection, new AsyncCallback<Void>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToSaveMatrix(caught);

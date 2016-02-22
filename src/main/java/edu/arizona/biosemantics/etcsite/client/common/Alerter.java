@@ -412,6 +412,10 @@ public class Alerter {
 		case TAXON_DESCRIPTION:
 			return showAlert("Not saved", "Content is no longer valid against the <a href='https://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupInput.xsd' target='_blank'>input schema</a>. "
 								+ "correct the problems and try to save again.");
+		case CLEANTAX:
+			break;
+		case MATRIX_GENERATION_SERIALIZED_MODEL:
+			break;
 		default:
 			break;
 		}
@@ -681,6 +685,20 @@ public class Alerter {
 
 	public static MessageBox selectATask() {
 		return showAlert("Select a task", "Select a task to resume.");
+	}
+
+	public static MessageBox failedToGetTaxonomiesFromUploadedFiles(Throwable caught) {
+		return showAlert("Failed to get taxonomies", "Failed to get taxonomies from uploaded files.", caught);
+	}
+
+	public static void couldNotGetMachineArticulations(Throwable caught) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public static void notAValidThreshold(Exception e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

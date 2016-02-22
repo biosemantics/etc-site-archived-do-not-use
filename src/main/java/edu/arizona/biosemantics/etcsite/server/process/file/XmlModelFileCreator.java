@@ -472,16 +472,17 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		Collections.sort(taxonIdentificationEntries);
 		
 		if(data.get("author") != null && !data.get("author").isEmpty() && data.get("year") != null && !data.get("year").isEmpty()) {
-			String filename = data.get("author").get(0) + data.get("year").get(0) + "_";
+			String filename = ""; //data.get("author").get(0) + data.get("year").get(0) + "_";
 			for (TaxonIdentificationEntry taxonIdentificationEntry : taxonIdentificationEntries) {
 				if (filename.matches(".*(_|^)" + taxonIdentificationEntry.getRank()	+ "(_|$).*"))
 					modelFile.appendError("Redundant rank '" + taxonIdentificationEntry.getRank() + "'");
-				filename += taxonIdentificationEntry.getRank() + "_" + taxonIdentificationEntry.getValue() + "_";
+				filename += taxonIdentificationEntry.getValue().replaceAll(",", " ") + "_";
 			}
 			if(data.containsKey("strain number") && !data.get("strain number").isEmpty() && !data.get("strain number").get(0).trim().isEmpty())
-				filename += "strain_" + data.get("strain number") + "_";
+				filename += data.get("strain number") + "_";
 			
-			filename = filename.replaceAll("_+", "_").replaceFirst("_$", ".xml");
+			filename += data.get("author").get(0) + "_" + data.get("year").get(0) + "_";
+			filename = filename.replaceAll(" ",  "_").replaceAll("_+", "_").replaceFirst("_$", ".xml");
 			return filename;
 		}
 		return "";

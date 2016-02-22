@@ -74,10 +74,18 @@ public interface IFileService extends RemoteService {
 	
 	public List<FileInfo> getAllSharedFolders(AuthenticationToken authenticationToken);
 	
-	public FileInfo getOwnedRootFolder(AuthenticationToken authenticationToken);
+	public FolderTreeItem getOwnedRootFolder(AuthenticationToken authenticationToken);
 	
 	public List<FileTreeItem> getFiles(AuthenticationToken authenticationToken, FolderTreeItem folderTreeItem, FileFilter fileFilter) throws PermissionDeniedException;
 
 	public void deleteFiles(AuthenticationToken token, List<FileTreeItem> selection) throws PermissionDeniedException, FileDeleteFailedException;
 	
+	public List<FileTreeItem> getTaxonomies(AuthenticationToken token, FolderTreeItem loadConfig);
+	
+	public void copyFile(AuthenticationToken authenticationToken, String sourceFile, String destinationFile)  throws CopyFilesFailedException;
+
+	public void copyDirectory(AuthenticationToken authenticationToken, String source, String destination) throws CopyFilesFailedException,
+			PermissionDeniedException;
+
+	public FileTreeItem getTermReviewFileTreeItem(AuthenticationToken token, String matrixReviewModelPath);
 }

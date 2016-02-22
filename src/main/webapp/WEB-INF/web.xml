@@ -52,6 +52,11 @@
 	</listener>
 	<listener>
 		<listener-class>
+			edu.arizona.biosemantics.euler.alignment.server.AlignmentServletContextListener
+		</listener-class>
+	</listener>
+	<listener>
+		<listener-class>
 			edu.arizona.biosemantics.oto2.ontologize.server.OntologizeServletContextListener
 		</listener-class>
 	</listener>

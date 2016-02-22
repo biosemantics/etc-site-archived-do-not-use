@@ -41,7 +41,7 @@ public class FileTreeView extends Composite implements IFileTreeView {
 	private VerticalLayoutContainer container;
 
 	private Presenter presenter;
-	private final IFileServiceAsync fileService;
+	public final IFileServiceAsync fileService;
  
 	private Tree<FileTreeItem, String> tree;
 

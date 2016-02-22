@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.client.common;
+package edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison;
 
 import java.util.List;
 
@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.biosemantics.etcsite.client.common.files.FileUploadHandler;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.IInputCreateView.InputValidator;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
 import gwtupload.client.IUploader;
@@ -26,28 +27,20 @@ public interface IInputCreateView extends IsWidget {
 
 		void onNext();
 
-		void onSelectExistingFolder();
+		void onSelectExistingFolder1();
+		
+		void onSelectExistingFolder2();
 
 		void onFileManager();
-		
-		String getInputFolderPath();
-		
-		String getInputFolderShortenedPath();
 		
 		boolean createNewFolder(String path);
 
 		void createFiles(FolderTreeItem selectedFolder);
 
 		void createFilesInNewFolder();
-	
-		void setInputValidator(InputValidator inputValidator);
 
 		IInputCreateView getView();
 
-		void disableCreateFiles();
-		
-		void addDummyCreateFiles();
-		
 		void setNextButtonName(String str);
 
 		void refreshFolders();
@@ -56,30 +49,41 @@ public interface IInputCreateView extends IsWidget {
 
 		void setUploadFileType(FileTypeEnum fileType);
 
+		String getModelInputFolderPath1();
+		
+		String getModelInputFolderPath2();
+
+		String getCleanTaxInputFolderPath();
+		
+		void setModelInputValidator(InputValidator modelInputValidator);
+
+		void setCleanTaxInputValidator(InputValidator cleanTaxInputValidator);
+
+		String getCleanTaxInputFolderShortenedPath();
+		
+		String getModelInputFolderShortenedPath1();
+
+		String getModelInputFolderShortenedPath2();
+
 	}
 
 	void setOwnedFolders(List<FolderTreeItem> folders);
 
-	boolean isCreateFiles();
-	
 	Uploader getUploader();
 
 	Button getUploadButton();
 
 	FolderTreeItem getSelectedFolderForUpload();
 
-	void setStatusWidget(Widget widget);
 	
-	boolean isCreateFolderForCreateFiles();
-
 	boolean isSelectExistingFolder();
 
 	boolean isSelectFolderForUpload();
 
-	FolderTreeItem getSelectedFolderForCreateFiles();
+	void setSelectedExistingFolder1(String shortendPath);
 
-	void setSelectedExistingFolder(String shortendPath);
-
+	void setSelectedExistingFolder2(String shortendPath);
+	
 	void setNextButtonText(String text);
 
 	void setPresenter(Presenter presenter);
@@ -88,12 +92,10 @@ public interface IInputCreateView extends IsWidget {
 
 	boolean isCreateFolderForUpload();
 
-	void removeCreateFiles();
-	
-	void addDummyCreateFiles();
+	void setNextButtonName(String str);
 
-	boolean isSelectFolderForCreateFiles();
+	void setStatusWidget(Widget asWidget);
 
-	void setNextButtonName(String str);	
+	void setUploadedTaxonomies(String result);	
 
 }

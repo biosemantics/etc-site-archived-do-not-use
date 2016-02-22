@@ -15,24 +15,26 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.ListeningScheduledExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.common.taxonomy.Rank;
+import edu.arizona.biosemantics.common.taxonomy.RankData;
+import edu.arizona.biosemantics.common.taxonomy.TaxonIdentification;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Emailer;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
@@ -42,9 +44,15 @@ import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskType;
+import edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum;
+import edu.arizona.biosemantics.etcsite.shared.model.TaxonGroup;
 import edu.arizona.biosemantics.etcsite.shared.model.TaxonomyComparisonConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.TinyUser;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison.TaskStageEnum;
+import edu.arizona.biosemantics.etcsite.shared.rpc.HasTaskException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.CopyFilesFailedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.CreateDirectoryFailedException;
@@ -53,12 +61,25 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.IFilePermissi
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDeniedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.TaxonomyComparisonException;
+import edu.arizona.biosemantics.euler.alignment.server.io.MatrixReviewModelReader;
+import edu.arizona.biosemantics.euler.alignment.server.taxoncomparison.CharacterStateSimilarityMetric;
+import edu.arizona.biosemantics.euler.alignment.server.taxoncomparison.RelationGenerator;
+import edu.arizona.biosemantics.euler.alignment.server.taxoncomparison.lib.AllCombinationsArticulationsGenerator;
+import edu.arizona.biosemantics.euler.alignment.server.taxoncomparison.lib.ContainmentCharacterStateSimilarityMetric;
+import edu.arizona.biosemantics.euler.alignment.server.taxoncomparison.lib.TTestBasedRelationGenerator;
+import edu.arizona.biosemantics.euler.alignment.shared.IEulerAlignmentService;
+import edu.arizona.biosemantics.euler.alignment.shared.model.Articulation;
+import edu.arizona.biosemantics.euler.alignment.shared.model.Articulation.Type;
+import edu.arizona.biosemantics.euler.alignment.shared.model.Evidence;
 import edu.arizona.biosemantics.euler.alignment.shared.model.Model;
 import edu.arizona.biosemantics.euler.alignment.shared.model.PossibleWorld;
 import edu.arizona.biosemantics.euler.alignment.shared.model.RunOutput;
 import edu.arizona.biosemantics.euler.alignment.shared.model.RunOutputType;
+import edu.arizona.biosemantics.euler.alignment.shared.model.Taxon;
 import edu.arizona.biosemantics.euler.alignment.shared.model.Taxonomies;
 import edu.arizona.biosemantics.euler.alignment.shared.model.Taxonomy;
+import edu.arizona.biosemantics.euler.alignment.shared.model.taxoncomparison.ArticulationProposal;
+import edu.arizona.biosemantics.euler.alignment.shared.model.taxoncomparison.RelationProposal;
 import edu.arizona.biosemantics.euler.io.ArticulationsWriter;
 import edu.arizona.biosemantics.euler.io.EulerInputFileWriter;
 import edu.arizona.biosemantics.euler.io.TaxonomyFileReader;
@@ -67,6 +88,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	
 	private String tempFiles = Configuration.taxonomyComparison_tempFileBase;
 	private IFileService fileService;
+	private IEulerAlignmentService alignmentService;
 	//private IFileFormatService fileFormatService = new FileFormatService();
 	//private IFileAccessService fileAccessService = new FileAccessService();
 	private IFilePermissionService filePermissionService;
@@ -75,14 +97,17 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	private Map<Integer, MIRGeneration> activeProcess = new HashMap<Integer, MIRGeneration>();
 	private DAOManager daoManager;
 	private Emailer emailer;
+	private InputFileCreator inputFileCreator;
 	
 	@Inject
 	public TaxonomyComparisonService(IFileService fileService, IFilePermissionService filePermissionService, 
-			DAOManager daoManager, Emailer emailer) {
+			DAOManager daoManager, Emailer emailer, IEulerAlignmentService alignmentService, InputFileCreator inputFileCreator) {
 		this.fileService = fileService;
 		this.filePermissionService = filePermissionService;
 		this.daoManager = daoManager;
 		this.emailer = emailer;
+		this.inputFileCreator = inputFileCreator;
+		this.alignmentService = alignmentService;
 		executorService = MoreExecutors.listeningDecorator(Executors.newScheduledThreadPool(Configuration.maxActiveTaxonomyComparison));
 		File taxonomyComparisonCache = new File(Configuration.taxonomyComparison_tempFileBase);
 		if(!taxonomyComparisonCache.exists())
@@ -96,77 +121,10 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	    log(LogLevel.ERROR, "Unexpected failure", t);
 	    super.doUnexpectedFailure(t);
 	}
-	
-	@Override
-	public Task start(AuthenticationToken authenticationToken, String taskName, String input) throws TaxonomyComparisonException {	
-		boolean isShared = filePermissionService.isSharedFilePath(authenticationToken.getUserId(), input);
-		String fileName = null;
-		try {
-			fileName = fileService.getFileName(authenticationToken, input);
-		} catch (PermissionDeniedException e) {
-			log(LogLevel.ERROR, "Permission denied to read " + fileName);
-			throw new TaxonomyComparisonException();
-		}
-		if(isShared) {
-			String destination;
-			try {
-				destination = fileService.createDirectory(authenticationToken, Configuration.fileBase + File.separator + authenticationToken.getUserId(), 
-						fileName, true);
-			} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
-				throw new TaxonomyComparisonException();
-			}
-			try {
-				fileService.copyFiles(authenticationToken, input, destination);
-			} catch (CopyFilesFailedException | PermissionDeniedException e) {
-				throw new TaxonomyComparisonException();
-			}
-			input = destination;
-		}
 		
-		TaxonomyComparisonConfiguration config = new TaxonomyComparisonConfiguration();
-		config.setInput(input);	
-		config.setOutput(config.getInput() + "_output_by_TaxC_task_" + taskName);
-		config = daoManager.getTaxonomyComparisonConfigurationDAO().addTaxonomyComparisonConfiguration(config);
-		
-		edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum taskType = edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.TAXONOMY_COMPARISON;
-		TaskType dbTaskType = daoManager.getTaskTypeDAO().getTaskType(taskType);
-		TaskStage taskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.INPUT.toString());
-		TinyUser user = daoManager.getUserDAO().getTinyUser(authenticationToken.getUserId());
-		Task task = new Task();
-		task.setName(taskName);
-		task.setResumable(true);
-		task.setUser(user);
-		task.setTaskStage(taskStage);
-		task.setTaskConfiguration(config);
-		task.setTaskType(dbTaskType);
-		
-		task = daoManager.getTaskDAO().addTask(task);
-		taskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.ALIGN.toString());
-		task.setTaskStage(taskStage);
-		daoManager.getTaskDAO().updateTask(task);
-		
-		try {
-			fileService.createDirectory(new AdminAuthenticationToken(), tempFiles, String.valueOf(task.getId()), false);
-			fileService.createDirectory(new AdminAuthenticationToken(), tempFiles + File.separator + task.getId(), "run", false);
-			fileService.createDirectory(new AdminAuthenticationToken(), tempFiles + File.separator + task.getId(), "inputVisualization", false);
-		} catch(PermissionDeniedException | CreateDirectoryFailedException e) {
-			log(LogLevel.ERROR, "can not create cache directory.");
-			throw new TaxonomyComparisonException(task);
-		}
-		createModelFromInput(authenticationToken, task);
-		
-		try {
-			fileService.setInUse(authenticationToken, true, input, task);
-		} catch (PermissionDeniedException e) {
-			log(LogLevel.ERROR, "can not set file in use for " + input + ".");
-			throw new TaxonomyComparisonException(task);
-		}
-		return task;
-	}
-	
-	private Model createModelFromInput(AuthenticationToken token, Task task) throws TaxonomyComparisonException {
+	private Model createModelFromCleanTaxInput(AuthenticationToken token, Task task) throws TaxonomyComparisonException {
 		TaxonomyComparisonConfiguration config = this.getTaxonomyComparisonConfiguration(task);
-		String input = config.getInput();
+		String input = config.getCleanTaxInput();
 		File dir = new File(input);
 		Taxonomies taxonomies = new Taxonomies();
 		for(File file : dir.listFiles()) {
@@ -180,31 +138,33 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			}
 			taxonomies.add(taxonomy);
 		}
-		Model model = new Model(taxonomies);
-		saveModel(token, task, model);
+		Model model = new Model(taxonomies, null);
 		return model;
 	}
 	
 	@Override
-	public Model getModel(AuthenticationToken token, Task task) throws TaxonomyComparisonException {
+	public edu.arizona.biosemantics.euler.alignment.shared.model.Collection getCollection(AuthenticationToken token, Task task) throws TaxonomyComparisonException {
+		TaxonomyComparisonConfiguration config = this.getTaxonomyComparisonConfiguration(task);
 		try {
-			Model model = unserializeModel(this.tempFiles + File.separator + task.getId() + File.separator + "Model.ser");
-			return model;
-		} catch (ClassNotFoundException | IOException e) {
-			log(LogLevel.ERROR, "Couldn't get model", e);
+			edu.arizona.biosemantics.euler.alignment.shared.model.Collection collection = 
+					alignmentService.getCollection(config.getAlignmentId(), config.getAlignmentSecret());
+			return collection;
+		} catch (Exception e) {
+			log(LogLevel.ERROR, "Couldn't get collection", e);
 			throw new TaxonomyComparisonException(task);
 		}
-		
 	}
 	
+	//TODO
 	@Override 
-	public void saveModel(AuthenticationToken token, Task task, Model model) throws TaxonomyComparisonException {
-		try {
+	public void saveCollection(AuthenticationToken token, Task task, 
+			edu.arizona.biosemantics.euler.alignment.shared.model.Collection collection) throws TaxonomyComparisonException {
+		/*try {
 			serializeModel(model, this.tempFiles + File.separator + task.getId() + File.separator + "Model.ser");
 		} catch (IOException e) {
 			log(LogLevel.ERROR, "Couldn't serialize model to disk", e);
 			throw new TaxonomyComparisonException(task);
-		}
+		}*/
 	}
 	
 	private void serializeModel(Model model, String file) throws IOException {
@@ -221,15 +181,17 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	}
 	
 
+	//TODO
 	@Override
-	public Task runMirGeneration(final AuthenticationToken authenticationToken, final Task task, final Model model) throws TaxonomyComparisonException {
-		final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
+	public Task runMirGeneration(final AuthenticationToken authenticationToken, final Task task, 
+			final edu.arizona.biosemantics.euler.alignment.shared.model.Collection collection) throws TaxonomyComparisonException {
+		/*final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
 		
 		//browser back button may invoke another "learn"
 		if(activeProcessFutures.containsKey(config.getConfiguration().getId())) {
 			return task;
 		} else {
-			final TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.TAXONOMY_COMPARISON);
+			final TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(TaskTypeEnum.TAXONOMY_COMPARISON);
 			TaskStage taskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.ANALYZE.toString());
 			task.setTaskStage(taskStage);
 			task.setResumable(false);
@@ -307,11 +269,14 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			     }, executorService);
 			
 			return task;
-		}
+		}*/
+		return null;
 	}
 	
-	protected void save(AuthenticationToken token, Task task, Model model) throws TaxonomyComparisonException {
-		try {
+	//TODO
+	protected void save(AuthenticationToken token, Task task, 
+			edu.arizona.biosemantics.euler.alignment.shared.model.Collection collection) throws TaxonomyComparisonException {
+		/*try {
 			RunOutput output = this.getRunOutput(task);
 			for(PossibleWorld possibleWorld : output.getPossibleWorlds()) {
 				String oldUrl = possibleWorld.getUrl();
@@ -323,11 +288,11 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			if(!model.getRunHistory().isEmpty())
 				model.getRunHistory().getLast().setOutput(output);
 			
-			this.saveModel(token, task, model);
+			this.saveCollection(token, task, collection);
 		}catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't save model", e);
 			throw new TaxonomyComparisonException();
-		}
+		}*/
 	}
 	
 	private String getAuthenticatedGetPDFUrl(AuthenticationToken token, String url) throws UnsupportedEncodingException {
@@ -346,9 +311,11 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		
 	}
 
+	//TODO
 	@Override
-	public String getInputVisualization(AuthenticationToken token, Task task, Model model) throws TaxonomyComparisonException {
-		final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
+	public String getInputVisualization(AuthenticationToken token, Task task, 
+			edu.arizona.biosemantics.euler.alignment.shared.model.Collection collection) throws TaxonomyComparisonException {
+		/*final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
 		final String eulerInputFile = tempFiles + File.separator + task.getId() + File.separator + "input.txt";
 		try {
 			writeEulerInput(eulerInputFile, model);
@@ -382,7 +349,8 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			throw new TaxonomyComparisonException(task);
 		}
 		File output = new File(tempFiles + File.separator + task.getId() + File.separator + "inputVisualization" + File.separator + "out" + File.separator + "0-Input" + File.separator + "input.pdf");
-		return output.getAbsolutePath();
+		return output.getAbsolutePath();*/
+		return null;
 	}
 
 	
@@ -392,7 +360,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		List<Task> tasks = daoManager.getTaskDAO().getOwnedTasks(user.getId());
 		for(Task task : tasks) {
 			if(task != null && task.isResumable() && !task.isFailed() && 
-					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.TAXONOMY_COMPARISON)) {
+					task.getTaskType().getTaskTypeEnum().equals(TaskTypeEnum.TAXONOMY_COMPARISON)) {
 						return task;
 			}
 		}
@@ -404,9 +372,16 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
 						
 		//remove taxonomy comparison configuration
-		if(config.getInput() != null)
+		if(config.hasCleanTaxInput())
 			try {
-				fileService.setInUse(authenticationToken, false, config.getInput(), task);
+				fileService.setInUse(authenticationToken, false, config.getCleanTaxInput(), task);
+			} catch (PermissionDeniedException e) {
+				throw new TaxonomyComparisonException(task);
+			}
+		if(config.hasModelInputs()) 
+			try {
+				fileService.setInUse(authenticationToken, false, config.getModelInput1(), task);
+				fileService.setInUse(authenticationToken, false, config.getModelInput2(), task);
 			} catch (PermissionDeniedException e) {
 				throw new TaxonomyComparisonException(task);
 			}
@@ -448,17 +423,6 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			throw new TaxonomyComparisonException(task);
 		final TaxonomyComparisonConfiguration taxonomyComparisonConfiguration = (TaxonomyComparisonConfiguration)configuration;
 		return taxonomyComparisonConfiguration;
-	}
-
-	@Override
-	public boolean isValidInput(AuthenticationToken token, String inputFile) {
-		File file = new File(inputFile);
-		if(!file.isDirectory())
-			return false;
-		int count = file.listFiles().length;
-		if(count != 2) 
-			return false;
-		return true;
 	}
 
 	@Override
@@ -505,7 +469,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 
 	@Override
 	public Task goToTaskStage(AuthenticationToken token, Task task, TaskStageEnum taskStageEnum) {
-		TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.TAXONOMY_COMPARISON);
+		TaskType taskType = daoManager.getTaskTypeDAO().getTaskType(TaskTypeEnum.TAXONOMY_COMPARISON);
 		TaskStage taskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(taskStageEnum.toString());
 		task.setTaskStage(taskStage);
 		task.setResumable(true);
@@ -522,10 +486,11 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		}
 	}
 
+	//TODO
 	@Override
 	public String exportArticulations(AuthenticationToken token, Task task,
-			Model model) throws TaxonomyComparisonException {
-		final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
+			edu.arizona.biosemantics.euler.alignment.shared.model.Collection collection) throws TaxonomyComparisonException {
+		/*final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
 		
 		String path = tempFiles + File.separator + String.valueOf(task.getId()) + File.separator + "articulations_task-" + task.getName() + ".txt";
 		File file = new File(path);
@@ -543,7 +508,8 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			log(LogLevel.ERROR, e.getMessage()+"\n"+org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(e));
 			throw new TaxonomyComparisonException(task);
 		} 
-		return path;
+		return path;*/
+		return null;
 	}
 	
 	@Override
@@ -553,9 +519,325 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		List<Task> tasks = daoManager.getTaskDAO().getResumableTasks(user.getId());
 		for(Task task : tasks) {
 			if(task != null && task.isResumable() && !task.isFailed() && 
-					task.getTaskType().getTaskTypeEnum().equals(edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum.TAXONOMY_COMPARISON)) {
+					task.getTaskType().getTaskTypeEnum().equals(TaskTypeEnum.TAXONOMY_COMPARISON)) {
 				result.add(task);
 			}
+		}
+		return result;
+	}
+	
+	@Override
+	public List<String> getTaxonomies(AuthenticationToken token, FolderTreeItem folder) throws Exception {
+		List<String> result = new LinkedList<String>();
+		List<FileTreeItem> filesCleanTax = fileService.getFiles(token, folder, FileFilter.CLEANTAX);
+		for(FileTreeItem fileTreeItem : filesCleanTax) {
+			result.add(getRootNameFromCleantax(new File(fileTreeItem.getFilePath())));
+		}
+		List<FileTreeItem> filesMatrixGeneration = fileService.getFiles(token, folder, FileFilter.MATRIX_GENERATION_SERIALIZED_MODEL);
+		for(FileTreeItem fileTreeItem : filesMatrixGeneration) {
+			result.add(getRootNameFromMatrixGenerationModel(new File(fileTreeItem.getFilePath())));
+		}
+		return result;
+	}
+
+	private String getRootNameFromMatrixGenerationModel(File file) throws FileNotFoundException, ClassNotFoundException, IOException {
+		edu.arizona.biosemantics.matrixreview.shared.model.Model model = unserializeModel(file);
+		return model.getTaxonMatrix().getHierarchyRootTaxa().get(0).getName();
+	}
+	
+	private edu.arizona.biosemantics.matrixreview.shared.model.Model unserializeModel(File file) throws FileNotFoundException, IOException, ClassNotFoundException {
+		try(ObjectInput input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
+			edu.arizona.biosemantics.matrixreview.shared.model.Model model = (edu.arizona.biosemantics.matrixreview.shared.model.Model)input.readObject();
+			return model;
+		}
+	}
+
+	private String getRootNameFromCleantax(File file) throws Exception {
+		CleanTaxReader reader = new CleanTaxReader();
+		return reader.getRootName(file);
+	}
+		
+	private String getSerializedModel(String input) {
+		File dir = new File(input);
+		for(File child : dir.listFiles()) {
+			if(child.getName().endsWith(".ser"))
+				return child.getAbsolutePath();
+		}
+		return null;
+	}
+
+	private edu.arizona.biosemantics.matrixreview.shared.model.Model unserializeMatrix(String file) throws FileNotFoundException, IOException, ClassNotFoundException {
+		try(ObjectInput input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
+			edu.arizona.biosemantics.matrixreview.shared.model.Model model = 
+					(edu.arizona.biosemantics.matrixreview.shared.model.Model)input.readObject();
+			return model;
+		}
+	}
+	
+	@Override
+	public Task startFromCleantax(AuthenticationToken token, String taskName, String input, String taxonGroup, String ontology, String termReview1, String termReview2) throws HasTaskException {
+		String[] inputs = inputFileCreator.createOwnedIfShared(token, new String[] {input, ontology, termReview1, termReview2});
+		
+		TaxonomyComparisonConfiguration config = new TaxonomyComparisonConfiguration();
+		config.setCleanTaxInput(inputs[0]);
+		TaxonGroup group = daoManager.getTaxonGroupDAO().getTaxonGroup(taxonGroup);
+		config.setTaxonGroup(group);
+		config.setOntology(inputs[1]);
+		config.setTermReview1(inputs[2]); 
+		config.setTermReview2(inputs[3]);
+		config.setOutput(config.getModelInput1() + "_output_by_TaxC_task_" + taskName);
+		
+		config.setOutput(config.getCleanTaxInput() + "_output_by_TaxC_task_" + taskName);
+		config = daoManager.getTaxonomyComparisonConfigurationDAO().addTaxonomyComparisonConfiguration(config);
+		
+		TaskTypeEnum taskType =TaskTypeEnum.TAXONOMY_COMPARISON;
+		TaskType dbTaskType = daoManager.getTaskTypeDAO().getTaskType(taskType);
+		TaskStage taskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.INPUT.toString());
+		TinyUser user = daoManager.getUserDAO().getTinyUser(token.getUserId());
+		Task task = new Task();
+		task.setName(taskName);
+		task.setResumable(true);
+		task.setUser(user);
+		task.setTaskStage(taskStage);
+		task.setTaskConfiguration(config);
+		task.setTaskType(dbTaskType);
+		
+		task = daoManager.getTaskDAO().addTask(task);
+		taskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.ALIGN.toString());
+		task.setTaskStage(taskStage);
+		daoManager.getTaskDAO().updateTask(task);
+		
+		try {
+			fileService.createDirectory(new AdminAuthenticationToken(), tempFiles, String.valueOf(task.getId()), false);
+			fileService.createDirectory(new AdminAuthenticationToken(), tempFiles + File.separator + task.getId(), "run", false);
+			fileService.createDirectory(new AdminAuthenticationToken(), tempFiles + File.separator + task.getId(), "inputVisualization", false);
+		} catch(PermissionDeniedException | CreateDirectoryFailedException e) {
+			log(LogLevel.ERROR, "can not create cache directory.");
+			throw new TaxonomyComparisonException(task);
+		}
+		Model model = createModelFromCleanTaxInput(token, task);
+		
+		inputFileCreator.setInUse(token, new String[] { input, termReview1, termReview2, ontology }, task);
+		
+		edu.arizona.biosemantics.euler.alignment.shared.model.Collection collection = new edu.arizona.biosemantics.euler.alignment.shared.model.Collection();
+		collection.setSecret(String.valueOf(task.getId()));
+		collection.setModel(model);
+		collection.setGlossaryPath1(config.getTermReview1());
+		collection.setGlossaryPath2(config.getTermReview2());
+		collection.setTaxonGroup(edu.arizona.biosemantics.common.biology.TaxonGroup.valueFromDisplayName(taxonGroup));
+		collection.setOntologyPath(config.getOntology());
+		try {
+			collection = alignmentService.createCollection(collection);
+			config.setAlignmentId(collection.getId());
+			config.setAlignmentSecret(collection.getSecret());
+			daoManager.getTaxonomyComparisonConfigurationDAO().updateTaxonomyComparisonQueryConfiguration(config);
+		} catch (Exception e) {
+			e.printStackTrace();
+			log(LogLevel.ERROR, "Could not create collection", e);
+			throw new TaxonomyComparisonException(task);
+		}
+		return task;
+	}
+
+	@Override
+	public Task startFromSerializedModels(AuthenticationToken token, String taskName, String modelInput1, String modelInput2, 
+			String taxonGroup, String ontology, String termReview1, String termReview2) throws HasTaskException {
+		String[] inputs = inputFileCreator.createOwnedIfShared(token, new String[] {modelInput1, modelInput2, ontology, termReview1, termReview2});
+		
+		TaxonomyComparisonConfiguration config = new TaxonomyComparisonConfiguration();
+		config.setModelInput1(inputs[0]);
+		config.setModelInput2(inputs[1]);
+		TaxonGroup group = daoManager.getTaxonGroupDAO().getTaxonGroup(taxonGroup);
+		config.setTaxonGroup(group);
+		config.setOntology(inputs[2]);
+		config.setTermReview1(inputs[3]); 
+		config.setTermReview2(inputs[4]);
+		config.setOutput(config.getModelInput1() + "_output_by_TaxC_task_" + taskName);
+		config = daoManager.getTaxonomyComparisonConfigurationDAO().addTaxonomyComparisonConfiguration(config);
+		
+		TaskTypeEnum taskType = TaskTypeEnum.TAXONOMY_COMPARISON;
+		TaskType dbTaskType = daoManager.getTaskTypeDAO().getTaskType(taskType);
+		TaskStage taskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.INPUT.toString());
+		TinyUser user = daoManager.getUserDAO().getTinyUser(token.getUserId());
+		Task task = new Task();
+		task.setName(taskName);
+		task.setResumable(true);
+		task.setUser(user);
+		task.setTaskStage(taskStage);
+		task.setTaskConfiguration(config);
+		task.setTaskType(dbTaskType);
+		
+		task = daoManager.getTaskDAO().addTask(task);
+		taskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.ALIGN.toString());
+		task.setTaskStage(taskStage);
+		daoManager.getTaskDAO().updateTask(task);
+		
+		try {
+			fileService.createDirectory(new AdminAuthenticationToken(), tempFiles, String.valueOf(task.getId()), false);
+			fileService.createDirectory(new AdminAuthenticationToken(), tempFiles + File.separator + task.getId(), "run", false);
+			fileService.createDirectory(new AdminAuthenticationToken(), tempFiles + File.separator + task.getId(), "inputVisualization", false);
+		} catch(PermissionDeniedException | CreateDirectoryFailedException e) {
+			log(LogLevel.ERROR, "can not create cache directory.");
+			throw new TaxonomyComparisonException(task);
+		}
+		Model model = createModelFromInputModels(token, task);
+		
+		inputFileCreator.setInUse(token, new String[] { modelInput1, modelInput2, termReview1, termReview2, ontology }, task);
+		
+		edu.arizona.biosemantics.euler.alignment.shared.model.Collection collection = new edu.arizona.biosemantics.euler.alignment.shared.model.Collection();
+		collection.setSecret(String.valueOf(task.getId()));
+		collection.setModel(model);
+		collection.setGlossaryPath1(config.getTermReview1());
+		collection.setGlossaryPath2(config.getTermReview2());
+		collection.setTaxonGroup(edu.arizona.biosemantics.common.biology.TaxonGroup.valueFromDisplayName(taxonGroup));
+		collection.setOntologyPath(config.getOntology());
+		try {
+			collection = alignmentService.createCollection(collection);
+			config.setAlignmentId(collection.getId());
+			config.setAlignmentSecret(collection.getSecret());
+			daoManager.getTaxonomyComparisonConfigurationDAO().updateTaxonomyComparisonQueryConfiguration(config);
+		} catch (Exception e) {
+			e.printStackTrace();
+			log(LogLevel.ERROR, "Could not create collection", e);
+			throw new TaxonomyComparisonException(task);
+		}
+		return task;
+	}
+
+	private Model createModelFromInputModels(AuthenticationToken token, Task task) throws TaxonomyComparisonException {
+		TaxonomyComparisonConfiguration config = this.getTaxonomyComparisonConfiguration(task);
+		String modelInput1 = config.getModelInput1();
+		String modelInput2 = config.getModelInput2();
+		Taxonomies taxonomies = new Taxonomies();
+		try {
+			edu.arizona.biosemantics.matrixreview.shared.model.Model reviewModel1 = this.unserializeMatrix(getSerializedModel(modelInput1));
+			edu.arizona.biosemantics.matrixreview.shared.model.Model reviewModel2 = this.unserializeMatrix(getSerializedModel(modelInput2));
+			taxonomies.add(createTaxonomy(reviewModel1));
+			taxonomies.add(createTaxonomy(reviewModel2));
+			
+			Map<Taxon, Map<Taxon, List<Evidence>>> evidenceMap = new HashMap<Taxon, Map<Taxon, List<Evidence>>>();
+			try {
+				Collection<ArticulationProposal> proposals = this.getMachineArticulationProposals(token, task, taxonomies.get(0), taxonomies.get(1));
+				
+				Map<TaxonIdentification, Taxon> identificationTaxonMap1 = new HashMap<TaxonIdentification, Taxon>();
+				Map<TaxonIdentification, Taxon> identificationTaxonMap2 = new HashMap<TaxonIdentification, Taxon>();
+				for(Taxon taxon : taxonomies.get(0).getTaxaDFS()) {
+					identificationTaxonMap1.put(taxon.getTaxonIdentification(), taxon);
+				}
+				for(Taxon taxon : taxonomies.get(1).getTaxaDFS()) {
+					identificationTaxonMap2.put(taxon.getTaxonIdentification(), taxon);
+				}
+				
+				for(ArticulationProposal proposal : proposals) {
+					Taxon taxonA = identificationTaxonMap1.get(proposal.getCharacterizedTaxonA().getTaxonIdentification());
+					Taxon taxonB = identificationTaxonMap2.get(proposal.getCharacterizedTaxonB().getTaxonIdentification());
+					if(taxonA != null && taxonB != null) {
+						if(!evidenceMap.containsKey(taxonA))
+							evidenceMap.put(taxonA, new HashMap<Taxon, List<Evidence>>());
+						evidenceMap.get(taxonA).put(taxonB, proposal.getEvidence());
+					}
+				}
+			} catch (Exception e) {
+				log(LogLevel.ERROR, "Couldn't get machine articulations.", e);
+				throw new TaxonomyComparisonException();
+			}
+			Model model = new Model(taxonomies, evidenceMap);
+			return model;
+		} catch (ClassNotFoundException | IOException e) {
+			log(LogLevel.ERROR, "Could not unserialize review model 2.", e);
+			throw new TaxonomyComparisonException();
+		}
+	}
+
+	private Taxonomy createTaxonomy(edu.arizona.biosemantics.matrixreview.shared.model.Model reviewModel) throws TaxonomyComparisonException {
+		MatrixReviewModelReader matrixReviewModelReader = new MatrixReviewModelReader();
+		try {
+			Taxonomy taxonomy = matrixReviewModelReader.getTaxonomy(reviewModel);
+			return taxonomy;
+		} catch(Exception e) {
+			throw new TaxonomyComparisonException(e.getMessage());
+		}
+	}
+
+	@Override
+	public Boolean isValidCleanTaxInput(AuthenticationToken token, String inputFile) {
+		File file = new File(inputFile);
+		if(!file.isDirectory())
+			return false;
+		int count = file.listFiles().length;
+		if(count != 2) 
+			return false;
+		return true;
+	}
+
+	@Override
+	public Boolean isValidModelInput(AuthenticationToken token, String inputFile) {
+		File file = new File(inputFile);
+		if(!file.isDirectory())
+			return false;
+		/*int count = file.listFiles().length;
+		if(count != 2) 
+			return false;*/
+		return true;
+	}
+	
+	@Override
+	public List<Articulation> getMachineArticulations(AuthenticationToken token, Task task, 
+			edu.arizona.biosemantics.euler.alignment.shared.model.Collection collection, double threshold) throws Exception {
+		//TODO
+		List<Articulation> result = new LinkedList<Articulation>();
+		/*Collection<ArticulationProposal> proposals = this.getMachineArticulationProposals(token, task, model.getTaxonomies().get(0), 
+				model.getTaxonomies().get(1)); 
+		
+		//cleantax format doesnt allow for full taxonIdentification information. Thus string-based comparison so far.
+		Map<TaxonIdentification, Taxon> identificationTaxonMap1 = new HashMap<TaxonIdentification, Taxon>();
+		Map<TaxonIdentification, Taxon> identificationTaxonMap2 = new HashMap<TaxonIdentification, Taxon>();
+		for(Taxon taxon : model.getTaxonomies().get(0).getTaxaDFS()) {
+			identificationTaxonMap1.put(taxon.getTaxonIdentification(), taxon);
+		}
+		for(Taxon taxon :  model.getTaxonomies().get(1).getTaxaDFS()) {
+			identificationTaxonMap2.put(taxon.getTaxonIdentification(), taxon);
+		}
+		
+		//proposals.iterator().next().getRelationProposals().iterator().next().getRelation();
+		for(ArticulationProposal proposal : proposals)
+			for(RelationProposal relationProposal : proposal.getRelationProposals()) {
+				if(relationProposal.getConfidence() > threshold) {
+					Taxon characterizedTaxonA = proposal.getCharacterizedTaxonA();
+					Taxon taxonA = identificationTaxonMap1.get(characterizedTaxonA.getTaxonIdentification());
+					Taxon characterizedTaxonB = proposal.getCharacterizedTaxonB();
+					Taxon taxonB = identificationTaxonMap2.get(characterizedTaxonB.getTaxonIdentification());
+					if(taxonA != null && taxonB != null) 				
+						result.add(new Articulation(taxonA, taxonB, relationProposal.getRelation(), Type.MACHINE));
+				}
+			}*/
+		return result;
+	}
+
+	private Collection<ArticulationProposal> getMachineArticulationProposals(AuthenticationToken token, Task task, Taxonomy taxonomy1, Taxonomy taxonomy2)
+			throws Exception {
+		List<ArticulationProposal> result = new LinkedList<ArticulationProposal>();
+		final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
+		if(config.hasModelInputs()) {
+			edu.arizona.biosemantics.matrixreview.shared.model.Model model1 = unserializeMatrix(getSerializedModel(config.getModelInput1()));
+			edu.arizona.biosemantics.matrixreview.shared.model.Model model2 = unserializeMatrix(getSerializedModel(config.getModelInput1()));
+			
+			MatrixReviewModelReader matrixReviewModelReader = new MatrixReviewModelReader();
+			Taxonomy taxonomyA = matrixReviewModelReader.getTaxonomy(model1);
+			Taxonomy taxonomyB = matrixReviewModelReader.getTaxonomy(model2);
+			
+			CharacterStateSimilarityMetric characterStateSimilarityMetric = new ContainmentCharacterStateSimilarityMetric();
+			RelationGenerator pairwiseArticulationGenerator = new TTestBasedRelationGenerator(
+					edu.arizona.biosemantics.taxoncomparison.comparison.Configuration.disjointSimilarityMax, 
+					edu.arizona.biosemantics.taxoncomparison.comparison.Configuration.symmetricDifferenceMax, 
+					edu.arizona.biosemantics.taxoncomparison.comparison.Configuration.congurenceSimilarityMin, 
+					edu.arizona.biosemantics.taxoncomparison.comparison.Configuration.inclusionSimilarityMin, 
+					edu.arizona.biosemantics.taxoncomparison.comparison.Configuration.asymmetricDifferenceMin, 
+					characterStateSimilarityMetric, taxonomyA, taxonomyB);
+			AllCombinationsArticulationsGenerator allCombinationsArticulationsGenerator = 
+					new AllCombinationsArticulationsGenerator(pairwiseArticulationGenerator);	
+			Collection<ArticulationProposal> proposals = allCombinationsArticulationsGenerator.generate(taxonomyA, taxonomyB);		
+			return proposals;
 		}
 		return result;
 	}
