@@ -16,6 +16,10 @@
 		padding-bottom: 10px;
 	}
 	
+	.inputButton {
+		margin-left: 10px;
+	}
+	
 	.padding {
 		padding-top: 10px;
 		padding-bottom: 10px;
@@ -116,8 +120,8 @@
 							<g:cell verticalAlignment="ALIGN_TOP">
 								<g:TextBox ui:field="inputTermReviewLabel1" enabled="false"></g:TextBox>
 							</g:cell>
-							<g:cell verticalAlignment="ALIGN_MIDDLE" horizontalAlignment='ALIGN_RIGHT' width='105px'>
-								<g:Button ui:field="inputTermReviewButton1">Select Term Review Input</g:Button>
+							<g:cell verticalAlignment="ALIGN_MIDDLE" width='200px'>
+								<g:Button styleName="{style.inputButton}" ui:field="inputTermReviewButton1">Select Term Review Input</g:Button>
  							</g:cell> 
 						</g:HorizontalPanel>
 					</g:VerticalPanel>
@@ -138,8 +142,8 @@
 							<g:cell verticalAlignment="ALIGN_TOP">
 								<g:TextBox ui:field="inputTermReviewLabel2" enabled="false"></g:TextBox>
 							</g:cell>
-							<g:cell verticalAlignment="ALIGN_MIDDLE" horizontalAlignment='ALIGN_RIGHT' width='105px'>
-								<g:Button ui:field="inputTermReviewButton2">Select Term Review Input</g:Button>
+							<g:cell verticalAlignment="ALIGN_MIDDLE" width='200px'>
+								<g:Button styleName="{style.inputButton}" ui:field="inputTermReviewButton2">Select Term Review Input</g:Button>
  							</g:cell>  
 						</g:HorizontalPanel>
 					</g:VerticalPanel>
@@ -160,8 +164,8 @@
 							<g:cell verticalAlignment="ALIGN_TOP">
 								<g:TextBox ui:field="inputOntologyLabel" enabled="false"></g:TextBox>
 							</g:cell>
-							<g:cell verticalAlignment="ALIGN_MIDDLE" horizontalAlignment='ALIGN_RIGHT' width='105px'>
-								<g:Button ui:field="inputOntologyButton">Select Ontology Input</g:Button>
+							<g:cell verticalAlignment="ALIGN_MIDDLE" width='200px'>
+								<g:Button styleName="{style.inputButton}" ui:field="inputOntologyButton">Select Ontology Input</g:Button>
 							</g:cell>   
 						</g:HorizontalPanel>
 					</g:VerticalPanel>
