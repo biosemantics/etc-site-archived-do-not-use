@@ -175,7 +175,7 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 		Double size = dockLayoutPanel.getWidgetSize(eastPanel);
 		if(size == 400){
 			setHelpSize(0, false);
-			help.setText("Show Help");
+			help.setText("Help");
 		}else{
 			setHelpSize(400, false);
 			help.setText("Hide Help");

@@ -6,10 +6,8 @@
 	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout">
 	<ui:style>
 	.important {
-		font-weight: bold;
-		margin-left: 10px;
+		margin-left: 20px;
 	}
-	
 	.subMenuEntry {
 		margin-left: 20px;
 		padding-top: 10px;
@@ -97,11 +95,11 @@
 									requirements.
 								</g:InlineLabel> -->
 							</g:VerticalPanel>
-						<g:cell verticalAlignment="ALIGN_MIDDLE">
-								<g:Button ui:field="inputButton">Select Folder</g:Button>
-							</g:cell>
 							<g:cell verticalAlignment="ALIGN_MIDDLE">
-								<g:Label ui:field="inputLabel" styleName="{style.important}"></g:Label>
+								<g:TextBox ui:field="inputLabel" enabled="false"></g:TextBox>
+							</g:cell>
+						<g:cell verticalAlignment="ALIGN_MIDDLE" horizontalAlignment='ALIGN_RIGHT' width='105px'>
+								<g:Button ui:field="inputButton">Select Folder</g:Button>
 							</g:cell>
 						</g:HorizontalPanel>
 						<g:HorizontalPanel styleName="inputForm">

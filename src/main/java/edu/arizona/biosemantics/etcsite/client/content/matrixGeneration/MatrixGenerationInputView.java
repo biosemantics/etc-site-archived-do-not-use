@@ -28,7 +28,7 @@ public class MatrixGenerationInputView extends Composite implements IMatrixGener
 	TextBox taskNameTextBox;
 	
 	@UiField
-	Label inputLabel;
+	TextBox inputLabel;
 	
 	@UiField
 	ListBox glossaryListBox;
@@ -51,7 +51,6 @@ public class MatrixGenerationInputView extends Composite implements IMatrixGener
 	@UiField
 	SubMenu subMenu;
 	
-
 	public MatrixGenerationInputView() {
 		super();
 		initWidget(uiBinder.createAndBindUi(this));

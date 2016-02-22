@@ -45,11 +45,12 @@ public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.P
 				semanticMarkupService.checkValidInput(Authentication.getInstance().getToken(), inputFolderPath, new AsyncCallback<String>() {
 					@Override
 					public void onSuccess(String result) {
-						if(result.equals("valid")) {
-							placeController.goTo(new SemanticMarkupInputPlace());
-							Alerter.stopLoading(box);
-						} else {
+						if(!result.equals("valid")) {
 							Alerter.inputError(result);
+							Alerter.stopLoading(box);
+						} 
+						else {
+							placeController.goTo(new SemanticMarkupInputPlace());
 							Alerter.stopLoading(box);
 						}
 					}

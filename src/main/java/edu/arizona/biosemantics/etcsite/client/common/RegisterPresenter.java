@@ -85,7 +85,7 @@ public class RegisterPresenter implements IRegisterView.Presenter {
 			return;
 		}
 		if (captchaSolution.length() == 0){
-			view.setErrorMessage("Enter the security code.");
+			view.setErrorMessage("Please enter the security code.");
 			return;
 		}
 		

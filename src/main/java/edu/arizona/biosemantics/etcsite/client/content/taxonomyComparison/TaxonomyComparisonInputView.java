@@ -39,13 +39,13 @@ public class TaxonomyComparisonInputView extends Composite implements ITaxonomyC
 	ListBox glossaryListBox;
 	
 	@UiField
-	Label inputOntologyLabel;
+	TextBox inputOntologyLabel;
 
 	@UiField
-	Label inputTermReviewLabel1;
+	TextBox inputTermReviewLabel1;
 	
 	@UiField
-	Label inputTermReviewLabel2;
+	TextBox inputTermReviewLabel2;
 	
 	@UiField
 	SubMenu subMenu;

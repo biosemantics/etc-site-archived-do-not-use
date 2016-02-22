@@ -36,7 +36,7 @@ public class SemanticMarkupInputView extends Composite implements ISemanticMarku
 	ListBox glossaryListBox;
 	
 	@UiField
-	Label inputLabel;
+	TextBox inputLabel;
 	
 	@UiField 
 	Button inputButton;

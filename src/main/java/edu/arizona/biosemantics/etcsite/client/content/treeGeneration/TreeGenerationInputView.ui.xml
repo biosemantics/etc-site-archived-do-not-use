@@ -80,10 +80,12 @@
 									<g:Label>Selected Folder:</g:Label>
 								</g:cell>
 							</g:VerticalPanel>
-							<g:Button ui:field="inputButton">Select Input</g:Button>
 							<g:cell verticalAlignment="ALIGN_TOP">
-								<g:Label ui:field="inputLabel" styleName="{style.important}"></g:Label>
-							</g:cell>
+								<g:TextBox ui:field="inputLabel" enabled="false"></g:TextBox>
+		                    </g:cell>	
+							<g:cell verticalAlignment="ALIGN_MIDDLE" horizontalAlignment='ALIGN_RIGHT' width='105px'>
+						       <g:Button ui:field="inputButton">Select Input</g:Button>
+							</g:cell>							
 						</g:HorizontalPanel>
 					</g:VerticalPanel>
 					<g:VerticalPanel styleName="{style.padding}">

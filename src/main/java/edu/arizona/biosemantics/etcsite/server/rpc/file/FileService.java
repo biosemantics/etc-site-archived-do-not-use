@@ -1098,7 +1098,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	@Override
 	public FileTreeItem getTermReviewFileTreeItem(AuthenticationToken token, String matrixReviewModelPath) {
 		String[] parts = matrixReviewModelPath.split("_output_by_MG_task_");
-		String reviewTermsPath = parts[0].replaceAll("_output_by_TC_task_", "_outputTR_by_TC_task_");
+		String reviewTermsPath = parts[0].replaceAll("_output_by_TC_task_", "_ReviewTerms_by_TC_task_");
 		File file = new File(reviewTermsPath);
 		if(file.exists() && file.isDirectory()) {
 			if(file.listFiles().length != 3)

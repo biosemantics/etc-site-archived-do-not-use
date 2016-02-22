@@ -115,7 +115,7 @@ public class Alerter {
 	}
 
 	public static MessageBox failedToRegister(Throwable caught) {
-		return showAlert("Registration", "Failed to register.", caught);
+		return showAlert("Registration", caught.getMessage(), caught);
 	}
 
 	public static MessageBox failedToRequestPasswordResetCode(Throwable caught) {
@@ -412,10 +412,6 @@ public class Alerter {
 		case TAXON_DESCRIPTION:
 			return showAlert("Not saved", "Content is no longer valid against the <a href='https://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupInput.xsd' target='_blank'>input schema</a>. "
 								+ "correct the problems and try to save again.");
-		case CLEANTAX:
-			break;
-		case MATRIX_GENERATION_SERIALIZED_MODEL:
-			break;
 		default:
 			break;
 		}

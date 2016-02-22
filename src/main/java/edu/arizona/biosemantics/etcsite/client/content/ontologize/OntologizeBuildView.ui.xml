@@ -22,7 +22,7 @@
 	</ui:style>
 
 	<g:DockLayoutPanel unit='PX' ui:field='dockLayoutPanel'>
-		<g:north size='50'>
+		<g:north size='70'>
 			<g:SimplePanel> <!-- necessary because element.style information is set which leads ff not 
 					to center the menu -->
 				<g:VerticalPanel>
