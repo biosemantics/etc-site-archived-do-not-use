@@ -22,7 +22,6 @@ import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkup
 import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePresenter.ISelectListener;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;

@@ -24,7 +24,6 @@ import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerD
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.IInputCreateView.InputValidator;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.IInputCreateView.UploadCompleteHandler;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;

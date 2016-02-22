@@ -6,7 +6,6 @@ import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.ServerSetup;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileSource;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
 

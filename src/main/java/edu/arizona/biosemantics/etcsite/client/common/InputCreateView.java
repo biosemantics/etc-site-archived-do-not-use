@@ -23,7 +23,6 @@ import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
 import gwtupload.client.Uploader;
 

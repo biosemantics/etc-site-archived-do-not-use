@@ -8,7 +8,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.file.Tree;
@@ -17,9 +16,6 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDen
 
 @RemoteServiceRelativePath("file")
 public interface IFileService extends RemoteService {
-
-	public Tree<FileInfo> getUsersFiles(AuthenticationToken authenticationToken, FileFilter fileFilter) 
-		throws PermissionDeniedException;
 	
 	public void deleteFile(AuthenticationToken authenticationToken, String filePath) throws PermissionDeniedException, 
 		FileDeleteFailedException;
@@ -69,10 +65,6 @@ public interface IFileService extends RemoteService {
 	public String validateTaxonNames(AuthenticationToken authenticationToken, String directory);
 
 	public void deleteUploadedFiles(AuthenticationToken token, String uploadedDirectory, List<String> uploadedFiles) throws PermissionDeniedException, FileDeleteFailedException;
-
-	public List<FileInfo> getAllOwnedFolders(AuthenticationToken authenticationToken);
-	
-	public List<FileInfo> getAllSharedFolders(AuthenticationToken authenticationToken);
 	
 	public FolderTreeItem getOwnedRootFolder(AuthenticationToken authenticationToken);
 	
