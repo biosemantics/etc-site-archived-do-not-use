@@ -155,39 +155,22 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		}
 	}
 	
-	//TODO
 	@Override 
-	public void saveCollection(AuthenticationToken token, Task task, 
-			edu.arizona.biosemantics.euler.alignment.shared.model.Collection collection) throws TaxonomyComparisonException {
-		/*try {
-			serializeModel(model, this.tempFiles + File.separator + task.getId() + File.separator + "Model.ser");
+	public void saveCollection(AuthenticationToken token, Task task, edu.arizona.biosemantics.euler.alignment.shared.model.Collection collection) throws TaxonomyComparisonException {
+		try {
+			alignmentService.saveCollection(collection);
 		} catch (IOException e) {
 			log(LogLevel.ERROR, "Couldn't serialize model to disk", e);
 			throw new TaxonomyComparisonException(task);
-		}*/
-	}
-	
-	private void serializeModel(Model model, String file) throws IOException {
-		try(ObjectOutput output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
-			output.writeObject(model);
 		}
 	}
 	
-	private Model unserializeModel(String file) throws FileNotFoundException, IOException, ClassNotFoundException {
-		try(ObjectInput input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
-			Model model = (Model)input.readObject();
-			return model;
-		}
-	}
-	
-
-	//TODO
 	@Override
 	public Task runMirGeneration(final AuthenticationToken authenticationToken, final Task task, 
 			final edu.arizona.biosemantics.euler.alignment.shared.model.Collection collection) throws TaxonomyComparisonException {
-		/*final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
+		final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
+		final Model model = collection.getModel();
 		
-		//browser back button may invoke another "learn"
 		if(activeProcessFutures.containsKey(config.getConfiguration().getId())) {
 			return task;
 		} else {
@@ -249,7 +232,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 									sendFinishedTaxonomyComparisonEmail(task);
 				     			}
 				     			
-				     			save(authenticationToken, task, model);
+				     			save(authenticationToken, task, collection);
 				     		} else {
 				     			task.setFailed(true);
 								task.setFailedTime(new Date());
@@ -269,14 +252,13 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			     }, executorService);
 			
 			return task;
-		}*/
-		return null;
+		}
 	}
 	
-	//TODO
 	protected void save(AuthenticationToken token, Task task, 
 			edu.arizona.biosemantics.euler.alignment.shared.model.Collection collection) throws TaxonomyComparisonException {
-		/*try {
+		try {
+			Model model = collection.getModel();
 			RunOutput output = this.getRunOutput(task);
 			for(PossibleWorld possibleWorld : output.getPossibleWorlds()) {
 				String oldUrl = possibleWorld.getUrl();
@@ -289,10 +271,10 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 				model.getRunHistory().getLast().setOutput(output);
 			
 			this.saveCollection(token, task, collection);
-		}catch(Exception e) {
+		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't save model", e);
 			throw new TaxonomyComparisonException();
-		}*/
+		}
 	}
 	
 	private String getAuthenticatedGetPDFUrl(AuthenticationToken token, String url) throws UnsupportedEncodingException {
@@ -310,12 +292,12 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		// TODO Auto-generated method stub
 		
 	}
-
-	//TODO
+	
 	@Override
 	public String getInputVisualization(AuthenticationToken token, Task task, 
 			edu.arizona.biosemantics.euler.alignment.shared.model.Collection collection) throws TaxonomyComparisonException {
-		/*final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
+		Model model = collection.getModel();
+		final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
 		final String eulerInputFile = tempFiles + File.separator + task.getId() + File.separator + "input.txt";
 		try {
 			writeEulerInput(eulerInputFile, model);
@@ -349,8 +331,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			throw new TaxonomyComparisonException(task);
 		}
 		File output = new File(tempFiles + File.separator + task.getId() + File.separator + "inputVisualization" + File.separator + "out" + File.separator + "0-Input" + File.separator + "input.pdf");
-		return output.getAbsolutePath();*/
-		return null;
+		return output.getAbsolutePath();
 	}
 
 	
@@ -486,11 +467,11 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		}
 	}
 
-	//TODO
 	@Override
 	public String exportArticulations(AuthenticationToken token, Task task,
 			edu.arizona.biosemantics.euler.alignment.shared.model.Collection collection) throws TaxonomyComparisonException {
-		/*final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
+		Model model = collection.getModel();
+		final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
 		
 		String path = tempFiles + File.separator + String.valueOf(task.getId()) + File.separator + "articulations_task-" + task.getName() + ".txt";
 		File file = new File(path);
@@ -508,8 +489,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			log(LogLevel.ERROR, e.getMessage()+"\n"+org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(e));
 			throw new TaxonomyComparisonException(task);
 		} 
-		return path;*/
-		return null;
+		return path;
 	}
 	
 	@Override
