@@ -797,7 +797,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	private Collection<ArticulationProposal> getMachineArticulationProposals(AuthenticationToken token, Task task, Taxonomy taxonomy1, Taxonomy taxonomy2)
 			throws Exception {
 		List<ArticulationProposal> result = new LinkedList<ArticulationProposal>();
-		final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
+		/*final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
 		if(config.hasModelInputs()) {
 			edu.arizona.biosemantics.matrixreview.shared.model.Model model1 = unserializeMatrix(getSerializedModel(config.getModelInput1()));
 			edu.arizona.biosemantics.matrixreview.shared.model.Model model2 = unserializeMatrix(getSerializedModel(config.getModelInput1()));
@@ -818,7 +818,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 					new AllCombinationsArticulationsGenerator(pairwiseArticulationGenerator);	
 			Collection<ArticulationProposal> proposals = allCombinationsArticulationsGenerator.generate(taxonomyA, taxonomyB);		
 			return proposals;
-		}
+		}*/
 		return result;
 	}
 	
