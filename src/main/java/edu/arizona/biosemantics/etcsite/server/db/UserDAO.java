@@ -28,8 +28,10 @@ import edu.arizona.biosemantics.etcsite.shared.model.User.EmailPreference;
 
 public class UserDAO {
 	
+	private File profilesDir;
+
 	public UserDAO() {
-		File profilesDir = new File(Configuration.profiles);
+		profilesDir = new File(Configuration.profiles);
 		profilesDir.mkdir();
 	}
 
@@ -163,10 +165,8 @@ public class UserDAO {
 	}
 
 	private void storeSerializedProfile(int userId, Map<String, Boolean> profile) {
-		String file = Configuration.etcFiles + File.separator + "profiles"
-				+ File.separator + userId + ".ser";
 		try (ObjectOutput output = new ObjectOutputStream(
-				new BufferedOutputStream(new FileOutputStream(file)))) {
+				new BufferedOutputStream(new FileOutputStream(new File(profilesDir, userId + ".ser"))))) {
 			output.writeObject(profile);
 		} catch (Exception e) {
 			log(LogLevel.ERROR, "Serialization of user failed", e);
@@ -174,8 +174,7 @@ public class UserDAO {
 	}
 	
 	private Map<String, Boolean> getSerializedProfile(int userId) {
-		String file = Configuration.etcFiles + File.separator + "profiles" + File.separator + userId + ".ser";
-		try(ObjectInput input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
+		try(ObjectInput input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(new File(profilesDir, userId + ".ser"))))) {
 			return (Map<String, Boolean>) input.readObject();
 		} catch (ClassNotFoundException | IOException e) {
 			log(LogLevel.ERROR, "Deserialization of user failed. Will instantiate default profile.", e);
