@@ -1,6 +1,7 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.treegeneration;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Date;
 import java.util.LinkedList;
@@ -191,7 +192,12 @@ public class TreeGenerationService extends RemoteServiceServlet implements ITree
 		task = daoManager.getTaskDAO().getTask(task.getId());
 		
 		File file = new File(config.getInput());
-		File matrixFile = file.listFiles()[0];
+		File matrixFile = file.listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File pathname) {
+				return pathname.getName().endsWith(".csv");
+			} 
+		})[0];
 		try {
 			return reader.read(matrixFile.getAbsolutePath());
 		} catch(IOException e) {
