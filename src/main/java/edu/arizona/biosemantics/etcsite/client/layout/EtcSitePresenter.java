@@ -200,27 +200,27 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 
 	@Override
 	public void onTextCapture() {
-		this.authenticationToPlaceGoer.goTo(new SemanticMarkupCreatePlace(), new LinkedList<ToPlaceGoer>(Arrays.asList(this.resumeTaskToPlaceGoer)));
+		this.authenticationToPlaceGoer.goTo(new SemanticMarkupCreatePlace(), new LinkedList<ToPlaceGoer>());//Arrays.asList(this.resumeTaskToPlaceGoer)));
 	}
 	
 	@Override
 	public void onOntologize() {
-		this.authenticationToPlaceGoer.goTo(new OntologizeCreatePlace(), new LinkedList<ToPlaceGoer>(Arrays.asList(this.resumeTaskToPlaceGoer)));
+		this.authenticationToPlaceGoer.goTo(new OntologizeCreatePlace(), new LinkedList<ToPlaceGoer>());//Arrays.asList(this.resumeTaskToPlaceGoer)));
 	}
 
 	@Override
 	public void onMatrixGeneration() {
-		this.authenticationToPlaceGoer.goTo(new MatrixGenerationCreatePlace(), new LinkedList<ToPlaceGoer>(Arrays.asList(this.resumeTaskToPlaceGoer)));
+		this.authenticationToPlaceGoer.goTo(new MatrixGenerationCreatePlace(), new LinkedList<ToPlaceGoer>());//Arrays.asList(this.resumeTaskToPlaceGoer)));
 	}
 
 	@Override
 	public void onTreeGeneration() {
-		this.authenticationToPlaceGoer.goTo(new TreeGenerationCreatePlace(), new LinkedList<ToPlaceGoer>(Arrays.asList(this.resumeTaskToPlaceGoer)));
+		this.authenticationToPlaceGoer.goTo(new TreeGenerationCreatePlace(), new LinkedList<ToPlaceGoer>());//Arrays.asList(this.resumeTaskToPlaceGoer)));
 	}
 
 	@Override
 	public void onTaxonomyComparison() {
-		this.authenticationToPlaceGoer.goTo(new TaxonomyComparisonCreatePlace(), new LinkedList<ToPlaceGoer>(Arrays.asList(this.resumeTaskToPlaceGoer)));
+		this.authenticationToPlaceGoer.goTo(new TaxonomyComparisonCreatePlace(), new LinkedList<ToPlaceGoer>());//Arrays.asList(this.resumeTaskToPlaceGoer)));
 	}
 
 	@Override

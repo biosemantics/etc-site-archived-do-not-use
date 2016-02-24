@@ -1,7 +1,11 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.file;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -24,6 +28,7 @@ import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.process.file.MatrixGenerationSerializedModelReader;
 import edu.arizona.biosemantics.etcsite.server.process.file.TaxonNameValidator;
 import edu.arizona.biosemantics.etcsite.server.process.file.XmlNamespaceManager;
+import edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison.CleanTaxReader;
 import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.Share;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
@@ -109,6 +114,14 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	private FileTypeEnum getFileType(AuthenticationToken authenticationToken, String filePath) {
 		File file = new File(filePath);
 		if(file.isFile()) {
+			if(file.getName().endsWith(".ser")) {
+				try(ObjectInput input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
+					edu.arizona.biosemantics.matrixreview.shared.model.Model model = (edu.arizona.biosemantics.matrixreview.shared.model.Model)input.readObject();
+					return FileTypeEnum.MATRIX_GENERATION_SERIALIZED_MODEL;
+				} catch(Exception e) {
+					
+				}
+			}
 			if(file.getName().endsWith(".xml")) {
 				try {
 					return xmlNamespaceManager.getFileType(new File(filePath));
@@ -120,8 +133,20 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 				return FileTypeEnum.MATRIX;
 			} else if(file.getName().endsWith(".owl")) {
 				return FileTypeEnum.OWL_ONTOLOGY;
-			} else 
-				return FileTypeEnum.PLAIN_TEXT;
+			} else {
+				CleanTaxReader reader = new CleanTaxReader();
+				try {
+					boolean validCleanTax = reader.isValid(file);
+					if(validCleanTax)
+						return FileTypeEnum.CLEANTAX;
+					else
+						return FileTypeEnum.PLAIN_TEXT;
+				} catch(IOException e) {
+					log(LogLevel.ERROR, "Could not read file.", e);
+					return FileTypeEnum.PLAIN_TEXT;
+				}
+			}
+				
 			/*RPCResult<Boolean> validationResult = fileFormatService.isValidMarkedupTaxonDescription(authenticationToken, filePath);
 			if(validationResult.isSucceeded() && validationResult.getData())
 				return FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION;
@@ -645,15 +670,15 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		return result;
 	}
 
-	private FileTreeItem createFileTreeItem(String name, String path, String displayPath, FileTypeEnum fileType, int shareOwnerUserId, boolean isSystemFile, 
+	private FileTreeItem createFileTreeItem(String name, String path, String displayPath, FileTypeEnum fileType, int ownerUserId, boolean isSystemFile, 
 			boolean isAllowsNewFiles, boolean isAllowsNewFolders, FileSource fileSource) {
-		return new FileTreeItem(UUID.randomUUID().toString(), name, name, path, displayPath, fileType, shareOwnerUserId, isSystemFile, isAllowsNewFiles, isAllowsNewFolders, 
+		return new FileTreeItem(UUID.randomUUID().toString(), name, name, path, displayPath, fileType, ownerUserId, isSystemFile, isAllowsNewFiles, isAllowsNewFolders, 
 				fileSource); 
 	}
 	
-	private FolderTreeItem createFolderTreeItem(String name, String displayName, String path, String displayPath, FileTypeEnum fileType, int shareOwnerUserId, boolean isSystemFile, 
+	private FolderTreeItem createFolderTreeItem(String name, String displayName, String path, String displayPath, FileTypeEnum fileType, int ownerUserId, boolean isSystemFile, 
 			boolean isAllowsNewFiles, boolean isAllowsNewFolders, FileSource fileSource) {
-		return new FolderTreeItem(UUID.randomUUID().toString(), name, displayName, path, displayPath, fileType, shareOwnerUserId, isSystemFile, isAllowsNewFiles, isAllowsNewFolders, 
+		return new FolderTreeItem(UUID.randomUUID().toString(), name, displayName, path, displayPath, fileType, ownerUserId, isSystemFile, isAllowsNewFiles, isAllowsNewFolders, 
 				fileSource); 
 	}
 
@@ -765,7 +790,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 							boolean isAllowsNewFolders = fileSource.equals(FileSource.OWNED);
 							result.add(createFolderTreeItem(name, displayName,
 									child.getAbsolutePath(), displayPath, fileType,
-									token.getUserId(), isSystemFile,
+									getOwnerUserId(child), isSystemFile,
 									isAllowsNewFiles, isAllowsNewFolders, fileSource));
 						} else {
 							boolean isSystemFile = false;
@@ -773,7 +798,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 							boolean isAllowsNewFolders = fileSource.equals(FileSource.OWNED);
 							result.add(createFileTreeItem(name,
 									child.getAbsolutePath(), displayPath, fileType,
-									token.getUserId(), isSystemFile,
+									getOwnerUserId(child), isSystemFile,
 									isAllowsNewFiles, isAllowsNewFolders, fileSource));
 						}
 	            }
@@ -890,7 +915,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			if(isTaxonomyDirectory(file)) {
 				String taxonomyRoot = getTaxonomyRoot(getTaxonomyModelFile(file));
 				result.add(this.createFileTreeItem(taxonomyRoot, 
-						file.getAbsolutePath(), taxonomyRoot, FileTypeEnum.MATRIX_GENERATION_SERIALIZED_MODEL, -1, false, false, false, fileSource));
+						file.getAbsolutePath(), taxonomyRoot, FileTypeEnum.MATRIX_GENERATION_SERIALIZED_MODEL, getOwnerUserId(file), false, false, false, fileSource));
 			} else {
 				for(File child : file.listFiles()) {
 					result.addAll(createTaxonomies(child, fileSource));
@@ -900,6 +925,16 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		return result;
 	}
 	
+	private int getOwnerUserId(File file) {
+		String path = file.getAbsolutePath();
+		if(path.startsWith(Configuration.fileBase)) {
+			String left = path.replace(Configuration.fileBase + File.separator, "");
+			left = left.substring(0, left.indexOf(File.separator));
+			return Integer.valueOf(left);
+		}
+		return -1;
+	}
+
 	private String getTaxonomyRoot(File file) {
 		MatrixGenerationSerializedModelReader reader = new MatrixGenerationSerializedModelReader();
 		Model model = reader.getModel(file.getAbsolutePath());
@@ -912,7 +947,6 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	}
 	
 	private File getTaxonomyModelFile(File file) {
-		System.out.println(file.getAbsolutePath());
 		MatrixGenerationSerializedModelReader reader = new MatrixGenerationSerializedModelReader();
 		if(file.isDirectory()) {
 			for(File child : file.listFiles()) {
@@ -990,7 +1024,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 				fileSource = FileSource.SHARED;
 			FilePathShortener filePathShortener = new FilePathShortener();
 			String displayPath = filePathShortener.shorten(path, fileSource, token.getUserId());
-			return createFolderTreeItem(file.getName(), getDisplayName(file), file.getAbsolutePath(), displayPath, null, -1, false, 
+			return createFolderTreeItem(file.getName(), getDisplayName(file), file.getAbsolutePath(), displayPath, null, getOwnerUserId(file), false, 
 					false, false, fileSource);
 		}
 		return null;
