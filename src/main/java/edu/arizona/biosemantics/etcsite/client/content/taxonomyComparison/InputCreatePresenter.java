@@ -101,7 +101,8 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 					uploader.setServletPath(defaultServletPath);
 					//Alerter.successfullyUploadedFiles();
 					
-					taxonomyComparisonService.getTaxonomies(Authentication.getInstance().getToken(), new FolderTreeItem("", "", targetUploadDirectory, 
+					taxonomyComparisonService.getTaxonomies(Authentication.getInstance().getToken(), new FolderTreeItem("", "", 
+							"", targetUploadDirectory, 
 							"", FileTypeEnum.DIRECTORY, -1, false, false, false, null), 
 							new AsyncCallback<List<String>>() {
 						@Override

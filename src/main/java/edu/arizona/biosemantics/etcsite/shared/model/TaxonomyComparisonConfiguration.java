@@ -58,10 +58,15 @@ public class TaxonomyComparisonConfiguration extends AbstractTaskConfiguration i
 	@Override
 	public List<String> getOutputs() {
 		List<String> result = new LinkedList<String>();
-		result.add(this.getOutput());
+		if(hasOutput())
+			result.add(this.getOutput());
 		return result;
 	}
 	
+	private boolean hasOutput() {
+		return output != null && !output.isEmpty();
+	}
+
 	public boolean hasCleanTaxInput() {
 		return cleanTaxInput != null && !cleanTaxInput.isEmpty();
 	}

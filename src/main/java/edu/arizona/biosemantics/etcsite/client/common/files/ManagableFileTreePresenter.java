@@ -27,6 +27,7 @@ import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkupFilesDialogPresenter.ICloseHandler;
 import edu.arizona.biosemantics.etcsite.shared.Configuration;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileSource;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
@@ -108,7 +109,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 			@Override
 			public void onClose(int filesCreated) {
 				if(filesCreated > 0)
-					fileTreePresenter.getView().refreshChildren(selection, fileFilter);
+					fileTreePresenter.getView().refreshNode(selection, fileFilter);
 			}
 		});
 		createSemanticMarkupFilesDialogPresenter.show(fileTreePresenter.getView().getSelection().get(0).getFilePath());
@@ -153,7 +154,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 				new AsyncCallback<String>() {
 					@Override
 					public void onSuccess(String result) {
-						fileTreePresenter.getView().refreshChildren(selection, fileFilter);
+						fileTreePresenter.getView().refreshNode(selection, fileFilter);
 					}
 					@Override
 					public void onFailure(Throwable caught) {
@@ -172,7 +173,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 					}
 					@Override
 					public void onSuccess(Void result) {
-						fileTreePresenter.getView().refreshChildren(fileTreePresenter.getView().getParent(selection), fileFilter);
+						fileTreePresenter.getView().refreshNode(selection, fileFilter);
 						selection.setName(newName);
 					}
 			});
@@ -183,7 +184,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 					newFileName, new AsyncCallback<Void>() {
 				@Override
 				public void onSuccess(Void result) {
-					fileTreePresenter.getView().refreshChildren(fileTreePresenter.getView().getParent(selection), fileFilter);
+					fileTreePresenter.getView().refreshNode(selection, fileFilter);
 					selection.setName(newFileName);
 				}
 				@Override
@@ -207,7 +208,6 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 					}
 				});
 		box.getTextField().addKeyPressHandler(new KeyPressHandler() {
-
 			@Override
 			public void onKeyPress(KeyPressEvent event) {
 				if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
@@ -236,7 +236,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 						for(FileTreeItem item : selection)
 							parents.add(fileTreePresenter.getView().getParent(item));
 						for(FileTreeItem parent : parents)
-							fileTreePresenter.getView().refreshChildren(parent, fileFilter);
+							fileTreePresenter.getView().refreshNode(parent, fileFilter);
 						Alerter.stopLoading(box);
 					}
 					@Override
@@ -320,7 +320,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 					if(serverResponse != null && !serverResponse.isEmpty())
 						Alerter.failedToUpload(serverResponse);
 				}
-				fileTreePresenter.getView().refreshChildren(targetFileTreeItem, fileFilter);
+				fileTreePresenter.getView().refreshNode(targetFileTreeItem, fileFilter);
 			}else{
 				if(serverResponse != null && !serverResponse.isEmpty())
 					Alerter.failedToUpload(serverResponse);
@@ -442,16 +442,19 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 		boolean nonZeroSelection = !selections.isEmpty();
 		FileTreeItem firstItem = event.getSelection().get(0);
 		
-		boolean anySystemFile = false;
+		boolean anySystemOrSharedOrPublicFile = false;
 		for(FileTreeItem selection : selections) 
-			if(selection.isSystemFile())
-				anySystemFile = true;
+			if(selection.isSystemFile() || selection.getFileSource().equals(FileSource.PUBLIC) || 
+					selection.getFileSource().equals(FileSource.SHARED))
+				anySystemOrSharedOrPublicFile = true;
 		
 		view.setEnabledCreateDirectory(singleSelection && firstItem.isAllowsNewFolders());
 		view.setEnabledUpload(singleSelection && firstItem.isAllowsNewFiles() && firstItem.isAllowsNewFolders());
 		view.setEnabledCreateSemanticMarkupFiles(singleSelection && firstItem.isAllowsNewFiles());
-		view.setEnabledRename(singleSelection && !firstItem.isSystemFile());
-		view.setEnabledDelete(nonZeroSelection && !anySystemFile);
+		view.setEnabledRename(singleSelection && !firstItem.isSystemFile() 
+				&& !firstItem.getFileSource().equals(FileSource.PUBLIC)
+				&& !firstItem.getFileSource().equals(FileSource.SHARED));
+		view.setEnabledDelete(nonZeroSelection && !anySystemOrSharedOrPublicFile);
 		
 		setInputFileMultiple();
 	}

@@ -28,7 +28,7 @@ public interface IFileTreeView extends IsWidget {
 	int getDepth(FileTreeItem fileTreeItem);
 	
 	void refresh(FileFilter fileFilter);
-	void refreshChildren(FileTreeItem fileTreeItem, FileFilter fileFilter);
+	void refreshNode(FileTreeItem fileTreeItem, FileFilter fileFilter);
 	//void refresh(FileTreeItem selection, FileFilter fileFilter);
 
 }
