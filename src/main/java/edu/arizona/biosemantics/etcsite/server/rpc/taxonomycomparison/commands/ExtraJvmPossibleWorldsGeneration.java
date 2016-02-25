@@ -1,12 +1,15 @@
-package edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison;
+package edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison.commands;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.ExtraJvmCallable;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.TaxonomyComparisonException;
+import edu.arizona.biosemantics.euler2.EulerAlign;
+import edu.arizona.biosemantics.euler2.EulerException;
 import edu.arizona.biosemantics.euler2.EulerShow;
+import edu.arizona.biosemantics.euler2.Reasoner;
 
-public class ExtraJvmInputVisualization extends ExtraJvmCallable<Void> implements InputVisualization {
+public class ExtraJvmPossibleWorldsGeneration extends ExtraJvmCallable<Void> implements PossibleWorldsGeneration {
 
 	public static class MainWrapper {
 		
@@ -14,13 +17,23 @@ public class ExtraJvmInputVisualization extends ExtraJvmCallable<Void> implement
 			try {
 				String workingDir = args[0];
 				String inputFile = args[1];
-				String outputDirectory = args[2];
-				EulerShow euler = new EulerShow();
-				euler.setWorkingDir(workingDir);
+				String outputDir = args[2];
+				
+				String commandLineOutput = "";
+				EulerAlign euler = new EulerAlign();
 				euler.setInputFile(inputFile);
-				euler.setOutputDirectory(outputDirectory);
-				euler.setName("iv");
-				euler.run();
+				euler.setWorkingDir(workingDir);
+				euler.setOutputDirectory(outputDir);
+				euler.setReasoner(Reasoner.GRINGO);
+				commandLineOutput = euler.run();
+				commandLineOutput += "\n\n";
+				EulerShow show = new EulerShow();
+				show.setWorkingDir(workingDir);
+				show.setOutputDirectory(outputDir);
+				show.setName("pw"); // Generate possible worlds pdfs.
+				commandLineOutput += show.run();
+				show.setName("sv"); // Generate aggregate pdfs.
+				show.run();
 			} catch (Throwable t) {
 				System.exit(-1);
 			}
@@ -30,12 +43,12 @@ public class ExtraJvmInputVisualization extends ExtraJvmCallable<Void> implement
 
 	private String workingDir;
 	private String inputFile;
-	private String outputDirectory;
+	private String outputDir;
 	
-	public ExtraJvmInputVisualization(String inputFile, String outputDirectory, String workingDir) {
+	public ExtraJvmPossibleWorldsGeneration(String inputFile, String outputDir, String workingDir) {
 		this.workingDir = workingDir;
 		this.inputFile = inputFile;
-		this.outputDirectory = outputDirectory;
+		this.outputDir = outputDir;
 		
 		this.setArgs(createArgs());
 		if(!Configuration.taxonomyComparison_xms.isEmpty()) 
@@ -52,15 +65,15 @@ public class ExtraJvmInputVisualization extends ExtraJvmCallable<Void> implement
 	}
 	
 	private String[] createArgs() {
-		String[] args = { workingDir, inputFile, outputDirectory };
+		String[] args = { workingDir, inputFile, outputDir };
 		return args;
 	}
 
 	@Override
-	public Void createReturn() throws TaxonomyComparisonException {
+	public Void createReturn() throws EulerException {
 		if(exitStatus != 0) {
-			log(LogLevel.ERROR, "Taxonomy Comparison Input Visualization failed.");
-			throw new TaxonomyComparisonException();
+			log(LogLevel.ERROR, "Euler align failed.");
+			throw new EulerException("Euler align failed.");
 		}
 		return null;
 	}

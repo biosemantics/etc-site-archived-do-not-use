@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison;
+package edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison.commands;
 
 import java.util.concurrent.Callable;
 

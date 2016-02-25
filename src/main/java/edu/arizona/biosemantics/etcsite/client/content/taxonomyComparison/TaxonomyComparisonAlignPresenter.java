@@ -27,6 +27,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaxonomyComparisonTaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.PossibleWorldGenerationResult;
 import edu.arizona.biosemantics.euler.alignment.client.event.DownloadEvent;
 import edu.arizona.biosemantics.euler.alignment.client.event.SaveEvent;
 import edu.arizona.biosemantics.euler.alignment.client.event.model.AddArticulationsEvent;
@@ -127,25 +128,29 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 						case ANALYZE:
 							break;
 						case ANALYZE_COMPLETE:
-							taxonomyComparisonService.getMirGenerationResult(
-									Authentication.getInstance().getToken(), task, new AsyncCallback<RunOutput>() {
+							taxonomyComparisonService.getPossibleWorldGenerationResult(
+									Authentication.getInstance().getToken(), task, new AsyncCallback<PossibleWorldGenerationResult>() {
 										@Override
 										public void onFailure(Throwable t) {
 											processingDialog.hide();
 											Alerter.failedToGetTaxonomyComparisonResult(t);
 										}
 										@Override
-										public void onSuccess(RunOutput result) {
+										public void onSuccess(PossibleWorldGenerationResult result) {
 											processingDialog.hide();
-											for(PossibleWorld possibleWorld : result.getPossibleWorlds()) {
-												String oldUrl = possibleWorld.getUrl();
-												possibleWorld.setUrl(getAuthenticatedGetPDFUrl(possibleWorld.getUrl()));
+											if(result.isTooLong()) {
+												Alerter.taxonomyAlignmentTookTooLong();
+											} else {
+												RunOutput runOutput = result.getRunOutput();
+												for(PossibleWorld possibleWorld : runOutput.getPossibleWorlds()) {
+													String oldUrl = possibleWorld.getUrl();
+													possibleWorld.setUrl(getAuthenticatedGetPDFUrl(possibleWorld.getUrl()));
+												}
+												RunOutput output = new RunOutput(runOutput.getType(), runOutput.getPossibleWorlds(), getAuthenticatedGetPDFUrl(runOutput.getAggregateUrl()), 
+														getAuthenticatedGetPDFUrl(runOutput.getDiagnosisUrl()));
+												eulerEventBus.fireEvent(new EndMIREvent(output));
 											}
-											RunOutput output = new RunOutput(result.getType(), result.getPossibleWorlds(), getAuthenticatedGetPDFUrl(result.getAggregateUrl()), 
-													getAuthenticatedGetPDFUrl(result.getDiagnosisUrl()));
-											eulerEventBus.fireEvent(new EndMIREvent(output));
 										}
-	
 									});
 							break;
 						default:
@@ -284,14 +289,27 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 			@Override
 			public void onShow(StartMIREvent event) {
 				unsavedChanges = true;
-				taxonomyComparisonService.runMirGeneration(Authentication.getInstance().getToken(), task, collection, new AsyncCallback<Task>() {
+				taxonomyComparisonService.isConsistentInput(Authentication.getInstance().getToken(), task, collection, new AsyncCallback<Boolean>() {
 					@Override
 					public void onFailure(Throwable caught) {
-						Alerter.failedToRunMirGeneration(caught);
+						Alerter.failedToCheckConsistency(caught);
 					}
 					@Override
-					public void onSuccess(Task result) { 						
-						processingDialog.show();
+					public void onSuccess(Boolean result) {
+						if(result) {
+							taxonomyComparisonService.runPossibleWorldGeneration(Authentication.getInstance().getToken(), task, collection, new AsyncCallback<Task>() {
+								@Override
+								public void onFailure(Throwable caught) {
+									Alerter.failedToRunMirGeneration(caught);
+								}
+								@Override
+								public void onSuccess(Task result) { 						
+									processingDialog.show();
+								}
+							});
+						} else {
+							Alerter.inputInconsistent();
+						}
 					}
 				});
 			}

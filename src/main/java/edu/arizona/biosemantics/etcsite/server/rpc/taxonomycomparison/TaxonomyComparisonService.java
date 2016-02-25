@@ -39,6 +39,12 @@ import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Emailer;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.auth.AdminAuthenticationToken;
+import edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison.commands.ConsistencyCheck;
+import edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison.commands.ExtraJvmInputVisualization;
+import edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison.commands.ExtraJvmPossibleWorldsGeneration;
+import edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison.commands.InJvmConsistencyCheck;
+import edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison.commands.InputVisualization;
+import edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison.commands.PossibleWorldsGeneration;
 import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
@@ -60,6 +66,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.IFilePermissionService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDeniedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonService;
+import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.PossibleWorldGenerationResult;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.TaxonomyComparisonException;
 import edu.arizona.biosemantics.euler.alignment.server.io.MatrixReviewModelReader;
 import edu.arizona.biosemantics.euler.alignment.server.taxoncomparison.CharacterStateSimilarityMetric;
@@ -94,7 +101,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	private IFilePermissionService filePermissionService;
 	private ListeningScheduledExecutorService executorService;
 	private Map<Integer, ListenableFuture<Void>> activeProcessFutures = new HashMap<Integer, ListenableFuture<Void>>();
-	private Map<Integer, MIRGeneration> activeProcess = new HashMap<Integer, MIRGeneration>();
+	private Map<Integer, PossibleWorldsGeneration> activeProcess = new HashMap<Integer, PossibleWorldsGeneration>();
 	private DAOManager daoManager;
 	private Emailer emailer;
 	private InputFileCreator inputFileCreator;
@@ -165,8 +172,49 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		}
 	}
 	
+	//Assumption: Does not take long, hence blocking
 	@Override
-	public Task runMirGeneration(final AuthenticationToken authenticationToken, final Task task, 
+	public boolean isConsistentInput(AuthenticationToken token, Task task, 
+			final edu.arizona.biosemantics.euler.alignment.shared.model.Collection collection) throws TaxonomyComparisonException {
+		final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
+		final Model model = collection.getModel();
+				
+		final String eulerInputFile = tempFiles + File.separator + task.getId() + File.separator + "input.txt";
+		try {
+			writeEulerInput(eulerInputFile, model);
+		} catch(IOException e) {
+			log(LogLevel.ERROR, "Couldn't write euler input to file " , e);
+		}
+		
+		String runId = String.valueOf(model.getRunHistory().size());
+		final String workingDir = tempFiles + File.separator + task.getId() + File.separator + "run" + File.separator + runId;
+		final String outputDir = workingDir + File.separator + "out";
+		try {
+			fileService.deleteFile(new AdminAuthenticationToken(), workingDir);
+		} catch(Exception e) {
+			log(LogLevel.ERROR, "Couldn't delete working directory", e);
+			throw new TaxonomyComparisonException(task);
+		}
+		try {
+			fileService.createDirectory(new AdminAuthenticationToken(), tempFiles + File.separator + task.getId() + File.separator + "run", runId, false);
+			fileService.createDirectory(new AdminAuthenticationToken(), workingDir, "out", false);
+		} catch(Exception e) {
+			log(LogLevel.ERROR, "Couldn't set up output directory", e);
+			throw new TaxonomyComparisonException(task);
+		}
+		
+		final ConsistencyCheck consistencyCheck = new InJvmConsistencyCheck(eulerInputFile, workingDir, outputDir);
+		try {
+			Boolean result = consistencyCheck.call();
+			return result;
+		} catch(Exception e) {
+			log(LogLevel.ERROR, "Couldn't run consistency check", e);
+			throw new TaxonomyComparisonException(task);
+		}
+	}
+	
+	@Override
+	public Task runPossibleWorldGeneration(final AuthenticationToken authenticationToken, final Task task, 
 			final edu.arizona.biosemantics.euler.alignment.shared.model.Collection collection) throws TaxonomyComparisonException {
 		final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
 		final Model model = collection.getModel();
@@ -178,6 +226,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			TaskStage taskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.ANALYZE.toString());
 			task.setTaskStage(taskStage);
 			task.setResumable(false);
+			task.setTooLong(false);
 			daoManager.getTaskDAO().updateTask(task);
 			
 			final String eulerInputFile = tempFiles + File.separator + task.getId() + File.separator + "input.txt";
@@ -204,11 +253,11 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 				throw new TaxonomyComparisonException(task);
 			}
 
-			final MIRGeneration mirGeneration = new ExtraJvmMIRGeneration(eulerInputFile, outputDir, workingDir);
-			//final MIRGeneration mirGeneration = new InJvmMIRGeneration(eulerInputFile, outputDir, workingDir);
-			//final MIRGeneration mirGeneration = new DummyMIRGeneration(eulerInputFile, outputDir);
-			activeProcess.put(config.getConfiguration().getId(), mirGeneration);
-			final ListenableFuture<Void> futureResult = executorService.submit(mirGeneration);
+			final PossibleWorldsGeneration possibleWorldGeneration = new ExtraJvmPossibleWorldsGeneration(eulerInputFile, outputDir, workingDir);
+			//final PossibleWorldsGeneration possibleWorldGeneration = new InJvmPossibleWorldsGeneration(eulerInputFile, outputDir, workingDir);
+			//final PossibleWorldsGeneration possibleWorldGeneration = new DummyPossibleWorldsGeneration(eulerInputFile, outputDir);
+			activeProcess.put(config.getConfiguration().getId(), possibleWorldGeneration);
+			final ListenableFuture<Void> futureResult = executorService.submit(possibleWorldGeneration);
 			executorService.schedule(new Runnable() {
 				public void run() {
 					futureResult.cancel(true);
@@ -219,9 +268,9 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			futureResult.addListener(new Runnable() {
 			    	public void run() {	
 			     		try {
-			     			MIRGeneration mirGeneration = activeProcess.remove(config.getConfiguration().getId());
+			     			PossibleWorldsGeneration possibleWorldsGeneration = activeProcess.remove(config.getConfiguration().getId());
 				    		ListenableFuture<Void> futureResult = activeProcessFutures.remove(config.getConfiguration().getId());
-				     		if(mirGeneration.isExecutedSuccessfully()) {
+				     		if(possibleWorldsGeneration.isExecutedSuccessfully()) {
 				     			if(!futureResult.isCancelled()) {
 									TaskStage newTaskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.ANALYZE_COMPLETE.toString());
 									task.setTaskStage(newTaskStage);
@@ -234,17 +283,23 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 				     			
 				     			save(authenticationToken, task, collection);
 				     		} else {
-				     			task.setFailed(true);
-								task.setFailedTime(new Date());
-								task.setTooLong(futureResult.isCancelled());
-								daoManager.getTaskDAO().updateTask(task);
+				     			if(futureResult.isCancelled()) {
+				     				//took too long
+				     				task.setTooLong(futureResult.isCancelled());
+				     				daoManager.getTaskDAO().updateTask(task);
+				     			} else {
+				     				//task.setFailed(true);
+									//task.setFailedTime(new Date());
+									//task.setTooLong(futureResult.isCancelled());
+									//daoManager.getTaskDAO().updateTask(task);
+				     			}
 				     		}
 			     		} catch(Throwable t) {
 			     			log(LogLevel.ERROR, t.getMessage()+"\n"+org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(t));
-			     			task.setFailed(true);
+			     			/*task.setFailed(true);
 							task.setFailedTime(new Date());
 							
-							daoManager.getTaskDAO().updateTask(task);
+							daoManager.getTaskDAO().updateTask(task);*/
 			     		}
 			     	}
 
@@ -407,14 +462,17 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	}
 
 	@Override
-	public RunOutput getMirGenerationResult(AuthenticationToken token, Task task) {
+	public PossibleWorldGenerationResult getPossibleWorldGenerationResult(AuthenticationToken token, Task task) {
 		//final AbstractTaskConfiguration configuration = task.getConfiguration();
+		task = daoManager.getTaskDAO().getTask(task.getId());
+		if(task.isTooLong()) 
+			return new PossibleWorldGenerationResult(true, null);
 		TaskStage newTaskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.ALIGN.toString());
 		task.setTaskStage(newTaskStage);
 		task.setResumable(true);
 		daoManager.getTaskDAO().updateTask(task);
 		
-		return getRunOutput(task);
+		return new PossibleWorldGenerationResult(false, getRunOutput(task));
 		
 		//temporary for dummy use
 		//if(Math.random() < 0.5) {

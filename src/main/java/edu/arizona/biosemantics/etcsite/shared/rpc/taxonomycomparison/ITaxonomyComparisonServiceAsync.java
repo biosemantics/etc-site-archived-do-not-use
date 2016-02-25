@@ -18,13 +18,13 @@ import edu.arizona.biosemantics.euler.alignment.shared.model.RunOutput;
 
 public interface ITaxonomyComparisonServiceAsync extends IHasTasksServiceAsync {
 	
-	public void runMirGeneration(AuthenticationToken token, Task task,
+	public void runPossibleWorldGeneration(AuthenticationToken token, Task task,
 			Collection collection, AsyncCallback<Task> asyncCallback);
 
 	public void getInputVisualization(AuthenticationToken token, Task task,
 			Collection collection, AsyncCallback<String> callback);
 
-	public void getMirGenerationResult(AuthenticationToken token, Task task, AsyncCallback<RunOutput> callback);
+	public void getPossibleWorldGenerationResult(AuthenticationToken token, Task task, AsyncCallback<PossibleWorldGenerationResult> callback);
 
 	public void goToTaskStage(AuthenticationToken token, Task task,
 			TaskStageEnum taskStageEnum, AsyncCallback<Task> callback);
@@ -54,5 +54,7 @@ public interface ITaxonomyComparisonServiceAsync extends IHasTasksServiceAsync {
 
 	public void isValidModelInput(AuthenticationToken token,
 			String inputFolderPath, AsyncCallback<Boolean> asyncCallback);
+	
+	public void isConsistentInput(AuthenticationToken token, Task task, Collection collection, AsyncCallback<Boolean> callback);
 
 }

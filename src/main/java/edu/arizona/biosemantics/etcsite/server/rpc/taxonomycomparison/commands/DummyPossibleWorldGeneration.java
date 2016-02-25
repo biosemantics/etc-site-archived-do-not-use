@@ -1,4 +1,4 @@
-package edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison;
+package edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison.commands;
 
 import java.io.File;
 
@@ -6,12 +6,12 @@ import org.apache.commons.io.FileUtils;
 
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 
-public class DummyMIRGeneration implements MIRGeneration {
+public class DummyPossibleWorldGeneration implements PossibleWorldsGeneration {
 
 	private String eulerInputFile;
 	private String outputDir;
 
-	public DummyMIRGeneration(String eulerInputFile, String outputDir) {
+	public DummyPossibleWorldGeneration(String eulerInputFile, String outputDir) {
 		this.eulerInputFile = eulerInputFile;
 		this.outputDir = outputDir;
 	}

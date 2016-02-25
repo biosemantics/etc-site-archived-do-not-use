@@ -144,6 +144,10 @@ function force_directed_graph2(div, nodes, links) {
 	    .attr("y", ".31em")
 	    .text(function(d) { return d.name; });
 
+	d3.selectAll("circle").classed("ontologize", true);	
+	d3.selectAll("text").classed("ontologize", true);
+	d3.selectAll("path").classed("ontologize", true);
+
 	// Use elliptical arc path segments to doubly-encode directionality.
 	function tick() {
 	  path.attr("d", linkArc);

@@ -21,11 +21,11 @@ import edu.arizona.biosemantics.euler.alignment.shared.model.RunOutput;
 @RemoteServiceRelativePath("taxonomyComparison")
 public interface ITaxonomyComparisonService extends RemoteService, IHasTasksService {
 	
-	public Task runMirGeneration(AuthenticationToken token, Task task, Collection collection) throws HasTaskException;
+	public Task runPossibleWorldGeneration(AuthenticationToken token, Task task, Collection collection) throws HasTaskException;
 
 	public String getInputVisualization(AuthenticationToken token, Task task, Collection collection) throws HasTaskException;
 
-	public RunOutput getMirGenerationResult(AuthenticationToken token, Task task);
+	public PossibleWorldGenerationResult getPossibleWorldGenerationResult(AuthenticationToken token, Task task);
 	
 	public Task goToTaskStage(AuthenticationToken token, Task task, TaskStageEnum taskStageEnum);
 
@@ -52,6 +52,8 @@ public interface ITaxonomyComparisonService extends RemoteService, IHasTasksServ
 	public Boolean isValidCleanTaxInput(AuthenticationToken token, String inputFolderPath);
 
 	public Boolean isValidModelInput(AuthenticationToken token,	String inputFolderPath);
+
+	public boolean isConsistentInput(AuthenticationToken token, Task task, Collection collection) throws TaxonomyComparisonException;
 
 		
 }
