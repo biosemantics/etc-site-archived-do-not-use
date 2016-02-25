@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.biosemantics.common.biology.TaxonGroup;
@@ -29,8 +30,20 @@ public class TaxonomyComparisonInputView extends Composite implements ITaxonomyC
 	@UiField
 	TextBox taskNameTextBox;
 	
-	//@UiField
-	//Label inputLabel;
+	@UiField
+	VerticalPanel selectTaxonomiesPanel;
+	
+	@UiField
+	TextBox selectExistingFolderLabel1;
+
+	@UiField
+	TextBox selectExistingFolderLabel2;
+	
+	@UiField
+	TextBox selectExistingCleanTaxLabel;
+	
+	@UiField
+	VerticalPanel selectCleanTaxPanel;
 	
 	@UiField
 	Button nextButton;
@@ -56,6 +69,7 @@ public class TaxonomyComparisonInputView extends Composite implements ITaxonomyC
 		for(TaxonGroup taxonGroup : TaxonGroup.values()) {
 			this.glossaryListBox.addItem(taxonGroup.getDisplayName());
 		}
+		selectTaxonomiesPanel.setVisible(true);
 	}
 
 	@Override
@@ -117,6 +131,21 @@ public class TaxonomyComparisonInputView extends Composite implements ITaxonomyC
 		presenter.onTermReviewInput2();
 	}
 	
+	@UiHandler("selectExistingFolderButton1")
+	public void onSelectExistingModel1(ClickEvent event) {
+		presenter.onExistingModel1();
+	}
+	
+	@UiHandler("selectExistingFolderButton2")
+	public void onSelectExistingModel2(ClickEvent event) {
+		presenter.onExistingModel2();
+	}
+	
+	@UiHandler("selectExistingCleanTaxButton")
+	public void onCleanTaxFolder(ClickEvent event) {
+		presenter.onCleanTaxFolder();
+	}
+	
 	@Override
 	public void setTermReviewPath1(String text) {
 		this.inputTermReviewLabel1.setText(text);
@@ -160,5 +189,30 @@ public class TaxonomyComparisonInputView extends Composite implements ITaxonomyC
 	@Override
 	public boolean hasTaskName() {
 		return !taskNameTextBox.getValue().trim().isEmpty();
+	}
+
+	@Override
+	public void setSerializedModels(String serializedModel1, String serializedModel2) {
+		this.selectCleanTaxPanel.setVisible(false);
+		this.selectTaxonomiesPanel.setVisible(true);
+		this.selectExistingFolderLabel1.setText(serializedModel1);
+		this.selectExistingFolderLabel2.setText(serializedModel2);
+	}
+
+	@Override
+	public void setCleanTaxPath(String shortenedPath) {
+		this.selectTaxonomiesPanel.setVisible(false);
+		this.selectCleanTaxPanel.setVisible(true);
+		this.selectExistingCleanTaxLabel.setText(shortenedPath);
+	}
+
+	@Override
+	public void setSerializedModel1(String serializedModelPath1) {
+		this.selectExistingFolderLabel1.setText(serializedModelPath1);
+	}
+	
+	@Override
+	public void setSerializedModel2(String serializedModelPath2) {
+		this.selectExistingFolderLabel2.setText(serializedModelPath2);
 	}
 }

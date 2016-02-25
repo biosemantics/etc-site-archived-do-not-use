@@ -79,7 +79,11 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 		if(currentTask == null){
 			if(place instanceof TaxonomyComparisonInputPlace) {
 				if(createPresenter.isFromSerializedModel()) {
-					inputPresenter.setSelectedSerializedModels(createPresenter.getInputFolderPath1(), createPresenter.getInputFolderPath2());
+					inputPresenter.setSelectedSerializedModels(createPresenter.getInputTaxonomy1(), createPresenter.getInputTaxonomy2(), 
+							createPresenter.getModelFolderPath1(), createPresenter.getModelFolderPath2());
+				} else if(createPresenter.isFromCleantax()) {
+					inputPresenter.setSelectedCleanTaxFolder(createPresenter.getCleanTaxInputFolderPath(), 
+							createPresenter.getCleanTaxInputFolderShortenedPath());
 				}
 				panel.setWidget(inputPresenter.getView());
 			} else {

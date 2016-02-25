@@ -51,7 +51,7 @@
 	</ui:style>
 	<g:VerticalPanel styleName="{style.subMenuEntry}">
 	    <g:VerticalPanel spacing="20" ui:field="verticalPanel">	    
-	        <g:RadioButton name="selectInputMethod" ui:field="uploadRadio" styleName="{style.radioPadding}">Upload Files</g:RadioButton>
+	        <g:RadioButton name="selectInputMethod" ui:field="uploadRadio" styleName="{style.radioPadding}">Upload CleanTax Files</g:RadioButton>
 	        <g:VerticalPanel styleName = "{style.margin15}" ui:field="uploadPanel" visible="false">
 	            <g:InlineLabel>
 	                1: Create/Choose a folder to upload files into.
@@ -85,23 +85,25 @@
 	        	<g:InlineLabel ui:field="uploadedTaxonomiesLabel"></g:InlineLabel>
 	        </g:VerticalPanel>
 	        <g:HorizontalPanel spacing="5">
-	   			<g:RadioButton name="selectInputMethod" ui:field="selectExistingFolderRadio" styleName="{style.radioPadding}">Select Existing Folder</g:RadioButton>
-	         	<g:HorizontalPanel styleName = "{style.margin15}" ui:field="selectPanel1" visible="false">					            
-	        			<g:cell verticalAlignment="ALIGN_MIDDLE">
-							<g:Button ui:field="selectExistingFolderButton1">Select Taxonomy 1 Folder</g:Button>
-						</g:cell>
-						<g:cell verticalAlignment="ALIGN_MIDDLE">
-							<g:Label ui:field="selectExistingFolderLabel1"></g:Label>
-						</g:cell>
-	        	</g:HorizontalPanel>
-	        	<g:HorizontalPanel styleName = "{style.margin15}" ui:field="selectPanel2" visible="false">					            
-	        			<g:cell verticalAlignment="ALIGN_MIDDLE">
-							<g:Button ui:field="selectExistingFolderButton2">Select Taxonomy 2 Folder</g:Button>
-						</g:cell>
-						<g:cell verticalAlignment="ALIGN_MIDDLE">
-							<g:Label ui:field="selectExistingFolderLabel2"></g:Label>
-						</g:cell>
-	        	</g:HorizontalPanel>
+	   			<g:RadioButton name="selectInputMethod" ui:field="selectExistingFolderRadio" styleName="{style.radioPadding}">Select Existing Folders</g:RadioButton>
+	         	<g:VerticalPanel>
+		         	<g:HorizontalPanel styleName = "{style.margin15}" ui:field="selectPanel1" visible="false">					            
+		        			<g:cell verticalAlignment="ALIGN_MIDDLE" width='220px'>
+								<g:TextBox ui:field="selectExistingFolderLabel1" enabled="false" width='200px'></g:TextBox>
+							</g:cell>
+							<g:cell verticalAlignment="ALIGN_MIDDLE" width='200px'>
+								<g:Button ui:field="selectExistingFolderButton1">Select Taxonomy 1 Folder</g:Button>
+							</g:cell> 
+		        	</g:HorizontalPanel>
+		        	<g:HorizontalPanel styleName = "{style.margin15}" ui:field="selectPanel2" visible="false">					            
+		        			<g:cell verticalAlignment="ALIGN_MIDDLE" width='220px'>
+								<g:TextBox ui:field="selectExistingFolderLabel2" enabled="false" width='200px'></g:TextBox>
+							</g:cell>
+							<g:cell verticalAlignment="ALIGN_MIDDLE" width='200px'>
+								<g:Button ui:field="selectExistingFolderButton2">Select Taxonomy 2 Folder</g:Button>
+							</g:cell>
+		        	</g:HorizontalPanel>
+	         	</g:VerticalPanel>
 	        </g:HorizontalPanel>
 	    </g:VerticalPanel>
 		<g:FlowPanel styleName="{style.padding}">

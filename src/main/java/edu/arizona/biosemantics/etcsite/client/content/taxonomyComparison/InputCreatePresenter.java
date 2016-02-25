@@ -49,6 +49,8 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 	private FileUploadHandler fileUploadHandler;
 	private IInputCreateView view;
 	private String cleanTaxInputFolderPath;
+	private String modelInputText1;
+	private String modelInputText2;
 	private String modelInputFolderPath1;
 	private String modelInputFolderPath2;
 	private String cleanTaxInputFolderShortenedPath;
@@ -289,6 +291,7 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 				List<FileTreeItem> selections = fileTreePresenter.getView().getSelection();
 				if (selections.size() == 1) {
 					FileTreeItem selection = selections.get(0);
+					modelInputText1 = selection.getText();					
 					modelInputFolderPath1 = selection.getFilePath();
 					modelInputFolderShortenedPath1 = filePathShortener.shorten(selection, Authentication.getInstance().getUserId());
 					if(selection.isSystemFile()){
@@ -317,6 +320,7 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 				List<FileTreeItem> selections = fileTreePresenter.getView().getSelection();
 				if (selections.size() == 1) {
 					FileTreeItem selection = selections.get(0);
+					modelInputText2 = selection.getText();
 					modelInputFolderPath2 = selection.getFilePath();
 					modelInputFolderShortenedPath2 = filePathShortener.shorten(selection, Authentication.getInstance().getUserId());
 					if(selection.isSystemFile()){
@@ -402,4 +406,11 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 		return this.cleanTaxInputFolderPath;
 	}
 
+	public String getModel1() {
+		return modelInputText1;
+	}
+
+	public String getModel2() {
+		return modelInputText2;
+	}
 }

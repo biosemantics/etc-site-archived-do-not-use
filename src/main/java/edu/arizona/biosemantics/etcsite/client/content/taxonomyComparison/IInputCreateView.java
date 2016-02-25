@@ -65,6 +65,9 @@ public interface IInputCreateView extends IsWidget {
 
 		String getModelInputFolderShortenedPath2();
 
+		String getModel1();
+		String getModel2();
+
 	}
 
 	void setOwnedFolders(List<FolderTreeItem> folders);

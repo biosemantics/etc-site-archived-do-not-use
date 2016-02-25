@@ -54,10 +54,10 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	@UiField RadioButton selectExistingFolderRadio;
 	@UiField HorizontalPanel selectPanel1;	
 	@UiField Button selectExistingFolderButton1;
-	@UiField Label selectExistingFolderLabel1;
+	@UiField TextBox selectExistingFolderLabel1;
 	@UiField HorizontalPanel selectPanel2;	
 	@UiField Button selectExistingFolderButton2;
-	@UiField Label selectExistingFolderLabel2;
+	@UiField TextBox selectExistingFolderLabel2;
 	
 	@UiField Button nextButton;	
 	

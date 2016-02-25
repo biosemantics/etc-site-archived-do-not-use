@@ -20,9 +20,13 @@ public interface ITaxonomyComparisonCreateView extends IsWidget {
 
 		boolean isFromSerializedModel();
 
-		String getInputFolderPath1();
+		String getInputTaxonomy1();
+		
+		String getInputTaxonomy2();
 
-		String getInputFolderPath2();
+		String getModelFolderPath1();
+
+		String getModelFolderPath2();
 	}
 	  
 	public void setPresenter(Presenter presenter);

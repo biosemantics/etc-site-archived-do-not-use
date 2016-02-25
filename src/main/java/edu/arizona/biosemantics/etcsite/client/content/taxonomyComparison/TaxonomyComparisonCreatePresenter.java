@@ -118,12 +118,22 @@ public class TaxonomyComparisonCreatePresenter implements TaxonomyComparisonCrea
 	}
 
 	@Override
-	public String getInputFolderPath1() {
+	public String getInputTaxonomy1() {
+		return inputCreatePresenter.getModel1();
+	}
+
+	@Override
+	public String getInputTaxonomy2() {
+		return inputCreatePresenter.getModel2();
+	}
+
+	@Override
+	public String getModelFolderPath1() {
 		return inputCreatePresenter.getModelInputFolderPath1();
 	}
 
 	@Override
-	public String getInputFolderPath2() {
+	public String getModelFolderPath2() {
 		return inputCreatePresenter.getModelInputFolderPath2();
 	}
 }

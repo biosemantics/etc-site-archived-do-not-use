@@ -6,19 +6,20 @@ public interface ITaxonomyComparisonInputView extends IsWidget {
 
 	public interface Presenter {
 		void onNext();
-		//void setSelectedFolder(String fullPath, String shortenedPath);
+		void setSelectedCleanTaxFolder(String fullPath, String shortenedPath);
 		ITaxonomyComparisonInputView getView();
 		//void onInputSelect();
 		void onOntologyInput();
 		void onTermReviewInput2();
 		void onTermReviewInput1();
-		void setSelectedSerializedModels(String inputFolderPath1,
-				String inputFolderPath2);
+		void setSelectedSerializedModels(String model1, String model2, String modelPath1, String modelPath2);
+		void onExistingModel1();
+		void onExistingModel2();
+		void onCleanTaxFolder();
 	}
 	  
 	void setPresenter(Presenter presenter);
 	String getTaskName();
-	//void setFilePath(String shortendPath);
 	void setEnabledNext(boolean b);
 	void resetFields();
 	boolean hasTaskName();
@@ -29,5 +30,9 @@ public interface ITaxonomyComparisonInputView extends IsWidget {
 	void setTermReviewPath2(String text);
 	boolean hasTermReview1();
 	boolean hasTermReview2();
+	void setSerializedModels(String serializedModel1, String serializedModel2);
+	void setCleanTaxPath(String shortenedPath);
+	void setSerializedModel1(String serializedModelPath1);
+	void setSerializedModel2(String serializedModelPath2);
 
 }
