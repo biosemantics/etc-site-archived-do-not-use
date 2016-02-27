@@ -2,6 +2,8 @@ package edu.arizona.biosemantics.etcsite.client.common;
 
 import java.util.List;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -72,20 +74,18 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 		this.fileTreePresenter = selectableFileTreePresenter.getFileTreePresenter();
 		this.fileManagerDialogPresenter = fileManagerDialogPresenter;
 		this.filePathShortener = filePathShortener;
-
 		Uploader uploader = view.getUploader();
 		defaultServletPath = uploader.getServletPath();
 		uploader.setServletPath(defaultServletPath);
 		uploader.addOnFinishUploadHandler(new OnFinishUploadHandler());
 		uploader.addOnStartUploadHandler(new OnStartUploadHandler());
 		uploader.setI18Constants(new MyUploaderConstants());
-
 		IUploadStatus statusWidget = new BaseUploadStatus();
 	    statusWidget.setCancelConfiguration(IUploadStatus.DEFAULT_CANCEL_CFG);
 	    uploader.setStatusWidget(statusWidget);
 	    view.setStatusWidget(statusWidget.asWidget());
 	    uploader.setFileInput(new MyFileInput(view.getUploadButton()));
-		this.fileUploadHandler = new FileUploadHandler(fileService);
+	    this.fileUploadHandler = new FileUploadHandler(fileService);
 	}
 	
 	@Override
@@ -94,42 +94,49 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 			if (view.isCreateFolderForCreateFiles()) {
 				if (createdFolderForCreateFiles == null) {
 					Alerter.selectValidInputDirectory();
-					return;
 				} else {
 					setInputFolderPath(createdFolderForCreateFiles);
+					if(inputValidator != null)  inputValidator.validate(inputFolderPath);
 				}
 			} else if(view.isSelectFolderForCreateFiles()) {
 				if (view.getSelectedFolderForCreateFiles() == null) {
 					Alerter.selectValidInputDirectory();
-					return;
 				} else {
 					setInputFolderPath(view.getSelectedFolderForCreateFiles().getFilePath());
+					if(inputValidator != null)  inputValidator.validate(inputFolderPath);
 				}
 			}
-		} else if (view.isUpload()) {
+			else Alerter.selectValidInputDirectory();
+		} 
+		
+		else if (view.isUpload()) {
 			if (view.isCreateFolderForUpload()) {
 				if (createdFolderForUpload == null) {
 					Alerter.selectValidInputDirectory();
-					return;
 				} else {
 					setInputFolderPath(createdFolderForUpload);
+					if(inputValidator != null)  inputValidator.validate(inputFolderPath);
 				}
 			} else if(view.isSelectFolderForUpload()) {
 				if (view.getSelectedFolderForUpload() == null) {
 					Alerter.selectValidInputDirectory();
-					return;
 				} else {
 					setInputFolderPath(view.getSelectedFolderForUpload().getFilePath());
+					if(inputValidator != null)  inputValidator.validate(inputFolderPath);
 				}
 			}
-		} else if(view.isSelectExistingFolder()) {
+			else Alerter.selectValidInputDirectory();
+		} 
+		
+		else if(view.isSelectExistingFolder()) {
 			if (inputFolderPath == null) {
 				Alerter.selectValidInputDirectory();
-				return;
 			}
+			else {if(inputValidator != null)  inputValidator.validate(inputFolderPath);}
 		}
-		if(inputValidator != null)
-			inputValidator.validate(inputFolderPath);
+		
+		else Alerter.selectValidInputDirectory();
+		
 	}
 	
 	private void setInputFolderPath(String inputFolderPath) {
@@ -138,8 +145,8 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 	}
 
 	@Override
-	public void createFiles(final FileInfo selectedFolder) {
-		if(selectedFolder != null && selectedFolder.isAllowsNewFiles()) {
+	public void createFiles(FileInfo selectedFolder) {
+		if(selectedFolder != null && selectedFolder.isAllowsNewFiles()&&selectedFolder.getFilePath()!=null) {
 			showCreateFilesDialog(selectedFolder.getFilePath());
 		}
 		else {
@@ -159,11 +166,23 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 	}
 	
 	@Override
+	public void refreshinput() {
+		this.view.refreshinput();
+	}
+	
+	@Override
+	public void deleteFolderForinputFiles() {
+		this.createdFolderForCreateFiles=null;	
+         this.createdFolderForUpload=null;
+         this.inputFolderPath=null;
+	}
+	
+	@Override
 	public void createFilesInNewFolder() {
 		if(createdFolderForCreateFiles != null && !createdFolderForCreateFiles.isEmpty()){
 			showCreateFilesDialog(createdFolderForCreateFiles);
 		}else{
-			Alerter.inputError("New Folder is not created yet. Wait and try again.");
+			Alerter.inputError("New Folder is not created yet. Please try again!");
 		}
 	}
 
@@ -248,6 +267,7 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 				targetUploadDirectory = createdFolderForUpload;
 			if (view.isSelectFolderForUpload())
 				targetUploadDirectory = view.getSelectedFolderForUpload().getFilePath();
+
 			fileUploadHandler.setServletPathOfUploader(uploader, uploadFileType.displayName(), targetUploadDirectory);
 		}
 	}
@@ -321,8 +341,23 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 	}
 	
 	@Override
-	public void addDummyCreateFiles() {
-		view.addDummyCreateFiles();
+	public void disableDummyCreateFiles1() {
+		view.removeDummyCreateFiles1();
+	}
+	
+	@Override
+	public void disableDummyCreateFiles2() {
+		view.removeDummyCreateFiles2();
+	}
+	
+	@Override
+	public void addDummyCreateFiles1() {
+		view.addDummyCreateFiles1();
+	}
+	
+	@Override
+	public void addDummyCreateFiles2() {
+		view.addDummyCreateFiles2();
 	}
 	
 	@Override
