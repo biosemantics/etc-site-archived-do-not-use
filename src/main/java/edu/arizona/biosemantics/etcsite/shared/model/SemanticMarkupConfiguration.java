@@ -44,6 +44,10 @@ public class SemanticMarkupConfiguration extends AbstractTaskConfiguration imple
 	public String getInput() {
 		return input;
 	}
+	
+	public boolean hasInput() {
+		return input != null && !input.isEmpty();
+	}
 
 	public void setInput(String input) {
 		this.input = input;
@@ -100,16 +104,27 @@ public class SemanticMarkupConfiguration extends AbstractTaskConfiguration imple
 	@Override
 	public List<String> getInputs() {
 		List<String> result = new LinkedList<String>();
-		result.add(this.getInput());
+		if(hasInput())
+			result.add(getInput());
 		return result;
 	}
 
 	@Override
 	public List<String> getOutputs() {
 		List<String> result = new LinkedList<String>();
-		result.add(this.getOutput());
-		result.add(this.getOutputTermReview());
+		if(hasOutput())
+			result.add(getOutput());
+		if(hasOutputTermReview())
+			result.add(getOutputTermReview());
 		return result;
+	}
+
+	private boolean hasOutputTermReview() {
+		return outputTermReview != null && !outputTermReview.isEmpty();
+	}
+
+	private boolean hasOutput() {
+		return output != null && !output.isEmpty();
 	}
 
 	public String getOutputTermReview() {

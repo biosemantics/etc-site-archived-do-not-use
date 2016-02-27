@@ -1,5 +1,7 @@
 package edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison;
 
+import java.util.List;
+
 import com.google.gwt.http.client.URL;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
@@ -10,6 +12,7 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
+import com.sencha.gxt.widget.core.client.box.PromptMessageBox;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
@@ -24,11 +27,13 @@ import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaxonomyComparisonTaskStage;
 import edu.arizona.biosemantics.etcsite.shared.model.taxonomycomparison.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.ITaxonomyComparisonServiceAsync;
+import edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison.PossibleWorldGenerationResult;
 import edu.arizona.biosemantics.euler.alignment.client.event.DownloadEvent;
 import edu.arizona.biosemantics.euler.alignment.client.event.SaveEvent;
 import edu.arizona.biosemantics.euler.alignment.client.event.model.AddArticulationsEvent;
 import edu.arizona.biosemantics.euler.alignment.client.event.model.ImportArticulationsEvent;
-import edu.arizona.biosemantics.euler.alignment.client.event.model.LoadModelEvent;
+import edu.arizona.biosemantics.euler.alignment.client.event.model.LoadCollectionEvent;
+import edu.arizona.biosemantics.euler.alignment.client.event.model.LoadMachineArticulationsEvent;
 import edu.arizona.biosemantics.euler.alignment.client.event.model.ModifyArticulationEvent;
 import edu.arizona.biosemantics.euler.alignment.client.event.model.RemoveArticulationsEvent;
 import edu.arizona.biosemantics.euler.alignment.client.event.model.SetColorEvent;
@@ -38,9 +43,12 @@ import edu.arizona.biosemantics.euler.alignment.client.event.run.EndInputVisuali
 import edu.arizona.biosemantics.euler.alignment.client.event.run.EndMIREvent;
 import edu.arizona.biosemantics.euler.alignment.client.event.run.StartInputVisualizationEvent;
 import edu.arizona.biosemantics.euler.alignment.client.event.run.StartMIREvent;
+import edu.arizona.biosemantics.euler.alignment.shared.model.Articulation;
+import edu.arizona.biosemantics.euler.alignment.shared.model.Collection;
 import edu.arizona.biosemantics.euler.alignment.shared.model.Model;
 import edu.arizona.biosemantics.euler.alignment.shared.model.PossibleWorld;
 import edu.arizona.biosemantics.euler.alignment.shared.model.RunOutput;
+import edu.arizona.biosemantics.matrixreview.client.event.LoadModelEvent;
 
 public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlignView.Presenter {
 	
@@ -76,7 +84,7 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 	private ITaxonomyComparisonAlignView view;
 	private ITaxonomyComparisonServiceAsync taxonomyComparisonService;
 	private Task task;
-	private Model model;
+	private Collection collection;
 	private PlaceController placeController;
 	private EventBus eulerEventBus;
 	private EventBus tasksEventBus;
@@ -120,25 +128,29 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 						case ANALYZE:
 							break;
 						case ANALYZE_COMPLETE:
-							taxonomyComparisonService.getMirGenerationResult(
-									Authentication.getInstance().getToken(), task, new AsyncCallback<RunOutput>() {
+							taxonomyComparisonService.getPossibleWorldGenerationResult(
+									Authentication.getInstance().getToken(), task, new AsyncCallback<PossibleWorldGenerationResult>() {
 										@Override
 										public void onFailure(Throwable t) {
 											processingDialog.hide();
 											Alerter.failedToGetTaxonomyComparisonResult(t);
 										}
 										@Override
-										public void onSuccess(RunOutput result) {
+										public void onSuccess(PossibleWorldGenerationResult result) {
 											processingDialog.hide();
-											for(PossibleWorld possibleWorld : result.getPossibleWorlds()) {
-												String oldUrl = possibleWorld.getUrl();
-												possibleWorld.setUrl(getAuthenticatedGetPDFUrl(possibleWorld.getUrl()));
+											if(result.isTooLong()) {
+												Alerter.taxonomyAlignmentTookTooLong();
+											} else {
+												RunOutput runOutput = result.getRunOutput();
+												for(PossibleWorld possibleWorld : runOutput.getPossibleWorlds()) {
+													String oldUrl = possibleWorld.getUrl();
+													possibleWorld.setUrl(getAuthenticatedGetPDFUrl(possibleWorld.getUrl()));
+												}
+												RunOutput output = new RunOutput(runOutput.getType(), runOutput.getPossibleWorlds(), getAuthenticatedGetPDFUrl(runOutput.getAggregateUrl()), 
+														getAuthenticatedGetPDFUrl(runOutput.getDiagnosisUrl()));
+												eulerEventBus.fireEvent(new EndMIREvent(output));
 											}
-											RunOutput output = new RunOutput(result.getType(), result.getPossibleWorlds(), getAuthenticatedGetPDFUrl(result.getAggregateUrl()), 
-													getAuthenticatedGetPDFUrl(result.getDiagnosisUrl()));
-											eulerEventBus.fireEvent(new EndMIREvent(output));
 										}
-	
 									});
 							break;
 						default:
@@ -183,6 +195,37 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 	}
 
 	private void bindEulerEvents() {
+		/*eulerEventBus.addHandler(LoadMachineArticulationsEvent.TYPE, new LoadMachineArticulationsEvent.AddMachineArticulationsHandler() {
+			@Override
+			public void onAdd(LoadMachineArticulationsEvent event) {
+				final PromptMessageBox box = new PromptMessageBox(
+						"Confidence Threshold",
+						"Please enter a minimum confidence threshold for articulations to add");
+				box.setWidth(300);
+				box.show();
+				box.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
+					@Override
+					public void onSelect(SelectEvent event) {
+						try {
+							double threshold = Double.valueOf(box.getValue().trim());
+							taxonomyComparisonService.getMachineArticulations(Authentication.getInstance().getToken(), task, collection, 
+									threshold, new AsyncCallback<List<Articulation>>() {
+										@Override
+										public void onFailure(Throwable caught) {
+											Alerter.couldNotGetMachineArticulations(caught);
+										}
+										@Override
+										public void onSuccess(List<Articulation> result) {
+											eulerEventBus.fireEvent(new AddArticulationsEvent(result));
+										}
+							});
+						} catch(Exception e) {
+							Alerter.notAValidThreshold(e);
+						}
+					}
+				});
+			}
+		});*/
 		eulerEventBus.addHandler(AddArticulationsEvent.TYPE, new AddArticulationsEvent.AddArticulationEventHandler() {
 			@Override
 			public void onAdd(AddArticulationsEvent event) {
@@ -230,7 +273,7 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 			@Override
 			public void onEnd(EndMIREvent event) {
 				unsavedChanges = true;
-				taxonomyComparisonService.saveModel(Authentication.getInstance().getToken(), task, model, new AsyncCallback<Void>() {
+				taxonomyComparisonService.saveCollection(Authentication.getInstance().getToken(), task, collection, new AsyncCallback<Void>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						Alerter.failedToSaveTaxonomyComparisonModel(caught);
@@ -246,14 +289,27 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 			@Override
 			public void onShow(StartMIREvent event) {
 				unsavedChanges = true;
-				taxonomyComparisonService.runMirGeneration(Authentication.getInstance().getToken(), task, model, new AsyncCallback<Task>() {
+				taxonomyComparisonService.isConsistentInput(Authentication.getInstance().getToken(), task, collection, new AsyncCallback<Boolean>() {
 					@Override
 					public void onFailure(Throwable caught) {
-						Alerter.failedToRunMirGeneration(caught);
+						Alerter.failedToCheckConsistency(caught);
 					}
 					@Override
-					public void onSuccess(Task result) { 						
-						processingDialog.show();
+					public void onSuccess(Boolean result) {
+						if(result) {
+							taxonomyComparisonService.runPossibleWorldGeneration(Authentication.getInstance().getToken(), task, collection, new AsyncCallback<Task>() {
+								@Override
+								public void onFailure(Throwable caught) {
+									Alerter.failedToRunMirGeneration(caught);
+								}
+								@Override
+								public void onSuccess(Task result) { 						
+									processingDialog.show();
+								}
+							});
+						} else {
+							Alerter.inputInconsistent();
+						}
 					}
 				});
 			}
@@ -261,7 +317,7 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 		eulerEventBus.addHandler(StartInputVisualizationEvent.TYPE, new StartInputVisualizationEvent.StartInputVisualizationEventHandler() {
 			@Override
 			public void onShow(StartInputVisualizationEvent event) {
-				taxonomyComparisonService.getInputVisualization(Authentication.getInstance().getToken(), task, model, new AsyncCallback<String>() {
+				taxonomyComparisonService.getInputVisualization(Authentication.getInstance().getToken(), task, collection, new AsyncCallback<String>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						Alerter.failedToRunInputVisualization(caught);
@@ -287,7 +343,7 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 			public void onDownload(DownloadEvent event) {
 				final MessageBox box = Alerter.startLoading();
 				taxonomyComparisonService.exportArticulations(Authentication.getInstance().getToken(), 
-						task, event.getModel(), new AsyncCallback<String>() {
+						task, event.getCollection(), new AsyncCallback<String>() {
 					@Override
 					public void onSuccess(String result) {
 						Alerter.stopLoading(box);
@@ -315,12 +371,12 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 		this.task = task;
 		final MessageBox box = Alerter.startLoading();
 		view.getEulerAlignmentView().setShowDialogs(true);
-		taxonomyComparisonService.getModel(Authentication.getInstance().getToken(), 
-				task, new AsyncCallback<Model>() {
+		taxonomyComparisonService.getCollection(Authentication.getInstance().getToken(), 
+				task, new AsyncCallback<Collection>() {
 			@Override
-			public void onSuccess(Model model) {
-				TaxonomyComparisonAlignPresenter.this.model = model;
-				eulerEventBus.fireEvent(new LoadModelEvent(model));
+			public void onSuccess(Collection collection) {
+				TaxonomyComparisonAlignPresenter.this.collection = collection;
+				eulerEventBus.fireEvent(new LoadCollectionEvent(collection));
 				TaskStageEnum currentTaskStage = TaskStageEnum.valueOf(task.getTaskStage().getTaskStage());
 				switch(currentTaskStage) {
 				case ALIGN:
@@ -360,7 +416,7 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 	@Override
 	public void onSave() {
 		final MessageBox box = Alerter.startLoading();
-		taxonomyComparisonService.saveModel(Authentication.getInstance().getToken(), task, model, new AsyncCallback<Void>() {
+		taxonomyComparisonService.saveCollection(Authentication.getInstance().getToken(), task, collection, new AsyncCallback<Void>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToSaveTaxonomyComparisonModel(caught);

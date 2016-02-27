@@ -1,7 +1,11 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.file;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -18,16 +22,18 @@ import com.google.inject.Inject;
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.common.validation.key.KeyElementValidator;
 import edu.arizona.biosemantics.common.validation.key.KeyValidationException;
+import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
+import edu.arizona.biosemantics.etcsite.server.process.file.MatrixGenerationSerializedModelReader;
 import edu.arizona.biosemantics.etcsite.server.process.file.TaxonNameValidator;
 import edu.arizona.biosemantics.etcsite.server.process.file.XmlNamespaceManager;
+import edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison.CleanTaxReader;
 import edu.arizona.biosemantics.etcsite.shared.model.AbstractTaskConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.Share;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
@@ -45,6 +51,9 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.format.IFileFormatServic
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.IFilePermissionService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDeniedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskService;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileSource;
+import edu.arizona.biosemantics.matrixreview.shared.model.Model;
+import edu.arizona.biosemantics.matrixreview.shared.model.core.Taxon;
 
 public class FileService extends RemoteServiceServlet implements IFileService {
 
@@ -76,132 +85,6 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	    log(LogLevel.ERROR, "Unexpected failure", t);
 	    super.doUnexpectedFailure(t);
 	}
-	
-	/**
-	 * Cannot hand a fileFilter implementation of .filter(File file) to the method because
-	 * file access is not available in the client code. Hence, translation from enum to implementation 
-	 * becomes necessary.
-	 * @throws PermissionDeniedException 
-	 */
-	@Override
-	public Tree<FileInfo> getUsersFiles(AuthenticationToken authenticationToken, FileFilter fileFilter) throws PermissionDeniedException {
-		//will become part of 'target' and has effect on several things. therefore leave root as "" for now. Also will have to escape \\'s before it is inserted into SQL statements
-		//sql injection..
-		//Tree<FileInfo> result = new Tree<FileInfo>(new FileInfo(authenticationToken.getUsername() + "'s files", FileType.DIRECTORY));
-		
-		Tree<FileInfo> resultTree = new Tree<FileInfo>(new FileInfo("", "Root", "", FileTypeEnum.DIRECTORY, authenticationToken.getUserId(), true, false, false));
-		Tree<FileInfo> ownedFiles = new Tree<FileInfo>(new FileInfo("Owned", Configuration.fileBase + File.separator + authenticationToken.getUserId(),
-				"Owned", FileTypeEnum.DIRECTORY, authenticationToken.getUserId(), true, false, true));
-		Tree<FileInfo> sharedFiles = new Tree<FileInfo>(new FileInfo("Shared", "Shared", "Shared", FileTypeEnum.DIRECTORY, authenticationToken.getUserId(), true, false, false));
-		resultTree.addChild(ownedFiles);
-		resultTree.addChild(sharedFiles);
-		
-		decorateOwnedTree(authenticationToken, ownedFiles, fileFilter, Configuration.fileBase + File.separator + authenticationToken.getUserId());
-		decorateSharedTree(authenticationToken, sharedFiles, fileFilter);
-		return resultTree;
-	}
-	
-	private void decorateSharedTree(AuthenticationToken authenticationToken, Tree<FileInfo> sharedFiles, FileFilter fileFilter) 
-			throws PermissionDeniedException {
-		ShortUser user = daoManager.getUserDAO().getShortUser(authenticationToken.getUserId());
-		List<Share> shares = daoManager.getShareDAO().getSharesOfInvitee(user);
-		
-		for(Share share : shares) {
-			int shareOwnerUserId = share.getTask().getUser().getId();
-			Tree<FileInfo> shareTree = new Tree<FileInfo>(new FileInfo(share.getTask().getName(), "Share." + share.getTask().getId(), 
-					share.getTask().getName(), FileTypeEnum.DIRECTORY, shareOwnerUserId, false, false, false));
-			sharedFiles.addChild(shareTree);
-			AbstractTaskConfiguration taskConfiguration = share.getTask().getConfiguration();
-			
-			List<String> outputs = daoManager.getTasksOutputFilesDAO().getOutputs(share.getTask());
-			Tree<FileInfo> outputTree = new Tree<FileInfo>(new FileInfo("Output", "Share.Output." + share.getTask().getId(), 
-					"Output", FileTypeEnum.DIRECTORY, shareOwnerUserId, false, false, false));
-			shareTree.addChild(outputTree);
-			for(String output : outputs) {
-				File child = new File(output);
-				if(child.exists()) {
-					boolean permissionResult = filePermissionService.hasReadPermission(authenticationToken, output);
-					if(!permissionResult)
-						throw new PermissionDeniedException();
-					else {
-						String displayPath = share.getTask().getName() + File.separator + "Output" + File.separator + child.getName();
-						Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(child.getName(), child.getAbsolutePath(), displayPath, 
-								getFileType(authenticationToken, output), shareOwnerUserId, false, false, false));
-						outputTree.addChild(childTree);
-						if(child.isDirectory()) {
-							decorateOwnedTree(authenticationToken, childTree, fileFilter, child.getAbsolutePath());
-						}
-					}
-				}
-			}
-			
-			if(taskConfiguration != null) {
-				List<String> inputFiles = taskConfiguration.getInputs();
-				Tree<FileInfo> inputTree = new Tree<FileInfo>(new FileInfo("Input", "Share.Input." + share.getTask().getId(), "Input", 
-						FileTypeEnum.DIRECTORY, shareOwnerUserId, false, false, false));
-				shareTree.addChild(inputTree);
-				for(String input : inputFiles) {
-					File child = new File(input);
-					if(child.exists()) {
-						Boolean permissionResult = filePermissionService.hasReadPermission(authenticationToken, input);
-						if(!permissionResult)
-							throw new PermissionDeniedException();
-						else {
-							String displayPath = share.getTask().getName() + File.separator + "Input" + File.separator + child.getName();
-							Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(child.getName(), child.getAbsolutePath(), displayPath, 
-									getFileType(authenticationToken, input), shareOwnerUserId, false, false, false));
-							inputTree.addChild(childTree);
-							if(child.isDirectory()) {
-								decorateOwnedTree(authenticationToken, childTree, fileFilter, child.getAbsolutePath());
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	private void decorateOwnedTree(AuthenticationToken authenticationToken, Tree<FileInfo> fileTree, FileFilter fileFilter, String filePath) throws PermissionDeniedException {
-		Boolean permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
-		if(!permissionResult)
-			throw new PermissionDeniedException();
-		else {
-			File file = new File(filePath);
-			File[] childFiles = file.listFiles();
-			Arrays.sort(childFiles);
-			for(File child : childFiles) {
-				String childPath = child.getAbsolutePath();
-				permissionResult = filePermissionService.hasReadPermission(authenticationToken, childPath);
-				if (!permissionResult)
-					throw new PermissionDeniedException();
-				String name = child.getName();
-
-				FileTypeEnum fileType = null;
-				if (fileFilter != null) { // Call getFileType only if we have not received a null fileFilter, since it is slow.
-					fileType = getFileType(authenticationToken,
-							child.getAbsolutePath());
-					if (fileType == null || filter(fileType, fileFilter)) {
-						continue;
-					}
-				}
-
-				if (fileType == null) // Indicates that function received a null fileFilter. 
-					fileType = child.isDirectory() ? FileTypeEnum.DIRECTORY : FileTypeEnum.PLAIN_TEXT;
-
-				String displayPath = childPath.replace(Configuration.fileBase
-						+ File.separator + authenticationToken.getUserId(), "");
-				Tree<FileInfo> childTree = new Tree<FileInfo>(new FileInfo(
-						name, child.getAbsolutePath(), displayPath, fileType,
-						authenticationToken.getUserId(), false,
-						child.isDirectory(), true));
-				fileTree.addChild(childTree);
-				if (child.isDirectory()) {
-					decorateOwnedTree(authenticationToken, childTree,
-							fileFilter, childPath);
-				}
-			}
-		}
-	}
 
 	private boolean filter(FileTypeEnum fileType, FileFilter fileFilter) {
 		switch(fileFilter) {
@@ -219,6 +102,10 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			return !fileType.equals(FileTypeEnum.DIRECTORY);
 		case OWL_ONTOLOGY:
 			return !fileType.equals(FileTypeEnum.OWL_ONTOLOGY);
+		case CLEANTAX:
+			return !fileType.equals(FileTypeEnum.CLEANTAX);
+		case MATRIX_GENERATION_SERIALIZED_MODEL:
+			return !fileType.equals(FileTypeEnum.MATRIX_GENERATION_SERIALIZED_MODEL);
 		}
 		
 		return true;
@@ -227,6 +114,14 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	private FileTypeEnum getFileType(AuthenticationToken authenticationToken, String filePath) {
 		File file = new File(filePath);
 		if(file.isFile()) {
+			if(file.getName().endsWith(".ser")) {
+				try(ObjectInput input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
+					edu.arizona.biosemantics.matrixreview.shared.model.Model model = (edu.arizona.biosemantics.matrixreview.shared.model.Model)input.readObject();
+					return FileTypeEnum.MATRIX_GENERATION_SERIALIZED_MODEL;
+				} catch(Exception e) {
+					
+				}
+			}
 			if(file.getName().endsWith(".xml")) {
 				try {
 					return xmlNamespaceManager.getFileType(new File(filePath));
@@ -238,8 +133,20 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 				return FileTypeEnum.MATRIX;
 			} else if(file.getName().endsWith(".owl")) {
 				return FileTypeEnum.OWL_ONTOLOGY;
-			} else 
-				return FileTypeEnum.PLAIN_TEXT;
+			} else {
+				CleanTaxReader reader = new CleanTaxReader();
+				try {
+					boolean validCleanTax = reader.isValid(file);
+					if(validCleanTax)
+						return FileTypeEnum.CLEANTAX;
+					else
+						return FileTypeEnum.PLAIN_TEXT;
+				} catch(IOException e) {
+					log(LogLevel.ERROR, "Could not read file.", e);
+					return FileTypeEnum.PLAIN_TEXT;
+				}
+			}
+				
 			/*RPCResult<Boolean> validationResult = fileFormatService.isValidMarkedupTaxonDescription(authenticationToken, filePath);
 			if(validationResult.isSucceeded() && validationResult.getData())
 				return FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION;
@@ -709,39 +616,9 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	}
 
 	@Override
-	public List<FileInfo> getAllOwnedFolders(AuthenticationToken authenticationToken) {
-		List<FileInfo> allOwnedFolders = new LinkedList<FileInfo>();
-		File ownedFolder = new File(Configuration.fileBase + File.separator + authenticationToken.getUserId());
-		File[] childFiles = ownedFolder.listFiles();
-		for(File child : childFiles){
-			String fileAbsolutePath = child.getAbsolutePath();
-			String displayPath = fileAbsolutePath.replace(Configuration.fileBase + File.separator + authenticationToken.getUserId(), "");
-			allOwnedFolders.add(new FileInfo(child.getName(), fileAbsolutePath, displayPath, getFileType(authenticationToken, fileAbsolutePath), 
-					authenticationToken.getUserId(), false, child.isDirectory(), true));
-		}
-		return allOwnedFolders;
-	}
-
-	@Override
-	public FileInfo getOwnedRootFolder(AuthenticationToken authenticationToken) {
-		File ownedFolder = new File(Configuration.fileBase + File.separator + authenticationToken.getUserId());
-		FileInfo ownedFolderFileInfo = new FileInfo(ownedFolder.getName(), ownedFolder.getAbsolutePath(), "", getFileType(authenticationToken, ownedFolder.getAbsolutePath()), authenticationToken.getUserId(), false, ownedFolder.isDirectory(), true);
-		return ownedFolderFileInfo;
-	}
-
-	@Override
-	public List<FileInfo> getAllSharedFolders(
-			AuthenticationToken authenticationToken) {
-		List<FileInfo> allSharedFolders = new LinkedList<FileInfo>();
-		File sharedFolder = new File(Configuration.fileBase + File.separator + authenticationToken.getUserId());
-		File[] childFiles = sharedFolder.listFiles();
-		for(File child : childFiles){
-			String fileAbsolutePath = child.getAbsolutePath();
-			String displayPath = fileAbsolutePath.replace(Configuration.fileBase + File.separator + authenticationToken.getUserId(), "");
-			allSharedFolders.add(new FileInfo(child.getName(), fileAbsolutePath, displayPath, getFileType(authenticationToken, fileAbsolutePath), 
-					authenticationToken.getUserId(), false, child.isDirectory(), true));
-		}
-		return allSharedFolders;
+	public FolderTreeItem getOwnedRootFolder(AuthenticationToken token) {
+		return createFolderTreeItem("Owned", "Owned", Configuration.fileBase + File.separator + token.getUserId(), "Owned", FileTypeEnum.DIRECTORY,
+				token.getUserId(), true, false, true, FileSource.SYSTEM);
 	}
 	
 	@Override
@@ -784,23 +661,25 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	                	 
 	                if(!filter) 
 	                	if(child.isDirectory())
-	                		result.add(createFolderTreeItem(child.getName(), child.getAbsolutePath(), displayPath, fileType, shareOwnerUserId, false, false, false));
+	                		result.add(createFolderTreeItem(child.getName(), getDisplayName(child), child.getAbsolutePath(), displayPath, fileType, shareOwnerUserId, false, false, false, FileSource.SHARED));
 	                	else
-	                		result.add(createFileTreeItem(child.getName(), child.getAbsolutePath(), displayPath, fileType, shareOwnerUserId, false, false, false));						
+	                		result.add(createFileTreeItem(child.getName(), child.getAbsolutePath(), displayPath, fileType, shareOwnerUserId, false, false, false, FileSource.SHARED));						
 				}
 			}
 		}
 		return result;
 	}
 
-	private FileTreeItem createFileTreeItem(String name, String path, String displayPath, FileTypeEnum fileType, int shareOwnerUserId, boolean isSystemFile, 
-			boolean isAllowsNewFiles, boolean isAllowsNewFolders) {
-		return new FileTreeItem(UUID.randomUUID().toString(), name, path, displayPath, fileType, shareOwnerUserId, isSystemFile, isAllowsNewFiles, isAllowsNewFolders); 
+	private FileTreeItem createFileTreeItem(String name, String path, String displayPath, FileTypeEnum fileType, int ownerUserId, boolean isSystemFile, 
+			boolean isAllowsNewFiles, boolean isAllowsNewFolders, FileSource fileSource) {
+		return new FileTreeItem(UUID.randomUUID().toString(), name, name, path, displayPath, fileType, ownerUserId, isSystemFile, isAllowsNewFiles, isAllowsNewFolders, 
+				fileSource); 
 	}
 	
-	private FolderTreeItem createFolderTreeItem(String name, String path, String displayPath, FileTypeEnum fileType, int shareOwnerUserId, boolean isSystemFile, 
-			boolean isAllowsNewFiles, boolean isAllowsNewFolders) {
-		return new FolderTreeItem(UUID.randomUUID().toString(), name, path, displayPath, fileType, shareOwnerUserId, isSystemFile, isAllowsNewFiles, isAllowsNewFolders); 
+	private FolderTreeItem createFolderTreeItem(String name, String displayName, String path, String displayPath, FileTypeEnum fileType, int ownerUserId, boolean isSystemFile, 
+			boolean isAllowsNewFiles, boolean isAllowsNewFolders, FileSource fileSource) {
+		return new FolderTreeItem(UUID.randomUUID().toString(), name, displayName, path, displayPath, fileType, ownerUserId, isSystemFile, isAllowsNewFiles, isAllowsNewFolders, 
+				fileSource); 
 	}
 
 	private List<FileTreeItem> createSharedOutputTaskFolder(AuthenticationToken authenticationToken, FolderTreeItem folderTreeItem, FileFilter fileFilter) throws PermissionDeniedException {
@@ -826,9 +705,11 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	                	 
 	                if(!filter) 
 	                	if(child.isDirectory())
-	                		result.add(createFolderTreeItem(child.getName(), child.getAbsolutePath(), displayPath, fileType, shareOwnerUserId, false, false, false));
+	                		result.add(createFolderTreeItem(child.getName(), getDisplayName(child), child.getAbsolutePath(), displayPath, fileType, shareOwnerUserId, false, false, false, 
+	                				FileSource.SHARED));
 	                	else
-	                		result.add(createFileTreeItem(child.getName(), child.getAbsolutePath(), displayPath, fileType, shareOwnerUserId, false, false, false));					
+	                		result.add(createFileTreeItem(child.getName(), child.getAbsolutePath(), displayPath, fileType, shareOwnerUserId, false, false, false, 
+	                				FileSource.SHARED));					
 				}
 			}
 		}
@@ -840,10 +721,10 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		int shareId = Integer.parseInt(folderTreeItem.getFilePath().replace("Share.", ""));
 		Share share = daoManager.getShareDAO().getShare(shareId);
 		int shareOwnerUserId = share.getTask().getUser().getId();
-		FileTreeItem output = createFolderTreeItem("Output", "Share.Output." + share.getId(), 
-				"Output", FileTypeEnum.DIRECTORY, shareOwnerUserId, false, false, false);
-		FileTreeItem input = createFolderTreeItem("Input", "Share.Input." + share.getId(), "Input", 
-				FileTypeEnum.DIRECTORY, shareOwnerUserId, false, false, false);
+		FileTreeItem output = createFolderTreeItem("Output", "Output", "Share.Output." + share.getId(), 
+				"Output", FileTypeEnum.DIRECTORY, shareOwnerUserId, false, false, false, FileSource.SHARED);
+		FileTreeItem input = createFolderTreeItem("Input", "Input", "Share.Input." + share.getId(), "Input", 
+				FileTypeEnum.DIRECTORY, shareOwnerUserId, false, false, false, FileSource.SHARED);
 		result.add(input);
 		result.add(output);
 		return result;
@@ -856,28 +737,30 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		
 		for(Share share : shares) {
 			int shareOwnerUserId = share.getTask().getUser().getId();
-			result.add(createFolderTreeItem(share.getTask().getName(), "Share." + share.getId(), share.getTask().getName(), FileTypeEnum.DIRECTORY, 
-					shareOwnerUserId, false, false, false));
+			result.add(createFolderTreeItem(share.getTask().getName(), share.getTask().getName(),
+					"Share." + share.getId(), share.getTask().getName(), FileTypeEnum.DIRECTORY, 
+					shareOwnerUserId, false, false, false, FileSource.SHARED));
 		}
 		return result;
 	}
 
-	private List<FileTreeItem> createRootFiles(AuthenticationToken authenticationToken, FileFilter fileFilter) {
+	private List<FileTreeItem> createRootFiles(AuthenticationToken token, FileFilter fileFilter) {
 		List<FileTreeItem> result = new LinkedList<FileTreeItem>();
-		result.add(createFolderTreeItem("Owned", Configuration.fileBase + File.separator + authenticationToken.getUserId(), "Owned", FileTypeEnum.DIRECTORY,
-				 authenticationToken.getUserId(), true, false, true));
-		result.add(createFolderTreeItem("Shared", "Shared", "Shared", FileTypeEnum.DIRECTORY,
-				 authenticationToken.getUserId(), true, false, false));
+		result.add(this.getOwnedRootFolder(token));
+		result.add(createFolderTreeItem("Shared", "Shared", "Shared", "Shared", FileTypeEnum.DIRECTORY,
+				token.getUserId(), true, false, false, FileSource.SYSTEM));
+		result.add(createFolderTreeItem("Public", "Public", Configuration.publicFolder, "Public", FileTypeEnum.DIRECTORY,
+				token.getUserId(), true, false, false, FileSource.SYSTEM));
 		return result;
 	}
 
-	private List<FileTreeItem> createFilesByPath(AuthenticationToken authenticationToken, FolderTreeItem folderTreeItem, FileFilter fileFilter) throws PermissionDeniedException {
+	private List<FileTreeItem> createFilesByPath(AuthenticationToken token, FolderTreeItem folderTreeItem, FileFilter fileFilter) throws PermissionDeniedException {
 		List<FileTreeItem> result = new LinkedList<FileTreeItem>();
-		String filePath = Configuration.fileBase + File.separator + authenticationToken.getUserId();
+		String filePath = Configuration.fileBase + File.separator + token.getUserId();
 		if(folderTreeItem != null)
 			filePath = folderTreeItem.getFilePath();
 		
-		 boolean permissionResult = filePermissionService.hasReadPermission(authenticationToken, filePath);
+		 boolean permissionResult = filePermissionService.hasReadPermission(token, filePath);
 	        if(!permissionResult)
 	            throw new PermissionDeniedException();
 	        else {
@@ -886,49 +769,71 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 	            Arrays.sort(childFiles);
 	            for(File child : childFiles) {
 	                String childPath = child.getAbsolutePath(); 
-	                permissionResult = filePermissionService.hasReadPermission(authenticationToken, childPath);
+	                permissionResult = filePermissionService.hasReadPermission(token, childPath);
 	                if(!permissionResult)
 	                    throw new PermissionDeniedException();
 
 	            	String name = child.getName();
-	            	if(child.isDirectory()) {
-		            	int directories = child.listFiles(new java.io.FileFilter() {
-							@Override
-							public boolean accept(File file) {
-								return file.isDirectory();
-							}
-		            	}).length;
-		            	
-		            	int files = child.listFiles(new java.io.FileFilter() {
-							@Override
-							public boolean accept(File file) {
-								return file.isFile();
-							}
-		            	}).length;
-		            	name = child.getName() + " [" + files + " files, " + directories + " directories]";
-	            	}
-				String displayPath = childPath.replace(Configuration.fileBase + File.separator + authenticationToken.getUserId(), "");
-
-				boolean filter = false;
-				FileTypeEnum fileType = getFileType(authenticationToken, child.getAbsolutePath());
-				if(fileFilter != null)
-					filter = filter(fileType, fileFilter);
-
-				if (!filter)
-					if (child.isDirectory())
-						result.add(createFolderTreeItem(name,
-								child.getAbsolutePath(), displayPath, fileType,
-								authenticationToken.getUserId(), false,
-								child.isDirectory(), true));
-					else
-						result.add(createFileTreeItem(name,
-								child.getAbsolutePath(), displayPath, fileType,
-								authenticationToken.getUserId(), false,
-								child.isDirectory(), true));
+	            	String displayName = getDisplayName(child);
+					String displayPath = childPath.replace(Configuration.fileBase + File.separator + token.getUserId(), "");
+	
+					boolean filter = false;
+					FileTypeEnum fileType = getFileType(token, child.getAbsolutePath());
+					if(fileFilter != null)
+						filter = filter(fileType, fileFilter);
+	
+					FileSource fileSource = getFileSource(token, child.getAbsolutePath());
+					if (!filter)
+						if (child.isDirectory()) {
+							boolean isSystemFile = false;
+							boolean isAllowsNewFiles = fileSource.equals(FileSource.OWNED);
+							boolean isAllowsNewFolders = fileSource.equals(FileSource.OWNED);
+							result.add(createFolderTreeItem(name, displayName,
+									child.getAbsolutePath(), displayPath, fileType,
+									getOwnerUserId(child), isSystemFile,
+									isAllowsNewFiles, isAllowsNewFolders, fileSource));
+						} else {
+							boolean isSystemFile = false;
+							boolean isAllowsNewFiles = false;
+							boolean isAllowsNewFolders = fileSource.equals(FileSource.OWNED);
+							result.add(createFileTreeItem(name,
+									child.getAbsolutePath(), displayPath, fileType,
+									getOwnerUserId(child), isSystemFile,
+									isAllowsNewFiles, isAllowsNewFolders, fileSource));
+						}
 	            }
 	        }
 		
 		return result;
+	}
+
+	private FileSource getFileSource(AuthenticationToken token, String path) {
+		if(path.startsWith(Configuration.publicFolder))
+			return FileSource.PUBLIC;
+		if(path.startsWith(Configuration.fileBase + File.separator + token.getUserId()))
+			return FileSource.OWNED;
+		return FileSource.SHARED;
+	}
+
+	private String getDisplayName(File child) {
+		if(child.isDirectory()) {
+        	int directories = child.listFiles(new java.io.FileFilter() {
+				@Override
+				public boolean accept(File file) {
+					return file.isDirectory();
+				}
+        	}).length;
+        	
+        	int files = child.listFiles(new java.io.FileFilter() {
+				@Override
+				public boolean accept(File file) {
+					return file.isFile();
+				}
+        	}).length;
+        	return child.getName() + " [" + files + " files, " + directories + " directories]";
+    	} else {
+    		return child.getName();
+    	}
 	}
 
 	@Override
@@ -948,6 +853,181 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 		}
 		return result;
 	}
+	
+	@Override
+	public List<FileTreeItem> getTaxonomies(AuthenticationToken token, FolderTreeItem folderTreeItem) {
+		if(folderTreeItem == null)
+			return createRootTaxonomies(token);
+		else 
+			return createTaxonomiesByPath(token, folderTreeItem);		
+	}
+	
+	private List<FileTreeItem> createRootTaxonomies(AuthenticationToken token) {
+		List<FileTreeItem> result = new LinkedList<FileTreeItem>();
+		result.add(createFolderTreeItem("Owned", "Owned", "Owned", "Owned", FileTypeEnum.DIRECTORY,
+				-1, true, false, false, FileSource.SYSTEM));
+		result.add(createFolderTreeItem("Shared", "Shared", "Shared", "Shared", FileTypeEnum.DIRECTORY,
+				-1, true, false, false, FileSource.SYSTEM));
+		result.add(createFolderTreeItem("Public", "Public", "Public", "Public", FileTypeEnum.DIRECTORY,
+				-1, true, false, false, FileSource.SYSTEM));
+		return result;
+	}
+	
+	private List<FileTreeItem> createTaxonomiesByPath(AuthenticationToken token, FolderTreeItem folderTreeItem) {
+		switch(folderTreeItem.getFilePath()) {
+		case "Owned":
+			return createOwnedTaxonomies(token);
+		case "Shared":
+			return createSharedTaxnoomies(token);
+		case "Public":
+			return createPublicTaxonomies(token);
+		}
+		return new LinkedList<FileTreeItem>();
+	}
 
+	private List<FileTreeItem> createPublicTaxonomies(AuthenticationToken token) {
+		return createTaxonomies(new File(Configuration.publicFolder), FileSource.PUBLIC);
+	}
+
+	private List<FileTreeItem> createSharedTaxnoomies(AuthenticationToken token) {
+		List<FileTreeItem> result = new LinkedList<FileTreeItem>();
+		ShortUser user = daoManager.getUserDAO().getShortUser(token.getUserId());
+		List<Share> shares = daoManager.getShareDAO().getSharesOfInvitee(user);
+		for(Share share : shares) {
+			AbstractTaskConfiguration taskConfiguration = share.getTask().getConfiguration();
+			List<String> inputFiles = taskConfiguration.getInputs();
+			for(String inputFile : inputFiles) 
+				result.addAll(createTaxonomies(new File(inputFile), FileSource.SHARED));
+			for(String outputFile : taskConfiguration.getOutputs()) {
+				result.addAll(createTaxonomies(new File(outputFile), FileSource.SHARED));
+			}
+		}
+		return result;
+	}
+
+	private List<FileTreeItem> createOwnedTaxonomies(AuthenticationToken token) {
+   		return createTaxonomies(new File(Configuration.fileBase + File.separator + token.getUserId()), FileSource.OWNED);
+	}
+	
+	public List<FileTreeItem> createTaxonomies(File file, FileSource fileSource) {
+		List<FileTreeItem> result = new LinkedList<FileTreeItem>();
+		if(file.isDirectory()) {
+			if(isTaxonomyDirectory(file)) {
+				String taxonomyRoot = getTaxonomyRoot(getTaxonomyModelFile(file));
+				result.add(this.createFileTreeItem(taxonomyRoot, 
+						file.getAbsolutePath(), taxonomyRoot, FileTypeEnum.MATRIX_GENERATION_SERIALIZED_MODEL, getOwnerUserId(file), false, false, false, fileSource));
+			} else {
+				for(File child : file.listFiles()) {
+					result.addAll(createTaxonomies(child, fileSource));
+				}
+			}
+		}
+		return result;
+	}
+	
+	private int getOwnerUserId(File file) {
+		String path = file.getAbsolutePath();
+		if(path.startsWith(Configuration.fileBase)) {
+			String left = path.replace(Configuration.fileBase + File.separator, "");
+			left = left.substring(0, left.indexOf(File.separator));
+			return Integer.valueOf(left);
+		}
+		return -1;
+	}
+
+	private String getTaxonomyRoot(File file) {
+		MatrixGenerationSerializedModelReader reader = new MatrixGenerationSerializedModelReader();
+		Model model = reader.getModel(file.getAbsolutePath());
+		Taxon taxon = model.getTaxonMatrix().getHierarchyRootTaxa().get(0);
+		return taxon.getTaxonIdentification().getRankData().getLast().displayName();
+	}
+	
+	private boolean isTaxonomyDirectory(File file) {
+		return this.getTaxonomyModelFile(file) != null;
+	}
+	
+	private File getTaxonomyModelFile(File file) {
+		MatrixGenerationSerializedModelReader reader = new MatrixGenerationSerializedModelReader();
+		if(file.isDirectory()) {
+			for(File child : file.listFiles()) {
+				if(child.isFile() && reader.isValid(child)) 
+					return child;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public void copyFile(AuthenticationToken authenticationToken, String sourceFile, String destinationFile) throws CopyFilesFailedException {
+		try {
+			FileUtils.copyFile(new File(sourceFile), new File(destinationFile));
+		} catch(Exception e) {
+			String message = "Couldn't copy file";
+			log(LogLevel.ERROR, message, e);
+			throw new CopyFilesFailedException(message);
+		} 
+	}
+	
+	@Override
+	public void copyDirectory(AuthenticationToken authenticationToken, String source, String destination) throws CopyFilesFailedException, PermissionDeniedException {
+		boolean permissionResultSource = filePermissionService.hasReadPermission(authenticationToken, source);
+		boolean permissionResultDestination = filePermissionService.hasWritePermission(authenticationToken, destination);
+		if(!permissionResultSource || !permissionResultDestination)
+			throw new PermissionDeniedException();
+		if(permissionResultSource && permissionResultDestination) {
+			try {
+				FileUtils.copyDirectory(new File(source), new File(destination));
+			} catch(Exception e) {
+				String message = "Couldn't copy directory";
+				log(LogLevel.ERROR, message, e);
+				throw new CopyFilesFailedException(message);
+			} 
+			/*File sourceDir = new File(source);
+			for(File sourceFile : sourceDir.listFiles()) {
+				File destinationFile = new File(destination, sourceFile.getName());
+				try {
+					
+					Files.copy(sourceFile, destinationFile);
+				} catch(Exception e) {
+					e.printStackTrace();
+					return new RPCResult<Void>(false, e.getMessage());
+				}
+			}*/
+		}
+	}
+	
+	@Override
+	public FileTreeItem getTermReviewFileTreeItem(AuthenticationToken token, String matrixReviewModelPath) {
+		String[] parts = matrixReviewModelPath.split("_output_by_MG_task_");
+		String reviewTermsPath = parts[0].replaceAll("_output_by_TC_task_", "_ReviewTerms_by_TC_task_");
+		File file = new File(reviewTermsPath);
+		if(file.exists() && file.isDirectory()) {
+			if(file.listFiles().length != 3)
+				return null;
+			for(File child : file.listFiles()) {
+				if(child.isDirectory())
+					return null;
+				if(!((child.getName().startsWith("category_definition-task-") && child.getName().endsWith(".csv")) || 
+						(child.getName().startsWith("category_mainterm_synonymterm-task-") && child.getName().endsWith(".csv")) || 
+						(child.getName().startsWith("category_term-task-") && child.getName().endsWith(".csv")))) {
+					return null;
+				}
+			}
+			
+			String path = file.getAbsolutePath();
+			FileSource fileSource = null;
+			if(path.startsWith(Configuration.fileBase + File.separator + token.getUserId()))
+				fileSource = FileSource.OWNED;
+			if(path.startsWith(Configuration.publicFolder))
+				fileSource = FileSource.PUBLIC;
+			if(path.startsWith(Configuration.fileBase + File.separator) && !path.startsWith(Configuration.fileBase + File.separator + token.getUserId()))
+				fileSource = FileSource.SHARED;
+			FilePathShortener filePathShortener = new FilePathShortener();
+			String displayPath = filePathShortener.shorten(path, fileSource, token.getUserId());
+			return createFolderTreeItem(file.getName(), getDisplayName(file), file.getAbsolutePath(), displayPath, null, getOwnerUserId(file), false, 
+					false, false, fileSource);
+		}
+		return null;
+	}
 }
 

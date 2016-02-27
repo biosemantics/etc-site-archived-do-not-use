@@ -25,9 +25,7 @@ import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 
-import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.ITreeGenerationCreateView.Presenter;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
 import gwtupload.client.Uploader;
 
 public class TaxonomyComparisonCreateView extends Composite implements ITaxonomyComparisonCreateView{
@@ -47,7 +45,7 @@ public class TaxonomyComparisonCreateView extends Composite implements ITaxonomy
 	IInputCreateView inputCreateView;
 	
 	@Inject
-	public TaxonomyComparisonCreateView(@Named("TaxonomyComparison")IInputCreateView.Presenter inputCreatePresenter) {		
+	public TaxonomyComparisonCreateView(IInputCreateView.Presenter inputCreatePresenter) {		
 		this.inputCreateView = inputCreatePresenter.getView();
 		initWidget(uiBinder.createAndBindUi(this));		
 		fileManagerAnchor.getElement().getStyle().setCursor(Cursor.POINTER);

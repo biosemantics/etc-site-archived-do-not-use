@@ -180,7 +180,7 @@ public class TaskDAO {
 
 	public List<Task> getResumableTasks(int userId) {
 		List<Task> tasks = new LinkedList<Task>();
-		try(Query query = new Query("SELECT * FROM (" + allUsersTasksQuery + ")AS allTasks WHERE resumable=true")) {
+		try(Query query = new Query("SELECT * FROM (" + allUsersTasksQuery + ")AS allTasks WHERE resumable=true AND failed=false AND complete=false")) {
 			query.setParameter(1, userId);
 			query.setParameter(2, userId);
 			ResultSet result = query.execute();

@@ -34,4 +34,6 @@ public interface IMatrixGenerationService extends RemoteService, IHasTasksServic
 
 	public Model loadMatrixFromProcessOutput(AuthenticationToken token, Task task) throws MatrixGenerationException;
 
+	public void publish(AuthenticationToken token, Task task) throws Exception;
+
 }

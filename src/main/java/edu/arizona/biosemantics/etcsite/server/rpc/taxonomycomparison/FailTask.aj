@@ -26,10 +26,10 @@ public class FailTask {
 			Task task = e.getTask();
 			if(task == null)
 				task = getTask(proceedingJoinPoint);
-			failTask(task);
+			//failTask(task);
 			throw e;
  		} catch (Throwable t) {
-			failTask(getTask(proceedingJoinPoint));
+			//failTask(getTask(proceedingJoinPoint));
 			log(LogLevel.ERROR, "Unexpected throwable caught in fail task aspect. Check the pointcut/joinpoint interface.", t);
 			return null;
 		}

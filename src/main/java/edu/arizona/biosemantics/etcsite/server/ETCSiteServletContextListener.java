@@ -11,6 +11,7 @@ import javax.servlet.ServletContextListener;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.etcsite.client.common.ServerSetup;
 import edu.arizona.biosemantics.etcsite.server.db.CaptchaDAO;
 import edu.arizona.biosemantics.etcsite.server.db.ConnectionPool;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;

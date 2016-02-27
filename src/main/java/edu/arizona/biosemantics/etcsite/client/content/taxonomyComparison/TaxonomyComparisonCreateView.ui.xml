@@ -3,7 +3,6 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison"
 	xmlns:form='urn:import:com.sencha.gxt.widget.core.client.form'
-	xmlns:my2="urn:import:edu.arizona.biosemantics.etcsite.client.common"
 	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout"
 	xmlns:up="urn:import:gwtupload.client">
 	<ui:style>
@@ -70,18 +69,23 @@
 								href="https://github.com/EulerProject/EulerX"
 								target="_blank" styleName="{style.padding}">CleanTax format</g:Anchor>
 							<g:InlineLabel styleName="DescriptionFont">
-			            	. Choose one of the following methods to provide the input and Click Next.
+			            	&nbsp;or two folders with outputted taxonomies by Matrix Generation.&nbsp;
 			            	</g:InlineLabel>
-						</g:FlowPanel>
-						<g:InlineLabel>&nbsp;
-						</g:InlineLabel>
-						<g:FlowPanel>
 							<g:InlineLabel>To Edit, Delete or View uploaded file, go to &nbsp;
 							</g:InlineLabel>
 							<g:Anchor ui:field="fileManagerAnchor" styleName="{style.DescriptionFont}">File Manager</g:Anchor>
+			            	<g:InlineLabel>
+			            	.
+			            	</g:InlineLabel>
+			            	<g:InlineLabel styleName="DescriptionFont">&nbsp;</g:InlineLabel>
+							<g:FlowPanel>
+							    <g:InlineLabel styleName="DescriptionFont">
+				            	Choose one of the following methods to provide the input and Click Next.
+								</g:InlineLabel>
+							</g:FlowPanel>
 						</g:FlowPanel>
 					</g:VerticalPanel>
-					<my2:IInputCreateView ui:field="inputCreateView"></my2:IInputCreateView>
+					<my:IInputCreateView ui:field="inputCreateView"></my:IInputCreateView>
 				</g:VerticalPanel>
 			</g:VerticalPanel>
 		</lay:CenteredContentPanel>

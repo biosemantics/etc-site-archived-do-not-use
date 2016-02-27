@@ -62,17 +62,37 @@ public class MatrixGenerationConfiguration extends AbstractTaskConfiguration imp
 	@Override
 	public List<String> getInputs() {
 		List<String> result = new LinkedList<String>();
-		result.add(this.getInput());
-		result.add(this.getInputOntology());
-		result.add(this.getInputTermReview());
+		if(hasInput())
+			result.add(this.getInput());
+		if(hasInputOntology())
+			result.add(this.getInputOntology());
+		if(hasInputTermReview())
+			result.add(this.getInputTermReview());
 		return result;
+	}
+
+	private boolean hasInputTermReview() {
+		return inputTermReview != null && !inputTermReview.isEmpty();
+	}
+
+	private boolean hasInputOntology() {
+		return inputOntology != null && !inputOntology.isEmpty();
+	}
+
+	private boolean hasInput() {
+		return input != null && !input.isEmpty();
 	}
 
 	@Override
 	public List<String> getOutputs() {
 		List<String> result = new LinkedList<String>();
-		result.add(this.getOutput());
+		if(hasOutput())
+			result.add(this.getOutput());
 		return result;
+	}
+
+	private boolean hasOutput() {
+		return output != null && !output.isEmpty();
 	}
 
 	public void setTaxonGroup(TaxonGroup taxonGroup) {

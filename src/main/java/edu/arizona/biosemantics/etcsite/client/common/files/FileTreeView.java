@@ -1,6 +1,8 @@
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -19,6 +21,7 @@ import com.sencha.gxt.data.client.loader.RpcProxy;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.TreeStore;
 import com.sencha.gxt.data.shared.loader.ChildTreeStoreBinding;
+import com.sencha.gxt.data.shared.loader.DataProxy;
 import com.sencha.gxt.data.shared.loader.LoadEvent;
 import com.sencha.gxt.data.shared.loader.LoadHandler;
 import com.sencha.gxt.data.shared.loader.TreeLoader;
@@ -27,6 +30,7 @@ import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 import com.sencha.gxt.widget.core.client.tree.Tree;
+import com.sencha.gxt.widget.core.client.tree.Tree.TreeNode;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
@@ -41,7 +45,7 @@ public class FileTreeView extends Composite implements IFileTreeView {
 	private VerticalLayoutContainer container;
 
 	private Presenter presenter;
-	private final IFileServiceAsync fileService;
+	public final IFileServiceAsync fileService;
  
 	private Tree<FileTreeItem, String> tree;
 
@@ -52,6 +56,8 @@ public class FileTreeView extends Composite implements IFileTreeView {
 	private TreeStore<FileTreeItem> store;
 
 	private TreeStateHandler<FileTreeItem> stateHandler;
+
+	private DataProxy<FileTreeItem, List<FileTreeItem>> proxy;
 
 	@Inject
 	public FileTreeView(final IFileServiceAsync fileService, final IFileContentView.Presenter fileContentPresenter) {
@@ -68,6 +74,7 @@ public class FileTreeView extends Composite implements IFileTreeView {
 					@Override
 					public String getKey(FileTreeItem item) {
 						return item.getId();
+						//return item.getFilePath();
 					}
 				});
 		tree = new Tree<FileTreeItem, String>(
@@ -96,7 +103,7 @@ public class FileTreeView extends Composite implements IFileTreeView {
 			        super.onDoubleClick(event);
 			   }
 		};
-		loader = new TreeLoader<FileTreeItem>(proxy) {
+		loader = new TreeLoader<FileTreeItem>(getProxy()) {
 			@Override
 			public boolean hasChildren(FileTreeItem parent) {
 				return parent instanceof FolderTreeItem;
@@ -105,21 +112,38 @@ public class FileTreeView extends Composite implements IFileTreeView {
 		loader.addLoadHandler(new LoadHandler<FileTreeItem, List<FileTreeItem>>() {
 			@Override
 			public void onLoad(LoadEvent<FileTreeItem, List<FileTreeItem>> event) {
+				Map<String, Boolean> state = getExpandedState();
+				
 				FileTreeItem parent = event.getLoadConfig();
 				store.replaceChildren(parent, event.getLoadResult());
+				
+				state.put(parent.getFilePath(), true);
+				setExpandedState(state);
+				//tree.setExpanded(parent, true);
 			}
 		});
 		
 		tree.setStateful(true);
 		tree.setLoader(loader);
 		stateHandler = new TreeStateHandler<FileTreeItem>(tree);
-		stateHandler.loadState();
 		
 		tree.getSelectionModel().setSelectionMode(SelectionMode.MULTI);
 		container = new VerticalLayoutContainer();
 		container.setHeight(400);
 		container.add(tree);
 		container.getScrollSupport().setScrollMode(ScrollMode.AUTOY);
+	}
+	
+	protected DataProxy<FileTreeItem, List<FileTreeItem>> getProxy() {
+		if(proxy == null)
+			proxy = new RpcProxy<FileTreeItem, List<FileTreeItem>>() {
+				@Override
+				public void load(FileTreeItem loadConfig, AsyncCallback<List<FileTreeItem>> callback) {
+					if(loadConfig == null || loadConfig instanceof FolderTreeItem) 
+						fileService.getFiles(Authentication.getInstance().getToken(), (FolderTreeItem)loadConfig, fileFilter, callback);
+				}
+			};
+		return proxy;
 	}
 
 	@Override
@@ -158,17 +182,47 @@ public class FileTreeView extends Composite implements IFileTreeView {
 	
 	@Override
 	public void refresh(FileFilter fileFilter) {
-		stateHandler.saveState();
+		//Map<String, Boolean> state = getExpandedState();
+		//stateHandler.saveState();
+		
 		this.fileFilter = fileFilter;
 		loader.load(null);
-		stateHandler.loadState();
+		
+		//setExpandedState(state);
+		//stateHandler.loadState();
+	}
+
+	private void setExpandedState(Map<String, Boolean> state) {
+		for(FileTreeItem item : store.getAll()) {
+			TreeNode<FileTreeItem> node = tree.findNode(item);
+			if(state.containsKey(item.getFilePath())) {
+				tree.setExpanded(item, state.get(item.getFilePath()));
+				/*if(state.get(item.getFilePath()))
+					tree.getView().expand(node);
+				else 
+					tree.getView().collapse(node);*/
+			}
+		}
+	}
+
+	private Map<String, Boolean> getExpandedState() {
+		Map<String, Boolean> state = new HashMap<String, Boolean>();
+		for(FileTreeItem fileTreeItem : store.getAll()) {
+			state.put(fileTreeItem.getFilePath(), tree.isExpanded(fileTreeItem));
+		}
+		return state;
 	}
 
 	@Override
-	public void refreshChildren(FileTreeItem fileTreeItem, FileFilter fileFilter) {
-		this.fileFilter = fileFilter;
+	public void refreshNode(FileTreeItem fileTreeItem, FileFilter fileFilter) {
+		//Map<String, Boolean> state = getExpandedState();
+		//stateHandler.saveState();
 		
-		loader.loadChildren(fileTreeItem);
+		this.fileFilter = fileFilter;
+		loader.loadChildren(this.getParent(fileTreeItem));
+		
+		//setExpandedState(state);
+		//stateHandler.loadState();
 	}
 	
 	@Override

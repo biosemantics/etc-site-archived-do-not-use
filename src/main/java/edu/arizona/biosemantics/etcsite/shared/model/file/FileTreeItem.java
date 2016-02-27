@@ -13,14 +13,18 @@ public class FileTreeItem implements Serializable {
 	private boolean isSystemFile;
 	private boolean isAllowsNewFiles;
 	private boolean isAllowsNewFolders;
+	private FileSource fileSource;
+	private String displayName;
 
 	public FileTreeItem() { 
 		
 	}
 	
-	public FileTreeItem(String id, String name, String path, String displayPath, FileTypeEnum type, int ownerUserId, boolean isSystemFile, boolean isAllowsNewFiles, boolean isAllowsNewFolders) { 
+	public FileTreeItem(String id, String name, String displayName, String path, String displayPath, FileTypeEnum type, int ownerUserId, boolean isSystemFile, boolean isAllowsNewFiles, boolean isAllowsNewFolders, 
+			FileSource fileSource) { 
 		this.id = id;
 		this.name = name;
+		this.displayName = displayName;
 		this.path = path;
 		this.displayPath = displayPath;
 		this.type = type;
@@ -28,6 +32,7 @@ public class FileTreeItem implements Serializable {
 		this.isSystemFile = isSystemFile;
 		this.isAllowsNewFiles = isAllowsNewFiles;
 		this.isAllowsNewFolders = isAllowsNewFolders;
+		this.fileSource = fileSource;
 	}
 	
 	public String getPath() {
@@ -35,7 +40,7 @@ public class FileTreeItem implements Serializable {
 	}
 
 	public String getText() {
-		return name;
+		return displayName;
 	}
 
 	public boolean isSystemFile() {
@@ -73,7 +78,7 @@ public class FileTreeItem implements Serializable {
 	}
 	
 	public String getName(boolean includeExtension) {
-		if(isAllowsNewFiles() || isAllowsNewFolders())
+		if(this instanceof FolderTreeItem)
 			return name;
 		if(includeExtension)
 			return name;
@@ -83,6 +88,12 @@ public class FileTreeItem implements Serializable {
 
 	public String getId() {
 		return id;
+	}
+	
+	
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	public boolean isEditable() {
@@ -97,6 +108,10 @@ public class FileTreeItem implements Serializable {
 
 	public FileTypeEnum getFileType() {
 		return type;
+	}
+	
+	public FileSource getFileSource() {
+		return fileSource;
 	}
 
 }

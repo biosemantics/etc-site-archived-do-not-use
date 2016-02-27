@@ -83,6 +83,7 @@ public class DAOManager {
 		treeGenerationConfigurationDAO.setConfigurationDAO(configurationDAO);
 		taskDAO.setTreeGenerationConfigurationDAO(treeGenerationConfigurationDAO);
 		taxonomyComparisonConfigurationDAO.setConfigurationDAO(configurationDAO);
+		taxonomyComparisonConfigurationDAO.setTaxonGroupDAO(taxonGroupDAO);
 		ontologizeConfigurationDAO.setConfigurationDAO(configurationDAO);
 		ontologizeConfigurationDAO.setTaxonGroupDAO(taxonGroupDAO);
 	}

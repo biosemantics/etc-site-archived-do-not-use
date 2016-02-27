@@ -8,7 +8,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.file.Tree;
@@ -17,9 +16,6 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDen
 
 @RemoteServiceRelativePath("file")
 public interface IFileService extends RemoteService {
-
-	public Tree<FileInfo> getUsersFiles(AuthenticationToken authenticationToken, FileFilter fileFilter) 
-		throws PermissionDeniedException;
 	
 	public void deleteFile(AuthenticationToken authenticationToken, String filePath) throws PermissionDeniedException, 
 		FileDeleteFailedException;
@@ -69,15 +65,19 @@ public interface IFileService extends RemoteService {
 	public String validateTaxonNames(AuthenticationToken authenticationToken, String directory);
 
 	public void deleteUploadedFiles(AuthenticationToken token, String uploadedDirectory, List<String> uploadedFiles) throws PermissionDeniedException, FileDeleteFailedException;
-
-	public List<FileInfo> getAllOwnedFolders(AuthenticationToken authenticationToken);
 	
-	public List<FileInfo> getAllSharedFolders(AuthenticationToken authenticationToken);
-	
-	public FileInfo getOwnedRootFolder(AuthenticationToken authenticationToken);
+	public FolderTreeItem getOwnedRootFolder(AuthenticationToken authenticationToken);
 	
 	public List<FileTreeItem> getFiles(AuthenticationToken authenticationToken, FolderTreeItem folderTreeItem, FileFilter fileFilter) throws PermissionDeniedException;
 
 	public void deleteFiles(AuthenticationToken token, List<FileTreeItem> selection) throws PermissionDeniedException, FileDeleteFailedException;
 	
+	public List<FileTreeItem> getTaxonomies(AuthenticationToken token, FolderTreeItem loadConfig);
+	
+	public void copyFile(AuthenticationToken authenticationToken, String sourceFile, String destinationFile)  throws CopyFilesFailedException;
+
+	public void copyDirectory(AuthenticationToken authenticationToken, String source, String destination) throws CopyFilesFailedException,
+			PermissionDeniedException;
+
+	public FileTreeItem getTermReviewFileTreeItem(AuthenticationToken token, String matrixReviewModelPath);
 }

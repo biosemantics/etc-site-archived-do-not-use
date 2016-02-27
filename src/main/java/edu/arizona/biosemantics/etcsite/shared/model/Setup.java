@@ -6,6 +6,7 @@ public class Setup implements Serializable {
 	
 	private String seperator;
 	private String fileBase;
+	private String publicFolder;
 	private String googleRedirectURI;
 	private String googleClientId;
 	
@@ -19,6 +20,14 @@ public class Setup implements Serializable {
 
 	public String getFileBase() {
 		return fileBase;
+	}
+	
+	public String getPublicFolder() {
+		return publicFolder;
+	}
+
+	public void setPublicFolder(String publicFolder) {
+		this.publicFolder = publicFolder;
 	}
 
 	public void setFileBase(String fileBase) {

@@ -26,8 +26,13 @@ public class TreeGenerationConfiguration extends AbstractTaskConfiguration imple
 	@Override
 	public List<String> getInputs() {
 		List<String> inputs = new LinkedList<String>();
-		inputs.add(input);
+		if(hasInput())
+			inputs.add(input);
 		return inputs;
+	}
+
+	private boolean hasInput() {
+		return input != null && !input.isEmpty();
 	}
 
 	@Override

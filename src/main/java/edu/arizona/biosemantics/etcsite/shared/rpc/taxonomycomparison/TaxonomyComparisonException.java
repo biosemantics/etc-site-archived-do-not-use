@@ -1,28 +1,21 @@
 package edu.arizona.biosemantics.etcsite.shared.rpc.taxonomycomparison;
 
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
+import edu.arizona.biosemantics.etcsite.shared.rpc.HasTaskException;
 
-public class TaxonomyComparisonException extends Exception {
-
-	private Task task;
+public class TaxonomyComparisonException extends HasTaskException {
 	
 	public TaxonomyComparisonException() { }
-		
+	
+	public TaxonomyComparisonException(Task task) {
+		super(task);
+	}
+	
 	public TaxonomyComparisonException(String message) {
 		super(message);
 	}
-	
-	public TaxonomyComparisonException(Task task) {
-		this.task = task;
-	}
-	
+		
 	public TaxonomyComparisonException(String message, Task task) {
-		super(message);
-		this.task = task;
+		super(message, task);
 	}
-	
-	public Task getTask() {
-		return task;
-	}
-	
 }

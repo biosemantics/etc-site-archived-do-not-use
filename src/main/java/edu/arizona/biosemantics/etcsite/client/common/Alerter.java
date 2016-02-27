@@ -683,5 +683,30 @@ public class Alerter {
 		return showAlert("Select a task", "Select a task to resume.");
 	}
 
+	public static MessageBox failedToGetTaxonomiesFromUploadedFiles(Throwable caught) {
+		return showAlert("Failed to get taxonomies", "Failed to get taxonomies from uploaded files.", caught);
+	}
+
+	public static MessageBox couldNotGetMachineArticulations(Throwable caught) {
+		return showAlert("Failed to get machine articulations", "Failed to get machine articulations.", caught);
+	}
+
+	public static MessageBox notAValidThreshold(Throwable caught) {
+		return showAlert("Threshold invalid", "This is not a valid threshold. Only values between 0.0 and 1.0 are allowed.", caught);
+	}
+
+	public static MessageBox failedToCheckConsistency(Throwable caught) {
+		return showAlert("Consistency Check failed", "Failed to check the consistency of the input.", caught);
+	}
+
+	public static MessageBox inputInconsistent() {
+		return showAlert("Input inconsistent", "Check your articulations.");
+	}
+
+	public static MessageBox taxonomyAlignmentTookTooLong() {
+		return showAlert("Could not complete alignment", "Could not complete the alignment. Time limit has been exceeded. "
+				+ "Check your articulations to ease alignment.");
+	}
+
 
 }

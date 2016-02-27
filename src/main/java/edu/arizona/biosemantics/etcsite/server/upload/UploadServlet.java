@@ -92,6 +92,10 @@ public class UploadServlet extends UploadAction {
 			case OWL_ONTOLOGY:
 				uploader = new OWLOntologyUploader();
 				break;
+			case MATRIX_GENERATION_SERIALIZED_MODEL:
+			case CLEANTAX:
+				uploader = new CleanTaxUploader();
+				break;
 			case PLAIN_TEXT:
 				uploader = new TextFileUploader();
 				break;

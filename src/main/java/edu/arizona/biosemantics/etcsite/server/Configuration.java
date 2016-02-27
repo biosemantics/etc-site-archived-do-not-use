@@ -113,6 +113,8 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.shared.Confi
 	public static String otoSecret;
 	public static String secret;
 
+	public static String publicFolder;
+
 
 	
 	static {		
@@ -173,6 +175,7 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.shared.Confi
 			profiles = properties.getProperty("profiles").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			compressedFileBase = properties.getProperty("compressedFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			etcFiles= properties.getProperty("etcFiles").replaceAll("/", Matcher.quoteReplacement(File.separator));
+			publicFolder = properties.getProperty("publicFolder").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			
 			xPathObjectModel = properties.getProperty("xPathObjectModel");
 			

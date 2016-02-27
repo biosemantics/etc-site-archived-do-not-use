@@ -1,5 +1,6 @@
 package edu.arizona.biosemantics.etcsite.client.common;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.place.shared.PlaceController;
@@ -21,9 +22,9 @@ import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkup
 import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePresenter.ISelectListener;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.CreateDirectoryFailedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
 import gwtupload.client.BaseUploadStatus;
@@ -52,7 +53,7 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 	private String inputFolderShortenedPath;
 	private String createdFolderForCreateFiles;
 	private String createdFolderForUpload;
-	private FileInfo ownedFileInfo;
+	private FolderTreeItem ownedFileInfo;
 	private InputValidator inputValidator;
 	private UploadCompleteHandler uploadCompleteHandler;
 	private FileTypeEnum uploadFileType;
@@ -138,7 +139,7 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 	}
 
 	@Override
-	public void createFiles(final FileInfo selectedFolder) {
+	public void createFiles(final FolderTreeItem selectedFolder) {
 		if(selectedFolder != null && selectedFolder.isAllowsNewFiles()) {
 			showCreateFilesDialog(selectedFolder.getFilePath());
 		}
@@ -170,29 +171,33 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 	@Override
 	public void refreshFolders() {
 		final MessageBox box = Alerter.startLoading();
-		fileService.getAllOwnedFolders(Authentication.getInstance().getToken(), new AsyncCallback<List<FileInfo>>() {
-			@Override
-			public void onSuccess(List<FileInfo> result) {
-				view.setOwnedFolders(result);
-				Alerter.stopLoading(box);
-			}
-			@Override
-			public void onFailure(Throwable caught) {
-				Alerter.stopLoading(box);
-				Alerter.failedToRetrieveFiles();
-			}
-		});
-		final MessageBox box2 = Alerter.startLoading();
-		fileService.getOwnedRootFolder(Authentication.getInstance().getToken(), new AsyncCallback<FileInfo>() {
+		fileService.getOwnedRootFolder(Authentication.getInstance().getToken(), new AsyncCallback<FolderTreeItem>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToRetrieveFiles();
-				Alerter.stopLoading(box2);
+				Alerter.stopLoading(box);
 			}
 			@Override
-			public void onSuccess(FileInfo result) {
+			public void onSuccess(FolderTreeItem result) {
 				ownedFileInfo = result;
-				Alerter.stopLoading(box2);
+				final MessageBox box2 = Alerter.startLoading();
+				fileService.getFiles(Authentication.getInstance().getToken(), ownedFileInfo, FileFilter.ALL, new AsyncCallback<List<FileTreeItem>>() {
+					@Override
+					public void onSuccess(List<FileTreeItem> result) {
+						List<FolderTreeItem> folders = new LinkedList<FolderTreeItem>();
+						for(FileTreeItem fileTreeItem : result)
+							if(fileTreeItem instanceof FolderTreeItem)
+								folders.add((FolderTreeItem)fileTreeItem);
+						view.setOwnedFolders(folders);
+						Alerter.stopLoading(box2);
+					}
+					@Override
+					public void onFailure(Throwable caught) {
+						Alerter.stopLoading(box2);
+						Alerter.failedToRetrieveFiles();
+					}
+				});
+				Alerter.stopLoading(box);
 			}
 		});
 	}

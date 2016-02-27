@@ -23,7 +23,7 @@ import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
 import gwtupload.client.Uploader;
 
 public class InputCreateView extends Composite implements IInputCreateView {
@@ -35,7 +35,7 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	}
 
 	private IInputCreateView.Presenter presenter;
-	private ListStore<FileInfo> ownedFoldersStore;
+	private ListStore<FolderTreeItem> ownedFoldersStore;
 	
 	@UiField VerticalPanel verticalPanel;
 	
@@ -46,7 +46,7 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	@UiField Button createFolderForCreateFilesButton;
 	@UiField TextBox createFolderForCreateFilesTextBox;
 	@UiField RadioButton selectFolderForCreateFilesRadio;
-	@UiField(provided=true) ComboBox<FileInfo> selectFolderForCreateFilesComboBox;
+	@UiField(provided=true) ComboBox<FolderTreeItem> selectFolderForCreateFilesComboBox;
 	@UiField Button createFilesButton;
 	@UiField RadioButton dummyCreateFilesRadio;
 	
@@ -56,7 +56,7 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	@UiField Button createFolderForUploadButton;
 	@UiField TextBox createFolderForUploadTextBox;
 	@UiField RadioButton selectFolderForUploadRadio;
-	@UiField(provided=true) ComboBox<FileInfo> selectFolderForUploadComboBox;
+	@UiField(provided=true) ComboBox<FolderTreeItem> selectFolderForUploadComboBox;
 	@UiField Button uploadButton;
 	@UiField Uploader uploader;
 	@UiField SimplePanel statusWidgetContainer;
@@ -74,21 +74,21 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	@UiField Button nextButton;	
 	
 	public InputCreateView() {
-		ownedFoldersStore = new ListStore<FileInfo>(new ModelKeyProvider<FileInfo>() {
+		ownedFoldersStore = new ListStore<FolderTreeItem>(new ModelKeyProvider<FolderTreeItem>() {
 			@Override
-			public String getKey(FileInfo item) {
+			public String getKey(FolderTreeItem item) {
 				return item.getName(false);
 			}
 	    });
-	    LabelProvider<FileInfo> nameLabelProvider = new LabelProvider<FileInfo>() {
+	    LabelProvider<FolderTreeItem> nameLabelProvider = new LabelProvider<FolderTreeItem>() {
 			@Override
-			public String getLabel(FileInfo item) {
+			public String getLabel(FolderTreeItem item) {
 				return item.getName(false);
 			}
 	    };
-	    selectFolderForCreateFilesComboBox = new ComboBox<FileInfo>(ownedFoldersStore, nameLabelProvider);
+	    selectFolderForCreateFilesComboBox = new ComboBox<FolderTreeItem>(ownedFoldersStore, nameLabelProvider);
 	    selectFolderForCreateFilesComboBox.setTriggerAction(TriggerAction.ALL);
-		selectFolderForUploadComboBox = new ComboBox<FileInfo>(ownedFoldersStore, nameLabelProvider);
+		selectFolderForUploadComboBox = new ComboBox<FolderTreeItem>(ownedFoldersStore, nameLabelProvider);
 		selectFolderForUploadComboBox.setTriggerAction(TriggerAction.ALL);
 		selectFolderForCreateFilesComboBox.setEnabled(false);
 		selectFolderForUploadComboBox.setEnabled(false);
@@ -216,7 +216,7 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	}
 	
 	@Override
-	public void setOwnedFolders(List<FileInfo> folders){
+	public void setOwnedFolders(List<FolderTreeItem> folders){
 		ownedFoldersStore.replaceAll(folders);
 	}
 	
@@ -261,12 +261,12 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	}
 
 	@Override
-	public FileInfo getSelectedFolderForCreateFiles() {
+	public FolderTreeItem getSelectedFolderForCreateFiles() {
 		return selectFolderForCreateFilesComboBox.getValue();
 	}
 
 	@Override
-	public FileInfo getSelectedFolderForUpload() {
+	public FolderTreeItem getSelectedFolderForUpload() {
 		return selectFolderForUploadComboBox.getValue();
 	}
 

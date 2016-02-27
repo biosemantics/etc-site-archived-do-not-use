@@ -16,5 +16,7 @@ public interface IFilePermissionServiceAsync {
 	public void isSharedFilePath(int userId, String filePath, AsyncCallback<Boolean> callback);
 
 	public void isOwnedFilePath(int userId, String filePath, AsyncCallback<Boolean> callback);
+
+	public void isPublicFilePath(String filePath, AsyncCallback<Boolean> callback);
 	
 }

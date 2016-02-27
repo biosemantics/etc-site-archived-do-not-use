@@ -6,11 +6,9 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView.UploadCompleteHandler;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileUploadHandler;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileInfo;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
-import gwtupload.client.IUploadStatus.Status;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
 import gwtupload.client.IUploader;
 import gwtupload.client.Uploader;
 
@@ -38,7 +36,7 @@ public interface IInputCreateView extends IsWidget {
 		
 		boolean createNewFolder(String path);
 
-		void createFiles(FileInfo selectedFolder);
+		void createFiles(FolderTreeItem selectedFolder);
 
 		void createFilesInNewFolder();
 	
@@ -60,7 +58,7 @@ public interface IInputCreateView extends IsWidget {
 
 	}
 
-	void setOwnedFolders(List<FileInfo> folders);
+	void setOwnedFolders(List<FolderTreeItem> folders);
 
 	boolean isCreateFiles();
 	
@@ -68,7 +66,7 @@ public interface IInputCreateView extends IsWidget {
 
 	Button getUploadButton();
 
-	FileInfo getSelectedFolderForUpload();
+	FolderTreeItem getSelectedFolderForUpload();
 
 	void setStatusWidget(Widget widget);
 	
@@ -78,7 +76,7 @@ public interface IInputCreateView extends IsWidget {
 
 	boolean isSelectFolderForUpload();
 
-	FileInfo getSelectedFolderForCreateFiles();
+	FolderTreeItem getSelectedFolderForCreateFiles();
 
 	void setSelectedExistingFolder(String shortendPath);
 
