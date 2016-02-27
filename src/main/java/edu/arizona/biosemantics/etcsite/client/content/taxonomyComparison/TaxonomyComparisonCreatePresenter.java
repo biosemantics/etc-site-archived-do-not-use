@@ -55,7 +55,6 @@ public class TaxonomyComparisonCreatePresenter implements TaxonomyComparisonCrea
 		
 		this.inputCreatePresenter = inputCreatePresenter;
 		this.inputCreatePresenter.disableCreateFiles();
-		this.inputCreatePresenter.disableDummyCreateFiles2();
 		this.inputCreatePresenter.setNextButtonName("Next Step in Taxonomy Comparison");
 		inputCreatePresenter.setInputValidator(new InputValidator() {
 			@Override
@@ -107,6 +106,5 @@ public class TaxonomyComparisonCreatePresenter implements TaxonomyComparisonCrea
 	@Override
 	public void refresh() {
 		this.inputCreatePresenter.refreshFolders();
-		this.inputCreatePresenter.refreshinput();
 	}
 }

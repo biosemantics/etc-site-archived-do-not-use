@@ -10,7 +10,6 @@ import com.sencha.gxt.widget.core.client.box.MessageBox;
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView;
-import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView.InputValidator;
 import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView.UploadCompleteHandler;
 import edu.arizona.biosemantics.etcsite.client.common.files.FileUploadHandler;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
@@ -36,11 +35,10 @@ public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.P
 			IFileManagerDialogView.Presenter fileManagerDialogPresenter) {
 		this.view = view;
 		this.fileManagerDialogPresenter = fileManagerDialogPresenter;
-		view.setPresenter(this);
 		this.inputCreatePresenter = inputCreatePresenter;
-		this.inputCreatePresenter.disableCreateFiles();
 		this.inputCreatePresenter.setNextButtonName("Next Step in Text Capture");
-		inputCreatePresenter.setInputValidator(new InputValidator() {
+		view.setPresenter(this);
+		inputCreatePresenter.setInputValidator(new IInputCreateView.InputValidator() {
 			@Override
 			public void validate(String inputFolderPath) {
 				final MessageBox box = Alerter.startLoading();
@@ -48,14 +46,14 @@ public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.P
 					@Override
 					public void onSuccess(String result) {
 						if(!result.equals("valid")) {
-							Alerter.inputError(result);							
+							Alerter.inputError(result);
 							Alerter.stopLoading(box);
-						} else {
+						} 
+						else {
 							placeController.goTo(new SemanticMarkupInputPlace());
 							Alerter.stopLoading(box);
 						}
 					}
-					
 					@Override
 					public void onFailure(Throwable caught) {
 						Alerter.failedToIsValidInput(caught);
@@ -98,7 +96,6 @@ public class SemanticMarkupCreatePresenter implements SemanticMarkupCreateView.P
 	@Override
 	public void refresh() {
 		inputCreatePresenter.refreshFolders();
-		inputCreatePresenter.refreshinput();
 	}
 
 }
