@@ -49,7 +49,7 @@
 							<!-- <g:InlineLabel styleName="{style.bold} {style.DescriptionFont}">2.&nbsp;
 							</g:InlineLabel>-->
 							<g:InlineLabel styleName="{style.DescriptionFont}">
-								Provide the information below to start the
+								Provide the information below and click on "Next Step in Matrix Generation" to start the
 								process:
 							</g:InlineLabel>
 							<g:InlineLabel>&nbsp;

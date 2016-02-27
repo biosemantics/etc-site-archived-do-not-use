@@ -46,6 +46,7 @@
 					<my:SubMenu ui:field="subMenu" step="INPUT" />
 				</g:HorizontalPanel>
 				<g:VerticalPanel styleName="{style.padding}">
+					<g:VerticalPanel styleName="{style.padding}" />
 					<g:VerticalPanel>
 						<g:FlowPanel>
 							<g:InlineLabel styleName="DescriptionFont">
