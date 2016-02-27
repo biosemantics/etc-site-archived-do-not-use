@@ -1,6 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.semanticMarkup"
 	xmlns:form='urn:import:com.sencha.gxt.widget.core.client.form'
 	xmlns:my2="urn:import:edu.arizona.biosemantics.etcsite.client.common"
 	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout"
@@ -56,21 +57,14 @@
 	<g:VerticalPanel styleName="{style.subMenuEntry}">
 	    <g:VerticalPanel spacing="20" ui:field="verticalPanel">
 	    	
-	    	<g:RadioButton ui:field="dummyCreateFilesRadio1" name="selectInputMethod" styleName="{style.radioPadding}">Create Input Files</g:RadioButton>
-	        <g:VerticalPanel styleName = "{style.margin15}" ui:field="dummyCreatePanel1" visible="false">
+	    	<g:RadioButton ui:field="dummyCreateFilesRadio" name="selectInputMethod" styleName="{style.radioPadding}">Create Files</g:RadioButton>
+	        <g:VerticalPanel styleName = "{style.margin15}" ui:field="dummyCreatePanel" visible="false">
 	        	<g:InlineLabel>
-	                To create input files for Ontology Building, please run the Text Capture tool first.
-	            </g:InlineLabel>
-	        </g:VerticalPanel>
-	        
-	        <g:RadioButton ui:field="dummyCreateFilesRadio2" name="selectInputMethod" styleName="{style.radioPadding}">Create Input Files</g:RadioButton>
-	        <g:VerticalPanel styleName = "{style.margin15}" ui:field="dummyCreatePanel2" visible="false">
-	        	<g:InlineLabel>
-                    To create input files for Matrix Generation, please run the Text Capture tool
+	                If you do not have an input folder ready, please run the Text Capture tool first to generate it.
 	            </g:InlineLabel>
 	        </g:VerticalPanel>
 	    
-	        <g:RadioButton ui:field="createFilesRadio" name="selectInputMethod" styleName="{style.radioPadding}">Create Input Files</g:RadioButton>
+	        <g:RadioButton ui:field="createFilesRadio" name="selectInputMethod" styleName="{style.radioPadding}">Create Files</g:RadioButton>
 	        <g:VerticalPanel styleName = "{style.margin15}" ui:field="createPanel" visible="false">
 	            <g:InlineLabel>
 	                1: Create/Choose a folder to save the files.
@@ -98,13 +92,13 @@
 	                </g:row>
 	            </g:Grid>
 	        
-	               <g:InlineLabel >2: Create Input Files.&nbsp;</g:InlineLabel>
+	               <g:InlineLabel >2: Create Files.&nbsp;</g:InlineLabel>
 	                <g:HorizontalPanel styleName = "{style.panelpadding}">
 		                <g:Button ui:field="createFilesButton" enabled="false">Create Files</g:Button> 
 		            </g:HorizontalPanel>
 	        </g:VerticalPanel>
 	       
-	        <g:RadioButton name="selectInputMethod" ui:field="uploadRadio" styleName="{style.radioPadding}">Upload Input Files</g:RadioButton>
+	        <g:RadioButton name="selectInputMethod" ui:field="uploadRadio" styleName="{style.radioPadding}">Upload Files</g:RadioButton>
 	        <g:VerticalPanel styleName = "{style.margin15}" ui:field="uploadPanel" visible="false">
 	            <g:InlineLabel>
 	                1: Create/Choose a folder to upload files into.
@@ -131,11 +125,11 @@
 	                    </g:customCell>
 	                </g:row>
 	            </g:Grid>
-	            <g:InlineLabel >2: Upload Input Files.&nbsp;</g:InlineLabel>
+	            <g:InlineLabel >2: Upload Files.&nbsp;</g:InlineLabel>
 	  					<g:HorizontalPanel styleName = "{style.panelpadding}">
-	  					<up:SingleUploader ui:field="uploader" type="BUTTON" autoSubmit="true" avoidRepeatFiles="false" />
+	  					<up:SingleUploader ui:field="uploader" type="BUTTON" autoSubmit="true" avoidRepeatFiles="false"/>
 	  					<!-- validExtensions="xml" -->
-		                   	<g:Button ui:field="uploadButton" title="Please select or create a folder before uploading files!" enabled="false">Please select or Create a folder first</g:Button>
+		                   	<g:Button ui:field="uploadButton" title="Select a parent folder before uploading one or more files">Upload Files</g:Button>
 		                </g:HorizontalPanel>
 	  				 	
 	  				 	<g:SimplePanel addStyleNames="GWTUpld" ui:field="statusWidgetContainer"></g:SimplePanel>

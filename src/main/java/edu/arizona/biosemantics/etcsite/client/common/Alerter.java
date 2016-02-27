@@ -484,7 +484,7 @@ public class Alerter {
 	}
 
 	public static MessageBox selectValidInputDirectory() {
-		return showAlert("Input Directory", "Please select or create a valid input!");
+		return showAlert("Input Directory", "Please select a valid input directory.");
 	}
 
 	public static MessageBox selectValidInputOntology() {

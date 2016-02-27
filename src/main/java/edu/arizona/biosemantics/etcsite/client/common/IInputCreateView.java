@@ -47,26 +47,16 @@ public interface IInputCreateView extends IsWidget {
 		IInputCreateView getView();
 
 		void disableCreateFiles();
-
-        void disableDummyCreateFiles1(); 
-        
-        void disableDummyCreateFiles2(); 
 		
-		void addDummyCreateFiles1();
-		
-		void addDummyCreateFiles2();
+		void addDummyCreateFiles();
 		
 		void setNextButtonName(String str);
 
 		void refreshFolders();
-		
-		void refreshinput();
 
 		void setUploadCompleteHandler(UploadCompleteHandler handler);
 
 		void setUploadFileType(FileTypeEnum fileType);
-		
-		void deleteFolderForinputFiles();
 
 	}
 
@@ -102,25 +92,10 @@ public interface IInputCreateView extends IsWidget {
 
 	void removeCreateFiles();
 	
-	void removeDummyCreateFiles1();
-	
-	void removeDummyCreateFiles2();
-	
-	void addDummyCreateFiles1();
-	
-	void addDummyCreateFiles2();
+	void addDummyCreateFiles();
 
 	boolean isSelectFolderForCreateFiles();
 
-	void setNextButtonName(String str);
-	
-	void resetCreate();
-	
-	void resetUpload();
-	
-	void resetSelectExisting();
-	
-	void refreshinput();
-	
+	void setNextButtonName(String str);	
 
 }
