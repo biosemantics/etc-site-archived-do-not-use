@@ -1,16 +1,5 @@
 [
 	{
 		"title": "Input Files",
-		"content": "The first step of <b>Text Capture</b> is to create input files, user can either create input files <span style='color:green'><b>Here</b></span> or go to <span style='color:green'><b>File manager</b></span>. Input files should confirm to this <a href='https://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupInput.xsd' target='_blank'>format</a>.<br><br>In <b>Create Input</b> step, you have 3 different ways to create input files.<br>"},
-	{
-		"title": "Create Files",
-		"content": "1. <b>Create</b> a subfolder or <b>Select</b> an existing subfolder.<br>2. Click <span style='color:green'><b>Create Files in New Folder</b></span> button, and follow the instruction to create input files."},
-	{
-		"title": "Upload Files",
-		"content": "1. <b>Create</b> a subfolder or <b>Select</b> an existing subfolder.<br>2. Click <span style='color:green'><b>Upload files</b></span> button to upload input files."},
-	{
-		"title": "Select Existing Folder",
-		"content": "<b>Select</b> an existing subfolder, all files in this subfolder will be used as input files."}
-			
-		
-]		
+		"content": "Text Capture Input files should confirm to this format: url to be added here.<br> Text Capture Input files can be created in File Manager. In the input step you can create a new folder and upload the input files or select an already exiting folder."}
+]
