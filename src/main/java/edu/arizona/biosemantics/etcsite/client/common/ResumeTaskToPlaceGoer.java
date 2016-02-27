@@ -84,7 +84,7 @@ public class ResumeTaskToPlaceGoer implements ToPlaceGoer {
 					}
 					@Override
 					public void onSuccess(List<Task> result) {
-						if(!result.isEmpty()) {
+						/*if(!result.isEmpty()) {
 							TaskSelectDialog taskDialog = new TaskSelectDialog(SelectionMode.SINGLE);
 							taskDialog.getButton(PredefinedButton.OK).setText("Resume selected task");
 							taskDialog.getButton(PredefinedButton.CANCEL).setText("Start new task");
@@ -99,9 +99,9 @@ public class ResumeTaskToPlaceGoer implements ToPlaceGoer {
 									doGoTo(hasTaskPlace, nextToPlaceGoers);
 								}
 							});
-						} else {
-							doGoTo(hasTaskPlace, nextToPlaceGoers);
-						}
+						} else {*/
+					    doGoTo(hasTaskPlace, nextToPlaceGoers);
+						//}
 					}
 				});
 				
