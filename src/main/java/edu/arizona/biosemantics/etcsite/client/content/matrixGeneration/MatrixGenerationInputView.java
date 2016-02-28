@@ -37,10 +37,10 @@ public class MatrixGenerationInputView extends Composite implements IMatrixGener
 	Button nextButton;
 	
 	@UiField
-	Label inputOntologyLabel;
+	TextBox inputOntologyLabel;
 
 	@UiField
-	Label inputTermReviewLabel;
+	TextBox inputTermReviewLabel;
 	
 	@UiField
 	CheckBox inheritValuesBox;
