@@ -974,11 +974,11 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		LinkedList<RankData> rankDatas = new LinkedList<RankData>();
 		Map<Rank, RankData> rankDataMap = new HashMap<Rank, RankData>();
 		for(Element taxonIdentification : taxonIdentifications) {
-			String author = ""; //not used for oto2
-			String data = ""; //not used for oto2
+			String authority = taxonIdentification.getAttributeValue("authority");
+			String date = taxonIdentification.getAttributeValue("date");
 			Rank rank = Rank.valueOf(taxonIdentification.getAttributeValue("rank").toUpperCase());
 			String name = taxonIdentification.getValue();
-			RankData rankData = new RankData(rank, name, "", "");
+			RankData rankData = new RankData(rank, name, authority, date);
 			rankDatas.add(rankData);
 			rankDataMap.put(rank, rankData);
 			//taxonNameBuilder.append(taxonName.getAttributeValue("rank") + "=" + taxonName.getValue() + ",");
@@ -1014,7 +1014,14 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		if(pages != null)
 			sourceString += ", " + pages.getText();
 		
-		result += " sec. " + sourceString;
+		String rankAuthor = rankDatas.getLast().getAuthor();
+		if(rankAuthor == null || rankAuthor.isEmpty())
+			rankAuthor = "unknown";
+		String rankDate = rankDatas.getLast().getDate();
+		if(rankDate == null || rankDate.isEmpty())
+			rankDate = "unknown";
+		
+		result += " sec. " + rankAuthor + ", " + rankDate + " (from "+ sourceString + ")";
 		return result;
 	}
 
