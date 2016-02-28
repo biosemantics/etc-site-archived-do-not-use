@@ -34,7 +34,9 @@ public class OntologizeCreatePresenter implements OntologizeCreateView.Presenter
 		
 		this.inputCreatePresenter = inputCreatePresenter;
 		this.inputCreatePresenter.disableCreateFiles();
-		this.inputCreatePresenter.addDummyCreateFiles();
+		this.inputCreatePresenter.disableDummyCreateFiles2();
+		this.inputCreatePresenter.disableDummyCreateFiles2();
+		this.inputCreatePresenter.addDummyCreateFiles1();
 		this.inputCreatePresenter.setNextButtonName("Next Step in Ontology Building");
 		inputCreatePresenter.setInputValidator(new InputValidator() {
 			@Override
@@ -85,5 +87,6 @@ public class OntologizeCreatePresenter implements OntologizeCreateView.Presenter
 	@Override
 	public void refresh() {
 		inputCreatePresenter.refreshFolders();
+		inputCreatePresenter.refreshinput();
 	}
 }

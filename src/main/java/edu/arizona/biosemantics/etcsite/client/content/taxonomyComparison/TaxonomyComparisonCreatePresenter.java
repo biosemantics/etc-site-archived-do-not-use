@@ -105,6 +105,7 @@ public class TaxonomyComparisonCreatePresenter implements TaxonomyComparisonCrea
 	@Override
 	public void refresh() {
 		this.inputCreatePresenter.refreshFolders();
+		this.inputCreatePresenter.refreshinput();
 	}
 
 	@Override

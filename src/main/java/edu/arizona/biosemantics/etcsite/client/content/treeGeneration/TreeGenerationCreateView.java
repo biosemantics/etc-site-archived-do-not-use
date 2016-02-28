@@ -52,7 +52,11 @@ public class TreeGenerationCreateView extends Composite implements ITreeGenerati
 	private void setUpDialog() {
         samplePopup = new Modal();
     }*/
-
+	
+	@UiHandler("fileManagerAnchor")
+	public void onFileManagerAnchor(ClickEvent event){
+		presenter.onFileManager();
+	}	
 
 	@Override
 	public void setPresenter(Presenter presenter) {

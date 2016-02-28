@@ -38,7 +38,9 @@ public class MatrixGenerationCreatePresenter implements MatrixGenerationCreateVi
 		view.setPresenter(this);
 		this.inputCreatePresenter = inputCreatePresenter;
 		this.inputCreatePresenter.disableCreateFiles();
-		this.inputCreatePresenter.addDummyCreateFiles();
+		this.inputCreatePresenter.disableDummyCreateFiles2();
+		this.inputCreatePresenter.disableDummyCreateFiles1();
+		this.inputCreatePresenter.addDummyCreateFiles2();
 		this.inputCreatePresenter.setNextButtonName("Next Step in Matrix Generation");
 		inputCreatePresenter.setInputValidator(new InputValidator() {
 			@Override
@@ -98,5 +100,6 @@ public class MatrixGenerationCreatePresenter implements MatrixGenerationCreateVi
 	@Override
 	public void refresh() {
 		inputCreatePresenter.refreshFolders();
+		inputCreatePresenter.refreshinput();
 	}
 }

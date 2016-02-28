@@ -50,6 +50,11 @@ public class TaxonomyComparisonCreateView extends Composite implements ITaxonomy
 		initWidget(uiBinder.createAndBindUi(this));		
 		fileManagerAnchor.getElement().getStyle().setCursor(Cursor.POINTER);
 	}
+	
+	@UiHandler("fileManagerAnchor")
+	public void onFileManagerAnchor(ClickEvent event){
+		presenter.onFileManager();
+	}	
 
 	@Override
 	public void setPresenter(Presenter presenter) {
