@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -77,6 +79,12 @@ public class InputCreateView extends Composite implements IInputCreateView {
 		selectFolderForUploadComboBox = new ComboBox<FolderTreeItem>(ownedFoldersStore, nameLabelProvider);
 		selectFolderForUploadComboBox.setTriggerAction(TriggerAction.ALL);
 		selectFolderForUploadComboBox.setEnabled(false);
+		selectFolderForUploadComboBox.addSelectionHandler(new SelectionHandler<FolderTreeItem>() {
+            @Override
+            public void onSelection (SelectionEvent<FolderTreeItem> event){
+        			activiateuploadButton2();       
+            }
+		});	
 		
 		initWidget(uiBinder.createAndBindUi(this));
 		
@@ -93,24 +101,26 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	@UiHandler("uploadRadio")
 	public void onUploadRadio(ClickEvent event){
 		uploadPanel.setVisible(true);
-		selectPanel1.setVisible(false);
-		selectPanel2.setVisible(false);
+		resetSelectExisting();
 	}
 	
 	@UiHandler("selectExistingFolderRadio")
 	public void onSelectRadio(ClickEvent event){
-		uploadPanel.setVisible(false);
 		selectPanel1.setVisible(true);
 		selectPanel2.setVisible(true);
-		createFolderForUploadTextBox.setValue(null);
+		resetUpload();
+
+		
 	}
 	
 	@UiHandler("createFolderForUploadRadio")
 	public void onCreateFolderForUploadRadio(ClickEvent event){
 		createFolderForUploadTextBox.setEnabled(true);
 		selectFolderForUploadComboBox.setEnabled(false);
-		uploadButton.setEnabled(true);
 		createFolderForUploadButton.setVisible(true);
+		selectFolderForUploadComboBox.setText(null);
+		selectFolderForUploadComboBox.setValue(null);
+		enableuploadButton();
 	}
 	
 	@UiHandler("selectFolderForUploadRadio")
@@ -118,7 +128,9 @@ public class InputCreateView extends Composite implements IInputCreateView {
 		createFolderForUploadTextBox.setEnabled(false);
 		selectFolderForUploadComboBox.setEnabled(true);
 		createFolderForUploadButton.setVisible(false);
-		uploadButton.setEnabled(true);
+		createFolderForUploadTextBox.setValue(null);
+		presenter.deleteFolderForinputFiles();	
+		enableuploadButton();
 		createFolderForUploadTextBox.getElement().setPropertyString("placeholder", "Enter New Folder Name Here");
 	}
 	
@@ -212,6 +224,59 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	@Override
 	public void setUploadedTaxonomies(String text) {
 		uploadedTaxonomiesLabel.setText(text);
+	}
+	
+	@Override
+	public void activiateuploadButton1() {
+		uploadButton.setEnabled(true);
+		uploadButton.setText("Upload Files in New Folder");
+	}
+	
+	private void activiateuploadButton2() {
+		uploadButton.setEnabled(true);
+		uploadButton.setText("Upload Files in Existing Folder");
+	}
+	
+	
+	
+	@Override
+	public void resetUpload(){
+		uploadRadio.setChecked(false);
+		createFolderForUploadRadio.setChecked(false);
+		selectFolderForUploadRadio.setChecked(false);
+		createFolderForUploadTextBox.setValue(null);
+		createFolderForUploadTextBox.setEnabled(false);
+		createFolderForUploadButton.setVisible(false);
+		selectFolderForUploadComboBox.setValue(null);
+		selectFolderForUploadComboBox.setText(null);
+		selectFolderForUploadComboBox.setEnabled(false);
+		enableuploadButton();
+		uploadPanel.setVisible(false);
+		presenter.deleteFolderForinputFiles();
+	}
+	
+	@Override
+	public void resetSelectExisting(){
+		selectExistingFolderRadio.setChecked(false);
+		selectPanel1.setVisible(false);
+		selectPanel2.setVisible(false);
+		selectExistingFolderLabel1.setValue(null);
+		selectExistingFolderLabel1.setEnabled(false);
+		selectExistingFolderLabel2.setValue(null);
+		selectExistingFolderLabel2.setEnabled(false);
+		enableuploadButton();
+		presenter.deleteFolderForinputFiles();
+	}
+	
+	private void enableuploadButton() {
+		uploadButton.setEnabled(false);
+		uploadButton.setText("Please select or Create a folder first");
+	}
+	
+	@Override
+	public void refreshinput(){
+		resetUpload();
+		resetSelectExisting();
 	}
 	
 }

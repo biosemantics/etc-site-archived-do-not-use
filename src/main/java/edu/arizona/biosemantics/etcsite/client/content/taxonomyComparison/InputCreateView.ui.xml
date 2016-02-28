@@ -78,13 +78,13 @@
 	                    </g:customCell>
 	                </g:row>
 	            </g:Grid>
-	            <g:InlineLabel>2:&nbsp;</g:InlineLabel>
+	            <g:InlineLabel>2 Upload Taxonomy Files:&nbsp;</g:InlineLabel>
 				<up:SingleUploader ui:field="uploader" type="BUTTON" autoSubmit="true" avoidRepeatFiles="false"/>
-                <g:Button ui:field="uploadButton" title="Select a parent folder before uploading the taxonomy file">Upload Taxonomy 1</g:Button>
+                <g:Button ui:field="uploadButton" title="Select a parent folder before uploading the taxonomy file" enabled="false" >Please select or create a folder first</g:Button>
 				<g:SimplePanel addStyleNames="GWTUpld" ui:field="statusWidgetContainer"></g:SimplePanel>
 	        	<g:InlineLabel ui:field="uploadedTaxonomiesLabel"></g:InlineLabel>
 	        </g:VerticalPanel>
-	        <g:HorizontalPanel spacing="5">
+	        <g:HorizontalPanel>
 	   			<g:RadioButton name="selectInputMethod" ui:field="selectExistingFolderRadio" styleName="{style.radioPadding}">Select Existing Folders</g:RadioButton>
 	         	<g:VerticalPanel>
 		         	<g:HorizontalPanel styleName = "{style.margin15}" ui:field="selectPanel1" visible="false">					            

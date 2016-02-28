@@ -68,6 +68,10 @@ public interface IInputCreateView extends IsWidget {
 		String getModel1();
 		String getModel2();
 
+		void deleteFolderForinputFiles();
+
+		void refreshinput();
+
 	}
 
 	void setOwnedFolders(List<FolderTreeItem> folders);
@@ -99,6 +103,14 @@ public interface IInputCreateView extends IsWidget {
 
 	void setStatusWidget(Widget asWidget);
 
-	void setUploadedTaxonomies(String result);	
+	void setUploadedTaxonomies(String result);
+
+	void activiateuploadButton1();
+
+	void resetUpload();
+
+	void resetSelectExisting();
+
+	void refreshinput();	
 
 }

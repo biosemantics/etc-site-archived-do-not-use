@@ -212,6 +212,18 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 			Alerter.inputError("New Folder is not created yet. Wait and try again.");
 		}
 	}
+	
+	@Override
+	public void refreshinput() {
+		this.view.refreshinput();
+	}
+	
+	@Override
+	public void deleteFolderForinputFiles() {
+         this.createdFolderForUpload=null;
+         this.modelInputFolderPath1=null;
+         this.modelInputFolderPath2=null;
+	}
 
 	@Override
 	public void refreshFolders() {
@@ -262,8 +274,10 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 			}
 			@Override
 			public void onSuccess(String result) {
-				if(view.isUpload() && view.isCreateFolderForUpload())
+				if(view.isUpload() && view.isCreateFolderForUpload()){
 					createdFolderForUpload = result;
+					view.activiateuploadButton1();
+				}
 				Alerter.stopLoading(box);
 				Alerter.createdFolderSuccessfully();
 				refreshFolders();
