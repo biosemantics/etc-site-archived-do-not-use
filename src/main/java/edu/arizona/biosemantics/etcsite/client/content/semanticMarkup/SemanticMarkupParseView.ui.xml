@@ -43,7 +43,7 @@
 					<g:VerticalPanel>
 					    <g:InlineLabel>Parsing the descriptions. </g:InlineLabel>
 <!-- 					    <g:InlineLabel>You will be notified by an email when the process is complete.</g:InlineLabel> -->
-<g:InlineLabel>You will be notified by an email when the process is complete, if you have not disabled email notifications. </g:InlineLabel>
+<g:InlineLabel>You will be notified by an email when the process is complete, if your email notification is not disabled in My Account. </g:InlineLabel>
 					    <g:FlowPanel>
 					    <g:InlineLabel>You can also come back to this task at any time via the&nbsp;</g:InlineLabel>
 					    <g:Anchor ui:field="taskManagerAnchor">Task Manager</g:Anchor>
