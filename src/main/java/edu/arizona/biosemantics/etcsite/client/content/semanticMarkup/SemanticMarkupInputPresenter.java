@@ -133,7 +133,10 @@ public class SemanticMarkupInputPresenter implements ISemanticMarkupInputView.Pr
 	public void setSelectedFolder(String fullPath, String shortendPath) {
 		inputFile = fullPath;
 		view.setInput(shortendPath);
+		view.resetFields();
 	}
+	
+	
 
 	@Override
 	public void onInput() {

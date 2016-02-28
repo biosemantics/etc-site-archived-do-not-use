@@ -106,6 +106,8 @@ public class TaxonomyComparisonInputView extends Composite implements ITaxonomyC
 	public void resetFields(){
 		this.taskNameTextBox.setText("");
 		this.glossaryListBox.setSelectedIndex(getInitialGlossaryIndex());
+		this.inputOntologyLabel.setText(null);
+		this.inputOntologyLabel.setValue(null);
 	}
 	
 	private int getInitialGlossaryIndex() {

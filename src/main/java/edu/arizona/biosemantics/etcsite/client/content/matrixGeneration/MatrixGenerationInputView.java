@@ -112,9 +112,16 @@ public class MatrixGenerationInputView extends Composite implements IMatrixGener
 	
 	@Override
 	public void resetFields(){
-		this.taskNameTextBox.setText("");
-		this.inputLabel.setText("");
+		this.taskNameTextBox.setText(null);
+		//this.inputLabel.setText("");
 		this.glossaryListBox.setSelectedIndex(getInitialGlossaryIndex());
+		this.generateAbsentPresentBox.setValue(null);
+		this.inheritValuesBox.setValue(null);
+		this.inputOntologyLabel.setValue(null);
+		this.inputOntologyLabel.setText(null);
+		this.inputTermReviewLabel.setValue(null);
+		this.inputTermReviewLabel.setText(null);
+		
 	}
 
 	private int getInitialGlossaryIndex() {

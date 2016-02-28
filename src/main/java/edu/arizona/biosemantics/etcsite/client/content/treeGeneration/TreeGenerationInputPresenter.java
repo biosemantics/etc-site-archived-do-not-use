@@ -85,6 +85,7 @@ public class TreeGenerationInputPresenter implements ITreeGenerationInputView.Pr
 	public void setSelectedFolder(String fullPath, String shortendPath) {
 		inputFile = fullPath;
 		view.setFilePath(shortendPath);
+		view.resetFields();
 	}
 
 

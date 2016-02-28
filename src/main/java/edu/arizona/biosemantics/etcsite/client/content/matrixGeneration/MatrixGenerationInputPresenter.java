@@ -169,6 +169,7 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 		view.setTermReviewPath("");
 		this.ontologyInputFile = "";
 		this.termReviewInputFile = "";
+		view.resetFields();
 		//view.setEnabledNext(false);
 	}
 

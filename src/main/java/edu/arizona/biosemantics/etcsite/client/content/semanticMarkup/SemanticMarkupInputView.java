@@ -92,6 +92,7 @@ public class SemanticMarkupInputView extends Composite implements ISemanticMarku
 	public void resetFields(){
 		this.taskNameTextBox.setText("");
 		//this.inputLabel.setText("");
+		this.emptyGlossaryCheckbox.setValue(null);
 		this.glossaryListBox.setSelectedIndex(getInitialGlossaryIndex());
 	}
 

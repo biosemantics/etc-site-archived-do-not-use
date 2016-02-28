@@ -182,6 +182,7 @@ public class OntologizeInputPresenter implements IOntologizeInputView.Presenter 
 	public void setSelectedFolder(String fullPath, String shortendPath) {
 		inputFile = fullPath;
 		view.setFilePath(shortendPath);
+		view.resetFields();
 	}
 
 

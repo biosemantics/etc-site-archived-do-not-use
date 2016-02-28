@@ -120,6 +120,19 @@ public class OntologizeInputView extends Composite implements IOntologizeInputVi
 	@Override
 	public void resetFields(){
 		this.taskNameTextBox.setText("");
+		this.ontologyPrefixTextBox.setText(null);
+		this.ontologyPrefixTextBox.setValue(null);
+		this.glossaryListBox.setSelectedIndex(getInitialGlossaryIndex());
+		
+		
+	}
+	
+	private int getInitialGlossaryIndex() {
+		for(int i=0; i<TaxonGroup.values().length; i++) {
+			if(TaxonGroup.values()[i].equals(TaxonGroup.PLANT))
+				return i;
+		}
+		return 0;
 	}
 
 	/*@Override

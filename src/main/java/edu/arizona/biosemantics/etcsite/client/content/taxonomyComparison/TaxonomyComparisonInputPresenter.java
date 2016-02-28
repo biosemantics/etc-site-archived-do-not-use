@@ -188,7 +188,9 @@ public class TaxonomyComparisonInputPresenter implements ITaxonomyComparisonInpu
 
 	@Override
 	public void setSelectedSerializedModels(String model1, final String model2, final String modelPath1, final String modelPath2) {
+		view.resetFields();
 		this.cleanTaxInput = null;
+		view.setCleanTaxPath(null);
 		this.serializedModel1 = model1;
 		this.serializedModel2 = model2;
 		this.serializedModelPath1 = modelPath1;
@@ -229,8 +231,13 @@ public class TaxonomyComparisonInputPresenter implements ITaxonomyComparisonInpu
 	public void setSelectedCleanTaxFolder(String fullPath, String shortenedPath) {
 		this.serializedModel1 = null;
 		this.serializedModel2 = null;
+		this.termReviewInputFile1 = null;
+		this.termReviewInputFile2 = null;
+		this.serializedModelPath1=null;
+		this.serializedModelPath1=null;
 		this.cleanTaxInput = fullPath;
 		view.setCleanTaxPath(shortenedPath);
+		view.resetFields();
 	}
 
 	@Override
