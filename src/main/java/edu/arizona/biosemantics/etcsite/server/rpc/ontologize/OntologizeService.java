@@ -259,13 +259,19 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 			XPathFactory xpfac = XPathFactory.instance();
 			XPathExpression<Element> sourceXPath = xpfac.compile("/bio:treatment/meta/source", Filters.element(), null,
 					Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));	
-			XPathExpression<Element> taxonNameXPath = xpfac.compile("/bio:treatment/taxon_identification[@status='ACCEPTED']/taxon_name", Filters.element(), null,
+			XPathExpression<Element> taxonNameXPath = xpfac.compile("/bio:treatment/taxon_identification", Filters.element(), null,
 					Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
-
+			
 			if(doc != null) {
+				List<Element> taxonIdentifications = taxonNameXPath.evaluate(doc);
+				List<Element> taxonNames = new LinkedList<Element>();
+				for(Element taxonIdentification : taxonIdentifications) {
+					if(taxonIdentification.getAttributeValue("status").equalsIgnoreCase("accepted")) {
+						taxonNames.addAll(taxonIdentification.getChildren("taxon_name"));
+					}
+				}
 				List<Element> sources = sourceXPath.evaluate(doc);
-				List<Element> taxonIdentification = taxonNameXPath.evaluate(doc);
-				return createTaxonIdentification(sources.get(0), taxonIdentification);
+				return createTaxonIdentification(sources.get(0), taxonNames);
 			}
 		}
 		return null;

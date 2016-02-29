@@ -3,6 +3,7 @@ package edu.arizona.biosemantics.etcsite.server.process.file;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.jdom2.Document;
@@ -39,9 +40,15 @@ public class TaxonNameValidator {
 			}
 			XPathFactory xPathFactory = XPathFactory.instance();
 			XPathExpression<Element> taxonNameMatcher = 
-					xPathFactory.compile("/bio:treatment/taxon_identification[@status=\"ACCEPTED\"]/taxon_name", Filters.element(), 
+					xPathFactory.compile("/bio:treatment/taxon_identification", Filters.element(), 
 							null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
-			List<Element> taxonNameElements = taxonNameMatcher.evaluate(document);
+			List<Element> taxonIdentificationElements = taxonNameMatcher.evaluate(document);
+			List<Element> taxonNameElements = new LinkedList<Element>();
+			for(Element taxonIdentificationElement : taxonIdentificationElements) {
+				if(taxonIdentificationElement.getAttributeValue("status").equalsIgnoreCase("accepted")) {
+					taxonNameElements.addAll(taxonIdentificationElement.getChildren("taxon_name"));
+				}
+			}
 			String taxon = "";
 			for(Element taxonName: taxonNameElements){
 				taxon += taxonName.getText()+"_";
