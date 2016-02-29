@@ -46,12 +46,14 @@ public class TaxonNameValidator {
 			for(Element taxonName: taxonNameElements){
 				taxon += taxonName.getText()+"_";
 			}
-			Element lastElement = taxonNameElements.get(taxonNameElements.size()-1);
-			taxon += lastElement.getAttributeValue("authority") + "_" + lastElement.getAttributeValue("date");
-			if(taxonNames.containsKey(taxon)){
-				taxonNameErrors += "( " + taxonNames.get(taxon) + " , " + file.getName() + " ), ";
-			}else{
-				taxonNames.put(taxon,  file.getName());
+			if(!taxonNameElements.isEmpty()) {
+				Element lastElement = taxonNameElements.get(taxonNameElements.size()-1);
+				taxon += lastElement.getAttributeValue("authority") + "_" + lastElement.getAttributeValue("date");
+				if(taxonNames.containsKey(taxon)){
+					taxonNameErrors += "( " + taxonNames.get(taxon) + " , " + file.getName() + " ), ";
+				}else{
+					taxonNames.put(taxon,  file.getName());
+				}
 			}
 		}
 		if(!taxonNameErrors.equals("")){
