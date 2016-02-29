@@ -202,7 +202,7 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 
 	public CreateSemanticMarkupFilesView() {
 		
-		authorityDate="unknown,unknown";
+		authorityDate="unspecified,unspecified";
 		
 	    ListStore<Rank> store = new ListStore<Rank>(new ModelKeyProvider<Rank>() {
 			@Override
@@ -347,16 +347,6 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		if(currentRankIsStrain()) {
 			strainPanel.setVisible(true);
 		}
-
-		Widget valueWidget = ranksGrid.getWidget(ranksGrid.getRowCount()-2, 1);
-		TextField tf = (TextField)valueWidget;
-		String tfValue = tf.getText();
-		tfValue = tfValue.trim();
-		String splits[] = tfValue.split(" ", 2);
-		if(splits.length>1){
-			authorityDate = splits[1].trim();
-		}
-		
 		int newRow = ranksGrid.insertRow(ranksGrid.getRowCount() - 1);
 		Label label = new Label(ranksCombo.getValue().name());
 		deleteRankButton = new Button("Remove");
@@ -368,11 +358,14 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	      });
 		ranksGrid.setWidget(newRow - 1, 0, label);
 		ranksGrid.setWidget(newRow - 1, 2, deleteRankButton);
+		Widget valueWidget1 = ranksGrid.getWidget(newRow - 1, 1);
+		TextBox tf1 = (TextBox)valueWidget1;
+		tf1.setEnabled(false);
+		ranksGrid.setWidget(newRow - 1, 1, tf1);
 		ranksGrid.remove(authorityDateButton);
 		ranksGrid.setWidget(newRow, 0, ranksCombo);
-		ranksGrid.setWidget(newRow, 1, new TextField());
+		ranksGrid.setWidget(newRow, 1, new TextBox());
 		ranksCombo.setValue(Rank.values()[ranksCombo.getValue().getId() + 1]);
-
 		ranksGrid.setWidget(newRow, 2, authorityDateButton);
 		authorityDateButton.setVisible(true);	
 			
@@ -395,14 +388,24 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		descriptionGrid.setWidget(newRow-1, 0, descriptionLabel);
 		descriptionGrid.setWidget(newRow-1, 1, scopeLabel);
 		descriptionGrid.setWidget(newRow, 0, descriptionCombo);
-		descriptionGrid.setWidget(newRow, 1, scopePanel);
+		descriptionGrid.setWidget(newRow, 1, scopeCombo);
 		descriptionGrid.setWidget(newRow, 2, tArea);
 	}
 	
 	@UiHandler("authorityDateButton")
 	public void onAddAuthorityDate(ClickEvent event) {
+		Widget valueWidget1 = ranksGrid.getWidget(ranksGrid.getRowCount()-3, 1);
+		TextBox tf1 = (TextBox)valueWidget1;
+		String tfValue1 = tf1.getText();
+		tfValue1 = tfValue1.trim();
+		String splits[] = tfValue1.split(" ", 2);
+		if(splits.length>1){
+			authorityDate = splits[1].trim();
+		}
+		else authorityDate ="unspecified,unspecified";
+		
 		Widget valueWidget = ranksGrid.getWidget(ranksGrid.getRowCount()-2, 1);
-		TextField tf = (TextField)valueWidget;
+		TextBox tf = (TextBox)valueWidget;
 		String tfValue = tf.getText();
 		tfValue = tfValue.trim();
 		if(!hasAuthorityDate(tfValue)){
@@ -464,8 +467,8 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 				Label rankLabel = (Label)rankWidget;
 				rank = Rank.valueOf(rankLabel.getText());
 			}
-			if(valueWidget instanceof TextField) {
-				TextField valueBox = (TextField)valueWidget;
+			if(valueWidget instanceof TextBox) {
+				TextBox valueBox = (TextBox)valueWidget;
 				String value = valueBox.getText().trim();
 				if(rank != null)
 					result.add(new TaxonIdentificationEntry(rank, value));
@@ -554,6 +557,7 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		}
 		ranksCombo.setValue(Rank.LIFE);
 		ranksGrid.setWidget(1, 0, ranksCombo);
+		ranksGrid.setWidget(1, 1,new TextBox());
 		ranksGrid.setWidget(1, 2, deleteRankButton);
 		ranksGrid.remove(deleteRankButton);
 		authorityDateButton.setVisible(false);
@@ -564,6 +568,7 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		descriptionCombo.setValue(Description.MORPHOLOGY);
 		descriptionArea.setText("");
 		descriptionGrid.setWidget(1, 0, descriptionCombo);
+		descriptionGrid.setWidget(1, 1, scopeCombo);
 		while(descriptionGrid.getRowCount() > 3) {
 			descriptionGrid.removeRow(descriptionGrid.getRowCount() - 2);
 		}
