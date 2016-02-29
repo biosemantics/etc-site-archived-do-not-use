@@ -242,6 +242,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 					@Override
 					public void onFailure(Throwable caught) {
 						Alerter.failedToDeleteFile(caught);
+						Alerter.stopLoading(box);
 					}
 				});
 			}

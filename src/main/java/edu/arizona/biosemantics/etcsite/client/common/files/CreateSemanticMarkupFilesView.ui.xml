@@ -144,7 +144,7 @@
 											<!-- <g:SuggestBox ui:field="ranksCombo"></g:SuggestBox> -->
 										</g:customCell>
 										<g:customCell>
-											<form:TextField ui:field="rankNameField" />
+											<g:TextBox ui:field="rankNameField" />
 										</g:customCell>
 										<g:customCell>
 										    <g:Button ui:field="authorityDateButton" visible="false">Use last used Authority and Date</g:Button>
