@@ -19,6 +19,10 @@ public interface ISemanticMarkupPreprocessView extends IsWidget {
 		void onPreviousDescription();
 
 		void onValueChange();
+
+		void setTotalFiles(String text);
+
+		void setCorrectFiles(String text);
 		
 	}
 	
@@ -35,5 +39,9 @@ public interface ISemanticMarkupPreprocessView extends IsWidget {
 	void setEnabledNextDescriptionButton(boolean value);
 	
 	void setEnabledPreviousDescriptionButton(boolean value);
+
+	void setTotalFilesLabel(String text);
+
+	void setCorrectFilesLabel(String text);
 	
 }
