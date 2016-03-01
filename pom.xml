@@ -248,7 +248,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>semantic-markup</artifactId>
-			<version>0.1.171-SNAPSHOT</version>
+			<version>0.1.172-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>app</artifactId>
@@ -307,7 +307,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.matrixgeneration</groupId>
 		  <artifactId>matrix-generation</artifactId>
-		  <version>0.1.46-SNAPSHOT</version>
+		  <version>0.1.47-SNAPSHOT</version>
 		  <exclusions>
 		  	<exclusion>
 		  		<artifactId>owlapi-tools</artifactId>

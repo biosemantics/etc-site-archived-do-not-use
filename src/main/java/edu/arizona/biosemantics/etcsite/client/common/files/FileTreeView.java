@@ -117,7 +117,8 @@ public class FileTreeView extends Composite implements IFileTreeView {
 				FileTreeItem parent = event.getLoadConfig();
 				store.replaceChildren(parent, event.getLoadResult());
 				
-				state.put(parent.getFilePath(), true);
+				if(parent != null)
+					state.put(parent.getFilePath(), true);
 				setExpandedState(state);
 				//tree.setExpanded(parent, true);
 			}
