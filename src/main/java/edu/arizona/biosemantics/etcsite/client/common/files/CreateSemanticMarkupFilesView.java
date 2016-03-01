@@ -376,6 +376,7 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		int newRow = descriptionGrid.insertRow(descriptionGrid.getRowCount()-1);
 		TextArea tArea = new TextArea();
 		tArea.setStyleName(descriptionArea.getStyleName());
+		
 		Label descriptionLabel = new Label(descriptionCombo.getValue().name());
 		Label scopeLabel = new Label();
 		if(scopeCombo.getText().equals("Other")){
@@ -383,10 +384,14 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		}else{
 			scopeLabel.setText(scopeCombo.getText());
 		}
+		Widget descriptionWidget = descriptionGrid.getWidget(newRow-1, 2);
+		TextArea tArea1=(TextArea)descriptionWidget;
+		tArea1.setEnabled(false);
 		scopeTextBox.setVisible(false);
 		scopeCombo.clear();
 		descriptionGrid.setWidget(newRow-1, 0, descriptionLabel);
 		descriptionGrid.setWidget(newRow-1, 1, scopeLabel);
+		descriptionGrid.setWidget(newRow-1, 2, tArea1);
 		descriptionGrid.setWidget(newRow, 0, descriptionCombo);
 		descriptionGrid.setWidget(newRow, 1, scopeCombo);
 		descriptionGrid.setWidget(newRow, 2, tArea);
@@ -565,13 +570,16 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	
 	@Override
 	public void resetDescriptions() {
+		while(descriptionGrid.getRowCount() > 3) {
+			descriptionGrid.removeRow(descriptionGrid.getRowCount() - 2);
+		}
+		TextArea tArea = new TextArea();
+		tArea.setStyleName(descriptionArea.getStyleName());
 		descriptionCombo.setValue(Description.MORPHOLOGY);
 		descriptionArea.setText("");
 		descriptionGrid.setWidget(1, 0, descriptionCombo);
 		descriptionGrid.setWidget(1, 1, scopeCombo);
-		while(descriptionGrid.getRowCount() > 3) {
-			descriptionGrid.removeRow(descriptionGrid.getRowCount() - 2);
-		}
+		descriptionGrid.setWidget(1, 2, tArea);
 	}
 	
 	@Override
