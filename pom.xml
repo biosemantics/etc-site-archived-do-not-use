@@ -433,13 +433,13 @@
 		<dependency>
 			<groupId>edu.ucdavis.cs</groupId>
 			<artifactId>cfgproject</artifactId>
-			<version>0.0.8-SNAPSHOT</version>
+			<version>0.0.10-SNAPSHOT</version>
 			<classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.ucdavis.cs</groupId>
 		  <artifactId>cfgproject</artifactId>
-		  <version>0.0.8-SNAPSHOT</version>
+		  <version>0.0.10-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>

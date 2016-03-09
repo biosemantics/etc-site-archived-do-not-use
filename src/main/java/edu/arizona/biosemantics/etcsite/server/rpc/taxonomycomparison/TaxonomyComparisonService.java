@@ -173,10 +173,12 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	}
 	
 	//Assumption: Does not take long, hence blocking
+	//TODO: can't be blocking. Has to also show processing Dialog, which means it needs to be a resumable task later
 	@Override
 	public boolean isConsistentInput(AuthenticationToken token, Task task, 
 			final edu.arizona.biosemantics.euler.alignment.shared.model.Collection collection) throws TaxonomyComparisonException {
-		final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
+		return true;
+		/*final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
 		final Model model = collection.getModel();
 				
 		final String eulerInputFile = tempFiles + File.separator + task.getId() + File.separator + "input.txt";
@@ -210,7 +212,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		} catch(Exception e) {
 			log(LogLevel.ERROR, "Couldn't run consistency check", e);
 			throw new TaxonomyComparisonException(task);
-		}
+		}*/
 	}
 	
 	@Override

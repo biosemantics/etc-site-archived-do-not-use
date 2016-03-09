@@ -708,5 +708,9 @@ public class Alerter {
 				+ "Check your articulations to ease alignment.");
 	}
 
+	public static MessageBox failedToGetAccount(Throwable caught) {
+		return showAlert("Could not get account", "Could not get account");
+	}
+
 
 }

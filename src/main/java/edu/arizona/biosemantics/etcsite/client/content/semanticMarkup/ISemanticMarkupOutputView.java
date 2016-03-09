@@ -13,11 +13,15 @@ public interface ISemanticMarkupOutputView extends IsWidget {
 		IsWidget getView();
 
 		void onFileManager();
+
+		void onSendToOto();
 		
 	}
 	
 	void setPresenter(Presenter presenter);
 
 	void setOutput(String output);
+
+	void setEnabledSendToOto(boolean value);
 	
 }

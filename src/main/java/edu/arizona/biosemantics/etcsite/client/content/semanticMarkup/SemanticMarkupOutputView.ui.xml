@@ -17,13 +17,23 @@
 			padding-top: 10px;
 			padding-bottom:10px;
 		}
+		.subMenuButton {
+			margin-top: 28px;
+			margin-left: 20px;
+		}
 	</ui:style>
 	<g:ScrollPanel>
 	<lay:CenteredContentPanel>
 		<g:VerticalPanel styleName="{style.padding}">
 			<g:HorizontalPanel>
 <!-- 			    <my2:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.SemanticMarkupShort.gif" imageWidth="65px" imageHeight="20px" text="" /> -->
-			    <my:SubMenu ui:field="subMenu" step="OUTPUT"/>
+			    <g:cell>
+					<my:SubMenu ui:field="subMenu" step="OUTPUT"/>
+				</g:cell>
+			    <g:cell>
+					<g:Button addStyleNames="{style.subMenuButton}" ui:field="sendToOtoButton">
+							Contribute classifications to OTO</g:Button>
+				</g:cell>
 			</g:HorizontalPanel>
 			
 			<g:VerticalPanel>

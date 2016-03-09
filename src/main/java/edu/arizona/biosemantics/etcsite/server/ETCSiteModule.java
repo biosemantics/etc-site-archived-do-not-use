@@ -2,12 +2,28 @@ package edu.arizona.biosemantics.etcsite.server;
 
 //import com.google.gwt.logging.server.RemoteLoggingServiceImpl;
 import java.io.File;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import com.google.gwt.logging.server.RemoteLoggingServiceImpl;
 import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Scopes;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
+import edu.arizona.biosemantics.common.ling.know.ICharacterKnowledgeBase;
+import edu.arizona.biosemantics.common.ling.know.IPOSKnowledgeBase;
+import edu.arizona.biosemantics.common.ling.know.SingularPluralProvider;
+import edu.arizona.biosemantics.common.ling.know.lib.WordNetPOSKnowledgeBase;
+import edu.arizona.biosemantics.common.ling.transform.IInflector;
+import edu.arizona.biosemantics.common.ling.transform.lib.SomeInflector;
+import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.process.file.XMLValidator;
 import edu.arizona.biosemantics.etcsite.server.rpc.auth.AuthenticationService;
@@ -126,6 +142,15 @@ public class ETCSiteModule extends AbstractModule {
 		bind(DAOManager.class).in(Scopes.SINGLETON);
 		bind(Emailer.class).in(Scopes.SINGLETON);
 		
+		WordNetPOSKnowledgeBase wordNetPOSKnowledgeBase = null;
+		try {
+			wordNetPOSKnowledgeBase = new WordNetPOSKnowledgeBase(Configuration.charaparser_wordnet, false);
+			final SingularPluralProvider singularPluralProvider = new SingularPluralProvider();
+			final SomeInflector someInflector = new SomeInflector(wordNetPOSKnowledgeBase, 
+					singularPluralProvider.getSingulars(), singularPluralProvider.getPlurals());
+			bind(IInflector.class).toInstance(someInflector);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
-
 }

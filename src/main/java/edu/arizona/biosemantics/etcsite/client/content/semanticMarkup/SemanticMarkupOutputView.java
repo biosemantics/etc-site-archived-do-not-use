@@ -7,6 +7,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
@@ -24,6 +25,9 @@ public class SemanticMarkupOutputView extends Composite implements ISemanticMark
 	Anchor fileManagerAnchor;
 	
 	@UiField
+	Button sendToOtoButton;
+	
+	@UiField
 	InlineLabel outputLabel;
 
 	private Presenter presenter;
@@ -31,6 +35,8 @@ public class SemanticMarkupOutputView extends Composite implements ISemanticMark
 	public SemanticMarkupOutputView() {
 		initWidget(uiBinder.createAndBindUi(this));
 		fileManagerAnchor.getElement().getStyle().setCursor(Cursor.POINTER);
+		
+		sendToOtoButton.setTitle("Contribute classifications to OTO");
 	}
 
 	@Override
@@ -46,5 +52,16 @@ public class SemanticMarkupOutputView extends Composite implements ISemanticMark
 	@Override
 	public void setOutput(String output) {
 		this.outputLabel.setText(output);
+	}
+	
+
+	@UiHandler("sendToOtoButton")
+	public void onSendToOto(ClickEvent event) {
+		presenter.onSendToOto();
+	}
+
+	@Override
+	public void setEnabledSendToOto(boolean value) {
+		sendToOtoButton.setEnabled(value);
 	}
 }

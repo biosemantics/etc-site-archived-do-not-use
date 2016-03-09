@@ -92,3 +92,7 @@ finished_matrix_generation_generate_body=Matrix Generation has finished the gene
 #Bioportal
 bioportalUrl=http://data.bioontology.org
 bioportalApiKey=
+
+#to-OTO 
+#essentially frequency modifiers
+illegalOrderModifiers=more or less,not,usually,often,mostly,generally,sometimes,typically,predominantly,variably,always,frequently,primarily

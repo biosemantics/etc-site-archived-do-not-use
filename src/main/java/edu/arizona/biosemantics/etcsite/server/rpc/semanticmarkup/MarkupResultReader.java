@@ -16,6 +16,10 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 
+import com.google.inject.Inject;
+
+import edu.arizona.biosemantics.common.ling.transform.IInflector;
+
 public class MarkupResultReader {
 	
 	public static class Character {
@@ -62,16 +66,26 @@ public class MarkupResultReader {
 	
 	public static class BiologicalEntity {
 
+		private String constraint;
 		private String name;
 		private String type;
 		private String iri;
 		
-		public BiologicalEntity(String name, String type, String iri) {
+		public BiologicalEntity(String name, String constraint, String type, String iri) {
+			this.constraint = constraint;
 			this.name = name;
 			this.type = type;
 			this.iri = iri;
 		}
-			
+				
+		public String getConstraint() {
+			return constraint;
+		}
+
+		public void setConstraint(String constraint) {
+			this.constraint = constraint;
+		}
+
 		public String getName() {
 			return name;
 		}
@@ -100,10 +114,20 @@ public class MarkupResultReader {
 		public String toString() {
 			return this.name + ": " + this.type + " ( " + iri + " )";
 		}
+
+		public boolean hasConstraint() {
+			return this.constraint != null && !constraint.isEmpty();
+		}
 	}
 	
 	
 	private Pattern numericalsPattern = Pattern.compile(".*\\d+.*");
+	private IInflector inflector;
+	
+	@Inject
+	public MarkupResultReader(IInflector inflector) {
+		this.inflector = inflector;
+	}
 	
 	public List<Character> getRangeValueCharacters(File input, boolean includeNumericals) throws JDOMException, IOException {
 		List<Character> result = new LinkedList<Character>();
@@ -205,12 +229,37 @@ public class MarkupResultReader {
 				String constraint = element.getAttributeValue("constraint");
 				String type = element.getAttributeValue("type");
 				String iri = element.getAttributeValue("ontologyid");
-				if(constraint != null)
-					name = constraint + " " + name;
-				result.add(new BiologicalEntity(name, type, iri));
+				result.add(new BiologicalEntity(name, constraint, type, iri));
 			}
 		}
 		return result;
+	}
+
+	public List<String> getSentences(File input, String value) throws JDOMException, IOException {
+		value = value.toLowerCase();
+		List<String> sentences = new LinkedList<String>();
+		SAXBuilder saxBuilder = new SAXBuilder();
+		for(File file : input.listFiles()) {
+			Document document = null;
+			try {
+				document = saxBuilder.build(file);
+			} catch(JDOMParseException parseException) {
+				//file not a valid xml file (e.g. config.txt)
+				continue;
+			}
+			XPathFactory xpf = XPathFactory.instance();
+			XPathExpression<Element> xpath = xpf.compile("/bio:treatment/description/statement/text",
+			              Filters.element(), null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics")); 
+			List<Element> elements = xpath.evaluate(document);
+			for(Element element : elements) {
+				String text = element.getValue().toLowerCase();
+				String plural = inflector.getPlural(value).toLowerCase();
+				
+				if(text.matches(".*\\b" + value + "|" + plural + "\\b.*"))
+					sentences.add(text);
+			}
+		}
+		return sentences;
 	}
 
 }
