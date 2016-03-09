@@ -29,6 +29,9 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 	private BracketColorizer bracketColorizer;
 	private BracketValidator bracketValidator;
 	private PlaceController placeController;
+	private int correctedPreprocessedDescription;
+	private int totalPreprocessedDescription;
+	private int k=0;
 	
 	@Inject
 	public SemanticMarkupPreprocessPresenter(ISemanticMarkupPreprocessView view, 
@@ -69,10 +72,18 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
                 view.setHTML("");
                 view.setBracketCounts("");
                 view.setDescriptionIDLabel("");
+                view.setCorrectFilesLabel(null);
+                view.setTotalFilesLabel(null);
                 setEnabledDescriptionsNavigation(true);
                 if(preprocessedDescriptions.size() == 1)
                 	setEnabledDescriptionsNavigation(false);
+                
                 currentPreprocessedDescription = 0;
+                correctedPreprocessedDescription = 0;
+                k=0;
+                totalPreprocessedDescription=preprocessedDescriptions.size();
+                setTotalFiles(Integer.toString(totalPreprocessedDescription));
+                setCorrectFiles("0");
                 setPreprocessedDescription(preprocessedDescriptions.get(currentPreprocessedDescription));
 			}
 
@@ -127,6 +138,7 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 
 	@Override
 	public void onNextDescription() {
+		k=0;
 		store(new AsyncCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {
@@ -152,6 +164,7 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 
 	@Override
 	public void onPreviousDescription() {
+		k=0;
 		store(new AsyncCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {
@@ -177,6 +190,26 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 	public void onValueChange() {
 		String text = view.getHTML();
     	updateBracketCounts(bracketValidator.getBracketCountDifferences(text));
+    	if(k==0){ 
+    		if(bracketValidator.validate(text)) {
+    			correctedPreprocessedDescription++;
+    		    setCorrectFiles(Integer.toString(correctedPreprocessedDescription));
+    		    totalPreprocessedDescription--;
+    		    setTotalFiles(Integer.toString(totalPreprocessedDescription));
+    		    k=1;
+    	    }
+    	}
+    	
+    	else if(k==1){
+    		if(!bracketValidator.validate(text)) {
+    			correctedPreprocessedDescription--;
+    		    setCorrectFiles(Integer.toString(correctedPreprocessedDescription));
+    		    totalPreprocessedDescription++;
+    		    setTotalFiles(Integer.toString(totalPreprocessedDescription));
+    		    k=0;
+    		}
+    	}
+
 	}
 	
 	private void updateBracketCounts(Map<Character, Integer> bracketCounts) {
@@ -188,11 +221,12 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 		for(Character character : bracketCounts.keySet()) {
 			int count = bracketCounts.get(character);
 			if(count > 0)
-				result.append(character + " +" + count + "<br>");
-			else
-				result.append(character + " " + count + "<br>");
+				result.append("Bracket \'"+character + "\'    +" + count + "<br>");
+			//else
+				//result.append(character + " " + count + "<br>");
 		}
-		return result.toString();
+		if(result.toString().isEmpty()) return "0";
+		else return result.toString();
 	}
 
 	private void setEnabledDescriptionsNavigation(boolean value) {
@@ -205,6 +239,7 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 				preprocessedDescription.getFilePath(), preprocessedDescription.getDescriptionNumber(), new AsyncCallback<Description>() {
 					@Override
 					public void onSuccess(Description result) {
+					    
 						setText(preprocessedDescription.getFileName(), 
 								result, preprocessedDescription.getBracketCounts());
 					}
@@ -226,7 +261,7 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 			e.printStackTrace();
 		}*/
 		String text = description.getContent();
-		view.setDescriptionIDLabel("Description: " + filename);
+		view.setDescriptionIDLabel("Current File: " + filename);
 		updateBracketCounts(bracketCounts);
 		text = bracketColorizer.colorize(text);
 		
@@ -261,4 +296,16 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 		semanticMarkupService.setDescription(Authentication.getInstance().getToken(), 
 				filePath, descriptionNumber, content, callback);
 	}
+	
+	@Override
+	public void setTotalFiles(String text) {
+		view.setTotalFilesLabel("Files with Unmatch Brackets: "+ text);
+	}
+	
+	@Override
+	public void setCorrectFiles(String text) {
+		view.setCorrectFilesLabel("Corrected files: "+text);
+		
+	}
+	
 }

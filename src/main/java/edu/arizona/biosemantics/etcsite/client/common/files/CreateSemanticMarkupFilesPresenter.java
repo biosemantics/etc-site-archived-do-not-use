@@ -320,6 +320,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	@Override
 	public void init() {
 		view.removeAddtionalTaxonRanks();
+		view.resetDescriptions();
 	}
 
 	@Override

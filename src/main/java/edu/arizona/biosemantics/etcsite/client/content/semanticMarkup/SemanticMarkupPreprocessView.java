@@ -42,6 +42,12 @@ public class SemanticMarkupPreprocessView extends Composite implements ISemantic
 	
 	@UiField
 	Button nextButton;
+	
+	@UiField
+	Label totalFilesLabel;
+	
+	@UiField
+	Label correctFilesLabel;
 
 	public SemanticMarkupPreprocessView() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -86,6 +92,16 @@ public class SemanticMarkupPreprocessView extends Composite implements ISemantic
 	@Override
 	public void setDescriptionIDLabel(String text) {
 		this.descriptionIdLabel.setText(text);
+	}
+	
+	@Override
+	public void setTotalFilesLabel(String text) {
+		this.totalFilesLabel.setText(text);
+	}
+	
+	@Override
+	public void setCorrectFilesLabel(String text) {
+		this.correctFilesLabel.setText(text);
 	}
 
 	@Override
