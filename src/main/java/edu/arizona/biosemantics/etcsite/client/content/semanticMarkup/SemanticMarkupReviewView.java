@@ -25,9 +25,6 @@ public class SemanticMarkupReviewView extends Composite implements ISemanticMark
 
 	private Presenter presenter;
 	private Oto oto = new Oto();
-
-	@UiField
-	Button sendToOtoButton;
 	
 	@UiField
 	SimpleLayoutPanel otoPanel;
@@ -37,18 +34,11 @@ public class SemanticMarkupReviewView extends Composite implements ISemanticMark
 		super();
 		initWidget(uiBinder.createAndBindUi(this));
 		otoPanel.setWidget(oto.getView().asWidget());
-		
-		sendToOtoButton.setTitle("Contribute classifications to OTO");
 	}
 
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
-	}
-
-	@UiHandler("sendToOtoButton")
-	public void onSendToOto(ClickEvent event) {
-		presenter.onSendToOto();
 	}
 	
 	@UiHandler("nextButton")
@@ -74,11 +64,6 @@ public class SemanticMarkupReviewView extends Composite implements ISemanticMark
 	@Override
 	public Oto getOto() {
 		return oto;
-	}
-
-	@Override
-	public void setEnabledSendToOto(boolean value) {
-		sendToOtoButton.setEnabled(value);
 	}
 
 }

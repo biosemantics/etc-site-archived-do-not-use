@@ -708,5 +708,11 @@ public class Alerter {
 				+ "Check your articulations to ease alignment.");
 	}
 
+	public static MessageBox failedToGetAccount(Throwable caught) {
+		return showAlert("Could not get account", "Could not get account");
+	}
 
+	public static MessageBox selectAuthorAndYears() {
+		return showAlert("Taxonomy Author and Year", "Please enter for both taxonomies an author and a different non-empty year.");
+	}
 }

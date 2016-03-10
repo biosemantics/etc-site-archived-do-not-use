@@ -34,5 +34,9 @@ public interface ITaxonomyComparisonInputView extends IsWidget {
 	void setCleanTaxPath(String shortenedPath);
 	void setSerializedModel1(String serializedModelPath1);
 	void setSerializedModel2(String serializedModelPath2);
+	String getTaxonomy1Author();
+	String getTaxonomy2Author();
+	String getTaxonomy1Year();
+	String getTaxonomy2Year();
 
 }

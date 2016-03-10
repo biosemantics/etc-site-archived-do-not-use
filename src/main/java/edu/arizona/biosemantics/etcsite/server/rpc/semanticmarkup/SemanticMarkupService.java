@@ -98,7 +98,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	private Emailer emailer;
 	private ICollectionService otoCollectionService;
 	private edu.arizona.biosemantics.oto2.ontologize.shared.rpc.ICollectionService ontologizeCollectionService;
-	private ToOTOSender otoSender;
+	private ToOTOSender2 otoSender;
 	
 	@Inject
 	public SemanticMarkupService(ICollectionService collectionService, IFileAccessService fileAccessService, IFileService fileService, 
@@ -106,7 +106,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			DAOManager daoManager, Emailer emailer, 
 			edu.arizona.biosemantics.oto2.oto.shared.rpc.ICollectionService otoCollectionService, 
 			edu.arizona.biosemantics.oto2.ontologize.shared.rpc.ICollectionService ontologizeCollectionService,
-			ToOTOSender otoSender) {
+			ToOTOSender2 otoSender) {
 		this.collectionService = collectionService;
 		this.fileAccessService = fileAccessService; 
 		this.fileService = fileService;

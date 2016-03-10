@@ -89,9 +89,18 @@ public class TaxonomyComparisonInputPresenter implements ITaxonomyComparisonInpu
 				}
 			});
 		} else if(createPresenter.isFromSerializedModel()) {
+			if(view.getTaxonomy1Author().isEmpty() || view.getTaxonomy1Year().isEmpty() || 
+					view.getTaxonomy2Author().isEmpty() || view.getTaxonomy2Year().isEmpty() ||
+					//year can't be the same. see cleantax format and how year is used as id to in articulations
+					//(view.getTaxonomy1Author().equals(view.getTaxonomy2Author()) && view.getTaxonomy1Year().equals(view.getTaxonomy2Year()))) {
+					view.getTaxonomy1Year().equals(view.getTaxonomy2Year())) {
+				Alerter.selectAuthorAndYears();
+				return;
+			}
 			final MessageBox box = Alerter.startLoading();
 			taxonomyComparisonService.startFromSerializedModels(Authentication.getInstance().getToken(), 
-					view.getTaskName(), serializedModelPath1, serializedModelPath2, 
+					view.getTaskName(), serializedModelPath1, serializedModelPath2, view.getTaxonomy1Author(), 
+					view.getTaxonomy1Year(), view.getTaxonomy2Author(), view.getTaxonomy2Year(),
 					view.getTaxonGroup(), ontologyInputFile, termReviewInputFile1, termReviewInputFile2, 
 					new AsyncCallback<Task>() {
 					@Override

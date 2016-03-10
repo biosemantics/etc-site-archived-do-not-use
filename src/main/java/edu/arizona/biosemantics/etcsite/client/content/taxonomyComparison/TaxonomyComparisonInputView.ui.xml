@@ -103,6 +103,26 @@
 										<g:Button ui:field="selectExistingFolderButton1">Select Taxonomy 1 Folder</g:Button>
 									</g:cell> 
 				        	</g:HorizontalPanel>
+				        	<g:HorizontalPanel>				
+				         			<g:VerticalPanel styleName="{style.firstColumn}">
+					         			<g:cell verticalAlignment="ALIGN_TOP">
+											<g:Label>Taxonomy 1 Author:</g:Label>
+										</g:cell>	 
+									</g:VerticalPanel>           
+				        			<g:cell verticalAlignment="ALIGN_MIDDLE" width='220px'>
+										<g:TextBox ui:field="taxonomy1AuthorTextField"></g:TextBox>
+									</g:cell>
+				        	</g:HorizontalPanel>
+				      		<g:HorizontalPanel>
+				      				<g:VerticalPanel styleName="{style.firstColumn}">
+					         			<g:cell verticalAlignment="ALIGN_TOP">
+											<g:Label>Taxonomy 1 Year:</g:Label>
+										</g:cell>	 
+									</g:VerticalPanel>
+									<g:cell verticalAlignment="ALIGN_MIDDLE" width='200px'>
+										<g:TextBox ui:field="taxonomy1YearTextField"></g:TextBox>
+									</g:cell> 
+				        	</g:HorizontalPanel>
 				        	<g:HorizontalPanel>
 				        			<g:VerticalPanel styleName="{style.firstColumn}">
 					         			<g:cell verticalAlignment="ALIGN_TOP">
@@ -115,6 +135,26 @@
 									<g:cell verticalAlignment="ALIGN_MIDDLE" width='200px'>
 										<g:Button ui:field="selectExistingFolderButton2">Select Taxonomy 2 Folder</g:Button>
 									</g:cell>
+				        	</g:HorizontalPanel>
+				        	<g:HorizontalPanel>				
+				         			<g:VerticalPanel styleName="{style.firstColumn}">
+					         			<g:cell verticalAlignment="ALIGN_TOP">
+											<g:Label>Taxonomy 2 Author:</g:Label>
+										</g:cell>	 
+									</g:VerticalPanel>           
+				        			<g:cell verticalAlignment="ALIGN_MIDDLE" width='220px'>
+										<g:TextBox ui:field="taxonomy2AuthorTextField"></g:TextBox>
+									</g:cell>
+				        	</g:HorizontalPanel>
+				        	<g:HorizontalPanel>
+				      				<g:VerticalPanel styleName="{style.firstColumn}">
+					         			<g:cell verticalAlignment="ALIGN_TOP">
+											<g:Label>Taxonomy 2 Year:</g:Label>
+										</g:cell>	 
+									</g:VerticalPanel>
+									<g:cell verticalAlignment="ALIGN_MIDDLE" width='200px'>
+										<g:TextBox ui:field="taxonomy2YearTextField"></g:TextBox>
+									</g:cell> 
 				        	</g:HorizontalPanel>
 			         	</g:VerticalPanel>
 			         	

@@ -78,6 +78,7 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 	private edu.arizona.biosemantics.oto2.ontologize.shared.rpc.toontology.IToOntologyService toOntologyService;
 	private edu.arizona.biosemantics.oto2.ontologize.shared.rpc.IContextService contextService;
 	private DAOManager daoManager;
+	private MarkupResultReader markupResultReader;
 
 	@Inject
 	public OntologizeService(IFileService fileService, IFileFormatService fileFormatService, 
@@ -86,7 +87,7 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 			edu.arizona.biosemantics.oto2.ontologize.shared.rpc.ICollectionService collectionService,
 			edu.arizona.biosemantics.oto2.ontologize.shared.rpc.IContextService contextService,
 			edu.arizona.biosemantics.oto2.ontologize.shared.rpc.toontology.IToOntologyService toOntologyService,
-			DAOManager daoManager, Emailer emailer) {
+			DAOManager daoManager, Emailer emailer, MarkupResultReader markupResultReader) {
 		this.fileService = fileService;
 		this.fileFormatService = fileFormatService;
 		this.filePermissionService = filePermissionService;
@@ -96,6 +97,7 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 		this.toOntologyService = toOntologyService;
 		this.daoManager = daoManager;
 		this.emailer = emailer;
+		this.markupResultReader = markupResultReader;
 	}
 	
 	@Override
@@ -167,15 +169,14 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 	}
 
 	private List<Term> getTerms(String input) throws OntologizeException {
-		MarkupResultReader reader = new MarkupResultReader();
 		File inputFile = new File(input);
 		List<MarkupResultReader.BiologicalEntity> structures;
 		List<MarkupResultReader.Character> characters;
 		List<MarkupResultReader.Character> rangeValueCharacters;
 		try {
-			structures = reader.getBiologicalEntities(inputFile);
-			characters = reader.getCharacters(inputFile, false);
-			rangeValueCharacters = reader.getRangeValueCharacters(inputFile, false);
+			structures = markupResultReader.getBiologicalEntities(inputFile);
+			characters = markupResultReader.getCharacters(inputFile, false);
+			rangeValueCharacters = markupResultReader.getRangeValueCharacters(inputFile, false);
 		} catch (JDOMException | IOException e) {
 			log(LogLevel.ERROR, "Couldn't parse input", e);
 			throw new OntologizeException(e);
@@ -185,10 +186,11 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 				new LinkedList<edu.arizona.biosemantics.oto2.ontologize.shared.model.Term>();					
 		Set<String> containedStructures = new HashSet<String>();
 		for(BiologicalEntity structure : structures) {
-			if(!containedStructures.contains(structure.getName() + structure.getIri())) {
+			String name = structure.hasConstraint() ? structure.getConstraint() + " " + structure.getName() : structure.getName();
+			if(!containedStructures.contains(name + structure.getIri())) {
 				terms.add(new edu.arizona.biosemantics.oto2.ontologize.shared.model.Term(
-						structure.getName(), structure.getIri(), "/structure", "structure"));
-				containedStructures.add(structure.getName() + structure.getIri());
+						name, structure.getIri(), "/structure", "structure"));
+				containedStructures.add(name + structure.getIri());
 			}
 		}
 		Set<String> containedCharacters = new HashSet<String>();

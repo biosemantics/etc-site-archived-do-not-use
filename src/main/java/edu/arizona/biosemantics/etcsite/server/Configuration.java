@@ -115,6 +115,8 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.shared.Confi
 
 	public static String publicFolder;
 
+	public static Set<String> illegalOrderModifiers;
+
 
 	
 	static {		
@@ -200,7 +202,8 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.shared.Confi
 			googleRedirectURI = properties.getProperty("google_redirect_URI");
 			googleClientId = properties.getProperty("google_client_id");
 			googleSecret = properties.getProperty("google_secret");
-				
+			
+			illegalOrderModifiers = new HashSet<String>(Arrays.asList(properties.getProperty("illegalOrderModifiers").split(",")));	
 		} catch(Exception e) {
 			logger.error("Couldn't read configuration", e);
 		}
