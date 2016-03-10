@@ -19,7 +19,7 @@ import edu.arizona.biosemantics.euler.alignment.shared.model.RunOutput;
 public interface ITaxonomyComparisonServiceAsync extends IHasTasksServiceAsync {
 	
 	public void runPossibleWorldGeneration(AuthenticationToken token, Task task,
-			Collection collection, AsyncCallback<Task> asyncCallback);
+			Collection collection, AsyncCallback<Task> callback);
 
 	public void getInputVisualization(AuthenticationToken token, Task task,
 			Collection collection, AsyncCallback<String> callback);
@@ -39,21 +39,21 @@ public interface ITaxonomyComparisonServiceAsync extends IHasTasksServiceAsync {
 	public void getTaxonomies(AuthenticationToken token, FolderTreeItem folder, AsyncCallback<List<String>> callback);
 
 	public void getMachineArticulations(AuthenticationToken token, Task task, Collection collection, double threshold,
-			AsyncCallback<List<Articulation>> asyncCallback);
+			AsyncCallback<List<Articulation>> callback);
 
 	public void startFromCleantax(AuthenticationToken token, String taskName, String input, String taxonGroup, 
 			String ontology, String termReview1, String termReview2, AsyncCallback<Task> callback);
 
 	public void startFromSerializedModels(AuthenticationToken token,
-			String taskName, String inputFolderPath1, String inputFolderPath2, 
-			String taxonGroup, String ontology, String termReview1, String termReview2,
-			AsyncCallback<Task> asyncCallback);
+			String taskName, String inputFolderPath1, String inputFolderPath2, String modelAuthor1, String modelYear1, String modelAuthor2, 
+			String modelYear2, String taxonGroup, String ontology, String termReview1, String termReview2, 
+			AsyncCallback<Task> callback);
 
 	public void isValidCleanTaxInput(AuthenticationToken token,
-			String inputFolderPath, AsyncCallback<Boolean> asyncCallback);
+			String inputFolderPath, AsyncCallback<Boolean> callback);
 
 	public void isValidModelInput(AuthenticationToken token,
-			String inputFolderPath, AsyncCallback<Boolean> asyncCallback);
+			String inputFolderPath, AsyncCallback<Boolean> callback);
 	
 	public void isConsistentInput(AuthenticationToken token, Task task, Collection collection, AsyncCallback<Boolean> callback);
 

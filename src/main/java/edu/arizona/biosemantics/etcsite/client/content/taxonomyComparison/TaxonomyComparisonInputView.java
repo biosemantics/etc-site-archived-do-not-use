@@ -62,6 +62,18 @@ public class TaxonomyComparisonInputView extends Composite implements ITaxonomyC
 	
 	@UiField
 	SubMenu subMenu;
+	
+	@UiField
+	TextBox taxonomy1AuthorTextField;
+	
+	@UiField
+	TextBox taxonomy1YearTextField;
+
+	@UiField
+	TextBox taxonomy2AuthorTextField;
+	
+	@UiField
+	TextBox taxonomy2YearTextField;
 
 	public TaxonomyComparisonInputView() {
 		super();
@@ -108,8 +120,28 @@ public class TaxonomyComparisonInputView extends Composite implements ITaxonomyC
 		this.glossaryListBox.setSelectedIndex(getInitialGlossaryIndex());
 		this.inputOntologyLabel.setText(null);
 		this.inputOntologyLabel.setValue(null);
+		this.taxonomy1AuthorTextField.setValue("");
+		this.taxonomy1YearTextField.setValue("");
+		this.taxonomy2AuthorTextField.setValue("");
+		this.taxonomy2YearTextField.setValue("");
+	}	
+	
+	public TextBox getTaxonomy1AuthorTextField() {
+		return taxonomy1AuthorTextField;
+	}
+
+	public TextBox getTaxonomy1YearTextField() {
+		return taxonomy1YearTextField;
 	}
 	
+	public TextBox getTaxonomy2AuthorTextField() {
+		return taxonomy2AuthorTextField;
+	}
+
+	public TextBox getTaxonomy2YearTextField() {
+		return taxonomy2YearTextField;
+	}
+
 	private int getInitialGlossaryIndex() {
 		for(int i=0; i<TaxonGroup.values().length; i++) {
 			if(TaxonGroup.values()[i].equals(TaxonGroup.PLANT))
@@ -217,4 +249,25 @@ public class TaxonomyComparisonInputView extends Composite implements ITaxonomyC
 	public void setSerializedModel2(String serializedModelPath2) {
 		this.selectExistingFolderLabel2.setText(serializedModelPath2);
 	}
+	
+	@Override
+	public String getTaxonomy1Author() {
+		return taxonomy1AuthorTextField.getValue().trim();
+	}
+	
+	@Override
+	public String getTaxonomy2Author() {
+		return taxonomy2AuthorTextField.getValue().trim();
+	}
+	
+	@Override
+	public String getTaxonomy1Year() {
+		return taxonomy1YearTextField.getValue().trim();
+	}
+	
+	@Override
+	public String getTaxonomy2Year() {
+		return taxonomy2YearTextField.getValue().trim();
+	}
+	
 }

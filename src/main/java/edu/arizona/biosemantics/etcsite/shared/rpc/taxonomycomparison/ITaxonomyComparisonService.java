@@ -46,14 +46,13 @@ public interface ITaxonomyComparisonService extends RemoteService, IHasTasksServ
 			String ontology, String termReview1, String termReview2) throws HasTaskException;
 	
 	public Task startFromSerializedModels(AuthenticationToken token,
-			String taskName, String inputFolderPath1, String inputFolderPath2, 
-			String taxonGroup, String ontology, String termReview1, String termReview2) throws HasTaskException;
+			String taskName, String inputFolderPath1, String inputFolderPath2, String modelAuthor1, String modelYear1, String modelAuthor2, 
+			String modelYear2, String taxonGroup, String ontology, String termReview1, String termReview2) throws HasTaskException;
 
 	public Boolean isValidCleanTaxInput(AuthenticationToken token, String inputFolderPath);
 
 	public Boolean isValidModelInput(AuthenticationToken token,	String inputFolderPath);
 
 	public boolean isConsistentInput(AuthenticationToken token, Task task, Collection collection) throws TaxonomyComparisonException;
-
 		
 }

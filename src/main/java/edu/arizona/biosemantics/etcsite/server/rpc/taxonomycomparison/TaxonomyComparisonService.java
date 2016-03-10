@@ -681,12 +681,17 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 
 	@Override
 	public Task startFromSerializedModels(AuthenticationToken token, String taskName, String modelInput1, String modelInput2, 
+			String modelAuthor1, String modelYear1, String modelAuthor2, String modelYear2,
 			String taxonGroup, String ontology, String termReview1, String termReview2) throws HasTaskException {
 		String[] inputs = inputFileCreator.createOwnedIfShared(token, new String[] {modelInput1, modelInput2, ontology, termReview1, termReview2});
 		
 		TaxonomyComparisonConfiguration config = new TaxonomyComparisonConfiguration();
 		config.setModelInput1(inputs[0]);
 		config.setModelInput2(inputs[1]);
+		config.setModel1Author(modelAuthor1);
+		config.setModel2Author(modelAuthor2);
+		config.setModel1Year(modelYear1);
+		config.setModel2Year(modelYear2);
 		TaxonGroup group = daoManager.getTaxonGroupDAO().getTaxonGroup(taxonGroup);
 		config.setTaxonGroup(group);
 		config.setOntology(inputs[2]);
@@ -752,8 +757,18 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		try {
 			edu.arizona.biosemantics.matrixreview.shared.model.Model reviewModel1 = this.unserializeMatrix(getSerializedModel(modelInput1));
 			edu.arizona.biosemantics.matrixreview.shared.model.Model reviewModel2 = this.unserializeMatrix(getSerializedModel(modelInput2));
-			taxonomies.add(createTaxonomy(reviewModel1));
-			taxonomies.add(createTaxonomy(reviewModel2));
+			Taxonomy taxonomy1 = createTaxonomy(reviewModel1);
+			Taxonomy taxonomy2 = createTaxonomy(reviewModel2);
+			taxonomy1.setYear(config.getModel1Year());
+			taxonomy2.setYear(config.getModel2Year());
+			taxonomy1.setName(config.getModel1Author());
+			taxonomy2.setName(config.getModel2Author());
+			/*if(taxonomy1.getYear().equals(taxonomy2.getYear()) && taxonomy1.getName().equals(taxonomy2.getName())) {
+				taxonomy1.setName(taxonomy1.getName() + " (1)");
+				taxonomy2.setname(taxonomy2.getName() + " (2)");
+			}*/
+			taxonomies.add(taxonomy1);
+			taxonomies.add(taxonomy2);
 			
 			Map<Taxon, Map<Taxon, List<Evidence>>> evidenceMap = new HashMap<Taxon, Map<Taxon, List<Evidence>>>();
 			try {

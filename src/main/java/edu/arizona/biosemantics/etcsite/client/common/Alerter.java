@@ -712,5 +712,7 @@ public class Alerter {
 		return showAlert("Could not get account", "Could not get account");
 	}
 
-
+	public static MessageBox selectAuthorAndYears() {
+		return showAlert("Taxonomy Author and Year", "Please enter for both taxonomies a different non-empty author and year.");
+	}
 }
