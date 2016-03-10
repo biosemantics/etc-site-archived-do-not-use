@@ -61,14 +61,14 @@
 				   <g:Label styleName="{style.padding}">There are unmatched brackets ("(", ")", "[", "]" or "{","}") in the input descriptions. Please correct those in all descriptions, then move to the next step. 
 				   </g:Label>
 			    </g:HorizontalPanel>
-			    <g:Label styleName="{style.label1}">&#8226;Files Infomation with Unmatched Brackets </g:Label>
+			    <g:Label styleName="{style.label1}">&#8226;Files Information with Unmatched Brackets </g:Label>
 			    <g:Label ui:field="totalFilesLabel" styleName="{style.label}"/>
 			    <g:Label ui:field="correctFilesLabel" styleName="{style.label}"/>
 
 			  <g:Label styleName="{style.label1}">&#8226;Current File Description</g:Label>
 			  <g:Label ui:field="descriptionIdLabel" styleName="{style.label}"/>
 			  <g:HorizontalPanel>
-					<g:Label styleName="{style.label}">Unmatch Branckets in this File:</g:Label>
+					<g:Label styleName="{style.label}">Unmatched Brackets in This File:</g:Label>
 					<g:HTML styleName="{style.bracketCounts}" ui:field="bracketCounts"></g:HTML>
 			  </g:HorizontalPanel>
 				<g:HorizontalPanel styleName="{style.buttons1}">

@@ -155,7 +155,7 @@
 	  					<g:HorizontalPanel styleName = "{style.panelpadding}">
 	  					<up:SingleUploader ui:field="uploader" type="BUTTON" autoSubmit="true" avoidRepeatFiles="false" />
 	  					<!-- validExtensions="xml" -->
-		                   	<g:Button ui:field="uploadButton" title="Please select or create a folder before uploading files!" enabled="false">Please select or Create a folder first</g:Button>
+		                   	<g:Button ui:field="uploadButton" title="Please Select or Create a folder before uploading files!" enabled="false">Please Select or Create a folder first</g:Button>
 		                </g:HorizontalPanel>
 	  				 	
 	  				 	<g:SimplePanel addStyleNames="GWTUpld" ui:field="statusWidgetContainer"></g:SimplePanel>

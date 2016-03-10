@@ -26,15 +26,15 @@
 		}
 
 		.nextButton {
-			margin-top: 4px;
+			margin-top: 20px;
    			margin-left: 10px;
-			width: 100px;
+			width: 165px;
 			font-size:10px !important;
 		}
 		.saveButton {
-			margin-top: 4px;
-   			margin-left: 10px;
-			width: 60px;
+			margin-top: 20px;
+   			margin-left: 40px;
+			width: 90px;
 			font-size:10px !important;
 		}
 		.subMenuEntry {

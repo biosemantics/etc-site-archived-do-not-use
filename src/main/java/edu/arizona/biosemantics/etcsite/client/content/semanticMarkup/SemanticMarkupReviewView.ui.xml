@@ -6,7 +6,7 @@
 	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout">
 	<ui:style>
 	.centered {
-		margin: auto;
+		margin-left: -5px ;
 	}
 	
 	.nextButton {
@@ -15,14 +15,14 @@
 	}
 	
 	.subMenuEntry {
-		margin-left: 0px;
+		margin-left: -5px;
 		padding-top: 10px;
 		margin-bottom: 10px;
 	}
 	</ui:style>
 
 	<g:DockLayoutPanel unit='PX' ui:field='dockLayoutPanel'>
-		<g:north size='70'>
+		<g:north size='75'>
 			<g:SimplePanel> <!-- necessary because element.style information is set which leads ff not 
 					to center the menu -->
 				<g:VerticalPanel>

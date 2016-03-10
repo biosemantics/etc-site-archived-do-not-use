@@ -6,11 +6,11 @@
 	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout">
 	<ui:style>
 	.centered {
-		margin: auto;
+		margin-left: 35px;
 	}
 	
 	.nextButton {
-		margin-top: 4px;
+		margin-top: 15px;
 		margin-left: 20px;
 	}
 	
