@@ -1,12 +1,9 @@
 [
 	{
 		"title": "Rewind Task",
-		"content": "When the task is completed, you can use <span style='color:green'><b>Rewind</b></span> button to go to the previous user-interacted step.<br><br>Select the <span style='color:green'><b>Task</b></span> you need to rewind and Click the <span style='color:green'><b>Rewind</b></span> button."},
+		"content": "Select the task you need to rewind and Click the rewind button.<br> Choose the step the task should be rewinded to.<br>"},
 	{
 		"title": "Resume Task",
-		"content": "All incomplete tasks can be resumed.<br><br>Select the <span style='color:green'><b>Task</b></span> that you need to resume and Click the <span style='color:green'><b>Resume</b></span> button. The page will redirect to the corresponding task's page."},
-	{
-		"title": "Share Task",
-		"content": "Sharing a task allows other members of the community to contribute to the completion of the task.<br><br>1. Select the <span style='color:green'><b>Task</b></span> that you need to share and Click the <span style='color:green'><b>Share</b></span> button.<br>2. Select one or a few users you want to share, and then click <span style='color:green'><b>Shared with Selected."}
-
+		"content": "All incomplete tasks can be resumed. Select the task that you need to resume and Click the resume button. The page should redirect to the corresponding task's page."
+	}
 ]

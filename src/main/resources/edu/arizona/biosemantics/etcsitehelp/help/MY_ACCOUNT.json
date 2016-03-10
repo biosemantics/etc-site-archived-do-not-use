@@ -1,8 +1,5 @@
 [
-    {
-		"title": "Interact with Bioportal",
-		"content": "Input and save Bioportal information, you can submit ontology terms to Bioportalt in <span style='color:green'><b>Ontology Building</span></b> tool.<br>"},
 	{
-		"title": "Change Email Notification Preferences",
-		"content": "Check/Uncheck <span style='color:green'><b>Email Notification</span></b> boxes to change email notification for ETC toolkits.<br>"}
+		"title": "Changing Email Notification Preferences",
+		"content": "Check/Uncheck boxes on the Account Information page to change email notification preferences.<br>"}
 ]
