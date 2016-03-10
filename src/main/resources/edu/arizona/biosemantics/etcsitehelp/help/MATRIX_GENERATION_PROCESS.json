@@ -1,5 +1,6 @@
 [
-	{
-		"title": "Process",
-		"content": "Help Content"}
+    {
+		"title": "What do I need to do?",
+		"content": "In the <span style='color:green'><b>Process Stage</b></span>, Matrix Generation is converting the marked-up description files into a taxon-character matrix. You can wait for the step to complete or navigate other pages and resume the task from the <span style='color:green'><b>Task Manager</b></span>."}
+
 ]
