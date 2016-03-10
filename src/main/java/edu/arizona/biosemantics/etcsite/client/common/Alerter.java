@@ -713,6 +713,6 @@ public class Alerter {
 	}
 
 	public static MessageBox selectAuthorAndYears() {
-		return showAlert("Taxonomy Author and Year", "Please enter for both taxonomies a different non-empty author and year.");
+		return showAlert("Taxonomy Author and Year", "Please enter for both taxonomies an author and a different non-empty year.");
 	}
 }
