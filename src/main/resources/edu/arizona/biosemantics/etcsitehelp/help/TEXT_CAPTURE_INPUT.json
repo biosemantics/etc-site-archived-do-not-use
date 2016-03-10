@@ -1,5 +1,14 @@
 [
 	{
 		"title": "Input Files",
-		"content": "Text Capture Input files should confirm to this format: url to be added here.<br> Text Capture Input files can be created in File Manager. In the input step you can create a new folder and upload the input files or select an already exiting folder."}
+		"content": "Text Capture Input files can be created in <span style='color:green'><b>File Manager</b></span> or here. The input files should confirm to this <a href='http://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupInput.xsd' target='_blank'>format</a>."},
+    {
+        "title": "Create Input Files",
+        "content": "Select <span style='color:green'><b>Create Input Files</b></span>.</br>1. Select <span style='color:green'><b>Create New Folder</b></span> or <span style='color:green'><b>Select an Existing Folder</b></span> to choose a folder.</br>2. Click <span style='color:green'><b>Create Files in New</b></span> or <span style='color:green'><b>Selected Folder</b></span>, follow the instruction of file creation to create files."},
+     {
+        "title": "Upload Input Files",
+        "content": "Select <span style='color:green'><b>Upload Input Files</b></span>.</br>1. Select <span style='color:green'><b>Create New Folder</b></span> or <span style='color:green'><b>Select an Existing Folder</b></span>. Choose a folder to enable <span style='color:green'><b>Upload Files</b></span> button</br>2. Click <span style='color:green'><b> Upload files in Existing</b></span> or <span style='color:green'><b>New Folder</b></span>, the files should confirm the format of Text Capture Input files.</br>"},
+    {
+        "title": "Select an Existing Folder",
+        "content": "Select <span style='color:green'><b>Existing Folder</b></span>.</br>1. Click <span style='color:green'><b>Select Folder</b></span> to select an existing Text Capture input folder to run Text Capture."}
 ]

@@ -1,5 +1,11 @@
 [
 	{
 		"title": "Input Files",
-		"content": "Matrix Generation Input files should confirm to this format: url to be added here.<br> Matrix Generation Input files can be created in File Manager. In the input step you can create a new folder and upload the input files or select an already exiting folder."}
+		"content": "Matrix Generation Input files can be created in <span style='color:green'><b>File Manager</b></span> or here. The input files should confirm to this <a href='http://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupInput.xsd' target='_blank'>format</a>."},
+	 {
+        "title": "Upload Input Files",
+        "content": "Select <span style='color:green'><b>Upload Input Files</b></span>.</br>1. Select <span style='color:green'><b>Create New Folder</b></span> or <span style='color:green'><b>Select an Existing Folder</b></span>. Choose a folder to enable <span style='color:green'><b>Upload Files</b></span> button</br>2. Click <span style='color:green'><b> Upload files in Existing</b></span> or <span style='color:green'><b>New Folder</b></span>, the files should confirm the format of Matrix Generation Input files.</br>"},
+    {
+        "title": "Select an Existing Folder",
+        "content": "Select <span style='color:green'><b>Select Existing Folder</b></span> radio.</br>1. Click <span style='color:green'><b>Select Folder</b></span> to select a Text Capture output folder as an input folder to run Matrix Generation."}
 ]
