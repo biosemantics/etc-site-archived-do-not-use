@@ -16,9 +16,11 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executors;
 
 import org.apache.commons.io.FileUtils;
@@ -73,6 +75,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenera
 import edu.arizona.biosemantics.matrixgeneration.model.raw.ColumnHead;
 import edu.arizona.biosemantics.matrixgeneration.model.raw.Matrix;
 import edu.arizona.biosemantics.matrixgeneration.model.raw.RowHead;
+import edu.arizona.biosemantics.matrixreview.shared.model.Color;
 import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.Character;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.Organ;
@@ -402,8 +405,10 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		final MatrixGenerationConfiguration config = getMatrixGenerationConfiguration(task);
 		String outputFile = getOutputFile(task);
 		TaxonMatrix matrix = null;
+
+		Model model = new Model();
 		try {
-			matrix = createTaxonMatrix(outputFile);
+			matrix = createTaxonMatrix(outputFile, model);
 		} catch (IOException | JDOMException | ClassNotFoundException e) {
 			log(LogLevel.ERROR, "Couldn't create taxon matrix from generated output", e);
 			throw new MatrixGenerationException(task);
@@ -412,7 +417,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		if(matrix == null) 
 			throw new MatrixGenerationException(task);
 		
-		Model model = new Model(matrix);
+		model.setTaxonMatrix(matrix);
 		try {
 			serializeMatrix(model, Configuration.matrixGeneration_tempFileBase + File.separator + task.getId() + File.separator + "TaxonMatrix.ser");
 		} catch (IOException e) {
@@ -687,7 +692,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			csvWriter.writeNext(characters);
 			for(Taxon taxon : model.getTaxonMatrix().getFlatTaxa()) {
 				String[] line = new String[columns];
-				line[0] = taxon.getFullName();
+				line[0] = taxon.getBiologicalName();
 				i = 1;
 				for(Character character : flatCharacters) {
 					if(model.getTaxonMatrix().isVisiblyContained(character)) 
@@ -730,7 +735,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		}
 	}
 
-	private TaxonMatrix createTaxonMatrix(String filePath) throws ClassNotFoundException, IOException, JDOMException {
+	private TaxonMatrix createTaxonMatrix(String filePath, Model model) throws ClassNotFoundException, IOException, JDOMException {
 		List<Organ> hierarhicalCharacters = new LinkedList<Organ>();
 		List<Taxon> hierarchyTaxa = new LinkedList<Taxon>();
 		
@@ -804,13 +809,27 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	    	
 		    TaxonMatrix taxonMatrix = new TaxonMatrix(hierarhicalCharacters, hierarchyTaxa);
 		    
+		    Color inheritedColor = new Color("FFD700", "Inherited");
+			model.getColors().add(inheritedColor);
 		    //set values
 		    for(Taxon taxon : taxonMatrix.getFlatTaxa()) {
 		    	RowHead rowHead = taxonRowHeadMap.get(taxon);
 		    	for(int j=0; j<charactersInMatrix.size(); j++) {
 		    		Character character = charactersInMatrix.get(j);
 		    		String value = rawMatrix.getCellValues().get(rowHead).get(j + 1).getText();
-		    		taxonMatrix.setValue(taxon, character, new Value(value));
+		    		Value v = new Value(value);
+		    		
+		    		Set<String> provenance = new HashSet<String>();
+		    		provenance.addAll(rawMatrix.getCellValues().get(rowHead).get(j+1).getGenerationProvenance());
+		    		for(edu.arizona.biosemantics.matrixgeneration.model.complete.Value completeValue : 
+		    			rawMatrix.getCellValues().get(rowHead).get(j+1).getSource()) 
+		    			provenance.add(completeValue.getProvenance());
+		    		if(provenance.contains(
+		    				edu.arizona.biosemantics.matrixgeneration.transform.complete.
+		    				TaxonomyDescendantInheritanceTransformer.class.getSimpleName())) {
+		    			model.setColor(v, inheritedColor);
+		    		}
+		    		taxonMatrix.setValue(taxon, character, v);
 		    	}
 		    }  
 			return taxonMatrix;
