@@ -207,7 +207,7 @@ public class TaxonomyComparisonInputPresenter implements ITaxonomyComparisonInpu
 		view.setSerializedModels(serializedModel1, serializedModel2);
 		
 		final MessageBox box = Alerter.startLoading();
-		fileService.getTermReviewFileTreeItem(Authentication.getInstance().getToken(), modelPath1, new AsyncCallback<FileTreeItem>() {
+		fileService.getTermReviewFileFromMatrixGenerationOutput(Authentication.getInstance().getToken(), modelPath1, new AsyncCallback<FileTreeItem>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.stopLoading(box);
@@ -218,7 +218,7 @@ public class TaxonomyComparisonInputPresenter implements ITaxonomyComparisonInpu
 					termReviewInputFile1 = fileTreeItem.getFilePath();
 					view.setTermReviewPath1(fileTreeItem.getDisplayFilePath());
 				}
-				fileService.getTermReviewFileTreeItem(Authentication.getInstance().getToken(), modelPath2, new AsyncCallback<FileTreeItem>() {
+				fileService.getTermReviewFileFromMatrixGenerationOutput(Authentication.getInstance().getToken(), modelPath2, new AsyncCallback<FileTreeItem>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						Alerter.stopLoading(box);
@@ -229,7 +229,22 @@ public class TaxonomyComparisonInputPresenter implements ITaxonomyComparisonInpu
 							termReviewInputFile2 = fileTreeItem.getFilePath();
 							view.setTermReviewPath2(fileTreeItem.getDisplayFilePath());
 						}
-						Alerter.stopLoading(box);
+						
+						fileService.getOntologyInputFileFromMatrixGenerationOutput(
+								Authentication.getInstance().getToken(), modelPath2, new AsyncCallback<FileTreeItem>() {
+									@Override
+									public void onFailure(Throwable caught) {
+										Alerter.stopLoading(box);
+									}
+									@Override
+									public void onSuccess(FileTreeItem result) {
+										if(result != null) {
+											ontologyInputFile = result.getFilePath();
+											view.setOntologyPath(result.getDisplayFilePath());
+										}
+										Alerter.stopLoading(box);
+									}
+								});
 					}
 				});
 			}

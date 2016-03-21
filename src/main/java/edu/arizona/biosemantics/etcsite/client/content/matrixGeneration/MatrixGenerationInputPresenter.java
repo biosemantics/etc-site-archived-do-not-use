@@ -17,6 +17,7 @@ import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerD
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
+import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
 
 public class MatrixGenerationInputPresenter implements IMatrixGenerationInputView.Presenter {
@@ -31,6 +32,7 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 	private String ontologyInputFile;
 	private String termReviewInputFile;
 	private IFileManagerDialogView.Presenter fileManagerDialogPresenter;
+	private IFileServiceAsync fileService;
 	
 	@Inject
 	public MatrixGenerationInputPresenter(IMatrixGenerationInputView view, 
@@ -38,7 +40,8 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 			PlaceController placeController, 
 			ISelectableFileTreeView.Presenter selectableFileTreePresenter,
 			FilePathShortener filePathShortener,
-			IFileManagerDialogView.Presenter fileManagerDialogPresenter
+			IFileManagerDialogView.Presenter fileManagerDialogPresenter,
+			IFileServiceAsync fileService
 			) {
 		this.view = view;
 		view.setPresenter(this);;
@@ -48,6 +51,7 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 		this.fileTreePresenter = selectableFileTreePresenter.getFileTreePresenter();
 		this.filePathShortener = filePathShortener;
 		this.fileManagerDialogPresenter = fileManagerDialogPresenter;
+		this.fileService = fileService;
 	}
 	
 	private static interface InputSetter {
@@ -162,15 +166,47 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 	}
 
 	@Override
-	public void setSelectedFolder(String fullPath, String shortendPath) {
+	public void setSelectedFolder(final String fullPath, String shortendPath) {
 		inputFile = fullPath;
 		view.setFilePath(shortendPath);
 		view.setOntologyPath("");
 		view.setTermReviewPath("");
 		this.ontologyInputFile = "";
 		this.termReviewInputFile = "";
+		
+		final MessageBox box = Alerter.startLoading();
+		fileService.getTermReviewFileFromTextCaptureOutput(Authentication.getInstance().getToken(), fullPath, 
+				new AsyncCallback<FileTreeItem>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.stopLoading(box);
+			}
+			@Override
+			public void onSuccess(FileTreeItem fileTreeItem) {
+				if(fileTreeItem != null) {
+					termReviewInputFile = fileTreeItem.getFilePath();
+					view.setTermReviewPath(fileTreeItem.getDisplayFilePath());
+					
+					fileService.getOntologyInputFileFromTextCaptureOutput(Authentication.getInstance().getToken(), 
+							fullPath, new AsyncCallback<FileTreeItem>() {
+								@Override
+								public void onFailure(Throwable caught) {
+									Alerter.stopLoading(box);
+								}
+								@Override
+								public void onSuccess(FileTreeItem result) {
+									if(result != null) {
+										ontologyInputFile = result.getFilePath();
+										view.setOntologyPath(result.getDisplayFilePath());
+									}
+									Alerter.stopLoading(box);
+								}
+					});
+				}
+			}
+		});
+		
 		view.resetFields();
 		//view.setEnabledNext(false);
 	}
-
 }

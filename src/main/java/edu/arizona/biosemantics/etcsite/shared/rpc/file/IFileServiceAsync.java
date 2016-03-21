@@ -72,5 +72,15 @@ public interface IFileServiceAsync {
 	
 	public void copyDirectory(AuthenticationToken authenticationToken, String source, String destination, AsyncCallback<Void> callback);
 	
-	public void getTermReviewFileTreeItem(AuthenticationToken token, String matrixReviewModelPath, AsyncCallback<FileTreeItem> callback);
+	public void getTermReviewFileFromTextCaptureOutput(AuthenticationToken token, String matrixReviewModelPath, AsyncCallback<FileTreeItem> callback);
+
+	public void getOntologyInputFileFromTextCaptureOutput(AuthenticationToken token,
+			String fullPath, AsyncCallback<FileTreeItem> asyncCallback);
+	
+	public void getTermReviewFileFromMatrixGenerationOutput(
+			AuthenticationToken token, String matrixGenerationOutput, AsyncCallback<FileTreeItem> callback);
+
+	public void getOntologyInputFileFromMatrixGenerationOutput(
+			AuthenticationToken token, String modelPath,
+			AsyncCallback<FileTreeItem> asyncCallback);
 }

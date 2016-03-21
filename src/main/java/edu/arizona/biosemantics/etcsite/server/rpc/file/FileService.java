@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 
@@ -995,11 +996,16 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 			}*/
 		}
 	}
-	
+
 	@Override
-	public FileTreeItem getTermReviewFileTreeItem(AuthenticationToken token, String matrixReviewModelPath) {
-		String[] parts = matrixReviewModelPath.split("_output_by_MG_task_");
-		String reviewTermsPath = parts[0].replaceAll("_output_by_TC_task_", "_ReviewTerms_by_TC_task_");
+	public FileTreeItem getTermReviewFileFromMatrixGenerationOutput(AuthenticationToken token, String matrixGenerationOutput) {
+		String[] parts = matrixGenerationOutput.split("_output_by_MG_task_");
+		return this.getTermReviewFileFromTextCaptureOutput(token, parts[0]);
+	}
+
+	@Override
+	public FileTreeItem getTermReviewFileFromTextCaptureOutput(AuthenticationToken token, String textCaptureOutputPath) {
+		String reviewTermsPath = textCaptureOutputPath.replaceAll("_output_by_TC_task_", "_ReviewTerms_by_TC_task_");
 		File file = new File(reviewTermsPath);
 		if(file.exists() && file.isDirectory()) {
 			if(file.listFiles().length != 3)
@@ -1028,6 +1034,53 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 					false, false, fileSource);
 		}
 		return null;
+	}
+
+	//returns the first possiblity it can find
+	@Override
+	public FileTreeItem getOntologyInputFileFromTextCaptureOutput(AuthenticationToken token, String textCaptureOutput) {
+		File file = new File(textCaptureOutput);
+		String prefix = file.getName() + "_output_by_OB_task_";
+		String ontologyPath = null;
+		if(file.exists() && file.isDirectory()) {
+			for(File sibling : file.getParentFile().listFiles()) {
+				if(sibling.getName().startsWith(prefix)) {
+					ontologyPath = sibling.getAbsolutePath();
+					break;
+				}
+			}
+		}
+		
+		File ontologyFile = new File(ontologyPath);
+		if(ontologyFile.exists() && ontologyFile.isDirectory()) {
+			for(File child : ontologyFile.listFiles()) {
+				if(child.isDirectory())
+					return null;
+			}
+			
+			String path = ontologyFile.getAbsolutePath();
+			FileSource fileSource = null;
+			if(path.startsWith(Configuration.fileBase + File.separator + token.getUserId()))
+				fileSource = FileSource.OWNED;
+			if(path.startsWith(Configuration.publicFolder))
+				fileSource = FileSource.PUBLIC;
+			if(path.startsWith(Configuration.fileBase + File.separator) && !path.startsWith(Configuration.fileBase + File.separator + token.getUserId()))
+				fileSource = FileSource.SHARED;
+			FilePathShortener filePathShortener = new FilePathShortener();
+			String displayPath = filePathShortener.shorten(path, fileSource, token.getUserId());
+			return createFolderTreeItem(ontologyFile.getName(), getDisplayName(ontologyFile), 
+					ontologyFile.getAbsolutePath(), displayPath, null, getOwnerUserId(ontologyFile), false, 
+					false, false, fileSource);
+		}
+		return null;
+	}
+	
+	@Override
+	public FileTreeItem getOntologyInputFileFromMatrixGenerationOutput(
+			AuthenticationToken token, String matrixGenerationOutput) {		
+		String[] parts = matrixGenerationOutput.split("_output_by_MG_task_");
+		String textCaptureOutput = parts[0];
+		return this.getOntologyInputFileFromTextCaptureOutput(token, textCaptureOutput);
 	}
 }
 

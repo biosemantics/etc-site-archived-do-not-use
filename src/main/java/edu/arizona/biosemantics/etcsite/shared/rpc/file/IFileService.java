@@ -3,6 +3,7 @@ package edu.arizona.biosemantics.etcsite.shared.rpc.file;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -79,5 +80,14 @@ public interface IFileService extends RemoteService {
 	public void copyDirectory(AuthenticationToken authenticationToken, String source, String destination) throws CopyFilesFailedException,
 			PermissionDeniedException;
 
-	public FileTreeItem getTermReviewFileTreeItem(AuthenticationToken token, String matrixReviewModelPath);
+	public FileTreeItem getTermReviewFileFromTextCaptureOutput(AuthenticationToken token, String matrixReviewModelPath);
+
+	public FileTreeItem getOntologyInputFileFromTextCaptureOutput(AuthenticationToken token,
+			String fullPath);
+
+	public FileTreeItem getTermReviewFileFromMatrixGenerationOutput(
+			AuthenticationToken token, String matrixGenerationOutput);
+	
+	public FileTreeItem getOntologyInputFileFromMatrixGenerationOutput(
+			AuthenticationToken token, String modelPath);
 }
