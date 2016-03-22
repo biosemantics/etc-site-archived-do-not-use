@@ -100,15 +100,53 @@ public class TextFileUploader extends Uploader {
 		}
 		
 		List<UploadResult> childUploadResults = new LinkedList<UploadResult>();
-		for(File file : tempOutput.listFiles()) {
-			childUploadResults.addAll(handleFile(item, file, fileType, tempOutput, target));
+		if(tempOutput.listFiles().length == 1 && tempOutput.listFiles()[0].isDirectory()) {
+			childUploadResults.addAll(handleFile(item, tempOutput.listFiles()[0].listFiles(), fileType, tempOutput, target));
+		} else {
+			childUploadResults.addAll(handleFile(item, tempOutput.listFiles(), fileType, tempOutput, target));
 		}
+		
+		/*for(File file : tempOutput.listFiles()) {	
+			//disallow upload of zip files with directory sturctures
+			//childUploadResults.addAll(handleFile(item, file, fileType, tempOutput, target));
+		}*/
 		uploadResult.setChildResults(childUploadResults);
 		
 		return uploadResult;
 	}
 
-	private Collection<UploadResult> handleFile(FileItem item, File file, FileTypeEnum fileType, File tempOutput, File target) {
+	private Collection<? extends UploadResult> handleFile(FileItem item, File[] files, FileTypeEnum fileType, File tempOutput, File target) {
+		List<UploadResult> result = new LinkedList<UploadResult>();
+		for(File file : files) {
+			UploadResult childUploadResult = new UploadResult(item, file, getRelativeFileName(file, tempOutput));
+			if(file.isDirectory()) {
+				childUploadResult.setDirectoryNotAllowedInZip(true);
+			} else {
+				byte[] bytes = null;
+				try {
+					bytes = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
+					if(!isValidUTF8(bytes)) {
+						childUploadResult.setInvalidEncoding(true);
+					} else {
+						try {
+							FileUtils.copyFileToDirectory(file, target);
+						} catch (IOException e) {
+							childUploadResult.setWriteFailed(true);
+							log(LogLevel.ERROR, "Couldn't copy extracted files to target directory", e);
+						}
+					}
+				} catch (IOException e) {
+					log(LogLevel.ERROR, "Could not read file", e);
+					childUploadResult.setWriteFailed(true);
+				}
+			}
+			result.add(childUploadResult);
+		}
+		return result;
+	}
+
+	//disallow upload of zip files with directory sturctures
+	/*private Collection<UploadResult> handleFile(FileItem item, File file, FileTypeEnum fileType, File tempOutput, File target) {
 		List<UploadResult> result = new LinkedList<UploadResult>();
 		if(file.isDirectory()) {
 			target = new File(target, file.getName());
@@ -138,5 +176,5 @@ public class TextFileUploader extends Uploader {
 			result.add(childUploadResult);
 		}
 		return result;
-	}
+	}*/
 }

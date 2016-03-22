@@ -24,6 +24,7 @@ public abstract class Uploader {
 		private boolean invalidFormat = false;
 		private String formatErrorMessage = "";
 		private boolean invalidEncoding = false;
+		private boolean directoryNotAllowedInFile = false;
 		
 		private FileItem fileItem;
 		private File file;
@@ -39,13 +40,16 @@ public abstract class Uploader {
 		
 		public UploadResult(boolean writeFailed,
 				boolean fileExisted, boolean invalidFormat,
-				boolean invalidEncoding, FileItem fileItem,
+				boolean invalidEncoding, 
+				boolean directoryNotAllowedInFile,
+				FileItem fileItem,
 				File file, String relativeFileName) {
 			super();
 			this.writeFailed = writeFailed;
 			this.fileExisted = fileExisted;
 			this.invalidFormat = invalidFormat;
 			this.invalidEncoding = invalidEncoding;
+			this.directoryNotAllowedInFile = directoryNotAllowedInFile;
 			this.fileItem = fileItem;
 			this.file = file;
 			this.relativeFileName = relativeFileName;
@@ -102,13 +106,17 @@ public abstract class Uploader {
 		public void setRelativeFileName(String relativeFileName) {
 			this.relativeFileName = relativeFileName;
 		}
-
 		public String getFormatErrorMessage() {
 			return formatErrorMessage;
 		}
-
 		public void setFormatErrorMessage(String formatErrorMessage) {
 			this.formatErrorMessage = formatErrorMessage;
+		}
+		public void setDirectoryNotAllowedInZip(boolean directoryNotAllowedInFile) {
+			this.directoryNotAllowedInFile = directoryNotAllowedInFile;
+		}
+		public boolean isDirectoryNotAllowedInFile() {
+			return directoryNotAllowedInFile;
 		}
 	}
 	

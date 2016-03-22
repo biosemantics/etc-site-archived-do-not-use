@@ -130,15 +130,14 @@ public class UploadServlet extends UploadAction {
 		List<UploadResult> invalidFormat = new LinkedList<UploadResult>();
 		List<UploadResult> invalidEncoding = new LinkedList<UploadResult>();
 		List<UploadResult> writeFailed = new LinkedList<UploadResult>();
+		List<UploadResult> directoryNotAllowedInZip = new LinkedList<UploadResult>();
 		
 		for(UploadResult uploadResult : uploadResults) {
 			receivedFiles.put(uploadResult.getFileItem().getFieldName(), uploadResult.getFile());
 			receivedContentTypes.put(uploadResult.getFileItem().getFieldName(), uploadResult.getFileItem().getContentType());
 			
-			evaluate(uploadResult, notAdded, fileExisted, invalidFormat, invalidEncoding, writeFailed);
+			evaluate(uploadResult, notAdded, fileExisted, invalidFormat, invalidEncoding, writeFailed, directoryNotAllowedInZip);
 		}
-		
-
 		
 		if(!notAdded.isEmpty()) {
 			if(notAdded.size() == 1)
@@ -146,6 +145,7 @@ public class UploadServlet extends UploadAction {
 			if(notAdded.size() > 1)
 				result += notAdded.size() + " files were not added.";
 			
+			String directoryNotAllowedInZipFiles = " "; //Do not remove this space - used in client side processing of server response
 			String writeFailedFiles = " "; //Do not remove this space - used in client side processing of server response
 			String existingFiles = " "; //Do not remove this space - used in client side processing of server response
 			String invalidFormatFiles = " ";
@@ -166,7 +166,10 @@ public class UploadServlet extends UploadAction {
 			if(writeFailed.size() > 0){
 				writeFailedFiles = getJoinedFileNames(writeFailed);
 			}
-			result += "#" + writeFailedFiles + "#" + existingFiles + "#" + invalidFormatFiles + "#" + invalidEncodingFiles + "#";
+			if(directoryNotAllowedInZip.size() > 0) {
+				directoryNotAllowedInZipFiles = getJoinedFileNames(directoryNotAllowedInZip);
+			}
+			result += "#" + directoryNotAllowedInZipFiles + "#" + writeFailedFiles + "#" + existingFiles + "#" + invalidFormatFiles + "#" + invalidEncodingFiles + "#";
 		}
 		
 		return result;
@@ -175,7 +178,8 @@ public class UploadServlet extends UploadAction {
 	private void evaluate(UploadResult uploadResult,
 			List<UploadResult> notAdded, List<UploadResult> fileExisted,
 			List<UploadResult> invalidFormat,
-			List<UploadResult> invalidEncoding, List<UploadResult> writeFailed) {
+			List<UploadResult> invalidEncoding, List<UploadResult> writeFailed, 
+			List<UploadResult> directoryNotAllowedInFile) {
 		//if(uploadResult.getChildResults().isEmpty()) {
 			if(!uploadResult.isSuccess())
 				notAdded.add(uploadResult);
@@ -187,9 +191,11 @@ public class UploadServlet extends UploadAction {
 				invalidEncoding.add(uploadResult);
 			if(uploadResult.isWriteFailed())
 				writeFailed.add(uploadResult);
+			if(uploadResult.isDirectoryNotAllowedInFile())
+				directoryNotAllowedInFile.add(uploadResult);
 		//} else {
 			for(UploadResult childResult : uploadResult.getChildResults()) 
-				evaluate(childResult, notAdded, fileExisted, invalidFormat, invalidEncoding, writeFailed);
+				evaluate(childResult, notAdded, fileExisted, invalidFormat, invalidEncoding, writeFailed, directoryNotAllowedInFile);
 		//}
 	}
 

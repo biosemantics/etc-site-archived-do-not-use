@@ -107,15 +107,54 @@ public class CleanTaxUploader extends Uploader {
 			uploadResult.setWriteFailed(true);
 			return uploadResult;
 		}*/
-		for(File file : tempOutput.listFiles()) { //tempOutput.listFiles()[0].listFiles()) {
-			childUploadResults.addAll(handleFile(item, file, fileType, tempOutput, target));
+		
+		if(tempOutput.listFiles().length == 1 && tempOutput.listFiles()[0].isDirectory()) {
+			childUploadResults.addAll(handleFile(item, tempOutput.listFiles()[0].listFiles(), fileType, tempOutput, target));
+		} else {
+			childUploadResults.addAll(handleFile(item, tempOutput.listFiles(), fileType, tempOutput, target));
 		}
+		
+		/*for(File file : tempOutput.listFiles()) { //tempOutput.listFiles()[0].listFiles()) {
+			childUploadResults.addAll(handleFile(item, file, fileType, tempOutput, target));
+		}*/
 		uploadResult.setChildResults(childUploadResults);
 		
 		return uploadResult;
 	}
 	
-	private Collection<UploadResult> handleFile(FileItem item, File file, FileTypeEnum fileType, File tempOutput, File target) {
+	private Collection<UploadResult> handleFile(FileItem item, File[] files, FileTypeEnum fileType, File tempOutput, File target) {
+		List<UploadResult> result = new LinkedList<UploadResult>();
+		for(File file : files) {
+			UploadResult childUploadResult =  new UploadResult(item, file, getRelativeFileName(file, tempOutput));
+			byte[] bytes = null;
+			try {
+				bytes = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
+				if(!isValidUTF8(bytes)) {
+					childUploadResult.setInvalidEncoding(true);
+				} else {
+					String fileContent = new String(bytes, Charset.forName("UTF8"));
+					boolean valid = cleanTaxReader.validate(fileContent);
+					if(valid) {
+						try {
+							FileUtils.copyFileToDirectory(file, target);
+						} catch (IOException e) {
+							childUploadResult.setWriteFailed(true);
+							log(LogLevel.ERROR, "Couldn't copy extracted files to target directory", e);
+						}
+					} else {
+						childUploadResult.setInvalidFormat(true, cleanTaxReader.getInvalidMessage());
+					}
+				}
+			} catch (IOException e) {
+				log(LogLevel.ERROR, "Could not read file", e);
+				childUploadResult.setWriteFailed(true);
+			}
+			result.add(childUploadResult);
+		}
+		return result;
+	}
+	
+	/*private Collection<UploadResult> handleFile(FileItem item, File file, FileTypeEnum fileType, File tempOutput, File target) {
 		List<UploadResult> result = new LinkedList<UploadResult>();
 		if(file.isDirectory()) {
 			target = new File(target, file.getName());
@@ -151,5 +190,5 @@ public class CleanTaxUploader extends Uploader {
 			result.add(childUploadResult);
 		}
 		return result;
-	}
+	}*/
 }

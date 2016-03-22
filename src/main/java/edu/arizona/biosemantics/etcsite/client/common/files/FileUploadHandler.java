@@ -57,10 +57,11 @@ public class FileUploadHandler {
 				for(int i=0; i<responseStrings.length; i++)
 					responseStrings[i] = responseStrings[i].trim();
 				
-				String writeFailedFiles[] = responseStrings[1].isEmpty() ? new String[] { } : responseStrings[1].split("\\|");
-				String existingFiles[] = responseStrings[2].isEmpty() ? new String[] { } : responseStrings[2].split("\\|");
-				String invalidFormatFiles[] = responseStrings[3].isEmpty() ? new String[] { } : responseStrings[3].split("\n");
-				String invalidEncodingFiles[] = responseStrings[4].isEmpty() ? new String[] { } : responseStrings[4].split("\\|");
+				String directoryNotAllowedInZip[] = responseStrings[1].isEmpty() ? new String[] { } : responseStrings[1].split("\\|");
+				String writeFailedFiles[] = responseStrings[2].isEmpty() ? new String[] { } : responseStrings[2].split("\\|");
+				String existingFiles[] = responseStrings[3].isEmpty() ? new String[] { } : responseStrings[3].split("\\|");
+				String invalidFormatFiles[] = responseStrings[4].isEmpty() ? new String[] { } : responseStrings[4].split("\n");
+				String invalidEncodingFiles[] = responseStrings[5].isEmpty() ? new String[] { } : responseStrings[5].split("\\|");
 				
 				uploadServerResponse = responseStrings[0] + "\n";
 				
@@ -102,10 +103,22 @@ public class FileUploadHandler {
 					}
 				}
 				
+				if (directoryNotAllowedInZip.length > 0) {
+					uploadServerResponse += "\nFollowing directories are not allowed in the zip file\n";
+					
+					for (int i = 0; /*reportedUploadFailedFiles < MAX_FILES_TO_REPORT_FAILED &&*/ i < directoryNotAllowedInZip.length; i++) {
+						uploadServerResponse += directoryNotAllowedInZip[i] + "\n";
+						reportedUploadFailedFiles++;
+					}
+				}
+				
 				//if(writeFailedFiles.length + existingFiles.length + invalidFormatFiles.length + invalidEncodingFiles.length > MAX_FILES_TO_REPORT_FAILED)
 				//	uploadServerResponse += "and so on.\n";
 				
 				//remove all failed upload files
+				for (int i = 0; i < directoryNotAllowedInZip.length; i++) {
+					uploadedFiles.remove(directoryNotAllowedInZip[i]);
+				}
 				for (int i = 0; i < writeFailedFiles.length; i++) {
 					uploadedFiles.remove(writeFailedFiles[i]);
 				}
