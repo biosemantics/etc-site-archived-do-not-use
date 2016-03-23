@@ -1005,7 +1005,7 @@ public class FileService extends RemoteServiceServlet implements IFileService {
 
 	@Override
 	public FileTreeItem getTermReviewFileFromTextCaptureOutput(AuthenticationToken token, String textCaptureOutputPath) {
-		String reviewTermsPath = textCaptureOutputPath.replaceAll("_output_by_TC_task_", "_ReviewTerms_by_TC_task_");
+		String reviewTermsPath = textCaptureOutputPath.replaceAll("_output_by_TC_task_", "_TermsReviewed_by_TC_task_");
 		File file = new File(reviewTermsPath);
 		if(file.exists() && file.isDirectory()) {
 			if(file.listFiles().length != 3)
