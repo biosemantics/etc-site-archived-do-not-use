@@ -221,7 +221,7 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	    ranksCombo.setAllowBlank(false);
 	    ranksCombo.setForceSelection(true);
 	    ranksCombo.setTriggerAction(TriggerAction.ALL);
-	    ranksCombo.setValue(Rank.LIFE);
+	    ranksCombo.setValue(Rank.DOMAIN);
 	    
 		
 	    ListStore<Description> descStore = new ListStore<Description>(new ModelKeyProvider<Description>() {
@@ -560,7 +560,7 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		while(ranksGrid.getRowCount() > 3) {
 			ranksGrid.removeRow(ranksGrid.getRowCount() - 2);
 		}
-		ranksCombo.setValue(Rank.LIFE);
+		ranksCombo.setValue(Rank.DOMAIN);
 		ranksGrid.setWidget(1, 0, ranksCombo);
 		ranksGrid.setWidget(1, 1,new TextBox());
 		ranksGrid.setWidget(1, 2, deleteRankButton);
@@ -613,11 +613,6 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		Rank rank = ranksCombo.getValue();
 		Set<Rank> strainRanks = new HashSet<Rank>();
 		strainRanks.add(Rank.STRAIN);
-		strainRanks.add(Rank.SUPERSTRAIN);
-		strainRanks.add(Rank.SUBSTRAIN);
-		strainRanks.add(Rank.SUPERTYPESTRAIN);
-		strainRanks.add(Rank.TYPESTRAIN);
-		strainRanks.add(Rank.SUBTYPESTRAIN);
 		return strainRanks.contains(rank);
 	}
 	

@@ -744,7 +744,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	    	List<Character> charactersInMatrix = new LinkedList<Character>();
 	    	HashMap<String, Organ> organMap = new HashMap<String, Organ>();
 	    	List<ColumnHead> columnHeads = rawMatrix.getColumnHeads();
-	    	for(int i=1; i<columnHeads.size(); i++) {
+	    	for(int i=0; i<columnHeads.size(); i++) {
 	    		ColumnHead columnHead = columnHeads.get(i);
 	    		
 	    		String characterName = columnHead.getSource().getName();
@@ -816,14 +816,19 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		    	RowHead rowHead = taxonRowHeadMap.get(taxon);
 		    	for(int j=0; j<charactersInMatrix.size(); j++) {
 		    		Character character = charactersInMatrix.get(j);
-		    		String value = rawMatrix.getCellValues().get(rowHead).get(j + 1).getText();
+		    		String value = rawMatrix.getCellValues().get(rowHead).get(j).getText();
 		    		Value v = new Value(value);
 		    		
 		    		Set<String> provenance = new HashSet<String>();
-		    		provenance.addAll(rawMatrix.getCellValues().get(rowHead).get(j+1).getGenerationProvenance());
+		    		provenance.addAll(rawMatrix.getCellValues().get(rowHead).get(j).getGenerationProvenance());
+		    		
 		    		for(edu.arizona.biosemantics.matrixgeneration.model.complete.Value completeValue : 
-		    			rawMatrix.getCellValues().get(rowHead).get(j+1).getSource()) 
-		    			provenance.add(completeValue.getProvenance());
+		    			rawMatrix.getCellValues().get(rowHead).get(j).getSource()) {
+		    			if(completeValue != null) {
+		    				if(completeValue.getGenerationProvenance() != null) 
+			    				provenance.addAll(completeValue.getGenerationProvenance());
+		    			}
+		    		}
 		    		if(provenance.contains(
 		    				edu.arizona.biosemantics.matrixgeneration.transform.complete.
 		    				TaxonomyDescendantInheritanceTransformer.class.getSimpleName())) {
@@ -1149,8 +1154,15 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}*/
 	
 	public static void main(String[] args) throws Exception {
-		//MatrixGenerationService service = new MatrixGenerationService();
-		//service.createTaxonMatrix("C:/test/Test_mmm", "C:/test/Test_mmm.csv");
+		//MatrixGenerationService service = new MatrixGenerationService(null, null, null, null, null, null);
+		//service.createTaxonMatrix("C:/Users/rodenhausen.CATNET/Desktop/Matrix.ser", new Model());
+		edu.arizona.biosemantics.matrixgeneration.io.raw.out.CSVWriter writer = new 
+				edu.arizona.biosemantics.matrixgeneration.io.raw.out.CSVWriter("C:/Users/rodenhausen.CATNET/Desktop/Matrix2.csv", false);
+		 try(ObjectInputStream objectInputStream = new ObjectInputStream(
+				 new FileInputStream("C:/Users/rodenhausen.CATNET/Desktop/Matrix.ser"))) {
+		    	Matrix rawMatrix = (Matrix)objectInputStream.readObject();
+				writer.write(rawMatrix);
+		 }
 	}
 	
 	@Override

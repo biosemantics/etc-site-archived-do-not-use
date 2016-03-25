@@ -126,28 +126,32 @@ public class CleanTaxUploader extends Uploader {
 		List<UploadResult> result = new LinkedList<UploadResult>();
 		for(File file : files) {
 			UploadResult childUploadResult =  new UploadResult(item, file, getRelativeFileName(file, tempOutput));
-			byte[] bytes = null;
-			try {
-				bytes = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
-				if(!isValidUTF8(bytes)) {
-					childUploadResult.setInvalidEncoding(true);
-				} else {
-					String fileContent = new String(bytes, Charset.forName("UTF8"));
-					boolean valid = cleanTaxReader.validate(fileContent);
-					if(valid) {
-						try {
-							FileUtils.copyFileToDirectory(file, target);
-						} catch (IOException e) {
-							childUploadResult.setWriteFailed(true);
-							log(LogLevel.ERROR, "Couldn't copy extracted files to target directory", e);
-						}
+			if(file.isDirectory()) {
+				childUploadResult.setDirectoryNotAllowedInZip(true);
+			} else {
+				byte[] bytes = null;
+				try {
+					bytes = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
+					if(!isValidUTF8(bytes)) {
+						childUploadResult.setInvalidEncoding(true);
 					} else {
-						childUploadResult.setInvalidFormat(true, cleanTaxReader.getInvalidMessage());
+						String fileContent = new String(bytes, Charset.forName("UTF8"));
+						boolean valid = cleanTaxReader.validate(fileContent);
+						if(valid) {
+							try {
+								FileUtils.copyFileToDirectory(file, target);
+							} catch (IOException e) {
+								childUploadResult.setWriteFailed(true);
+								log(LogLevel.ERROR, "Couldn't copy extracted files to target directory", e);
+							}
+						} else {
+							childUploadResult.setInvalidFormat(true, cleanTaxReader.getInvalidMessage());
+						}
 					}
+				} catch (IOException e) {
+					log(LogLevel.ERROR, "Could not read file", e);
+					childUploadResult.setWriteFailed(true);
 				}
-			} catch (IOException e) {
-				log(LogLevel.ERROR, "Could not read file", e);
-				childUploadResult.setWriteFailed(true);
 			}
 			result.add(childUploadResult);
 		}

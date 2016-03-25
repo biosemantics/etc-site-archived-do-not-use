@@ -761,8 +761,8 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			Taxonomy taxonomy2 = createTaxonomy(reviewModel2);
 			taxonomy1.setYear(config.getModel1Year());
 			taxonomy2.setYear(config.getModel2Year());
-			taxonomy1.setName(config.getModel1Author());
-			taxonomy2.setName(config.getModel2Author());
+			taxonomy1.setAuthor(config.getModel1Author());
+			taxonomy2.setAuthor(config.getModel2Author());
 			/*if(taxonomy1.getYear().equals(taxonomy2.getYear()) && taxonomy1.getName().equals(taxonomy2.getName())) {
 				taxonomy1.setName(taxonomy1.getName() + " (1)");
 				taxonomy2.setname(taxonomy2.getName() + " (2)");

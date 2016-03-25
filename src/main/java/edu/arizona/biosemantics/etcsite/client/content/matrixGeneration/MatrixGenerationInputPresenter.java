@@ -202,6 +202,8 @@ public class MatrixGenerationInputPresenter implements IMatrixGenerationInputVie
 									Alerter.stopLoading(box);
 								}
 					});
+				} else {
+					Alerter.stopLoading(box);
 				}
 			}
 		});

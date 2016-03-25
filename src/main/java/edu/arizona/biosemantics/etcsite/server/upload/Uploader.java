@@ -74,7 +74,7 @@ public abstract class Uploader {
 			this.formatErrorMessage = formatErrorMessage;
 		}
 		public boolean isSuccess() {
-			return !writeFailed && !fileExisted && !invalidFormat && !invalidEncoding;
+			return !writeFailed && !fileExisted && !invalidFormat && !invalidEncoding && !directoryNotAllowedInFile;
 		}
 		public FileItem getFileItem() {
 			return fileItem;
