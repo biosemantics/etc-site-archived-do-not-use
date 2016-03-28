@@ -735,7 +735,22 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		collection.setGlossaryPath1(config.getTermReview1());
 		collection.setGlossaryPath2(config.getTermReview2());
 		collection.setTaxonGroup(edu.arizona.biosemantics.common.biology.TaxonGroup.valueFromDisplayName(taxonGroup));
-		collection.setOntologyPath(config.getOntology());
+		File ontologyDir = new File(config.getOntology());
+		if(ontologyDir.exists() && ontologyDir.isDirectory()) {
+			File ontologyFile = null;
+			for(File child : ontologyDir.listFiles()) {
+				if(child.getName().endsWith(".owl") && !child.getName().startsWith("module.")) {
+					ontologyFile = child;
+				}
+			}
+			if(ontologyFile != null) {
+				collection.setOntologyPath(ontologyFile.getAbsolutePath());
+			} else {
+				throw new TaxonomyComparisonException();
+			}
+		} else {
+			throw new TaxonomyComparisonException();
+		}
 		try {
 			collection = alignmentService.createCollection(collection);
 			config.setAlignmentId(collection.getId());

@@ -5,6 +5,7 @@ import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.ExtraJvmCallable;
 import edu.arizona.biosemantics.etcsite.server.enhance.EnhanceRun;
+import edu.arizona.biosemantics.etcsite.server.enhance.MinimalEnhanceRun;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
 
 public class ExtraJvmEnhance extends ExtraJvmCallable<Void> implements Enhance {
@@ -20,13 +21,20 @@ public class ExtraJvmEnhance extends ExtraJvmCallable<Void> implements Enhance {
 			String taxonGroup = args[5];
 			
 			try {
-				System.out.println("Run Enhance: \n" + inputDir + " \n" + tempDir + " \n" + inputOntology + "\n " + termReviewTermCategorization + "\n"
-						+ termReviewSynonyms + "\n" + taxonGroup );
-				EnhanceRun enhance = new EnhanceRun(inputDir, tempDir, inputOntology, 
-						termReviewTermCategorization, termReviewSynonyms, TaxonGroup.valueOf(taxonGroup));
-				enhance.run();
-				System.out.println("Done Running Enhance");
-				
+				if(inputOntology != null && termReviewTermCategorization != null && termReviewSynonyms != null) {
+					System.out.println("Run Enhance: \n" + inputDir + " \n" + tempDir + " \n" + inputOntology + "\n " + termReviewTermCategorization + "\n"
+							+ termReviewSynonyms + "\n" + taxonGroup );
+					EnhanceRun enhance = new EnhanceRun(inputDir, tempDir, inputOntology, 
+							termReviewTermCategorization, termReviewSynonyms, TaxonGroup.valueOf(taxonGroup));
+					enhance.run();
+					System.out.println("Done Running Minimal Enhance");
+				} else {
+					System.out.println("Run Minimal Enhance: \n" + inputDir + " \n" + tempDir + " \n" + taxonGroup );
+					MinimalEnhanceRun enhance = new MinimalEnhanceRun(inputDir, tempDir, TaxonGroup.valueOf(taxonGroup));
+					enhance.run();
+					System.out.println("Done Running Minimal Enhance");
+				}
+					
 			} catch (Throwable t) {
 				System.out.println("ExtraJvmEnhance failed with throwable "+t.getMessage());
 				System.out.println(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(t));

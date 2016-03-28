@@ -251,9 +251,10 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			}
 			
 			if(isEnhanceAndMatrixGeneration(config.getInputTermReview(), config.getInputOntology())) {
+				//doMatrixGeneration(token, task, config, config.getInput());
 				doEnhanceAndMatrixGeneration(token, task, config);
 			} else {
-				doMatrixGeneration(token, task, config, config.getInput());
+				doMinimalEnhanceAndMatrixGeneration(token, task, config, config.getInput());
 			}
 			
 			return task;
@@ -349,8 +350,65 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		
 	}
 
+	private void doMinimalEnhanceAndMatrixGeneration(final AuthenticationToken token, final Task task, final MatrixGenerationConfiguration config, 
+			String inputDir) throws MatrixGenerationException {
+		String input = config.getInput();
+		String ontologyFile = null;
+		String categoryTerm = null;
+		String synonym = null;
+		String taxonGroup = config.getTaxonGroup().getName().toUpperCase();
+		
+		final String enhanceDir = this.getTempDir(task) + File.separator + "enhance";
+		final Enhance enhance = new ExtraJvmEnhance(input, enhanceDir, ontologyFile, categoryTerm, synonym, taxonGroup);
+		//final Enhance enhance = new InJvmEnhance(input, enhanceDir, ontologyFile, categoryTerm, synonym, taxonGroup);
+		
+		activeEnhanceProcess.put(config.getConfiguration().getId(), enhance);
+		final ListenableFuture<Void> futureResult = executorService.submit(enhance);
+		this.activeProcessFutures.put(config.getConfiguration().getId(), futureResult);
+		
+		/*try {
+			futureResult.get(Configuration.matrixGeneration_maxRunningTimeMinutes, TimeUnit.MINUTES);
+		} catch (InterruptedException e2) {
+			e2.printStackTrace();
+		} catch (ExecutionException e2) {
+			e2.printStackTrace();
+		} catch (TimeoutException e2) {
+			// Task took too long. 
+			futureResult.cancel(true);
+			matrixGeneration.destroy();
+			log(LogLevel.ERROR,
+					"Matrix generation took too long and was canceled.");
+		}*/
+		
+		futureResult.addListener(new Runnable() {
+		     	public void run() {	
+		     		try {
+		     			Enhance enhance = activeEnhanceProcess.remove(config.getConfiguration().getId());
+		     			ListenableFuture<Void> futureResult = activeProcessFutures.remove(config.getConfiguration().getId());
+		     			if(enhance.isExecutedSuccessfully()) {
+		     				if(!futureResult.isCancelled()) {
+		     					doMatrixGeneration(token, task, config, enhanceDir);
+		     				}
+		     			} else {
+			     			task.setFailed(true);
+							task.setFailedTime(new Date());
+							task.setTooLong(futureResult.isCancelled());
+							enhance.destroy();
+							daoManager.getTaskDAO().updateTask(task);
+			     		}
+		     		} catch(Throwable t) {
+		     			log(LogLevel.ERROR, t.getMessage()+"\n"+org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(t));
+		     			task.setFailed(true);
+						task.setFailedTime(new Date());
+						enhance.destroy();
+						daoManager.getTaskDAO().updateTask(task);
+		     		}
+		     	}
+		     }, executorService);
+	}
+	
 	private void doMatrixGeneration(final AuthenticationToken token, final Task task, final MatrixGenerationConfiguration config, 
-			String inputDir) {
+			String inputDir) throws MatrixGenerationException {
 		String outputFile = getOutputFile(task);
 		String taxonGroup = config.getTaxonGroup().getName().toUpperCase();
 		boolean inheritValues = config.isInheritValues();

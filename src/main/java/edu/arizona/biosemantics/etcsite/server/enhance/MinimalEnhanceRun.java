@@ -72,18 +72,14 @@ import edu.arizona.biosemantics.semanticmarkup.enhance.transform.old.Standardize
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.old.StandardizeStructureName;
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.old.StandardizeTerminology;
 
-public class EnhanceRun {
+public class MinimalEnhanceRun {
 
 	public static void main(String[] args) throws IOException, InterruptedException, ExecutionException, OWLOntologyCreationException {
 		String inputDir = "C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/users/1/1_output_by_TC_task_2";
 		String enhanceDir = "C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/matrixGeneration/45/enhance";
-		String inputOntology = "C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/users/1/1_output_by_TC_task_2_output_by_OB_task_3/3.owl";
-		String termReviewTermCategorization = "C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/users/1/1_TermsReviewed_by_TC_task_2/category_term-task-2.csv";
-		String termReviewSynonyms = "C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/users/1/1_TermsReviewed_by_TC_task_2/category_mainterm_synonymterm-task-2.csv";
 		String taxonGroup = TaxonGroup.PLANT.toString();
 		
-		EnhanceRun enhance = new EnhanceRun(inputDir, enhanceDir, inputOntology, 
-				termReviewTermCategorization, termReviewSynonyms, TaxonGroup.valueOf(taxonGroup));
+		MinimalEnhanceRun enhance = new MinimalEnhanceRun(inputDir, enhanceDir, TaxonGroup.valueOf(taxonGroup));
 		enhance.run();
 	}
 	
@@ -107,20 +103,13 @@ public class EnhanceRun {
 	private Set<String> durations;
 	private String input;
 	private String output;
-	private String ontology;
-	private String termReviewTermCategorization;
-	private String termReviewSynonyms;
 	
-	public EnhanceRun(String input, String output, String ontology, 
-			String termReviewTermCategorization, String termReviewSynonyms, TaxonGroup taxonGroup) throws IOException, InterruptedException, ExecutionException {
+	public MinimalEnhanceRun(String input, String output, TaxonGroup taxonGroup) throws IOException, InterruptedException, ExecutionException {
 		this.input = input;
 		this.output = output;
-		this.ontology = ontology;
-		this.termReviewTermCategorization = termReviewTermCategorization;
-		this.termReviewSynonyms = termReviewSynonyms;
 		this.taxonGroup = taxonGroup;
 		
-		initGlossary(glossary, inflector, taxonGroup, termReviewTermCategorization, termReviewSynonyms);
+		initGlossary(glossary, inflector, taxonGroup);
 		
 		renames = new HashMap<String, String>();
 		renames.put("count", "quantity");
@@ -137,22 +126,7 @@ public class EnhanceRun {
 	
 	public void run() throws OWLOntologyCreationException {
 		Run run = new Run();
-		KnowsPartOf knowsPartOf = new OWLOntologyKnowsPartOf(ontology, inflector);
-		KnowsSynonyms knowsSynonyms = new OWLOntologyKnowsSynonyms(ontology, inflector);
-		RemoveNonSpecificBiologicalEntitiesByRelations transformer1 = new RemoveNonSpecificBiologicalEntitiesByRelations(
-				knowsPartOf, knowsSynonyms, tokenizer, new CollapseBiologicalEntityToName());
-		RemoveNonSpecificBiologicalEntitiesByBackwardConnectors transformer2 = new RemoveNonSpecificBiologicalEntitiesByBackwardConnectors(
-				knowsPartOf, knowsSynonyms, tokenizer, new CollapseBiologicalEntityToName());
-		RemoveNonSpecificBiologicalEntitiesByForwardConnectors transformer3 = new RemoveNonSpecificBiologicalEntitiesByForwardConnectors(
-				knowsPartOf, knowsSynonyms, tokenizer, new CollapseBiologicalEntityToName());
-		RemoveNonSpecificBiologicalEntitiesByPassedParents transformer4 = new RemoveNonSpecificBiologicalEntitiesByPassedParents(
-				knowsPartOf, knowsSynonyms, tokenizer, new CollapseBiologicalEntityToName(), inflector);
 		
-		run.addTransformer(new SimpleRemoveSynonyms(knowsSynonyms));
-		run.addTransformer(transformer1);
-		run.addTransformer(transformer2);
-		run.addTransformer(transformer3);
-		run.addTransformer(transformer4);
 		run.addTransformer(new SplitCompoundBiologicalEntity(inflector));
 		run.addTransformer(new SplitCompoundBiologicalEntitiesCharacters(inflector));
 		run.addTransformer(new RemoveUselessWholeOrganism());
@@ -189,9 +163,8 @@ public class EnhanceRun {
 		return set;
 	}
 
-	private void initGlossary(IGlossary glossary, IInflector inflector, TaxonGroup taxonGroup, String termReviewTermCategorization, String termReviewSynonyms) throws IOException, InterruptedException, ExecutionException {
+	private void initGlossary(IGlossary glossary, IInflector inflector, TaxonGroup taxonGroup) throws IOException, InterruptedException, ExecutionException {
 		addPermanentGlossary(glossary, inflector, taxonGroup);
-		addTermReviewGlossary(glossary, inflector, termReviewTermCategorization, termReviewSynonyms);
 	}
 
 	private void addTermReviewGlossary(IGlossary glossary,	IInflector inflector, String termReviewTermCategorization,	String termReviewSynonyms) throws IOException {
