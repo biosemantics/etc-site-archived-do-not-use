@@ -353,9 +353,9 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	private void doMinimalEnhanceAndMatrixGeneration(final AuthenticationToken token, final Task task, final MatrixGenerationConfiguration config, 
 			String inputDir) throws MatrixGenerationException {
 		String input = config.getInput();
-		String ontologyFile = null;
-		String categoryTerm = null;
-		String synonym = null;
+		String ontologyFile = "";
+		String categoryTerm = "";
+		String synonym = "";
 		String taxonGroup = config.getTaxonGroup().getName().toUpperCase();
 		
 		final String enhanceDir = this.getTempDir(task) + File.separator + "enhance";

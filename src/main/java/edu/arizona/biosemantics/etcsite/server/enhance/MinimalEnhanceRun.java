@@ -75,7 +75,7 @@ import edu.arizona.biosemantics.semanticmarkup.enhance.transform.old.Standardize
 public class MinimalEnhanceRun {
 
 	public static void main(String[] args) throws IOException, InterruptedException, ExecutionException, OWLOntologyCreationException {
-		String inputDir = "C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/users/1/1_output_by_TC_task_2";
+		String inputDir = "C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/users/1/0_output_by_TC_task_2";
 		String enhanceDir = "C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/matrixGeneration/45/enhance";
 		String taxonGroup = TaxonGroup.PLANT.toString();
 		

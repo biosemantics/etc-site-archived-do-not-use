@@ -13,13 +13,24 @@ public class ExtraJvmEnhance extends ExtraJvmCallable<Void> implements Enhance {
 	public static class MainWrapper {
 		
 		public static void main(String[] args) {
-			String inputDir = args[0];
-			String tempDir = args[1];
-			String inputOntology = args[2];
-			String termReviewTermCategorization = args[3];
-			String termReviewSynonyms = args[4];
-			String taxonGroup = args[5];
-			
+			String inputDir = null;
+			String tempDir = null;
+			String inputOntology = null;
+			String termReviewTermCategorization = null;
+			String termReviewSynonyms = null;
+			String taxonGroup = null;
+			if(args.length == 6) {
+				inputDir = args[0];
+				tempDir = args[1];
+				inputOntology = args[2];
+				termReviewTermCategorization = args[3];
+				termReviewSynonyms = args[4];
+				taxonGroup = args[5];
+			} else if(args.length == 3) {
+				inputDir = args[0];
+				tempDir = args[1];
+				taxonGroup = args[2];
+			}
 			try {
 				if(inputOntology != null && termReviewTermCategorization != null && termReviewSynonyms != null) {
 					System.out.println("Run Enhance: \n" + inputDir + " \n" + tempDir + " \n" + inputOntology + "\n " + termReviewTermCategorization + "\n"
@@ -51,6 +62,14 @@ public class ExtraJvmEnhance extends ExtraJvmCallable<Void> implements Enhance {
 	private String termReviewTermCategorization;
 	private String termReviewSynonyms;
 	private String taxonGroup;
+	
+	public static void main(String[] args) throws Exception {
+		ExtraJvmEnhance enhance = new ExtraJvmEnhance(
+				"C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/users/1/0_output_by_TC_task_2", 
+				"C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/matrixGeneration/68/enhance", 
+				"", "", "", TaxonGroup.PLANT.toString());
+		enhance.call();
+	}
 
 	public ExtraJvmEnhance(String inputDir, String outputDir, 
 			String inputOntology, String termReviewTermCategorization, String termReviewSynonyms, 

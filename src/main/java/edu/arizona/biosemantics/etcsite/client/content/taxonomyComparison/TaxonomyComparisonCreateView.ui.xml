@@ -65,8 +65,8 @@
 							<g:InlineLabel styleName="{style.DescriptionFont}">
 								Taxonomy Comparison takes as input a folder containing two text files in&nbsp;
 							</g:InlineLabel>
-							<g:Anchor
-								href="https://github.com/EulerProject/EulerX"
+							<g:Anchor ui:field="cleantaxAnchor"
+								href="images/cleantax.jpg"
 								target="_blank" styleName="{style.padding}">CleanTax format</g:Anchor>
 							<g:InlineLabel styleName="DescriptionFont">
 			            	&nbsp;or two folders with outputted taxonomies by Matrix Generation.&nbsp;

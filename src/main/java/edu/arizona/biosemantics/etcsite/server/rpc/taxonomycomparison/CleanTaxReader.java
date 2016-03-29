@@ -22,7 +22,7 @@ import edu.arizona.biosemantics.etcsite.server.process.file.IContentValidator;
 
 public class CleanTaxReader implements IContentValidator {
 
-	private String firstLinePatternString = "taxonomy (\\w+) (\\w+)";
+	private String firstLinePatternString = "taxonomy (\\w+) (\\w+) (\\w+)";
 	private Pattern firstLinePattern = Pattern.compile(firstLinePatternString);
 	private String invalidMessage = "";
 	
@@ -37,9 +37,10 @@ public class CleanTaxReader implements IContentValidator {
 					if(lineNumber == 0) {
 					    Matcher matcher = firstLinePattern.matcher(line);
 						if(matcher.matches()) {
-							String shortcut = matcher.group(1);
-							String name = matcher.group(2);
-							return shortcut + " " + name;
+							String id = matcher.group(1);
+							String year = matcher.group(2);
+							String author = matcher.group(3);
+							return "sec " + author + " " + year + " (" + id + ")";
 						} else {
 							throw new Exception("Illegal format");
 						}
@@ -93,8 +94,9 @@ public class CleanTaxReader implements IContentValidator {
 	private boolean isValidFirstLine(String line) {
 	    Matcher matcher = firstLinePattern.matcher(line);
 		if(matcher.matches()) {
-			String shortcut = matcher.group(1);
-			String name = matcher.group(2);
+			String id = matcher.group(1);
+			String year = matcher.group(2);
+			String author = matcher.group(3);
 			return true;
 		}
 		return false;

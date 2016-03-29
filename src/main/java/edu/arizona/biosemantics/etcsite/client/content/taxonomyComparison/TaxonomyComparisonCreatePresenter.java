@@ -3,8 +3,12 @@ package edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Label;
 import com.google.inject.Inject;
+import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
@@ -136,5 +140,15 @@ public class TaxonomyComparisonCreatePresenter implements TaxonomyComparisonCrea
 	@Override
 	public String getModelFolderPath2() {
 		return inputCreatePresenter.getModelInputFolderPath2();
+	}
+
+	@Override
+	public void onCleantax() {
+		/*Dialog dialog = new Dialog();
+		ContentPanel container = new ContentPanel();
+		container.add(new Label("test"));
+		container.addStyleName(ApplicationResources.INSTANCE.layoutStyles().containerBackground());
+		dialog.setWidget(container);
+		dialog.show();*/
 	}
 }

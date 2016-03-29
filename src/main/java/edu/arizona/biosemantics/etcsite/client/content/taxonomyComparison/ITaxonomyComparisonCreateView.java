@@ -27,6 +27,8 @@ public interface ITaxonomyComparisonCreateView extends IsWidget {
 		String getModelFolderPath1();
 
 		String getModelFolderPath2();
+
+		void onCleantax();
 	}
 	  
 	public void setPresenter(Presenter presenter);

@@ -40,9 +40,12 @@ public class TaxonomyComparisonCreateView extends Composite implements ITaxonomy
 	private ITaxonomyComparisonCreateView.Presenter presenter;
 	
 	@UiField Anchor fileManagerAnchor;
+	
+	@UiField Anchor cleantaxAnchor;
 
 	@UiField(provided=true)
 	IInputCreateView inputCreateView;
+	
 	
 	@Inject
 	public TaxonomyComparisonCreateView(IInputCreateView.Presenter inputCreatePresenter) {		
@@ -54,6 +57,11 @@ public class TaxonomyComparisonCreateView extends Composite implements ITaxonomy
 	@UiHandler("fileManagerAnchor")
 	public void onFileManagerAnchor(ClickEvent event){
 		presenter.onFileManager();
+	}	
+
+	@UiHandler("cleantaxAnchor")
+	public void onCleantaxAnchor(ClickEvent event){
+		presenter.onCleantax();
 	}	
 
 	@Override

@@ -735,21 +735,23 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 		collection.setGlossaryPath1(config.getTermReview1());
 		collection.setGlossaryPath2(config.getTermReview2());
 		collection.setTaxonGroup(edu.arizona.biosemantics.common.biology.TaxonGroup.valueFromDisplayName(taxonGroup));
-		File ontologyDir = new File(config.getOntology());
-		if(ontologyDir.exists() && ontologyDir.isDirectory()) {
-			File ontologyFile = null;
-			for(File child : ontologyDir.listFiles()) {
-				if(child.getName().endsWith(".owl") && !child.getName().startsWith("module.")) {
-					ontologyFile = child;
+		if(config.getOntology() != null) {
+			File ontologyDir = new File(config.getOntology());
+			if(ontologyDir.exists() && ontologyDir.isDirectory()) {
+				File ontologyFile = null;
+				for(File child : ontologyDir.listFiles()) {
+					if(child.getName().endsWith(".owl") && !child.getName().startsWith("module.")) {
+						ontologyFile = child;
+					}
 				}
-			}
-			if(ontologyFile != null) {
-				collection.setOntologyPath(ontologyFile.getAbsolutePath());
+				if(ontologyFile != null) {
+					collection.setOntologyPath(ontologyFile.getAbsolutePath());
+				} else {
+					throw new TaxonomyComparisonException();
+				}
 			} else {
 				throw new TaxonomyComparisonException();
 			}
-		} else {
-			throw new TaxonomyComparisonException();
 		}
 		try {
 			collection = alignmentService.createCollection(collection);
@@ -774,14 +776,12 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			edu.arizona.biosemantics.matrixreview.shared.model.Model reviewModel2 = this.unserializeMatrix(getSerializedModel(modelInput2));
 			Taxonomy taxonomy1 = createTaxonomy(reviewModel1);
 			Taxonomy taxonomy2 = createTaxonomy(reviewModel2);
+			taxonomy1.setId(config.getModel1Author() + "_" + config.getModel1Year());
+			taxonomy2.setId(config.getModel2Author() + "_" + config.getModel2Year());
 			taxonomy1.setYear(config.getModel1Year());
 			taxonomy2.setYear(config.getModel2Year());
 			taxonomy1.setAuthor(config.getModel1Author());
 			taxonomy2.setAuthor(config.getModel2Author());
-			/*if(taxonomy1.getYear().equals(taxonomy2.getYear()) && taxonomy1.getName().equals(taxonomy2.getName())) {
-				taxonomy1.setName(taxonomy1.getName() + " (1)");
-				taxonomy2.setname(taxonomy2.getName() + " (2)");
-			}*/
 			taxonomies.add(taxonomy1);
 			taxonomies.add(taxonomy2);
 			
