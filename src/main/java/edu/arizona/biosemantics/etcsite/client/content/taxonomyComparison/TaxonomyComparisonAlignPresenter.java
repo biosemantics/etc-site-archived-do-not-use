@@ -18,6 +18,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.client.common.MyWindow;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.IProcessingView.IOnTaskManagerListener;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.IProcessingView.Presenter;
@@ -342,14 +343,15 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 			@Override
 			public void onDownload(DownloadEvent event) {
 				final MessageBox box = Alerter.startLoading();
+				final MyWindow window = MyWindow.open(null, "_blank", null);
 				taxonomyComparisonService.exportArticulations(Authentication.getInstance().getToken(), 
 						task, event.getCollection(), new AsyncCallback<String>() {
 					@Override
 					public void onSuccess(String result) {
 						Alerter.stopLoading(box);
-						Window.open("download.dld?target=" + URL.encodeQueryString(result) + 
+						window.setUrl("download.dld?target=" + URL.encodeQueryString(result) + 
 								"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
-								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()), "_blank", "");
+								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()));
 					}
 					@Override
 					public void onFailure(Throwable caught) {

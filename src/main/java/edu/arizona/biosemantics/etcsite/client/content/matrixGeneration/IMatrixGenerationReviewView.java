@@ -17,6 +17,7 @@ public interface IMatrixGenerationReviewView extends IsWidget {
 		void onSave();
 		boolean hasUnsavedChanges();
 		void setUnsavedChanges(boolean value);
+		void onExport();
 	}
 	  
 	void setPresenter(Presenter presenter);

@@ -58,6 +58,11 @@ public class MatrixGenerationReviewView extends Composite implements IMatrixGene
 	public void onNext(ClickEvent event) {
 		presenter.onNext();
 	}
+	
+	@UiHandler("exportButton")
+	public void onExport(ClickEvent event) {
+		presenter.onExport();
+	}
 
 	@Override
 	public void onResize() {

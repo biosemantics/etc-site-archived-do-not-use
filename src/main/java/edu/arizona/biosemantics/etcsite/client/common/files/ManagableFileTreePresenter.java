@@ -24,6 +24,7 @@ import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.Selecti
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.client.common.MyWindow;
 import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkupFilesDialogPresenter.ICloseHandler;
 import edu.arizona.biosemantics.etcsite.shared.Configuration;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
@@ -267,12 +268,16 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 				final String selectionPath = selections.get(0).getFilePath();
 				if(selectionPath != null) {
 					final MessageBox box = Alerter.startLoading();
+					final MyWindow window = MyWindow.open(null, "_blank", null);
 					fileService.getDownloadPath(Authentication.getInstance().getToken(), selectionPath, new AsyncCallback<String>() {
 						@Override
 						public void onSuccess(String result) {
 							//target=" + result.getData() + "&directory=yes
 							Alerter.stopLoading(box);
-							Window.open("download.dld?target=" + URL.encodeQueryString(result) + 
+							window.setUrl("download.dld?target=" + URL.encodeQueryString(result) + 
+									"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
+									"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()));
+							/*Window.open("download.dld?target=" + URL.encodeQueryString(result) + 
 									"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
 									"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()), "_blank", "");
 							/*Window.Location.replace("/etcsite/download?target=" + URL.encodeQueryString(result) + 

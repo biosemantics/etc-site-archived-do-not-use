@@ -12,6 +12,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
+import edu.arizona.biosemantics.etcsite.client.common.MyWindow;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
 import edu.arizona.biosemantics.matrixreview.client.event.AddCharacterEvent;
@@ -158,22 +159,7 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 		view.getMatrixReviewView().getFullModelBus().addHandler(DownloadEvent.TYPE, new DownloadEvent.DownloadHandler() {
 			@Override
 			public void onDownload(DownloadEvent event) {
-				final MessageBox box = Alerter.startLoading();
-				matrixGenerationService.outputMatrix(Authentication.getInstance().getToken(), 
-						task, event.getModel(), new AsyncCallback<String>() {
-					@Override
-					public void onSuccess(String result) {
-						Alerter.stopLoading(box);
-						Window.open("download.dld?target=" + URL.encodeQueryString(result) + 
-								"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
-								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()), "_blank", "");
-					}
-					@Override
-					public void onFailure(Throwable caught) {
-						Alerter.failedToOutputMatrix(caught);
-						Alerter.stopLoading(box);
-					}
-				});
+				download(event.getModel());
 			}
 		});
 		view.getMatrixReviewView().getFullModelBus().addHandler(SaveEvent.TYPE, new SaveEvent.SaveHandler() {
@@ -192,6 +178,30 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 						unsavedChanges = false;
 					}
 				});
+			}
+		});
+	}
+
+	protected void download(Model model) {
+		final MessageBox box = Alerter.startLoading();
+		final MyWindow window = MyWindow.open(null, "_blank", null);
+		matrixGenerationService.outputMatrix(Authentication.getInstance().getToken(), 
+				task, model, new AsyncCallback<String>() {
+			@Override
+			public void onSuccess(String result) {
+				Alerter.stopLoading(box);
+				window.setUrl("download.dld?target=" + URL.encodeQueryString(result) + 
+						"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
+						"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()));
+				/*Window.open("download.dld?target=" + URL.encodeQueryString(result) + 
+						"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
+						"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()), "_blank", "");
+				*/
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToOutputMatrix(caught);
+				Alerter.stopLoading(box);
 			}
 		});
 	}
@@ -309,5 +319,10 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 	@Override
 	public void setUnsavedChanges(boolean value) {
 		this.unsavedChanges = value;
+	}
+
+	@Override
+	public void onExport() {
+		download(model);
 	}
 }
