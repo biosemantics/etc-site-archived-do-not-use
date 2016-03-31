@@ -56,5 +56,7 @@ public interface ITaxonomyComparisonServiceAsync extends IHasTasksServiceAsync {
 			String inputFolderPath, AsyncCallback<Boolean> callback);
 	
 	public void isConsistentInput(AuthenticationToken token, Task task, Collection collection, AsyncCallback<Boolean> callback);
+	
+	public void stopPossibleWorldGeneration(AuthenticationToken token, Task task, AsyncCallback<Void> callback);
 
 }

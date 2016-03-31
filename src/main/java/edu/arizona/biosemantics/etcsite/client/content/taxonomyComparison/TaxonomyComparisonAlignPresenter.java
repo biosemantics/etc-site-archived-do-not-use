@@ -66,12 +66,33 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 			setMinHeight(0);
 		    setResizable(true);
 		    setShadow(true);
+		    this.setModal(true);
+		    this.setBlinkModal(true);
+		    this.setClosable(false);
 		    
 		    // can't make modal, otherwise user wno't be able to go to task/file/manager and the like
 		    //this.setModal(true);
 		    //this.setBlinkModal(true);
 		    
-			setPredefinedButtons();
+			setPredefinedButtons(PredefinedButton.CANCEL);
+			this.getButton(PredefinedButton.CANCEL).addSelectHandler(new SelectHandler() {
+				@Override
+				public void onSelect(SelectEvent event) {
+					final MessageBox box = Alerter.startLoading();
+					taxonomyComparisonService.cancel(Authentication.getInstance().getToken(), task, new AsyncCallback<Void>() {
+						@Override
+						public void onFailure(Throwable caught) {
+							Alerter.failedToCancelPossibleWorldGeneration(caught);
+							Alerter.stopLoading(box);
+						}
+						@Override
+						public void onSuccess(Void result) {
+							Alerter.stopLoading(box);
+							ProcessingDialog.this.hide();
+						}
+					});
+				}
+			});
 			add(processingView.asWidget());
 		}
 

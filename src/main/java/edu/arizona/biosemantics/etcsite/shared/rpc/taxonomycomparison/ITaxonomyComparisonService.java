@@ -54,5 +54,7 @@ public interface ITaxonomyComparisonService extends RemoteService, IHasTasksServ
 	public Boolean isValidModelInput(AuthenticationToken token,	String inputFolderPath);
 
 	public boolean isConsistentInput(AuthenticationToken token, Task task, Collection collection) throws TaxonomyComparisonException;
+
+	public void stopPossibleWorldGeneration(AuthenticationToken token, Task task) throws TaxonomyComparisonException;
 		
 }

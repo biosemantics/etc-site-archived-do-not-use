@@ -216,6 +216,18 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	}
 	
 	@Override
+	public void stopPossibleWorldGeneration(final AuthenticationToken token, final Task task) throws TaxonomyComparisonException {
+		final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
+		if(activeProcessFutures.containsKey(config.getConfiguration().getId())) {
+			ListenableFuture<Void> processFuture = this.activeProcessFutures.get(config.getConfiguration().getId());
+			processFuture.cancel(true);
+		}
+		if(activeProcess.containsKey(config.getConfiguration().getId())) {
+			activeProcess.get(config.getConfiguration().getId()).destroy();
+		}
+	}
+	
+	@Override
 	public Task runPossibleWorldGeneration(final AuthenticationToken authenticationToken, final Task task, 
 			final edu.arizona.biosemantics.euler.alignment.shared.model.Collection collection) throws TaxonomyComparisonException {
 		final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
@@ -439,13 +451,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			case ALIGN:
 				break;
 			case ANALYZE:
-				if(activeProcessFutures.containsKey(config.getConfiguration().getId())) {
-					ListenableFuture<Void> processFuture = this.activeProcessFutures.get(config.getConfiguration().getId());
-					processFuture.cancel(true);
-				}
-				if(activeProcess.containsKey(config.getConfiguration().getId())) {
-					activeProcess.get(config.getConfiguration().getId()).destroy();
-				}
+				stopPossibleWorldGeneration(authenticationToken, task);
 				break; 
 			case ANALYZE_COMPLETE:
 				break;
