@@ -72,6 +72,13 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.IFilePermissi
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDeniedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.MatrixGenerationException;
+import edu.arizona.biosemantics.matrixgeneration.model.OntologySubclassProvenance;
+import edu.arizona.biosemantics.matrixgeneration.model.OntologySuperclassProvenance;
+import edu.arizona.biosemantics.matrixgeneration.model.Provenance;
+import edu.arizona.biosemantics.matrixgeneration.model.SemanticMarkupProvenance;
+import edu.arizona.biosemantics.matrixgeneration.model.TaxonomyDescendantInheritanceProvenance;
+import edu.arizona.biosemantics.matrixgeneration.model.complete.AbsentPresentCharacter;
+import edu.arizona.biosemantics.matrixgeneration.model.raw.CellValue;
 import edu.arizona.biosemantics.matrixgeneration.model.raw.ColumnHead;
 import edu.arizona.biosemantics.matrixgeneration.model.raw.Matrix;
 import edu.arizona.biosemantics.matrixgeneration.model.raw.RowHead;
@@ -802,6 +809,11 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	    	List<Character> charactersInMatrix = new LinkedList<Character>();
 	    	HashMap<String, Organ> organMap = new HashMap<String, Organ>();
 	    	List<ColumnHead> columnHeads = rawMatrix.getColumnHeads();
+	    	
+	    	Map<Taxon, edu.arizona.biosemantics.matrixgeneration.model.complete.Taxon> taxonTaxonMap = 
+	    			new HashMap<Taxon, edu.arizona.biosemantics.matrixgeneration.model.complete.Taxon>();
+	    	Map<Character, edu.arizona.biosemantics.matrixgeneration.model.complete.Character> characterCharacterMap = 
+	    			new HashMap<Character, edu.arizona.biosemantics.matrixgeneration.model.complete.Character>();
 	    	for(int i=0; i<columnHeads.size(); i++) {
 	    		ColumnHead columnHead = columnHeads.get(i);
 	    		
@@ -821,6 +833,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 
 				Character c = new Character(characterName, connector, o, o.getFlatCharacters().size());
 				charactersInMatrix.add(c);
+				characterCharacterMap.put(c, columnHead.getSource());
 	    	}
 	    	
 	    	List<TaxonIdentification> taxonIdentifications = new LinkedList<TaxonIdentification>();
@@ -836,6 +849,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	    		 Taxon taxon = new Taxon(taxonIdentification, description);
 	    		 rankTaxaMap.put(taxonIdentification, taxon);
 	    		 taxonRowHeadMap.put(taxon, rowHead);
+	    		 taxonTaxonMap.put(taxon, rowHead.getSource());
 	    	 }
 	    	
 	    	for(TaxonIdentification taxonIdentification : taxonIdentifications) {
@@ -868,33 +882,84 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		    TaxonMatrix taxonMatrix = new TaxonMatrix(hierarhicalCharacters, hierarchyTaxa);
 		    
 		    Color inheritedColor = new Color("FFD700", "Inherited");
+		    Color conflictColor = new Color("FF0000", "Conflict");
+		    Color sourceColor = new Color("00FFFF", "Source");
+		    Color ontologyColor = new Color("FF00FF", "Ontology");
 			model.getColors().add(inheritedColor);
+			model.getColors().add(conflictColor);
+			model.getColors().add(sourceColor);
+			model.getColors().add(ontologyColor);
 		    //set values
 		    for(Taxon taxon : taxonMatrix.getFlatTaxa()) {
 		    	RowHead rowHead = taxonRowHeadMap.get(taxon);
+		    	System.out.println("taxon " + rowHead.getValue());
 		    	for(int j=0; j<charactersInMatrix.size(); j++) {
 		    		Character character = charactersInMatrix.get(j);
-		    		String value = rawMatrix.getCellValues().get(rowHead).get(j).getText();
+		    		CellValue cellValue = rawMatrix.getCellValues().get(rowHead).get(j);
+		    		
+		    		System.out.println("character " + character.getName() + " value " + cellValue.getText());
+		    		System.out.println(cellValue.getGenerationProvenance());
+		    		for(edu.arizona.biosemantics.matrixgeneration.model.complete.Value value : cellValue.getSource()) {
+		    			if(value == null) 
+		    				System.out.println(value);
+		    			else
+		    				System.out.println(value.getGenerationProvenance());
+		    		}
+		    		
+		    		String value = cellValue.getText();
 		    		Value v = new Value(value);
 		    		
-		    		Set<String> provenance = new HashSet<String>();
-		    		provenance.addAll(rawMatrix.getCellValues().get(rowHead).get(j).getGenerationProvenance());
-		    		
+		    		Set<Provenance> provenanceSet = new HashSet<Provenance>();
+		    		provenanceSet.addAll(rawMatrix.getCellValues().get(rowHead).get(j).getGenerationProvenance());		    		
 		    		for(edu.arizona.biosemantics.matrixgeneration.model.complete.Value completeValue : 
 		    			rawMatrix.getCellValues().get(rowHead).get(j).getSource()) {
 		    			if(completeValue != null) {
 		    				if(completeValue.getGenerationProvenance() != null) 
-			    				provenance.addAll(completeValue.getGenerationProvenance());
+		    					provenanceSet.addAll(completeValue.getGenerationProvenance());
 		    			}
 		    		}
-		    		if(provenance.contains(
-		    				edu.arizona.biosemantics.matrixgeneration.transform.complete.
-		    				TaxonomyDescendantInheritanceTransformer.class.getSimpleName())) {
-		    			model.setColor(v, inheritedColor);
+		    		for(Provenance provenance : provenanceSet) {
+		    			if(provenance.getSource().equals(edu.arizona.biosemantics.matrixgeneration.transform.complete.AbsentPresentFromBiologicalEntitiesTransformer.class)) {
+		    				model.setColor(v, sourceColor);
+		    			}
+		    			if(provenance.getSource().equals(edu.arizona.biosemantics.matrixgeneration.transform.complete.AbsentPresentFromRelationsTranformer.class)) {
+		    				model.setColor(v, sourceColor);
+		    			}
+		    			if(provenance instanceof TaxonomyDescendantInheritanceProvenance) {
+		    				model.setColor(v, inheritedColor);
+		    				System.out.println("inherited");
+		    			}
+		    			if(provenance instanceof SemanticMarkupProvenance) {
+		    				SemanticMarkupProvenance semanticMarkupProvenance = (SemanticMarkupProvenance)provenance;
+		    				if(!taxonTaxonMap.get(taxon).equals(semanticMarkupProvenance.getTaxon()) ||
+		    						!characterCharacterMap.get(character).equals(semanticMarkupProvenance.getCharacter())) {
+		    				} else {
+		    					model.setColor(v, sourceColor);
+			    				System.out.println("source");
+		    				}
+		    			}
+		    			if(provenance instanceof OntologySubclassProvenance) {
+		    				model.setColor(v, ontologyColor);
+		    				System.out.println("ontologycolor");
+		    			}
+		    			if(provenance instanceof OntologySuperclassProvenance) {
+		    				model.setColor(v, ontologyColor);
+		    				System.out.println("ontologycolor");
+		    			}
 		    		}
+		    		
+		    		if(rawMatrix.getColumnHeads().get(j).getSource() instanceof AbsentPresentCharacter) {
+		    			if(cellValue.getContainedValues().contains("present") && 
+			    				cellValue.getContainedValues().contains("absent")) {
+			    			model.setColor(v, conflictColor);
+			    			System.out.println("conflict");
+			    		}
+		    		}
+		    		
 		    		taxonMatrix.setValue(taxon, character, v);
 		    	}
-		    }  
+		    } 
+		    
 			return taxonMatrix;
 	    }
 	}
