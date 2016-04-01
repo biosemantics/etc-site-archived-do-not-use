@@ -93,6 +93,8 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.shared.Confi
 	public static String finishedSemanticMarkupLearnBody;
 	public static String finishedSemanticMarkupParseSubject;
 	public static String finishedSemanticMarkupParseBody;
+	public static String failedSemanticMarkupParseSubject;
+	public static String failedSemanticMarkupParseBody;
 	public static String finishedMatrixgenerationGenerateSubject;
 	public static String finishedMatrixgenerationGenerateBody;
 	
@@ -196,6 +198,8 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.shared.Confi
 			finishedSemanticMarkupLearnBody = properties.getProperty("finished_semantic_markup_learn_body");
 			finishedSemanticMarkupParseSubject = properties.getProperty("finished_semantic_markup_parse_subject");
 			finishedSemanticMarkupParseBody = properties.getProperty("finished_semantic_markup_parse_body");
+			failedSemanticMarkupParseSubject = properties.getProperty("failed_semantic_markup_parse_subject");
+			failedSemanticMarkupParseBody = properties.getProperty("failed_semantic_markup_parse_body");
 			finishedMatrixgenerationGenerateSubject = properties.getProperty("finished_martrix_generation_genreate_subject"); 
 			finishedMatrixgenerationGenerateBody = properties.getProperty("finished_matrix_generation_generate_body");
 			

@@ -35,9 +35,11 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 
+
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.common.taxonomy.Rank;
 import edu.arizona.biosemantics.common.taxonomy.RankData;
+import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Emailer;
 import edu.arizona.biosemantics.etcsite.server.JavaZipper;
@@ -351,7 +353,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			
 			String taxonGroup = config.getTaxonGroup().getName();
 			boolean useEmptyGlossary = config.isUseEmptyGlossary();
-			String input = config.getInput();
+			final String input = config.getInput();
 			String tablePrefix = String.valueOf(task.getId());
 			String source = input; //maybe something else later
 			String operator;
@@ -389,12 +391,54 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 						ListenableFuture<ParseResult> futureResult = activeParseFutures.remove(config.getConfiguration().getId());
 						if(parse.isExecutedSuccessfully()) {
 							if(!futureResult.isCancelled()) {
-								task.setResumable(true);
-								//TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.TO_ONTOLOGIES.toString());
-								TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.OUTPUT.toString());
-								task.setTaskStage(newTaskStage);
-								daoManager.getTaskDAO().updateTask(task);
-								sendFinishedParsingEmail(task);	
+								List<String> files;
+								String charaParserOutputDirectory = Configuration.charaparser_tempFileBase + File.separator + task.getId() + File.separator + "out";
+								boolean validResult=true;
+								try {
+									files = fileService.getDirectoriesFiles(new AdminAuthenticationToken(), charaParserOutputDirectory);
+								} catch (PermissionDeniedException e) {
+									throw new SemanticMarkupException();
+								}
+								for(String file : files) {
+									try {
+										validResult = fileFormatService.isValidMarkedupTaxonDescription(new AdminAuthenticationToken(), charaParserOutputDirectory + File.separator + file);
+									} catch (PermissionDeniedException | GetFileContentFailedException e) {
+										throw new SemanticMarkupException();
+									}
+									if(!validResult){
+										parse.destroy();
+										String inputpath = Configuration.charaparser_tempFileBase + File.separator + task.getId() + File.separator + "input" + ".zip";
+										String outputpath = charaParserOutputDirectory + ".zip";
+										JavaZipper zipper = new JavaZipper();
+										try {
+											inputpath = zipper.zip(input, inputpath);
+											outputpath = zipper.zip(charaParserOutputDirectory, outputpath);
+										} catch (Exception e) {
+											throw new SemanticMarkupException("Saving failed");
+										}
+										sendFailedParsingEmail(task,inputpath,outputpath);	//rewrite
+										task.setResumable(false);
+										daoManager.getTaskDAO().updateTask(task);
+										task.setFailed(true);
+										task.setFailedTime(new Date());
+										/*try {
+											fileService.deleteFile(new AdminAuthenticationToken(), inputpath);
+											fileService.deleteFile(new AdminAuthenticationToken(), outputpath);
+										} catch (PermissionDeniedException | FileDeleteFailedException e) {
+											throw new SemanticMarkupException(task);
+										}*/
+										throw new SemanticMarkupException();
+									}
+								}
+								
+								if(validResult){
+									task.setResumable(true);
+								    //TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.TO_ONTOLOGIES.toString());
+								    TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.OUTPUT.toString());
+								    task.setTaskStage(newTaskStage);
+								    daoManager.getTaskDAO().updateTask(task);
+								    sendFinishedParsingEmail(task);
+								}
 							}
 						} else {
 							parse.destroy();
@@ -924,6 +968,16 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			String subject = Configuration.finishedSemanticMarkupParseSubject.replace("<taskname>", task.getName());
 			String body = Configuration.finishedSemanticMarkupParseBody.replace("<taskname>", task.getName());
 			emailer.sendEmail(user.getEmail(), subject, body);
+		}
+	}
+	
+	private void sendFailedParsingEmail(Task task, String input, String output) {
+		User user = daoManager.getUserDAO().getUser(task.getUser().getId());
+		if (user.getProfileValue(User.EmailPreference.TEXT_CAPTURE.getKey())) {
+			String subject = Configuration.failedSemanticMarkupParseSubject.replace("<taskname>", task.getName());
+			String body = Configuration.failedSemanticMarkupParseBody.replace("<taskname>", task.getName());
+			body=body.replace("<user>", user.getEmail());
+			emailer.sendEmailAttachment("hong1.cui@gmail.com", subject, body,input,output);
 		}
 	}
 	
