@@ -86,6 +86,8 @@ finished_semantic_markup_learn_subject=[ETC] (<taskname>) Text Capture: Learn St
 finished_semantic_markup_learn_body=Text Capture has finished the learn step for your task \"<taskname>\". You may resume the task using the Task Manager.
 finished_semantic_markup_parse_subject=[ETC] (<taskname>) Text Capture: Parse Step Complete
 finished_semantic_markup_parse_body=Text Capture has finished the parse step for your task \"<taskname>\". You may resume this task using the Task Manager.
+failed_semantic_markup_parse_subject=[ETC-DEV] (<taskname>) Text Capture Parse Step failed for invalid output
+failed_semantic_markup_parse_body=Text Capture has failed the parse step for the (\"<user>\") user's task \"<taskname>\". The output files attached below are not validated by system, please check the xml schema of text capture output.
 finished_martrix_generation_genreate_subject=[ETC] (<taskname>) Matrix Generation: Generate Step Complete 
 finished_matrix_generation_generate_body=Matrix Generation has finished the generation step for your task \"<taskname>\". You may resume the task using the Task Manager.
 
