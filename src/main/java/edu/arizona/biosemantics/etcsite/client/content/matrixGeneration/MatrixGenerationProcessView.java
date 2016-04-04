@@ -23,7 +23,10 @@ public class MatrixGenerationProcessView extends Composite implements IMatrixGen
 	private Presenter presenter;
 		
 	@UiField
-	Button nextButton;
+	Button reviewButton;
+	
+	@UiField
+	Button outputButton;
 	
 	@UiField
 	HorizontalPanel resumablePanel;
@@ -51,26 +54,27 @@ public class MatrixGenerationProcessView extends Composite implements IMatrixGen
 
 	@Override
 	public void setNonResumable() {
-		this.nextButton.setVisible(false);
+		this.reviewButton.setVisible(false);
+		this.outputButton.setVisible(false);
 		this.nonResumablePanel.setVisible(true);
 		this.resumablePanel.setVisible(false);
 	}
 	
 	@Override
 	public void setResumable() {
-		this.nextButton.setVisible(true);
+		this.reviewButton.setVisible(true);
+		this.outputButton.setVisible(true);
 		this.nonResumablePanel.setVisible(false);
 		this.resumablePanel.setVisible(true);
 	}
 	
-	@UiHandler("nextButton")
-	public void onNext(ClickEvent event) {
-		presenter.onNext();
+	@UiHandler("reviewButton")
+	public void onReview(ClickEvent event) {
+		presenter.onReview();
 	}
 	
-	@UiHandler("playImage")
-	public void onPlay(ClickEvent event) {
-		presenter.onNext();
+	@UiHandler("outputButton")
+	public void onOutput(ClickEvent event) {
+		presenter.onOutput();
 	}
-
 }

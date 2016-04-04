@@ -8,10 +8,11 @@ import edu.arizona.biosemantics.etcsite.shared.model.Task;
 public interface IMatrixGenerationProcessView extends IsWidget {
 
 	public interface Presenter {
-		void onNext();
 		void onTaskManager();
 		IMatrixGenerationProcessView getView();
 		void setTask(Task task);
+		void onReview();
+		void onOutput();
 	}
 	  
 	void setPresenter(Presenter presenter);

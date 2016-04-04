@@ -73,11 +73,6 @@ public class MatrixGenerationProcessPresenter implements IMatrixGenerationProces
 	}
 
 	@Override
-	public void onNext() {
-		placeController.goTo(new MatrixGenerationReviewPlace(task));
-	}
-
-	@Override
 	public void onTaskManager() {
 		placeController.goTo(new TaskManagerPlace());
 	}
@@ -99,6 +94,31 @@ public class MatrixGenerationProcessPresenter implements IMatrixGenerationProces
 			}
 			@Override
 			public void onFailure(Throwable caught) { }
+		});
+	}
+
+	@Override
+	public void onReview() {
+		placeController.goTo(new MatrixGenerationReviewPlace(task));
+	}
+
+	@Override
+	public void onOutput() {
+		final MessageBox box = Alerter.startLoading();
+		matrixGenerationService.completeReview(Authentication.getInstance().getToken(), 
+				task, new AsyncCallback<Task>() {
+			@Override
+			public void onSuccess(Task result) {
+				if(box != null)
+					Alerter.stopLoading(box);
+				placeController.goTo(new MatrixGenerationOutputPlace(result));
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToCompleteReview(caught);
+				if(box != null)
+					Alerter.stopLoading(box);
+			}
 		});
 	}
 }

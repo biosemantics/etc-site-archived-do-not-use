@@ -21,6 +21,9 @@
 			padding-top: 10px;
 			padding-bottom:10px;
 		}
+		.outputButton {
+			padding-left: 10px;
+		}
 	    .padding{
 			padding-top: 10px;
 			padding-bottom:10px;
@@ -38,8 +41,8 @@
 					<g:Image styleName="{style.playImage}" ui:field="playImage" url='images/play.png'></g:Image>
 					<g:VerticalPanel>
 					    <g:InlineLabel>A taxon-by-character matrix has been generated.</g:InlineLabel>
-						<g:InlineLabel>In the next step, you will review the matrix. If the matrix is large, it is best to review it segment by segment. </g:InlineLabel>
-						<g:InlineLabel>Please read the Instructions in the Review interface when it loads after clicking on the "Next Step in Matrix Generation" button below.</g:InlineLabel>
+						<g:InlineLabel>In the next step, you can either review the matrix or directly outpu the matrix. If the matrix is large, it is best to review it segment by segment. </g:InlineLabel>
+						<g:InlineLabel>Please read the Instructions in the Review interface when it loads after clicking on the "Review Matrix" button below.</g:InlineLabel>
 				</g:VerticalPanel>
 				</g:HorizontalPanel>
 				<g:VerticalPanel ui:field="nonResumablePanel">
@@ -55,7 +58,9 @@
 					</g:FlowPanel>
 				</g:VerticalPanel>
 				<g:FlowPanel styleName="{style.padding}">
-				<g:Button ui:field="nextButton">Next Step in Matrix Generation</g:Button>
+					<g:Button ui:field="reviewButton">Review Matrix</g:Button>
+					<g:InlineLabel>&nbsp;&nbsp;&nbsp;</g:InlineLabel>
+					<g:Button ui:field="outputButton">Output Matrix</g:Button>
 				</g:FlowPanel>
 			</g:VerticalPanel>
 		</g:VerticalPanel>
