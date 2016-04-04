@@ -165,7 +165,7 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		Hashtable<Rank, String> rankedNames = new Hashtable<Rank, String>();
 		for(String key : data.keySet()) {
 			if(!this.allLabels.contains(key)) {
-				modelFile.appendError("Don't know what " +key + " is.");
+				modelFile.appendError("Don't know what field \"" +key + "\" is in the treatment \"" + data.toString() + "\".");
 			} else {
 				if(key.endsWith(" name")){	
 					rankedNames.put(Rank.valueOf(key.replaceFirst("\\s+name", "").toUpperCase()), data.get(key).get(0));
@@ -209,7 +209,7 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 			}			
 		}
 		if(lowestName == null)
-			modelFile.appendError("No rank and name is given.");
+			modelFile.appendError("You need to provide a rank and a taxon name for each description entry.");
 		else 
 			if(!lowestName.matches(".*?,.*?\\w+.*")) modelFile.appendError("'"+lowestName+ "' does not have authority/date.");
 		if(taxonNames.contains(completeName.toString()))
@@ -220,11 +220,11 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 	
 		//check data required to generate error if necessary
 		if(!data.containsKey("author") || data.get("author").isEmpty() || data.get("author").get(0).trim().isEmpty())
-			modelFile.appendError("You need to provide an author");
+			modelFile.appendError("You need to provide an author in the treatment \"" + data.toString() + "\".");
 		if(!data.containsKey("year") || data.get("year").isEmpty() || data.get("year").get(0).trim().isEmpty())
-			modelFile.appendError("You need to provide a year");
+			modelFile.appendError("You need to provide a year in the treatment \"" + data.toString() + "\".");
 		if(!data.containsKey("title") || data.get("title").isEmpty() || data.get("title").get(0).trim().isEmpty())
-			modelFile.appendError("You need to provide a title");
+			modelFile.appendError("You need to provide a title in the treatment \"" + data.toString() + "\".");
 		
 		boolean nameValid = false;
 		if(nameTypes.size()>0){
@@ -236,7 +236,7 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		}
 		nameValid = nameValid || (!nameValid && data.containsKey("strain number") && !data.get("strain number").isEmpty() && !data.get("strain number").get(0).trim().isEmpty()); 
 		if(!nameValid)
-			modelFile.appendError("You need to provide at least either a taxon rank or a strain");
+			modelFile.appendError("You need to provide at least either a taxon rank or a strain in the treatment \"" + data.toString() + "\".");
 		
 		boolean descriptionValid = false;
 		for(String descriptionType : descriptionTypes) {
@@ -250,13 +250,15 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 				break;
 		}
 		if(!descriptionValid)
-			modelFile.appendError("You need to provide at least one of the description types: morphology, phenology, habitat, or distribution");
+			modelFile.appendError("You need to provide at least one of the description types: morphology, phenology, habitat, or distribution. Please check the treatment \"" + data.toString() + "\".");
 		
 
 		//build xml
-		Document xml = createXML(data, operator, modelFile);
-		modelFile.setFileName(createFileName(data, modelFile));
-		modelFile.setXML(new XMLOutputter(Format.getPrettyFormat()).outputString(xml));
+		if(!modelFile.hasError()){
+		   Document xml = createXML(data, operator, modelFile);
+		   modelFile.setFileName(createFileName(data, modelFile));
+		   modelFile.setXML(new XMLOutputter(Format.getPrettyFormat()).outputString(xml));
+		}
 		return modelFile;
 	}
 	
@@ -474,7 +476,8 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		/*based on the classification level "genus", if taxon has lower level information, the name would start with "genus" information,
 		  otherwise the taxon name would only keep the lowest level classification information*/
 		if(data.get("author") != null && !data.get("author").isEmpty() && data.get("year") != null && !data.get("year").isEmpty()) {
-			String filename = data.get("author").get(0);
+			String [] author = data.get("author").get(0).split(",");
+			String filename = author[0];
 			TaxonIdentificationEntry lasttaxonIdentificationLastEntry =  taxonIdentificationEntries.get(taxonIdentificationEntries.size()-1);
 			Rank lowesttaxonIdentification=taxonIdentificationEntries.get(taxonIdentificationEntries.size()-1).getRank();
 			if(!Rank.equalOrBelowGenus(lowesttaxonIdentification)){

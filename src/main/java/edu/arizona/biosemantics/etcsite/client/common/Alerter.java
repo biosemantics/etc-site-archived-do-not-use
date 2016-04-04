@@ -319,7 +319,7 @@ public class Alerter {
 	}
 
 	public static MessageBox failedToParse(Throwable caught) {
-		return showAlert("Parse", "Failed to parse.", caught);
+		return showAlert("Parse", "An internal error has occurred and the task is not completed. The issue has been reported to the system developer.", caught);
 	}
 
 	public static MessageBox failedToGetDescription(Throwable caught) {

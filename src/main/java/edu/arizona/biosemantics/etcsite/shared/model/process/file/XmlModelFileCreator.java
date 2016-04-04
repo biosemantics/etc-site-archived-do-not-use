@@ -103,9 +103,10 @@ public class XmlModelFileCreator {
 					authorityDate = newAuthorityDate;
 				}else{
 					if(authorityDate == null){
-						return "ERROR";
+						return "ERROR"+ line;
 					}
-					line = line.concat(" "+authorityDate);
+					else
+					    line = line.concat(" "+authorityDate);
 				}
 			}
 			result = result.concat(line+"\n");
@@ -122,6 +123,7 @@ public class XmlModelFileCreator {
 			if(names.length > 1){
 				return names[1];
 			}
+			else return null;
 		}
 		return null;
 	}
@@ -195,6 +197,7 @@ public class XmlModelFileCreator {
 						values.add(valueBuilder.toString());
 					}
 				} else {
+					if (colonIndex==-1) continue;
 					String key = line.substring(0, colonIndex).toLowerCase().trim();
 					String value = line.substring(colonIndex + 1, line.length()).trim();
 					keys.add(key);
@@ -226,6 +229,7 @@ public class XmlModelFileCreator {
 		StringBuilder treatment = new StringBuilder();
 		for(int j=0; j<keys.size(); j++) {
 			String key = keys.get(j);
+			if(values.size()<=j) continue;
 			String value = values.get(j);
 			treatment.append(key + ": " + value + "\n");
 		}
@@ -233,16 +237,20 @@ public class XmlModelFileCreator {
 	}
 
 
-	public boolean validateTaxonNames(String normalizedText) {
+	public String validateTaxonNames(String normalizedText) {
 		for(String line : normalizedText.split("\n")) {
 			line = line.trim();
 			if(line.contains("name:") || line.contains("name :")){
-				if(!validateName(line.split(":")[1].trim())){
-					return false;
+				String colonSplits[] = line.split(":");
+				if(colonSplits.length > 1){	
+					if(!validateName(colonSplits[1].trim()))
+						return "ERROR"+ line;
+					
+				}
+				else return "ERROR"+ line;
 				}
 			}
-		}
-		return true;
+		return normalizedText;
 	}
 
 }

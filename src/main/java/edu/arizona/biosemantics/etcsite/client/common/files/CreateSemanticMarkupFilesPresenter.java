@@ -70,7 +70,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 				if(overallErrorString.isEmpty())
 					createXmlFiles(overallXmlModelFiles, destinationFilePath);
 				else {
-					overallErrorString += "Did not create any files";
+					overallErrorString += "Did not create any files! Please try again!";
 					Alerter.inputError(overallErrorString.replaceAll("\n", "</br>"));
 					view.hideProgress();
 				}
@@ -221,7 +221,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 			if(rank != null && !name.isEmpty()){
 				textBuilder.append(rank + " name: " + name + "\n");
 				if(!xmlModelFileCreator.validateName(name)){
-					Alerter.inputError(wrongTaxonNameError);
+					Alerter.inputError("The line \""+ name +"\" is not validated. "+ wrongTaxonNameError);
 					view.hideProgress();
 					return;	
 				}
@@ -262,7 +262,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 					createXmlFiles(modelFiles, destinationFilePath);
 					view.resetDescriptions();
 				}else {
-					error += "Did not create any files";
+					error += "Did not create any files! Please try again!";
 					Alerter.inputError(error.replaceAll("\n", "</br>"));
 					view.hideProgress();
 				}
@@ -355,18 +355,18 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 		String normalizedText = xmlModelFileCreator.normalizeText(text);
 		if(view.isCopyCheckBox()){
 			normalizedText = xmlModelFileCreator.copyAuthorityAndDate(normalizedText);
-			if(normalizedText.equals("ERROR")){
-				Alerter.inputError("Authority and date values are missing for taxon names. Unable to copy values. ");
+			if(normalizedText.contains("ERROR")){
+				Alerter.inputError(normalizedText.replace("ERROR","The line \"")+ "\" is not validated. The authority and date values are missing for taxon names. Unable to copy values! Please try again!");
 				return;
 			}
 		}
-		if(!xmlModelFileCreator.validateTaxonNames(normalizedText)){
-			Alerter.inputError(wrongTaxonNameError);
+		normalizedText = xmlModelFileCreator.validateTaxonNames(normalizedText);
+		if(normalizedText.contains("ERROR")){
+			Alerter.inputError(normalizedText.replace("ERROR","The line \"")+ "\" is not validated. "+ wrongTaxonNameError);
 			return;
 		}
 		
 		final List<String> treatments = xmlModelFileCreator.getTreatmentTexts(batchSourceDocumentInfoMap, normalizedText);
-		
 		for (String treatment : treatments) {
 			returnString += treatment + "\n";
 		}
