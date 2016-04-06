@@ -148,5 +148,10 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 		});
 	}
 
+	@Override
+	public void onSave() {
+		otoEventBus.fireEvent(new SaveEvent());
+	}
+
 	
 }

@@ -13,7 +13,10 @@
 		margin-top: 28px;
 		margin-left: 20px;
 	}
-	
+	.saveButton {
+		margin-top: 20px;
+  		margin-left: 10px;
+	}
 	.subMenuEntry {
 		margin-left: -5px;
 		padding-top: 10px;
@@ -30,6 +33,9 @@
 						<g:cell>
 							<my:SubMenu ui:field="subMenu" step="REVIEW_TERMS" />
 						</g:cell>
+						<g:cell>
+			    	    	<g:Button addStyleNames="{style.saveButton}" ui:field="saveButton">Save Progress</g:Button>
+			    	    </g:cell>
 						<g:cell>
 							<g:Button addStyleNames="{style.nextButton}" ui:field="nextButton">Next
 								Step in Text Capture</g:Button>

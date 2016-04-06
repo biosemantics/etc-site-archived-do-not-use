@@ -45,6 +45,11 @@ public class SemanticMarkupReviewView extends Composite implements ISemanticMark
 	public void onNext(ClickEvent event) {
 		presenter.onNext();
 	}
+	
+	@UiHandler("saveButton")
+	public void onSave(ClickEvent event) {
+		presenter.onSave();
+	}
 
 	@Override
 	public void onResize() {

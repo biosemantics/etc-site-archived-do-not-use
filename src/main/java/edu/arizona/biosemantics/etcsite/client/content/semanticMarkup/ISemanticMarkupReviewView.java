@@ -14,6 +14,8 @@ public interface ISemanticMarkupReviewView extends IsWidget {
 		ISemanticMarkupReviewView getView();
 
 		void onNext();
+
+		void onSave();
 		
 	}
 	
