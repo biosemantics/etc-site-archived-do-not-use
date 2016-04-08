@@ -35,7 +35,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 
-
+import edu.arizona.biosemantics.common.context.shared.Context;
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.common.taxonomy.Rank;
 import edu.arizona.biosemantics.common.taxonomy.RankData;
@@ -76,7 +76,6 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkup
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserNotFoundException;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Collection;
-import edu.arizona.biosemantics.oto2.oto.shared.model.Context;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Label;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Term;
 import edu.arizona.biosemantics.oto2.oto.shared.rpc.ICollectionService;
@@ -779,7 +778,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			try {
 				doc = sax.build(reader);
 			} catch (JDOMException | IOException e) {
-				return null;
+				return descriptions;
 			}
 			
 			XPathFactory xpfac = XPathFactory.instance();
@@ -934,11 +933,12 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		} catch (PermissionDeniedException e) {
 			throw new SemanticMarkupException(task);
 		}
+		int i=0;
 		for(String file : files) {
 			List<Description> descriptions = getDescriptions(authenticationToken, input + File.separator + file);
 			for(Description description : descriptions) {
 				try {
-					contexts.add(new Context(learnResult.getOtoUploadId(), getTaxonIdentification(authenticationToken, input + File.separator + file), 
+					contexts.add(new Context(i++, getTaxonIdentification(authenticationToken, input + File.separator + file), 
 							description.getContent()));
 				} catch (PermissionDeniedException | GetFileContentFailedException e) {
 					throw new SemanticMarkupException(task);

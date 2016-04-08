@@ -57,16 +57,6 @@ public class SemanticMarkupReviewView extends Composite implements ISemanticMark
 	}
 	
 	@Override
-	public void setReview(int collectionId, String secret) {
-		oto.setUser(Authentication.getInstance().getFirstName() + " " + 
-			Authentication.getInstance().getLastName() + " (" + 
-			Authentication.getInstance().getEmail() + ")");
-		
-		//don't want to initialize from history when coming back to the task again -> false
-		oto.loadCollection(collectionId, secret, false);
-	}
-	
-	@Override
 	public Oto getOto() {
 		return oto;
 	}

@@ -719,4 +719,8 @@ public class Alerter {
 	public static MessageBox failedToCancelPossibleWorldGeneration(Throwable caught) {
 		return showAlert("Cancel Possible World Generation", "Failed to cancel possible world generation", caught);
 	}
+
+	public static MessageBox failedToGetOtoCollection(Throwable caught) {
+		return showAlert("Failed to load term review", "Failed to load term review", caught);
+	}
 }

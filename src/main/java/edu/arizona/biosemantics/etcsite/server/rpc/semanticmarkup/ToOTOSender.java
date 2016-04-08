@@ -1,5 +1,6 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.semanticmarkup;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -8,6 +9,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
+import org.apache.lucene.queryparser.classic.ParseException;
 
 import com.google.inject.Inject;
 
@@ -114,7 +117,7 @@ public class ToOTOSender {
 		return datasetFuture.get();
 	}
 
-	private void createTerms(String datasetName, OTOClient otoClient, SemanticMarkupConfiguration config, User user, Collection collection) throws InterruptedException, ExecutionException {
+	private void createTerms(String datasetName, OTOClient otoClient, SemanticMarkupConfiguration config, User user, Collection collection) throws InterruptedException, ExecutionException, ParseException, IOException {
 		List<TermContext> termContexts = new LinkedList<TermContext>();
 		for(Bucket bucket : collection.getBuckets()) {
 			for(Term term : bucket.getTerms()) {
@@ -250,7 +253,7 @@ public class ToOTOSender {
 	}
 
 
-	private void addTermContext(List<TermContext> termContexts, Collection collection, Term term) {
+	private void addTermContext(List<TermContext> termContexts, Collection collection, Term term) throws ParseException, IOException {
 		List<TypedContext> contexts = contextService.getContexts(collection, term);
 		if(contexts.isEmpty())
 			termContexts.add(new TermContext(term.getTerm(), ""));

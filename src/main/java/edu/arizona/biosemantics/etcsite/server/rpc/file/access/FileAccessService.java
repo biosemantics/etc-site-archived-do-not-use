@@ -103,7 +103,7 @@ public class FileAccessService extends RemoteServiceServlet implements IFileAcce
 			throw new GetFileContentFailedException();
 		try {
 			byte[] encoded = Files.readAllBytes(Paths.get(filePath));
-			return prettyFormat(new String(encoded, StandardCharsets.UTF_8));
+			return new String(encoded, StandardCharsets.UTF_8);
 		} catch(IOException e) {
 			log(LogLevel.ERROR, "Can't read file content", e);
 			throw new GetFileContentFailedException();

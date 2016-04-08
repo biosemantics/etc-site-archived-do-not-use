@@ -20,10 +20,14 @@ import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnu
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
+import edu.arizona.biosemantics.oto2.oto.client.event.DownloadEvent.DownloadHandler; 
+import edu.arizona.biosemantics.oto2.oto.client.event.DownloadEvent;
 import edu.arizona.biosemantics.oto2.oto.client.event.ImportEvent;
+import edu.arizona.biosemantics.oto2.oto.client.event.LoadEvent;
 import edu.arizona.biosemantics.oto2.oto.client.event.SaveEvent;
-import edu.arizona.biosemantics.oto2.oto.client.event.SaveEvent.SaveHandler;
 import edu.arizona.biosemantics.oto2.oto.client.event.TermRenameEvent;
+import edu.arizona.biosemantics.oto2.oto.shared.model.Collection;
+import edu.arizona.biosemantics.oto2.oto.shared.rpc.ICollectionServiceAsync;
 
 public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.Presenter {
 
@@ -31,22 +35,31 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 	private ISemanticMarkupReviewView view;
 	private PlaceController placeController;
 	private ISemanticMarkupServiceAsync semanticMarkupService;
+	private ICollectionServiceAsync otoCollectionService;
 	private IFileServiceAsync fileService;
 	private EventBus otoEventBus;
 	private IUserServiceAsync userService;
+	private Collection collection;
 	
 	@Inject
 	public SemanticMarkupReviewPresenter(final ISemanticMarkupReviewView view, 
-			final ISemanticMarkupServiceAsync semanticMarkupService, final IUserServiceAsync userService,
+			final ISemanticMarkupServiceAsync semanticMarkupService, ICollectionServiceAsync otoCollectionService, 
+			final IUserServiceAsync userService,
 			IFileServiceAsync fileService,
 			PlaceController placeController, 
 			final ImportOtoPresenter importOtoPresenter) {
 		this.view = view;
 		view.setPresenter(this);
 		this.otoEventBus = view.getOto().getEventBus();
-		otoEventBus.addHandler(SaveEvent.TYPE, new SaveHandler() {
+		otoEventBus.addHandler(LoadEvent.TYPE, new LoadEvent.LoadHandler() {
 			@Override
-			public void onSave(SaveEvent event) {
+			public void onLoad(LoadEvent event) {
+				SemanticMarkupReviewPresenter.this.collection = event.getCollection();
+			}
+		});
+		otoEventBus.addHandler(DownloadEvent.TYPE, new DownloadHandler() {
+			@Override
+			public void onDownload(DownloadEvent event) {
 				final MessageBox box = Alerter.startLoading();
 				final MyWindow window = MyWindow.open(null, "_blank", null);
 				semanticMarkupService.saveOto(Authentication.getInstance().getToken(), 
@@ -99,29 +112,48 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 		this.semanticMarkupService = semanticMarkupService;
 		this.fileService = fileService;
 		this.userService = userService;
+		this.otoCollectionService = otoCollectionService;
 	}
 
 	@Override
 	public void setTask(final Task task) {
+		final MessageBox box = Alerter.startLoading();
 		userService.hasLinkedOTOAccount(Authentication.getInstance().getToken(), new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToReview(caught);
+				Alerter.stopLoading(box);
 			}
 			@Override
 			public void onSuccess(final Boolean hasLinkedOTOAccount) {
 				semanticMarkupService.review(Authentication.getInstance().getToken(), 
 						task, new AsyncCallback<Task>() {
 					@Override
-					public void onSuccess(Task task) {
+					public void onSuccess(final Task task) {
 						SemanticMarkupConfiguration configuration = (SemanticMarkupConfiguration)task.getConfiguration();
-						view.setReview(configuration.getOtoUploadId(), 
-								configuration.getOtoSecret());
-						SemanticMarkupReviewPresenter.this.task = task;
+						otoCollectionService.get(configuration.getOtoUploadId(), configuration.getOtoSecret(), new AsyncCallback<Collection>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								Alerter.failedToGetOtoCollection(caught);
+								Alerter.stopLoading(box);
+							}
+							@Override
+							public void onSuccess(Collection result) {
+								SemanticMarkupReviewPresenter.this.collection = result;
+								//don't want to initialize from history when coming back to the task again -> false
+								view.getOto().setUser(Authentication.getInstance().getFirstName() + " " + 
+											Authentication.getInstance().getLastName() + " (" + 
+											Authentication.getInstance().getEmail() + ")");
+								otoEventBus.fireEvent(new LoadEvent(result, false));
+								SemanticMarkupReviewPresenter.this.task = task;
+								Alerter.stopLoading(box);
+							}
+						});
 					}
 					@Override
 					public void onFailure(Throwable caught) {
 						Alerter.failedToReview(caught);
+						Alerter.stopLoading(box);
 					}
 				});
 			}
@@ -135,22 +167,47 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 
 	@Override
 	public void onNext() {
-		semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), task, TaskStageEnum.PARSE_TEXT, new AsyncCallback<Task>() {
-			@Override
-			public void onSuccess(Task result) {
-				placeController.goTo(new SemanticMarkupParsePlace(task));
-			}
-
+		final MessageBox box = Alerter.startLoading();
+		this.otoCollectionService.update(collection, new AsyncCallback<Void>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				Alerter.failedToGoToTaskStage(caught);
+				Alerter.failedToSaveOto(caught);
+				Alerter.stopLoading(box);
+			}
+			@Override
+			public void onSuccess(Void result) {
+				semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), task, TaskStageEnum.PARSE_TEXT, new AsyncCallback<Task>() {
+					@Override
+					public void onSuccess(Task result) {
+						Alerter.stopLoading(box);
+						placeController.goTo(new SemanticMarkupParsePlace(task));
+					}
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Alerter.failedToGoToTaskStage(caught);
+						Alerter.stopLoading(box);
+					}
+				});
 			}
 		});
 	}
 
 	@Override
 	public void onSave() {
-		otoEventBus.fireEvent(new SaveEvent());
+		final MessageBox box = Alerter.startLoading();
+		this.otoCollectionService.update(collection, new AsyncCallback<Void>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToSaveOto(caught);
+				Alerter.stopLoading(box);
+			}
+			@Override
+			public void onSuccess(Void result) {
+				Alerter.savedSuccessfully();
+				Alerter.stopLoading(box);
+			}
+		});
 	}
 
 	
