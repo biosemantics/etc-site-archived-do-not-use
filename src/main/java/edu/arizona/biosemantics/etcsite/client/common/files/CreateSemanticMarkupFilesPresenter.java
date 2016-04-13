@@ -207,7 +207,9 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 		createModelFile();
 	}
 	
-	private void createModelFile() {
+	private boolean createModelFile() {
+		boolean createrank = false;
+		boolean createdescription = false;
 		StringBuilder textBuilder = new StringBuilder();
 		textBuilder.append("author: " + shortenAuthor(view.getAuthor().trim()) + "\n");
 		textBuilder.append("year: " + view.getYear().trim() + "\n");
@@ -221,15 +223,23 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 			if(rank != null && !name.isEmpty()){
 				textBuilder.append(rank + " name: " + name + "\n");
 				if(!xmlModelFileCreator.validateName(name)){
-					Alerter.inputError("The line \""+ name +"\" is not validated. "+ wrongTaxonNameError);
+					Alerter.inputError(wrongTaxonNameError);
 					view.hideProgress();
-					return;	
+					return false;	
 				}
+				createrank = true;
 			}
 		}
 		textBuilder.append("strain number: " + view.getStrainNumber().trim() + "\n");
 		textBuilder.append("equivalent strain numbers: " + view.getEqStrainNumbers().trim() + "\n");
 		textBuilder.append("accession number 16s rrna: " + view.getStrainAccession().trim() + "\n");
+		textBuilder.append("accession number genome sequence: " + view.getStrainGenomeAccession().trim() + "\n");
+		textBuilder.append("previous or new taxonomic names: " + view.getAlternativeTaxonomy().trim() + "\n");
+		if(!createrank&&view.getStrainNumber().trim().isEmpty()) {
+			Alerter.inputError("Please input at least Taxon Name Information or Strain Information!");
+			view.hideProgress();
+			return false;
+		}
 		
 		List<DescriptionEntry> descriptions  = view.getDescriptionsList();
 		for(DescriptionEntry entry: descriptions){
@@ -242,8 +252,14 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 					descriptionType = scope + "-" + descriptionType;
 				}
 				textBuilder.append(descriptionType + ": #" + desc + "#\n");
-			}
-		}		
+				createdescription = true;
+			}	
+		}
+		if (!createdescription){
+			Alerter.inputError("Please input Description!");
+			view.hideProgress();
+			return false;
+		}
 		
 		fileFormatService.createTaxonDescriptionFile(Authentication.getInstance().getToken(), textBuilder.toString(), 
 				new AsyncCallback<List<XmlModelFile>>() {
@@ -260,7 +276,9 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 				if(error.isEmpty()){
 					System.out.println(destinationFilePath);
 					createXmlFiles(modelFiles, destinationFilePath);
+					view.removeAddtionalTaxonRanks();
 					view.resetDescriptions();
+					view.resetStrain();
 				}else {
 					error += "Did not create any files! Please try again!";
 					Alerter.inputError(error.replaceAll("\n", "</br>"));
@@ -274,6 +292,8 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 				view.hideProgress();
 			}
 		});
+		
+		return true;
 	}
 
 	/**
@@ -321,6 +341,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	public void init() {
 		view.removeAddtionalTaxonRanks();
 		view.resetDescriptions();
+		view.resetStrain();
 	}
 
 	@Override

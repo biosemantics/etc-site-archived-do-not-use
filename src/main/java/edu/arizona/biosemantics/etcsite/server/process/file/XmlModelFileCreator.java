@@ -42,8 +42,8 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 	public String[] fields =  new String[] {"author", "year", "title", "doi", "full citation",
 			/*"order", "suborder", "superfamily", "family", "subfamily", "tribe", "subtribe", "genus", "subgenus", 
 			"section", "subsection", "series", "species", "subspecies", "variety", "forma", "unranked",*/
-			"strain number", "equivalent strain numbers", "accession number 16s rrna",
-			"morphology", "phenology",  "habitat", "distribution" };
+			"strain number","equivalent strain numbers", "accession number 16s rrna", "accession number genome sequence",
+			"previous or new taxonomic names","morphology", "phenology",  "habitat", "distribution" };
 	
 	protected BracketChecker bracketChecker;
 	private XmlNamespaceManager xmlNamespaceManager;
@@ -86,7 +86,16 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		view.setPresenter(presenter);
 		presenter.showMessage(title, text);*/
 		log(LogLevel.TRACE, title + ": " + text);
-	}	
+	}
+	
+	private String showdata(String data) {
+		data = data.replaceAll("\\{" , "");
+		data = data.replaceAll("\\],","\n");
+		data = data.replaceAll("=\\[","=");
+		data = data.replaceAll("\\]\\}","");
+		return data;
+		
+	}
 
 	//TODO: use taxonNames to check for duplicate taxa, but can't do it given current code structure: only one entry is processed at a time. 
 	public XmlModelFile createXmlModelFile(String text, String operator, HashSet<String> taxonNames) {
@@ -165,7 +174,7 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		Hashtable<Rank, String> rankedNames = new Hashtable<Rank, String>();
 		for(String key : data.keySet()) {
 			if(!this.allLabels.contains(key)) {
-				modelFile.appendError("Don't know what field \"" +key + "\" is in the treatment \"" + data.toString() + "\".");
+				modelFile.appendError("Don't know what field \"" +key + "\" is in the treatment: \n\n\"" + showdata(data.toString()) + "\".");
 			} else {
 				if(key.endsWith(" name")){	
 					rankedNames.put(Rank.valueOf(key.replaceFirst("\\s+name", "").toUpperCase()), data.get(key).get(0));
@@ -208,10 +217,11 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 				lowestName = rname;
 			}			
 		}
-		if(lowestName == null)
-			modelFile.appendError("You need to provide a rank and a taxon name for each description entry.");
-		else 
+		if(lowestName != null) {
+			//modelFile.appendError("You need to provide a rank and a taxon name for each description entry.");
+		//else 
 			if(!lowestName.matches(".*?,.*?\\w+.*")) modelFile.appendError("'"+lowestName+ "' does not have authority/date.");
+		}
 		if(taxonNames.contains(completeName.toString()))
 			modelFile.appendError("'"+completeName.toString()+ "' already exists. Duplicate taxa are not allowed");
 		else
@@ -220,11 +230,11 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 	
 		//check data required to generate error if necessary
 		if(!data.containsKey("author") || data.get("author").isEmpty() || data.get("author").get(0).trim().isEmpty())
-			modelFile.appendError("You need to provide an author in the treatment \"" + data.toString() + "\".");
+			modelFile.appendError("You need to provide an Author Information in the treatment: \n\n\"" + showdata(data.toString()) + "\".");
 		if(!data.containsKey("year") || data.get("year").isEmpty() || data.get("year").get(0).trim().isEmpty())
-			modelFile.appendError("You need to provide a year in the treatment \"" + data.toString() + "\".");
+			modelFile.appendError("You need to provide a  Year information in the treatment: \n\n \"" + showdata(data.toString()) + "\".");
 		if(!data.containsKey("title") || data.get("title").isEmpty() || data.get("title").get(0).trim().isEmpty())
-			modelFile.appendError("You need to provide a title in the treatment \"" + data.toString() + "\".");
+			modelFile.appendError("You need to provide a Title information in the treatment: \n\n\"" + showdata(data.toString()) + "\".");
 		
 		boolean nameValid = false;
 		if(nameTypes.size()>0){
@@ -236,8 +246,17 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		}
 		nameValid = nameValid || (!nameValid && data.containsKey("strain number") && !data.get("strain number").isEmpty() && !data.get("strain number").get(0).trim().isEmpty()); 
 		if(!nameValid)
-			modelFile.appendError("You need to provide at least either a taxon rank or a strain in the treatment \"" + data.toString() + "\".");
-		
+			modelFile.appendError("You need to provide at least a Taxon Name Information or Strain Information in the treatment:\n\n \"" + showdata(data.toString()) + "\".");
+		boolean strainValid = false;
+		strainValid = (data.containsKey("equivalent strain numbers") && !data.get("equivalent strain numbers").isEmpty() && !data.get("equivalent strain numbers").get(0).trim().isEmpty())||(data.containsKey("accession number 16s rrna") && !data.get("accession number 16s rrna").isEmpty() && !data.get("accession number 16s rrna").get(0).trim().isEmpty())||(data.containsKey("accession number genome sequence") && !data.get("accession number genome sequence").isEmpty() && !data.get("accession number genome sequence").get(0).trim().isEmpty());
+        if(strainValid){
+               if(data.containsKey("strain number") && !data.get("strain number").isEmpty() && !data.get("strain number").get(0).trim().isEmpty()) {
+               }
+               else 
+            	   modelFile.appendError("To input Strain Information, you need to provide at least strain number in the treatment:\n\n \"" + showdata(data.toString()) + "\".");	
+        }
+			
+	
 		boolean descriptionValid = false;
 		for(String descriptionType : descriptionTypes) {
 			if(data.containsKey(descriptionType)) {
@@ -250,7 +269,7 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 				break;
 		}
 		if(!descriptionValid)
-			modelFile.appendError("You need to provide at least one of the description types: morphology, phenology, habitat, or distribution. Please check the treatment \"" + data.toString() + "\".");
+			modelFile.appendError("You need to provide at least one of the description types: morphology, phenology, habitat, or distribution. Please check the treatment:\n\n \"" + showdata(data.toString()) + "\".");
 		
 
 		//build xml
@@ -366,7 +385,7 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 			Element element = new Element("taxon_name");
 			taxonIdentification.addContent(element);
 			element.setText(name);
-			element.setAttribute("rank", rank);
+			    element.setAttribute("rank", rank);
 			if(authority!=null){
 				element.setAttribute("authority", authority);
 				if(ndate!=null) element.setAttribute("date", ndate);
@@ -385,6 +404,7 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 			element.setText(data.get("strain number").get(0));
 			if(data.get("equivalent strain numbers") != null && !data.get("equivalent strain numbers").isEmpty() && !data.get("equivalent strain numbers").get(0).trim().isEmpty()) element.setAttribute("equivalent_strain_numbers", data.get("equivalent strain numbers").get(0));
 			if(data.get("accession number 16s rrna") != null && !data.get("accession number 16s rrna").isEmpty() && !data.get("accession number 16s rrna").get(0).trim().isEmpty()) element.setAttribute("accession_number_16s_rrna", data.get("accession number 16s rrna").get(0));
+			if(data.get("accession number genome sequence") != null && !data.get("accession number genome sequence").isEmpty() && !data.get("accession number genome sequence").get(0).trim().isEmpty()) element.setAttribute("accession_number_for_genome_sequence", data.get("accession number genome sequence").get(0));
 		}
 
 		taxonIdentification.setAttribute("status", "ACCEPTED");
@@ -412,7 +432,11 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		addAsElementIfExists(taxonIdentification, data, "unranked", "unranked_epithet_name", doc);*/
 		//addAsElementIfExists(taxonIdentification, data, "strain", "strain_name", doc);
 		//addAsElementIfExists(taxonIdentification, data, "strain source", "strain_source", doc);
-
+		if(data.get("previous or new taxonomic names") != null && !data.get("previous or new taxonomic names").isEmpty() && !data.get("previous or new taxonomic names").get(0).trim().isEmpty()) {
+			Element alternativeTaxonomy = new Element("other_name");
+			alternativeTaxonomy.setText(data.get("previous or new taxonomic names").get(0));
+			treatment.addContent(alternativeTaxonomy);
+		}
 		for(String descriptionType : descriptionTypes) {
 			if(data.containsKey(descriptionType)) {
 				List<String> descriptionTexts = data.get(descriptionType);
@@ -478,23 +502,23 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		if(data.get("author") != null && !data.get("author").isEmpty() && data.get("year") != null && !data.get("year").isEmpty()) {
 			String [] author = data.get("author").get(0).split(",");
 			String filename = author[0];
-			TaxonIdentificationEntry lasttaxonIdentificationLastEntry =  taxonIdentificationEntries.get(taxonIdentificationEntries.size()-1);
-			Rank lowesttaxonIdentification=taxonIdentificationEntries.get(taxonIdentificationEntries.size()-1).getRank();
-			if(!Rank.equalOrBelowGenus(lowesttaxonIdentification)){
-				  filename += "_" + lasttaxonIdentificationLastEntry.getValue().substring(0,lasttaxonIdentificationLastEntry.getValue().indexOf(" ")) + "_";
-			}
-			
-			else {
-				for (TaxonIdentificationEntry taxonIdentificationEntry : taxonIdentificationEntries) {
-					  if (filename.matches(".*(_|^)" + taxonIdentificationEntry.getRank()	+ "(_|$).*"))
-						 modelFile.appendError("Redundant rank '" + taxonIdentificationEntry.getRank() + "'");
-					  if(taxonIdentificationEntry.getRank().getId()>=Rank.GENUS.getId())
-					     filename += "_" + taxonIdentificationEntry.getValue().substring(0,taxonIdentificationEntry.getValue().indexOf(" ")) + "_";
+			if(taxonIdentificationEntries.size()>=1){
+				TaxonIdentificationEntry lasttaxonIdentificationLastEntry =  taxonIdentificationEntries.get(taxonIdentificationEntries.size()-1);
+				Rank lowesttaxonIdentification=taxonIdentificationEntries.get(taxonIdentificationEntries.size()-1).getRank();
+				if(!Rank.equalOrBelowGenus(lowesttaxonIdentification)){
+					filename += "_" + lasttaxonIdentificationLastEntry.getValue().substring(0,lasttaxonIdentificationLastEntry.getValue().indexOf(" ")) + "_";
+				}
+				else {
+					for (TaxonIdentificationEntry taxonIdentificationEntry : taxonIdentificationEntries) {
+						if (filename.matches(".*(_|^)" + taxonIdentificationEntry.getRank()	+ "(_|$).*"))
+							modelFile.appendError("Redundant rank '" + taxonIdentificationEntry.getRank() + "'");
+						if(taxonIdentificationEntry.getRank().getId()>=Rank.GENUS.getId())
+							filename += "_" + taxonIdentificationEntry.getValue().substring(0,taxonIdentificationEntry.getValue().indexOf(" ")) + "_";
+					}
 				}
 			}
-			
 			if(data.containsKey("strain number") && !data.get("strain number").isEmpty() && !data.get("strain number").get(0).trim().isEmpty())
-				filename +=  data.get("strain number") + "_";
+				filename += "_" + data.get("strain number") + "_";
 			
 			filename = filename.replaceAll("_+", "_").replaceFirst("_$","_"+data.get("year").get(0)+".xml");
 			return filename;

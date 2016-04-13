@@ -52,6 +52,9 @@
 			font-style: italic;
 			color: DimGray;
 		}
+		.radioPadding{
+		padding: 8px;
+	    }
 		</ui:style>
 		<ui:with type="com.sencha.gxt.core.client.util.Margins" field="margins5">
     		<ui:attributes top="5" right="5" bottom="5" left="5" />
@@ -161,15 +164,16 @@
 									</g:row>
 								</g:Grid> 
 							</g:VerticalPanel>
+							<g:Label styleName="{style.sub-heading}">Strain Information (For microbes only)</g:Label>
+							<g:RadioButton ui:field="createStrainRadio" name="createStrainInformation" styleName="{style.radioPadding}">Input strain information </g:RadioButton>
 							<g:VerticalPanel ui:field="strainPanel" visible="false">
-								<g:Label styleName="{style.sub-heading}">Strain Information (* for microbes only)</g:Label>
 								<g:Grid>
 								    <g:row>
-								        <g:customCell>
+									    <g:customCell>
 											<g:Label>Strain Number *</g:Label>
 										</g:customCell>
 										<g:customCell>
-											<g:TextBox ui:field="strain"></g:TextBox>
+											<g:TextBox visibleLength="45" ui:field="strainNumber"></g:TextBox>
 										</g:customCell>
 									</g:row>
 									<g:row>
@@ -177,7 +181,7 @@
 											<g:Label>Equivalent Strain Numbers in Other Collections</g:Label>
 										</g:customCell>
 										<g:customCell>
-											<g:TextBox ui:field="equivalStrain"></g:TextBox>
+											<g:TextBox visibleLength="45" ui:field="equivalStrain"></g:TextBox>
 										</g:customCell>
 									</g:row>
 									<g:row>
@@ -185,11 +189,34 @@
 											<g:Label>Genbank 16S accession number</g:Label>
 										</g:customCell>
 										<g:customCell>
-											<g:TextBox ui:field="strainAccession"></g:TextBox>
+											<g:TextBox visibleLength="45" ui:field="strainAccession"></g:TextBox>
+										</g:customCell>
+									</g:row>
+									<g:row>
+									    <g:customCell>
+											<g:Label>Genome sequence accession number</g:Label>
+										</g:customCell>
+										<g:customCell>
+											<g:TextBox visibleLength="45" ui:field="strainGenomeAccession"></g:TextBox>
 										</g:customCell>
 									</g:row>
 								</g:Grid>
-							</g:VerticalPanel> 
+							</g:VerticalPanel>
+							
+						    <g:VerticalPanel>
+						        <g:Label styleName="{style.sub-heading}"> Previous or New Taxonomic Names</g:Label>
+						        <g:Grid>
+						              <g:row>
+								        <g:customCell>
+											<g:Label>Previous or new taxonomic names&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</g:Label>
+										</g:customCell>
+										<g:customCell>
+											<g:TextBox visibleLength="45" ui:field="alternativeTaxonomy"></g:TextBox>
+										</g:customCell>
+									</g:row>
+						        </g:Grid>
+						    </g:VerticalPanel>	 
+							
 							<g:VerticalPanel>
 								<g:Label styleName="{style.sub-heading}">Descriptions (* at least one)</g:Label>
 								<g:FlowPanel>
@@ -291,14 +318,15 @@
 										<!-- Required/Optional Fields -->
 										<g:ScrollPanel>
 											<g:HTMLPanel>
-											  Required and optional fields for a taxonomic treatment are listed below: (R = required, O = optional).<br/>
+											  Required and optional fields for a taxonomic treatment are listed below: (R = required, O = optional; FR = format required, FF = format free).<br/>
 											    <br/>
 											    <ol> 
-											    	<li><b>author</b>(R), <b>year</b>(R), <b>title</b>(R), either specified in the Source Document Information form, or included in Taxonomic Treatment Area.</li>
-										    	    <li>At least one <b>strain number</b> or one ranked taxon name, in the format of "<b><i>rank</i> name</b>"(R), e.g., family name.</li>   
-		      						    			<li><b>equivalent strain numbers</b>(O), comma separated list if multiple numbers</li> 
-			      						    		<li><b>accession number 16S rRNA</b>(O)</li>
-			      						    		<li>At least one taxon description type of {<b>morphology</b>, <b>phenology</b>, <b>habitat</b>, <b>distribution</b>}(R)</li>
+											    	<li><b>author</b>(R;FR), <b>year</b>(R;FF), <b>title</b>(R;FF), either specified in the Source Document Information form, or included in Taxonomic Treatment Area.</li>
+										    	    <li>At least Strain Information (Strain Information fields listed below) or one other Ranked Taxon Name (please follow the format of "<b><i>rank</i> name</b>"(FR), e.g., <b>family name</b>, <b>genus name</b>. (see <b>Specifying Taxon Names</b>)</li>   
+		      						    			<li>To input Strain Inforamtion, <b>strain number</b>(R;FF) required, other three relative fields are optional: <b>equivalent strain numbers</b>(O;FR), comma separated list if multiple numbers;
+			      						    		<b>accession number 16S rrna</b>(O;FF); and also <b>accession number genome sequence</b>(O;FF).</li>
+			      						    		<li><b>previous or new taxonomic names</b>(O;FF)</li>
+			      						    		<li>At least one taxon description type(R;FR) of {<b>morphology</b>, <b>phenology</b>, <b>habitat</b>, <b>distribution</b>}(R)</li>
 			      						    		<li>Scope may be applied for each description type in the format of "scope-description type". For example, male-morphology, fruiting-phenology,
 			      						    		 see "Specifying Taxon Descriptions"</li>
 			      						    	</ol>

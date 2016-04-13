@@ -40,12 +40,16 @@ public interface ICreateSemanticMarkupFilesView extends IsWidget {
 	List<TaxonIdentificationEntry> getTaxonIdentificationEntries();
 	
 	List<DescriptionEntry> getDescriptionsList();
-
+	
 	String getStrainNumber(); 
 	
 	String getEqStrainNumbers(); 
 
-	String getStrainAccession(); 
+	String getStrainAccession();
+	
+	String getStrainGenomeAccession();
+	
+	String getAlternativeTaxonomy();
 
 	void removeAddtionalTaxonRanks();
 
@@ -66,5 +70,7 @@ public interface ICreateSemanticMarkupFilesView extends IsWidget {
 	void setPreviewText(String text);
 
 	void clearBatchText();
+
+	void resetStrain();
 	
 }
