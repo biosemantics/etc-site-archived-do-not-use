@@ -575,7 +575,7 @@ public class Alerter {
 		return info;
 	}
 	
-	private static MessageBox showConfirm(String title, String message) {
+	private static ConfirmMessageBox showConfirm(String title, String message) {
 		 ConfirmMessageBox confirm = new ConfirmMessageBox(title, message);
 		 confirm.show();
          return confirm;
@@ -722,5 +722,9 @@ public class Alerter {
 
 	public static MessageBox failedToGetOtoCollection(Throwable caught) {
 		return showAlert("Failed to load term review", "Failed to load term review", caught);
+	}
+
+	public static ConfirmMessageBox confirmSaveTermReview() {
+		return showConfirm("Save changes?", "Do you want to save your term review changes?");
 	}
 }
