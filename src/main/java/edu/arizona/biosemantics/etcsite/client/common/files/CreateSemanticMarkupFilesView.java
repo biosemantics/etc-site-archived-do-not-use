@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
@@ -127,14 +128,23 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	@UiField
 	Button authorityDateButton;
 	
+	@UiField 
+	RadioButton createStrainRadio;
+	
 	@UiField
-	TextBox strain;
+	TextBox strainNumber;
 	
 	@UiField
 	TextBox equivalStrain;
 	
 	@UiField
-	TextBox strainAccession;	
+	TextBox strainAccession;
+	
+	@UiField
+	TextBox strainGenomeAccession;
+	
+	@UiField
+	TextBox alternativeTaxonomy;
 		
 	@UiField
 	Button addDescriptionButton;
@@ -195,6 +205,8 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	Button returnButton;
 	
 	String authorityDate;
+	
+	int k=1;
 	
 	private ICreateSemanticMarkupFilesView.Presenter presenter;
 
@@ -286,11 +298,16 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	    toggleGroup.add(descInstructions);
 		tabPanel.selectTab(0);
 		
-		author.getElement().setPropertyString("placeholder", "Enter only the Last Name of the first Author here");
+		author.getElement().setPropertyString("placeholder", "Enter only the Last Name of the first Author");
 		title.getElement().setPropertyString("placeholder", "Enter Publication Title");
 		doi.getElement().setPropertyString("placeholder", "Enter DoI");
 		fullCitation.getElement().setPropertyString("placeholder", "Enter Full Citation");
 		year.getElement().setPropertyString("placeholder", "Enter Publication Year");
+		strainNumber.getElement().setPropertyString("placeholder", "Enter strain number");
+		equivalStrain.getElement().setPropertyString("placeholder", "Enter alternative strain name(s) with comma separated");
+		strainAccession.getElement().setPropertyString("placeholder", "Enter accession number 16S rRNA");
+		strainGenomeAccession.getElement().setPropertyString("placeholder", "Enter accession number for genome sequence");
+		alternativeTaxonomy.getElement().setPropertyString("placeholder", "Enter previous or new taxonomic names");
 		
 		batch_author.getElement().setPropertyString("placeholder", "Enter only the Last Name of the first Author here");
 		batch_title.getElement().setPropertyString("placeholder", "Enter Publication Title");
@@ -344,57 +361,77 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	 
 	@UiHandler("addRankButton")
 	public void onAddRank(ClickEvent event) {
-		if(currentRankIsStrain()) {
+		/*if(currentRankIsStrain()) {
 			strainPanel.setVisible(true);
+		}*/
+		Widget valueWidget1 = ranksGrid.getWidget(ranksGrid.getRowCount()-2, 1);
+	    TextBox tf1 = (TextBox)valueWidget1;
+		if(!ranksCombo.getValue().name().isEmpty()&&!tf1.getText().isEmpty()){
+			int newRow = ranksGrid.insertRow(ranksGrid.getRowCount() - 1);
+			Label label = new Label(ranksCombo.getValue().name());
+		    deleteRankButton = new Button("Remove");
+		    deleteRankButton.addClickHandler(new ClickHandler() {
+		    	public void onClick(ClickEvent event) {
+		    		ranksGrid.removeRow(ranksGrid.getCellForEvent(event).getRowIndex());
+		    		if(ranksGrid.getRowCount()==3) 
+		    			ranksGrid.remove(authorityDateButton);
+		    	}
+		    });
+		    ranksGrid.setWidget(newRow - 1, 0, label);
+		    ranksGrid.setWidget(newRow - 1, 2, deleteRankButton);
+		    tf1.setEnabled(false);
+		    ranksGrid.setWidget(newRow - 1, 1, tf1);
+		    ranksGrid.remove(authorityDateButton);
+		    ranksGrid.setWidget(newRow, 0, ranksCombo);
+		    ranksGrid.setWidget(newRow, 1, new TextBox());
+		    ranksCombo.setValue(Rank.values()[ranksCombo.getValue().getId() + 1]);
+		    ranksGrid.setWidget(newRow, 2, authorityDateButton);
+		    authorityDateButton.setVisible(true);	
 		}
-		int newRow = ranksGrid.insertRow(ranksGrid.getRowCount() - 1);
-		Label label = new Label(ranksCombo.getValue().name());
-		deleteRankButton = new Button("Remove");
-		deleteRankButton.addClickHandler(new ClickHandler() {
-	        public void onClick(ClickEvent event) {
-	        	ranksGrid.removeRow(ranksGrid.getCellForEvent(event).getRowIndex());
-	        	if(ranksGrid.getRowCount()==3) ranksGrid.remove(authorityDateButton);
-	        }
-	      });
-		ranksGrid.setWidget(newRow - 1, 0, label);
-		ranksGrid.setWidget(newRow - 1, 2, deleteRankButton);
-		Widget valueWidget1 = ranksGrid.getWidget(newRow - 1, 1);
-		TextBox tf1 = (TextBox)valueWidget1;
-		tf1.setEnabled(false);
-		ranksGrid.setWidget(newRow - 1, 1, tf1);
-		ranksGrid.remove(authorityDateButton);
-		ranksGrid.setWidget(newRow, 0, ranksCombo);
-		ranksGrid.setWidget(newRow, 1, new TextBox());
-		ranksCombo.setValue(Rank.values()[ranksCombo.getValue().getId() + 1]);
-		ranksGrid.setWidget(newRow, 2, authorityDateButton);
-		authorityDateButton.setVisible(true);	
-			
+		else 
+			Alerter.inputError("Please input rank information!");
+	}
+	
+	@UiHandler("createStrainRadio")
+	public void onCreateStrainRadion(ClickEvent event){
+		if(k==1){
+			strainPanel.setVisible(true);
+			k=2;
+		}
+		else {
+			resetStrain();
+			k=1;
+		}
 	}
 	
 	@UiHandler("addDescriptionButton")
 	public void onAddDescription(ClickEvent event) {
-		int newRow = descriptionGrid.insertRow(descriptionGrid.getRowCount()-1);
-		TextArea tArea = new TextArea();
-		tArea.setStyleName(descriptionArea.getStyleName());
-		
-		Label descriptionLabel = new Label(descriptionCombo.getValue().name());
-		Label scopeLabel = new Label();
-		if(scopeCombo.getText().equals("Other")){
-			scopeLabel.setText(scopeTextBox.getText());
-		}else{
-			scopeLabel.setText(scopeCombo.getText());
+		Widget descriptionWidget = descriptionGrid.getWidget(descriptionGrid.getRowCount()-2, 2);
+	    TextArea tArea1=(TextArea)descriptionWidget;
+		if(!tArea1.getText().isEmpty()&&!descriptionCombo.getValue().name().isEmpty()) {
+			int newRow = descriptionGrid.insertRow(descriptionGrid.getRowCount()-1);
+		    TextArea tArea = new TextArea();
+		    tArea.setStyleName(descriptionArea.getStyleName());
+		    Label descriptionLabel = new Label(descriptionCombo.getValue().name());
+		    Label scopeLabel = new Label();
+		    if(scopeCombo.getText().equals("Other")){
+		    	scopeLabel.setText(scopeTextBox.getText());
+		    }
+		    else 
+		    	scopeLabel.setText(scopeCombo.getText());
+		    tArea1.setEnabled(false);
+		    scopeTextBox.setVisible(false);
+		    scopeCombo.clear();
+		    descriptionGrid.setWidget(newRow-1, 0, descriptionLabel);
+		    descriptionGrid.setWidget(newRow-1, 1, scopeLabel);
+		    descriptionGrid.setWidget(newRow-1, 2, tArea1);
+		    descriptionGrid.setWidget(newRow, 0, descriptionCombo);
+		    descriptionGrid.setWidget(newRow, 1, scopeCombo);
+		    descriptionGrid.setWidget(newRow, 2, tArea);
 		}
-		Widget descriptionWidget = descriptionGrid.getWidget(newRow-1, 2);
-		TextArea tArea1=(TextArea)descriptionWidget;
-		tArea1.setEnabled(false);
-		scopeTextBox.setVisible(false);
-		scopeCombo.clear();
-		descriptionGrid.setWidget(newRow-1, 0, descriptionLabel);
-		descriptionGrid.setWidget(newRow-1, 1, scopeLabel);
-		descriptionGrid.setWidget(newRow-1, 2, tArea1);
-		descriptionGrid.setWidget(newRow, 0, descriptionCombo);
-		descriptionGrid.setWidget(newRow, 1, scopeCombo);
-		descriptionGrid.setWidget(newRow, 2, tArea);
+		else
+			Alerter.inputError("Please input description information!");
+			
 	}
 	
 	@UiHandler("authorityDateButton")
@@ -422,7 +459,14 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 
 	@UiHandler("createButton") 
 	public void onCreate(ClickEvent event) {
-		presenter.onCreate();
+		if(!author.getText().isEmpty()&&!year.getText().isEmpty()&&!author.getText().isEmpty()) {
+			if(k==2 && strainNumber.getText().isEmpty())
+				Alerter.inputError("Please input Strain Number if you choose to input Strain Information!");
+			else 
+				presenter.onCreate();
+		}	
+		else 
+			Alerter.inputError("Please input Source Document Information!");
 	}
 
 	@UiHandler("batchButton")
@@ -445,7 +489,7 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	}
 	
 	public String getStrainNumber() {
-		return strain.getText().trim();
+		return strainNumber.getText().trim();
 	}
 	
 	public String getEqStrainNumbers() {
@@ -455,9 +499,20 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	public String getStrainAccession() {
 		return strainAccession.getText().trim();
 	}
+	
+	public String getStrainGenomeAccession() {
+		return strainGenomeAccession.getText().trim();
+	}
+	
+	public String getAlternativeTaxonomy() {
+		return alternativeTaxonomy.getText().trim();
+	}
+	
 	public List<TaxonIdentificationEntry> getTaxonIdentificationEntries() {
 		List<TaxonIdentificationEntry> result = new LinkedList<TaxonIdentificationEntry>();
-		for(int i = 1; i < ranksGrid.getRowCount() - 1; i++){ //row 0 is the header row, also there is a button at the end of table
+		if (ranksGrid.getRowCount()<=3) 
+			return result;
+		for(int i = 1; i < ranksGrid.getRowCount() - 2; i++){ //row 0 is the header row, also there is a button at the end of table
 			Widget rankWidget = ranksGrid.getWidget(i, 0);
 			Widget valueWidget = ranksGrid.getWidget(i, 1);
 			
@@ -484,7 +539,9 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	
 	public List<DescriptionEntry> getDescriptionsList(){
 		List<DescriptionEntry> entries = new LinkedList<DescriptionEntry>();
-		for(int i=1; i<descriptionGrid.getRowCount()-1; i++){
+		if (descriptionGrid.getRowCount()<=3) 
+			return entries;
+		for(int i=1; i<descriptionGrid.getRowCount()-2; i++){
 			Widget typeWidget = descriptionGrid.getWidget(i, 0);
 			Widget scopeWidget = descriptionGrid.getWidget(i,  1);
 			Widget descriptionWidget = descriptionGrid.getWidget(i, 2);
@@ -580,8 +637,20 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		descriptionGrid.setWidget(1, 0, descriptionCombo);
 		descriptionGrid.setWidget(1, 1, scopeCombo);
 		descriptionGrid.setWidget(1, 2, tArea);
+		alternativeTaxonomy.setText("");
 	}
 	
+	@Override
+	public void resetStrain() {
+		createStrainRadio.setChecked(false);
+		strainPanel.setVisible(false);
+		strainNumber.setText("");
+		equivalStrain.setText("");
+		strainAccession.setText("");
+		strainGenomeAccession.setText("");
+		k=1;
+	}
+		
 	@Override
 	public void clearBatchText() {
 		previewArea.setText("");
@@ -609,12 +678,12 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	}
 	
 	/*================= Private Methods =================*/
-	private boolean currentRankIsStrain() {
+	/*private boolean currentRankIsStrain() {
 		Rank rank = ranksCombo.getValue();
 		Set<Rank> strainRanks = new HashSet<Rank>();
 		strainRanks.add(Rank.STRAIN);
 		return strainRanks.contains(rank);
-	}
+	}*/
 	
 	private boolean hasAuthorityDate(String tfValue) {
 		String splits[] = tfValue.split(" ", 2);
