@@ -2,11 +2,13 @@ package edu.arizona.biosemantics.etcsite.client.content.semanticMarkup;
 
 import com.google.gwt.http.client.URL;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
+import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
@@ -40,6 +42,7 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 	private EventBus otoEventBus;
 	private IUserServiceAsync userService;
 	private Collection collection;
+	private Timer saveTimer;
 	
 	@Inject
 	public SemanticMarkupReviewPresenter(final ISemanticMarkupReviewView view, 
@@ -115,9 +118,31 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 		this.otoCollectionService = otoCollectionService;
 	}
 
+	private void createSaveTimer() {
+		removeSaveTimer();
+		saveTimer = new Timer() {
+			@Override
+			public void run() {
+				ConfirmMessageBox box = Alerter.confirmSaveTermReview();
+				box.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
+					@Override
+					public void onSelect(SelectEvent event) {
+						otoEventBus.fireEvent(new SaveEvent());
+					}
+				});
+		    }
+		};
+		saveTimer.scheduleRepeating(900000);	
+	}
+	
+	private void removeSaveTimer() {
+		if(saveTimer != null)
+			saveTimer.cancel();
+	}
+	
 	@Override
 	public void setTask(final Task task) {
-		final MessageBox box = Alerter.startLoading();
+	    final MessageBox box = Alerter.startLoading();
 		userService.hasLinkedOTOAccount(Authentication.getInstance().getToken(), new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -147,6 +172,7 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 								otoEventBus.fireEvent(new LoadEvent(result, false));
 								SemanticMarkupReviewPresenter.this.task = task;
 								Alerter.stopLoading(box);
+								createSaveTimer();
 							}
 						});
 					}
@@ -167,6 +193,7 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 
 	@Override
 	public void onNext() {
+		removeSaveTimer();
 		final MessageBox box = Alerter.startLoading();
 		this.otoCollectionService.update(collection, new AsyncCallback<Void>() {
 			@Override
@@ -195,6 +222,7 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 
 	@Override
 	public void onSave() {
+		createSaveTimer();
 		final MessageBox box = Alerter.startLoading();
 		this.otoCollectionService.update(collection, new AsyncCallback<Void>() {
 			@Override
@@ -208,7 +236,5 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 				Alerter.stopLoading(box);
 			}
 		});
-	}
-
-	
+	}	
 }
