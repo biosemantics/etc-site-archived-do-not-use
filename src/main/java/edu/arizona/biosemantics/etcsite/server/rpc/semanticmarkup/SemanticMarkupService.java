@@ -991,7 +991,6 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		//return 21259;
 	}
 	
-	
 	private String getTaxonIdentification(AuthenticationToken authenticationToken, String filePath) throws PermissionDeniedException, GetFileContentFailedException {
 		String fileContent = fileAccessService.getFileContent(authenticationToken, filePath);
 		SAXBuilder sax = new SAXBuilder();
@@ -1012,53 +1011,74 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			if(doc != null) {
 				List<Element> taxonIdentifications = taxonNameXPath.evaluate(doc);
 				List<Element> taxonNames = new LinkedList<Element>();
+				List<Element> strainNumbers = new LinkedList<Element>();
 				for(Element taxonIdentification : taxonIdentifications) {
 					if(taxonIdentification.getAttributeValue("status").equalsIgnoreCase("accepted")) {
-						taxonNames.addAll(taxonIdentification.getChildren("taxon_name"));
+						if(!taxonIdentification.getChildren("taxon_name").isEmpty()) {
+							taxonNames.addAll(taxonIdentification.getChildren("taxon_name"));
+						}
+						if(!taxonIdentification.getChildren("strain_number").isEmpty()) {
+							strainNumbers.addAll(taxonIdentification.getChildren("strain_number"));
+						}
 					}
 				}
 				List<Element> sources = sourceXPath.evaluate(doc);
-				return createTaxonIdentification(sources.get(0), taxonNames);
+				return createTaxonIdentification(sources.get(0), taxonNames, strainNumbers);
 			}
 		}
 		return null;
 	}
 	
-	private String createTaxonIdentification(Element source, List<Element> taxonIdentifications) {
+	private String createTaxonIdentification(Element source, List<Element> taxonNames, List<Element> strainNumbers) {
 		String result = "";
 		//StringBuilder taxonNameBuilder = new StringBuilder();
-		
+
 		//the whole set of classes dealing with taxonomy building from plain text
 		//should be moved in an own small project: functionality is currently shared
 		//between matrix-generation, matrix-review, etc-site (for oto2)
 		LinkedList<RankData> rankDatas = new LinkedList<RankData>();
 		Map<Rank, RankData> rankDataMap = new HashMap<Rank, RankData>();
-		for(Element taxonIdentification : taxonIdentifications) {
-			String authority = taxonIdentification.getAttributeValue("authority");
-			String date = taxonIdentification.getAttributeValue("date");
-			Rank rank = Rank.valueOf(taxonIdentification.getAttributeValue("rank").toUpperCase());
-			String name = taxonIdentification.getValue();
+		for(Element taxonName : taxonNames) {
+			String authority = taxonName.getAttributeValue("authority");
+			String date = taxonName.getAttributeValue("date");
+			Rank rank = Rank.valueOf(taxonName.getAttributeValue("rank").toUpperCase());
+			String name = taxonName.getValue();
 			RankData rankData = new RankData(rank, name, authority, date);
 			rankDatas.add(rankData);
 			rankDataMap.put(rank, rankData);
 			//taxonNameBuilder.append(taxonName.getAttributeValue("rank") + "=" + taxonName.getValue() + ",");
 		}
 		Collections.sort(rankDatas);
-		if(rankDatas.contains(Rank.GENUS)) {
-			String fullName = "";
-			boolean found = false;
-			for(int i=0; i<rankDatas.size(); i++) {
-				RankData rankData = rankDatas.get(i);
-				if(rankData.getRank().equals(Rank.GENUS)) {
-					found = true;
+		if(!rankDatas.isEmpty()){
+			if(rankDatas.contains(Rank.GENUS)) {
+				String fullName = "";
+				boolean found = false;
+				for(int i=0; i<rankDatas.size(); i++) {
+					RankData rankData = rankDatas.get(i);
+					if(rankData.getRank().equals(Rank.GENUS)) {
+						found = true;
+					}
+					if(found)
+						fullName += rankData.getName() + " ";
 				}
-				if(found)
-					fullName += rankData.getName() + " ";
-			}
-			result = fullName.substring(0, fullName.length() - 1);
-		} else {
-			result = rankDatas.getLast().getName();
+				result = fullName.substring(0, fullName.length() - 1);
+			} else 
+				result = rankDatas.getLast().getName();
+			
+			String rankAuthor = rankDatas.getLast().getAuthor();
+			if(rankAuthor == null || rankAuthor.isEmpty())
+				rankAuthor = "unknown";
+			String rankDate = rankDatas.getLast().getDate();
+			if(rankDate == null || rankDate.isEmpty())
+				rankDate = "unknown";
+			result += " sec. " + rankAuthor + ", " + rankDate ;
 		}
+		if(!strainNumbers.isEmpty()){
+			for(Element strainNumber : strainNumbers) {
+				String strainnumber = strainNumber.getValue();
+				result += " " + strainnumber + "";
+			}
+		};
 		
 		Element author = source.getChild("author");
 		Element date = source.getChild("date");
@@ -1073,15 +1093,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			sourceString += ", " + title.getText();
 		if(pages != null)
 			sourceString += ", " + pages.getText();
-		
-		String rankAuthor = rankDatas.getLast().getAuthor();
-		if(rankAuthor == null || rankAuthor.isEmpty())
-			rankAuthor = "unknown";
-		String rankDate = rankDatas.getLast().getDate();
-		if(rankDate == null || rankDate.isEmpty())
-			rankDate = "unknown";
-		
-		result += " sec. " + rankAuthor + ", " + rankDate + " (from "+ sourceString + ")";
+        
+		result +=  " (from "+ sourceString + ")";
 		return result;
 	}
 
