@@ -31,6 +31,8 @@ public class SemanticMarkupOutputView extends Composite implements ISemanticMark
 	InlineLabel outputLabel;
 
 	private Presenter presenter;
+
+	private String outputFull;
 	
 	public SemanticMarkupOutputView() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -50,10 +52,15 @@ public class SemanticMarkupOutputView extends Composite implements ISemanticMark
 	}
 
 	@Override
-	public void setOutput(String output) {
-		this.outputLabel.setText(output);
+	public void setOutput(String outputFull, String outputFullDisplay) {
+		this.outputFull = outputFull;
+		this.outputLabel.setText(outputFullDisplay);
 	}
 	
+	@UiHandler("continueMatrixGenerationButton")
+	public void onMatrixGeneration(ClickEvent event) {
+		presenter.onContinueMatrixGeneration(outputFull);
+	}
 
 	@UiHandler("sendToOtoButton")
 	public void onSendToOto(ClickEvent event) {

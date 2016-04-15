@@ -9,6 +9,8 @@ import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerPlace;
+import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPlace;
+import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
@@ -63,7 +65,8 @@ public class SemanticMarkupOutputPresenter implements ISemanticMarkupOutputView.
 					@Override
 					public void onSuccess(Task result) {
 						SemanticMarkupConfiguration configuration = (SemanticMarkupConfiguration)task.getConfiguration();
-						view.setOutput(filePathShortener.shortenOutput(configuration.getOutput(), result, Authentication.getInstance().getUserId()));
+						view.setOutput(configuration.getOutput(), 
+								filePathShortener.shortenOutput(configuration.getOutput(), result, Authentication.getInstance().getUserId()));
 						view.setEnabledSendToOto(!configuration.isOtoCreatedDataset() && hasLinkedOTOAccount);
 						SemanticMarkupOutputPresenter.this.task = task;
 						Alerter.stopLoading(box);
@@ -95,6 +98,15 @@ public class SemanticMarkupOutputPresenter implements ISemanticMarkupOutputView.
 				view.setEnabledSendToOto(false);
 			}
 		});
+	}
+
+	@Override
+	public void onContinueMatrixGeneration(String text) {
+		Task task = new Task();
+		MatrixGenerationConfiguration config = new MatrixGenerationConfiguration();
+		task.setTaskConfiguration(config);
+		config.setInput(text);
+		placeController.goTo(new MatrixGenerationInputPlace(task));
 	}
 
 }

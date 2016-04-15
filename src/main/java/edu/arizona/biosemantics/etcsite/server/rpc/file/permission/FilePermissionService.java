@@ -108,7 +108,7 @@ public class FilePermissionService extends RemoteServiceServlet implements IFile
 	
 	@Override
 	public boolean isOwnedFilePath(int userId, String filePath) {
-		if(filePath.equals("Owned") || filePath.equals("Root"))
+		if(filePath.equals("OWNED") || filePath.equals("ROOT"))
 			return true;
 		String ownedFilesDirectory = Configuration.fileBase + File.separator + userId;
 		String compressedOwnedFilesDirectory = Configuration.compressedFileBase + File.separator + userId;

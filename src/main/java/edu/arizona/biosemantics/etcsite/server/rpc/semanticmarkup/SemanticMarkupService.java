@@ -430,9 +430,22 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 									}
 								}
 								
-								if(validResult){
+								if(validResult) {
+									config.setOutput(config.getInput() + "_output_by_TC_task_" + task.getName());
+									config.setOutputTermReview(config.getInput() + "_TermsReviewed_by_TC_task_" + task.getName());
+									String createDirectory = getOutputDirectory(config.getOutput(), task);
+									String createTermReviewDirectory = getOutputDirectory(config.getOutputTermReview(), task);
+									copyCharaparserOutput(createDirectory, task);
+									saveOto(authenticationToken, createTermReviewDirectory, task);
+									
+									config.setOutput(createDirectory);
+									config.setOutputTermReview(createTermReviewDirectory);
+									daoManager.getSemanticMarkupConfigurationDAO().updateSemanticMarkupConfiguration(config);
+									daoManager.getTasksOutputFilesDAO().addOutput(task, createDirectory);
+									daoManager.getTasksOutputFilesDAO().addOutput(task, createTermReviewDirectory);
+									
 									task.setResumable(true);
-								    //TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.TO_ONTOLOGIES.toString());
+									//TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.TO_ONTOLOGIES.toString());
 								    TaskStage newTaskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.OUTPUT.toString());
 								    task.setTaskStage(newTaskStage);
 								    daoManager.getTaskDAO().updateTask(task);
@@ -459,24 +472,10 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	
 	@Override
 	public Task output(AuthenticationToken authenticationToken, Task task) throws SemanticMarkupException {	
-		final SemanticMarkupConfiguration config = getSemanticMarkupConfiguration(task);
-		config.setOutput(config.getInput() + "_output_by_TC_task_" + task.getName());
-		config.setOutputTermReview(config.getInput() + "_TermsReviewed_by_TC_task_" + task.getName());
-		String createDirectory = getOutputDirectory(config.getOutput(), task);
-		String createTermReviewDirectory = getOutputDirectory(config.getOutputTermReview(), task);
-		copyCharaparserOutput(createDirectory, task);
-		saveOto(authenticationToken, createTermReviewDirectory, task);
-		
-		//update task
-		config.setOutput(createDirectory);
-		config.setOutputTermReview(createTermReviewDirectory);
-		daoManager.getSemanticMarkupConfigurationDAO().updateSemanticMarkupConfiguration(config);
 		task.setResumable(false);
 		task.setComplete(true);
 		task.setCompleted(new Date());
 		daoManager.getTaskDAO().updateTask(task);
-		daoManager.getTasksOutputFilesDAO().addOutput(task, createDirectory);
-		daoManager.getTasksOutputFilesDAO().addOutput(task, createTermReviewDirectory);
 		return task;
 	}
 

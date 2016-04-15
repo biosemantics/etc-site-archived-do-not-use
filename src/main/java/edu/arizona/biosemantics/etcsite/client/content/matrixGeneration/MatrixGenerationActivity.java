@@ -13,6 +13,8 @@ import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
+import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
+import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum;
@@ -35,6 +37,7 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 	private TaskStageEnum currentTaskStage;
 	private Model currentModel;
 	private Task currentTask;
+	private FilePathShortener filePathShortener;
 	
 	@Inject
 	public MatrixGenerationActivity(ITaskServiceAsync taskService, 
@@ -48,7 +51,8 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 			IAuthenticationServiceAsync authenticationService, 
 			ILoginView.Presenter loginPresenter, 
 			IRegisterView.Presenter registerPresenter, 
-			IResetPasswordView.Presenter resetPasswordPresenter) {
+			IResetPasswordView.Presenter resetPasswordPresenter, 
+			FilePathShortener filePathShortener) {
 		super(placeController, authenticationService, loginPresenter, registerPresenter, resetPasswordPresenter);
 		this.taskService = taskService;
 		this.matrixGenerationService = matrixGenerationService;
@@ -56,6 +60,7 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 		this.inputPresenter = inputPresenter;
 		this.processPresenter = processPresenter;
 		this.reviewPresenter = reviewPresenter;
+		this.filePathShortener = filePathShortener;
 		reviewPresenter.getView().getMatrixReviewView().getFullModelBus().addHandler(LoadModelEvent.TYPE, new LoadModelEvent.LoadModelEventHandler() {
 			@Override
 			public void onLoad(LoadModelEvent event) {
@@ -88,46 +93,52 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 				inputPresenter.setSelectedFolder(createPresenter.getInputFolderPath(), createPresenter.getInputFolderShortenedPath());
 				panel.setWidget(inputPresenter.getView());
 			}
-		}else 
-			this.taskService.getTask(Authentication.getInstance().getToken(),
-					currentTask, new AsyncCallback<Task>() {
-						@Override
-						public void onSuccess(Task result) {
-							if(result.getTaskType().getTaskTypeEnum().equals(TaskTypeEnum.MATRIX_GENERATION)) {
-								currentTaskStage = TaskStageEnum.valueOf(result.getTaskStage().getTaskStage());
-								switch(currentTaskStage) {
-								case CREATE_INPUT:
-									panel.setWidget(createPresenter.getView());
-									createPresenter.refresh();
-									break;
-								case INPUT:
-									inputPresenter.setSelectedFolder(createPresenter.getInputFolderPath(), createPresenter.getInputFolderShortenedPath());
-									panel.setWidget(inputPresenter.getView());
-									break;
-								case OUTPUT:
-									outputPresenter.setTask(result);
-									panel.setWidget(outputPresenter.getView());
-									break;
-								case PROCESS:
-									processPresenter.setTask(result);
-									panel.setWidget(processPresenter.getView());
-									break;
-								case REVIEW:
-									reviewPresenter.setTask(result);
-									panel.setWidget(reviewPresenter.getView());
-									break;
-								default:
-									panel.setWidget(inputPresenter.getView());
-									break;
+		} else
+			if(place instanceof MatrixGenerationInputPlace) {
+				MatrixGenerationConfiguration config = (MatrixGenerationConfiguration)currentTask.getConfiguration();
+				inputPresenter.setSelectedFolder(config.getInput(), filePathShortener.shortenPath(config.getInput()));
+				panel.setWidget(inputPresenter.getView());
+			} else {
+				this.taskService.getTask(Authentication.getInstance().getToken(),
+						currentTask, new AsyncCallback<Task>() {
+							@Override
+							public void onSuccess(Task result) {
+								if(result.getTaskType().getTaskTypeEnum().equals(TaskTypeEnum.MATRIX_GENERATION)) {
+									currentTaskStage = TaskStageEnum.valueOf(result.getTaskStage().getTaskStage());
+									switch(currentTaskStage) {
+									case CREATE_INPUT:
+										panel.setWidget(createPresenter.getView());
+										createPresenter.refresh();
+										break;
+									case INPUT:
+										inputPresenter.setSelectedFolder(createPresenter.getInputFolderPath(), createPresenter.getInputFolderShortenedPath());
+										panel.setWidget(inputPresenter.getView());
+										break;
+									case OUTPUT:
+										outputPresenter.setTask(result);
+										panel.setWidget(outputPresenter.getView());
+										break;
+									case PROCESS:
+										processPresenter.setTask(result);
+										panel.setWidget(processPresenter.getView());
+										break;
+									case REVIEW:
+										reviewPresenter.setTask(result);
+										panel.setWidget(reviewPresenter.getView());
+										break;
+									default:
+										panel.setWidget(inputPresenter.getView());
+										break;
+									}
 								}
 							}
-						}
-
-						@Override
-						public void onFailure(Throwable caught) {
-							Alerter.failedToGetTask(caught);
-						}
-			});
+	
+							@Override
+							public void onFailure(Throwable caught) {
+								Alerter.failedToGetTask(caught);
+							}
+				});
+			}
 	}
 	
 	@Override

@@ -248,7 +248,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>semantic-markup</artifactId>
-			<version>0.1.175-SNAPSHOT</version>
+			<version>0.1.177-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>app</artifactId>
@@ -269,7 +269,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.118-SNAPSHOT</version>
+		  <version>0.0.119-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		  <exclusions>
 		  	<exclusion>
@@ -281,7 +281,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.118-SNAPSHOT</version>
+		  <version>0.0.119-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
@@ -421,7 +421,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>taxonomy</artifactId>
-			<version>0.0.23-SNAPSHOT</version>
+			<version>0.0.24-SNAPSHOT</version>
 			<classifier>sources</classifier>
 		</dependency>
 		<!-- Neeeded For JavaEnvUtils.getJreExecutable(), even if removed no errors are displayed -->

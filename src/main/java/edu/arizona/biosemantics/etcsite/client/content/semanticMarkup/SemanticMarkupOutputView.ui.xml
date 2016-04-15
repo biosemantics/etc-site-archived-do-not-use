@@ -43,8 +43,9 @@
 			    <g:InlineLabel ui:field="outputLabel" styleName="{style.important}"></g:InlineLabel>
 			    <g:InlineLabel>&nbsp;in the&nbsp;</g:InlineLabel>
 			    <g:Anchor ui:field="fileManagerAnchor">File Manager</g:Anchor>
-			    <g:InlineLabel>. The folder can be used as the input for the Matrix Generation Tool.</g:InlineLabel>	    
+			    <g:InlineLabel>. The folder can be used as the input for the Matrix Generation Tool.</g:InlineLabel>	 
 			    </g:FlowPanel>
+			    <g:Button ui:field="continueMatrixGenerationButton">Use this input for Matrix Generation</g:Button>   
 			</g:VerticalPanel>
 		</g:VerticalPanel>	
 	</lay:CenteredContentPanel>
