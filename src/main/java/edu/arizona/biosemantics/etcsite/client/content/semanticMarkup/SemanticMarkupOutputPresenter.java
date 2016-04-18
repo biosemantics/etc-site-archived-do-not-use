@@ -66,7 +66,8 @@ public class SemanticMarkupOutputPresenter implements ISemanticMarkupOutputView.
 					public void onSuccess(Task result) {
 						SemanticMarkupConfiguration configuration = (SemanticMarkupConfiguration)task.getConfiguration();
 						view.setOutput(configuration.getOutput(), 
-								filePathShortener.shortenOutput(configuration.getOutput(), result, Authentication.getInstance().getUserId()));
+								filePathShortener.shortenOutput(configuration.getOutput(), result, Authentication.getInstance().getUserId()), 
+								configuration.getOutputTermReview());
 						view.setEnabledSendToOto(!configuration.isOtoCreatedDataset() && hasLinkedOTOAccount);
 						SemanticMarkupOutputPresenter.this.task = task;
 						Alerter.stopLoading(box);

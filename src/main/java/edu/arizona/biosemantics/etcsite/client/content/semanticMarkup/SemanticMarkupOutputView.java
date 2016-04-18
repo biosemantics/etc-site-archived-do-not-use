@@ -29,6 +29,9 @@ public class SemanticMarkupOutputView extends Composite implements ISemanticMark
 	
 	@UiField
 	InlineLabel outputLabel;
+	
+	@UiField
+	InlineLabel outputLabelTermReview;
 
 	private Presenter presenter;
 
@@ -52,9 +55,10 @@ public class SemanticMarkupOutputView extends Composite implements ISemanticMark
 	}
 
 	@Override
-	public void setOutput(String outputFull, String outputFullDisplay) {
+	public void setOutput(String outputFull, String outputFullDisplay, String outputTermReview) {
 		this.outputFull = outputFull;
 		this.outputLabel.setText(outputFullDisplay);
+		this.outputLabelTermReview.setText(outputTermReview);
 	}
 	
 	@UiHandler("continueMatrixGenerationButton")
