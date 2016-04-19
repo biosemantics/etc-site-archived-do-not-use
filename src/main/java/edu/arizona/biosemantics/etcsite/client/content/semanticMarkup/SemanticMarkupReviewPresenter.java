@@ -121,15 +121,19 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 	private void createSaveTimer() {
 		removeSaveTimer();
 		saveTimer = new Timer() {
+			private ConfirmMessageBox saveTermReviewBox;
+
 			@Override
 			public void run() {
-				ConfirmMessageBox box = Alerter.confirmSaveTermReview();
-				box.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
-					@Override
-					public void onSelect(SelectEvent event) {
-						otoEventBus.fireEvent(new SaveEvent());
-					}
-				});
+				if(saveTermReviewBox == null) {
+					saveTermReviewBox = Alerter.confirmSaveTermReview();
+					saveTermReviewBox.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
+						@Override
+						public void onSelect(SelectEvent event) {
+							otoEventBus.fireEvent(new SaveEvent());
+						}
+					});
+				}
 		    }
 		};
 		saveTimer.scheduleRepeating(900000);	
@@ -195,7 +199,7 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 	public void onNext() {
 		removeSaveTimer();
 		final MessageBox box = Alerter.startLoading();
-		this.otoCollectionService.update(collection, new AsyncCallback<Void>() {
+		this.otoCollectionService.update(collection, false, new AsyncCallback<Void>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToSaveOto(caught);
@@ -224,7 +228,7 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 	public void onSave() {
 		createSaveTimer();
 		final MessageBox box = Alerter.startLoading();
-		this.otoCollectionService.update(collection, new AsyncCallback<Void>() {
+		this.otoCollectionService.update(collection, false, new AsyncCallback<Void>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				Alerter.failedToSaveOto(caught);

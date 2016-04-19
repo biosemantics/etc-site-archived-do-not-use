@@ -10,6 +10,8 @@ database_maxConnectionsPerPartition=20
 
 #Temporary Storage
 files = /var/lib/etcsite/data/textCapture/oto2
+context = /var/lib/etcsite/data/textCapture/oto2/context
+contextMaxHits = 1000
 
 #Bioportal
 bioportalUrl=http://data.bioontology.org

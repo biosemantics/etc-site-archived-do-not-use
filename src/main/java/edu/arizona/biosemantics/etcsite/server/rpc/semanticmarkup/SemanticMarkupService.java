@@ -293,6 +293,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 										} catch (SemanticMarkupException e1) { }
 						     			try {
 											otoCollectionService.initializeFromHistory(new Collection(result.getOtoUploadId(), result.getOtoSecret()));
+											Collection collection = otoCollectionService.get(result.getOtoUploadId(), result.getOtoSecret());
+											otoCollectionService.update(collection, true);
 										} catch (Exception e) {
 											log(LogLevel.ERROR, "Couldn't initialize the uploaded oto dataset from history", e);
 										}
@@ -614,7 +616,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		createTermCategorization(task, termCategorization, collection, termsInCollection, labelsInCollection);
 		createSynonymy(task, synonymy, collection, termsInCollection, labelsInCollection);
 		
-		otoCollectionService.update(collection);
+		otoCollectionService.update(collection, false);
 	}
 	
 	private void createSynonymy(Task task, String synonymy, Collection collection, Map<String, Term> termsInCollection, Map<String, Label> labelsInCollection) throws SemanticMarkupException {
