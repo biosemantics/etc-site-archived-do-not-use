@@ -2,17 +2,17 @@
 	{
 		"title": "What can I do in File Manager?",
 		"content": "There are <span style='color:green'><b>Owned</b></span>, <span style='color:green'><b>Shared</span></b>, and <span style='color:green'><b>Public</span></b> folders. <p><span style='color:green'><b>Owned</b></span>: holds the files you uploaded or generated using ETC tools.</p><p><span style='color:green'><b>Shared</b></span>: holds the files other users have shared with you.</p><p><span style='color:green'><b>Public</b></span>: holds any files ETC users made public.</p>		<h3>You can:</h3><ul><li>Upload files</li><li>Create input files for Text Capture</li><li>Contribute term categorization results to OTO</li><li>Download selected files/folders</li><li>Delete selected files/folders</li></ul><p>Each project should have a folder, <span style='color:red'><b>do not mix files and folders</b></span> in one folder.</p>"
-	}
+	},
 	
 	{
 		"title": "Upload files",
 		"content": "If you have files that are suitable for ETC tools to process, you can upload them. <ol><li>Add a new folder by selecting <span style='color:green'><b>Owned</b></span> and clicking on <span style='color:green'><b>Add Folder</b></span>. Each project should have a folder, do not mix files and folders in one folder. </li>	<li>Select file type to be uploaded in the drop-down selection. </li><li>Click on <span style='color:green'><b>Upload files</b></span>. You can zip multiple files and upload the zipped file. The zipped file should not contain any folders.</li></ol>"
-	}
+	},
 		
 	{
 		"title": "Create input files for Text Capture",
 		"content": "Text Capture requires input files be in a specific format. <ol><li>Select a folder in <span style='color:green'><b>Owned</b></span> to hold the uploaded files.</li><li>Click on <span style='color:green'><b>Create Input for Text Capture</b></span> and follow the instructions.</li></ol>"
-	}
+	},
 	
 	{
 		"title": "Contribute term categorization results to OTO",
