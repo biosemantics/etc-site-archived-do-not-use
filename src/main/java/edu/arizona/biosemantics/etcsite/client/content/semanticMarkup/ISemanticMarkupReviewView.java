@@ -16,6 +16,10 @@ public interface ISemanticMarkupReviewView extends IsWidget {
 		void onNext();
 
 		void onSave();
+
+		void removeSaveTimer();
+
+		boolean hasUnsavedChanges();
 		
 	}
 	

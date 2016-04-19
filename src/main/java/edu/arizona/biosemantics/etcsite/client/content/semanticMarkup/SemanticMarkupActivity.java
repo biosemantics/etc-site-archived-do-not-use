@@ -31,6 +31,7 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 	private ISemanticMarkupReviewView.Presenter reviewPresenter;
 	private ISemanticMarkupParseView.Presenter parsePresenter;
 	private ISemanticMarkupOutputView.Presenter outputPresenter;
+	private TaskStageEnum currentTaskStage;
 	private AcceptsOneWidget panel;
 
 	@Inject
@@ -90,7 +91,8 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 						@Override
 						public void onSuccess(Task result) {
 							if(result.getTaskType().getTaskTypeEnum().equals(TaskTypeEnum.SEMANTIC_MARKUP)) {
-								switch(TaskStageEnum.valueOf(result.getTaskStage().getTaskStage())) {
+								currentTaskStage = TaskStageEnum.valueOf(result.getTaskStage().getTaskStage());
+								switch(currentTaskStage) {
 								case CREATE_INPUT:
 									panel.setWidget(createPresenter.getView());
 									createPresenter.refresh();
@@ -133,5 +135,38 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 			});
 	}
 
+	@Override
+	public String mayStop() {
+		if(currentTaskStage != null) {
+			switch(currentTaskStage) {
+			case CREATE_INPUT:
+				break;
+			case INPUT:
+				break;
+			case LEARN_TERMS:
+				break;
+			case OUTPUT:
+				break;
+			case PARSE_TEXT:
+				break;
+			case PREPROCESS_TEXT:
+				break;
+			case REVIEW_TERMS:
+				if(reviewPresenter.hasUnsavedChanges()) {
+					return "You have unsaved changes. Do you want to continue without saving?";
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		return null;
+	}
+		
+	@Override
+	public void onStop() {
+		reviewPresenter.removeSaveTimer();
+	}
+	
 
 }

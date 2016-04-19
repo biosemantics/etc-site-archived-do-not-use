@@ -23,11 +23,24 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarkupServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
 import edu.arizona.biosemantics.oto2.oto.client.event.DownloadEvent.DownloadHandler; 
+import edu.arizona.biosemantics.oto2.oto.client.event.CategorizeCopyRemoveTermEvent;
+import edu.arizona.biosemantics.oto2.oto.client.event.CategorizeMoveTermEvent;
+import edu.arizona.biosemantics.oto2.oto.client.event.CommentEvent;
 import edu.arizona.biosemantics.oto2.oto.client.event.DownloadEvent;
 import edu.arizona.biosemantics.oto2.oto.client.event.ImportEvent;
+import edu.arizona.biosemantics.oto2.oto.client.event.LabelCreateEvent;
+import edu.arizona.biosemantics.oto2.oto.client.event.LabelModifyEvent;
+import edu.arizona.biosemantics.oto2.oto.client.event.LabelRemoveEvent;
+import edu.arizona.biosemantics.oto2.oto.client.event.LabelsMergeEvent;
 import edu.arizona.biosemantics.oto2.oto.client.event.LoadEvent;
 import edu.arizona.biosemantics.oto2.oto.client.event.SaveEvent;
+import edu.arizona.biosemantics.oto2.oto.client.event.SynonymCreationEvent;
+import edu.arizona.biosemantics.oto2.oto.client.event.SynonymRemovalEvent;
+import edu.arizona.biosemantics.oto2.oto.client.event.TermCategorizeEvent;
+import edu.arizona.biosemantics.oto2.oto.client.event.TermMarkUselessEvent;
 import edu.arizona.biosemantics.oto2.oto.client.event.TermRenameEvent;
+import edu.arizona.biosemantics.oto2.oto.client.event.TermSplitEvent;
+import edu.arizona.biosemantics.oto2.oto.client.event.TermUncategorizeEvent;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Collection;
 import edu.arizona.biosemantics.oto2.oto.shared.rpc.ICollectionServiceAsync;
 
@@ -43,6 +56,8 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 	private IUserServiceAsync userService;
 	private Collection collection;
 	private Timer saveTimer;
+	private ImportOtoPresenter importOtoPresenter;
+	protected boolean unsavedChanges = false;
 	
 	@Inject
 	public SemanticMarkupReviewPresenter(final ISemanticMarkupReviewView view, 
@@ -53,7 +68,18 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 			final ImportOtoPresenter importOtoPresenter) {
 		this.view = view;
 		view.setPresenter(this);
+		this.importOtoPresenter = importOtoPresenter;
 		this.otoEventBus = view.getOto().getEventBus();
+		this.placeController = placeController;
+		this.semanticMarkupService = semanticMarkupService;
+		this.fileService = fileService;
+		this.userService = userService;
+		this.otoCollectionService = otoCollectionService;
+		
+		bindEvents();
+	}
+
+	private void bindEvents() {
 		otoEventBus.addHandler(LoadEvent.TYPE, new LoadEvent.LoadHandler() {
 			@Override
 			public void onLoad(LoadEvent event) {
@@ -111,35 +137,136 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 				});
 			}
 		});
-		this.placeController = placeController;
-		this.semanticMarkupService = semanticMarkupService;
-		this.fileService = fileService;
-		this.userService = userService;
-		this.otoCollectionService = otoCollectionService;
+		otoEventBus.addHandler(edu.arizona.biosemantics.oto2.oto.client.event.TermUncategorizeEvent.TYPE, 
+				new TermUncategorizeEvent.TermUncategorizeHandler() {
+			@Override
+			public void onUncategorize(TermUncategorizeEvent event) {
+				SemanticMarkupReviewPresenter.this.unsavedChanges = true;
+			}
+		});
+		otoEventBus.addHandler(edu.arizona.biosemantics.oto2.oto.client.event.TermCategorizeEvent.TYPE, 
+				new TermCategorizeEvent.TermCategorizeHandler() {
+					@Override
+					public void onCategorize(TermCategorizeEvent event) {
+						SemanticMarkupReviewPresenter.this.unsavedChanges = true;
+					}
+				});
+		otoEventBus.addHandler(edu.arizona.biosemantics.oto2.oto.client.event.CategorizeMoveTermEvent.TYPE, 
+				new CategorizeMoveTermEvent.CategorizeMoveTermHandler() {
+					@Override
+					public void onCategorize(CategorizeMoveTermEvent event) {
+						SemanticMarkupReviewPresenter.this.unsavedChanges = true;
+					}
+				});
+		otoEventBus.addHandler(edu.arizona.biosemantics.oto2.oto.client.event.LabelsMergeEvent.TYPE, 
+				new LabelsMergeEvent.MergeLabelsHandler() {
+					@Override
+					public void onMerge(LabelsMergeEvent event) {
+						SemanticMarkupReviewPresenter.this.unsavedChanges = true;
+					}
+				});
+		otoEventBus.addHandler(edu.arizona.biosemantics.oto2.oto.client.event.SynonymCreationEvent.TYPE, 
+				new SynonymCreationEvent.SynonymCreationHandler() {
+					@Override
+					public void onSynonymCreation(SynonymCreationEvent event) {
+						SemanticMarkupReviewPresenter.this.unsavedChanges = true;
+					}
+				});
+		otoEventBus.addHandler(edu.arizona.biosemantics.oto2.oto.client.event.SynonymRemovalEvent.TYPE, 
+				new SynonymRemovalEvent.SynonymRemovalHandler() {
+					@Override
+					public void onSynonymRemoval(SynonymRemovalEvent event) {
+						SemanticMarkupReviewPresenter.this.unsavedChanges = true;
+					}
+				});
+		otoEventBus.addHandler(edu.arizona.biosemantics.oto2.oto.client.event.CommentEvent.TYPE, 
+				new CommentEvent.CommentHandler() {
+					@Override
+					public void onComment(CommentEvent event) {
+						SemanticMarkupReviewPresenter.this.unsavedChanges = true;
+					}
+				});
+		otoEventBus.addHandler(edu.arizona.biosemantics.oto2.oto.client.event.LabelCreateEvent.TYPE, 
+				new LabelCreateEvent.CreateLabelHandler() {
+					@Override
+					public void onCreate(LabelCreateEvent event) {
+						SemanticMarkupReviewPresenter.this.unsavedChanges = true;
+					}
+				});
+		otoEventBus.addHandler(edu.arizona.biosemantics.oto2.oto.client.event.LabelModifyEvent.TYPE, 
+				new LabelModifyEvent.ModifyLabelHandler() {
+					@Override
+					public void onModify(LabelModifyEvent event) {
+						SemanticMarkupReviewPresenter.this.unsavedChanges = true;
+					}
+				});
+		otoEventBus.addHandler(edu.arizona.biosemantics.oto2.oto.client.event.LabelRemoveEvent.TYPE, 
+				new LabelRemoveEvent.RemoveLabelHandler() {
+					@Override
+					public void onRemove(LabelRemoveEvent event) {
+						SemanticMarkupReviewPresenter.this.unsavedChanges = true;
+					}
+				});
+		otoEventBus.addHandler(edu.arizona.biosemantics.oto2.oto.client.event.TermMarkUselessEvent.TYPE, 
+				new TermMarkUselessEvent.MarkUselessTermHandler() {
+					@Override
+					public void onMark(TermMarkUselessEvent event) {
+						SemanticMarkupReviewPresenter.this.unsavedChanges = true;
+					}
+				});
+		otoEventBus.addHandler(edu.arizona.biosemantics.oto2.oto.client.event.TermSplitEvent.TYPE, 
+				new TermSplitEvent.SplitTermHandler() {
+					@Override
+					public void onSplit(TermSplitEvent event) {
+						SemanticMarkupReviewPresenter.this.unsavedChanges = true;
+					}
+				});
+		otoEventBus.addHandler(edu.arizona.biosemantics.oto2.oto.client.event.TermRenameEvent.TYPE, 
+				new TermRenameEvent.RenameTermHandler() {
+					@Override
+					public void onRename(TermRenameEvent event) {
+						SemanticMarkupReviewPresenter.this.unsavedChanges = true;
+					}
+				});
+		otoEventBus.addHandler(CategorizeCopyRemoveTermEvent.TYPE, new CategorizeCopyRemoveTermEvent.CategorizeCopyRemoveTermHandler() {
+			@Override
+			public void onRemove(CategorizeCopyRemoveTermEvent event) {
+				SemanticMarkupReviewPresenter.this.unsavedChanges = true;
+			}
+		});
+		otoEventBus.addHandler(CategorizeMoveTermEvent.TYPE, new CategorizeMoveTermEvent.CategorizeMoveTermHandler() {
+			@Override
+			public void onCategorize(CategorizeMoveTermEvent event) {
+				SemanticMarkupReviewPresenter.this.unsavedChanges = true;
+			}
+		});
+		otoEventBus.addHandler(SaveEvent.TYPE, new SaveEvent.SaveHandler() {
+			@Override
+			public void onSave(SaveEvent event) {
+				SemanticMarkupReviewPresenter.this.unsavedChanges = false;
+			}
+		});
 	}
 
 	private void createSaveTimer() {
 		removeSaveTimer();
 		saveTimer = new Timer() {
-			private ConfirmMessageBox saveTermReviewBox;
-
 			@Override
 			public void run() {
-				if(saveTermReviewBox == null) {
-					saveTermReviewBox = Alerter.confirmSaveTermReview();
-					saveTermReviewBox.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
-						@Override
-						public void onSelect(SelectEvent event) {
-							otoEventBus.fireEvent(new SaveEvent());
-						}
-					});
-				}
+				MessageBox saveTermReviewBox = Alerter.confirmSaveTermReview();
+				saveTermReviewBox.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
+					@Override
+					public void onSelect(SelectEvent event) {
+						otoEventBus.fireEvent(new SaveEvent());
+					}
+				});
 		    }
 		};
 		saveTimer.scheduleRepeating(900000);	
 	}
 	
-	private void removeSaveTimer() {
+	@Override
+	public void removeSaveTimer() {
 		if(saveTimer != null)
 			saveTimer.cancel();
 	}
@@ -147,6 +274,7 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 	@Override
 	public void setTask(final Task task) {
 	    final MessageBox box = Alerter.startLoading();
+	    this.unsavedChanges = false;
 		userService.hasLinkedOTOAccount(Authentication.getInstance().getToken(), new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -207,6 +335,7 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 			}
 			@Override
 			public void onSuccess(Void result) {
+				SemanticMarkupReviewPresenter.this.unsavedChanges = false;
 				semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), task, TaskStageEnum.PARSE_TEXT, new AsyncCallback<Task>() {
 					@Override
 					public void onSuccess(Task result) {
@@ -236,9 +365,15 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 			}
 			@Override
 			public void onSuccess(Void result) {
+				SemanticMarkupReviewPresenter.this.unsavedChanges = false;
 				Alerter.savedSuccessfully();
 				Alerter.stopLoading(box);
 			}
 		});
+	}
+
+	@Override
+	public boolean hasUnsavedChanges() {
+		return this.unsavedChanges;
 	}	
 }
