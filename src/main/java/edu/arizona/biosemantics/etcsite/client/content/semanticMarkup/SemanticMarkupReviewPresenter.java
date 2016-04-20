@@ -114,9 +114,23 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 				confirm.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
 					@Override
 					public void onSelect(SelectEvent event) {
-						importOtoPresenter.setTask(task);
-						importOtoPresenter.setOto(view.getOto());
-						importOtoPresenter.show();
+						//save first otherwise pending changes are lost
+						final MessageBox box = Alerter.startLoading();
+						otoCollectionService.update(collection, false, new AsyncCallback<Void>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								Alerter.failedToSaveOto(caught);
+								Alerter.stopLoading(box);
+							}
+							@Override
+							public void onSuccess(Void result) {
+								Alerter.stopLoading(box);
+								SemanticMarkupReviewPresenter.this.unsavedChanges = false;
+								importOtoPresenter.setTask(task);
+								importOtoPresenter.setOto(view.getOto());
+								importOtoPresenter.show();
+							}
+						});
 					}	
 				});
 			}

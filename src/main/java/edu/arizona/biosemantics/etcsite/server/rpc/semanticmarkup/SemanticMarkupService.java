@@ -75,6 +75,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.ISemanticMarku
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkupException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.UserNotFoundException;
+import edu.arizona.biosemantics.oto2.oto.shared.model.Bucket;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Collection;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Label;
 import edu.arizona.biosemantics.oto2.oto.shared.model.Term;
@@ -652,40 +653,50 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			throw new SemanticMarkupException(task);
 		}
 		
-		for(String[] line : lines) {
-			String label = line[0].trim();
-			String term = line[1].trim();
-			Term collectionTerm = null;
-			Label collectionLabel = null;
-			if(!termsInCollection.containsKey(term)){
-				collectionTerm = new Term(term);
-				otoCollectionService.addTerm(collectionTerm, 3); //3 is "Others" bucket
-			}else if(termsInCollection.containsKey(term)){
-				collectionTerm = termsInCollection.get(term);
-				List<Label> termsLabels = collection.getLabels(collectionTerm);
-				for(Label termLabel : termsLabels) 
-					termLabel.uncategorizeTerm(collectionTerm);
+		Bucket othersBucket = null;
+		for(Bucket bucket : collection.getBuckets()) {
+			if(bucket.getName().equalsIgnoreCase("Others")) {
+				othersBucket = bucket;
+				break;
 			}
-			if(!labelsInCollection.containsKey(label)){
-				collectionLabel = new Label(collection.getId(), label, "");
-				collection.addLabel(collectionLabel);
-			}else{
-				collectionLabel = labelsInCollection.get(label);
-			}
-			collectionLabel.addMainTerm(collectionTerm);
 		}
 		
-		/*for(String[] line : lines) {
-			String label = line[0].trim();
-			String term = line[1].trim();
-			
-			if(termsInCollection.containsKey(term) && labelsInCollection.containsKey(label)) {
-				Term collectionTerm = termsInCollection.get(term);
-				Label collectionLabel = labelsInCollection.get(label);
-				
-				
+		if(othersBucket != null) {
+			for(String[] line : lines) {
+				String label = line[0].trim();
+				String term = line[1].trim();
+				Term collectionTerm = null;
+				Label collectionLabel = null;
+				if(!termsInCollection.containsKey(term)){
+					collectionTerm = new Term(term);
+					otoCollectionService.addTerm(collectionTerm, othersBucket.getId());
+				}else if(termsInCollection.containsKey(term)){
+					collectionTerm = termsInCollection.get(term);
+					List<Label> termsLabels = collection.getLabels(collectionTerm);
+					for(Label termLabel : termsLabels) 
+						termLabel.uncategorizeTerm(collectionTerm);
+				}
+				if(!labelsInCollection.containsKey(label)){
+					collectionLabel = new Label(collection.getId(), label, "");
+					collection.addLabel(collectionLabel);
+				}else{
+					collectionLabel = labelsInCollection.get(label);
+				}
+				collectionLabel.addMainTerm(collectionTerm);
 			}
-		}*/
+			
+			/*for(String[] line : lines) {
+				String label = line[0].trim();
+				String term = line[1].trim();
+				
+				if(termsInCollection.containsKey(term) && labelsInCollection.containsKey(label)) {
+					Term collectionTerm = termsInCollection.get(term);
+					Label collectionLabel = labelsInCollection.get(label);
+					
+					
+				}
+			}*/
+		}
 	}
 
 	private void createCategoriesFile(Task task, Collection collection, String destination) throws SemanticMarkupException {
