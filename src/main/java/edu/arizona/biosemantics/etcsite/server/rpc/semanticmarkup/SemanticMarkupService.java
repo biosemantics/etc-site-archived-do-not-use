@@ -614,13 +614,22 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			labelsInCollection.put(label.getName(), label);
 		}
 		
-		createTermCategorization(task, termCategorization, collection, termsInCollection, labelsInCollection);
-		createSynonymy(task, synonymy, collection, termsInCollection, labelsInCollection);
+		Bucket othersBucket = null;
+		for(Bucket bucket : collection.getBuckets()) {
+			if(bucket.getName().equalsIgnoreCase("Others")) {
+				othersBucket = bucket;
+				break;
+			}
+		}
+		
+		createTermCategorization(task, termCategorization, collection, termsInCollection, labelsInCollection, othersBucket);
+		createSynonymy(task, synonymy, collection, termsInCollection, labelsInCollection, othersBucket);
 		
 		otoCollectionService.update(collection, false);
 	}
 	
-	private void createSynonymy(Task task, String synonymy, Collection collection, Map<String, Term> termsInCollection, Map<String, Label> labelsInCollection) throws SemanticMarkupException {
+	private void createSynonymy(Task task, String synonymy, Collection collection, Map<String, Term> termsInCollection, Map<String, 
+			Label> labelsInCollection, Bucket othersBucket) throws SemanticMarkupException {
 		List<String[]> lines = new LinkedList<String[]>();
 		try(CSVReader reader = new CSVReader(new StringReader(synonymy))) {
 			lines = reader.readAll();
@@ -633,18 +642,42 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			String mainTerm = line[1].trim();
 			String synonymTerm = line[2].trim();
 			
-			if(termsInCollection.containsKey(mainTerm) && termsInCollection.containsKey(synonymTerm) && 
-					labelsInCollection.containsKey(label)) {
-				Label collectionLabel = labelsInCollection.get(label);
-				Term collectionMainTerm = termsInCollection.get(mainTerm);
-				Term collectionSynonymTerm = termsInCollection.get(synonymTerm);
-				collectionLabel.addSynonym(collectionMainTerm, collectionSynonymTerm, false);
+			Term collectionSynonymTerm = null;
+			if(!termsInCollection.containsKey(synonymTerm)) {
+				collectionSynonymTerm = new Term(synonymTerm);
+				collectionSynonymTerm = otoCollectionService.addTerm(collectionSynonymTerm, othersBucket.getId());
+				termsInCollection.put(synonymTerm, collectionSynonymTerm);
+			} else {
+				collectionSynonymTerm = termsInCollection.get(synonymTerm);
 			}
+			
+			Term collectionMainTerm = null;
+			if(!termsInCollection.containsKey(mainTerm)) {
+				collectionMainTerm = new Term(mainTerm);
+				collectionMainTerm = otoCollectionService.addTerm(collectionMainTerm, othersBucket.getId());
+				termsInCollection.put(mainTerm, collectionMainTerm);
+			} else {
+				collectionMainTerm = termsInCollection.get(mainTerm);
+			}
+			
+			Label collectionLabel = null;
+			if(!labelsInCollection.containsKey(label)){
+				collectionLabel = new Label(collection.getId(), label, "");
+				collection.addLabel(collectionLabel);
+				labelsInCollection.put(label, collectionLabel);
+			} else {
+				collectionLabel = labelsInCollection.get(label);
+			}
+			
+			if(!collectionLabel.isMainTerm(collectionMainTerm)) {
+				collectionLabel.addMainTerm(collectionMainTerm);
+			}
+			collectionLabel.addSynonym(collectionMainTerm, collectionSynonymTerm, true);
 		}
 	}
 
 	private void createTermCategorization(Task task, String termCategorization, Collection collection, 
-			Map<String, Term> termsInCollection, Map<String, Label> labelsInCollection) throws SemanticMarkupException {
+			Map<String, Term> termsInCollection, Map<String, Label> labelsInCollection, Bucket othersBucket) throws SemanticMarkupException {
 		List<String[]> lines = new LinkedList<String[]>();
 		try(CSVReader reader = new CSVReader(new StringReader(termCategorization))) {
 			lines = reader.readAll();
@@ -653,36 +686,43 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			throw new SemanticMarkupException(task);
 		}
 		
-		Bucket othersBucket = null;
-		for(Bucket bucket : collection.getBuckets()) {
-			if(bucket.getName().equalsIgnoreCase("Others")) {
-				othersBucket = bucket;
-				break;
-			}
-		}
-		
 		if(othersBucket != null) {
 			for(String[] line : lines) {
 				String label = line[0].trim();
 				String term = line[1].trim();
-				Term collectionTerm = null;
-				Label collectionLabel = null;
-				if(!termsInCollection.containsKey(term)){
-					collectionTerm = new Term(term);
-					otoCollectionService.addTerm(collectionTerm, othersBucket.getId());
-				}else if(termsInCollection.containsKey(term)){
-					collectionTerm = termsInCollection.get(term);
-					List<Label> termsLabels = collection.getLabels(collectionTerm);
-					for(Label termLabel : termsLabels) 
-						termLabel.uncategorizeTerm(collectionTerm);
+				if(!label.isEmpty()) {
+					Term collectionTerm = null;
+					Label collectionLabel = null;
+					if(!termsInCollection.containsKey(term)) {
+						collectionTerm = new Term(term);
+						otoCollectionService.addTerm(collectionTerm, othersBucket.getId());
+						termsInCollection.put(term, collectionTerm);
+					} else if(termsInCollection.containsKey(term)) {
+						collectionTerm = termsInCollection.get(term);
+						List<Label> termsLabels = collection.getLabels(collectionTerm);
+						for(Label termLabel : termsLabels) 
+							termLabel.uncategorizeTerm(collectionTerm);
+					}
+					if(!labelsInCollection.containsKey(label)){
+						collectionLabel = new Label(collection.getId(), label, "");
+						collection.addLabel(collectionLabel);
+						labelsInCollection.put(label, collectionLabel);
+					} else {
+						collectionLabel = labelsInCollection.get(label);
+					}
+					collectionLabel.addMainTerm(collectionTerm);
+				} else {
+					Term collectionTerm = new Term(term);
+					if(!termsInCollection.containsKey(term)) {
+						collectionTerm = otoCollectionService.addTerm(collectionTerm, othersBucket.getId());
+						termsInCollection.put(term, collectionTerm);
+					} else {
+						collectionTerm = termsInCollection.get(term);
+					}
+					for(Label existingInLabel : collection.getLabels(collectionTerm)) {
+						existingInLabel.uncategorizeTerm(collectionTerm);
+					}
 				}
-				if(!labelsInCollection.containsKey(label)){
-					collectionLabel = new Label(collection.getId(), label, "");
-					collection.addLabel(collectionLabel);
-				}else{
-					collectionLabel = labelsInCollection.get(label);
-				}
-				collectionLabel.addMainTerm(collectionTerm);
 			}
 			
 			/*for(String[] line : lines) {
