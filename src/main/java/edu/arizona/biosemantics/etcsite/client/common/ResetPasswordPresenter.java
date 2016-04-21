@@ -26,7 +26,7 @@ public class ResetPasswordPresenter implements IResetPasswordView.Presenter {
 		
 		dialog = new Dialog();
 		dialog.setBodyBorder(false);
-		dialog.setHeadingText("Register");
+		dialog.setHeadingText("Forgot Password");
 		dialog.setPixelSize(-1, -1);
 		dialog.setMinWidth(0);
 		dialog.setMinHeight(0);
@@ -35,7 +35,6 @@ public class ResetPasswordPresenter implements IResetPasswordView.Presenter {
 		dialog.setHideOnButtonClick(true);
 		dialog.setPredefinedButtons(PredefinedButton.CANCEL);
 		dialog.add(resetPasswordView.asWidget());
-		
 		dialog.addHideHandler(new HideHandler() {
 			@Override
 			public void onHide(HideEvent event) {

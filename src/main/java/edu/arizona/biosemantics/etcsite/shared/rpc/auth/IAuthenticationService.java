@@ -17,7 +17,7 @@ public interface IAuthenticationService extends RemoteService {
 			AuthenticationToken authenticationToken);
 
 	public void requestPasswordResetCode(int captchaId, String captchaSolution,
-			String email) throws IncorrectCaptchaSolutionException, NoSuchUserException, OpenPasswordResetRequestException;
+			String email) throws Exception;
 
 	public void resetPassword(String email, String resetCode,
 			String newPassword) throws NoSuchUserException, InvalidPasswordResetException;

@@ -198,13 +198,16 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	
 	@Override
 	public void requestPasswordResetCode(int captchaId, String captchaSolution, String email) 
-			throws IncorrectCaptchaSolutionException, NoSuchUserException, OpenPasswordResetRequestException {
+			throws Exception {
 		if (!captchaDAO.isValidSolution(captchaId, captchaSolution))
 			throw new IncorrectCaptchaSolutionException();
 	
 		User user = userDAO.getUser(email);
 		if (user == null)
 			throw new NoSuchUserException();
+		if(user.getOpenIdProvider() != "none") {
+			throw new Exception("Can not reset password for a linked OpenID account");
+		}
 		
 		PasswordResetRequest oldRequest = passwordResetRequestDAO.get(user);
 		if (oldRequest != null) {
