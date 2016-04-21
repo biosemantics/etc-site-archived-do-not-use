@@ -126,7 +126,10 @@ public class Alerter {
 	}
 
 	public static MessageBox failedToResetPassword(Throwable caught) {
-		return showAlert("Password Reset", "Failed to reset password.", caught);
+		if(caught.getMessage() == null)
+			return showAlert("Password Reset", "Failed to reset password.", caught);
+		else
+			return showAlert("Password Reset", caught.getMessage(), caught);
 	}
 
 	public static MessageBox failedToGetFileContent(Throwable caught) {

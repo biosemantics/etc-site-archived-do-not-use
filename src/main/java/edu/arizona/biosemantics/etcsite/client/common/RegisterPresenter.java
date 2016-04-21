@@ -101,7 +101,6 @@ public class RegisterPresenter implements IRegisterView.Presenter {
 				auth.setFirstName(result.getUser().getFirstName());
 				auth.setLastName(result.getUser().getLastName());
 				auth.setAffiliation(result.getUser().getAffiliation());
-				captchaPresenter.requestNewCaptcha();
 				dialog.hide();
 				eventBus.fireEvent(new AuthenticationEvent(AuthenticationEventType.LOGGEDIN));
 				Alerter.firstLoginCheckAccountInfo();
@@ -109,6 +108,7 @@ public class RegisterPresenter implements IRegisterView.Presenter {
 			}
 			@Override
 			public void onFailure(Throwable caught) {
+				captchaPresenter.requestNewCaptcha();
 				Alerter.failedToRegister(caught);
 			}
 		});

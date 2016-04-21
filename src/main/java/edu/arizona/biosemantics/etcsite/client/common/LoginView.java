@@ -43,6 +43,7 @@ public class LoginView extends Composite implements ILoginView {
 		KeyPressHandler keyHandler = new KeyPressHandler() {
 			@Override
 			public void onKeyPress(KeyPressEvent event) {
+				headerLabel.setText("Enter sign-in credentials below.");
 				if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER)
 					presenter.onLogin();
 			} 
