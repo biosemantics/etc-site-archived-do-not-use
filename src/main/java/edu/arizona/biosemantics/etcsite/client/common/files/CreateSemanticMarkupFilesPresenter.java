@@ -191,7 +191,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 	private int filesCreated;
 	private String destinationFilePath;
 	private XmlModelFileCreator xmlModelFileCreator = new XmlModelFileCreator();
-	private String wrongTaxonNameError = "Taxon name input should be of the form: Name Authority, Date.  If authority or date value is not known provide 'unknown' as the value in corresponding place(s)";
+	private String wrongTaxonNameError = "Taxon name input should be of the form: Name Authority, Date.  If authority or date value is not known provide 'unspecified' as the value in corresponding place(s)";
 	@Inject
 	public CreateSemanticMarkupFilesPresenter(ICreateSemanticMarkupFilesView view, IFileServiceAsync fileService, 
 			IFileAccessServiceAsync fileAccessService, IFileFormatServiceAsync fileFormatService) {
@@ -236,7 +236,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 		textBuilder.append("accession number genome sequence: " + view.getStrainGenomeAccession().trim() + "\n");
 		textBuilder.append("previous or new taxonomic names: " + view.getAlternativeTaxonomy().trim() + "\n");
 		if(!createrank&&view.getStrainNumber().trim().isEmpty()) {
-			Alerter.inputError("Please input at least Taxon Name Information or Strain Information!");
+			Alerter.inputError("Please input at least one taxon name or one strain number in the treatment!");
 			view.hideProgress();
 			return false;
 		}
@@ -256,7 +256,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 			}	
 		}
 		if (!createdescription){
-			Alerter.inputError("Please input Description!");
+			Alerter.inputError("Please input description!");
 			view.hideProgress();
 			return false;
 		}
