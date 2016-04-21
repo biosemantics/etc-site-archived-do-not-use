@@ -1,8 +1,14 @@
 [
-    {
-		"title": "Interact with Bioportal",
-		"content": "Input and save Bioportal information, you can submit ontology terms to Bioportalt in <span style='color:green'><b>Ontology Building</span></b> tool.<br>"},
 	{
-		"title": "Change Email Notification Preferences",
-		"content": "Check/Uncheck <span style='color:green'><b>Email Notification</span></b> boxes to change email notification for ETC toolkits.<br>"}
+		"title": "What can I do in My Account",
+		"content": "<ul><li>Change password</li><li>Set/unset email notifications</li><li>Connect to BioPortal for ontology term submission</li><li>Link to OTO to contribute terms to biodiversity communities</li></ul>"},
+	{
+		"title": "Email Notification",
+		"content": "ETC tools send you an email when your job is completed. <p>To <b>disable email notification</b> from a tool, uncheck the box next to the tool."},
+	{
+		"title": "BioPortal Connection",
+		"content": "If you plan to use the <span style='color:green'><b>Ontology Building</span></b> tool to submit terms to BioPortal ontologies, provide <b>BioPortal User Id and API Key</b>."},
+	{
+		"title": "Link to Ontology Term Organizer (OTO)",
+		"content": "<h3>What is OTO?</h3> <p> OTO is a community consensus-promoting term categorization application ( http://biosemantics.arizona.edu/OTO). The terms categorized on ETC site can be directly imported into OTO with you as the owner of the term set. You and others can co-categorize the terms on OTO and help grow the consensus-based glossary/ontology for your group and improve the performance of biodiversity software applications including ETC tools. <h3>What does "Link" mean?</h3> <p>Link means to link your ETC account to your OTO account and if you don't have an account on OTO, one will be created for you by <span style='color:green'><b>checking Share Terms with Community</b></span> and following the instruction on My Account page. <p> Once the link is established, you can send your terms to OTO from within the ETC site."},
 ]
