@@ -175,7 +175,6 @@ public class SettingsView extends Composite implements ISettingsView {
 	    emailNotificationVertical.add(taxonomyComparisonFieldLabel, new VerticalLayoutData(1, -1));
 	    userInfoVertical.add(bioportNotificationFieldSet, new VerticalLayoutData(1, -1));
 	    userInfoVertical.add(emailNotificationFieldSet, new VerticalLayoutData(1, -1));
-	    
 	    userInfoVertical.add(saveButton, new VerticalLayoutData(1, -1));
 	    userInfoVertical.forceLayout();
 	    	    
@@ -305,7 +304,7 @@ public class SettingsView extends Composite implements ISettingsView {
 	    choiceContatiner.add(otoNewPasswordConfirmFieldLabel, new HtmlData(".passwordConfirm"));
 	    choiceContatiner.add(otoNewCreateButton, new HtmlData(".create"));
 	    choiceContatiner.add(otoNewAccountGoogleButton, new HtmlData(".google"));
-	    newOTOAccountFieldSet.add(choiceContatiner);
+	    newOTOAccountFieldSet.add(choiceContatiner); 
 	        
 	    bindEvents();
 	    
@@ -336,9 +335,15 @@ public class SettingsView extends Composite implements ISettingsView {
 				boolean hasAccount = event.getValue();
 				if(hasAccount) {
 					otoVerticalInner.add(existingOTOAccountFieldSet);
+					otoExistingEmail.setValue("");
+					otoExistingPassword.setValue("");
 					otoVerticalInner.remove(newOTOAccountFieldSet);
+					
 				} else {
 					otoVerticalInner.remove(existingOTOAccountFieldSet);
+					otoNewEmail.setValue("");
+					otoNewPassword.setValue("");
+					otoNewPasswordConfirm.setValue("");
 					otoVerticalInner.add(newOTOAccountFieldSet);
 				}
 			}
