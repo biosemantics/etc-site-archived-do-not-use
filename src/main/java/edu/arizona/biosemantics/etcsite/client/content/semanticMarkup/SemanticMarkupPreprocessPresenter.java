@@ -70,10 +70,8 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
                 	preprocessedDescriptions = result;
                 	
                 view.setHTML("");
-                view.setBracketCounts("");
-                view.setDescriptionIDLabel("");
-                view.setCorrectFilesLabel(null);
-                view.setTotalFilesLabel(null);
+                view.setDescriptionSummaryLabel("");
+                view.setCurrentDescriptionLabel(null);
                 setEnabledDescriptionsNavigation(true);
                 if(preprocessedDescriptions.size() == 1)
                 	setEnabledDescriptionsNavigation(false);
@@ -82,8 +80,9 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
                 correctedPreprocessedDescription = 0;
                 k=0;
                 totalPreprocessedDescription=preprocessedDescriptions.size();
-                setTotalFiles(Integer.toString(totalPreprocessedDescription));
-                setCorrectFiles("0");
+                setDescriptionSummary(Integer.toString(totalPreprocessedDescription),"0");
+                //setTotalFiles(Integer.toString(totalPreprocessedDescription));
+                //setCorrectFiles("0");
                 setPreprocessedDescription(preprocessedDescriptions.get(currentPreprocessedDescription));
 			}
 
@@ -193,9 +192,8 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
     	if(k==0){ 
     		if(bracketValidator.validate(text)) {
     			correctedPreprocessedDescription++;
-    		    setCorrectFiles(Integer.toString(correctedPreprocessedDescription));
     		    totalPreprocessedDescription--;
-    		    setTotalFiles(Integer.toString(totalPreprocessedDescription));
+    		    setDescriptionSummary (Integer.toString(totalPreprocessedDescription), Integer.toString(correctedPreprocessedDescription));
     		    k=1;
     	    }
     	}
@@ -203,9 +201,8 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
     	else if(k==1){
     		if(!bracketValidator.validate(text)) {
     			correctedPreprocessedDescription--;
-    		    setCorrectFiles(Integer.toString(correctedPreprocessedDescription));
     		    totalPreprocessedDescription++;
-    		    setTotalFiles(Integer.toString(totalPreprocessedDescription));
+    		    setDescriptionSummary (Integer.toString(totalPreprocessedDescription), Integer.toString(correctedPreprocessedDescription));
     		    k=0;
     		}
     	}
@@ -218,10 +215,11 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 	
 	private String getBracketHTML(Map<Character, Integer> bracketCounts) {
 		StringBuilder result = new StringBuilder();
+		result.append("unmatched brackets:  ");
 		for(Character character : bracketCounts.keySet()) {
 			int count = bracketCounts.get(character);
 			if(count > 0)
-				result.append("Bracket \'"+character + "\'    +" + count + "<br>");
+				result.append("   \'" + character + "\'   " + count + ";  ");
 			//else
 				//result.append(character + " " + count + "<br>");
 		}
@@ -261,7 +259,7 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 			e.printStackTrace();
 		}*/
 		String text = description.getContent();
-		view.setDescriptionIDLabel("Current File: " + filename);
+		view.setCurrentDescriptionLabel("Shown: Current File: " + filename + ": ");
 		updateBracketCounts(bracketCounts);
 		text = bracketColorizer.colorize(text);
 		
@@ -298,14 +296,8 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 	}
 	
 	@Override
-	public void setTotalFiles(String text) {
-		view.setTotalFilesLabel("Files with Unmatch Brackets: "+ text);
-	}
-	
-	@Override
-	public void setCorrectFiles(String text) {
-		view.setCorrectFilesLabel("Corrected files: "+text);
-		
+	public void setDescriptionSummary(String unmatchedDescription, String correctedDescription) {
+		view.setDescriptionSummaryLabel("Unmatched Descriptions Summary:  "+ unmatchedDescription + " descriptions to be corrected (" + correctedDescription + " descriptions corrected).");
 	}
 	
 }

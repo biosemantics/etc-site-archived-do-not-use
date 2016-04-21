@@ -26,10 +26,10 @@ public class SemanticMarkupPreprocessView extends Composite implements ISemantic
 	private Presenter presenter;
 	
 	@UiField
-	Label descriptionIdLabel;
+	Label descriptionSummaryLabel;
 	
 	@UiField
-	HTML bracketCounts;
+	Label bracketCountsLabel;
 	
 	@UiField
 	ChangeAwareRichTextArea textArea;
@@ -44,10 +44,7 @@ public class SemanticMarkupPreprocessView extends Composite implements ISemantic
 	Button nextButton;
 	
 	@UiField
-	Label totalFilesLabel;
-	
-	@UiField
-	Label correctFilesLabel;
+	Label currentDescriptionLabel;
 
 	public SemanticMarkupPreprocessView() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -83,25 +80,20 @@ public class SemanticMarkupPreprocessView extends Composite implements ISemantic
 	public String getHTML() {
 		return textArea.getText();
 	}
-
+	
 	@Override
-	public void setBracketCounts(String html) {
-		this.bracketCounts.setHTML(html);
+	public void setBracketCounts(String bracketCounts) {
+		this.bracketCountsLabel.setText(bracketCounts);
 	}
 
 	@Override
-	public void setDescriptionIDLabel(String text) {
-		this.descriptionIdLabel.setText(text);
+	public void setDescriptionSummaryLabel(String text) {
+		this.descriptionSummaryLabel.setText(text);
 	}
 	
 	@Override
-	public void setTotalFilesLabel(String text) {
-		this.totalFilesLabel.setText(text);
-	}
-	
-	@Override
-	public void setCorrectFilesLabel(String text) {
-		this.correctFilesLabel.setText(text);
+	public void setCurrentDescriptionLabel(String text) {
+		this.currentDescriptionLabel.setText(text);
 	}
 
 	@Override

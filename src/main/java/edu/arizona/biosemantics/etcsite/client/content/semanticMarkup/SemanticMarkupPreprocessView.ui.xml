@@ -45,7 +45,8 @@
         }
         .label1{
 	              padding-top: 15px;
-                  font-size: 16px;
+	              padding-left: 3px;
+                  font-size: 14px;
                   font-weight: bold;  
         }		
 	</ui:style>
@@ -61,19 +62,14 @@
 				   <g:Label styleName="{style.padding}">There are unmatched brackets ("(", ")", "[", "]" or "{","}") in the input descriptions. Please correct those in all descriptions, then move to the next step. 
 				   </g:Label>
 			    </g:HorizontalPanel>
-			    <g:Label styleName="{style.label1}">&#8226;Files Information with Unmatched Brackets </g:Label>
-			    <g:Label ui:field="totalFilesLabel" styleName="{style.label}"/>
-			    <g:Label ui:field="correctFilesLabel" styleName="{style.label}"/>
-
-			  <g:Label styleName="{style.label1}">&#8226;Current File Description</g:Label>
-			  <g:Label ui:field="descriptionIdLabel" styleName="{style.label}"/>
-			  <g:HorizontalPanel>
-					<g:Label styleName="{style.label}">Unmatched Brackets in This File:</g:Label>
-					<g:HTML styleName="{style.bracketCounts}" ui:field="bracketCounts"></g:HTML>
-			  </g:HorizontalPanel>
+			    <g:Label ui:field="descriptionSummaryLabel" styleName="{style.label1}"/>
+                <g:HorizontalPanel>			
+					<g:Label ui:field="currentDescriptionLabel" styleName="{style.label1}"/>
+					<g:Label ui:field="bracketCountsLabel" styleName="{style.label1}"/>
+			    </g:HorizontalPanel>
 				<g:HorizontalPanel styleName="{style.buttons1}">
-					<g:Button ui:field="previousDescriptionButton">&lt;&lt;&lt;</g:Button>
-					<g:Button ui:field="nextDescriptionButton">&gt;&gt;&gt;</g:Button>
+					<g:Button ui:field="previousDescriptionButton" title="Previous Description">&lt;&lt;&lt;</g:Button>
+					<g:Button ui:field="nextDescriptionButton" title="Next Description">&gt;&gt;&gt;</g:Button>
                </g:HorizontalPanel>
 			   <co:ChangeAwareRichTextArea ui:field="textArea" styleName="{style.preprocessTextArea}"></co:ChangeAwareRichTextArea>
 			

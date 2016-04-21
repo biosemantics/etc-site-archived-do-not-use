@@ -20,9 +20,7 @@ public interface ISemanticMarkupPreprocessView extends IsWidget {
 
 		void onValueChange();
 
-		void setTotalFiles(String text);
-
-		void setCorrectFiles(String text);
+		void setDescriptionSummary(String unmatchDescription, String correctedDescription);
 		
 	}
 	
@@ -30,18 +28,15 @@ public interface ISemanticMarkupPreprocessView extends IsWidget {
 
 	String getHTML();
 
-	void setBracketCounts(String bracketHTML);
-
-	void setDescriptionIDLabel(String text);
-
 	void setHTML(String text);
+	
+	void setBracketCounts(String bracketHTML);
 
 	void setEnabledNextDescriptionButton(boolean value);
 	
 	void setEnabledPreviousDescriptionButton(boolean value);
 
-	void setTotalFilesLabel(String text);
-
-	void setCorrectFilesLabel(String text);
+	void setDescriptionSummaryLabel(String text);
 	
+	void setCurrentDescriptionLabel(String text);
 }
