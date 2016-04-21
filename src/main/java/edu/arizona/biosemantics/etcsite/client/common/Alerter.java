@@ -119,7 +119,10 @@ public class Alerter {
 	}
 
 	public static MessageBox failedToRequestPasswordResetCode(Throwable caught) {
-		return showAlert("Password Reset", "Failed to request password reset code.", caught);
+		if(caught.getMessage() == null)
+			return showAlert("Password Reset", "Failed to request password reset code.", caught);
+		else
+			return showAlert("Password Reset", "Failed to request password reset code. " + caught.getMessage(), caught);
 	}
 
 	public static MessageBox failedToResetPassword(Throwable caught) {

@@ -206,7 +206,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 		if (user == null)
 			throw new NoSuchUserException();
 		if(user.getOpenIdProvider() != "none") {
-			throw new Exception("Can not reset password for a linked OpenID account");
+			throw new Exception("Can not reset password for a linked OpenID account. Use the Sign in with Google option.");
 		}
 		
 		PasswordResetRequest oldRequest = passwordResetRequestDAO.get(user);
