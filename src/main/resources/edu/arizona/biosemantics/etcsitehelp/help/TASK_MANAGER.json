@@ -1,12 +1,19 @@
 [
 	{
-		"title": "Rewind Task",
-		"content": "When the task is completed, you can use <span style='color:green'><b>Rewind</b></span> button to go to the previous user-interacted step.<br><br>Select the <span style='color:green'><b>Task</b></span> you need to rewind and Click the <span style='color:green'><b>Rewind</b></span> button."},
+		"title": "What can I do in Task Manager",
+		"content": "Task Manager allows you to manage various analyses (we call them Tasks) you started on ETC site. Tasks are often completed in steps and they are listed in the table on this page. 
+		<ul><li>Monitor the progress of your task (<b>Status</b>) </li><li>Check ownership of a task (</b>Access</b>)</li><li>Continue a task to the next step (<span style='color:green'><b>Resume</b></span>)</li><li>Go back and redo the critical step of a task (<span style='color:green'><b>Rewind</b></span>)</li><li>Remove one or more tasks (<span style='color:green'><b>Delete</b></span>)</li><li>Share your tasks with other ETC users (<span style='color:green'><b>Share</b></span>)</li></ul>"},
 	{
 		"title": "Resume Task",
-		"content": "All incomplete tasks can be resumed.<br><br>Select the <span style='color:green'><b>Task</b></span> that you need to resume and Click the <span style='color:green'><b>Resume</b></span> button. The page will redirect to the corresponding task's page."},
+		"content": "All incomplete tasks can be resumed Completed tasks are marked as "Completed" as its status.<br><br>Click to select the tasks you need to resume and click the <span style='color:green'><b>Resume</b></span> button. The page will redirect to the corresponding task's page."},
+	{
+		"title": "Rewind Task",
+		"content": "Each tool has one step requiring substantial user interaction. Rewind allows you to go back and redo that step. Click to select a task you need to redo, then click the <span style='color:green'><b>Rewind</b></span> button."},
+	{
+		"title": "Delete Task",
+		"content": "Click to select the tasks and then click the <span style='color:green'><b>Delete</b></span> button."},
 	{
 		"title": "Share Task",
-		"content": "Sharing a task allows other members of the community to contribute to the completion of the task.<br><br>1. Select the <span style='color:green'><b>Task</b></span> that you need to share and Click the <span style='color:green'><b>Share</b></span> button.<br>2. Select one or a few users you want to share, and then click <span style='color:green'><b>Shared with Selected."}
+		"content": "Sharing a task allows other users to contribute to your task.<ol><li>Click to select the task to share and click the <span style='color:green'><b>Share</b></span> button.</li> <li>Select one or more users from left and move them to the right, then click <span style='color:green'><b>Shared with Selected</b></li></ol>. <p>Sharing a task means that the shared-with user(s) will have the same task shown in their Task Manager and will have your input/output files for the task in their Shared folder in File Manager. The latest task status among all shared users is the status shown for all users for the task."}
 
 ]
