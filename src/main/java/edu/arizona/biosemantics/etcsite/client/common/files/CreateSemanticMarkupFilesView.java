@@ -459,7 +459,7 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 
 	@UiHandler("createButton") 
 	public void onCreate(ClickEvent event) {
-		if(!author.getText().isEmpty()&&!year.getText().isEmpty()&&!author.getText().isEmpty()) {
+		if(!author.getText().isEmpty()&&!year.getText().isEmpty()&&!title.getText().isEmpty()) {
 			if(k==2 && strainNumber.getText().isEmpty())
 				Alerter.inputError("Please input Strain Number if you choose to input Strain Information!");
 			else 

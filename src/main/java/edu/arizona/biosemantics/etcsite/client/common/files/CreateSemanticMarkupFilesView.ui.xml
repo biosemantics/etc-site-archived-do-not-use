@@ -318,17 +318,14 @@
 										<!-- Required/Optional Fields -->
 										<g:ScrollPanel>
 											<g:HTMLPanel>
-											  Required and optional fields for a taxonomic treatment are listed below: (R = required, O = optional; FR = format required, FF = format free).<br/>
+											  Required (in bold) and optional (in italic) fields for a taxonomic treatment are listed below:<br/>
 											    <br/>
-											    <ol> 
-											    	<li><b>author</b>(R;FR), <b>year</b>(R;FF), <b>title</b>(R;FF), either specified in the Source Document Information form, or included in Taxonomic Treatment Area.</li>
-										    	    <li>At least Strain Information (Strain Information fields listed below) or one other Ranked Taxon Name (please follow the format of "<b><i>rank</i> name</b>"(FR), e.g., <b>family name</b>, <b>genus name</b>. (see <b>Specifying Taxon Names</b>)</li>   
-		      						    			<li>To input Strain Inforamtion, <b>strain number</b>(R;FF) required, other three relative fields are optional: <b>equivalent strain numbers</b>(O;FR), comma separated list if multiple numbers;
-			      						    		<b>accession number 16S rrna</b>(O;FF); and also <b>accession number genome sequence</b>(O;FF).</li>
-			      						    		<li><b>previous or new taxonomic names</b>(O;FF)</li>
-			      						    		<li>At least one taxon description type(R;FR) of {<b>morphology</b>, <b>phenology</b>, <b>habitat</b>, <b>distribution</b>}(R)</li>
-			      						    		<li>Scope may be applied for each description type in the format of "scope-description type". For example, male-morphology, fruiting-phenology,
-			      						    		 see "Specifying Taxon Descriptions"</li>
+											    <ol style="list-style:disc;padding: 5px 20px;"> 
+											    	<li>Require <b>author</b>, <b>year</b> and <b>title</b>, specify in Source Document Information or Taxonomic Treatment Area.</li>
+										    	    <li>Require at least one <b>ranked taxon name</b> (including strain number), for example genus name, strain number (see also Specifying Taxon Names).</li>   
+		      						    			<li>Require at least one description of type morphology, phenology, habitat, or distribution. A scope may be applied to each description type in the format of "scope-description type". For example, male-morphology, fruiting-phenology, see also "Specifying Taxon Descriptions".</li>
+			      						    		<li>Optional fields related to strain number: <i>equivalent strain numbers</i>, <i>accession number 16S rrna</i>, <i>accession number genome sequence</i>.</li>
+			      						    		<li>Optional: previous or new taxonomic names.</li>
 			      						    	</ol>
 		      							    </g:HTMLPanel>
 		    	  					    </g:ScrollPanel>
@@ -342,6 +339,7 @@
 		      						    			<li>Taxon authority and date should be included in taxon names, use a <b>comma (,)</b> to separate the date. For example: Homosclerophorida Dendy, 1905. Use the token "unspecified" if the authority or the date can not be provided. </li>
 		      						    			<li>Alternatively, the Copy Authority and Date checkbox can be checked to copy the last included authority and date to the taxon names that do not have any authority and date specified. (see example)</li>
 		      						    			<li>Lower rank taxa should list all ranks on separate lines, starting from the highest rank of interests (see examples 2 and 3)</li>
+												    <li>Use comma to separate multiple values in optional fields: previous or new taxonomic names, and equivalent strain numbers.</li>
 												</ol>
 											</g:HTMLPanel>
 										</g:ScrollPanel>
@@ -354,7 +352,7 @@
 												<ol style="list-style:disc;padding: 5px 20px;">
 													<li>A paragraph is a string without any line break</li>
 													<li>If you have multiple paragraphs for any type of the description types {morphology, phenology, habitat, distribution}, 
-		      										insert an empty line between the paragraphs enclose all the paragraphs with one pair of number signs (#, see example 3). 
+		      										insert an empty line between the paragraphs, and enclose all the paragraphs with one pair of number signs (#, see example 3). 
 		      										Do not use # in description content (they may be replaced with 'no.', for example). </li>
 		      										<li>Superscripts (e.g. "squared") should be typed as a regular character, for example cm2 for square centimeter.</li>		    
 												</ol>	    

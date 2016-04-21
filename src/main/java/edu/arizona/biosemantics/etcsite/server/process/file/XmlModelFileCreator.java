@@ -87,15 +87,6 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		presenter.showMessage(title, text);*/
 		log(LogLevel.TRACE, title + ": " + text);
 	}
-	
-	private String showdata(String data) {
-		data = data.replaceAll("\\{" , "");
-		data = data.replaceAll("\\],","\n");
-		data = data.replaceAll("=\\[","=");
-		data = data.replaceAll("\\]\\}","");
-		return data;
-		
-	}
 
 	//TODO: use taxonNames to check for duplicate taxa, but can't do it given current code structure: only one entry is processed at a time. 
 	public XmlModelFile createXmlModelFile(String text, String operator, HashSet<String> taxonNames) {
@@ -174,7 +165,7 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		Hashtable<Rank, String> rankedNames = new Hashtable<Rank, String>();
 		for(String key : data.keySet()) {
 			if(!this.allLabels.contains(key)) {
-				modelFile.appendError("Don't know what field \"" +key + "\" is in the treatment: \n\n\"" + showdata(data.toString()) + "\".");
+				modelFile.appendError("Don't know what field \"" +key + "\" is in the treatment: \n\n\"" + text + "\".");
 			} else {
 				if(key.endsWith(" name")){	
 					rankedNames.put(Rank.valueOf(key.replaceFirst("\\s+name", "").toUpperCase()), data.get(key).get(0));
@@ -230,11 +221,11 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 	
 		//check data required to generate error if necessary
 		if(!data.containsKey("author") || data.get("author").isEmpty() || data.get("author").get(0).trim().isEmpty())
-			modelFile.appendError("You need to provide an Author Information in the treatment: \n\n\"" + showdata(data.toString()) + "\".");
+			modelFile.appendError("You need to provide an author in the treatment: \n\n\"" + text + "\".");
 		if(!data.containsKey("year") || data.get("year").isEmpty() || data.get("year").get(0).trim().isEmpty())
-			modelFile.appendError("You need to provide a  Year information in the treatment: \n\n \"" + showdata(data.toString()) + "\".");
+			modelFile.appendError("You need to provide a publication year in the treatment: \n\n \"" + text + "\".");
 		if(!data.containsKey("title") || data.get("title").isEmpty() || data.get("title").get(0).trim().isEmpty())
-			modelFile.appendError("You need to provide a Title information in the treatment: \n\n\"" + showdata(data.toString()) + "\".");
+			modelFile.appendError("You need to provide a title in the treatment: \n\n\"" + text + "\".");
 		
 		boolean nameValid = false;
 		if(nameTypes.size()>0){
@@ -246,14 +237,14 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		}
 		nameValid = nameValid || (!nameValid && data.containsKey("strain number") && !data.get("strain number").isEmpty() && !data.get("strain number").get(0).trim().isEmpty()); 
 		if(!nameValid)
-			modelFile.appendError("You need to provide at least a Taxon Name Information or Strain Information in the treatment:\n\n \"" + showdata(data.toString()) + "\".");
+			modelFile.appendError("You need to provide at least one taxon name or one strain number in the treatment:\n\n \"" + text + "\".");
 		boolean strainValid = false;
 		strainValid = (data.containsKey("equivalent strain numbers") && !data.get("equivalent strain numbers").isEmpty() && !data.get("equivalent strain numbers").get(0).trim().isEmpty())||(data.containsKey("accession number 16s rrna") && !data.get("accession number 16s rrna").isEmpty() && !data.get("accession number 16s rrna").get(0).trim().isEmpty())||(data.containsKey("accession number genome sequence") && !data.get("accession number genome sequence").isEmpty() && !data.get("accession number genome sequence").get(0).trim().isEmpty());
         if(strainValid){
                if(data.containsKey("strain number") && !data.get("strain number").isEmpty() && !data.get("strain number").get(0).trim().isEmpty()) {
                }
                else 
-            	   modelFile.appendError("To input Strain Information, you need to provide at least strain number in the treatment:\n\n \"" + showdata(data.toString()) + "\".");	
+            	   modelFile.appendError("To input Strain Information, you need to provide at least strain number in the treatment:\n\n \"" + text + "\".");	
         }
 			
 	
@@ -269,7 +260,7 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 				break;
 		}
 		if(!descriptionValid)
-			modelFile.appendError("You need to provide at least one of the description types: morphology, phenology, habitat, or distribution. Please check the treatment:\n\n \"" + showdata(data.toString()) + "\".");
+			modelFile.appendError("You need to provide at least one of the description types below: morphology, phenology, habitat, or distribution. Please check the treatment:\n\n \"" + text + "\".");
 		
 
 		//build xml
@@ -371,8 +362,8 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 			String rank = nameType.replaceFirst(" name$", "");
 			String nameString = data.get(nameType).get(0).trim();
 			String name = nameString;
-			String authority = "unknown";
-			String ndate = "unknown";
+			String authority = "unspecified";
+			String ndate = "unspecified";
 			if(nameString.contains(",")){
 				String dateSplits[] = nameString.split(",");
 				ndate = dateSplits[1].trim();
