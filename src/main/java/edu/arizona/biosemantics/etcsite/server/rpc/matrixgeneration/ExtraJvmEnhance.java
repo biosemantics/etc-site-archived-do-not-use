@@ -13,6 +13,7 @@ public class ExtraJvmEnhance extends ExtraJvmCallable<Void> implements Enhance {
 	public static class MainWrapper {
 		
 		public static void main(String[] args) {
+			//System.out.println(args);
 			String inputDir = null;
 			String tempDir = null;
 			String inputOntology = null;
@@ -20,6 +21,7 @@ public class ExtraJvmEnhance extends ExtraJvmCallable<Void> implements Enhance {
 			String termReviewSynonyms = null;
 			String taxonGroup = null;
 			if(args.length == 6) {
+				//System.out.println(6);
 				inputDir = args[0];
 				tempDir = args[1];
 				inputOntology = args[2];
@@ -27,12 +29,15 @@ public class ExtraJvmEnhance extends ExtraJvmCallable<Void> implements Enhance {
 				termReviewSynonyms = args[4];
 				taxonGroup = args[5];
 			} else if(args.length == 3) {
+				//System.out.println(3);
 				inputDir = args[0];
 				tempDir = args[1];
 				taxonGroup = args[2];
 			}
 			try {
-				if(inputOntology != null && termReviewTermCategorization != null && termReviewSynonyms != null) {
+				if(inputOntology != null && !inputOntology.isEmpty() 
+						&& termReviewTermCategorization != null && !termReviewTermCategorization.isEmpty()
+						&& termReviewSynonyms != null && !termReviewSynonyms.isEmpty()) {
 					System.out.println("Run Enhance: \n" + inputDir + " \n" + tempDir + " \n" + inputOntology + "\n " + termReviewTermCategorization + "\n"
 							+ termReviewSynonyms + "\n" + taxonGroup );
 					EnhanceRun enhance = new EnhanceRun(inputDir, tempDir, inputOntology, 
@@ -63,13 +68,26 @@ public class ExtraJvmEnhance extends ExtraJvmCallable<Void> implements Enhance {
 	private String termReviewSynonyms;
 	private String taxonGroup;
 	
-	public static void main(String[] args) throws Exception {
+	/*public static void main(String[] args) {
+		MainWrapper.main(new String[] {"C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/users/1/0", 
+				"C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/matrixGeneration/208/enhance", 
+				TaxonGroup.PLANT.toString()});
+	}*/
+	
+	public static void main(String[] args) {
+		MainWrapper.main(new String[] {"C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/users/1/0", 
+				"C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/matrixGeneration/209/enhance", 
+				null, null, null,
+				TaxonGroup.PLANT.toString()});
+	}
+	
+	/*public static void main(String[] args) throws Exception {
 		ExtraJvmEnhance enhance = new ExtraJvmEnhance(
 				"C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/users/1/0_output_by_TC_task_2", 
 				"C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/matrixGeneration/68/enhance", 
 				"", "", "", TaxonGroup.PLANT.toString());
 		enhance.call();
-	}
+	}*/
 
 	public ExtraJvmEnhance(String inputDir, String outputDir, 
 			String inputOntology, String termReviewTermCategorization, String termReviewSynonyms, 
