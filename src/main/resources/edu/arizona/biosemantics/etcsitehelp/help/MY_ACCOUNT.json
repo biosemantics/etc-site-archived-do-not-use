@@ -1,14 +1,14 @@
 [
 	{
-		"title": "What can I do in My Account",
-		"content": "<ul><li>Change password</li><li>Set/unset email notifications</li><li>Connect to BioPortal for ontology term submission</li><li>Link to OTO to contribute terms to biodiversity communities</li></ul>"},
+		"title": "<b>What can I do in My Account</b>",
+		"content": "1. Change <b>password</b>.<br><br>2. Set/unset <b>email notifications</b>.<br><br>3. Connect to <b>BioPortal</b> for ontology term submission.<br><br>4. Link to <b>OTO</b> to contribute terms to biodiversity communities."},
 	{
-		"title": "Email Notification",
-		"content": "ETC tools send you an email when your job is completed. <p>To <b>disable email notification</b> from a tool, uncheck the box next to the tool."},
+		"title": "<b>Email Notification</b>",
+		"content": "ETC tools send you an email when your job is completed. <br><br>To <b>disable email notification</b> from a tool, uncheck the box next to the tool."},
 	{
-		"title": "BioPortal Connection",
-		"content": "If you plan to use the <span style='color:green'><b>Ontology Building</span></b> tool to submit terms to BioPortal ontologies, provide <b>BioPortal User Id and API Key</b>."},
+		"title": "<b>BioPortal Connection</b>",
+		"content": "If you plan to use the <span style='color:green'><b>Ontology Building</span></b> tool to submit terms to BioPortal ontologies, provide <b>BioPortal User Id</b> and <b>API Key</b>."},
 	{
-		"title": "Link to Ontology Term Organizer (OTO)",
-		"content": "<h3>What is OTO?</h3> <p> OTO is a community consensus-promoting term categorization application ( http://biosemantics.arizona.edu/OTO). The terms categorized on ETC site can be directly imported into OTO with you as the owner of the term set. You and others can co-categorize the terms on OTO and help grow the consensus-based glossary/ontology for your group and improve the performance of biodiversity software applications including ETC tools. <h3>What does "Link" mean?</h3> <p>Link means to link your ETC account to your OTO account and if you don't have an account on OTO, one will be created for you by <span style='color:green'><b>checking Share Terms with Community</b></span> and following the instruction on My Account page. <p> Once the link is established, you can send your terms to OTO from within the ETC site."},
+		"title": "<b>Link to Ontology Term Organizer (OTO)</b>",
+		"content": "<b>What is OTO?</b> <br><a href='http://biosemantics.arizona.edu/OTO' target='_blank'>OTO</a> is a community consensus-promoting term categorization application. <br><br>The terms categorized on ETC site can be directly imported into OTO with you as the owner of the term set. You and others can co-categorize the terms on OTO and help grow the consensus-based glossary/ontology for your group and improve the performance of biodiversity software applications including ETC tools. <br><br><b>What does 'Link' mean?</b> <br>Link means to <b>link your ETC account to your OTO account</b> and if you don't have an account on OTO, one will be created for you: Check <span style='color:green'><b>Share Terms with Community</b></span> box and follow the instruction on My Account page. <br><br>Once the link is established, you can send your terms to OTO from within the ETC site."}
 ]
