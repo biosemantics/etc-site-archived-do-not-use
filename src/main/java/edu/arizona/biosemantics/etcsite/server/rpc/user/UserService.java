@@ -159,10 +159,10 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 	public ShortUser update(AuthenticationToken authenticationToken, String oldPassword, String newPassword) throws UserNotFoundException, InvalidPasswordException { 
 		User user = userDAO.getUser(authenticationToken.getUserId());
 		if(user == null)
-			throw new UserNotFoundException();			
+			throw new UserNotFoundException("User information not found! Please re-login again!");			
 		
 		if(!BCrypt.checkpw(oldPassword, user.getPassword())) {
-			throw new InvalidPasswordException();
+			throw new InvalidPasswordException("Current password is not matched! Please try again!");
 		}
 		
 		String encryptedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
