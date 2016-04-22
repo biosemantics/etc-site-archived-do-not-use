@@ -1,9 +1,5 @@
 [
 	{
-		"title": "Preprocess Stage",
-		"content": "In the <span style='color:green'><b>Preprocess Step</b></span>, Text Capture tool is checking the unmatched brackets in the input files. You can wait for the step to complete, or navigate other pages and resume the task from the <span style='color:green'><b>Task Manager</b></span>.</br>If your task stopped at this stage, you should correct all unmatched brackets to continue your task.<br>"},
-	{
-		"title": "How to Correct Unmatched Brackets",
-		"content": "<span style='color:green'><b>Files Information with Unmatched Brackets</b></span> shows the total number of files with unmatched brackets and how many files have been corrected.</br><span style='color:green'><b>Current File Description</b></span> shows the name and content of the file as well as the missing brackets in this description.</br><span style='color:green'><b>Unmatched Brackets in This File</b></span> indicates the content of current description with <span style='color:red'><b>red marked brackets</b></span>, and what type and how many missing brackets you need add to this description.</br></br>1. Go to <span style='color:green'><b>Current File Description</b></span>, add correct brackets at the right position based on the red marked brackets in the description until the unmatched brackets shows <b>0</b>.</br>2. Click <span style='color:green'><b><<<</b></span> or <span style='color:green'><b>>>></b></span> to go to other descriptions, correct them as <b>Step 1</b>. </br>3. Click <span style='color:green'><b>Next Step in Text Capture</b></span> unless <span style='color:green'><b>Files with Unmatched Brackets</b></span> shows <b>0</b>."}
-		
+		"title": "<b>What should I do in Preprocess</b>",
+		"content": "<b>Correct all unmatched brackets</b> in your input files. <br><br>When it is shown '<b>0 descriptions</b> to be corrected', you've corrected all files."}
 ]
