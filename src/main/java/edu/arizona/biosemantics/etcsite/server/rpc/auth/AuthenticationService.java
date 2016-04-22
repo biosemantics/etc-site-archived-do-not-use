@@ -198,21 +198,18 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	
 	@Override
 	public void requestPasswordResetCode(int captchaId, String captchaSolution, String email) 
-			throws Exception {
+			throws IncorrectCaptchaSolutionException, NoSuchUserException, OpenPasswordResetRequestException {
 		if (!captchaDAO.isValidSolution(captchaId, captchaSolution))
-			throw new IncorrectCaptchaSolutionException();
+			throw new IncorrectCaptchaSolutionException("Scurity key is not correct! Please try agian!");
 	
 		User user = userDAO.getUser(email);
 		if (user == null)
-			throw new NoSuchUserException();
-		if(user.getOpenIdProvider() != "none") {
-			throw new Exception("Can not reset password for a linked OpenID account. Use the Sign in with Google option.");
-		}
+			throw new NoSuchUserException("No such user in ETC system! Please sign up first!");
 		
 		PasswordResetRequest oldRequest = passwordResetRequestDAO.get(user);
 		if (oldRequest != null) {
 			if ((new Date()).getTime() - oldRequest.getRequestTime().getTime() < RESET_PASSWORD_MINIMUM_WAIT_TIME_SECONDS * 1000)
-				throw new OpenPasswordResetRequestException();
+				throw new OpenPasswordResetRequestException("You have already requested authentication code in one hour, please check you Email!");
 			passwordResetRequestDAO.remove(user);
 		}
 		String authenticationCode = generatePasswordResetCode();
@@ -226,16 +223,19 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	@Override
 	public void resetPassword(String email, String code, String newPassword) throws NoSuchUserException, InvalidPasswordResetException {
 		User user = userDAO.getUser(email);
+		
 		if (user == null)
-			throw new NoSuchUserException();
+			throw new NoSuchUserException("No such user in ETC system! Please sign up first!");
 		
 		PasswordResetRequest request = passwordResetRequestDAO.get(user);
 		if (request == null)
-			throw new InvalidPasswordResetException();
+			throw new InvalidPasswordResetException("Please send Authentication Code to your email address first!");
 			
-		if((new Date()).getTime() - request.getRequestTime().getTime() > RESET_PASSWORD_HOURS_BEFORE_EXPIRE * 60 * 60 * 1000
-				|| !code.equals(request.getAuthenticationCode()))
-			throw new InvalidPasswordResetException();
+		if((new Date()).getTime() - request.getRequestTime().getTime() > RESET_PASSWORD_HOURS_BEFORE_EXPIRE * 60 * 60 * 1000)
+			throw new InvalidPasswordResetException("The valid time of the code expired! Please try again!");
+		
+		if( (new Date()).getTime() - request.getRequestTime().getTime() <= RESET_PASSWORD_HOURS_BEFORE_EXPIRE * 60 * 60 * 1000&&!code.equals(request.getAuthenticationCode()))
+			throw new InvalidPasswordResetException("Authentication code is not correct! Please try again!");
 			
 		String encryptedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
 		user.setPassword(encryptedPassword);
@@ -283,7 +283,7 @@ public class AuthenticationService extends RemoteServiceServlet implements IAuth
 	public AuthenticationResult signupUser(int captchaId, String captchaSolution,
 			String firstName, String lastName, String email, String password) throws CaptchaException, RegistrationFailedException {
 		if (!captchaDAO.isValidSolution(captchaId, captchaSolution)){
-			throw new CaptchaException("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Security Code incorrect!</br>&nbsp;&nbsp;Please refresh the captcha and try again.");
+			throw new CaptchaException("Security Code incorrect! Please try again!");
 		}
 		addUser(firstName, lastName, email, password, null);
 		return this.login(email, password);
