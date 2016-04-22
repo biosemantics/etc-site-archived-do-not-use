@@ -189,11 +189,11 @@
 								</b:ListGroup>
 							</g:HTMLPanel>
 						</g:FocusPanel>
-						<g:FocusPanel ui:field="visualizationMenu" styleName="{style.navEntry}">
+						<!--g:FocusPanel ui:field="visualizationMenu" styleName="{style.navEntry}">
 						    <g:HTMLPanel>
 								<my:ImageLabel styleName="{style.navEntry}" ui:field="visualization" imagePath="images/Visualization_unselected.gif" imageWidth="20px" imageHeight="20px" text="Visualization" systemFolder="false"></my:ImageLabel>
 							</g:HTMLPanel>
-						</g:FocusPanel>
+						</g:FocusPanel-->
 					</div>
 	            </g:HTMLPanel>
 	   	</g:west>
