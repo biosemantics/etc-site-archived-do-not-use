@@ -1,0 +1,6 @@
+[
+	{
+		"title": "<b>Define Task for Text Capture</b>",
+		"content": "Fill the form on this page to define the task. <br><br><b>Task Name:</b> Provide a name to identify your task/analysis. This name will be used in Task Manager and output folders (Task Name + Input Folder Name = Output Folder Name). <br><br><b>Selected Input Folder:</b> The input folder you selected for this task. <b>Click <span style='color:green'><b>Select Folder</b></b> button to select a different folder. <br><br><b>Select Taxon Group:</b>Select a taxon group relevant to your input. System will use the resources (e.g., glossary) relevant to your taxon group in the process. <br><br><b>Use Empty Glossary:</b> Use this option when none of the Taxon Groups is relevant to your input files."}
+]
+
