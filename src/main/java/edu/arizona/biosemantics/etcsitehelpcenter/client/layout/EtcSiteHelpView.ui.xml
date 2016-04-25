@@ -114,7 +114,9 @@
 	   	<g:north size="90">
 	   	    <g:HTMLPanel>
 				<div style="padding-left: 20px; padding-top: 5px; padding-bottom: 5px;">
-					<my:ImageLabel ui:field="menu" imagePath="images/ETCLogoBeta.png" imageWidth="180px" imageHeight="70px" text="" systemFolder="false"></my:ImageLabel>
+					<a href="../index.html">
+						<my:ImageLabel ui:field="menu" imagePath="images/ETCLogoBeta.png" imageWidth="180px" imageHeight="70px" text="" systemFolder="false"></my:ImageLabel>
+					</a>
 				</div>
 				<hr style="height:1px; border:none; color:#dddddd; background-color:#dddddd; margin-top: 0px;" width="100%" noshade="noshade"></hr>
 			</g:HTMLPanel>
