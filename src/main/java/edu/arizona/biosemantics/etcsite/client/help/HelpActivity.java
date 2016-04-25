@@ -121,6 +121,7 @@ public class HelpActivity extends MyAbstractActivity implements Presenter{
 			case "SettingsPlace":
 				return Help.MY_ACCOUNT;
 			case "SemanticMarkupCreatePlace":
+				return Help.TEXT_CAPTURE_CREATE;
 			case "SemanticMarkupInputPlace":
 				return Help.TEXT_CAPTURE_INPUT;
 			case "SemanticMarkupLearnPlace":
@@ -134,6 +135,7 @@ public class HelpActivity extends MyAbstractActivity implements Presenter{
 			case "SemanticMarkupOutputPlace":
 				return Help.TEXT_CAPTURE_OUTPUT;
 			case "MatrixGenerationCreatePlace":
+				return Help.MATRIX_GENERATION_CREATE;
 			case "MatrixGenerationInputPlace":
 				return Help.MATRIX_GENERATION_INPUT;
 			case "MatrixGenerationProcessPlace":
@@ -143,6 +145,7 @@ public class HelpActivity extends MyAbstractActivity implements Presenter{
 			case "MatrixGenerationOutputPlace":
 				return Help.MATRIX_GENERATION_OUTPUT;
 			case "OntologizeCreatePlace":
+				return Help.ONTOLOGY_BUILDING_CREATE;
 			case "OntologizeInputPlace":
 				return Help.ONTOLOGY_BUILDING_INPUT;
 			case "OntologizeBuildPlace":
@@ -150,11 +153,13 @@ public class HelpActivity extends MyAbstractActivity implements Presenter{
 			case "OntologizeOutputPlace":
 				return Help.ONTOLOGY_BUILDING_OUTPUT;
 			case "TaxonomyComparisonCreatePlace":
+				return Help.TAXONOMY_COMPARISON_CREATE;
 			case "TaxonomyComparisonInputPlace":
 				return Help.TAXONOMY_COMPARISON_INPUT;
 			case "TaxonomyComparisonAlignPlace":
 				return Help.TAXONOMY_COMPARISON_ALIGN;
 			case "TreeGenerationCreatePlace":
+				return Help.TREE_GENERATION_CREATE;
 			case "TreeGenerationInputPlace":
 				return Help.TREE_GENERATION_INPUT;
 			case "TreeGenerationViewPlace":

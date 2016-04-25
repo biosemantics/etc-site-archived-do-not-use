@@ -141,7 +141,8 @@
 					        <g:HTMLPanel>
 								<my:ImageLabel styleName="{style.navEntry}" ui:field="textCapture" imagePath="images/SemanticMarkup.gif" imageWidth="20px" imageHeight="20px" text="Text Capture" systemFolder="false"></my:ImageLabel>
 								<b:ListGroup ui:field="textCaptureSubmenu" visible="false" styleName="{style.subMenuPanel}">
-							    	 <b:ListGroupItem text="Input" ui:field="textCaptureInput"></b:ListGroupItem>
+							    	<b:ListGroupItem text="Create" ui:field="textCaptureCreate"></b:ListGroupItem>
+							    	<b:ListGroupItem text="Input" ui:field="textCaptureInput"></b:ListGroupItem>
 							     	<b:ListGroupItem text="Preprocess" ui:field="textCapturePreprocess"></b:ListGroupItem>
 							     	<b:ListGroupItem text="Learn" ui:field="textCaptureLearn"></b:ListGroupItem>
 							     	<b:ListGroupItem text="Review" ui:field="textCaptureReview"></b:ListGroupItem>
@@ -154,6 +155,7 @@
 						    <g:HTMLPanel>
 								<my:ImageLabel styleName="{style.navEntry}" ui:field="ontologize" imagePath="images/Ontologize.gif" imageWidth="20px" imageHeight="20px" text="Ontology Building" systemFolder="false"></my:ImageLabel>
 								<b:ListGroup ui:field="ontologyBuildingSubmenu" visible="false" styleName="{style.subMenuPanel}">
+								    <b:ListGroupItem text="Create" ui:field="ontologyBuildingCreate"></b:ListGroupItem>
 								    <b:ListGroupItem text="Input" ui:field="ontologyBuildingInput"></b:ListGroupItem>
 								    <b:ListGroupItem text="Build" ui:field="ontologyBuildingBuild"></b:ListGroupItem>
 								    <b:ListGroupItem text="Output" ui:field="ontologyBuildingOutput"></b:ListGroupItem>
@@ -164,6 +166,7 @@
 						    <g:HTMLPanel>
 								<my:ImageLabel styleName="{style.navEntry}" ui:field="matrixGeneration" imagePath="images/MatrixGeneration.gif" imageWidth="20px" imageHeight="20px" text="Matrix Generation" systemFolder="false"></my:ImageLabel>
 								<b:ListGroup ui:field="matrixGenerationSubmenu" visible="false" styleName="{style.subMenuPanel}">
+									    <b:ListGroupItem text="Create" ui:field="matrixGenerationCreate"></b:ListGroupItem>
 									    <b:ListGroupItem text="Input" ui:field="matrixGenerationInput"></b:ListGroupItem>
 									    <b:ListGroupItem text="Process" ui:field="matrixGenerationProcess"></b:ListGroupItem>
 									    <b:ListGroupItem text="Review" ui:field="matrixGenerationReview"></b:ListGroupItem>
@@ -175,6 +178,7 @@
 						    <g:HTMLPanel>
 								<my:ImageLabel styleName="{style.navEntry}" ui:field="treeGeneration" imagePath="images/TreeGeneration.gif" imageWidth="20px" imageHeight="20px" text="Key Generation" systemFolder="false"></my:ImageLabel>
 								<b:ListGroup ui:field="treeGenerationSubmenu" visible="false" styleName="{style.subMenuPanel}">
+								    <b:ListGroupItem text="Create" ui:field="treeGenerationCreate"></b:ListGroupItem>
 								    <b:ListGroupItem text="Input" ui:field="treeGenerationInput"></b:ListGroupItem>
 								    <b:ListGroupItem text="View" ui:field="treeGenerationView"></b:ListGroupItem>
 								</b:ListGroup>
@@ -184,6 +188,7 @@
 						    <g:HTMLPanel>
 								<my:ImageLabel styleName="{style.navEntry}" ui:field="taxonomyComparison" imagePath="images/TaxonomyComparison.gif" imageWidth="20px" imageHeight="20px" text="Taxonomy Comparison" systemFolder="false"></my:ImageLabel>
 								<b:ListGroup ui:field="taxonomyComparisonSubmenu" visible="false" styleName="{style.subMenuPanel}">
+								    <b:ListGroupItem text="Create" ui:field="taxonomyComparisonCreate"></b:ListGroupItem>
 								    <b:ListGroupItem text="Input" ui:field="taxonomyComparisonInput"></b:ListGroupItem>
 								    <b:ListGroupItem text="Align" ui:field="taxonomyComparisonAlign"></b:ListGroupItem>
 								</b:ListGroup>

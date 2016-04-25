@@ -67,26 +67,31 @@ public class EtcSiteHelpView extends Composite implements IEtcSiteHelpView {
 	@UiField FocusPanel matrixGenerationMenu;
 	@UiField FocusPanel treeGenerationMenu;
 	@UiField FocusPanel taxonomyComparisonMenu;
-	
+
+	@UiField ListGroupItem textCaptureCreate;
 	@UiField ListGroupItem textCaptureInput;
 	@UiField ListGroupItem textCapturePreprocess;
 	@UiField ListGroupItem textCaptureLearn;
 	@UiField ListGroupItem textCaptureReview;
 	@UiField ListGroupItem textCaptureParse;
 	@UiField ListGroupItem textCaptureOutput;
-	
+
+	@UiField ListGroupItem ontologyBuildingCreate;
 	@UiField ListGroupItem ontologyBuildingInput;
 	@UiField ListGroupItem ontologyBuildingBuild;
 	@UiField ListGroupItem ontologyBuildingOutput;
-	
+
+	@UiField ListGroupItem matrixGenerationCreate;
 	@UiField ListGroupItem matrixGenerationInput;
 	@UiField ListGroupItem matrixGenerationProcess;
 	@UiField ListGroupItem matrixGenerationReview;
 	@UiField ListGroupItem matrixGenerationOutput;
-	
+
+	@UiField ListGroupItem treeGenerationCreate;
 	@UiField ListGroupItem treeGenerationInput;
 	@UiField ListGroupItem treeGenerationView;
-	
+
+	@UiField ListGroupItem taxonomyComparisonCreate;
 	@UiField ListGroupItem taxonomyComparisonInput;
 	@UiField ListGroupItem taxonomyComparisonAlign;
 	
@@ -104,6 +109,8 @@ public class EtcSiteHelpView extends Composite implements IEtcSiteHelpView {
 				presenter.populateHelpContent(Help.TASK_MANAGER);
 			}else if(source.equals(account)){
 				presenter.populateHelpContent(Help.MY_ACCOUNT);
+			}else if(source.equals(textCaptureCreate)) {
+				presenter.populateHelpContent(Help.TEXT_CAPTURE_CREATE);
 			}else if(source.equals(textCaptureInput)){
 				presenter.populateHelpContent(Help.TEXT_CAPTURE_INPUT);
 			}else if(source.equals(textCapturePreprocess)){

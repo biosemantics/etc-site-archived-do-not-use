@@ -14,7 +14,7 @@ public interface IEtcSiteHelpView extends IsWidget {
 
 		IEtcSiteHelpView getView();
 		
-		void populateHelpContent(Help hepl);
+		void populateHelpContent(Help help);
 	}
 	
 	void setPresenter(Presenter presenter);
