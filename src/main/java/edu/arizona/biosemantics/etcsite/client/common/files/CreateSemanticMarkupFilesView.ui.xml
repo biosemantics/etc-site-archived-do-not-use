@@ -363,8 +363,11 @@
 							</container:BorderLayoutContainer>
 						</gxt:ContentPanel>
 						<g:VerticalPanel>
-						    <g:Label styleName="{style.heading}">EXAMPLES</g:Label>
-		     	           <g:HTML>
+						 <g:Label styleName="{style.heading}">EXAMPLES</g:Label>
+						  <gxt:ContentPanel pixelSize="720, 250" bodyBorder="false" headerVisible="false">
+						   <g:ScrollPanel >
+		     	            <g:HTML>
+		     	               <div style="padding: 5px 8px;">
 		        	            author: Fernald<br/>
 								year: 1950<br/>
 								title: Gray's Manual of Botany<br/>
@@ -388,21 +391,24 @@
 								morphology: #Erect or high arching, mostly 1-3 m. high, armed with scattered broad-based lanceolate to lance-subulate prickles or prickles wanting, the young primocanes often ridged or angled and finely pubescent, the expanding tip often glandular;<br/>
 								<br/>
 								Canes up to 1 cm. or more thick at base; terminal primocane-leaflet 0.7-2 dm. long, 3.5-11 cm. broad; lower elongate pedicels often forking.#<br/>
+			        	        </div>
 			        	    </g:HTML>
-			            </g:VerticalPanel>
-		            </container:CardLayoutContainer>
+			              </g:ScrollPanel>
+			            </gxt:ContentPanel>
+			          </g:VerticalPanel>
+			        </container:CardLayoutContainer>
 		            <container:CardLayoutContainer ui:field="batchCreateCards">
 		            	<g:VerticalPanel ui:field="batchPanel">
 		                	<g:Label styleName="{style.heading}">CREATE FILES</g:Label>
 			                <g:VerticalPanel>
-								<g:Label styleName="{style.sub-heading}">Source Document Information</g:Label>
+								<g:Label styleName="{style.sub-heading}" title="If entered here, source info will be included for each of the descriptions entered in the Area below. Useful for descriptions from a common source.">Source Document Information</g:Label>
 								<g:Grid>
 								    <g:row>
 								        <g:customCell>
 											<g:Label>Author</g:Label>
 										</g:customCell>
 										<g:customCell>
-											<g:TextBox visibleLength="45" ui:field="batch_author"></g:TextBox>
+											<g:TextBox visibleLength="45" ui:field="batch_author" title="If entered here, source info will be included for each of the descriptions entered in the Area below. Useful for descriptions from a common source."></g:TextBox>
 										</g:customCell>
 									</g:row>
 									<g:row>
@@ -440,9 +446,9 @@
 								</g:Grid>
 							</g:VerticalPanel>
 							<g:HorizontalPanel width="100%">
-		                        <g:Label styleName="{style.sub-heading}">Taxonomic Treatment Area *</g:Label>
-		                        <g:cell width="50%" horizontalAlignment="ALIGN_RIGHT" verticalAlignment="ALIGN_MIDDLE">
-		                            <g:CheckBox ui:field="copyCheckBox">Copy Authority and Date values</g:CheckBox>
+		                        <g:Label styleName="{style.sub-heading}">Taxonomic Descriptions Area*: paste formatted descriptions below</g:Label>
+		                        <g:cell width="35%" horizontalAlignment="ALIGN_RIGHT" verticalAlignment="ALIGN_MIDDLE">
+		                            <g:CheckBox ui:field="copyCheckBox" title="If checked, authority and date info of a higher taxon will be copied automatically to all its lower taxa. ">Copy Authority and Date values</g:CheckBox>
 		                        </g:cell>
 			                </g:HorizontalPanel>
 			               	<g:TextArea ui:field="batchArea" styleName="{style.batchArea}"></g:TextArea>
