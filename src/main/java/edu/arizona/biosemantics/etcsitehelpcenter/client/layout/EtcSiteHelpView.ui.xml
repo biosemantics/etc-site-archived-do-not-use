@@ -114,7 +114,7 @@
 	   	<g:north size="90">
 	   	    <g:HTMLPanel>
 				<div style="padding-left: 20px; padding-top: 5px; padding-bottom: 5px;">
-					<a href="../index.html">
+					<a href="./index.html" target="_blank">
 						<my:ImageLabel ui:field="menu" imagePath="images/ETCLogoBeta.png" imageWidth="180px" imageHeight="70px" text="" systemFolder="false"></my:ImageLabel>
 					</a>
 				</div>

@@ -245,6 +245,8 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 	@UiHandler("openInNewWindowButton")
 	void onOpenClick(ClickEvent e){
 		presenter.onOpenHelpInNewWindow();
+		setHelpSize(0, false);
+		help.setText("Help");
 	}
 	
 	@UiHandler("sample")
