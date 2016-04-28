@@ -102,6 +102,12 @@ public class InputCreateView extends Composite implements IInputCreateView {
 		selectFolderForUploadComboBox.setTriggerAction(TriggerAction.ALL);
 		selectFolderForCreateFilesComboBox.setEnabled(false);
 		selectFolderForUploadComboBox.setEnabled(false);
+		selectFolderForCreateFilesComboBox.addSelectionHandler(new SelectionHandler<FolderTreeItem>() {
+            @Override
+            public void onSelection (SelectionEvent<FolderTreeItem> event){
+        			activiatecreateButton2();       
+            }
+		});	     		
 		selectFolderForUploadComboBox.addSelectionHandler(new SelectionHandler<FolderTreeItem>() {
             @Override
             public void onSelection (SelectionEvent<FolderTreeItem> event){
@@ -184,11 +190,10 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	public void onCreateFolderForCreateFilesRadio(ClickEvent event){
 		createFolderForCreateFilesTextBox.setEnabled(true);
 		selectFolderForCreateFilesComboBox.setEnabled(false);
-		createFilesButton.setEnabled(true);
 		createFolderForCreateFilesButton.setVisible(true);
-		createFilesButton.setText("Create Files in New Folder");
 		selectFolderForCreateFilesComboBox.setText(null);
 		selectFolderForCreateFilesComboBox.setValue(null);
+		disablecreateButton();
 	}
 	
 	@UiHandler("selectFolderForCreateFilesRadio")
@@ -196,8 +201,7 @@ public class InputCreateView extends Composite implements IInputCreateView {
 		createFolderForCreateFilesTextBox.setEnabled(false);
 		selectFolderForCreateFilesComboBox.setEnabled(true);
 		createFolderForCreateFilesButton.setVisible(false);
-		createFilesButton.setEnabled(true);
-		createFilesButton.setText("Create Files in Selected Folder");
+		disablecreateButton();
 		createFolderForCreateFilesTextBox.setValue(null);
 		presenter.deleteFolderForinputFiles();	
 	}
@@ -209,7 +213,7 @@ public class InputCreateView extends Composite implements IInputCreateView {
 		createFolderForUploadButton.setVisible(true);
 		selectFolderForUploadComboBox.setText(null);
 		selectFolderForUploadComboBox.setValue(null);
-		enableuploadButton();
+		disableuploadButton();
 	}
 	
 	@UiHandler("selectFolderForUploadRadio")
@@ -219,7 +223,7 @@ public class InputCreateView extends Composite implements IInputCreateView {
 		createFolderForUploadButton.setVisible(false);
 		createFolderForUploadTextBox.setValue(null);
 		presenter.deleteFolderForinputFiles();	
-		enableuploadButton();
+		disableuploadButton();
 	}
 	
 	@UiHandler("createFilesButton")
@@ -267,9 +271,25 @@ public class InputCreateView extends Composite implements IInputCreateView {
 		uploadButton.setText("Upload Files in Existing Folder");
 	}
 	
-	private void enableuploadButton() {
+	@Override
+	public void activiatecreateButton1() {
+		createFilesButton.setEnabled(true);
+		createFilesButton.setText("Create Files in New Folder");
+	}
+	
+	private void activiatecreateButton2() {
+		createFilesButton.setEnabled(true);
+		createFilesButton.setText("Create Files in Existing Folder");
+	}
+	
+	private void disableuploadButton() {
 		uploadButton.setEnabled(false);
-		uploadButton.setText("Please Select or Create a folder first");
+		uploadButton.setText("Upload Files");
+	}
+	
+	private void disablecreateButton(){
+		createFilesButton.setEnabled(false);
+		createFilesButton.setText("Create Files");
 	}
 	
 	
@@ -415,7 +435,8 @@ public class InputCreateView extends Composite implements IInputCreateView {
 		dummyCreateFilesRadio3.setChecked(false);
 		dummyCreatePanel3.setVisible(false);
 		presenter.deleteFolderForinputFiles();
-		enableuploadButton();
+		disableuploadButton();
+		disablecreateButton();
 	}
 	
 	@Override
@@ -429,7 +450,8 @@ public class InputCreateView extends Composite implements IInputCreateView {
 		selectFolderForUploadComboBox.setValue(null);
 		selectFolderForUploadComboBox.setText(null);
 		selectFolderForUploadComboBox.setEnabled(false);
-		enableuploadButton();
+		disableuploadButton();
+		disablecreateButton();
 		uploadPanel.setVisible(false);
 		presenter.deleteFolderForinputFiles();
 	}
@@ -443,7 +465,8 @@ public class InputCreateView extends Composite implements IInputCreateView {
 		fileDirectory.setVisible(false);
 		fileDirectory.setEnabled(false);
 		presenter.deleteFolderForinputFiles();
-		enableuploadButton();
+		disableuploadButton();
+		disablecreateButton();
 	}
 	
 	

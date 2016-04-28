@@ -98,7 +98,7 @@
 	            <g:Grid cellSpacing="5">
 	                <g:row>
 	                    <g:customCell>
-	                    	<g:RadioButton name="createFileFolder" ui:field="createFolderForCreateFilesRadio" styleName="{style.radioPadding}">Create New Folder</g:RadioButton>
+	                    	<g:RadioButton name="createFileFolder" ui:field="createFolderForCreateFilesRadio" styleName="{style.radioPadding}">New Folder</g:RadioButton>
 	                    </g:customCell>
 	                    <g:customCell>
 	                    	<g:TextBox enabled="false" ui:field="createFolderForCreateFilesTextBox"></g:TextBox>    
@@ -120,7 +120,7 @@
 	        
 	               <g:InlineLabel >2: Create Input Files.&nbsp;</g:InlineLabel>
 	                <g:HorizontalPanel styleName = "{style.panelpadding}">
-		                <g:Button ui:field="createFilesButton" enabled="false">Create Files</g:Button> 
+		                <g:Button ui:field="createFilesButton" title="Please Select or Create a folder before creating files!" enabled="false">Create Files</g:Button> 
 		            </g:HorizontalPanel>
 	        </g:VerticalPanel>
 	        
@@ -132,7 +132,7 @@
 	            <g:Grid cellSpacing="5">
 	                <g:row>
 	                    <g:customCell>
-	                    	<g:RadioButton name="uploadFileFolder" ui:field="createFolderForUploadRadio" styleName="{style.radioPadding}">Create New Folder</g:RadioButton>    
+	                    	<g:RadioButton name="uploadFileFolder" ui:field="createFolderForUploadRadio" styleName="{style.radioPadding}">New Folder</g:RadioButton>    
 	                    </g:customCell>
 	                    <g:customCell>
 	                    	<g:TextBox enabled="false" ui:field="createFolderForUploadTextBox"></g:TextBox>    

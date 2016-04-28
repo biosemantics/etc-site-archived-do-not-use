@@ -54,12 +54,12 @@
 	        <g:RadioButton name="selectInputMethod" ui:field="uploadRadio" styleName="{style.radioPadding}">Upload CleanTax Files</g:RadioButton>
 	        <g:VerticalPanel styleName = "{style.margin15}" ui:field="uploadPanel" visible="false">
 	            <g:InlineLabel>
-	                1: Create/Choose a folder to upload files into.
+	                1: Create/Choose a folder to upload files info.
 	            </g:InlineLabel>
 	            <g:Grid cellSpacing="5">
 	                <g:row>
 	                    <g:customCell>
-	                    	<g:RadioButton name="uploadFileFolder" ui:field="createFolderForUploadRadio" styleName="{style.radioPadding}">Create New Folder</g:RadioButton>    
+	                    	<g:RadioButton name="uploadFileFolder" ui:field="createFolderForUploadRadio" styleName="{style.radioPadding}">New Folder</g:RadioButton>    
 	                    </g:customCell>
 	                    <g:customCell>
 	                    	<g:TextBox enabled="false" ui:field="createFolderForUploadTextBox"></g:TextBox>    
@@ -80,7 +80,7 @@
 	            </g:Grid>
 	            <g:InlineLabel>2 Upload Taxonomy Files:&nbsp;</g:InlineLabel>
 				<up:SingleUploader ui:field="uploader" type="BUTTON" autoSubmit="true" avoidRepeatFiles="false"/>
-                <g:Button ui:field="uploadButton" title="Select a parent folder before uploading the taxonomy file" enabled="false" >Please select or create a folder first</g:Button>
+                <g:Button ui:field="uploadButton" title="Select/Create a parent folder before uploading the taxonomy file" enabled="false" >Upload Files</g:Button>
 				<g:SimplePanel addStyleNames="GWTUpld" ui:field="statusWidgetContainer"></g:SimplePanel>
 	        	<g:InlineLabel ui:field="uploadedTaxonomiesLabel"></g:InlineLabel>
 	        </g:VerticalPanel>

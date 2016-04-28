@@ -238,6 +238,7 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 			public void onSuccess(String result) {
 				if(view.isCreateFiles() && view.isCreateFolderForCreateFiles())
 					createdFolderForCreateFiles = result;
+				    view.activiatecreateButton1();
 				if(view.isUpload() && view.isCreateFolderForUpload()){
 					createdFolderForUpload = result;
 					view.activiateuploadButton1();

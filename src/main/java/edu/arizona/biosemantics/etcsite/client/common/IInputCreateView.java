@@ -125,6 +125,8 @@ public interface IInputCreateView extends IsWidget {
 	void refreshinput();
 
 	void addDummyCreateFiles3();
+
+	void activiatecreateButton1();
 	
 
 }

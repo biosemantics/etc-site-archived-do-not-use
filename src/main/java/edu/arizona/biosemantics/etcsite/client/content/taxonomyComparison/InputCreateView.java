@@ -270,7 +270,7 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	
 	private void enableuploadButton() {
 		uploadButton.setEnabled(false);
-		uploadButton.setText("Please Select or Create a folder first");
+		uploadButton.setText("Upload Files");
 	}
 	
 	@Override
