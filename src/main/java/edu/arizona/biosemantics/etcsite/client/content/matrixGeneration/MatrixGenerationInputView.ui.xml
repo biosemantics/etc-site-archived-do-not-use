@@ -84,7 +84,7 @@
 						<g:HorizontalPanel>
 							<g:VerticalPanel styleName="{style.firstColumn}">
 								<g:cell verticalAlignment="ALIGN_TOP">
-									<g:Label>Selected Folder:</g:Label>
+									<g:Label>Select Input Folder:</g:Label>
 								</g:cell>
 							<!-- <g:InlineLabel styleName="{style.note}">
 									Select a folder of taxon
@@ -106,7 +106,7 @@
 						<g:HorizontalPanel>
 							<g:VerticalPanel styleName="{style.firstColumn}">
 								<g:cell verticalAlignment="ALIGN_TOP">
-									<g:Label>Selected Term Review Folder (optional):</g:Label>
+									<g:Label>Select Term Review Folder (optional):</g:Label>
 								</g:cell>
 							<!-- <g:InlineLabel styleName="{style.note}">
 									Select a folder of taxon
@@ -126,7 +126,7 @@
 						<g:HorizontalPanel>
 							<g:VerticalPanel styleName="{style.firstColumn}">
 								<g:cell verticalAlignment="ALIGN_TOP">
-									<g:Label>Selected Ontology Folder (optional):</g:Label>
+									<g:Label>Select Ontology Folder (optional):</g:Label>
 								</g:cell>
 							<!-- <g:InlineLabel styleName="{style.note}">
 									Select a folder of taxon

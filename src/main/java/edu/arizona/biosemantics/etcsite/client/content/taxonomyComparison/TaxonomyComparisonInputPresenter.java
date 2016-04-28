@@ -86,6 +86,7 @@ public class TaxonomyComparisonInputPresenter implements ITaxonomyComparisonInpu
 				@Override
 				public void onFailure(Throwable caught) {
 					Alerter.failedToStartTaxonomyComparison(caught);
+					Alerter.stopLoading(box);
 				}
 			});
 		} else if(createPresenter.isFromSerializedModel()) {
@@ -111,6 +112,7 @@ public class TaxonomyComparisonInputPresenter implements ITaxonomyComparisonInpu
 					@Override
 					public void onFailure(Throwable caught) {
 						Alerter.failedToStartTaxonomyComparison(caught);
+						Alerter.stopLoading(box);
 					}
 				});
 		} else {
