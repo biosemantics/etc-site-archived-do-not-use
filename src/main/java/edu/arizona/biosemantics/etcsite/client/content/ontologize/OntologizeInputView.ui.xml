@@ -33,6 +33,11 @@
 		font-weight: bold;
 	}
 	
+	.boldgreen {
+		font-weight: bold;
+		color: green;
+	}
+	
 	.radioPadding{
 		padding-left: 20px;
 	}
@@ -48,8 +53,13 @@
 						imageWidth="80px" imageHeight="20px" text="" /> -->
 					<my:SubMenu ui:field="subMenu" step="INPUT" />
 				</g:HorizontalPanel>
-						<g:InlineLabel>&nbsp;
-						</g:InlineLabel>
+				<g:InlineLabel>&nbsp;
+				</g:InlineLabel>
+				<g:InlineLabel styleName="{style.boldgreen}">To continue building an ontology, go to Task Manager and resume the ontology task. 
+					DO NOT start a new Ontology Building task.
+				</g:InlineLabel>
+				<g:InlineLabel>&nbsp;
+				</g:InlineLabel>
 				<g:VerticalPanel styleName="{style.padding}">
 					<g:VerticalPanel>
 						<g:FlowPanel>
@@ -173,9 +183,9 @@
 							</g:cell>
 						</g:HorizontalPanel>
 						<g:HorizontalPanel styleName="inputForm">
-							<g:InlineLabel styleName="{style.note} DescriptionFont">
-							Ontology prefix for new ontology.
-							</g:InlineLabel>			
+							<g:HTML styleName="{style.note} DescriptionFont">
+							Ontology prefix for the <b>new</b> ontology. To continue working on an ontology go to Task Manager and resume the ontology task.
+							</g:HTML>		
 						</g:HorizontalPanel>
 					</g:VerticalPanel>
 					

@@ -43,6 +43,10 @@
 	.bold {
 		font-weight: bold;
 	}
+	.boldgreen {
+		font-weight: bold;
+		color: green;
+	}
 	
 	.DescriptionFont {font-size: 14px;}
 	
@@ -55,8 +59,13 @@
 						imageWidth="80px" imageHeight="20px" text="" /> -->
 					<my:SubMenu ui:field="subMenu" step="CREATE_INPUT" />
 				</g:HorizontalPanel>
-						<g:InlineLabel>&nbsp;
-						</g:InlineLabel>
+				<g:InlineLabel>&nbsp;
+				</g:InlineLabel>
+				<g:InlineLabel styleName="{style.boldgreen}">To continue building an ontology, go to Task Manager and resume the ontology task. 
+					DO NOT start a new Ontology Building task.
+				</g:InlineLabel>
+				<g:InlineLabel>&nbsp;
+				</g:InlineLabel>
 				<g:VerticalPanel styleName="{style.padding}">
 					<g:VerticalPanel>
 						<g:FlowPanel>
