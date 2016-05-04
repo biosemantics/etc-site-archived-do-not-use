@@ -1,5 +1,11 @@
 [
 	{
-		"title": "Taxonomy Comparison Input Format",
-		"content": "Help Content"}
+		"title": "<b>What should I do in Input?</b>",
+		"content": "<b>Provide input folder for your Taxon Comparison task.</b> Two types of input are accepted: <br><br>1. Two CleanTax files, one for each taxonomy to be aligned/compared. <br><br>2. Two ETC matrix generation output folders: one for each taxonomy to be aligned/compared.  <br><br>If you have CleanTax files <i>on your local computer</i>, <span style='color:green'><b>upload CleanTax files.</b></span> <br><br>If you have folders output by Matrix Generation <i>on ETC site</i>, <span style='color:green'><b>select existing folders.</b></span>. <br><br>The second option assumes that you've run Matrix Generation (probably also Text Capture) on two sets of taxonomic descriptions and obtained results."},
+	{
+        "title": "<b>Upload CleanTax Files</b>",
+        "content": "If you have CleanTax files for the two taxonomies to be compared <i>on your local computer</i>, use <span style='color:green'><b>Upload CleanTax Files</b></span> option. <br><br>First  <span style='color:green'><b>Create a New Folder</b></span> or  <span style='color:green'><b>Select an Existing Folder.</b></span><br><br>Then click on <span style='color:green'><b>Upload Taxonomy Files</b></span> button."},
+    {
+        "title": "<b>Select an Existing Folder</b>",
+        "content": "You need to have two folders output by Matrix Generation <i>on ETC site</i>, one for each of the taxonomies to be compared. These folders have <i>_output_by_MG_</i> in the folder names. <br><br>The second option assumes that you've run Matrix Generation (probably also Text Capture) on two sets of taxonomic descriptions and obtained results. <br><br>Select <span style='color:green'><b>Select Existing Folder</b></span> option, then <br><br> Click on <span style='color:green'><b>Select Taxonomy 1/2 Folder</b></span> button to select the two folders. "}
 ]

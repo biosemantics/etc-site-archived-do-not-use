@@ -1,0 +1,9 @@
+[
+	{
+		"title": "<b>What should I do in Define Task?</b>",
+		"content": "<b>Provide parameters for your <span style='color:green'><b>new</b></span>ontology building task.</b> Fill the form on this page to define the task. <br><br><b>Task Name:</b> Provide a name for your task/ontology. This name will be used in Task Manager and output folders (Input Folder Name + Task Name = Output Folder Name). You can come back later to continue building this ontology by going to Task Manager and resuming this task. <br><br><b>Selected Input Folder:</b> Shown the input folder you selected for this task in the last step. <b>Click <span style='color:green'><b>Select Folder</b></span></b> button to select a different folder if needed. <br><br><b>Select Taxon Group:</b>Select a taxon group relevant/related to your input. System will use the resources (e.g., glossary) relevant to your taxon group in this task. <br><br><b>Ontology Prefix:</b> Enter the prefix (short name) of the new ontology you will start to build."},
+	{
+		"title": "<b>What is an ontology prefix?</b>",
+		"content": "Each ontology needs a unique name called a 'prefix'. It is typically an acronym of the ontology's full name and should be a combination of a small number of English letters (may we suggest < 7)"}
+]
+

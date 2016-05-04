@@ -1,5 +1,5 @@
 [
 	{
-		"title": "Tree Generation View",
-		"content": "Help Content"}
+		"title": "<b>What should I do in View?</b>",
+		"content": "<b>Use the tool to identify specimens</b>. <br><br>Characters from the input are listed on the left, and taxa on the right. <br><br><b>Select the informative characters</b> that are applicable to your specimen, the right side will be updated with the list of taxa matching the characters. <br><br>Characters are sorted based on their Information Entropy scores -- the higher the score, the better the character can separate the remaining taxa into two even groups."}
 ]

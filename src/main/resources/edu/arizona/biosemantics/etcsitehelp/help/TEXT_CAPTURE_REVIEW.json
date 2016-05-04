@@ -1,6 +1,6 @@
 [
 	{
-		"title": "<b>What should I do in Review</b>",
+		"title": "<b>What should I do in Review?</b>",
         "content": "<b>Review and categorize the terms</b> the system has discovered from the input files. Terms that are known the systems are pre-categorized into the category boxes on the right (shown in brown). You can change those decisions. <br><br><b>How to categorize?</b><br>Move character-bearing terms from the left panel to the category boxes on the right by <b>drag-and-drop</b> or through <b>the pop-up menus invoked by a right-click</b> on a term.<br><br>Please also <b>synonymize synonyms</b>. <br><br>Terms left uncategorized will not be used in tagging characters. <br><br><b>If the task is shared</b> with others, the latest result among all users of a shared task is shown for each of the user."},
     {
 		"title": "<b>(Un)Categorize terms</b>",
