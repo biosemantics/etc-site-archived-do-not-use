@@ -28,7 +28,7 @@
 		.exportButton {
 			margin-top: 20px;
    			margin-left: 10px;
-			width: 165px;
+			width: 90px;
 			font-size:10px !important;
 		}
 		.nextButton {
@@ -40,7 +40,7 @@
 		.saveButton {
 			margin-top: 20px;
    			margin-left: 10px;
-			width: 165px;
+			width: 90px;
 			font-size:10px !important;
 		}
 		.subMenuEntry {

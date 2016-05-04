@@ -569,7 +569,7 @@ public class Alerter {
 		return showAlert(title, message);
 	}
 	
-	private static MessageBox showAlert(String title, String message) {
+	public static MessageBox showAlert(String title, String message) {
 		AlertMessageBox alert = new AlertMessageBox(title, message);
 		alert.show();
 		return alert;

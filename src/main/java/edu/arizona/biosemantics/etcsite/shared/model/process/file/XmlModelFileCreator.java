@@ -16,6 +16,7 @@ import com.google.gwt.user.client.rpc.core.java.util.Arrays;
  */
 public class XmlModelFileCreator {
 
+	
 	protected String[] descriptionTypes = { "morphology", "habitat", "distribution", "phenology" };
 	protected Set<String> descriptionTypesSet;
 	
@@ -128,20 +129,21 @@ public class XmlModelFileCreator {
 		return null;
 	}
 
-	public List<String> getTreatmentTexts(Map<String, String> batchSourceDocumentInfoMap, String text) {
+	public List<String> getTreatmentTexts(Map<String, String> batchSourceDocumentInfoMap, String text) throws Exception {
 		List<String> result = new LinkedList<String>();
 		
 		boolean insideContinuousValue = false;
 		
 		List<String> treatmentTexts = new LinkedList<String>();
-		StringBuilder treatment = new StringBuilder();
+		List<String> treatmentLines = new LinkedList<String>();
 		for(String line : text.split("\n")) {
 			line = line.trim();
+			
 			if(line.length()==0 && !insideContinuousValue) {
-				treatmentTexts.add(treatment.toString().trim());
-				treatment = new StringBuilder();
+				treatmentTexts.add(collapseToString(treatmentLines));
+				treatmentLines = new LinkedList<String>();
 			} else {
-				treatment.append(line + "\n");
+				addTreatmentLine(treatmentLines, line);
 				int colonIndex = line.indexOf(":");
 				if(colonIndex == -1 || insideContinuousValue) {
 					if(line.endsWith("#"))
@@ -161,7 +163,7 @@ public class XmlModelFileCreator {
 				}
 			}
 		}
-		treatmentTexts.add(treatment.toString().trim());
+		treatmentTexts.add(collapseToString(treatmentLines));
 				
 		for(String treatmentText : treatmentTexts) {
 			treatmentText = completeTreatmentWithSourceDocumentInformation(batchSourceDocumentInfoMap, treatmentText);
@@ -169,6 +171,31 @@ public class XmlModelFileCreator {
 		}
 		
 		return result;
+	}
+
+	private void addTreatmentLine(List<String> treatmentLines, String line) throws Exception {		
+		if(treatmentLines.isEmpty()) {
+			int colonIndex = line.indexOf(":");
+			if(colonIndex == -1) {
+				throw new Exception("A treatment does not begin with a valid field. "
+						+ "Did you forget to delimit morphology text by #? The problem occurs in line \"" + 
+						(line.length() > 50 ? line.substring(0, 50) : line) + "\"");
+			} else {
+				String key = line.substring(0, colonIndex).toLowerCase().trim();
+				if(!DescriptionFields.getAll().contains(key))
+					throw new Exception("A treatment does not begin with a valid field. "
+							+ "Did you forget to delimit morphology text by #? The problem occurs in line \"" + 
+							(line.length() > 50 ? line.substring(0, 50) : line) + "\"");
+			}
+		}
+		treatmentLines.add(line);
+	}
+
+	private String collapseToString(List<String> lines) {
+		StringBuilder treatment = new StringBuilder();
+		for(String line : lines) 
+			treatment.append(line + "\n");
+		return treatment.toString().trim();
 	}
 
 	private String completeTreatmentWithSourceDocumentInformation(Map<String, String> batchSourceDocumentInfoMap, String treatmentText) {

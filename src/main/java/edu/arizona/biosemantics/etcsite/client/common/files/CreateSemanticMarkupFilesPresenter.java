@@ -387,12 +387,15 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 			return;
 		}
 		
-		final List<String> treatments = xmlModelFileCreator.getTreatmentTexts(batchSourceDocumentInfoMap, normalizedText);
-		for (String treatment : treatments) {
-			returnString += treatment + "\n";
+		try {
+			final List<String> treatments = xmlModelFileCreator.getTreatmentTexts(batchSourceDocumentInfoMap, normalizedText);
+			for (String treatment : treatments) {
+				returnString += treatment + "\n";
+			}
+			view.setPreviewText(returnString);
+		} catch(Exception e) {
+			Alerter.showAlert("Batch Input Creation", "You have malformed input. " + e.getMessage());
 		}
-		
-		view.setPreviewText(returnString);
 	}
 
 }

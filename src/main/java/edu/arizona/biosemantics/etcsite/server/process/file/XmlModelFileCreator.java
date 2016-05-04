@@ -29,6 +29,7 @@ import edu.arizona.biosemantics.common.taxonomy.Rank;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.file.TaxonIdentificationEntry;
 import edu.arizona.biosemantics.etcsite.shared.model.file.XmlModelFile;
+import edu.arizona.biosemantics.etcsite.shared.model.process.file.DescriptionFields;
 import edu.arizona.biosemantics.etcsite.shared.model.process.semanticmarkup.BracketChecker;
 
 /*import com.google.gwt.i18n.shared.DateTimeFormat;
@@ -38,28 +39,17 @@ import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.XMLParser;*/
 
 public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared.model.process.file.XmlModelFileCreator {
-
-	public String[] fields =  new String[] {"author", "year", "title", "doi", "full citation",
-			/*"order", "suborder", "superfamily", "family", "subfamily", "tribe", "subtribe", "genus", "subgenus", 
-			"section", "subsection", "series", "species", "subspecies", "variety", "forma", "unranked",*/
-			"strain number","equivalent strain numbers", "accession number 16s rrna", "accession number genome sequence",
-			"previous or new taxonomic names","morphology", "phenology",  "habitat", "distribution" };
 	
 	protected BracketChecker bracketChecker;
 	private XmlNamespaceManager xmlNamespaceManager;
 	//protected String[] nameTypes = { "order", "suborder", "superfamily", "family", "subfamily", "tribe", "subtribe", "genus", "subgenus", 
 	//		"section", "subsection", "series", "species", "subspecies", "variety", "forma", "unranked" };
 	protected ArrayList<String> nameTypes = new ArrayList<String>();
-	protected Set<String> allLabels = new HashSet<String>();
-
 		
 	@Inject
 	public XmlModelFileCreator(XmlNamespaceManager xmlNamespaceManager, BracketChecker bracketChecker) {
 		this.xmlNamespaceManager = xmlNamespaceManager;
 		this.bracketChecker = bracketChecker;
-		this.allLabels.addAll(Arrays.asList(fields));
-		for(Rank rank : Rank.values())
-			this.allLabels.add(rank.name().toLowerCase() + " name");
 	}
 	
 	public synchronized List<XmlModelFile> createXmlModelFiles(String text, String operator) {
@@ -164,7 +154,7 @@ public class XmlModelFileCreator extends edu.arizona.biosemantics.etcsite.shared
 		HashSet<String> names = new HashSet<String>();
 		Hashtable<Rank, String> rankedNames = new Hashtable<Rank, String>();
 		for(String key : data.keySet()) {
-			if(!this.allLabels.contains(key)) {
+			if(!DescriptionFields.getAll().contains(key)) {
 				modelFile.appendError("Don't know what field \"" +key + "\" is in the treatment: \n\n\"" + text + "\".");
 			} else {
 				if(key.endsWith(" name")){	
