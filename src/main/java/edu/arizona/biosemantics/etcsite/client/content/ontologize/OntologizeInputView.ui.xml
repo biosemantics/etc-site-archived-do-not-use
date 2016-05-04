@@ -111,6 +111,9 @@
 								<g:Button ui:field="inputButton">Select Folder</g:Button>
 							</g:cell>
 						</g:HorizontalPanel>
+						<g:InlineLabel styleName="{style.note} DescriptionFont">
+							This folder has been auto-selected based on your input in the last step. 
+						</g:InlineLabel>
 					</g:VerticalPanel>
 					<g:VerticalPanel styleName="{style.subMenuEntry}">
 						<g:HorizontalPanel styleName="inputForm">

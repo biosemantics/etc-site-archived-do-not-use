@@ -97,6 +97,9 @@
 						       <g:Button ui:field="inputButton">Select Input</g:Button>
 							</g:cell>							
 						</g:HorizontalPanel>
+						<g:InlineLabel styleName="{style.note} DescriptionFont">
+							This folder has been auto-selected based on your input in the last step. 
+						</g:InlineLabel>
 					</g:VerticalPanel>
 					<g:VerticalPanel styleName="{style.padding}">
 						<g:Button ui:field="nextButton">Next Step in Key Generation</g:Button>

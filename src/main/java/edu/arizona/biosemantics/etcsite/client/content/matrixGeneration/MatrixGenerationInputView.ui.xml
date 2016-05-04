@@ -84,7 +84,7 @@
 						<g:HorizontalPanel>
 							<g:VerticalPanel styleName="{style.firstColumn}">
 								<g:cell verticalAlignment="ALIGN_TOP">
-									<g:Label>Select Input Folder:</g:Label>
+									<g:Label>Selected Description Folder:</g:Label>
 								</g:cell>
 							<!-- <g:InlineLabel styleName="{style.note}">
 									Select a folder of taxon
@@ -98,9 +98,12 @@
 								<g:TextBox ui:field="inputLabel" enabled="false"></g:TextBox>
 							</g:cell>
 						<g:cell verticalAlignment="ALIGN_MIDDLE" horizontalAlignment='ALIGN_RIGHT' width='105px'>
-							<g:Button ui:field="inputButton">Select Input</g:Button>
+							<g:Button ui:field="inputButton">Select Folder</g:Button>
 						</g:cell>
 						</g:HorizontalPanel>
+						<g:InlineLabel styleName="{style.note} DescriptionFont">
+							This and the following two folders have been auto-selected based on your input in the last step. 
+						</g:InlineLabel>
 					</g:VerticalPanel>
 					<g:VerticalPanel styleName="{style.subMenuEntry}">
 						<g:HorizontalPanel>
@@ -119,7 +122,9 @@
 							<g:cell verticalAlignment="ALIGN_TOP">
 								<g:TextBox ui:field="inputTermReviewLabel" enabled="false"></g:TextBox>
 							</g:cell>
-							<g:Button ui:field="inputTermReviewButton">Select Term Review Input</g:Button>
+							<g:cell verticalAlignment="ALIGN_MIDDLE" horizontalAlignment='ALIGN_RIGHT' width='105px'>
+								<g:Button ui:field="inputTermReviewButton">Select Folder</g:Button>
+							</g:cell>
 						</g:HorizontalPanel>
 					</g:VerticalPanel>
 					<g:VerticalPanel styleName="{style.subMenuEntry}">
@@ -139,7 +144,9 @@
 							<g:cell verticalAlignment="ALIGN_TOP">
 								<g:TextBox ui:field="inputOntologyLabel" enabled="false"></g:TextBox>
 							</g:cell>
-							<g:Button ui:field="inputOntologyButton">Select Ontology Input</g:Button>
+							<g:cell verticalAlignment="ALIGN_MIDDLE" horizontalAlignment='ALIGN_RIGHT' width='105px'>
+								<g:Button ui:field="inputOntologyButton">Select Folder</g:Button>
+							</g:cell>
 						</g:HorizontalPanel>
 					</g:VerticalPanel>
 					<g:VerticalPanel styleName="{style.subMenuEntry}">
