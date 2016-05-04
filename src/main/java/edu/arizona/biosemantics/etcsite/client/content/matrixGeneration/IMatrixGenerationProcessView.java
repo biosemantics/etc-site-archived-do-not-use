@@ -19,5 +19,6 @@ public interface IMatrixGenerationProcessView extends IsWidget {
 	Widget asWidget();
 	void setNonResumable();
 	void setResumable();
+	void setOutput(String value);
 	
 }

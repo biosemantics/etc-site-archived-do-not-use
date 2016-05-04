@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -24,6 +25,9 @@ public class MatrixGenerationProcessView extends Composite implements IMatrixGen
 		
 	@UiField
 	Button reviewButton;
+	
+	@UiField
+	Label outputLabel;
 	
 	@UiField
 	Button outputButton;
@@ -76,5 +80,10 @@ public class MatrixGenerationProcessView extends Composite implements IMatrixGen
 	@UiHandler("outputButton")
 	public void onOutput(ClickEvent event) {
 		presenter.onOutput();
+	}
+	
+	@Override
+	public void setOutput(String value) {
+		this.outputLabel.setText(value);
 	}
 }

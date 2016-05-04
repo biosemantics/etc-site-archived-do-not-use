@@ -66,15 +66,14 @@
 								REQUIREMENTS:&nbsp;
 							</g:InlineLabel>
 							<g:InlineLabel styleName="DescriptionFont">
-								Text Capture takes textual morphological descriptions of one or
-								more taxa as input. The input files, which must be in English and
-								conform to this&nbsp;
+								Matrix Generation takes marked-up textual morphological descriptions of one or more taxa as input. 
+								The input files must be in English and conform to this&nbsp;
 							</g:InlineLabel>
 							<g:Anchor
 								href="http://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupOutput.xsd"
 								target="_blank" styleName="{style.padding}">format</g:Anchor>
 							<g:InlineLabel styleName="DescriptionFont">
-			            		. Choose one of the following methods to provide the input and Click Next.
+			            		. Choose one of the following methods to provide the input.
 			            	</g:InlineLabel>
 						</g:FlowPanel>
 						<g:InlineLabel styleName="DescriptionFont">&nbsp;</g:InlineLabel>
