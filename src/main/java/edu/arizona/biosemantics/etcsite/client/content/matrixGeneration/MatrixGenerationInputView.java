@@ -1,169 +1,69 @@
 package edu.arizona.biosemantics.etcsite.client.content.matrixGeneration;
 
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+import com.sencha.gxt.data.shared.LabelProvider;
+import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.widget.core.client.form.ComboBox;
 
-import edu.arizona.biosemantics.common.biology.TaxonGroup;
+import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView;
+import gwtupload.client.Uploader;
 
 public class MatrixGenerationInputView extends Composite implements IMatrixGenerationInputView {
 
-	private static MatrixGenerationViewUiBinder uiBinder = GWT.create(MatrixGenerationViewUiBinder.class);
+	private static MatrixGenerationInputViewUiBinder uiBinder = GWT
+			.create(MatrixGenerationInputViewUiBinder.class);
 
-	interface MatrixGenerationViewUiBinder extends UiBinder<Widget, MatrixGenerationInputView> {
+	interface MatrixGenerationInputViewUiBinder extends
+			UiBinder<Widget, MatrixGenerationInputView> {
 	}
 
-	private Presenter presenter;
+	private IMatrixGenerationInputView.Presenter presenter;
 	
-	@UiField
-	TextBox taskNameTextBox;
+	@UiField 
+	Anchor fileManagerAnchor;
 	
-	@UiField
-	TextBox inputLabel;
+	@UiField(provided=true) 
+	IInputCreateView inputCreateView;
 	
-	@UiField
-	ListBox glossaryListBox;
-	
-	@UiField
-	Button nextButton;
-	
-	@UiField
-	TextBox inputOntologyLabel;
-
-	@UiField
-	TextBox inputTermReviewLabel;
-	
-	@UiField
-	CheckBox inheritValuesBox;
-	
-	@UiField
-	CheckBox generateAbsentPresentBox;
-	
-	@UiField
-	SubMenu subMenu;
-	
-	public MatrixGenerationInputView() {
-		super();
+	@Inject
+	public MatrixGenerationInputView(@Named("MatrixGeneration")IInputCreateView.Presenter inputCreatePresenter) {
+		this.inputCreateView = inputCreatePresenter.getView();
 		initWidget(uiBinder.createAndBindUi(this));
-		for(TaxonGroup taxonGroup : TaxonGroup.values()) {
-			this.glossaryListBox.addItem(taxonGroup.getDisplayName());
-		}
+		fileManagerAnchor.getElement().getStyle().setCursor(Cursor.POINTER);
 	}
 
-	@UiHandler("inputButton") 
-	public void onInputSelect(ClickEvent event) {
-		presenter.onInputSelect();
-	}
-
-	
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
 	}
 	
-	@UiHandler("nextButton")
-	public void onSearchClick(ClickEvent event) {
-		presenter.onNext();
-    }
-	
-	@UiHandler("inputOntologyButton")
-	public void onOntologyButton(ClickEvent event) {
-		presenter.onOntologyInput();
-	}
-	
-	@UiHandler("inputTermReviewButton")
-	public void onTermReviewButton(ClickEvent event) {
-		presenter.onTermReviewInput();
-	}
+	@UiHandler("fileManagerAnchor")
+	public void onFileManagerAnchor(ClickEvent event){
+		presenter.onFileManager();
+	}	
 	
 	@Override
-	public void setTermReviewPath(String text) {
-		this.inputTermReviewLabel.setText(text);
-	}
-	
-	@Override
-	public void setOntologyPath(String text) {
-		this.inputOntologyLabel.setText(text);
-	}
-
-	@Override
-	public String getTaskName() {
-		return this.taskNameTextBox.getText();
-	}
-
-	@Override
-	public void setFilePath(String path) {
-		this.inputLabel.setText(path);
-	}
-
-	@Override
-	public void setEnabledNext(boolean value) {
-		this.nextButton.setEnabled(value);
-	}
-	
-	@Override
-	public void resetFields(){
-		this.taskNameTextBox.setText(null);
-		//this.inputLabel.setText("");
-		this.glossaryListBox.setSelectedIndex(getInitialGlossaryIndex());
-		this.generateAbsentPresentBox.setValue(null);
-		this.inheritValuesBox.setValue(null);
-		this.inputOntologyLabel.setValue(null);
-		this.inputOntologyLabel.setText(null);
-		this.inputTermReviewLabel.setValue(null);
-		this.inputTermReviewLabel.setText(null);
-		
-	}
-
-	private int getInitialGlossaryIndex() {
-		for(int i=0; i<TaxonGroup.values().length; i++) {
-			if(TaxonGroup.values()[i].equals(TaxonGroup.PLANT))
-				return i;
-		}
-		return 0;
-	}
-
-	@Override
-	public boolean isInheritValues() {
-		return inheritValuesBox.getValue();
-	}
-
-	@Override
-	public boolean isGenerateAbsentPresent() {
-		return generateAbsentPresentBox.getValue();
-	}
-	
-	@Override
-	public String getTaxonGroup() {
-		return glossaryListBox.getItemText(glossaryListBox.getSelectedIndex());
-	}
-
-	@Override
-	public boolean hasOntologyPath() {
-		return !this.inputOntologyLabel.getText().trim().isEmpty();
-	}
-
-	@Override
-	public boolean hasInput() {
-		return !this.inputLabel.getText().trim().isEmpty();
-	}
-
-	@Override
-	public boolean hasTermReview() {
-		return !this.inputTermReviewLabel.getText().trim().isEmpty();
-	}
-
-	@Override
-	public boolean hasTaskName() {
-		return !taskNameTextBox.getValue().trim().isEmpty();
+	public IInputCreateView getInputCreateView() {
+		return inputCreateView;
 	}
 }

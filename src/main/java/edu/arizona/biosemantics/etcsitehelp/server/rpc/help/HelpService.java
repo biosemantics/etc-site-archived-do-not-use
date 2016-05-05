@@ -19,7 +19,8 @@ public class HelpService extends RemoteServiceServlet implements IHelpService {
 		File helpFile = new File(helpFiles, help.toString() + ".json");
 		String path = helpFile.getAbsolutePath();
 		
-		return new String(Files.readAllBytes(Paths.get(path))).replace("\r", "").replace("\t", "  ");
+		String helpContent = new String(Files.readAllBytes(Paths.get(path))).replace("\r", "").replace("\t", "  ");
+		return helpContent;
 	}
 
 }

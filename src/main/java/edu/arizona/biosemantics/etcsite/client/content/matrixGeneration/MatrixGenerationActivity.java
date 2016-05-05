@@ -28,8 +28,8 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 
 	private ITaskServiceAsync taskService;
 	private IMatrixGenerationServiceAsync matrixGenerationService;
-	private IMatrixGenerationCreateView.Presenter createPresenter;
-	private IMatrixGenerationInputView.Presenter inputPresenter;
+	private IMatrixGenerationInputView.Presenter createPresenter;
+	private IMatrixGenerationDefineView.Presenter inputPresenter;
 	private IMatrixGenerationProcessView.Presenter processPresenter;
 	private IMatrixGenerationReviewView.Presenter reviewPresenter;
 	private IMatrixGenerationOutputView.Presenter outputPresenter;
@@ -42,8 +42,8 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 	@Inject
 	public MatrixGenerationActivity(ITaskServiceAsync taskService, 
 			IMatrixGenerationServiceAsync matrixGenerationService,
-			IMatrixGenerationCreateView.Presenter createPresenter,
-			IMatrixGenerationInputView.Presenter inputPresenter, 
+			IMatrixGenerationInputView.Presenter createPresenter,
+			IMatrixGenerationDefineView.Presenter inputPresenter, 
 			IMatrixGenerationProcessView.Presenter processPresenter,
 			IMatrixGenerationReviewView.Presenter reviewPresenter,
 			IMatrixGenerationOutputView.Presenter outputPresenter, 
@@ -86,7 +86,7 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 		if(place instanceof MatrixGenerationPlace)
 			currentTask = ((MatrixGenerationPlace)place).getTask();
 		if(currentTask == null){
-			if( place instanceof MatrixGenerationCreatePlace){
+			if( place instanceof MatrixGenerationInputPlace){
 				createPresenter.refresh();
 				panel.setWidget(createPresenter.getView());
 			}else{
@@ -94,7 +94,7 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 				panel.setWidget(inputPresenter.getView());
 			}
 		} else
-			if(place instanceof MatrixGenerationInputPlace) {
+			if(place instanceof MatrixGenerationDefinePlace) {
 				MatrixGenerationConfiguration config = (MatrixGenerationConfiguration)currentTask.getConfiguration();
 				inputPresenter.setSelectedFolder(config.getInput(), filePathShortener.shortenPath(config.getInput()));
 				panel.setWidget(inputPresenter.getView());

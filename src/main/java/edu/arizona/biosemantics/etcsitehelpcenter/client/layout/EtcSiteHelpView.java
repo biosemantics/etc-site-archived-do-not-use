@@ -110,7 +110,7 @@ public class EtcSiteHelpView extends Composite implements IEtcSiteHelpView {
 			}else if(source.equals(account)){
 				presenter.populateHelpContent(Help.MY_ACCOUNT);
 			}else if(source.equals(textCaptureCreate)) {
-				presenter.populateHelpContent(Help.TEXT_CAPTURE_CREATE);
+				presenter.populateHelpContent(Help.TEXT_CAPTURE_DEFINE);
 			}else if(source.equals(textCaptureInput)){
 				presenter.populateHelpContent(Help.TEXT_CAPTURE_INPUT);
 			}else if(source.equals(textCapturePreprocess)){

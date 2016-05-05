@@ -11,18 +11,18 @@ import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 
 import edu.arizona.biosemantics.etcsite.client.common.TaskSelectDialog.ISelectListener;
-import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPlace;
+import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationDefinePlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationOutputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationPlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationProcessPlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationReviewPlace;
 import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeBuildPlace;
-import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeInputPlace;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeDefinePlace;
 import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizePlace;
-import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPlace;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupDefinePlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupLearnPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupOutputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupParsePlace;
@@ -30,11 +30,11 @@ import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMa
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupPreprocessPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupReviewPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonAlignPlace;
-import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonInputPlace;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonDefinePlace;
 import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonPlace;
-import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationInputPlace;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationDefinePlace;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationPlace;
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationViewPlace;
 import edu.arizona.biosemantics.etcsite.client.content.visualization.VisualizationPlace;
@@ -166,9 +166,9 @@ public class ResumeTaskToPlaceGoer implements ToPlaceGoer {
 		case "Text Capture":
 			switch(taskStage){
 			case "Create Input":
-				return new SemanticMarkupCreatePlace(task);
-			case "Input":
 				return new SemanticMarkupInputPlace(task);
+			case "Input":
+				return new SemanticMarkupDefinePlace(task);
 			case "Preprocess Text":
 				return new SemanticMarkupPreprocessPlace(task);
 			case "Learn Terms":
@@ -183,18 +183,18 @@ public class ResumeTaskToPlaceGoer implements ToPlaceGoer {
 		case "Ontology Building":
 			switch(taskStage){
 			case "Create Input":
-				return new OntologizeCreatePlace(task);
-			case "Input":
 				return new OntologizeInputPlace(task);
+			case "Input":
+				return new OntologizeDefinePlace(task);
 			case "Build":
 				return new OntologizeBuildPlace(task);
 			}
 		case "Matrix Generation":
 			switch(taskStage){
 			case "Create/Select Input":
-				return new MatrixGenerationCreatePlace(task);
-			case "Input":
 				return new MatrixGenerationInputPlace(task);
+			case "Input":
+				return new MatrixGenerationDefinePlace(task);
 			case "Process":
 				return new MatrixGenerationProcessPlace(task);
 			case "Review":
@@ -205,18 +205,18 @@ public class ResumeTaskToPlaceGoer implements ToPlaceGoer {
 		case "Key Generation":
 			switch(taskStage){
 			case "Create Input":
-				return new TreeGenerationCreatePlace(task);
-			case "Input":
 				return new TreeGenerationInputPlace(task);
+			case "Input":
+				return new TreeGenerationDefinePlace(task);
 			case "View":
 				return new TreeGenerationViewPlace(task);
 			}
 		case "Taxonomy Comparison":
 			switch(taskStage){
 			case "Create Input":
-				return new TaxonomyComparisonCreatePlace(task);
-			case "Input":
 				return new TaxonomyComparisonInputPlace(task);
+			case "Input":
+				return new TaxonomyComparisonDefinePlace(task);
 			case "Align":
 			case "Analyze": 
 			case "Analyze Complete":

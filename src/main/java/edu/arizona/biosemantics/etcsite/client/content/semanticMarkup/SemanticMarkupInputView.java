@@ -1,21 +1,21 @@
 package edu.arizona.biosemantics.etcsite.client.content.semanticMarkup;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
-import edu.arizona.biosemantics.common.biology.TaxonGroup;
+import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView;
+import edu.arizona.biosemantics.etcsite.client.common.InputCreateView;
 
-public class SemanticMarkupInputView extends Composite implements ISemanticMarkupInputView {
+public class SemanticMarkupInputView extends Composite implements ISemanticMarkupInputView{
 
 	private static SemanticmarkupInputViewUiBinder uiBinder = GWT
 			.create(SemanticmarkupInputViewUiBinder.class);
@@ -24,88 +24,34 @@ public class SemanticMarkupInputView extends Composite implements ISemanticMarku
 			UiBinder<Widget, SemanticMarkupInputView> {
 	}
 
-	private Presenter presenter;
-	
-	@UiField
-	CheckBox emptyGlossaryCheckbox;
-	
-	@UiField
-	Button nextButton;
-	
-	@UiField
-	ListBox glossaryListBox;
-	
-	@UiField
-	TextBox inputLabel;
+	private ISemanticMarkupInputView.Presenter presenter;
 	
 	@UiField 
-	Button inputButton;
+	Anchor fileManagerAnchor;
 	
-	@UiField
-	TextBox taskNameTextBox;
+	@UiField(provided=true) 
+	IInputCreateView inputCreateView;
 	
-	public SemanticMarkupInputView() {
+	@Inject
+	public SemanticMarkupInputView(@Named("SemanticMarkup") IInputCreateView.Presenter inputCreatePresenter) {
+		this.inputCreateView = inputCreatePresenter.getView();
 		initWidget(uiBinder.createAndBindUi(this));
-		for(TaxonGroup taxonGroup : TaxonGroup.values()) {
-			this.glossaryListBox.addItem(taxonGroup.getDisplayName());
-		}
+		fileManagerAnchor.getElement().getStyle().setCursor(Cursor.POINTER);
 	}
 
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
 	}
-	
-	@UiHandler("nextButton")
-	public void onNext(ClickEvent event) {
-		presenter.onNext();
-	}
-	
-	@Override
-	public void setInput(String input) {
-		if(input != null){
-			this.inputLabel.setText(input);
-		}
-	}
+		
+	@UiHandler("fileManagerAnchor")
+	public void onFileManagerAnchor(ClickEvent event){
+		presenter.onFileManager();
+	}	
 	
 	@Override
-	public void setEnabledNext(boolean value) {
-		this.nextButton.setEnabled(value);
-	}
-
-	@Override
-	public String getTaskName() {
-		return taskNameTextBox.getText();
-	}
-
-	@Override
-	public String getGlossaryName() {
-		return glossaryListBox.getItemText(glossaryListBox.getSelectedIndex());
+	public IInputCreateView getInputCreateView() {
+		return inputCreateView;
 	}
 	
-	@UiHandler("inputButton")
-	public void onInput(ClickEvent event) {
-		presenter.onInput();
-	}
-	
-	@Override
-	public void resetFields(){
-		this.taskNameTextBox.setText("");
-		//this.inputLabel.setText("");
-		this.emptyGlossaryCheckbox.setValue(null);
-		this.glossaryListBox.setSelectedIndex(getInitialGlossaryIndex());
-	}
-
-	private int getInitialGlossaryIndex() {
-		for(int i=0; i<TaxonGroup.values().length; i++) {
-			if(TaxonGroup.values()[i].equals(TaxonGroup.PLANT))
-				return i;
-		}
-		return 0;
-	}
-
-	@Override
-	public boolean isEmptyGlossarySelected() {
-		return emptyGlossaryCheckbox.getValue();
-	}
 }
