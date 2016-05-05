@@ -48,7 +48,7 @@
 		        <g:InlineLabel>3. Follow the instructions to complete the necessary steps. Your progress is shown on the screen.</g:InlineLabel>
 			    <g:InlineLabel>4. The final step informs the user the location of output files if any is generated. Take note of the location, then go to File Manager to retrieve or download the output.</g:InlineLabel>
 			    <g:InlineLabel>5. The output folders from one tool can be used as input to another tool: </g:InlineLabel>
-			    <g:Image url="images/InputOutput.png" title="input-output relationships" altText="input-output relationships" width="900px" height="530px"/>
+			    <g:Image url="images/InputOutput.png" title="input-output relationships" altText="input-output relationships" width="450px" height="260px"/>
 			    
 			    <g:VerticalPanel styleName="{style.padding}"/>
 			    <g:Label>The user can leave the website at any time and come back to resume an analysis (also called a "task") in Task Manager, where you can also check the status of a task or share the task with other registered users.</g:Label>
