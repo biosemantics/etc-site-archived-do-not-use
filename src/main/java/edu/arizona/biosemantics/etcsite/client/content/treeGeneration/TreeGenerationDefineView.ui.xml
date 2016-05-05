@@ -79,7 +79,6 @@
 						<g:HorizontalPanel>
 								<g:InlineLabel styleName="{style.note}">
 								Provide a name to identify your task/analysis. This name will be used in Task Manager.
-								Also Task Name + Input Folder Name = Output Folder Name
 								</g:InlineLabel>
 								</g:HorizontalPanel>
 					</g:VerticalPanel>
