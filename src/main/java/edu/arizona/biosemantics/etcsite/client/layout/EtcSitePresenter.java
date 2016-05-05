@@ -139,7 +139,7 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 						
 						if(loginGoogleResult.isNewlyRegistered()) {
 							Alerter.firstLoginCheckAccountInfo();
-							placeController.goTo(new SettingsPlace());
+							placeController.goTo(new HomePlace());
 						}
 					} else {
 						Alerter.failedToLoginWithgGoogle(null);
