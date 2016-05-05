@@ -478,6 +478,9 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		task.setResumable(false);
 		task.setComplete(true);
 		task.setCompleted(new Date());
+		//SemanticMarkupConfiguration semanticMarkupConfig=(SemanticMarkupConfiguration)task.getConfiguration();
+		//String outputTermReview= semanticMarkupConfig.getOutput().replaceAll("_output_", "_TermsReviewed_");
+		//((SemanticMarkupConfiguration)task.getConfiguration()).setOutputTermReview(outputTermReview);
 		daoManager.getTaskDAO().updateTask(task);
 		return task;
 	}

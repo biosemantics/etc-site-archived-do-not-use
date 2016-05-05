@@ -9,8 +9,11 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
 
 public class SemanticMarkupOutputView extends Composite implements ISemanticMarkupOutputView {
 
@@ -20,12 +23,24 @@ public class SemanticMarkupOutputView extends Composite implements ISemanticMark
 	interface SemanticMarkupOutputViewUiBinder extends
 			UiBinder<Widget, SemanticMarkupOutputView> {
 	}
-
+	
+	@UiField 
+	HTMLPanel htmlpanel;   
+    
+	@UiField
+	Anchor whatIsOto;
+	
 	@UiField
 	Anchor fileManagerAnchor;
 	
-	@UiField
-	Button sendToOtoButton;
+	@UiField 
+	Anchor matrixGenerationAnchor;
+	
+	@UiField 
+	Anchor myAccount;
+	
+	@UiField 
+	Anchor sendToOto;
 	
 	@UiField
 	InlineLabel outputLabel;
@@ -37,11 +52,15 @@ public class SemanticMarkupOutputView extends Composite implements ISemanticMark
 
 	private String outputFull;
 	
+	int k=1;
+		
 	public SemanticMarkupOutputView() {
 		initWidget(uiBinder.createAndBindUi(this));
 		fileManagerAnchor.getElement().getStyle().setCursor(Cursor.POINTER);
-		
-		sendToOtoButton.setTitle("Contribute classifications to OTO");
+		matrixGenerationAnchor.getElement().getStyle().setCursor(Cursor.POINTER);
+		sendToOto.getElement().getStyle().setCursor(Cursor.POINTER);
+		whatIsOto.getElement().getStyle().setCursor(Cursor.POINTER);
+		sendToOto.getElement().getStyle().setCursor(Cursor.POINTER);
 	}
 
 	@Override
@@ -53,26 +72,45 @@ public class SemanticMarkupOutputView extends Composite implements ISemanticMark
 	public void onFileManager(ClickEvent event) {
 		presenter.onFileManager();
 	}
+	
+	@UiHandler("matrixGenerationAnchor") 
+	public void onMatrixGeneration(ClickEvent event) {
+		presenter.onContinueMatrixGeneration(outputFull);
+	}
+	
+	@UiHandler("whatIsOto") 
+	public void onWhatIsOTO (ClickEvent event) {
+		if (this.k==1){
+			htmlpanel.setVisible(true);
+			this.k=2;
+		}
+		else {
+			htmlpanel.setVisible(false);
+			this.k=1;
+		}
+	}
+
 
 	@Override
 	public void setOutput(String outputFull, String outputFullDisplay, String outputTermReview) {
 		this.outputFull = outputFull;
 		this.outputLabel.setText(outputFullDisplay);
+		outputTermReview=outputFullDisplay.replaceAll("_output_", "_TermsReviewed_");
 		this.outputLabelTermReview.setText(outputTermReview);
 	}
-	
-	@UiHandler("continueMatrixGenerationButton")
-	public void onMatrixGeneration(ClickEvent event) {
-		presenter.onContinueMatrixGeneration(outputFull);
-	}
 
-	@UiHandler("sendToOtoButton")
+	@UiHandler("sendToOto")
 	public void onSendToOto(ClickEvent event) {
 		presenter.onSendToOto();
+	}
+	
+	@UiHandler("myAccount")
+	public void onMyAccount(ClickEvent event) {
+		presenter.onMyAccount();
 	}
 
 	@Override
 	public void setEnabledSendToOto(boolean value) {
-		sendToOtoButton.setEnabled(value);
+		sendToOto.setEnabled(value);
 	}
 }

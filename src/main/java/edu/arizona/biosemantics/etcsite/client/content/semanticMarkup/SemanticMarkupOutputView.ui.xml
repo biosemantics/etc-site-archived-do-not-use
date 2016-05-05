@@ -30,24 +30,40 @@
 			    <g:cell>
 					<my:SubMenu ui:field="subMenu" step="OUTPUT"/>
 				</g:cell>
-			    <g:cell>
-					<g:Button addStyleNames="{style.subMenuButton}" ui:field="sendToOtoButton">
-							Contribute classifications to OTO</g:Button>
-				</g:cell>
 			</g:HorizontalPanel>
 			
 			<g:VerticalPanel>
-			    <g:InlineLabel>Text Capture is complete.</g:InlineLabel>
 			    <g:FlowPanel styleName="{style.padding}">
-			    <g:InlineLabel>A new folder containing the formatted output files is saved as&nbsp;</g:InlineLabel>
-			    <g:InlineLabel ui:field="outputLabel" styleName="{style.important}"></g:InlineLabel>
-			    <g:InlineLabel>&nbsp; and a second new folder containing the reviewed terms is saved as &nbsp;</g:InlineLabel>
-			    <g:InlineLabel ui:field="outputLabelTermReview" styleName="{style.important}"></g:InlineLabel>
-			    <g:InlineLabel>&nbsp;in the&nbsp;</g:InlineLabel>
+			    <g:InlineLabel>Text Capture is complete. Two folders below are output in the&nbsp;</g:InlineLabel>
 			    <g:Anchor ui:field="fileManagerAnchor">File Manager</g:Anchor>
-			    <g:InlineLabel>. The folders can be used as the input for the Matrix Generation Tool.</g:InlineLabel>	 
+			    <g:InlineLabel>:</g:InlineLabel>
 			    </g:FlowPanel>
-			    <g:Button ui:field="continueMatrixGenerationButton">Use this input for Matrix Generation</g:Button>   
+			     <g:FlowPanel styleName="{style.padding}">
+			    <g:InlineLabel>1.&nbsp;</g:InlineLabel>
+			    <g:InlineLabel ui:field="outputLabel" styleName="{style.important}"></g:InlineLabel>
+			    <g:InlineLabel>&nbsp;containing input descriptions marked with character information. The folder can be used as the input for the&nbsp;</g:InlineLabel>
+			    <g:Anchor ui:field="matrixGenerationAnchor">Matrix Generation Tool</g:Anchor>
+			    <g:InlineLabel>.</g:InlineLabel>
+			    </g:FlowPanel>
+			     <g:FlowPanel styleName="{style.padding}">
+			    <g:InlineLabel>2.&nbsp;</g:InlineLabel>
+			    <g:InlineLabel ui:field="outputLabelTermReview" styleName="{style.important}"></g:InlineLabel>
+			    <g:InlineLabel>&nbsp;containing the term categorization results.</g:InlineLabel>
+			     </g:FlowPanel>
+			     <g:FlowPanel>
+			    <g:Anchor ui:field="sendToOto">Contribute term categorizations to OTO</g:Anchor>
+			    <g:InlineLabel>.&nbsp; (</g:InlineLabel>
+			    <g:Anchor ui:field="whatIsOto"> What is OTO?</g:Anchor>
+			     <g:InlineLabel>)</g:InlineLabel>
+                       <g:HTMLPanel ui:field="htmlpanel" visible="false">
+                                  <div style="display:inline">
+                                    <a href="http://biosemantics.arizona.edu/OTO/">OTO</a> is a community consensus-promoting term categorization site for incrementally building large glossaries for everyone to use. If the
+                                    <g:InlineLabel>'Contribute' button is not active, you can enable it by adjusting your settings in&nbsp;</g:InlineLabel> 
+                                    <g:Anchor ui:field="myAccount">My Account</g:Anchor>
+                                    <g:InlineLabel>. Then go to File Manager to contribute the categorizations to OTO.</g:InlineLabel> 
+                                  </div>
+                       </g:HTMLPanel>
+			    </g:FlowPanel>
 			</g:VerticalPanel>
 		</g:VerticalPanel>	
 	</lay:CenteredContentPanel>

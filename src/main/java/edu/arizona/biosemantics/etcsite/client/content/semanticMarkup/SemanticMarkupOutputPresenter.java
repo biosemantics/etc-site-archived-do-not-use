@@ -10,6 +10,7 @@ import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerPlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPlace;
+import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsPlace;
 import edu.arizona.biosemantics.etcsite.shared.model.MatrixGenerationConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
@@ -108,6 +109,10 @@ public class SemanticMarkupOutputPresenter implements ISemanticMarkupOutputView.
 		task.setTaskConfiguration(config);
 		config.setInput(text);
 		placeController.goTo(new MatrixGenerationInputPlace(task));
+	}
+	
+	public void onMyAccount() {
+		placeController.goTo(new SettingsPlace());
 	}
 
 }

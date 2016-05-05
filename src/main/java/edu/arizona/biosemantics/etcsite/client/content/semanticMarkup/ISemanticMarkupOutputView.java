@@ -17,6 +17,8 @@ public interface ISemanticMarkupOutputView extends IsWidget {
 		void onSendToOto();
 
 		void onContinueMatrixGeneration(String text);
+
+		void onMyAccount();
 		
 	}
 	
