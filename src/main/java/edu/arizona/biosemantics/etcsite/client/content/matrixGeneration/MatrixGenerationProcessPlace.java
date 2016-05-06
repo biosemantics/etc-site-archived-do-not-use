@@ -35,6 +35,6 @@ public class MatrixGenerationProcessPlace extends MatrixGenerationPlace {
 
 	@Override
 	public String toString(){
-		return "MatrixGnerationProcessPlace";
+		return "MatrixGenerationProcessPlace";
 	}
 }
