@@ -14,6 +14,7 @@ import com.google.inject.Inject;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 
+import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
@@ -72,12 +73,11 @@ public class HelpActivity extends MyAbstractActivity implements Presenter{
 
 		public void getHelpContent(Help help){
 			helpService.getHelp(help, new AsyncCallback<String>() {
-
 				@Override
 				public void onFailure(Throwable caught) {
-					
+					caught.printStackTrace();
+					Alerter.showAlert("Get Help", "Failed to get help content");
 				}
-
 				@Override
 				public void onSuccess(String result) {
 					setHelpContent(JsonUtils.<JsArray<HelpContent>>safeEval(result));
