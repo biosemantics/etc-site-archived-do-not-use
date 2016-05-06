@@ -54,6 +54,10 @@ public class Alerter {
 		return showAlert("Required fields", "Last name is required.");
 	}
 	
+	public static MessageBox selectedUsersRequired() {
+		return showAlert("Required fields", "Failed to share the task, please select and move the user(s) to the right dialog!");
+	}
+	
 	public static MessageBox passwordsDontMatch() {
 		return showAlert("Passwords do not match", "Passwords do not match.");
 	}
