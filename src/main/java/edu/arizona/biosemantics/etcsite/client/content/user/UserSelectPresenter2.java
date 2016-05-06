@@ -150,7 +150,10 @@ public class UserSelectPresenter2 extends Dialog implements IUserSelectView.Pres
 					public void onSelect(SelectEvent event) {
 						if (dualListField.validate()) {
 							if(currentListener != null)
-								currentListener.onSelect(getSelectedUsers());
+								if(getSelectedUsers().isEmpty())
+									Alerter.selectedUsersRequired();
+								else
+									currentListener.onSelect(getSelectedUsers());
 							hide();
 						}
 					}
