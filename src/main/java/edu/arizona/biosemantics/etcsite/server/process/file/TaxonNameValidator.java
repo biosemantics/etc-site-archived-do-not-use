@@ -66,7 +66,7 @@ public class TaxonNameValidator {
 			}
 		}
 		if(!taxonNameErrors.equals("")){
-			invalidMessage = "Taxon names, authority, date should be unique. There are duplicates in files " + taxonNameErrors;
+			invalidMessage = "Taxon names should be unique. There are duplicates in files " + taxonNameErrors + " please merge them or delete one duolicated file.";
 			return false;
 		}
 		return true;

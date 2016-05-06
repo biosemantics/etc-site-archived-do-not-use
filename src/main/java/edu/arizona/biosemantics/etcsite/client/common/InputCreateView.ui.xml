@@ -75,7 +75,7 @@
 	        <g:VerticalPanel styleName = "{style.margin15}" ui:field="dummyCreatePanel3" visible="false">
 	        <g:FlowPanel>
 	            <g:InlineLabel styleName="{style.DescriptionFont}">
-								If you do not have the input ready for Tree Generation, please run the Matrix Generation
+								If you do not have the input ready for Key Generation, please run the Matrix Generation
 								tool first to generate it, or upload a folder here. The upload folder should contain only a single valid
 								taxon-by-character matrix file in .csv
 			    </g:InlineLabel>
