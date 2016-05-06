@@ -104,7 +104,7 @@ public class RegisterPresenter implements IRegisterView.Presenter {
 				auth.setAffiliation(result.getUser().getAffiliation());
 				dialog.hide();
 				eventBus.fireEvent(new AuthenticationEvent(AuthenticationEventType.LOGGEDIN));
-				Alerter.firstLoginCheckAccountInfo();
+				//Alerter.firstLoginCheckAccountInfo();
 				placeController.goTo(new HomePlace());
 			}
 			@Override

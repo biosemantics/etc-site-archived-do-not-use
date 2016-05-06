@@ -138,7 +138,7 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 						eventBus.fireEvent(new AuthenticationEvent(AuthenticationEventType.LOGGEDIN));
 						
 						if(loginGoogleResult.isNewlyRegistered()) {
-							Alerter.firstLoginCheckAccountInfo();
+							//Alerter.firstLoginCheckAccountInfo();
 							placeController.goTo(new HomePlace());
 						}
 					} else {

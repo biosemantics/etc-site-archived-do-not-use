@@ -292,7 +292,7 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 		userService.hasLinkedOTOAccount(Authentication.getInstance().getToken(), new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				Alerter.showAlert("Review terms2", "Failed to load terms for review");
+				Alerter.showAlert("Review terms", "Failed to load terms for review");
 				Alerter.stopLoading(box);
 			}
 			@Override
