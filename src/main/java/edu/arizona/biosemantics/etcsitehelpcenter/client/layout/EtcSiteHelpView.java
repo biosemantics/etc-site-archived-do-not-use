@@ -217,7 +217,8 @@ public class EtcSiteHelpView extends Composite implements IEtcSiteHelpView {
 			headingAnchor.setDataTarget("#collapse"+count);
 			headingAnchor.setDataToggle(Toggle.COLLAPSE);
 			headingAnchor.setIcon(IconType.PLUS);
-			headingAnchor.setText(contents.get(i).getTitle());
+			String title = contents.get(i).getTitle().replaceAll("</?b>", "");
+			headingAnchor.setText(title);
 			panelHeading.add(headingAnchor);
 			subPanelHeader.add(panelHeading);
 			PanelCollapse subPanelCollapse = new PanelCollapse();
