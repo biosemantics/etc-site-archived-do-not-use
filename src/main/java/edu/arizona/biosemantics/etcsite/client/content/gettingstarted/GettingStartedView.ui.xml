@@ -44,8 +44,8 @@
 		    	<g:VerticalPanel styleName="{style.padding}"/>
 		    	<g:Label styleName="{style.bold}">Quick Guide for First-Time Users</g:Label>
 		        <g:InlineLabel>All the tools require input files in a certain format. The general steps for running each of the tools include:</g:InlineLabel>
-		        <g:InlineLabel>1. Click on a green button like <g:Image url="images/BeginButton.png" title="Begin ..." altText="Begin ..." width="90px" height="12px"/> on the homepage to start a tool.</g:InlineLabel>
-		        <g:InlineLabel>2. Read on-screen instruction or click on <g:Image url="images/HelpButton.png" title="Help" altText="Help" width="90px" height="12px"/> on the right top corner of each page.</g:InlineLabel> 
+		        <g:InlineLabel>1. Click on a green button like <g:Image url="images/BeginButton.png" title="Begin ..." altText="Begin ..." width="100px" height="24px"/> on the homepage to start a tool.</g:InlineLabel>
+		        <g:InlineLabel>2. Read on-screen instruction or click on <g:Image url="images/HelpButton.png" title="Help" altText="Help" width="70px" height="24px"/> on the right top corner of each page.</g:InlineLabel> 
 		        <g:InlineLabel>3. Follow the instructions to complete the necessary steps. Your progress is shown on the screen.</g:InlineLabel>
 			<g:InlineLabel>4. The final step informs the user the location of output files if any is generated. Take note of the location, then go to File Manager to retrieve or download the output.</g:InlineLabel>
 			<g:InlineLabel>5. The output folders from one tool can be used as input to another tool: </g:InlineLabel>
