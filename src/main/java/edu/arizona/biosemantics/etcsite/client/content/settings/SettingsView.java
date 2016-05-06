@@ -1,5 +1,8 @@
 package edu.arizona.biosemantics.etcsite.client.content.settings;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -63,7 +66,10 @@ public class SettingsView extends Composite implements ISettingsView {
 	private PasswordField newPassword = new PasswordField();
 	private PasswordField currentPassword = new PasswordField();
 	private TextButton changePasswordButton = new TextButton("Save");
-
+    private TextButton saveBioportalButton = new TextButton("save");
+    private TextButton emailNotificationButton = new TextButton("save");
+	
+	
 	private VerticalLayoutContainer otoVertical;
 	private TextButton otoSaveButton = new TextButton("Save");
 
@@ -116,78 +122,35 @@ public class SettingsView extends Composite implements ISettingsView {
 	    userInfoFieldSet.setCollapsible(true);
 	    VerticalLayoutContainer userInfoVertical = new VerticalLayoutContainer();
 	    userInfoFieldSet.add(userInfoVertical);
-	    userInfoVertical.add(new Label("Note: * denotes required fields."), new VerticalLayoutData(1, 25));
+	    
+	    FieldSet profileFieldSet = new FieldSet();
+	    profileFieldSet.setHeadingText("Profile");
+	    profileFieldSet.setCollapsible(true);
+	    VerticalLayoutContainer profileVertical = new VerticalLayoutContainer();
+	    profileFieldSet.add(profileVertical);
+	    profileVertical.add(new Label("Note: * denotes required fields."), new VerticalLayoutData(1, 25));
 	    
 	    firstName.setAllowBlank(false);
 	    lastName.setAllowBlank(false);
 	    FieldLabel firstNameFieldLabel = new FieldLabel(firstName, "First Name *");
 	    firstNameFieldLabel.setLabelWidth(200);
-	    userInfoVertical.add(firstNameFieldLabel, new VerticalLayoutData(1, -1));
+	    profileVertical.add(firstNameFieldLabel, new VerticalLayoutData(1, -1));
 	    
 	    FieldLabel lastNameFieldLabel = new FieldLabel(lastName, "Last Name *");
 	    lastNameFieldLabel.setLabelWidth(200);
-	    userInfoVertical.add(lastNameFieldLabel, new VerticalLayoutData(1, -1));
+	    profileVertical.add(lastNameFieldLabel, new VerticalLayoutData(1, -1));
 		
 	    email.setEnabled(false);
 	    email.setAllowBlank(false);
 	    FieldLabel emailFieldLabel = new FieldLabel(email, "Email *");
 	    emailFieldLabel.setLabelWidth(200);
-	    userInfoVertical.add(emailFieldLabel, new VerticalLayoutData(1, -1));
+	    profileVertical.add(emailFieldLabel, new VerticalLayoutData(1, -1));
 	    
 	    FieldLabel affiliationFieldLabel = new FieldLabel(affiliation, "Affiliation");
 	    affiliationFieldLabel.setLabelWidth(200);
-	    userInfoVertical.add(affiliationFieldLabel, new VerticalLayoutData(1, -1));
+	    profileVertical.add(affiliationFieldLabel, new VerticalLayoutData(1, -1));
 	    
-	    FieldSet bioportNotificationFieldSet = new FieldSet();
-	    VerticalLayoutContainer bioportNotificationVertical = new VerticalLayoutContainer();
-	    bioportNotificationFieldSet.setHeadingText("Bioportal connection");
-	    bioportNotificationFieldSet.add(bioportNotificationVertical);
-	    bioportNotificationVertical.add(new Label("Note: Needed for submitting ontology terms to Bioportal."),new VerticalLayoutData(1, 25));
-	    
-	    FieldLabel bioportalFieldLabel = new FieldLabel(bioportalUserId, "Bioportal User Id");
-	    bioportalFieldLabel.setLabelWidth(200);
-	    bioportNotificationVertical.add(bioportalFieldLabel, new VerticalLayoutData(1, -1));
-	    
-	    FieldLabel bioportalApiKeyFieldLabel = new FieldLabel(bioportalApiKey, "Bioportal API Key");
-	    bioportalApiKeyFieldLabel.setLabelWidth(200);
-	    bioportNotificationVertical.add(bioportalApiKeyFieldLabel, new VerticalLayoutData(1, 28));
-	    
-	    FieldSet emailNotificationFieldSet = new FieldSet();
-	    emailNotificationFieldSet.setHeadingText("Email Notification");
-	    VerticalLayoutContainer emailNotificationVertical = new VerticalLayoutContainer();
-	    emailNotificationFieldSet.add(emailNotificationVertical);
-	    emailNotificationVertical.add(new Label("Note: Uncheck a box to disable the email notification function of a tool."),new VerticalLayoutData(1, 25));
-	    FieldLabel textCaptureFieldLabel = new FieldLabel(this.semanticMarkupEmail, "Text Capture Task");
-	    textCaptureFieldLabel.setLabelWidth(200);
-	    semanticMarkupEmail.setBoxLabel("");
-	    emailNotificationVertical.add(textCaptureFieldLabel, new VerticalLayoutData(1, -1));
-	    FieldLabel matrixGenerationFieldLabel = new FieldLabel(this.matrixGenerationEmail, "Matrix Generation Task");
-	    matrixGenerationFieldLabel.setLabelWidth(200);
-	    matrixGenerationEmail.setBoxLabel("");
-	    emailNotificationVertical.add(matrixGenerationFieldLabel, new VerticalLayoutData(1, -1));
-	    FieldLabel treeGenerationFieldLabel = new FieldLabel(this.treeGenerationEmail, "Key Generation Task");
-	    emailNotificationVertical.add(treeGenerationFieldLabel, new VerticalLayoutData(1, -1));
-	    treeGenerationFieldLabel.setLabelWidth(200);
-	    treeGenerationEmail.setBoxLabel("");
-	    FieldLabel taxonomyComparisonFieldLabel = new FieldLabel(this.taxonomyComparisonEmail, "Taxonomy Comparison Task");
-	    taxonomyComparisonFieldLabel.setLabelWidth(200);
-	    taxonomyComparisonEmail.setBoxLabel("");
-	    emailNotificationVertical.add(taxonomyComparisonFieldLabel, new VerticalLayoutData(1, -1));
-	    userInfoVertical.add(bioportNotificationFieldSet, new VerticalLayoutData(1, -1));
-	    userInfoVertical.add(emailNotificationFieldSet, new VerticalLayoutData(1, -1));
-	    userInfoVertical.add(saveButton, new VerticalLayoutData(1, -1));
-	    userInfoVertical.forceLayout();
-	    	    
-	    /*FieldSet emailPreferencesFieldSet = new FieldSet();
-	    emailPreferencesFieldSet.setHeadingText("Email Notification");
-	    emailPreferencesFieldSet.setCollapsible(true); 
-	    VerticalLayoutContainer emailPreferencesVertical = new VerticalLayoutContainer();
-	    emailPreferencesFieldSet.add(emailPreferencesVertical);
-	    emailPreferencesVertical.add(new FieldLabel(this.matrixGenerationEmail, "Text Capture Task"), new VerticalLayoutData(1, -1));
-	    emailPreferencesVertical.add(new FieldLabel(this.matrixGenerationEmail, "Matrix Generation Task"), new VerticalLayoutData(1, -1));
-	    emailPreferencesVertical.add(new FieldLabel(this.taxonomyComparisonEmail, "Taxonomy Comparison Task"), new VerticalLayoutData(1, -1));
-	    emailPreferencesVertical.add(saveEmailPreferencesButton, new VerticalLayoutData(1, -1));
-	    */
+	    profileVertical.add(saveButton, new VerticalLayoutData(1, -1));
 	    
 	    FieldSet passwordFieldSet = new FieldSet();
 	    passwordFieldSet.setHeadingText("Change Password");
@@ -204,6 +167,70 @@ public class SettingsView extends Composite implements ISettingsView {
 	    passwordVertical.add(confirmPasswordFieldLabel, new VerticalLayoutData(1, -1));
 	    passwordFieldSet.add(passwordVertical);	  
 	    passwordVertical.add(changePasswordButton, new VerticalLayoutData(1, -1));
+	    
+	    userInfoVertical.add(profileFieldSet, new VerticalLayoutData(1, -1));
+	    
+	    userInfoVertical.add(passwordFieldSet, new VerticalLayoutData(1, -1));
+	    userInfoVertical.forceLayout();
+	    
+	    
+	    
+	    FieldSet bioportNotificationFieldSet = new FieldSet();
+	    VerticalLayoutContainer bioportNotificationVertical = new VerticalLayoutContainer();
+	    bioportNotificationFieldSet.setHeadingText("BioPortal connection");
+	    bioportNotificationFieldSet.add(bioportNotificationVertical);
+	    bioportNotificationFieldSet.setCollapsible(true);
+	    bioportNotificationVertical.add(new Label("Note: Needed for submitting ontology terms to BioPortal."),new VerticalLayoutData(1, 25));
+	    
+	    FieldLabel bioportalFieldLabel = new FieldLabel(bioportalUserId, "BioPortal User Id");
+	    bioportalFieldLabel.setLabelWidth(200);
+	    bioportNotificationVertical.add(bioportalFieldLabel, new VerticalLayoutData(1, -1));
+	    
+	    FieldLabel bioportalApiKeyFieldLabel = new FieldLabel(bioportalApiKey, "BioPortal API Key");
+	    bioportalApiKeyFieldLabel.setLabelWidth(200);
+	    bioportNotificationVertical.add(bioportalApiKeyFieldLabel, new VerticalLayoutData(1, 28));
+	    bioportNotificationVertical.add(saveBioportalButton, new VerticalLayoutData(1, -1));
+	    
+	    
+	    FieldSet emailNotificationFieldSet = new FieldSet();
+	    emailNotificationFieldSet.setHeadingText("Email Notification");
+	    VerticalLayoutContainer emailNotificationVertical = new VerticalLayoutContainer();
+	    emailNotificationFieldSet.setCollapsible(true);
+	    emailNotificationFieldSet.add(emailNotificationVertical);
+	    emailNotificationVertical.add(new Label("Note: Uncheck a box to disable the email notification function of a tool."),new VerticalLayoutData(1, 25));
+	    FieldLabel textCaptureFieldLabel = new FieldLabel(this.semanticMarkupEmail, "Text Capture");
+	    textCaptureFieldLabel.setLabelWidth(200);
+	    semanticMarkupEmail.setBoxLabel("");
+	    emailNotificationVertical.add(textCaptureFieldLabel, new VerticalLayoutData(1, -1));
+	    FieldLabel matrixGenerationFieldLabel = new FieldLabel(this.matrixGenerationEmail, "Matrix Generation");
+	    matrixGenerationFieldLabel.setLabelWidth(200);
+	    matrixGenerationEmail.setBoxLabel("");
+	    emailNotificationVertical.add(matrixGenerationFieldLabel, new VerticalLayoutData(1, -1));
+	    FieldLabel treeGenerationFieldLabel = new FieldLabel(this.treeGenerationEmail, "Key Generation");
+	    emailNotificationVertical.add(treeGenerationFieldLabel, new VerticalLayoutData(1, -1));
+	    treeGenerationFieldLabel.setLabelWidth(200);
+	    treeGenerationEmail.setBoxLabel("");
+	    FieldLabel taxonomyComparisonFieldLabel = new FieldLabel(this.taxonomyComparisonEmail, "Taxonomy Comparison");
+	    taxonomyComparisonFieldLabel.setLabelWidth(200);
+	    taxonomyComparisonEmail.setBoxLabel("");
+	    emailNotificationVertical.add(taxonomyComparisonFieldLabel, new VerticalLayoutData(1, -1));
+	    emailNotificationVertical.add(emailNotificationButton, new VerticalLayoutData(1, -1));
+	    //userInfoVertical.add(bioportNotificationFieldSet, new VerticalLayoutData(1, -1));
+	    //userInfoVertical.add(emailNotificationFieldSet, new VerticalLayoutData(1, -1));
+	    
+	    
+	    	    
+	    /*FieldSet emailPreferencesFieldSet = new FieldSet();
+	    emailPreferencesFieldSet.setHeadingText("Email Notification");
+	    emailPreferencesFieldSet.setCollapsible(true); 
+	    VerticalLayoutContainer emailPreferencesVertical = new VerticalLayoutContainer();
+	    emailPreferencesFieldSet.add(emailPreferencesVertical);
+	    emailPreferencesVertical.add(new FieldLabel(this.matrixGenerationEmail, "Text Capture Task"), new VerticalLayoutData(1, -1));
+	    emailPreferencesVertical.add(new FieldLabel(this.matrixGenerationEmail, "Matrix Generation Task"), new VerticalLayoutData(1, -1));
+	    emailPreferencesVertical.add(new FieldLabel(this.taxonomyComparisonEmail, "Taxonomy Comparison Task"), new VerticalLayoutData(1, -1));
+	    emailPreferencesVertical.add(saveEmailPreferencesButton, new VerticalLayoutData(1, -1));
+	    */
+	    
 	    
 	    FieldSet otoFieldSet = new FieldSet();
 	    otoFieldSet.setHeadingText("Link to Ontology Term Organizer (OTO)");
@@ -230,7 +257,8 @@ public class SettingsView extends Composite implements ISettingsView {
 	    VerticalLayoutData layoutData = new VerticalLayoutData();
 	    layoutData.setMargins(new Margins(10));
 	    vertical.add(userInfoFieldSet, layoutData);
-	    vertical.add(passwordFieldSet, layoutData);
+	    vertical.add(emailNotificationFieldSet, layoutData);
+	    vertical.add(bioportNotificationFieldSet, layoutData);
 	    vertical.add(otoFieldSet, layoutData);
 
 	    //vertical.add(emailPreferencesFieldSet, layoutData);
@@ -382,6 +410,20 @@ public class SettingsView extends Composite implements ISettingsView {
 			}
 		});
 		
+		emailNotificationButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				presenter.onEmailNotification();
+			}
+		});
+		
+		saveBioportalButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				presenter.onSaveBioportal();
+			}
+		});
+		
 		this.otoNewAccountGoogleButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -502,6 +544,20 @@ public class SettingsView extends Composite implements ISettingsView {
 	}
 	
 	@Override
+	public Map<String, Boolean> getEmailPreference() {
+		Map<String,Boolean> emailPreference = new HashMap<String, Boolean>();
+		emailPreference.put(EmailPreference.MATRIX_GENERATION.getKey()
+				.toString(), matrixGenerationEmail.getValue());		
+		emailPreference.put(EmailPreference.TEXT_CAPTURE.getKey().toString(),
+				semanticMarkupEmail.getValue());
+		emailPreference.put(EmailPreference.TAXONOMY_COMPARISON.getKey()
+				.toString(), taxonomyComparisonEmail.getValue());
+		emailPreference.put(EmailPreference.TREE_GENERATION.getKey()
+				.toString(), treeGenerationEmail.getValue());
+		return emailPreference;
+	}
+	
+	@Override
 	public void setOTOAccount(String email, String password) {
 		otoExistingEmail.setText(email);
 		otoExistingPassword.setText(password);
@@ -521,6 +577,31 @@ public class SettingsView extends Composite implements ISettingsView {
 	@Override
 	public boolean isLinkedOTOAccount() {
 		return otoShareCheckBox.getValue() && (otoVerticalInner.getWidget(otoVerticalInner.getWidgetCount() -1)).equals(otoAccountEmailFieldLabel);
+	}
+	
+	@Override
+	public String getFirstName() {
+		return firstName.getText();
+	}
+	
+	@Override
+	public String getLastName() {
+		return lastName.getText();
+	}
+	
+	@Override
+	public String getAffiliation() {
+		return affiliation.getText();
+	}
+	
+	@Override
+	public String getBioportalApiKey() {
+		return bioportalApiKey.getText();
+	}
+	
+	@Override
+	public String getBioportalUserId() {
+		return bioportalUserId.getText();
 	}
 
 	@Override

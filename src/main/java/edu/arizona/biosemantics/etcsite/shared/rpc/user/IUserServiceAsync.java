@@ -1,6 +1,7 @@
 package edu.arizona.biosemantics.etcsite.shared.rpc.user;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -17,10 +18,7 @@ public interface IUserServiceAsync {
 	public void getUser(AuthenticationToken authenticationToken, AsyncCallback<ShortUser> callback);
 	
 	public void add(String firstName, String lastName, String email, String password, AsyncCallback<ShortUser> callback);
-	
-
-	public void update(AuthenticationToken authenticationToken, ShortUser user, AsyncCallback<ShortUser> callback);
-	
+		
 	public void update(AuthenticationToken authenticationToken, String oldPassword,	String newPassword, AsyncCallback<ShortUser> callback);
 	
 	public void existsUser(String openIdProviderId, AsyncCallback<Boolean> callback);
@@ -47,5 +45,11 @@ public interface IUserServiceAsync {
 	public void setProfile(AuthenticationToken token, EmailPreference emailPreferences, boolean dontShowPopup, AsyncCallback<Void> callback);
 
 	public void hasLinkedOTOAccount(AuthenticationToken token, AsyncCallback<Boolean> asyncCallback);
+
+	public void updateBioportal(AuthenticationToken authenticationToken, String bioportalApiKey, String bioportalUserId,AsyncCallback<ShortUser> callback);
+
+	public void updateEmailNotification(AuthenticationToken authenticationToken,Map<String, Boolean> emailPreferences, AsyncCallback<ShortUser> callback);
+
+	void updateName(AuthenticationToken authenticationToken, String firstName, String lastName, String affiliation,AsyncCallback<ShortUser> callback);
 
 }

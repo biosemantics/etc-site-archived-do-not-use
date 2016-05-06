@@ -139,21 +139,44 @@ public class UserService extends RemoteServiceServlet implements IUserService {
 	
 
 	@Override
-	public ShortUser update(AuthenticationToken authenticationToken, ShortUser shortUser) throws UserNotFoundException {
+	public ShortUser updateName(AuthenticationToken authenticationToken, String firstName, String lastName, String affiliation) throws UserNotFoundException {
 		User user = userDAO.getUser(authenticationToken.getUserId());
 		if(user == null)
 			throw new UserNotFoundException();			
-		user.setAffiliation(shortUser.getAffiliation());
-		user.setBioportalAPIKey(shortUser.getBioportalApiKey());
-		user.setBioportalUserId(shortUser.getBioportalUserId());
-		user.setEmail(shortUser.getEmail());
-		user.setFirstName(shortUser.getFirstName());
-		user.setLastName(shortUser.getLastName());
-		user.setProfile(shortUser.getProfile());
+		user.setAffiliation(affiliation);
+		user.setFirstName(firstName);
+		user.setLastName(lastName);
 		userDAO.update(user);
 		
 		return userDAO.getShortUser(authenticationToken.getUserId());
 	}
+	
+	@Override
+	public ShortUser updateBioportal(AuthenticationToken authenticationToken, String bioportalApiKey, String bioportalUserId) throws UserNotFoundException {
+		User user = userDAO.getUser(authenticationToken.getUserId());
+		if(user == null)
+			throw new UserNotFoundException();			
+		
+		user.setBioportalAPIKey(bioportalApiKey);
+		user.setBioportalUserId(bioportalUserId);
+		userDAO.update(user);
+		
+		return userDAO.getShortUser(authenticationToken.getUserId());
+	}
+	
+	@Override
+	public ShortUser updateEmailNotification(AuthenticationToken authenticationToken,Map<String, Boolean>  profile) throws UserNotFoundException {
+		User user = userDAO.getUser(authenticationToken.getUserId());
+		if(user == null)
+			throw new UserNotFoundException();			
+		
+		user.setProfile( profile);
+		userDAO.update(user);
+		
+		return userDAO.getShortUser(authenticationToken.getUserId());
+	}
+	
+	
 
 	@Override
 	public ShortUser update(AuthenticationToken authenticationToken, String oldPassword, String newPassword) throws UserNotFoundException, InvalidPasswordException { 

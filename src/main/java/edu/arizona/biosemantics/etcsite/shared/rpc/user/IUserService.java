@@ -1,6 +1,7 @@
 package edu.arizona.biosemantics.etcsite.shared.rpc.user;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -23,8 +24,6 @@ public interface IUserService extends RemoteService {
 	
 	public ShortUser add(String firstName, 
 			String lastName, String email, String password) throws UserAddException;
-	
-	public ShortUser update(AuthenticationToken authenticationToken, ShortUser user) throws UserNotFoundException;
 	
 	public ShortUser update(AuthenticationToken authenticationToken, String oldPassword, String newPassword) throws UserNotFoundException, InvalidPasswordException;
 
@@ -50,4 +49,10 @@ public interface IUserService extends RemoteService {
 	public void setProfile(AuthenticationToken token, EmailPreference emailPreferences, boolean dontShowPopup);
 	
 	public boolean hasLinkedOTOAccount(AuthenticationToken token);
+
+	public ShortUser updateBioportal(AuthenticationToken authenticationToken, String bioportalApiKey, String bioportalUserId) throws UserNotFoundException;
+
+	public ShortUser updateEmailNotification(AuthenticationToken authenticationToken,  Map<String, Boolean> emailPreferences) throws UserNotFoundException;
+
+	public ShortUser updateName(AuthenticationToken authenticationToken, String firstName, String lastName, String affiliation) throws UserNotFoundException;
 }

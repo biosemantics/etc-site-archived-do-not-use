@@ -1,5 +1,7 @@
 package edu.arizona.biosemantics.etcsite.client.content.settings;
 
+import java.util.Map;
+
 import com.google.gwt.activity.shared.MyAbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.http.client.URL;
@@ -145,19 +147,21 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 
 	@Override
 	public void onSave() {                 
-		ShortUser user = view.getData();
+		String firstName=view.getFirstName();
+		String lastName=view.getLastName();
+		String affiliation=view.getAffiliation();
 		
-		if(user.getFirstName().trim().isEmpty()) {
+		if(firstName.trim().isEmpty()) {
 			Alerter.firstNameRequired();
 			return;
 		}
 		
-		if(user.getLastName().trim().isEmpty()) {
+		if(lastName.trim().isEmpty()) {
 			Alerter.lastNameRequired();
 			return;
 		}
 		
-		userService.update(Authentication.getInstance().getToken(), user, new AsyncCallback<ShortUser>() {
+		userService.updateName(Authentication.getInstance().getToken(), firstName,lastName,affiliation, new AsyncCallback<ShortUser>() {
 				@Override
 				public void onSuccess(ShortUser result) {
 					Alerter.savedSettingsSuccesfully();
@@ -167,9 +171,12 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 					Alerter.failedToUpdateUser(caught);
 				}
 		});
-		etcSitePresenter.getView().setName(user.getFirstName());
+
+		etcSitePresenter.getView().setName(firstName);
 		
 	}
+	
+
 
 	@Override
 	public void onPasswordSave() {
@@ -188,10 +195,57 @@ public class SettingsActivity extends MyAbstractActivity implements ISettingsVie
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				Alerter.failedToUpdateUser(caught);
+				Alerter.failedToUpdatePassword(caught);
 			}
 		});
 	}
+	
+	@Override
+	public void onSaveBioportal() {                 
+		String bioportalApiKey = view.getBioportalApiKey();
+		String bioportalUserId = view.getBioportalUserId();
+		
+		if(bioportalApiKey.isEmpty()) {
+			Alerter.bioportalApiKeyRequired();
+			return;
+		}
+		
+		if(bioportalUserId.isEmpty()) {
+			Alerter.bioportalUserIdRequired();
+			return;
+		}
+		
+		userService.updateBioportal(Authentication.getInstance().getToken(), bioportalApiKey, bioportalUserId, new AsyncCallback<ShortUser>() {
+				@Override
+				public void onSuccess(ShortUser result) {
+					Alerter.savedSettingsSuccesfully();
+				}
+				@Override
+				public void onFailure(Throwable caught) {
+					Alerter.failedToUpdateBioPortalInfo(caught);
+				}
+		});
+		
+	}
+	
+	@Override
+	public void onEmailNotification() {                 
+		Map<String, Boolean>  emailPreference = view.getEmailPreference();
+		
+		userService.updateEmailNotification(Authentication.getInstance().getToken(), emailPreference, new AsyncCallback<ShortUser>() {
+				@Override
+				public void onSuccess(ShortUser result) {
+					Alerter.savedSettingsSuccesfully();
+				}
+				@Override
+				public void onFailure(Throwable caught) {
+					Alerter.failedToUpdateEmailNotification(caught);
+				}
+		});
+		
+	}
+	
+	
 
 	@Override
 	public void onNewOTOGoogleAccount() {

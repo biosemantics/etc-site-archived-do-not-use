@@ -57,6 +57,14 @@ public class Alerter {
 	public static MessageBox passwordsDontMatch() {
 		return showAlert("Passwords do not match", "Passwords do not match.");
 	}
+	
+	public static MessageBox bioportalApiKeyRequired() {
+		return showAlert("Required fields", "BioPortalApiKey is required, please try again!");
+	}
+	
+	public static MessageBox bioportalUserIdRequired() {
+		return showAlert("Required fields", "BioPortalUserID is required, please try again!");
+	}
 
 	public static MessageBox failedToCreateTaxonDescription(Throwable caught) {
 		return showAlert("Create Taxon Description", "Failed to create taxon description.", caught);
@@ -68,6 +76,18 @@ public class Alerter {
 	
 	public static MessageBox failedToSetProfile(Throwable caught) {
 		return showAlert("Save Profile", "Failed to set profile value", caught);
+	}
+	
+	public static MessageBox failedToUpdatePassword(Throwable caught) {
+		return showAlert("Change Password", "Failed to change password!", caught);
+	}
+	
+	public static MessageBox failedToUpdateBioPortalInfo(Throwable caught) {
+		return showAlert("Save Profile", "Failed to set BioPortal Information!", caught);
+	}
+	
+	public static MessageBox failedToUpdateEmailNotification(Throwable caught) {
+		return showAlert("Save Profile", "Failed to update email notification!", caught);
 	}
 	
 	public static MessageBox invalidOTOAccount(Throwable caught) {
@@ -249,7 +269,11 @@ public class Alerter {
 	}
 
 	public static MessageBox failedToUpdateUser(Throwable caught) {
-		return showAlert("Update User", "Failed to update user.", caught);
+		if (caught.getMessage().isEmpty()){
+			return showAlert("Update User", "Failed to update user.", caught);
+		}
+		else
+			return showAlert("Update User", caught.getMessage(), caught);
 	}
 
 	public static MessageBox savedSettingsSuccesfully() {

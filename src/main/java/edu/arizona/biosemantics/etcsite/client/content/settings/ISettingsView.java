@@ -1,5 +1,7 @@
 package edu.arizona.biosemantics.etcsite.client.content.settings;
 
+import java.util.Map;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -21,6 +23,10 @@ public interface ISettingsView extends IsWidget {
 		void onLinkAccount(Boolean share, String email, String password);
 
 		void onExistingOTOGoogleAccount();
+
+		void onEmailNotification();
+
+		void onSaveBioportal();
 	}
 	  
 	void setPresenter(Presenter presenter);
@@ -40,4 +46,10 @@ public interface ISettingsView extends IsWidget {
 	boolean isTextCaptureEmailChecked();
 	boolean isTaxonomyComparisonEmailChecked();
 	boolean isLinkedOTOAccount();
+	String getBioportalApiKey();
+	String getBioportalUserId();
+	Map<String, Boolean> getEmailPreference();
+	String getFirstName();
+	String getLastName();
+	String getAffiliation();
 }
