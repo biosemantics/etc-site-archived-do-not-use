@@ -22,16 +22,16 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.task.ITaskServiceAsync;
 public class OntologizeActivity extends MyAbstractActivity {
 
 	private ITaskServiceAsync taskService;
-	private IOntologizeCreateView.Presenter createPresenter;
-	private IOntologizeInputView.Presenter inputPresenter;
+	private IOntologizeInputView.Presenter createPresenter;
+	private IOntologizeDefineView.Presenter inputPresenter;
 	private IOntologizeBuildView.Presenter buildPresenter;
 	private IOntologizeOutputView.Presenter outputPresenter;
 	private AcceptsOneWidget panel;
 
 	@Inject
 	public OntologizeActivity(ITaskServiceAsync taskService,
-			IOntologizeCreateView.Presenter createPresenter,
-			IOntologizeInputView.Presenter inputPresenter,
+			IOntologizeInputView.Presenter createPresenter,
+			IOntologizeDefineView.Presenter inputPresenter,
 			IOntologizeBuildView.Presenter buildPresenter,
 			IOntologizeOutputView.Presenter outputPresenter,
 			PlaceController placeController, 
@@ -64,7 +64,7 @@ public class OntologizeActivity extends MyAbstractActivity {
 		if(place instanceof OntologizePlace)
 			task = ((OntologizePlace)place).getTask();
 		if(task == null) {
-			if(place instanceof OntologizeInputPlace) {
+			if(place instanceof OntologizeDefinePlace) {
 				inputPresenter.setSelectedFolder(createPresenter.getInputFolderPath(), createPresenter.getInputFolderShortenedPath());
 				panel.setWidget(inputPresenter.getView());
 			} else {

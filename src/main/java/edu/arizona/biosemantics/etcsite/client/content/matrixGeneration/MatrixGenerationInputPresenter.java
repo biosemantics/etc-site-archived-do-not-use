@@ -1,214 +1,105 @@
 package edu.arizona.biosemantics.etcsite.client.content.matrixGeneration;
 
-import java.util.List;
-
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
-import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView;
-import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView;
-import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePresenter.ISelectListener;
+import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView;
+import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView.InputValidator;
+import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView.Presenter;
+import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView.UploadCompleteHandler;
+import edu.arizona.biosemantics.etcsite.client.common.files.FileUploadHandler;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
-import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupDefinePlace;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
+import gwtupload.client.IUploadStatus.Status;
+import gwtupload.client.IUploader;
 
-public class MatrixGenerationInputPresenter implements IMatrixGenerationInputView.Presenter {
+public class MatrixGenerationInputPresenter implements MatrixGenerationInputView.Presenter {
 
 	private IMatrixGenerationInputView view;
-	private PlaceController placeController;
-	private IMatrixGenerationServiceAsync matrixGenerationService;
-	private ISelectableFileTreeView.Presenter selectableFileTreePresenter;
-	private IFileTreeView.Presenter fileTreePresenter;
-	private FilePathShortener filePathShortener;
-	private String inputFile;
-	private String ontologyInputFile;
-	private String termReviewInputFile;
-	private IFileManagerDialogView.Presenter fileManagerDialogPresenter;
-	private IFileServiceAsync fileService;
-	
+	private edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView.Presenter fileManagerDialogPresenter;
+	private IInputCreateView.Presenter inputCreatePresenter;
+
 	@Inject
-	public MatrixGenerationInputPresenter(IMatrixGenerationInputView view, 
-			IMatrixGenerationServiceAsync matrixGenerationService,
-			PlaceController placeController, 
-			ISelectableFileTreeView.Presenter selectableFileTreePresenter,
-			FilePathShortener filePathShortener,
-			IFileManagerDialogView.Presenter fileManagerDialogPresenter,
-			IFileServiceAsync fileService
-			) {
+	public MatrixGenerationInputPresenter(final PlaceController placeController, 
+			IMatrixGenerationInputView view, 
+			@Named("MatrixGeneration") IInputCreateView.Presenter inputCreatePresenter,
+			final IMatrixGenerationServiceAsync matrixGenerationService, 
+			IFileManagerDialogView.Presenter fileManagerDialogPresenter) {
 		this.view = view;
-		view.setPresenter(this);;
-		this.matrixGenerationService = matrixGenerationService;
-		this.placeController = placeController;
-		this.selectableFileTreePresenter = selectableFileTreePresenter;
-		this.fileTreePresenter = selectableFileTreePresenter.getFileTreePresenter();
-		this.filePathShortener = filePathShortener;
 		this.fileManagerDialogPresenter = fileManagerDialogPresenter;
-		this.fileService = fileService;
-	}
-	
-	private static interface InputSetter {
-		
-		public void set(String input, String filePath);
-		
-	}
-	
-	private void showInput(final InputSetter inputSetter) {
-		selectableFileTreePresenter.show("Select input", FileFilter.DIRECTORY, new ISelectListener() {
+		view.setPresenter(this);
+		this.inputCreatePresenter = inputCreatePresenter;
+		this.inputCreatePresenter.disableCreateFiles();
+		this.inputCreatePresenter.disableDummyCreateFiles2();
+		this.inputCreatePresenter.disableDummyCreateFiles1();
+		this.inputCreatePresenter.addDummyCreateFiles2();
+		this.inputCreatePresenter.setNextButtonName("Next Step in Matrix Generation");
+		inputCreatePresenter.setInputValidator(new InputValidator() {
 			@Override
-			public void onSelect() {
-				List<FileTreeItem> selections = fileTreePresenter.getView().getSelection();
-				if (selections.size() == 1) {
-					FileTreeItem selection = selections.get(0);
-					String shortendPath = filePathShortener.shorten(selection, Authentication.getInstance().getUserId());
-					if(selection.isSystemFile()){
-						Alerter.systemFolderNotAllowedInputForTask();
-					}else if(selection.getText().contains(" 0 file")){
-						Alerter.emptyFolder();
-					}else if(!selection.getText().matches(".*?\\b0 director.*")){
-						Alerter.containSubFolder();
-					}
-					else{
-						inputSetter.set(shortendPath, selection.getFilePath());
-						if(selection.getOwnerUserId() != Authentication.getInstance().getUserId()) {
-							Alerter.sharedInputForTask();
-							fileManagerDialogPresenter.hide();
+			public void validate(String inputFolderPath) {
+				final MessageBox box = Alerter.startLoading();
+				matrixGenerationService.checkInputValid(Authentication.getInstance().getToken(), inputFolderPath, new AsyncCallback<String>() {
+					@Override
+					public void onSuccess(String result) {
+						if(!result.equals("valid")) {
+							Alerter.inputError(result);
+							Alerter.stopLoading(box);
 						} else {
-							fileManagerDialogPresenter.hide();
+							placeController.goTo(new MatrixGenerationDefinePlace());
+							Alerter.stopLoading(box);
 						}
 					}
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Alerter.failedToIsValidInput(caught);
+						Alerter.stopLoading(box);
+					}
+				});
+			}
+		});
+		inputCreatePresenter.setUploadCompleteHandler(new UploadCompleteHandler() {
+			@Override
+			public void handle(FileUploadHandler fileUploadHandler,IUploader uploader, String uploadDirectory) {
+				if (uploader.getStatus() == Status.SUCCESS) {
+					fileUploadHandler.validateTaxonDescriptionFiles(uploadDirectory);
 				}
 			}
 		});
+		inputCreatePresenter.setUploadFileType(FileTypeEnum.MARKED_UP_TAXON_DESCRIPTION);
 	}
 	
 	@Override
-	public void onInputSelect() {
-		showInput(new InputSetter() {
-			@Override
-			public void set(String input, String filePath) {
-				inputFile = filePath;
-				view.setFilePath(input);	
-				//view.setEnabledNext(isInputComplete());
-			}
-		});
-	}
-	
-	protected boolean isInputComplete() {
-		return view.hasInput() && view.hasOntologyPath() && view.hasTermReview() && view.hasTaskName();
-	}
-
-	@Override
-	public void onTermReviewInput() {
-		showInput(new InputSetter() {
-			@Override
-			public void set(String input, String filePath) {
-				termReviewInputFile = filePath;
-				view.setTermReviewPath(input);	
-				//view.setEnabledNext(isInputComplete());
-			}
-		});
-	}
-	
-	@Override
-	public void onOntologyInput() {
-		showInput(new InputSetter() {
-			@Override
-			public void set(String input, String filePath) {
-				ontologyInputFile = filePath;
-				view.setOntologyPath(input);
-				//view.setEnabledNext(isInputComplete());
-			}
-		});
-	}
-
-	@Override
-	public void onNext() {
-		if (inputFile == null || inputFile.isEmpty()) {
-			Alerter.selectValidInputDirectory();
-			return;
-		}
-		/*if(ontologyInputFile == null || ontologyInputFile.isEmpty()) {
-			Alerter.selectValidInputOntology();
-			return;
-		}*/
-		if (view.getTaskName() == null || view.getTaskName().equals("")){
-			Alerter.selectTaskName();
-			return;
-		}
-		
-		final MessageBox box = Alerter.startLoading();
-		matrixGenerationService.start(Authentication.getInstance().getToken(), 
-			view.getTaskName(), inputFile, termReviewInputFile, ontologyInputFile,
-				view.getTaxonGroup(), view.isInheritValues(), view.isGenerateAbsentPresent(), new AsyncCallback<Task>() {
-			@Override
-			public void onSuccess(Task result) {
-				placeController.goTo(new MatrixGenerationProcessPlace(result));
-				Alerter.stopLoading(box);
-			}
-			@Override
-			public void onFailure(Throwable caught) {
-				Alerter.failedToStartMatrixGeneration(caught);
-			}
-		});
-	}
-				
-	@Override
-	public IMatrixGenerationInputView getView() {
+	public IsWidget getView() {
 		return view;
 	}
 
 	@Override
-	public void setSelectedFolder(final String fullPath, String shortendPath) {
-		inputFile = fullPath;
-		view.setFilePath(shortendPath);
-		view.setOntologyPath("");
-		view.setTermReviewPath("");
-		this.ontologyInputFile = "";
-		this.termReviewInputFile = "";
-		
-		final MessageBox box = Alerter.startLoading();
-		fileService.getTermReviewFileFromTextCaptureOutput(Authentication.getInstance().getToken(), fullPath, 
-				new AsyncCallback<FileTreeItem>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				Alerter.stopLoading(box);
-			}
-			@Override
-			public void onSuccess(FileTreeItem fileTreeItem) {
-				if(fileTreeItem != null) {
-					termReviewInputFile = fileTreeItem.getFilePath();
-					view.setTermReviewPath(fileTreeItem.getDisplayFilePath());
-					
-					fileService.getOntologyInputFileFromTextCaptureOutput(Authentication.getInstance().getToken(), 
-							fullPath, new AsyncCallback<FileTreeItem>() {
-								@Override
-								public void onFailure(Throwable caught) {
-									Alerter.stopLoading(box);
-								}
-								@Override
-								public void onSuccess(FileTreeItem result) {
-									if(result != null) {
-										ontologyInputFile = result.getFilePath();
-										view.setOntologyPath(result.getDisplayFilePath());
-									}
-									Alerter.stopLoading(box);
-								}
-					});
-				} else {
-					Alerter.stopLoading(box);
-				}
-			}
-		});
-		
-		view.resetFields();
-		//view.setEnabledNext(false);
+	public String getInputFolderPath() {
+		return inputCreatePresenter.getInputFolderPath();
+	}
+
+	@Override
+	public String getInputFolderShortenedPath() {
+		return inputCreatePresenter.getInputFolderShortenedPath();
+	}
+	
+	@Override
+	public void onFileManager() {
+		fileManagerDialogPresenter.show();
+	}
+
+	@Override
+	public void refresh() {
+		inputCreatePresenter.refreshFolders();
+		inputCreatePresenter.refreshinput();
 	}
 }

@@ -23,15 +23,15 @@ import edu.arizona.biosemantics.etcsitehelp.shared.help.Help;
 public class TreeGenerationActivity extends MyAbstractActivity {
 
 	private ITaskServiceAsync taskService;
-	private ITreeGenerationCreateView.Presenter createPresenter;
-	private ITreeGenerationInputView.Presenter inputPresenter;
+	private ITreeGenerationInputView.Presenter createPresenter;
+	private ITreeGenerationDefineView.Presenter inputPresenter;
 	private ITreeGenerationViewView.Presenter viewPresenter;
 	private AcceptsOneWidget panel;
 
 	@Inject
 	public TreeGenerationActivity(ITaskServiceAsync taskService,
-			ITreeGenerationCreateView.Presenter createPresenter,
-			ITreeGenerationInputView.Presenter inputPresenter,
+			ITreeGenerationInputView.Presenter createPresenter,
+			ITreeGenerationDefineView.Presenter inputPresenter,
 			ITreeGenerationViewView.Presenter viewPresenter,
 			PlaceController placeController, 
 			IAuthenticationServiceAsync authenticationService, 
@@ -62,7 +62,7 @@ public class TreeGenerationActivity extends MyAbstractActivity {
 		if(place instanceof TreeGenerationPlace)
 			task = ((TreeGenerationPlace)place).getTask();
 		if(task == null){
-			if(place instanceof TreeGenerationInputPlace){
+			if(place instanceof TreeGenerationDefinePlace){
 				inputPresenter.setSelectedFolder(createPresenter.getInputFolderPath(), createPresenter.getInputFolderShortenedPath());
 				panel.setWidget(inputPresenter.getView());
 			}else{

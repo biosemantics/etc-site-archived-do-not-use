@@ -20,13 +20,13 @@ import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
 import edu.arizona.biosemantics.etcsite.client.content.about.AboutPlace;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerPlace;
 import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
-import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPlace;
+import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationDefinePlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationProcessPlace;
 import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationReviewPlace;
 import edu.arizona.biosemantics.etcsite.client.content.news.NewsPlace;
-import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupCreatePlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPlace;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupDefinePlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupLearnPlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupParsePlace;
 import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupPreprocessPlace;
@@ -108,7 +108,7 @@ public class HelpActivity extends MyAbstractActivity implements Presenter{
 		}
 		
 		private Help getHelpOfPlace(String helpPlace) {
-			switch(helpPlace){
+ 			switch(helpPlace){
 			case "HomePlace":
 			case "AboutPlace":
 			case "NewsPlace":
@@ -120,10 +120,10 @@ public class HelpActivity extends MyAbstractActivity implements Presenter{
 				return Help.TASK_MANAGER;
 			case "SettingsPlace":
 				return Help.MY_ACCOUNT;
-			case "SemanticMarkupCreatePlace":
-				return Help.TEXT_CAPTURE_CREATE;
 			case "SemanticMarkupInputPlace":
 				return Help.TEXT_CAPTURE_INPUT;
+			case "SemanticMarkupDefinePlace":
+				return Help.TEXT_CAPTURE_DEFINE;
 			case "SemanticMarkupLearnPlace":
 				return Help.TEXT_CAPTURE_LEARN;
 			case "SemanticMarkupParsePlace":
@@ -134,32 +134,32 @@ public class HelpActivity extends MyAbstractActivity implements Presenter{
 				return Help.TEXT_CAPTURE_REVIEW;
 			case "SemanticMarkupOutputPlace":
 				return Help.TEXT_CAPTURE_OUTPUT;
-			case "MatrixGenerationCreatePlace":
-				return Help.MATRIX_GENERATION_CREATE;
 			case "MatrixGenerationInputPlace":
 				return Help.MATRIX_GENERATION_INPUT;
+			case "MatrixGenerationDefinePlace":
+				return Help.MATRIX_GENERATION_DEFINE;
 			case "MatrixGenerationProcessPlace":
 				return Help.MATRIX_GENERATION_PROCESS;
 			case "MatrixGenerationReviewPlace":
 				return Help.MATRIX_GENERATION_REVIEW;
 			case "MatrixGenerationOutputPlace":
 				return Help.MATRIX_GENERATION_OUTPUT;
-			case "OntologizeCreatePlace":
-				return Help.ONTOLOGY_BUILDING_CREATE;
 			case "OntologizeInputPlace":
 				return Help.ONTOLOGY_BUILDING_INPUT;
+			case "OntologizeDefinePlace":
+				return Help.ONTOLOGY_BUILDING_DEFINE;
 			case "OntologizeBuildPlace":
 				return Help.ONTOLOGY_BUILDING_BUILD;
 			case "OntologizeOutputPlace":
 				return Help.ONTOLOGY_BUILDING_OUTPUT;
-			case "TaxonomyComparisonCreatePlace":
-				return Help.TAXONOMY_COMPARISON_CREATE;
 			case "TaxonomyComparisonInputPlace":
 				return Help.TAXONOMY_COMPARISON_INPUT;
+			case "TaxonomyComparisonDefinePlace":
+				return Help.TAXONOMY_COMPARISON_DEFINE;
 			case "TaxonomyComparisonAlignPlace":
 				return Help.TAXONOMY_COMPARISON_ALIGN;
-			case "TreeGenerationCreatePlace":
-				return Help.TREE_GENERATION_CREATE;
+			case "TreeGenerationDefinePlace":
+				return Help.TREE_GENERATION_DEFINE;
 			case "TreeGenerationInputPlace":
 				return Help.TREE_GENERATION_INPUT;
 			case "TreeGenerationViewPlace":

@@ -5,7 +5,7 @@ import com.google.gwt.place.shared.PlaceTokenizer;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 
 public class SemanticMarkupInputPlace extends SemanticMarkupPlace{
-	
+
 	public SemanticMarkupInputPlace() {
 		super(null);
 	}
@@ -39,5 +39,5 @@ public class SemanticMarkupInputPlace extends SemanticMarkupPlace{
 	@Override
 	public String toString(){
 		return "SemanticMarkupInputPlace";
-	}	
+	}
 }

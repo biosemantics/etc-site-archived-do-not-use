@@ -1,0 +1,111 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:my="urn:import:edu.arizona.biosemantics.etcsite.client.content.treeGeneration"
+	xmlns:my2="urn:import:edu.arizona.biosemantics.etcsite.client.common"
+	xmlns:lay="urn:import:edu.arizona.biosemantics.etcsite.client.layout">
+	<ui:style>
+	.important {
+		font-weight: bold;
+		margin-left: 10px;
+	}
+	
+	.subMenuEntry {
+		margin-left: 20px;
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
+	
+	.padding {
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
+	
+	.note {
+		font-size: 14px;
+		color: #555555;
+	}
+	
+	.firstColumn {
+		width: 220px;
+	}
+	
+	.bold {
+		font-weight: bold;
+	}
+	
+	.DescriptionFont {font-size: 14px;}
+	
+	</ui:style>
+	<g:ScrollPanel>
+		<lay:CenteredContentPanel>
+			<g:VerticalPanel>
+				<g:HorizontalPanel>
+					<!-- <my2:ImageLabel styleName="{style.subMenuEntry}" imagePath="images/Text.TreeGenerationShort.gif" 
+						imageWidth="80px" imageHeight="20px" text="" /> -->
+					<my:SubMenu ui:field="subMenu" step="INPUT" />
+				</g:HorizontalPanel>
+						<g:InlineLabel>&nbsp;
+						</g:InlineLabel>
+				<g:VerticalPanel styleName="{style.padding}">
+					<g:VerticalPanel>
+						<g:FlowPanel>
+							<g:InlineLabel styleName="{style.DescriptionFont}">
+								Provide the information below and click on "Next Step in Key Generation" to start the
+								process:
+							</g:InlineLabel>
+							<g:InlineLabel>&nbsp;
+							</g:InlineLabel>
+						</g:FlowPanel>
+					</g:VerticalPanel>
+					<!-- <g:VerticalPanel styleName="{style.padding}">  -->
+					<g:VerticalPanel styleName="{style.subMenuEntry}">
+						<g:HorizontalPanel styleName="inputForm">
+							<g:VerticalPanel styleName="{style.firstColumn}">
+								<g:cell verticalAlignment="ALIGN_TOP">
+									<g:Label>Task Name:</g:Label>
+								</g:cell>
+								<!-- <g:InlineLabel styleName="{style.note}">
+									Provide a name to
+									identify your task/analysis. This name will be used in Task Manager.</g:InlineLabel>
+								 <g:InlineLabel styleName="{style.note}">Also Task Name + Input Folder Name = Output Folder Name
+								</g:InlineLabel> -->
+								
+							</g:VerticalPanel>
+							<g:cell verticalAlignment="ALIGN_MIDDLE">
+								<g:TextBox ui:field="taskNameTextBox"></g:TextBox>
+							</g:cell>
+						</g:HorizontalPanel>
+						<g:HorizontalPanel>
+								<g:InlineLabel styleName="{style.note}">
+								Provide a name to identify your task/analysis. This name will be used in Task Manager.
+								</g:InlineLabel>
+								</g:HorizontalPanel>
+					</g:VerticalPanel>
+					<g:VerticalPanel styleName="{style.subMenuEntry}">
+						<g:HorizontalPanel>
+							<g:VerticalPanel styleName="{style.firstColumn}">
+								<g:cell verticalAlignment="ALIGN_TOP">
+									<g:Label>Select Input Folder:</g:Label>
+								</g:cell>
+							</g:VerticalPanel>
+							<g:cell verticalAlignment="ALIGN_TOP">
+								<g:TextBox ui:field="inputLabel" enabled="false"></g:TextBox>
+		                    </g:cell>	
+							<g:cell verticalAlignment="ALIGN_MIDDLE" horizontalAlignment='ALIGN_RIGHT' width='105px'>
+						       <g:Button ui:field="inputButton">Select Input</g:Button>
+							</g:cell>							
+						</g:HorizontalPanel>
+						<g:InlineLabel styleName="{style.note} DescriptionFont">
+							This folder has been auto-selected based on your input in the last step. 
+						</g:InlineLabel>
+					</g:VerticalPanel>
+					<g:VerticalPanel styleName="{style.padding}">
+						<g:Button ui:field="nextButton">Next Step in Key Generation</g:Button>
+					</g:VerticalPanel>
+					<!-- <g:Button styleName="{style.important}" ui:field="button" /> -->
+				</g:VerticalPanel>
+			</g:VerticalPanel>
+		</lay:CenteredContentPanel>
+	</g:ScrollPanel>
+</ui:UiBinder>

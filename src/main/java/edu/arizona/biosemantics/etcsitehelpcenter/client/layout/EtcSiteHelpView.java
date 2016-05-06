@@ -68,31 +68,31 @@ public class EtcSiteHelpView extends Composite implements IEtcSiteHelpView {
 	@UiField FocusPanel treeGenerationMenu;
 	@UiField FocusPanel taxonomyComparisonMenu;
 
-	@UiField ListGroupItem textCaptureCreate;
 	@UiField ListGroupItem textCaptureInput;
+	@UiField ListGroupItem textCaptureDefine;
 	@UiField ListGroupItem textCapturePreprocess;
 	@UiField ListGroupItem textCaptureLearn;
 	@UiField ListGroupItem textCaptureReview;
 	@UiField ListGroupItem textCaptureParse;
 	@UiField ListGroupItem textCaptureOutput;
 
-	@UiField ListGroupItem ontologyBuildingCreate;
 	@UiField ListGroupItem ontologyBuildingInput;
+	@UiField ListGroupItem ontologyBuildingDefine;
 	@UiField ListGroupItem ontologyBuildingBuild;
 	@UiField ListGroupItem ontologyBuildingOutput;
 
-	@UiField ListGroupItem matrixGenerationCreate;
 	@UiField ListGroupItem matrixGenerationInput;
+	@UiField ListGroupItem matrixGenerationDefine;
 	@UiField ListGroupItem matrixGenerationProcess;
 	@UiField ListGroupItem matrixGenerationReview;
 	@UiField ListGroupItem matrixGenerationOutput;
 
-	@UiField ListGroupItem treeGenerationCreate;
 	@UiField ListGroupItem treeGenerationInput;
+	@UiField ListGroupItem treeGenerationDefine;
 	@UiField ListGroupItem treeGenerationView;
 
-	@UiField ListGroupItem taxonomyComparisonCreate;
 	@UiField ListGroupItem taxonomyComparisonInput;
+	@UiField ListGroupItem taxonomyComparisonDefine;
 	@UiField ListGroupItem taxonomyComparisonAlign;
 	
 	
@@ -109,8 +109,8 @@ public class EtcSiteHelpView extends Composite implements IEtcSiteHelpView {
 				presenter.populateHelpContent(Help.TASK_MANAGER);
 			}else if(source.equals(account)){
 				presenter.populateHelpContent(Help.MY_ACCOUNT);
-			}else if(source.equals(textCaptureCreate)) {
-				presenter.populateHelpContent(Help.TEXT_CAPTURE_CREATE);
+			}else if(source.equals(textCaptureDefine)) {
+				presenter.populateHelpContent(Help.TEXT_CAPTURE_DEFINE);
 			}else if(source.equals(textCaptureInput)){
 				presenter.populateHelpContent(Help.TEXT_CAPTURE_INPUT);
 			}else if(source.equals(textCapturePreprocess)){
@@ -123,12 +123,16 @@ public class EtcSiteHelpView extends Composite implements IEtcSiteHelpView {
 				presenter.populateHelpContent(Help.TEXT_CAPTURE_REVIEW);
 			}else if(source.equals(textCaptureOutput)){
 				presenter.populateHelpContent(Help.TEXT_CAPTURE_OUTPUT);
+			}else if(source.equals(ontologyBuildingDefine)){
+				presenter.populateHelpContent(Help.ONTOLOGY_BUILDING_DEFINE);
 			}else if(source.equals(ontologyBuildingInput)){
 				presenter.populateHelpContent(Help.ONTOLOGY_BUILDING_INPUT);
 			}else if(source.equals(ontologyBuildingBuild)){
 				presenter.populateHelpContent(Help.ONTOLOGY_BUILDING_BUILD);
 			}else if(source.equals(ontologyBuildingOutput)){
 				presenter.populateHelpContent(Help.ONTOLOGY_BUILDING_OUTPUT);
+			}else if(source.equals(matrixGenerationDefine)){
+				presenter.populateHelpContent(Help.MATRIX_GENERATION_DEFINE);
 			}else if(source.equals(matrixGenerationInput)){
 				presenter.populateHelpContent(Help.MATRIX_GENERATION_INPUT);
 			}else if(source.equals(matrixGenerationProcess)){
@@ -137,10 +141,14 @@ public class EtcSiteHelpView extends Composite implements IEtcSiteHelpView {
 				presenter.populateHelpContent(Help.MATRIX_GENERATION_REVIEW);
 			}else if(source.equals(matrixGenerationOutput)){
 				presenter.populateHelpContent(Help.MATRIX_GENERATION_OUTPUT);
+			}else if(source.equals(treeGenerationDefine)){
+				presenter.populateHelpContent(Help.TREE_GENERATION_DEFINE);
 			}else if(source.equals(treeGenerationInput)){
 				presenter.populateHelpContent(Help.TREE_GENERATION_INPUT);
 			}else if(source.equals(treeGenerationView)){
 				presenter.populateHelpContent(Help.TREE_GENERATION_VIEW);
+			}else if(source.equals(taxonomyComparisonDefine)){
+				presenter.populateHelpContent(Help.TAXONOMY_COMPARISON_DEFINE);
 			}else if(source.equals(taxonomyComparisonInput)){
 				presenter.populateHelpContent(Help.TAXONOMY_COMPARISON_INPUT);
 			}else if(source.equals(taxonomyComparisonAlign)){
@@ -197,6 +205,7 @@ public class EtcSiteHelpView extends Composite implements IEtcSiteHelpView {
 		treeGenerationInput.addDomHandler(handler, ClickEvent.getType());
 		treeGenerationView.addDomHandler(handler, ClickEvent.getType());
 		taxonomyComparisonInput.addDomHandler(handler, ClickEvent.getType());
+		taxonomyComparisonDefine.addDomHandler(handler, ClickEvent.getType());
 		taxonomyComparisonAlign.addDomHandler(handler, ClickEvent.getType());
 	}
 

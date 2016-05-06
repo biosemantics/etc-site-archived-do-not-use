@@ -2,32 +2,26 @@ package edu.arizona.biosemantics.etcsite.client.content.semanticMarkup;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface ISemanticMarkupInputView extends IsWidget {
+import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView;
 
+public interface ISemanticMarkupInputView extends IsWidget{
+	
 	public interface Presenter {
 
 		IsWidget getView();
 
-		void onNext();
-		
-		void setSelectedFolder(String fullPath, String shortendPath);
+		void onFileManager();
 
-		void onInput();
+		String getInputFolderPath();
+
+		String getInputFolderShortenedPath();
+
+		void refresh();
 		
 	}
 	
 	void setPresenter(Presenter presenter);
 
-	void setInput(String input);
+	IInputCreateView getInputCreateView();
 
-	void setEnabledNext(boolean value);
-
-	String getTaskName();
-
-	String getGlossaryName();
-	
-	void resetFields();
-
-	boolean isEmptyGlossarySelected();
-	
 }

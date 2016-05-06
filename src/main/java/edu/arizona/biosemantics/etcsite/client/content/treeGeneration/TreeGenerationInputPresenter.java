@@ -1,121 +1,93 @@
 package edu.arizona.biosemantics.etcsite.client.content.treeGeneration;
 
-import java.util.List;
-
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
 
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
-import edu.arizona.biosemantics.etcsite.client.common.files.FilePathShortener;
-import edu.arizona.biosemantics.etcsite.client.common.files.IFileTreeView;
-import edu.arizona.biosemantics.etcsite.client.common.files.ISelectableFileTreeView;
-import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePresenter.ISelectListener;
+import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView;
+import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView.InputValidator;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
-import edu.arizona.biosemantics.etcsite.shared.model.Task;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
-import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
+import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView.Presenter;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.treegeneration.ITreeGenerationServiceAsync;
 
-public class TreeGenerationInputPresenter implements ITreeGenerationInputView.Presenter {
+public class TreeGenerationInputPresenter implements TreeGenerationInputView.Presenter{
 
 	private ITreeGenerationInputView view;
-	private PlaceController placeController;
-	private ITreeGenerationServiceAsync treeGenerationService;
-	private ISelectableFileTreeView.Presenter selectableFileTreePresenter;
-	private IFileTreeView.Presenter fileTreePresenter;
-	private FilePathShortener filePathShortener;
-	private String inputFile;
-	private IFileManagerDialogView.Presenter fileManagerDialogPresenter;
+	private Presenter fileManagerDialogPresenter;
+	private edu.arizona.biosemantics.etcsite.client.common.IInputCreateView.Presenter inputCreatePresenter;
 	
 	@Inject
-	public TreeGenerationInputPresenter(ITreeGenerationInputView view, 
-			ITreeGenerationServiceAsync treeGenerationService,
-			PlaceController placeController, 
-			ISelectableFileTreeView.Presenter selectableFileTreePresenter,
-			FilePathShortener filePathShortener,
-			IFileManagerDialogView.Presenter fileManagerDialogPresenter
-			) {
+	public TreeGenerationInputPresenter(final PlaceController placeController, 
+			ITreeGenerationInputView view, 
+			@Named("TreeGeneration") IInputCreateView.Presenter inputCreatePresenter,
+			final ITreeGenerationServiceAsync treeGenerationService,
+			IFileManagerDialogView.Presenter fileManagerDialogPresenter) {
 		this.view = view;
-		view.setPresenter(this);;
-		this.treeGenerationService = treeGenerationService;
-		this.placeController = placeController;
-		this.selectableFileTreePresenter = selectableFileTreePresenter;
-		this.fileTreePresenter = selectableFileTreePresenter.getFileTreePresenter();
-		this.filePathShortener = filePathShortener;
+		view.setPresenter(this);
 		this.fileManagerDialogPresenter = fileManagerDialogPresenter;
-	}
-	
-
-	@Override
-	public void onNext() {
-		if (inputFile == null || inputFile.equals("")){
-			Alerter.selectValidInputDirectory();
-			return;
-		}
-		if (view.getTaskName() == null || view.getTaskName().equals("")){
-			Alerter.selectTaskName();
-			return;
-		}
 		
-		final MessageBox box = Alerter.startLoading();
-		treeGenerationService.start(Authentication.getInstance().getToken(), 
-			view.getTaskName(), inputFile, new AsyncCallback<Task>() {
+		this.inputCreatePresenter = inputCreatePresenter;
+		this.inputCreatePresenter.disableCreateFiles();
+		this.inputCreatePresenter.disableDummyCreateFiles2();
+		this.inputCreatePresenter.disableDummyCreateFiles2();
+		this.inputCreatePresenter.addDummyCreateFiles3();
+		this.inputCreatePresenter.setNextButtonName("Next Step in Key Generation");
+		inputCreatePresenter.setInputValidator(new InputValidator() {
 			@Override
-			public void onSuccess(Task result) {
-				placeController.goTo(new TreeGenerationViewPlace(result));
-				Alerter.stopLoading(box);
-			}
-			@Override
-			public void onFailure(Throwable caught) {
-				Alerter.failedToStartTreeGeneration(caught);
-			}
-		});
-	}
-				
-
-	@Override
-	public ITreeGenerationInputView getView() {
-		return view;
-	}
-	
-	@Override
-	public void setSelectedFolder(String fullPath, String shortendPath) {
-		inputFile = fullPath;
-		view.setFilePath(shortendPath);
-		view.resetFields();
-	}
-
-
-	@Override
-	public void onInputSelect() {
-		selectableFileTreePresenter.show("Select input", FileFilter.DIRECTORY, new ISelectListener() {
-			@Override
-			public void onSelect() {
-				List<FileTreeItem> selections = fileTreePresenter.getView().getSelection();
-				if (selections.size() == 1) {
-					FileTreeItem selection = selections.get(0);
-					inputFile = selection.getFilePath();
-					String shortendPath = filePathShortener.shorten(selection, Authentication.getInstance().getUserId());
-					if(selection.isSystemFile()){
-						Alerter.systemFolderNotAllowedInputForTask();
-					} else if(selection.getText().contains(" 0 file")) {
-						Alerter.emptyFolder();
-					} else {
-						view.setFilePath(shortendPath);
-						view.setEnabledNext(true);			
-						if(selection.getOwnerUserId() != Authentication.getInstance().getUserId()) {
-							Alerter.sharedInputForTask();
-							fileManagerDialogPresenter.hide();
+			public void validate(String inputFolderPath) {
+				final MessageBox box = Alerter.startLoading();
+				treeGenerationService.isValidInput(Authentication.getInstance().getToken(), inputFolderPath, new AsyncCallback<Boolean>() {
+					@Override
+					public void onSuccess(Boolean result) {
+						if(!result) {
+							Alerter.invalidInputDirectory();
+							Alerter.stopLoading(box);
 						} else {
-							fileManagerDialogPresenter.hide();
+							placeController.goTo(new TreeGenerationDefinePlace());
+							Alerter.stopLoading(box);
 						}
 					}
-				}
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Alerter.failedToIsValidInput(caught);
+						Alerter.stopLoading(box);
+					}
+				});
 			}
 		});
+		inputCreatePresenter.setUploadFileType(FileTypeEnum.PLAIN_TEXT);
+	}
+	
+	@Override
+	public IsWidget getView() {
+		return view;
 	}
 
+	@Override
+	public void onFileManager() {
+		fileManagerDialogPresenter.show();
+	}
+
+	@Override
+	public String getInputFolderPath() {
+		return inputCreatePresenter.getInputFolderPath();
+	}
+
+	@Override
+	public String getInputFolderShortenedPath() {
+		return inputCreatePresenter.getInputFolderShortenedPath();
+	}
+
+	@Override
+	public void refresh() {
+		inputCreatePresenter.refreshFolders();
+		inputCreatePresenter.refreshinput();
+	}
 }

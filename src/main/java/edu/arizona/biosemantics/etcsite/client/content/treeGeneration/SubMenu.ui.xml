@@ -29,7 +29,7 @@
 			<g:Label styleName="{style.subMenuEntry">You are at: </g:Label>
 			<my:ImageLabel ui:field="createInput" styleName="{style.subMenuEntry}" imagePath="images/Enumeration_unselected_1.gif" imageWidth="20px" imageHeight="20px" text="Create Input" systemFolder="false"></my:ImageLabel>
 			<my:ImageLabel ui:field="input" styleName="{style.subMenuEntry}" imagePath="images/Enumeration_unselected_2.gif" imageWidth="20px" imageHeight="20px" text="Define Task" systemFolder="false"></my:ImageLabel>
-			<my:ImageLabel ui:field="view" styleName="{style.subMenuEntry}" imagePath="images/Enumeration_unselected_3.gif" imageWidth="20px" imageHeight="20px" text="Output: interactive key" systemFolder="false"></my:ImageLabel>
+			<my:ImageLabel ui:field="view" styleName="{style.subMenuEntry}" imagePath="images/Enumeration_unselected_3.gif" imageWidth="20px" imageHeight="20px" text="View Interactive Key" systemFolder="false"></my:ImageLabel>
 		</g:HorizontalPanel>
 	</g:VerticalPanel>
 </ui:UiBinder> 

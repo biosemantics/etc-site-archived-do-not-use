@@ -27,8 +27,8 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 
 	private ITaskServiceAsync taskService;
 	private ITaxonomyComparisonServiceAsync taxonomyComparisonService;
-	private ITaxonomyComparisonCreateView.Presenter createPresenter;
-	private ITaxonomyComparisonInputView.Presenter inputPresenter;
+	private ITaxonomyComparisonInputView.Presenter createPresenter;
+	private ITaxonomyComparisonDefineView.Presenter inputPresenter;
 	private ITaxonomyComparisonAlignView.Presenter alignPresenter;
 	private AcceptsOneWidget panel;
 	private TaskStageEnum currentTaskStage;
@@ -38,8 +38,8 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 	@Inject
 	public TaxonomyComparisonActivity(ITaskServiceAsync taskService, 
 			ITaxonomyComparisonServiceAsync taxonomyComparisonService,
-			ITaxonomyComparisonCreateView.Presenter createPresenter,
-			ITaxonomyComparisonInputView.Presenter inputPresenter,
+			ITaxonomyComparisonInputView.Presenter createPresenter,
+			ITaxonomyComparisonDefineView.Presenter inputPresenter,
 			ITaxonomyComparisonAlignView.Presenter alignPresenter,
 			PlaceController placeController, 
 			IAuthenticationServiceAsync authenticationService, 
@@ -77,7 +77,7 @@ public class TaxonomyComparisonActivity extends MyAbstractActivity {
 			currentTask = ((TaxonomyComparisonPlace)place).getTask();
 		}
 		if(currentTask == null){
-			if(place instanceof TaxonomyComparisonInputPlace) {
+			if(place instanceof TaxonomyComparisonDefinePlace) {
 				if(createPresenter.isFromSerializedModel()) {
 					inputPresenter.setSelectedSerializedModels(createPresenter.getInputTaxonomy1(), createPresenter.getInputTaxonomy2(), 
 							createPresenter.getModelFolderPath1(), createPresenter.getModelFolderPath2());

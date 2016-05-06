@@ -23,15 +23,15 @@ import edu.arizona.biosemantics.etcsite.client.content.about.AboutPlace;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.FileManagerPlace;
 import edu.arizona.biosemantics.etcsite.client.content.gettingstarted.GettingStartedPlace;
 import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
-import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationCreatePlace;
+import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.news.NewsPlace;
-import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeCreatePlace;
+import edu.arizona.biosemantics.etcsite.client.content.ontologize.OntologizeInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.sample.SamplePlace;
-import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupCreatePlace;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsPlace;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
-import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonCreatePlace;
-import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationCreatePlace;
+import edu.arizona.biosemantics.etcsite.client.content.taxonomyComparison.TaxonomyComparisonInputPlace;
+import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationInputPlace;
 import edu.arizona.biosemantics.etcsite.client.content.visualization.VisualizationPlace;
 import edu.arizona.biosemantics.etcsite.client.event.AuthenticationEvent;
 import edu.arizona.biosemantics.etcsite.client.event.AuthenticationEvent.AuthenticationEventType;
@@ -139,7 +139,7 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 						
 						if(loginGoogleResult.isNewlyRegistered()) {
 							Alerter.firstLoginCheckAccountInfo();
-							placeController.goTo(new SettingsPlace());
+							placeController.goTo(new HomePlace());
 						}
 					} else {
 						Alerter.failedToLoginWithgGoogle(null);
@@ -200,27 +200,27 @@ public class EtcSitePresenter implements IEtcSiteView.Presenter {
 
 	@Override
 	public void onTextCapture() {
-		this.authenticationToPlaceGoer.goTo(new SemanticMarkupCreatePlace(), new LinkedList<ToPlaceGoer>());//Arrays.asList(this.resumeTaskToPlaceGoer)));
+		this.authenticationToPlaceGoer.goTo(new SemanticMarkupInputPlace(), new LinkedList<ToPlaceGoer>());//Arrays.asList(this.resumeTaskToPlaceGoer)));
 	}
 	
 	@Override
 	public void onOntologize() {
-		this.authenticationToPlaceGoer.goTo(new OntologizeCreatePlace(), new LinkedList<ToPlaceGoer>());//Arrays.asList(this.resumeTaskToPlaceGoer)));
+		this.authenticationToPlaceGoer.goTo(new OntologizeInputPlace(), new LinkedList<ToPlaceGoer>());//Arrays.asList(this.resumeTaskToPlaceGoer)));
 	}
 
 	@Override
 	public void onMatrixGeneration() {
-		this.authenticationToPlaceGoer.goTo(new MatrixGenerationCreatePlace(), new LinkedList<ToPlaceGoer>());//Arrays.asList(this.resumeTaskToPlaceGoer)));
+		this.authenticationToPlaceGoer.goTo(new MatrixGenerationInputPlace(), new LinkedList<ToPlaceGoer>());//Arrays.asList(this.resumeTaskToPlaceGoer)));
 	}
 
 	@Override
 	public void onTreeGeneration() {
-		this.authenticationToPlaceGoer.goTo(new TreeGenerationCreatePlace(), new LinkedList<ToPlaceGoer>());//Arrays.asList(this.resumeTaskToPlaceGoer)));
+		this.authenticationToPlaceGoer.goTo(new TreeGenerationInputPlace(), new LinkedList<ToPlaceGoer>());//Arrays.asList(this.resumeTaskToPlaceGoer)));
 	}
 
 	@Override
 	public void onTaxonomyComparison() {
-		this.authenticationToPlaceGoer.goTo(new TaxonomyComparisonCreatePlace(), new LinkedList<ToPlaceGoer>());//Arrays.asList(this.resumeTaskToPlaceGoer)));
+		this.authenticationToPlaceGoer.goTo(new TaxonomyComparisonInputPlace(), new LinkedList<ToPlaceGoer>());//Arrays.asList(this.resumeTaskToPlaceGoer)));
 	}
 
 	@Override

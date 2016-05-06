@@ -45,9 +45,10 @@ public class EtcSiteHelpPresenter implements IEtcSiteHelpView.Presenter {
 			return Help.TASK_MANAGER;
 		case "SettingsPlace":
 			return Help.MY_ACCOUNT;
-		case "SemanticMarkupCreatePlace":
 		case "SemanticMarkupInputPlace":
 			return Help.TEXT_CAPTURE_INPUT;
+		case "SemanticMarkupDefinePlace":
+			return Help.TEXT_CAPTURE_DEFINE;
 		case "SemanticMarkupLearnPlace":
 			return Help.TEXT_CAPTURE_LEARN;
 		case "SemanticMarkupParsePlace":
@@ -58,28 +59,32 @@ public class EtcSiteHelpPresenter implements IEtcSiteHelpView.Presenter {
 			return Help.TEXT_CAPTURE_REVIEW;
 		case "SemanticMarkupOutputPlace":
 			return Help.TEXT_CAPTURE_OUTPUT;
-		case "MatrixGenerationCreatePlace":
 		case "MatrixGenerationInputPlace":
 			return Help.MATRIX_GENERATION_INPUT;
+		case "MatrixGenerationDefinePlace":
+			return Help.MATRIX_GENERATION_DEFINE;
 		case "MatrixGenerationProcessPlace":
 			return Help.MATRIX_GENERATION_PROCESS;
 		case "MatrixGenerationReviewPlace":
 			return Help.MATRIX_GENERATION_REVIEW;
 		case "MatrixGenerationOutputPlace":
 			return Help.MATRIX_GENERATION_OUTPUT;
-		case "OntologizeCreatePlace":
 		case "OntologizeInputPlace":
 			return Help.ONTOLOGY_BUILDING_INPUT;
+		case "OntologizeDefinePlace":
+			return Help.ONTOLOGY_BUILDING_DEFINE;
 		case "OntologizeBuildPlace":
 			return Help.ONTOLOGY_BUILDING_BUILD;
 		case "OntologizeOutputPlace":
 			return Help.ONTOLOGY_BUILDING_OUTPUT;
-		case "TaxonomyComparisonCreatePlace":
 		case "TaxonomyComparisonInputPlace":
 			return Help.TAXONOMY_COMPARISON_INPUT;
+		case "TaxonomyComparisonDefinePlace":
+			return Help.TAXONOMY_COMPARISON_DEFINE;
 		case "TaxonomyComparisonAlignPlace":
 			return Help.TAXONOMY_COMPARISON_ALIGN;
-		case "TreeGenerationCreatePlace":
+		case "TreeGenerationDefinePlace":
+			return Help.TREE_GENERATION_DEFINE;
 		case "TreeGenerationInputPlace":
 			return Help.TREE_GENERATION_INPUT;
 		case "TreeGenerationViewPlace":

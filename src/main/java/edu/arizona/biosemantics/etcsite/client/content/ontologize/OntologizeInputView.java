@@ -1,73 +1,51 @@
 package edu.arizona.biosemantics.etcsite.client.content.ontologize;
 
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
+import com.sencha.gxt.data.shared.LabelProvider;
+import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.widget.core.client.form.ComboBox;
 
-import edu.arizona.biosemantics.common.biology.TaxonGroup;
+import edu.arizona.biosemantics.etcsite.client.common.IInputCreateView;
+import gwtupload.client.Uploader;
 
-public class OntologizeInputView extends Composite implements IOntologizeInputView {
+public class OntologizeInputView extends Composite implements IOntologizeInputView{
 
-	private static OntologizeViewUiBinder uiBinder = GWT.create(OntologizeViewUiBinder.class);
+	private static OntologizeCreateViewUiBinder uiBinder = GWT
+			.create(OntologizeCreateViewUiBinder.class);
 
-	interface OntologizeViewUiBinder extends UiBinder<Widget, OntologizeInputView> {
+	interface OntologizeCreateViewUiBinder extends
+			UiBinder<Widget, OntologizeInputView> {
 	}
 
-	private Presenter presenter;
-	
-	@UiField
-	TextBox taskNameTextBox;
-	
-	@UiField
-	TextBox inputLabel;
-	
-	@UiField
-	ListBox glossaryListBox;
-	
-	@UiField
-	Button nextButton;
-	
-	@UiField
-	SubMenu subMenu;
-	
-	/*@UiField
-	RadioButton selectOntologyRadio;
+	private IOntologizeInputView.Presenter presenter;
 
-	@UiField
-	VerticalPanel selectOntologyPanel;
-	
-	@UiField
-	Label ontologyLabel;
-	
-	@UiField
-	RadioButton createOntologyRadio;*/
-
-	@UiField
-	VerticalPanel createOntologyPanel;
-	
-	@UiField
-	TextBox ontologyPrefixTextBox;
+	@UiField(provided=true) 
+	IInputCreateView inputCreateView;
 	
 	@Inject
-	public OntologizeInputView() {
-		super();
-		initWidget(uiBinder.createAndBindUi(this));
-		for(TaxonGroup taxonGroup : TaxonGroup.values()) {
-			this.glossaryListBox.addItem(taxonGroup.getDisplayName());
-		}
-		//selectOntologyPanel.setVisible(false);
-		//createOntologyPanel.setVisible(false);
+	public OntologizeInputView(@Named("Ontologize")IInputCreateView.Presenter inputCreatePresenter) {		
+		this.inputCreateView = inputCreatePresenter.getView();
+		initWidget(uiBinder.createAndBindUi(this));		
 	}
 
 	@Override
@@ -75,88 +53,9 @@ public class OntologizeInputView extends Composite implements IOntologizeInputVi
 		this.presenter = presenter;
 	}
 
-	@UiHandler("inputButton") 
-	public void onInputSelect(ClickEvent event) {
-		presenter.onInputSelect();
-	}
-	
-	@UiHandler("nextButton")
-	public void onSearchClick(ClickEvent event) {
-		presenter.onNext();
-    }
-	
-	/*@UiHandler("selectOntologyRadio")
-	public void onSelectOntologyRadio(ClickEvent event) {
-		createOntologyPanel.setVisible(false);
-		selectOntologyPanel.setVisible(true);
-	}
-	
-	@UiHandler("createOntologyRadio")
-	public void onCreateOntologyRadio(ClickEvent event) {
-		createOntologyPanel.setVisible(true);
-		selectOntologyPanel.setVisible(false);
-	}
-	
-	@UiHandler("ontologyButton")
-	public void onOntologyButton(ClickEvent event) {
-		presenter.onOntologySelect();
-	}*/
-
 	@Override
-	public String getTaskName() {
-		return this.taskNameTextBox.getText();
+	public IInputCreateView getInputCreateView() {
+		return inputCreateView;
 	}
-
-	@Override
-	public void setFilePath(String path) {
-		this.inputLabel.setText(path);
-	}
-
-	@Override
-	public void setEnabledNext(boolean value) {
-		this.nextButton.setEnabled(value);
-	}
-	
-	@Override
-	public void resetFields(){
-		this.taskNameTextBox.setText("");
-		this.ontologyPrefixTextBox.setText(null);
-		this.ontologyPrefixTextBox.setValue(null);
-		this.glossaryListBox.setSelectedIndex(getInitialGlossaryIndex());
 		
-		
-	}
-	
-	private int getInitialGlossaryIndex() {
-		for(int i=0; i<TaxonGroup.values().length; i++) {
-			if(TaxonGroup.values()[i].equals(TaxonGroup.PLANT))
-				return i;
-		}
-		return 0;
-	}
-
-	/*@Override
-	public boolean isSelectOntology() {
-		return selectOntologyRadio.getValue();
-	}*/
-	
-	@Override
-	public String getTaxonGroup() {
-		return glossaryListBox.getItemText(glossaryListBox.getSelectedIndex());
-	}
-
-	@Override
-	public String getOntologyPrefix() {
-		return ontologyPrefixTextBox.getValue();
-	}
-
-	/*@Override
-	public boolean isCreateOntology() {
-		return createOntologyRadio.getValue();
-	}
-
-	@Override
-	public void setOntologyFilePath(String path) {
-		this.ontologyLabel.setText(path);
-	}*/
 }

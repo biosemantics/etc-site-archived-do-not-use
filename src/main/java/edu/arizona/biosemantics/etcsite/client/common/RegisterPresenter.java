@@ -9,6 +9,7 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.sencha.gxt.widget.core.client.Dialog;
 
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView.IRegisterListener;
+import edu.arizona.biosemantics.etcsite.client.content.home.HomePlace;
 import edu.arizona.biosemantics.etcsite.client.content.settings.SettingsPlace;
 import edu.arizona.biosemantics.etcsite.client.event.AuthenticationEvent;
 import edu.arizona.biosemantics.etcsite.client.event.AuthenticationEvent.AuthenticationEventType;
@@ -104,7 +105,7 @@ public class RegisterPresenter implements IRegisterView.Presenter {
 				dialog.hide();
 				eventBus.fireEvent(new AuthenticationEvent(AuthenticationEventType.LOGGEDIN));
 				Alerter.firstLoginCheckAccountInfo();
-				placeController.goTo(new SettingsPlace());
+				placeController.goTo(new HomePlace());
 			}
 			@Override
 			public void onFailure(Throwable caught) {

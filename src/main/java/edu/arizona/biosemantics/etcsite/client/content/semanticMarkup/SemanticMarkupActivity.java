@@ -13,7 +13,7 @@ import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.common.ILoginView;
 import edu.arizona.biosemantics.etcsite.client.common.IRegisterView;
 import edu.arizona.biosemantics.etcsite.client.common.IResetPasswordView;
-import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupInputView.Presenter;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.ISemanticMarkupDefineView.Presenter;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.TaskTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.TaskStageEnum;
@@ -24,8 +24,8 @@ import edu.arizona.biosemantics.etcsitehelp.shared.help.Help;
 public class SemanticMarkupActivity extends MyAbstractActivity {
 
 	private ITaskServiceAsync taskService;
-	private ISemanticMarkupCreateView.Presenter createPresenter;
-	private ISemanticMarkupInputView.Presenter inputPresenter;
+	private ISemanticMarkupInputView.Presenter createPresenter;
+	private ISemanticMarkupDefineView.Presenter inputPresenter;
 	private ISemanticMarkupPreprocessView.Presenter preprocessPresenter;
 	private ISemanticMarkupLearnView.Presenter learnPresenter;
 	private ISemanticMarkupReviewView.Presenter reviewPresenter;
@@ -38,7 +38,7 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 	public SemanticMarkupActivity(
 			ITaskServiceAsync taskService,
 			Presenter inputPresenter,
-			ISemanticMarkupCreateView.Presenter createPresenter,
+			ISemanticMarkupInputView.Presenter createPresenter,
 			ISemanticMarkupPreprocessView.Presenter preprocessPresenter,
 			ISemanticMarkupLearnView.Presenter learnPresenter,
 			ISemanticMarkupReviewView.Presenter reviewPresenter,
@@ -78,7 +78,7 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 			task = ((SemanticMarkupPlace)place).getTask();
 		if(task == null){
 			//TODO: normally the info of type input folder is tied to InputPlace and should reside there, tokenization, linking, etc.
-			if(place instanceof SemanticMarkupInputPlace){
+			if(place instanceof SemanticMarkupDefinePlace){
 				inputPresenter.setSelectedFolder(createPresenter.getInputFolderPath(), createPresenter.getInputFolderShortenedPath());
 				panel.setWidget(inputPresenter.getView());
 			}else{
