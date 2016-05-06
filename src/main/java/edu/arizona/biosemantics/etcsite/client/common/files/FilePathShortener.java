@@ -49,7 +49,7 @@ public class FilePathShortener {
 		String seperator = ServerSetup.getInstance().getSetup().getSeperator();
 		String publicBase = ServerSetup.getInstance().getSetup().getPublicFolder();
 		
-		int userId = 1;//Authentication.getInstance().getUserId();
+		int userId = Authentication.getInstance().getUserId();
 		if(filePath.startsWith(fileBase)) {
 			String remainder = filePath.replace(fileBase, "");
 			if(remainder.startsWith(seperator + userId))
