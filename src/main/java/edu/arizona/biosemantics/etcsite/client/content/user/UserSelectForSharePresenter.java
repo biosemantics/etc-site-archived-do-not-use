@@ -10,6 +10,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor;
 import com.google.gwt.editor.client.EditorError;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Label;
 import com.google.inject.Inject;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
@@ -17,6 +18,10 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.SortDir;
 import com.sencha.gxt.data.shared.Store.StoreSortInfo;
 import com.sencha.gxt.widget.core.client.Dialog;
+import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.DualListField;
@@ -31,7 +36,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.ShortUser;
 import edu.arizona.biosemantics.etcsite.shared.model.ShortUserProperties;
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
 
-public class UserSelectPresenter2 extends Dialog implements IUserSelectView.Presenter {
+public class UserSelectForSharePresenter extends Dialog implements IUserSelectView.Presenter {
 	
 	/*public static class CustomDualListField<D, T> extends DualListField<D, T> {
 		public static final int leftButton = 0x1;
@@ -96,7 +101,7 @@ public class UserSelectPresenter2 extends Dialog implements IUserSelectView.Pres
 	private IUserServiceAsync userService;
 	
 	@Inject
-	public UserSelectPresenter2(IUserServiceAsync userService) {
+	public UserSelectForSharePresenter(IUserServiceAsync userService) {
 		this.userService = userService;
 		setPredefinedButtons(PredefinedButton.OK);
 		setHeadingText("Select Users");
@@ -106,9 +111,10 @@ public class UserSelectPresenter2 extends Dialog implements IUserSelectView.Pres
 		setMinHeight(0);
 	    setResizable(true);
 	    setShadow(true);
-		setHideOnButtonClick(true);
+		setHideOnButtonClick(false);
 		setWidth(500);
 		setHeight(500);
+		this.setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
 		getButton(PredefinedButton.OK).setText("Share with selected");
 		
 		
@@ -120,6 +126,12 @@ public class UserSelectPresenter2 extends Dialog implements IUserSelectView.Pres
 		selectedListStore.addSortInfo(new StoreSortInfo<ShortUser>(shortUserProperties.fullNameEmail(), SortDir.ASC));
 		unselectedListStore.addSortInfo(new StoreSortInfo<ShortUser>(shortUserProperties.fullNameEmail(), SortDir.ASC));
 		
+		VerticalLayoutContainer vlc = new VerticalLayoutContainer();
+		HorizontalLayoutContainer hlc = new HorizontalLayoutContainer();
+		hlc.add(new Label("Available users"), new HorizontalLayoutData(0.5, 20));
+		hlc.add(new Label(""), new HorizontalLayoutData(40, 20));
+		hlc.add(new Label("Shared with"), new HorizontalLayoutData(0.5, 20));
+		vlc.add(hlc, new VerticalLayoutData(1, 20));
 		final DualListField<ShortUser, String> dualListField = new DualListField<ShortUser, String>(
 				unselectedListStore, selectedListStore,
 				shortUserProperties.fullNameEmail(), new TextCell());
@@ -142,7 +154,9 @@ public class UserSelectPresenter2 extends Dialog implements IUserSelectView.Pres
 			}
 		});
 		dualListField.setEnableDnd(true);
-		add(dualListField);
+		vlc.add(dualListField, new VerticalLayoutData(1, 1));
+		//add(dualListField);
+		add(vlc);
 
 		this.getButton(PredefinedButton.OK).addSelectHandler(
 				new SelectHandler() {
@@ -150,14 +164,16 @@ public class UserSelectPresenter2 extends Dialog implements IUserSelectView.Pres
 					public void onSelect(SelectEvent event) {
 						if (dualListField.validate()) {
 							if(currentListener != null)
-								if(getSelectedUsers().isEmpty())
-									Alerter.selectedUsersRequired();
-								else
-									currentListener.onSelect(getSelectedUsers());
-							hide();
+								currentListener.onSelect(getSelectedUsers());
 						}
 					}
 				});
+		this.getButton(PredefinedButton.CANCEL).addSelectHandler(new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				hide();
+			}
+		});
 	}
 	
 	protected Set<ShortUser> getSelectedUsers() {

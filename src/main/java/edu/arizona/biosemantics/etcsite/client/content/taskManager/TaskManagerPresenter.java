@@ -1,6 +1,7 @@
 package edu.arizona.biosemantics.etcsite.client.content.taskManager;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -100,21 +101,34 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 		share.setTask(task);
 		taskService.getInvitees(Authentication.getInstance().getToken(), task, new AsyncCallback<Set<ShortUser>>() {			
 			@Override
-			public void onSuccess(Set<ShortUser> result) {
+			public void onSuccess(final Set<ShortUser> result) {
 				userSelectPresenter.show(new ISelectListener() {
 					@Override
-					public void onSelect(Set<ShortUser> users) {
-						inviteesForOwnedTasks.put(task, users);
-						view.updateTaskData(new TaskData(task, users));						
-						share.setInvitees(users);
-						taskService.addOrUpdateShare(Authentication.getInstance().getToken(), share, new AsyncCallback<Share>() {
+					public void onSelect(final Set<ShortUser> users) {
+						Set<ShortUser> addedUsers = new HashSet<ShortUser>(users);
+						addedUsers.removeAll(result);
+						Set<ShortUser> removedUsers = new HashSet<ShortUser>(result);
+						removedUsers.removeAll(users);
+						final MessageBox box = Alerter.showConfirm("Share Task", "You have added " + addedUsers.size() + " to and removed " + removedUsers.size() + " from this share. "
+								+ "Do you want to continue?");
+						box.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
 							@Override
-							public void onSuccess(Share result) {}
-
-							@Override
-							public void onFailure(Throwable caught) {
-								Alerter.failedToAddOrUpdateShare(caught);
-							} 				
+							public void onSelect(SelectEvent event) {
+								inviteesForOwnedTasks.put(task, users);
+								view.updateTaskData(new TaskData(task, users));						
+								share.setInvitees(users);
+								taskService.addOrUpdateShare(Authentication.getInstance().getToken(), share, new AsyncCallback<Share>() {
+									@Override
+									public void onSuccess(Share result) {}
+		
+									@Override
+									public void onFailure(Throwable caught) {
+										Alerter.failedToAddOrUpdateShare(caught);
+									} 				
+								});
+								box.hide();
+								userSelectPresenter.hide();
+							}
 						});
 					}
 				}, result);
