@@ -106,8 +106,8 @@ public class SemanticMarkupOutputPresenter implements ISemanticMarkupOutputView.
 	public void onContinueMatrixGeneration(String text) {
 		Task task = new Task();
 		MatrixGenerationConfiguration config = new MatrixGenerationConfiguration();
-		task.setTaskConfiguration(config);
 		config.setInput(text);
+		task.setTaskConfiguration(config);
 		placeController.goTo(new MatrixGenerationDefinePlace(task));
 	}
 	

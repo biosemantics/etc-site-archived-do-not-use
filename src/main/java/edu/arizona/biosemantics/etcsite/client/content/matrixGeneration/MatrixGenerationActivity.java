@@ -159,16 +159,19 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 		reviewPresenter.setUnsavedChanges(false);
 	}
 
-	public void onStop() {			
-		matrixGenerationService.save(Authentication.getInstance().getToken(), currentModel, currentTask, new AsyncCallback<Void>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				Alerter.failedToSaveMatrix(caught);
-			}
-			@Override
-			public void onSuccess(Void result) {
-				reviewPresenter.setUnsavedChanges(false); }
-		});
+	public void onStop() {
+		if (currentTask.getTaskStage()!=null){
+			matrixGenerationService.save(Authentication.getInstance().getToken(), currentModel, currentTask, new AsyncCallback<Void>() {
+				@Override
+			    public void onFailure(Throwable caught) {
+					Alerter.failedToSaveMatrix(caught);
+			    }
+				@Override
+				public void onSuccess(Void result) {
+					reviewPresenter.setUnsavedChanges(false); 
+			    }
+		    });
+		}
 	}
 
 }
