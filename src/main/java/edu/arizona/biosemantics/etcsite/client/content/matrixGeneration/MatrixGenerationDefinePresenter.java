@@ -166,9 +166,8 @@ public class MatrixGenerationDefinePresenter implements IMatrixGenerationDefineV
 	}
 
 	@Override
-	public void setSelectedFolder(final String fullPath, String shortendPath) {
+	public void setSelectedFolder(final String fullPath, final String shortendPath) {
 		inputFile = fullPath;
-		view.setFilePath(shortendPath);
 		view.setOntologyPath("");
 		view.setTermReviewPath("");
 		this.ontologyInputFile = "";
@@ -183,10 +182,10 @@ public class MatrixGenerationDefinePresenter implements IMatrixGenerationDefineV
 			}
 			@Override
 			public void onSuccess(FileTreeItem fileTreeItem) {
-				if(fileTreeItem != null) {
+ 				if(fileTreeItem != null) {
 					termReviewInputFile = fileTreeItem.getFilePath();
 					view.setTermReviewPath(fileTreeItem.getDisplayFilePath());
-					
+					view.setFilePath(shortendPath);
 					fileService.getOntologyInputFileFromTextCaptureOutput(Authentication.getInstance().getToken(), 
 							fullPath, new AsyncCallback<FileTreeItem>() {
 								@Override

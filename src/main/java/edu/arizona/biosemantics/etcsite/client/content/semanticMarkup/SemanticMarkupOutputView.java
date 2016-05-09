@@ -75,7 +75,7 @@ public class SemanticMarkupOutputView extends Composite implements ISemanticMark
 	
 	@UiHandler("matrixGenerationAnchor") 
 	public void onMatrixGeneration(ClickEvent event) {
-		presenter.onContinueMatrixGeneration(outputFull);
+		presenter.onContinueMatrixGeneration(this.outputFull);
 	}
 	
 	@UiHandler("whatIsOto") 
