@@ -73,15 +73,16 @@
 								href="http://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupOutput.xsd"
 								target="_blank" styleName="{style.padding}">format</g:Anchor>
 							<g:InlineLabel styleName="DescriptionFont">
-			            		. Choose one of the following methods to provide the input.
-			            	</g:InlineLabel>
+			            	. To View, Edit or Delete the created or uploaded files, 
+							use&nbsp;
+							</g:InlineLabel>
+							<g:Anchor ui:field="fileManagerAnchor" styleName="DescriptionFont">File Manager.</g:Anchor>
 						</g:FlowPanel>
 						<g:InlineLabel styleName="DescriptionFont">&nbsp;</g:InlineLabel>
 						<g:FlowPanel>
-							<g:InlineLabel>
-			            		 To View, Edit or Delete the created or uploaded files, go to&nbsp; 
+                           <g:InlineLabel styleName="DescriptionFont">
+			            	Choose one of the following methods to provide the input.
 							</g:InlineLabel>
-							<g:Anchor ui:field="fileManagerAnchor" styleName="DescriptionFont">File Manager.</g:Anchor>
 						</g:FlowPanel>
 					</g:VerticalPanel>
 					<my2:IInputCreateView ui:field="inputCreateView"></my2:IInputCreateView>

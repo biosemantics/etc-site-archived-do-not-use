@@ -62,7 +62,7 @@
 							<g:InlineLabel styleName="{style.bold}">INPUT
 								REQUIREMENTS:&nbsp;
 							</g:InlineLabel>
-							<g:InlineLabel styleName="{style.DescriptionFont}">
+							<g:InlineLabel styleName="DescriptionFont">
 								Taxonomy Comparison takes as input a folder containing two text files in&nbsp;
 							</g:InlineLabel>
 							<g:Anchor ui:field="cleantaxAnchor"
@@ -71,21 +71,16 @@
 							<g:InlineLabel styleName="DescriptionFont">
 			            	&nbsp;or two folders with outputted taxonomies by Matrix Generation.&nbsp;
 			            	</g:InlineLabel>
-			            	<g:InlineLabel styleName="DescriptionFont">
-				            	Choose one of the following methods to provide the input and Click Next.
-								</g:InlineLabel>
-			            	<g:InlineLabel styleName="DescriptionFont">&nbsp;</g:InlineLabel>
-							<g:FlowPanel>
-							     <g:InlineLabel styleName="DescriptionFont">&nbsp;</g:InlineLabel>
-							</g:FlowPanel>
-							<g:FlowPanel>
-							   <g:InlineLabel>To Edit, Delete or View uploaded file, go to &nbsp;
-							   </g:InlineLabel>
-							<g:Anchor ui:field="fileManagerAnchor" styleName="{style.DescriptionFont}">File Manager</g:Anchor>
-			            	<g:InlineLabel>
-			            	.
-			            	</g:InlineLabel>
-							</g:FlowPanel>
+							<g:InlineLabel styleName="DescriptionFont">
+			            	To View, Edit or Delete the created or uploaded files, use&nbsp;
+							</g:InlineLabel>
+							<g:Anchor ui:field="fileManagerAnchor" styleName="DescriptionFont">File Manager.</g:Anchor>
+						</g:FlowPanel>
+						<g:InlineLabel styleName="DescriptionFont">&nbsp;</g:InlineLabel>
+						<g:FlowPanel>
+                           <g:InlineLabel styleName="DescriptionFont">
+			            	Choose one of the following methods to provide the input.
+							</g:InlineLabel>
 						</g:FlowPanel>
 					</g:VerticalPanel>
 					<my:IInputCreateView ui:field="inputCreateView"></my:IInputCreateView>

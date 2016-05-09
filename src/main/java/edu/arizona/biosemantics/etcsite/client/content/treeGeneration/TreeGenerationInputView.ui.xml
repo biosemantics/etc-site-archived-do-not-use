@@ -63,32 +63,24 @@
 							<g:InlineLabel styleName="{style.bold}">INPUT
 								REQUIREMENTS:&nbsp;
 							</g:InlineLabel>
-							<g:InlineLabel styleName="{style.DescriptionFont}">
+							<g:InlineLabel styleName="DescriptionFont">
 								Key Generation takes as input either a folder output by the Matrix
 								Generation tool or a folder containing a taxon-by-character
 								matrix file in .csv (comma separated values) format.
 							</g:InlineLabel>
-							<g:InlineLabel >
-							   &nbsp;
-							</g:InlineLabel>
-							<!--  <g:DialogBox ui:field="sampleFilePopup" >
-			        			<g:HTML>
-			            			
-			        			</g:HTML>
-							</g:DialogBox> -->
 							<g:Anchor ui:field="sampleFileAnchor" styleName="{style.DescriptionFont}">Sample File</g:Anchor>
 					        <g:InlineLabel>.&nbsp;
 						    </g:InlineLabel>
-						</g:FlowPanel>
-						    <g:InlineLabel>&nbsp;
-						    </g:InlineLabel>
-						<g:FlowPanel>
-							<g:InlineLabel>To Edit, Delete or View uploaded file, go to &nbsp;
+							<g:InlineLabel styleName="DescriptionFont">
+			            	To View, Edit or Delete the created or uploaded files, use&nbsp;
 							</g:InlineLabel>
-							<g:Anchor ui:field="fileManagerAnchor" styleName="{style.DescriptionFont}">File Manager</g:Anchor>
-						    <g:InlineLabel>
-			            	.
-			            	</g:InlineLabel>
+							<g:Anchor ui:field="fileManagerAnchor" styleName="DescriptionFont">File Manager.</g:Anchor>
+						</g:FlowPanel>
+						<g:InlineLabel styleName="DescriptionFont">&nbsp;</g:InlineLabel>
+						<g:FlowPanel>
+                           <g:InlineLabel styleName="DescriptionFont">
+			            	Choose one of the following methods to provide the input.
+							</g:InlineLabel>
 						</g:FlowPanel>
 					</g:VerticalPanel>
 					<my2:IInputCreateView ui:field="inputCreateView"></my2:IInputCreateView>
