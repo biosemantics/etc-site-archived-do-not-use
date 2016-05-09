@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.Inject;
@@ -109,8 +110,12 @@ public class TaskManagerPresenter implements ITaskManagerView.Presenter {
 						addedUsers.removeAll(result);
 						Set<ShortUser> removedUsers = new HashSet<ShortUser>(result);
 						removedUsers.removeAll(users);
-						final MessageBox box = Alerter.showConfirm("Share Task", "You have added " + addedUsers.size() + " to and removed " + removedUsers.size() + " from this share. "
-								+ "Do you want to continue?");
+						
+						final MessageBox box = Alerter.showConfirm(SafeHtmlUtils.fromTrustedString("Share Task"), 
+								SafeHtmlUtils.fromTrustedString(
+								addedUsers.size() + " users added to the shared list. </br>" +
+								removedUsers.size() + " users removed from the shared list. </br>" +
+								"Do you want to continue?"));
 						box.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
 							@Override
 							public void onSelect(SelectEvent event) {

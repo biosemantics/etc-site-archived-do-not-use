@@ -1,6 +1,7 @@
 package edu.arizona.biosemantics.etcsite.client.common;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
@@ -8,6 +9,7 @@ import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 import com.sencha.gxt.widget.core.client.box.AutoProgressMessageBox;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
+import com.sencha.gxt.widget.core.client.box.MessageBox.MessageBoxIcons;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.form.TextArea;
 
@@ -607,6 +609,15 @@ public class Alerter {
 		InfoMessageBox info = new InfoMessageBox(title, message);
 		info.show();
 		return info;
+	}
+	
+	public static MessageBoxIcons ICONS = GWT.create(MessageBoxIcons.class);
+	public static MessageBox showConfirm(SafeHtml title, SafeHtml message) {
+		MessageBox confirm = new MessageBox(title, message);
+		confirm.setIcon(ICONS.question());
+		confirm.setPredefinedButtons(PredefinedButton.YES, PredefinedButton.NO);
+		confirm.show();
+        return confirm;
 	}
 	
 	public static ConfirmMessageBox showConfirm(String title, String message) {

@@ -115,7 +115,7 @@ public class UserSelectForSharePresenter extends Dialog implements IUserSelectVi
 		setWidth(500);
 		setHeight(500);
 		this.setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
-		getButton(PredefinedButton.OK).setText("Share with selected");
+		getButton(PredefinedButton.OK).setText("Save Changes");
 		
 		
 		//setBodyStyleName("pad-text");
