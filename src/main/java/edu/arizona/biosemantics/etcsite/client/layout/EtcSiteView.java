@@ -108,17 +108,18 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 	}
 	
 	@Override
-	public void setHelpSize(int size, boolean animated) {
+	public void setHelpSize(int size) { //, boolean animated) {
 		//dockLayoutPanel.forceLayout(); //makes fast mouse movement not to collapse the menu without animation (for some reason)
 		dockLayoutPanel.setWidgetSize(eastPanel, size);
-		if(animated)
-			dockLayoutPanel.animate(300);
+		//if(animated)
+		//	dockLayoutPanel.animate(300);
 		
 		if(size == 0) 
 			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 				@Override
 				public void execute() {
 					helpActivity.getView().onHide();
+					helpActivity.getView().onResize();
 				}
 			});
 		else 
@@ -126,6 +127,7 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 				@Override
 				public void execute() {
 					helpActivity.getView().onShow();
+					helpActivity.getView().onResize();
 				}
 			});
 		//helpActivity.getView().expandDefaultItem();
@@ -174,10 +176,10 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 	void onHelpClick(ClickEvent e) {
 		Double size = dockLayoutPanel.getWidgetSize(eastPanel);
 		if(size == 400){
-			setHelpSize(0, false);
+			setHelpSize(0);
 			help.setText("Help");
 		}else{
-			setHelpSize(400, false);
+			setHelpSize(400);
 			help.setText("Hide Help");
 		}
 	}
@@ -245,7 +247,7 @@ public class EtcSiteView extends Composite implements IEtcSiteView, RequiresResi
 	@UiHandler("openInNewWindowButton")
 	void onOpenClick(ClickEvent e){
 		presenter.onOpenHelpInNewWindow();
-		setHelpSize(0, false);
+		setHelpSize(0);
 		help.setText("Help");
 	}
 	

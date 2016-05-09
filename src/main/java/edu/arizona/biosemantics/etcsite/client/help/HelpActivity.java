@@ -41,7 +41,7 @@ import edu.arizona.biosemantics.etcsitehelp.shared.help.HelpContent;
 import edu.arizona.biosemantics.etcsitehelp.shared.rpc.help.IHelpServiceAsync;
 
 
-public class HelpActivity extends MyAbstractActivity implements Presenter{
+public class HelpActivity extends MyAbstractActivity implements Presenter {
 
 		private IHelpView helpView;
 		private IHelpServiceAsync helpService;
@@ -63,7 +63,7 @@ public class HelpActivity extends MyAbstractActivity implements Presenter{
 		
 		private void setHelpContentWithPlace() {
 			Place place = placeController.getWhere();
-			getHelpContent(getHelpOfPlace(place.toString()));
+			setHelpContent(getHelpOfPlace(place.toString()));
 			
 			FlowLayoutContainer flowLayoutContainer = new FlowLayoutContainer();
 			flowLayoutContainer.setScrollMode(ScrollMode.AUTOY);
@@ -71,7 +71,7 @@ public class HelpActivity extends MyAbstractActivity implements Presenter{
 			flowLayoutContainer.add(helpView.asWidget());
 		}
 
-		public void getHelpContent(Help help){
+		public void setHelpContent(Help help){
 			helpService.getHelp(help, new AsyncCallback<String>() {
 				@Override
 				public void onFailure(Throwable caught) {
@@ -81,6 +81,7 @@ public class HelpActivity extends MyAbstractActivity implements Presenter{
 				@Override
 				public void onSuccess(String result) {
 					setHelpContent(JsonUtils.<JsArray<HelpContent>>safeEval(result));
+					helpView.onResize();
 				}
 				
 			});	
@@ -98,7 +99,7 @@ public class HelpActivity extends MyAbstractActivity implements Presenter{
 		}
 
 		protected void setHelpContent(JsArray<HelpContent> contents) {
-			helpView.addContent(contents);
+			helpView.setContent(contents);
 		}
 
 

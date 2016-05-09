@@ -2,6 +2,7 @@ package edu.arizona.biosemantics.etcsite.client.help;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
@@ -15,42 +16,24 @@ import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.ContentPanel.ContentPanelAppearance;
 import com.sencha.gxt.widget.core.client.container.AccordionLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.AccordionLayoutContainer.AccordionLayoutAppearance;
+import com.sencha.gxt.widget.core.client.container.AccordionLayoutContainer.ExpandMode;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 
 import edu.arizona.biosemantics.etcsitehelp.shared.help.HelpContent;
 
-public class HelpView extends Composite implements IHelpView, RequiresResize {
-
-	private static HelpHomeViewUiBinder uiBinder = GWT.create(HelpHomeViewUiBinder.class);
-
-	interface HelpHomeViewUiBinder extends UiBinder<Widget, HelpView> {
-	}
-	
-	interface HelpStyle extends CssResource{
-		String subPanel();
-	}
+public class HelpView extends SimpleContainer implements IHelpView {
 
 	private Presenter presenter;
-	
-	@UiField
-	ContentPanel panel;
-	
-	@UiField HelpStyle style;
-	
-	AccordionLayoutAppearance appearance;
-
+	private ContentPanel panel = new ContentPanel();	
+	private AccordionLayoutAppearance appearance;
 	private AccordionLayoutContainer accordionLayoutContainer;
-
 	private boolean hidden = true;
-	
-	@UiFactory
-	public ContentPanel createContentPanel(ContentPanelAppearance appearance) {
-	    return new ContentPanel(appearance);
-	}
 	
 	public HelpView() {
 		appearance = GWT.<AccordionLayoutAppearance> create(AccordionLayoutAppearance.class);
-		initWidget(uiBinder.createAndBindUi(this));
+		panel.setHeadingText("Help/Instructions");
+		this.add(panel);
 	}
 
 	@Override
@@ -59,15 +42,16 @@ public class HelpView extends Composite implements IHelpView, RequiresResize {
 	}
 	
 
-	public void addContent(JsArray<HelpContent> contents){
+	public void setContent(JsArray<HelpContent> contents){
 		accordionLayoutContainer = new AccordionLayoutContainer();
-		for(int i=0;i<contents.length();i++){
+		accordionLayoutContainer.setExpandMode(ExpandMode.SINGLE); //ExpandMode.SINGLE_FILL does not layout correctly for some reason
+		for(int i = 0; i < contents.length(); i++){
 			HTML htmlContent = new HTML(contents.get(i).getContent());
-			htmlContent.setStyleName(style.subPanel());
+			htmlContent.getElement().getStyle().setPadding(5, Unit.PX);
 			ContentPanel subPanel = new ContentPanel(appearance);
 			subPanel.setHeadingHtml(contents.get(i).getTitle());
 			FlowLayoutContainer flowLayoutContainer = new FlowLayoutContainer();
-			flowLayoutContainer.setScrollMode(ScrollMode.AUTO);
+			flowLayoutContainer.setScrollMode(ScrollMode.AUTOY);
 			flowLayoutContainer.add(htmlContent);
 			subPanel.add(flowLayoutContainer);
 			
@@ -79,11 +63,12 @@ public class HelpView extends Composite implements IHelpView, RequiresResize {
 		}
 		if(!hidden)
 			accordionLayoutContainer.setActiveWidget(accordionLayoutContainer.getWidget(0));
-		panel.add(accordionLayoutContainer);
+		panel.setWidget(accordionLayoutContainer);
 	}
 
 	@Override
 	public void onResize() {
+		super.onResize();
 		//accordionLayoutContainer.setActiveWidget(null);
 		//accordionLayoutContainer.setActiveWidget(accordionLayoutContainer.getWidget(0));
 	}

@@ -50,7 +50,7 @@ public interface IEtcSiteView extends IsWidget {
 	void setPresenter(Presenter presenter);
 	SimpleLayoutPanel getContentContainer();
 	void setNavigationSize(int size, boolean animated);
-	void setHelpSize(int size, boolean animated);
+	void setHelpSize(int size);//, boolean animated);
 	AcceptsOneWidget getHelpContainer();
 	void setLogin();
 	void setLogout();
