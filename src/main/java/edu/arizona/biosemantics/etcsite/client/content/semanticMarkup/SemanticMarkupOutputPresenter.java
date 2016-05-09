@@ -70,6 +70,7 @@ public class SemanticMarkupOutputPresenter implements ISemanticMarkupOutputView.
 								filePathShortener.shortenOutput(configuration.getOutput(), result, Authentication.getInstance().getUserId()), 
 								configuration.getOutputTermReview());
 						view.setEnabledSendToOto(!configuration.isOtoCreatedDataset() && hasLinkedOTOAccount);
+						view.setTitleSendToOto(!configuration.isOtoCreatedDataset() && hasLinkedOTOAccount);
 						SemanticMarkupOutputPresenter.this.task = task;
 						Alerter.stopLoading(box);
 					}

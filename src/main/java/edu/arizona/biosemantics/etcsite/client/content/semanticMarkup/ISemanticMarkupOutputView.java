@@ -25,6 +25,8 @@ public interface ISemanticMarkupOutputView extends IsWidget {
 	void setPresenter(Presenter presenter);
 
 	void setEnabledSendToOto(boolean value);
+	
+	void setTitleSendToOto(boolean value);
 
 	void setOutput(String outputFull, String outputFullDisplay,
 			String outputTermReview);

@@ -40,7 +40,7 @@ public class SemanticMarkupOutputView extends Composite implements ISemanticMark
 	Anchor myAccount;
 	
 	@UiField 
-	Anchor sendToOto;
+	Button sendToOto;
 	
 	@UiField
 	InlineLabel outputLabel;
@@ -101,7 +101,15 @@ public class SemanticMarkupOutputView extends Composite implements ISemanticMark
 
 	@UiHandler("sendToOto")
 	public void onSendToOto(ClickEvent event) {
-		presenter.onSendToOto();
+		//if(sendToOto.isEnabled()){
+			//sendToOto.setTitle("");
+			presenter.onSendToOto();
+		//}
+		//else {
+			//sendToOto.setTitle("This button is not enabled, please follow the instruction below to activate it. ");
+		//}
+			
+		
 	}
 	
 	@UiHandler("myAccount")
@@ -113,4 +121,15 @@ public class SemanticMarkupOutputView extends Composite implements ISemanticMark
 	public void setEnabledSendToOto(boolean value) {
 		sendToOto.setEnabled(value);
 	}
+	
+	@Override
+	public void setTitleSendToOto(boolean value) {
+		if(value!=true){
+			sendToOto.setTitle("This button is not enabled, please follow the instruction below to activate it. ");
+		}
+		else 
+			sendToOto.setTitle("");
+		
+	}
+	
 }
