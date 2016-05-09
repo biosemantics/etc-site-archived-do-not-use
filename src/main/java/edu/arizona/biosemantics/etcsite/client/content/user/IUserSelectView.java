@@ -11,6 +11,8 @@ public interface IUserSelectView extends IsWidget {
 
 	public interface Presenter {
 		void show(ISelectListener listener, Set<ShortUser> selected);
+
+		void hide();
 	}
 	
 	public interface ISelectListener {

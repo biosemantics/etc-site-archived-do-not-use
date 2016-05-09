@@ -89,7 +89,7 @@ public class HelpDialog extends Dialog {
 
 					@Override
 					public void onFailure(Throwable caught) {
-						Alerter.failedToSaveMatrix(caught);
+						Alerter.showAlert("User profile", "Could not retrieve user profile");
 					}
 				});
 	}

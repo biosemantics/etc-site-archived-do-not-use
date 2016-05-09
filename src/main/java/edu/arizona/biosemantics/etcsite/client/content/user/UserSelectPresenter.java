@@ -52,4 +52,9 @@ public class UserSelectPresenter implements IUserSelectView.Presenter {
 		dialog.show();	
 	}
 
+	@Override
+	public void hide() {
+		dialog.hide();
+	}
+
 }

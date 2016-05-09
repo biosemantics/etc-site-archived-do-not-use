@@ -609,13 +609,13 @@ public class Alerter {
 		return info;
 	}
 	
-	private static ConfirmMessageBox showConfirm(String title, String message) {
+	public static ConfirmMessageBox showConfirm(String title, String message) {
 		 ConfirmMessageBox confirm = new ConfirmMessageBox(title, message);
 		 confirm.show();
          return confirm;
 	}
 
-	private static MessageBox showYesNoCancelConfirm(String title, String message) {
+	public static MessageBox showYesNoCancelConfirm(String title, String message) {
 		MessageBox box = new MessageBox(title, message);
         box.setPredefinedButtons(PredefinedButton.YES, PredefinedButton.NO, PredefinedButton.CANCEL);
         box.setIcon(MessageBox.ICONS.question());

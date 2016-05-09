@@ -158,7 +158,7 @@ import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenera
 import edu.arizona.biosemantics.etcsite.client.content.treeGeneration.TreeGenerationViewView;
 import edu.arizona.biosemantics.etcsite.client.content.user.IUserSelectView;
 import edu.arizona.biosemantics.etcsite.client.content.user.IUsersView;
-import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectPresenter2;
+import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectForSharePresenter;
 import edu.arizona.biosemantics.etcsite.client.content.user.UserSelectView;
 import edu.arizona.biosemantics.etcsite.client.content.user.UsersPresenter;
 import edu.arizona.biosemantics.etcsite.client.content.user.UsersView;
@@ -223,7 +223,7 @@ public class ClientModule extends AbstractGinModule {
 		bind(IUsersView.class).to(UsersView.class);
 		bind(IUsersView.Presenter.class).to(UsersPresenter.class).in(Singleton.class);
 		bind(IUserSelectView.class).to(UserSelectView.class);
-		bind(IUserSelectView.Presenter.class).to(UserSelectPresenter2.class).in(Singleton.class);
+		bind(IUserSelectView.Presenter.class).to(UserSelectForSharePresenter.class).in(Singleton.class);
 				
 		bind(IFileTreeView.Presenter.class).to(FileTreePresenter.class).in(Singleton.class);
 		bind(IFileTreeView.class).to(FileTreeView.class).in(Singleton.class);
