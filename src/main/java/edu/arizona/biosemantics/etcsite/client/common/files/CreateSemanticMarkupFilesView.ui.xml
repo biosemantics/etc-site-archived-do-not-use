@@ -323,7 +323,9 @@
 											    <ol style="list-style:disc;padding: 5px 20px;"> 
 											    	<li>Require <b>author</b>, <b>year</b> and <b>title</b>, specify in Source Document Information or Taxonomic Treatment Area.</li>
 										    	    <li>Require at least one <b>ranked taxon name</b> (including strain number), for example genus name, strain number (see also Specifying Taxon Names).</li>   
-		      						    			<li>Require at least one description of type morphology, phenology, habitat, or distribution. A scope may be applied to each description type in the format of "scope-description type". For example, male-morphology, fruiting-phenology, see also "Specifying Taxon Descriptions".</li>
+		      						    			<li>Require at least one description of type <b>morphology</b>, <b>phenology</b>, <b>habitat</b>, or <b>distribution</b>. 
+		      						    			A scope may be applied to each description type in the format of "scope-description type". For example, male-morphology, 
+		      						    			fruiting-phenology, see also "Specifying Taxon Descriptions".</li>
 			      						    		<li>Optional fields related to strain number: <i>equivalent strain numbers</i>, <i>accession number 16S rrna</i>, <i>accession number genome sequence</i>.</li>
 			      						    		<li>Optional: previous or new taxonomic names.</li>
 			      						    	</ol>
