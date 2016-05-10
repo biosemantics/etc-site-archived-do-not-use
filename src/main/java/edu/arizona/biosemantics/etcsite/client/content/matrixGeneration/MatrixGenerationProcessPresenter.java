@@ -24,6 +24,8 @@ import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
+import edu.arizona.biosemantics.matrixreview.shared.model.Model;
+import edu.arizona.biosemantics.matrixreview.shared.model.core.TaxonMatrix;
 
 public class MatrixGenerationProcessPresenter implements IMatrixGenerationProcessView.Presenter {
 
@@ -119,49 +121,45 @@ public class MatrixGenerationProcessPresenter implements IMatrixGenerationProces
 	@Override
 	public void onOutput() {
 		final MessageBox box = Alerter.startLoading();
-		matrixGenerationService.completeReview(Authentication.getInstance().getToken(), 
-				task, new AsyncCallback<Task>() {
-			@Override
-			public void onSuccess(Task result) {
-				if(box != null)
-					Alerter.stopLoading(box);
-				placeController.goTo(new MatrixGenerationOutputPlace(result));
-				
-				MatrixGenerationConfiguration config = (MatrixGenerationConfiguration)result.getConfiguration();
-				
-				final MyWindow window = MyWindow.open(null, "_blank", null);
-				fileService.getDownloadPath(Authentication.getInstance().getToken(), config.getOutput(), new AsyncCallback<String>() {
+		matrixGenerationService.review(Authentication.getInstance().getToken(), task, new AsyncCallback<Model>() { 
+			public void onSuccess(final Model model) {
+				matrixGenerationService.completeReview(Authentication.getInstance().getToken(), 
+						task, new AsyncCallback<Task>() {
 					@Override
-					public void onSuccess(String result) {
-						//target=" + result.getData() + "&directory=yes
-						Alerter.stopLoading(box);
-						window.setUrl("download.dld?target=" + URL.encodeQueryString(result + ServerSetup.getInstance().getSetup().getSeperator() + "Matrix.csv") + 
-								"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
-								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()));
-						/*Window.open("download.dld?target=" + URL.encodeQueryString(result) + 
-								"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
-								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()), "_blank", "");
-						/*Window.Location.replace("/etcsite/download?target=" + URL.encodeQueryString(result) + 
-								"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
-								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()));*/
-						
-						/*Window.open("/etcsite/download/?target=" + result.getData() + "&username=" + Authentication.getInstance().getUsername() + "&" + 
-								"sessionID=" + Authentication.getInstance().getSessionID()
-								, "download", "resizable=yes,scrollbars=yes,menubar=yes,location=yes,status=yes"); */
+					public void onSuccess(Task result) {
+						final MyWindow window = MyWindow.open(null, "_blank", null);
+						matrixGenerationService.outputMatrix(Authentication.getInstance().getToken(), 
+								task, model, new AsyncCallback<String>() {
+							@Override
+							public void onSuccess(String result) {
+								Alerter.stopLoading(box);
+								window.setUrl("download.dld?target=" + URL.encodeQueryString(result) + 
+										"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
+										"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()));
+								/*Window.open("download.dld?target=" + URL.encodeQueryString(result) + 
+										"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
+										"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()), "_blank", "");
+								*/
+								placeController.goTo(new MatrixGenerationOutputPlace(task));
+							}
+							@Override
+							public void onFailure(Throwable caught) {
+								Alerter.failedToOutputMatrix(caught);
+								Alerter.stopLoading(box);
+							}
+						});	
 					}
-
 					@Override
 					public void onFailure(Throwable caught) {
-						Alerter.failedToGetDownloadPath(caught);
+						Alerter.failedToCompleteReview(caught);
 						Alerter.stopLoading(box);
 					}
 				});
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				Alerter.failedToCompleteReview(caught);
-				if(box != null)
-					Alerter.stopLoading(box);
+				Alerter.failedToReview(caught);
+				Alerter.stopLoading(box);
 			}
 		});
 	}
