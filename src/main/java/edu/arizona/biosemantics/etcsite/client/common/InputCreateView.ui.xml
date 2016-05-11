@@ -58,27 +58,38 @@
 	    <g:VerticalPanel spacing="20" ui:field="verticalPanel">
 	    	
 	    	<g:RadioButton ui:field="dummyCreateFilesRadio1" name="selectInputMethod" styleName="{style.radioPadding}">Create Input Files</g:RadioButton>
-	        <g:VerticalPanel styleName = "{style.margin15}" ui:field="dummyCreatePanel1" visible="false">
+	        <g:FlowPanel styleName = "{style.margin15}" ui:field="dummyCreatePanel1" visible="false">
 	        	<g:InlineLabel>
-	                To create input files for Ontology Building, please run the Text Capture tool first.
+	                To create input files for Ontology Building, please run the&nbsp;
 	            </g:InlineLabel>
-	        </g:VerticalPanel>
+	            <g:Anchor ui:field="textCaptureAnchor1" styleName="{style.DescriptionFont}">Text Capture</g:Anchor>
+	            <g:InlineLabel>
+	                 &nbsp;tool first.
+	            </g:InlineLabel>
+	        </g:FlowPanel>
 	        
 	        <g:RadioButton ui:field="dummyCreateFilesRadio2" name="selectInputMethod" styleName="{style.radioPadding}">Create Input Files</g:RadioButton>
-	        <g:VerticalPanel styleName = "{style.margin15}" ui:field="dummyCreatePanel2" visible="false">
-	        	<g:InlineLabel>
-                    To create input files for Matrix Generation, please run the Text Capture tool first.
+	        <g:FlowPanel styleName = "{style.margin15}" ui:field="dummyCreatePanel2" visible="false">
+    		    <g:InlineLabel>
+	                To create input files for Matrix Generation, please run the&nbsp;
 	            </g:InlineLabel>
-	        </g:VerticalPanel>
+	            <g:Anchor ui:field="textCaptureAnchor2" styleName="{style.DescriptionFont}">Text Capture</g:Anchor>
+	            <g:InlineLabel>
+	                 &nbsp;tool first.
+	            </g:InlineLabel>
+	        </g:FlowPanel>
 	        
 	        <g:RadioButton ui:field="dummyCreateFilesRadio3" name="selectInputMethod" styleName="{style.radioPadding}">Create Input Files</g:RadioButton>
 	        <g:VerticalPanel styleName = "{style.margin15}" ui:field="dummyCreatePanel3" visible="false">
 	        <g:FlowPanel>
 	            <g:InlineLabel styleName="{style.DescriptionFont}">
-								If you do not have the input ready for Key Generation, please run the Matrix Generation
-								tool first to generate it, or upload a folder here. The upload folder should contain only a single valid
-								taxon-by-character matrix file in .csv
+								If you do not have the input ready for Key Generation, please run the&nbsp;
 			    </g:InlineLabel>
+			    <g:Anchor ui:field="matrixGenerationAnchor" styleName="{style.DescriptionFont}">Matrix Generation</g:Anchor>
+	            <g:InlineLabel>
+	           		 &nbsp;tool first to generate it, or upload a folder here. The upload folder should contain only a single valid
+								taxon-by-character matrix file in .csv
+	            </g:InlineLabel>
 			    <g:InlineLabel >
 							   &nbsp;
 				</g:InlineLabel>

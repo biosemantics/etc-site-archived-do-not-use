@@ -68,6 +68,10 @@ public interface IInputCreateView extends IsWidget {
 		
 		void deleteFolderForinputFiles();
 
+		void onTextCapture();
+
+		void onMatrixGeneration();
+
 	}
 
 	void setOwnedFolders(List<FolderTreeItem> folders);

@@ -21,6 +21,9 @@ import edu.arizona.biosemantics.etcsite.client.common.files.MyUploaderConstants;
 import edu.arizona.biosemantics.etcsite.client.common.files.CreateSemanticMarkupFilesDialogPresenter.ICloseHandler;
 import edu.arizona.biosemantics.etcsite.client.common.files.SelectableFileTreePresenter.ISelectListener;
 import edu.arizona.biosemantics.etcsite.client.content.fileManager.IFileManagerDialogView;
+import edu.arizona.biosemantics.etcsite.client.content.matrixGeneration.MatrixGenerationInputPlace;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupInputPlace;
+import edu.arizona.biosemantics.etcsite.client.content.semanticMarkup.SemanticMarkupPlace;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileFilter;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
@@ -57,6 +60,7 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 	private InputValidator inputValidator;
 	private UploadCompleteHandler uploadCompleteHandler;
 	private FileTypeEnum uploadFileType;
+	private PlaceController placeController;
 		
 	@Inject
 	public InputCreatePresenter(PlaceController placeController, IInputCreateView view,
@@ -65,6 +69,7 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 			IFileServiceAsync fileService,
 			ISelectableFileTreeView.Presenter selectableFileTreePresenter,
 			IFileManagerDialogView.Presenter fileManagerDialogPresenter) {
+		this.placeController = placeController;
 		this.view = view;
 		view.setPresenter(this);
 		this.createSemanticMarkupFilesDialogPresenter = createSemanticMarkupFilesDialogPresenter;
@@ -385,6 +390,16 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 	@Override
 	public void setNextButtonName(String str) {
 		view.setNextButtonName(str);
+	}
+
+	@Override
+	public void onTextCapture() {
+		placeController.goTo(new SemanticMarkupInputPlace());
+	}
+
+	@Override
+	public void onMatrixGeneration() {
+		placeController.goTo(new MatrixGenerationInputPlace());
 	}
 
 }

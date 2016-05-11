@@ -123,10 +123,10 @@ public class MatrixGenerationProcessPresenter implements IMatrixGenerationProces
 		final MessageBox box = Alerter.startLoading();
 		matrixGenerationService.review(Authentication.getInstance().getToken(), task, new AsyncCallback<Model>() { 
 			public void onSuccess(final Model model) {
-				matrixGenerationService.completeReview(Authentication.getInstance().getToken(), 
-						task, new AsyncCallback<Task>() {
-					@Override
-					public void onSuccess(Task result) {
+				//matrixGenerationService.completeReview(Authentication.getInstance().getToken(), 
+				//		task, new AsyncCallback<Task>() {
+				//	@Override
+				//	public void onSuccess(Task result) {
 						final MyWindow window = MyWindow.open(null, "_blank", null);
 						matrixGenerationService.outputMatrix(Authentication.getInstance().getToken(), 
 								task, model, new AsyncCallback<String>() {
@@ -140,7 +140,7 @@ public class MatrixGenerationProcessPresenter implements IMatrixGenerationProces
 										"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
 										"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()), "_blank", "");
 								*/
-								placeController.goTo(new MatrixGenerationOutputPlace(task));
+								//placeController.goTo(new MatrixGenerationOutputPlace(task));
 							}
 							@Override
 							public void onFailure(Throwable caught) {
@@ -148,13 +148,13 @@ public class MatrixGenerationProcessPresenter implements IMatrixGenerationProces
 								Alerter.stopLoading(box);
 							}
 						});	
-					}
-					@Override
-					public void onFailure(Throwable caught) {
-						Alerter.failedToCompleteReview(caught);
-						Alerter.stopLoading(box);
-					}
-				});
+				//	}
+				//	@Override
+				//	public void onFailure(Throwable caught) {
+				//		Alerter.failedToCompleteReview(caught);
+				//		Alerter.stopLoading(box);
+				//	}
+				//});
 			}
 			@Override
 			public void onFailure(Throwable caught) {

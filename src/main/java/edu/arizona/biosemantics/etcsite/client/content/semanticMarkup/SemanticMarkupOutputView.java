@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
@@ -36,8 +37,11 @@ public class SemanticMarkupOutputView extends Composite implements ISemanticMark
 	@UiField 
 	Anchor matrixGenerationAnchor;
 	
-	@UiField 
-	Anchor myAccount;
+	//@UiField 
+	//Anchor myAccount;
+	
+	@UiField
+	FlowPanel sendToOtoPanel;
 	
 	@UiField 
 	Button sendToOto;
@@ -112,17 +116,18 @@ public class SemanticMarkupOutputView extends Composite implements ISemanticMark
 		
 	}
 	
-	@UiHandler("myAccount")
+	/*@UiHandler("myAccount")
 	public void onMyAccount(ClickEvent event) {
 		presenter.onMyAccount();
-	}
+	}*/
 
 	@Override
 	public void setEnabledSendToOto(boolean value) {
-		sendToOto.setEnabled(value);
+		sendToOtoPanel.setVisible(value);
+		//sendToOto.setEnabled(value);
 	}
 	
-	@Override
+	/*@Override
 	public void setTitleSendToOto(boolean value) {
 		if(value!=true){
 			sendToOto.setTitle("This button is not enabled, please follow the instruction below to activate it. ");
@@ -130,6 +135,6 @@ public class SemanticMarkupOutputView extends Composite implements ISemanticMark
 		else 
 			sendToOto.setTitle("");
 		
-	}
+	}*/
 	
 }

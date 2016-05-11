@@ -13,6 +13,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -48,8 +49,10 @@ public class InputCreateView extends Composite implements IInputCreateView {
 	
 	@UiField RadioButton createFilesRadio;
 	@UiField VerticalPanel createPanel;
-	@UiField VerticalPanel dummyCreatePanel1;
-	@UiField VerticalPanel dummyCreatePanel2;
+	@UiField FlowPanel dummyCreatePanel1;
+	@UiField FlowPanel dummyCreatePanel2;
+	@UiField Anchor textCaptureAnchor1;
+	@UiField Anchor textCaptureAnchor2;
 	@UiField VerticalPanel dummyCreatePanel3;
 	@UiField RadioButton createFolderForCreateFilesRadio;
 	@UiField Button createFolderForCreateFilesButton;
@@ -121,6 +124,21 @@ public class InputCreateView extends Composite implements IInputCreateView {
 		
 		verticalPanel.remove(0);
 		verticalPanel.remove(0);
+	}
+
+	@UiHandler("textCaptureAnchor2")
+	public void onTextCapture2(ClickEvent event) {
+		presenter.onTextCapture();
+	}
+
+	@UiHandler("textCaptureAnchor1")
+	public void onTextCapture1(ClickEvent event) {
+		presenter.onTextCapture();
+	}
+	
+	@UiHandler("matrixGenerationAnchor")
+	public void onMatrixGeneration(ClickEvent event) {
+		presenter.onMatrixGeneration();
 	}
 	
 	@UiHandler("sampleFileAnchor")

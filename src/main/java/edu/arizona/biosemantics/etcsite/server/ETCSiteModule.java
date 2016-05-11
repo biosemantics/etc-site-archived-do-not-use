@@ -93,6 +93,7 @@ public class ETCSiteModule extends AbstractModule {
 		bind(edu.arizona.biosemantics.oto2.oto.server.rpc.OntologyService.class).in(Scopes.SINGLETON);
 		bind(edu.ucdavis.cs.cfgproject.server.rpc.KeyGenerationService.class).in(Scopes.SINGLETON);
 		bind(edu.arizona.biosemantics.euler.alignment.server.EulerAlignmentService.class).in(Scopes.SINGLETON);
+		bind(edu.arizona.biosemantics.matrixreview.server.MatrixService.class).in(Scopes.SINGLETON);
 		bind(GoogleAuthenticationServlet.class).in(Scopes.SINGLETON);
 		bind(PDFServlet.class).in(Scopes.SINGLETON);
 		bind(DownloadServlet.class).in(Scopes.SINGLETON);
@@ -134,6 +135,8 @@ public class ETCSiteModule extends AbstractModule {
 				edu.ucdavis.cs.cfgproject.server.rpc.KeyGenerationService.class).in(Scopes.SINGLETON);
 		bind(edu.arizona.biosemantics.euler.alignment.shared.IEulerAlignmentService.class).to(
 				edu.arizona.biosemantics.euler.alignment.server.EulerAlignmentService.class).in(Scopes.SINGLETON);
+		bind(edu.arizona.biosemantics.matrixreview.shared.IMatrixService.class).to(
+				edu.arizona.biosemantics.matrixreview.server.MatrixService.class).in(Scopes.SINGLETON);
 		
 		XMLValidator taxonDescriptionValidator = new XMLValidator(new File(Configuration.taxonDescriptionSchemaFile));
 		XMLValidator markedUpTaxonDescriptionValidator = new XMLValidator(new File(Configuration.markedUpTaxonDescriptionSchemaFile));

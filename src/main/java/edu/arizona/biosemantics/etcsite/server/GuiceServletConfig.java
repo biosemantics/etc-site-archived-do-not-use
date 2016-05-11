@@ -59,6 +59,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
 				serve("/etcsite/oto_ontology").with(edu.arizona.biosemantics.oto2.oto.server.rpc.OntologyService.class);
 				serve("/etcsite/keyGeneration").with(edu.ucdavis.cs.cfgproject.server.rpc.KeyGenerationService.class);
 				serve("/etcsite/alignment").with(edu.arizona.biosemantics.euler.alignment.server.EulerAlignmentService.class);
+				serve("/etcsite/matrix").with(edu.arizona.biosemantics.matrixreview.server.MatrixService.class);
 				serve("/googleauth").with(GoogleAuthenticationServlet.class);
 				serve("*.gpdf").with(PDFServlet.class);
 				serve("*.dld").with(DownloadServlet.class);
