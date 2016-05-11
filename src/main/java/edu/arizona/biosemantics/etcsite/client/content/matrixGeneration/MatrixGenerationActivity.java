@@ -160,7 +160,7 @@ public class MatrixGenerationActivity extends MyAbstractActivity {
 	}
 
 	public void onStop() {
-		if (currentTask.getTaskStage()!=null){
+		if (currentTask.getTaskStage() != null && currentModel != null) {
 			matrixGenerationService.save(Authentication.getInstance().getToken(), currentModel, currentTask, new AsyncCallback<Void>() {
 				@Override
 			    public void onFailure(Throwable caught) {
