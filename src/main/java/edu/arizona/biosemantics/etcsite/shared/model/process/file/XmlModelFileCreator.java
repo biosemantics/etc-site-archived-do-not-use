@@ -264,20 +264,56 @@ public class XmlModelFileCreator {
 	}
 
 
-	public String validateTaxonNames(String normalizedText) {
-		for(String line : normalizedText.split("\n")) {
+	public void validateTaxonNamesFormat(String text) throws Exception {
+		for(String line : text.split("\n")) {
 			line = line.trim();
 			if(line.contains("name:") || line.contains("name :")){
 				String colonSplits[] = line.split(":");
 				if(colonSplits.length > 1){	
 					if(!validateName(colonSplits[1].trim()))
-						return "ERROR"+ line;
+						throw new Exception(line);
 					
-				}
-				else return "ERROR"+ line;
-				}
+				} else 
+					throw new Exception(line);
 			}
-		return normalizedText;
+		}
+	}
+	
+	public void validateTaxonNames(String text) throws Exception {
+		List<String> treatmentTexts = this.getTreatmentTexts(text);
+		Set<String> taxonNameIds = new HashSet<String>();
+		for(String treatmentText : treatmentTexts) {
+			String taxonNameId = this.getTaxonNameID(treatmentText);
+			if(!taxonNameIds.contains(taxonNameId))
+				taxonNameIds.add(taxonNameId);
+			else
+				throw new Exception(taxonNameId);
+		}	
+	}
+
+	private String getTaxonNameID(String treatmentText) {
+		String id = "";
+		for(String line : treatmentText.split("\n")) {
+			line = line.trim();
+			if(line.contains("name:") || line.contains("name :")){
+				String colonSplits[] = line.split(":");
+				String name = colonSplits[0].trim();
+				String nameSplit[] = name.split(" ");
+				String rank = nameSplit[0].trim();
+				String value = colonSplits[1].trim();
+				String valueSplit[] = value.split(",");
+				String valueAuthority = valueSplit[0].trim();
+				String date = valueSplit[1].trim();
+				String valueAuthoritySplit[] = valueAuthority.split(" ");
+				value = valueAuthoritySplit[0].trim();
+				String authority = valueAuthoritySplit[1].trim();
+				
+				if(!id.isEmpty())
+					id += "_";
+				id += rank + "_" + value + "_" + authority + "_" + date;
+			}
+		}
+		return id;
 	}
 
 }

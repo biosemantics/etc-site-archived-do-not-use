@@ -376,14 +376,22 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 		String normalizedText = xmlModelFileCreator.normalizeText(text);
 		if(view.isCopyCheckBox()){
 			normalizedText = xmlModelFileCreator.copyAuthorityAndDate(normalizedText);
-			if(normalizedText.contains("ERROR")){
+			if(normalizedText.contains("ERROR")) {
 				Alerter.inputError(normalizedText.replace("ERROR","The line \"")+ "\" is not validated. The authority and date values are missing for taxon names. Unable to copy values! Please try again!");
 				return;
 			}
 		}
-		normalizedText = xmlModelFileCreator.validateTaxonNames(normalizedText);
-		if(normalizedText.contains("ERROR")){
-			Alerter.inputError(normalizedText.replace("ERROR","The line \"")+ "\" is not validated. "+ wrongTaxonNameError);
+		
+		try {
+			xmlModelFileCreator.validateTaxonNamesFormat(normalizedText);
+		} catch(Exception e) {
+			Alerter.inputError("The line \"" + e.getMessage() + "\" is not validated. "+ wrongTaxonNameError);
+			return;
+		}
+		try {
+			xmlModelFileCreator.validateTaxonNames(normalizedText);
+		} catch(Exception e) {
+			Alerter.showAlert("Taxon name validation", "Duplicate taxon name: " + e.getMessage());
 			return;
 		}
 		
@@ -395,6 +403,7 @@ public class CreateSemanticMarkupFilesPresenter implements ICreateSemanticMarkup
 			view.setPreviewText(returnString);
 		} catch(Exception e) {
 			Alerter.showAlert("Batch Input Creation", "You have malformed input. " + e.getMessage());
+			return;
 		}
 	}
 

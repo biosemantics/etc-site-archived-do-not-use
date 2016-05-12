@@ -43,23 +43,27 @@ public class TaxonNameValidator {
 				XPathExpression<Element> taxonNameMatcher = 
 						xPathFactory.compile("/bio:treatment/taxon_identification", Filters.element(), 
 								null, Namespace.getNamespace("bio", "http://www.github.com/biosemantics"));
-				List<Element> taxonIdentificationElements = taxonNameMatcher.evaluate(document);
+				List<Element> taxonIdentificationElements = taxonNameMatcher.evaluate(document);				
 				List<Element> taxonNameElements = new LinkedList<Element>();
+				List<Element> strainNumberElements = new LinkedList<Element>();
 				for(Element taxonIdentificationElement : taxonIdentificationElements) {
 					if(taxonIdentificationElement.getAttributeValue("status").equalsIgnoreCase("accepted")) {
 						taxonNameElements.addAll(taxonIdentificationElement.getChildren("taxon_name"));
+						strainNumberElements.addAll(taxonIdentificationElement.getChildren("strain_number"));
 					}
 				}
 				String taxon = "";
-				for(Element taxonName: taxonNameElements){
-					taxon += taxonName.getText()+"_";
+				for(Element taxonName : taxonNameElements) {
+					taxon += taxonName.getAttributeValue("rank") + "_" + taxonName.getText() + "_" + 
+							taxonName.getAttributeValue("authority") + "_" + taxonName.getAttributeValue("date");
 				}
-				if(!taxonNameElements.isEmpty()) {
-					Element lastElement = taxonNameElements.get(taxonNameElements.size()-1);
-					taxon += lastElement.getAttributeValue("authority") + "_" + lastElement.getAttributeValue("date");
+				for(Element strainNumber : strainNumberElements) {
+					taxon += strainNumber.getText();
+				}
+				if(!taxonNameElements.isEmpty() || !strainNumberElements.isEmpty()) {
 					if(taxonNames.containsKey(taxon)){
 						taxonNameErrors += "( " + taxonNames.get(taxon) + " , " + file.getName() + " ), ";
-					}else{
+					} else {
 						taxonNames.put(taxon,  file.getName());
 					}
 				}
