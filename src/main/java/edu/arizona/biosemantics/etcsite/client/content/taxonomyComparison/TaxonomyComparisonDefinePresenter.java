@@ -145,6 +145,8 @@ public class TaxonomyComparisonDefinePresenter implements ITaxonomyComparisonDef
 	}
 	
 	
+	
+	
 	@Override
 	public void onOntologyInput() {
 		showInput(new InputSetter() {
@@ -173,7 +175,7 @@ public class TaxonomyComparisonDefinePresenter implements ITaxonomyComparisonDef
 					String shortendPath = filePathShortener.shorten(selection, Authentication.getInstance().getUserId());
 					if(selection.isSystemFile()){
 						Alerter.systemFolderNotAllowedInputForTask();
-					}else if(selection.getText().contains(" 0 file")){
+					}else if(selection.getText().contains("[0 files")){
 						Alerter.emptyFolder();
 					}else if(!selection.getText().matches(".*?\\b0 director.*")){
 						Alerter.containSubFolder();
@@ -206,7 +208,7 @@ public class TaxonomyComparisonDefinePresenter implements ITaxonomyComparisonDef
 		this.serializedModel2 = model2;
 		this.serializedModelPath1 = modelPath1;
 		this.serializedModelPath2 = modelPath2;
-		view.setSerializedModels(serializedModel1, serializedModel2);
+		view.setSerializedModels(filePathShortener.shortenPath(serializedModelPath1), filePathShortener.shortenPath(serializedModelPath2));
 		
 		final MessageBox box = Alerter.startLoading();
 		fileService.getTermReviewFileFromMatrixGenerationOutput(Authentication.getInstance().getToken(), modelPath1, new AsyncCallback<FileTreeItem>() {
@@ -220,6 +222,8 @@ public class TaxonomyComparisonDefinePresenter implements ITaxonomyComparisonDef
 					termReviewInputFile1 = fileTreeItem.getFilePath();
 					view.setTermReviewPath1(fileTreeItem.getDisplayFilePath());
 				}
+				else
+					view.setTermReviewPath1(null);
 				fileService.getTermReviewFileFromMatrixGenerationOutput(Authentication.getInstance().getToken(), modelPath2, new AsyncCallback<FileTreeItem>() {
 					@Override
 					public void onFailure(Throwable caught) {
@@ -231,7 +235,8 @@ public class TaxonomyComparisonDefinePresenter implements ITaxonomyComparisonDef
 							termReviewInputFile2 = fileTreeItem.getFilePath();
 							view.setTermReviewPath2(fileTreeItem.getDisplayFilePath());
 						}
-						
+						else 
+							view.setTermReviewPath2(null);
 						fileService.getOntologyInputFileFromMatrixGenerationOutput(
 								Authentication.getInstance().getToken(), modelPath2, new AsyncCallback<FileTreeItem>() {
 									@Override
@@ -244,6 +249,8 @@ public class TaxonomyComparisonDefinePresenter implements ITaxonomyComparisonDef
 											ontologyInputFile = result.getFilePath();
 											view.setOntologyPath(result.getDisplayFilePath());
 										}
+										else
+											view.setOntologyPath(null);
 										Alerter.stopLoading(box);
 									}
 								});
@@ -265,8 +272,32 @@ public class TaxonomyComparisonDefinePresenter implements ITaxonomyComparisonDef
 		view.setCleanTaxPath(shortenedPath);
 		view.resetFields();
 	}
-
+    
 	@Override
+	public void onExistingModel1() {
+		showInput(new InputSetter() {
+			@Override
+			public void set(String input, String filePath) {
+				serializedModelPath1= filePath;
+				view.setSerializedModel1(input);	
+				//view.setEnabledNext(isInputComplete());
+			}
+		});
+	}
+	
+	@Override
+	public void onExistingModel2() {
+		showInput(new InputSetter() {
+			@Override
+			public void set(String input, String filePath) {
+				serializedModelPath2= filePath;
+				view.setSerializedModel2(input);	
+				//view.setEnabledNext(isInputComplete());
+			}
+		});
+	}
+	
+	/*@Override
 	public void onExistingModel1() {
 		taxonomySelectionPresenter.show("Select input", FileFilter.DIRECTORY, new ISelectListener() {
 			@Override
@@ -275,13 +306,13 @@ public class TaxonomyComparisonDefinePresenter implements ITaxonomyComparisonDef
 				if (selections.size() == 1) {
 					FileTreeItem selection = selections.get(0);
 					serializedModelPath1 = selection.getFilePath();
-					serializedModel1 = selection.getText();
+					serializedModel1 = filePathShortener.shortenPath(selection.getText());
 					if(selection.isSystemFile()){
 						Alerter.systemFolderNotAllowedInputForTask();
 					} else if(selection.getText().contains(" 0 file")) {
 						Alerter.emptyFolder();
 					} else {
-						view.setSerializedModel1(serializedModel1);
+						view.setSerializedModel1(filePathShortener.shortenPath(serializedModelPath1));
 						if(selection.getOwnerUserId() != Authentication.getInstance().getUserId()) {
 							Alerter.sharedInputForTask();
 							fileManagerDialogPresenter.hide();
@@ -292,9 +323,9 @@ public class TaxonomyComparisonDefinePresenter implements ITaxonomyComparisonDef
 				}
 			}
 		});
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public void onExistingModel2() {
 		taxonomySelectionPresenter.show("Select input", FileFilter.DIRECTORY, new ISelectListener() {
 			@Override
@@ -309,7 +340,7 @@ public class TaxonomyComparisonDefinePresenter implements ITaxonomyComparisonDef
 					} else if(selection.getText().contains(" 0 file")) {
 						Alerter.emptyFolder();
 					} else {
-						view.setSerializedModel2(serializedModel2);
+						view.setSerializedModel2(filePathShortener.shortenPath(serializedModelPath2));
 						if(selection.getOwnerUserId() != Authentication.getInstance().getUserId()) {
 							Alerter.sharedInputForTask();
 							fileManagerDialogPresenter.hide();
@@ -320,7 +351,7 @@ public class TaxonomyComparisonDefinePresenter implements ITaxonomyComparisonDef
 				}
 			}
 		});
-	}
+	}*/
 
 	@Override
 	public void onCleanTaxFolder() {

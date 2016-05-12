@@ -151,14 +151,14 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 		if (view.isUpload()) {
 			if (view.isCreateFolderForUpload()) {
 				if (createdFolderForUpload == null) {
-					Alerter.selectValidInputDirectory();
+					Alerter.selectValidInputDirectoryTaxonComp();
 					return;
 				} else {
 					setCleanTaxInputFolderPath(createdFolderForUpload);
 				}
 			} else if(view.isSelectFolderForUpload()) {
 				if (view.getSelectedFolderForUpload() == null) {
-					Alerter.selectValidInputDirectory();
+					Alerter.selectValidInputDirectoryTaxonComp();
 					return;
 				} else {
 					setCleanTaxInputFolderPath(view.getSelectedFolderForUpload().getFilePath());
@@ -168,14 +168,16 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 				cleanTaxInputValidator.validate(cleanTaxInputFolderPath);
 		} else if(view.isSelectExistingFolder()) {
 			if (modelInputFolderPath1 == null || modelInputFolderPath2 == null) {
-				Alerter.selectValidInputDirectory();
+				Alerter.selectValidInputDirectoryTaxonComp();
 				return;
 			}
-			if(modelInputValidator != null) {
+			else if(modelInputValidator != null) {
 				modelInputValidator.validate(modelInputFolderPath1);
 				modelInputValidator.validate(modelInputFolderPath2);
 			}
 		}
+		else 
+			Alerter.selectValidInputDirectoryTaxonComp();
 	}
 	
 	private void setCleanTaxInputFolderPath(String cleanTaxInputFolderPath) {
@@ -310,8 +312,10 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 					modelInputFolderShortenedPath1 = filePathShortener.shorten(selection, Authentication.getInstance().getUserId());
 					if(selection.isSystemFile()){
 						Alerter.systemFolderNotAllowedInputForTask();
-					} else if(selection.getText().contains(" 0 file")) {
+					} else if(modelInputText1.contains("[0 files")) {
 						Alerter.emptyFolder();
+					} else if(!selection.getText().matches(".*?\\b0 director.*")){
+						Alerter.containSubFolder();
 					} else {
 						view.setSelectedExistingFolder1(modelInputFolderShortenedPath1);
 						if(selection.getOwnerUserId() != Authentication.getInstance().getUserId()) {
@@ -339,8 +343,10 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 					modelInputFolderShortenedPath2 = filePathShortener.shorten(selection, Authentication.getInstance().getUserId());
 					if(selection.isSystemFile()){
 						Alerter.systemFolderNotAllowedInputForTask();
-					} else if(selection.getText().contains(" 0 file")) {
+					} else if(selection.getText().contains("[0 files")) {
 						Alerter.emptyFolder();
+					} else if(!selection.getText().matches(".*?\\b0 director.*")){
+						Alerter.containSubFolder();
 					} else {
 						view.setSelectedExistingFolder2(modelInputFolderShortenedPath2);
 						if(selection.getOwnerUserId() != Authentication.getInstance().getUserId()) {

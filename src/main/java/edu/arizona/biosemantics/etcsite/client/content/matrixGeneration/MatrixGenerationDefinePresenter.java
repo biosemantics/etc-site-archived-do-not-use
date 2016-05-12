@@ -70,7 +70,7 @@ public class MatrixGenerationDefinePresenter implements IMatrixGenerationDefineV
 					String shortendPath = filePathShortener.shorten(selection, Authentication.getInstance().getUserId());
 					if(selection.isSystemFile()){
 						Alerter.systemFolderNotAllowedInputForTask();
-					}else if(selection.getText().contains(" 0 file")){
+					}else if(selection.getText().contains("[0 files")){
 						Alerter.emptyFolder();
 					}else if(!selection.getText().matches(".*?\\b0 director.*")){
 						Alerter.containSubFolder();

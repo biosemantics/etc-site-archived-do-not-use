@@ -306,9 +306,12 @@ public class InputCreatePresenter implements IInputCreateView.Presenter {
 					inputFolderShortenedPath = filePathShortener.shorten(selection, Authentication.getInstance().getUserId());
 					if(selection.isSystemFile()){
 						Alerter.systemFolderNotAllowedInputForTask();
-					} else if(selection.getText().contains(" 0 file")) {
+					} else if(selection.getText().contains("[0 files")) {
 						Alerter.emptyFolder();
-					} else {
+					} else if(!selection.getText().matches(".*?\\b0 director.*")){
+					Alerter.containSubFolder();
+				    }
+					else {
 						view.setSelectedExistingFolder(inputFolderShortenedPath);
 						if(selection.getOwnerUserId() != Authentication.getInstance().getUserId()) {
 							Alerter.sharedInputForTask();
