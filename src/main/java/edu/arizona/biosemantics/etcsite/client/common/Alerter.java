@@ -522,6 +522,10 @@ public class Alerter {
 	public static MessageBox selectValidInputDirectory() {
 		return showAlert("Input Directory", "Please select or create a valid input!");
 	}
+	
+	public static MessageBox selectValidInputDirectoryTaxonComp() {
+		return showAlert("Input Directory", "Please select or upload a valid input!");
+	}
 
 	public static MessageBox selectValidInputOntology() {
 		return showAlert("Input Ontology Directory", "Please select a valid ontology directory.");
