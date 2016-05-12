@@ -12,8 +12,12 @@
 	
 	.subMenuEntry {
 		margin-left: 20px;
-		padding-top: 7px;
-		padding-bottom: 10px;
+		padding-top: 6px;
+		padding-bottom: 6px;
+	}
+	.subMenuEntry2 {
+		padding-top: 10px;
+		padding-bottom: 5px;
 	}
 	
 	.inputButton {
@@ -65,7 +69,7 @@
 						<g:HorizontalPanel styleName="inputForm">
 							<g:VerticalPanel styleName="{style.firstColumn}">
 								<g:cell verticalAlignment="ALIGN_TOP">
-									<g:Label>Task Name:</g:Label>
+									<g:Label width="250px">Task Name:</g:Label>
 								</g:cell>
 						<!-- 		<g:InlineLabel styleName="{style.note}">
 									Provide a name to
@@ -73,8 +77,8 @@
 								 <g:InlineLabel styleName="{style.note}">Also Task Name + Input Folder Name = Output Folder Name
 								</g:InlineLabel> -->
 							</g:VerticalPanel>
-							<g:cell verticalAlignment="ALIGN_MIDDLE">
-								<g:TextBox ui:field="taskNameTextBox"></g:TextBox>
+							<g:cell verticalAlignment="ALIGN_MIDDLE" width='220px'>
+								<g:TextBox ui:field="taskNameTextBox" width='200px'></g:TextBox>
 							</g:cell>
 						</g:HorizontalPanel>
 						<g:HorizontalPanel>
@@ -90,98 +94,46 @@
 					</g:VerticalPanel>
 					<g:VerticalPanel styleName="{style.subMenuEntry}">
 						<g:VerticalPanel ui:field="selectTaxonomiesPanel" visible="false">
-				         	<g:HorizontalPanel>				
+				         	<g:HorizontalPanel styleName="{style.subMenuEntry2}">				
 				         			<g:VerticalPanel styleName="{style.firstColumn}">
-					         			<g:cell verticalAlignment="ALIGN_TOP">
-											<g:Label>Select Taxonomy 1:</g:Label>
+					         			<g:cell verticalAlignment="ALIGN_MIDDLE">
+											<g:Label width="250px">Select Taxonomy 1:</g:Label>
 										</g:cell>	 
 									</g:VerticalPanel>           
 				        			<g:cell verticalAlignment="ALIGN_MIDDLE" width='220px'>
 										<g:TextBox ui:field="selectExistingFolderLabel1" enabled="false" width='200px'></g:TextBox>
 									</g:cell>
 									<g:cell verticalAlignment="ALIGN_MIDDLE" width='200px'>
-										<g:Button ui:field="selectExistingFolderButton1">Select Taxonomy 1 Folder</g:Button>
+										<g:Button styleName="{style.inputButton}" ui:field="selectExistingFolderButton1">Select Folder</g:Button>
 									</g:cell> 
 				        	</g:HorizontalPanel>
-				        	<g:InlineLabel styleName="{style.note} DescriptionFont">
+				        	<!--  g:InlineLabel styleName="{style.note} DescriptionFont">
 								This and the following four folders have been auto-selected based on your input in the last step.
-							</g:InlineLabel>
-				        	<g:HorizontalPanel>				
+							</g:InlineLabel-->
+				        	<g:HorizontalPanel styleName="{style.subMenuEntry}">				
 				         			<g:VerticalPanel styleName="{style.firstColumn}">
-					         			<g:cell verticalAlignment="ALIGN_TOP">
+					         			<g:cell verticalAlignment="ALIGN_MIDDLE">
 											<g:Label>Taxonomy 1 Author:</g:Label>
 										</g:cell>	 
 									</g:VerticalPanel>           
 				        			<g:cell verticalAlignment="ALIGN_MIDDLE" width='220px'>
-										<g:TextBox ui:field="taxonomy1AuthorTextField"></g:TextBox>
+										<g:TextBox ui:field="taxonomy1AuthorTextField" width='200px'></g:TextBox>
 									</g:cell>
 				        	</g:HorizontalPanel>
-				      		<g:HorizontalPanel>
+				      		<g:HorizontalPanel styleName="{style.subMenuEntry}">
 				      				<g:VerticalPanel styleName="{style.firstColumn}">
-					         			<g:cell verticalAlignment="ALIGN_TOP">
+					         			<g:cell verticalAlignment="ALIGN_MIDDLE">
 											<g:Label>Taxonomy 1 Year:</g:Label>
 										</g:cell>	 
 									</g:VerticalPanel>
-									<g:cell verticalAlignment="ALIGN_MIDDLE" width='200px'>
-										<g:TextBox ui:field="taxonomy1YearTextField"></g:TextBox>
+									<g:cell verticalAlignment="ALIGN_MIDDLE" width='220px'>
+										<g:TextBox ui:field="taxonomy1YearTextField" width='200px'></g:TextBox>
 									</g:cell> 
 				        	</g:HorizontalPanel>
-				        	<g:HorizontalPanel>
-				        			<g:VerticalPanel styleName="{style.firstColumn}">
-					         			<g:cell verticalAlignment="ALIGN_TOP">
-											<g:Label>Select Taxonomy 2:</g:Label>
-										</g:cell>	 
-									</g:VerticalPanel>   				            
-				        			<g:cell verticalAlignment="ALIGN_MIDDLE" width='220px'>
-										<g:TextBox ui:field="selectExistingFolderLabel2" enabled="false" width='200px'></g:TextBox>
-									</g:cell>
-									<g:cell verticalAlignment="ALIGN_MIDDLE" width='200px'>
-										<g:Button ui:field="selectExistingFolderButton2">Select Taxonomy 2 Folder</g:Button>
-									</g:cell>
-				        	</g:HorizontalPanel>
-				        	<g:HorizontalPanel>				
-				         			<g:VerticalPanel styleName="{style.firstColumn}">
-					         			<g:cell verticalAlignment="ALIGN_TOP">
-											<g:Label>Taxonomy 2 Author:</g:Label>
-										</g:cell>	 
-									</g:VerticalPanel>           
-				        			<g:cell verticalAlignment="ALIGN_MIDDLE" width='220px'>
-										<g:TextBox ui:field="taxonomy2AuthorTextField"></g:TextBox>
-									</g:cell>
-				        	</g:HorizontalPanel>
-				        	<g:HorizontalPanel>
-				      				<g:VerticalPanel styleName="{style.firstColumn}">
-					         			<g:cell verticalAlignment="ALIGN_TOP">
-											<g:Label>Taxonomy 2 Year:</g:Label>
-										</g:cell>	 
-									</g:VerticalPanel>
-									<g:cell verticalAlignment="ALIGN_MIDDLE" width='200px'>
-										<g:TextBox ui:field="taxonomy2YearTextField"></g:TextBox>
-									</g:cell> 
-				        	</g:HorizontalPanel>
-			         	</g:VerticalPanel>
-			         	
-			         	<g:VerticalPanel ui:field="selectCleanTaxPanel" visible="false">
-				         	<g:HorizontalPanel >					            
-				        			<g:VerticalPanel styleName="{style.firstColumn}">
-					         			<g:cell verticalAlignment="ALIGN_TOP">
-											<g:Label>Select CleanTax Folder:</g:Label>
-										</g:cell>	 
-									</g:VerticalPanel>   
-				        			<g:cell verticalAlignment="ALIGN_MIDDLE" width='220px'>
-										<g:TextBox ui:field="selectExistingCleanTaxLabel" enabled="false" width='200px'></g:TextBox>
-									</g:cell>
-									<g:cell verticalAlignment="ALIGN_MIDDLE" width='200px'>
-										<g:Button ui:field="selectExistingCleanTaxButton">Select CleanTax Folder</g:Button>
-									</g:cell> 
-				        	</g:HorizontalPanel>
-			         	</g:VerticalPanel>
-						
-					</g:VerticalPanel> 
-					<g:VerticalPanel styleName="{style.subMenuEntry}">
-						<g:HorizontalPanel>
+				        					
+						<g:HorizontalPanel styleName="{style.subMenuEntry}">
 							<g:VerticalPanel styleName="{style.firstColumn}">
-								<g:cell verticalAlignment="ALIGN_TOP">
+								<g:cell verticalAlignment="ALIGN_MIDDLE">
 									<g:Label>Select Term Review Folder 1 (optional):</g:Label>
 								</g:cell>
 							<!-- <g:InlineLabel styleName="{style.note}">
@@ -192,18 +144,71 @@
 									conforming to the format requirements.
 								</g:InlineLabel>-->
 							</g:VerticalPanel>
-							<g:cell verticalAlignment="ALIGN_TOP">
-								<g:TextBox ui:field="inputTermReviewLabel1" enabled="false"></g:TextBox>
+							<g:cell verticalAlignment="ALIGN_MIDDLE" width='220px'>
+								<g:TextBox ui:field="inputTermReviewLabel1" enabled="false" width='200px'></g:TextBox>
 							</g:cell>
 							<g:cell verticalAlignment="ALIGN_MIDDLE" width='200px'>
-								<g:Button styleName="{style.inputButton}" ui:field="inputTermReviewButton1">Select Term Review Input</g:Button>
+								<g:Button styleName="{style.inputButton}" ui:field="inputTermReviewButton1">Select Folder</g:Button>
  							</g:cell> 
 						</g:HorizontalPanel>
-					</g:VerticalPanel>
+					
+				        	<g:HorizontalPanel styleName="{style.subMenuEntry2}">
+				        			<g:VerticalPanel styleName="{style.firstColumn}">
+					         			<g:cell verticalAlignment="ALIGN_MIDDLE">
+											<g:Label width="250px">Select Taxonomy 2:</g:Label>
+										</g:cell>	 
+									</g:VerticalPanel>   				            
+				        			<g:cell verticalAlignment="ALIGN_MIDDLE" width='220px'>
+										<g:TextBox ui:field="selectExistingFolderLabel2" enabled="false" width='200px'></g:TextBox>
+									</g:cell>
+									<g:cell verticalAlignment="ALIGN_MIDDLE" width='200px'>
+										<g:Button styleName="{style.inputButton}" ui:field="selectExistingFolderButton2">Select Folder</g:Button>
+									</g:cell>
+				        	</g:HorizontalPanel>
+				        	<g:HorizontalPanel styleName="{style.subMenuEntry}">				
+				         			<g:VerticalPanel styleName="{style.firstColumn}">
+					         			<g:cell verticalAlignment="ALIGN_MIDDLE">
+											<g:Label>Taxonomy 2 Author:</g:Label>
+										</g:cell>	 
+									</g:VerticalPanel>           
+				        			<g:cell verticalAlignment="ALIGN_MIDDLE" width='220px'>
+										<g:TextBox ui:field="taxonomy2AuthorTextField" width='200px'></g:TextBox>
+									</g:cell>
+				        	</g:HorizontalPanel>
+				        	<g:HorizontalPanel styleName="{style.subMenuEntry}">
+				      				<g:VerticalPanel styleName="{style.firstColumn}">
+					         			<g:cell verticalAlignment="ALIGN_MIDDLE">
+											<g:Label>Taxonomy 2 Year:</g:Label>
+										</g:cell>	 
+									</g:VerticalPanel>
+									<g:cell verticalAlignment="ALIGN_MIDDLE" width='220px'>
+										<g:TextBox ui:field="taxonomy2YearTextField" width='200px'></g:TextBox>
+									</g:cell> 
+				        	</g:HorizontalPanel>
+			         	</g:VerticalPanel>
+			         	
+			         	<g:VerticalPanel ui:field="selectCleanTaxPanel" visible="false">
+				         	<g:HorizontalPanel >					            
+				        			<g:VerticalPanel styleName="{style.firstColumn}">
+					         			<g:cell verticalAlignment="ALIGN_MIDDLE">
+											<g:Label>Select CleanTax Folder:</g:Label>
+										</g:cell>	 
+									</g:VerticalPanel>   
+				        			<g:cell verticalAlignment="ALIGN_MIDDLE" width='220px'>
+										<g:TextBox ui:field="selectExistingCleanTaxLabel" enabled="false" width='200px'></g:TextBox>
+									</g:cell>
+									<g:cell verticalAlignment="ALIGN_MIDDLE" width='200px'>
+										<g:Button styleName="{style.inputButton}" ui:field="selectExistingCleanTaxButton">Select CleanTax Folder</g:Button>
+									</g:cell> 
+				        	</g:HorizontalPanel>
+			         	</g:VerticalPanel>
+						
+					 
+
 					<g:VerticalPanel styleName="{style.subMenuEntry}">
 						<g:HorizontalPanel>
 							<g:VerticalPanel styleName="{style.firstColumn}">
-								<g:cell verticalAlignment="ALIGN_TOP">
+								<g:cell verticalAlignment="ALIGN_MIDDLE">
 									<g:Label>Select Term Review Folder 2 (optional):</g:Label>
 								</g:cell>
 							<!-- <g:InlineLabel styleName="{style.note}">
@@ -214,19 +219,21 @@
 									conforming to the format requirements.
 								</g:InlineLabel>-->
 							</g:VerticalPanel>
-							<g:cell verticalAlignment="ALIGN_TOP">
-								<g:TextBox ui:field="inputTermReviewLabel2" enabled="false"></g:TextBox>
+							<g:cell verticalAlignment="ALIGN_MIDDLE" width='220px'>
+								<g:TextBox ui:field="inputTermReviewLabel2" enabled="false" width='200px'></g:TextBox>
 							</g:cell>
 							<g:cell verticalAlignment="ALIGN_MIDDLE" width='200px'>
-								<g:Button styleName="{style.inputButton}" ui:field="inputTermReviewButton2">Select Term Review Input</g:Button>
+								<g:Button styleName="{style.inputButton}" ui:field="inputTermReviewButton2">Select Folder</g:Button>
  							</g:cell>  
 						</g:HorizontalPanel>
 					</g:VerticalPanel>
+					</g:VerticalPanel>
+					
 					<g:VerticalPanel styleName="{style.subMenuEntry}">
 						<g:HorizontalPanel>
 							<g:VerticalPanel styleName="{style.firstColumn}">
-								<g:cell verticalAlignment="ALIGN_TOP">
-									<g:Label>Select Ontology Folder (optional):</g:Label>
+								<g:cell verticalAlignment="ALIGN_MIDDLE">
+									<g:Label width="250px">Select Ontology Folder (optional):</g:Label>
 								</g:cell>
 							<!-- <g:InlineLabel styleName="{style.note}">
 									Select a folder of taxon
@@ -236,8 +243,8 @@
 									conforming to the format requirements.
 								</g:InlineLabel>-->
 							</g:VerticalPanel>
-							<g:cell verticalAlignment="ALIGN_TOP">
-								<g:TextBox ui:field="inputOntologyLabel" enabled="false"></g:TextBox>
+							<g:cell verticalAlignment="ALIGN_MIDDLE" width='220px'>
+								<g:TextBox ui:field="inputOntologyLabel" enabled="false" width='200px'></g:TextBox>
 							</g:cell>
 							<g:cell verticalAlignment="ALIGN_MIDDLE" width='200px'>
 								<g:Button styleName="{style.inputButton}" ui:field="inputOntologyButton">Select Ontology Input</g:Button>
@@ -248,7 +255,7 @@
 						<g:HorizontalPanel styleName="inputForm">
 							<g:VerticalPanel styleName="{style.firstColumn}">
 								<g:cell verticalAlignment="ALIGN_TOP">
-									<g:Label>Select Taxon Group:</g:Label>
+									<g:Label width="250px">Select Taxon Group:</g:Label>
 								</g:cell>
 <!-- 								<g:InlineLabel styleName="{style.note}"> 
  									select taxon group relevant 
@@ -257,9 +264,9 @@
  									to your text. 
  								</g:InlineLabel> -->
 							</g:VerticalPanel>
-							<g:cell verticalAlignment="ALIGN_MIDDLE">
+							<g:cell verticalAlignment="ALIGN_MIDDLE" >
 								<g:ListBox ui:field="glossaryListBox"
-									visibleItemCount="1"></g:ListBox>
+									visibleItemCount="1" width='220px'></g:ListBox>
 							</g:cell>
 						</g:HorizontalPanel>
 						<g:HorizontalPanel styleName="inputForm">
