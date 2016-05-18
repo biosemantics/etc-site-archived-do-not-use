@@ -155,6 +155,7 @@ public class SemanticMarkupActivity extends MyAbstractActivity {
 				if(reviewPresenter.hasUnsavedChanges()) {
 					return "You have unsaved changes. Do you want to continue without saving?";
 				}
+				onStop();
 				break;
 			default:
 				break;
