@@ -590,7 +590,7 @@ public class Alerter {
 	
 	public static MessageBox confirmOtoImport() {
 		return showConfirm("Import Term Categorizations", "An imported term categorization will override the existing "
-				+ "term categorization for that term if there is a conflict. Do you want to continue?");
+				+ "term categorization for that term if there is a conflict. Do you want to continue? (To Import a To import a large data set, split it into smaller portions, and import them separately!)");
 	}
 
 	public static MessageBox confirmSaveMatrix() {
