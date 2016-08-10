@@ -24,8 +24,16 @@ public class Alerter {
 	private static IUserServiceAsync userService = GWT.create(IUserService.class);
 	
 	public static MessageBox startLoading() {
-		AutoProgressMessageBox box = new AutoProgressMessageBox("Loading", "Saving your data, please wait...");
+		AutoProgressMessageBox box = new AutoProgressMessageBox("Loading", "Loading your data, please wait...");
         box.setProgressText("Loading...");
+        box.auto();
+        box.show();
+        return box;
+	}
+	
+	public static MessageBox startSaving() {
+		AutoProgressMessageBox box = new AutoProgressMessageBox("Saving", "Saving your data, please wait...");
+        box.setProgressText("Saving...");
         box.auto();
         box.show();
         return box;

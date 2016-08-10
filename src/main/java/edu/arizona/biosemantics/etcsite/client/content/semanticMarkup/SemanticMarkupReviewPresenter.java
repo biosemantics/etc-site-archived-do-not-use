@@ -370,7 +370,7 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 	@Override
 	public void onSave() {
 		createSaveTimer();
-		final MessageBox box = Alerter.startLoading();
+		final MessageBox box = Alerter.startSaving();
 		this.otoCollectionService.update(collection, false, new AsyncCallback<Void>() {
 			@Override
 			public void onFailure(Throwable caught) {
