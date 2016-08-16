@@ -65,7 +65,7 @@ public class OntologizeDefinePresenter implements IOntologizeDefineView.Presente
 			public void onSuccess(Boolean result) {
 				if(result) {
 					ontologizeService.startWithOntologyCreation(Authentication.getInstance().getToken(), 
-							view.getTaskName(), inputFile, view.getTaxonGroup(), view.getOntologyPrefix()
+							view.getTaskName(), inputFile, view.getTaxonGroup()
 							, new AsyncCallback<Task>() {
 						@Override
 						public void onSuccess(Task result) {
@@ -126,12 +126,6 @@ public class OntologizeDefinePresenter implements IOntologizeDefineView.Presente
 		}
 		if (view.getTaskName() == null || view.getTaskName().equals("")){
 			Alerter.selectTaskName();
-			callback.onSuccess(false);
-			return;
-		}
-		
-		if(view.getOntologyPrefix().isEmpty()) {
-			Alerter.selectOrCreateOntology();
 			callback.onSuccess(false);
 			return;
 		}

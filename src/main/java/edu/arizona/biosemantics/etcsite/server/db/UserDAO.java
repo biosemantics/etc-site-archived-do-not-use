@@ -221,16 +221,17 @@ public class UserDAO {
 		return this.getUser(email) != null;
 	}
 
-	public List<edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection> getOntologizeCollections(int userId) {
-		List<edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection> collections = new LinkedList<edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection>();
+	public List<edu.arizona.biosemantics.oto2.ontologize2.shared.model.Collection> getOntologizeCollections(int userId) {
+		List<edu.arizona.biosemantics.oto2.ontologize2.shared.model.Collection> collections = 
+				new LinkedList<edu.arizona.biosemantics.oto2.ontologize2.shared.model.Collection>();
 		try (Query query = new Query("SELECT * FROM etcsite_user_ontologize_collection WHERE user = ?")) {
 			query.setParameter(1, userId);
 			ResultSet result = query.execute();
 			while (result.next()) {
 				int collectionId = result.getInt("ontologize_collection_id");
 				String collectionSecret = result.getString("ontologize_collection_secret");
-				edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection collection = 
-						new edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection();
+				edu.arizona.biosemantics.oto2.ontologize2.shared.model.Collection collection = 
+						new edu.arizona.biosemantics.oto2.ontologize2.shared.model.Collection();
 				collection.setId(collectionId);
 				collection.setSecret(collectionSecret);
 				collections.add(collection);

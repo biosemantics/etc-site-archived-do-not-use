@@ -57,7 +57,7 @@
 	</listener>
 	<listener>
 		<listener-class>
-			edu.arizona.biosemantics.oto2.ontologize.server.OntologizeServletContextListener
+			edu.arizona.biosemantics.oto2.ontologize2.server.OntologizeServletContextListener
 		</listener-class>
 	</listener>
 	<listener>

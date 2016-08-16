@@ -1,0 +1,16 @@
+#Database
+databaseName=etcsite_alignment
+databaseUser=termsuser
+databasePassword=termspassword
+databaseHost=localhost
+databasePort=3306
+database_partitionCount=2
+database_minConnectionsPerPartition=10
+database_maxConnectionsPerPartition=20
+
+#Files
+collectionsPath=
+
+wordnet_directory=
+oto_url=http://biosemantics.arizona.edu:8080/OTO
+stateWeight=3

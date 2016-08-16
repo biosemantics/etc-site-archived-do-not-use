@@ -52,12 +52,6 @@ public class OntologizeDefineView extends Composite implements IOntologizeDefine
 	
 	@UiField
 	RadioButton createOntologyRadio;*/
-
-	@UiField
-	VerticalPanel createOntologyPanel;
-	
-	@UiField
-	TextBox ontologyPrefixTextBox;
 	
 	@Inject
 	public OntologizeDefineView() {
@@ -120,11 +114,7 @@ public class OntologizeDefineView extends Composite implements IOntologizeDefine
 	@Override
 	public void resetFields(){
 		this.taskNameTextBox.setText("");
-		this.ontologyPrefixTextBox.setText(null);
-		this.ontologyPrefixTextBox.setValue(null);
 		this.glossaryListBox.setSelectedIndex(getInitialGlossaryIndex());
-		
-		
 	}
 	
 	private int getInitialGlossaryIndex() {
@@ -143,11 +133,6 @@ public class OntologizeDefineView extends Composite implements IOntologizeDefine
 	@Override
 	public String getTaxonGroup() {
 		return glossaryListBox.getItemText(glossaryListBox.getSelectedIndex());
-	}
-
-	@Override
-	public String getOntologyPrefix() {
-		return ontologyPrefixTextBox.getValue();
 	}
 
 	/*@Override

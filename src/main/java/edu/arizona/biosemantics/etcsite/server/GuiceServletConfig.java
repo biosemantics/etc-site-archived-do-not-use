@@ -50,9 +50,8 @@ public class GuiceServletConfig extends GuiceServletContextListener {
 				serve("/etcsite/matrixGeneration").with(MatrixGenerationService.class);
 				serve("/etcsite/ontologize").with(OntologizeService.class);
 				serve("/etcsite/captcha/*").with(KaptchaServlet.class);
-				serve("/etcsite/ontologize_collection").with(edu.arizona.biosemantics.oto2.ontologize.server.rpc.CollectionService.class);
-				serve("/etcsite/ontologize_context").with(edu.arizona.biosemantics.oto2.ontologize.server.rpc.ContextService.class);
-				serve("/etcsite/ontologize_toOntology").with(edu.arizona.biosemantics.oto2.ontologize.server.rpc.ToOntologyService.class);
+				serve("/etcsite/ontologize2_collection").with(edu.arizona.biosemantics.oto2.ontologize2.server.CollectionService.class);
+				serve("/etcsite/ontologize2_context").with(edu.arizona.biosemantics.oto2.ontologize2.server.ContextService.class);
 				serve("/etcsite/oto_collection").with(edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService.class);
 				serve("/etcsite/oto_community").with(edu.arizona.biosemantics.oto2.oto.server.rpc.CommunityService.class);
 				serve("/etcsite/oto_context").with(edu.arizona.biosemantics.oto2.oto.server.rpc.ContextService.class);

@@ -21,7 +21,6 @@ public interface IOntologizeDefineView extends IsWidget {
 	void resetFields();
 	//boolean isSelectOntology();
 	String getTaxonGroup();
-	String getOntologyPrefix();
 	//boolean isCreateOntology();
 	//void setOntologyFilePath(String shortendPath);
 }

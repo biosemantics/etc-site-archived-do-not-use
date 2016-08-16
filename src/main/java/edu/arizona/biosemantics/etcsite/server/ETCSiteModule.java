@@ -84,9 +84,8 @@ public class ETCSiteModule extends AbstractModule {
 		bind(OntologizeService.class).in(Scopes.SINGLETON);
 		bind(TreeGenerationService.class).in(Scopes.SINGLETON);
 		bind(KaptchaServlet.class).in(Scopes.SINGLETON);
-		bind(edu.arizona.biosemantics.oto2.ontologize.server.rpc.CollectionService.class).in(Scopes.SINGLETON);
-		bind(edu.arizona.biosemantics.oto2.ontologize.server.rpc.ToOntologyService.class).in(Scopes.SINGLETON);
-		bind(edu.arizona.biosemantics.oto2.ontologize.server.rpc.ContextService.class).in(Scopes.SINGLETON);
+		bind(edu.arizona.biosemantics.oto2.ontologize2.server.CollectionService.class).in(Scopes.SINGLETON);
+		bind(edu.arizona.biosemantics.oto2.ontologize2.server.ContextService.class).in(Scopes.SINGLETON);
 		bind(edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService.class).in(Scopes.SINGLETON);
 		bind(edu.arizona.biosemantics.oto2.oto.server.rpc.CommunityService.class).in(Scopes.SINGLETON);
 		bind(edu.arizona.biosemantics.oto2.oto.server.rpc.ContextService.class).in(Scopes.SINGLETON);
@@ -117,12 +116,10 @@ public class ETCSiteModule extends AbstractModule {
 		bind(ITaxonomyComparisonService.class).to(TaxonomyComparisonService.class).in(Scopes.SINGLETON);
 		bind(IOntologizeService.class).to(OntologizeService.class).in(Scopes.SINGLETON);
 		bind(ITreeGenerationService.class).to(TreeGenerationService.class).in(Scopes.SINGLETON);
-		bind(edu.arizona.biosemantics.oto2.ontologize.shared.rpc.ICollectionService.class).to(
-				edu.arizona.biosemantics.oto2.ontologize.server.rpc.CollectionService.class).in(Scopes.SINGLETON);
-		bind(edu.arizona.biosemantics.oto2.ontologize.shared.rpc.toontology.IToOntologyService.class).to(
-				edu.arizona.biosemantics.oto2.ontologize.server.rpc.ToOntologyService.class).in(Scopes.SINGLETON);
-		bind(edu.arizona.biosemantics.oto2.ontologize.shared.rpc.IContextService.class).to(
-				edu.arizona.biosemantics.oto2.ontologize.server.rpc.ContextService.class).in(Scopes.SINGLETON);
+		bind(edu.arizona.biosemantics.oto2.ontologize2.shared.ICollectionService.class).to(
+				edu.arizona.biosemantics.oto2.ontologize2.server.CollectionService.class).in(Scopes.SINGLETON);
+		bind(edu.arizona.biosemantics.oto2.ontologize2.shared.IContextService.class).to(
+				edu.arizona.biosemantics.oto2.ontologize2.server.ContextService.class).in(Scopes.SINGLETON);
 		bind(edu.arizona.biosemantics.oto2.oto.shared.rpc.ICollectionService.class).to(
 				edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService.class).in(Scopes.SINGLETON);
 		bind(edu.arizona.biosemantics.oto2.oto.shared.rpc.ICommunityService.class).to(

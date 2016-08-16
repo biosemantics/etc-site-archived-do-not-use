@@ -99,7 +99,6 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 	private DAOManager daoManager;
 	private Emailer emailer;
 	private ICollectionService otoCollectionService;
-	private edu.arizona.biosemantics.oto2.ontologize.shared.rpc.ICollectionService ontologizeCollectionService;
 	private ToOTOSender2 otoSender;
 	
 	@Inject
@@ -107,7 +106,6 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			IFileFormatService fileFormatService, IFilePermissionService filePermissionService, IUserService userService, 
 			DAOManager daoManager, Emailer emailer, 
 			edu.arizona.biosemantics.oto2.oto.shared.rpc.ICollectionService otoCollectionService, 
-			edu.arizona.biosemantics.oto2.ontologize.shared.rpc.ICollectionService ontologizeCollectionService,
 			ToOTOSender2 otoSender) {
 		this.collectionService = collectionService;
 		this.fileAccessService = fileAccessService; 
@@ -118,7 +116,6 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		this.daoManager = daoManager;
 		this.emailer = emailer;
 		this.otoCollectionService = otoCollectionService;
-		this.ontologizeCollectionService = ontologizeCollectionService;
 		this.otoSender = otoSender;
 		executorService = MoreExecutors.listeningDecorator(Executors.newScheduledThreadPool(Configuration.maxActiveSemanticMarkup));
 	}

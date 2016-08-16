@@ -174,25 +174,6 @@
 						</g:HorizontalPanel>
 					</g:VerticalPanel> -->
 					
-					<g:VerticalPanel ui:field="createOntologyPanel" styleName="{style.subMenuEntry}">
-						<g:HorizontalPanel styleName="inputForm">
-							<g:VerticalPanel styleName="{style.firstColumn}">
-								<g:cell verticalAlignment="ALIGN_TOP">
-									<g:Label>Ontology Prefix:</g:Label>
-								</g:cell>
-							</g:VerticalPanel>
-							<g:cell verticalAlignment="ALIGN_MIDDLE">
-								<g:TextBox ui:field="ontologyPrefixTextBox"></g:TextBox>
-							</g:cell>
-						</g:HorizontalPanel>
-						<g:HorizontalPanel styleName="inputForm">
-							<g:HTML styleName="{style.note} DescriptionFont">
-							Ontology prefix for the <b>new</b> ontology. To continue working on an ontology go to Task Manager and resume the ontology task.
-							</g:HTML>		
-						</g:HorizontalPanel>
-					</g:VerticalPanel>
-					
-					
 					<g:VerticalPanel styleName="{style.padding}">
 						<g:Button ui:field="nextButton">Next Step in Ontology Building</g:Button>
 					</g:VerticalPanel>

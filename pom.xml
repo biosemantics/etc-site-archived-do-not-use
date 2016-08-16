@@ -248,7 +248,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>semantic-markup</artifactId>
-			<version>0.1.181-SNAPSHOT</version>
+			<version>0.1.182-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>app</artifactId>
@@ -286,22 +286,14 @@
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
-		  <artifactId>ontologize</artifactId>
-		  <version>0.1.22-SNAPSHOT</version>
+		  <artifactId>ontologize2</artifactId>
+		  <version>0.0.7-SNAPSHOT</version>
 		  <classifier>sources</classifier>
-		  <exclusions>
-		  	<exclusion>
-		  		<artifactId>search</artifactId>
-		  		<groupId>
-		  			edu.arizona.biosemantics.common.ontology
-		  		</groupId>
-		  	</exclusion>
-		  </exclusions>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
-		  <artifactId>ontologize</artifactId>
-		  <version>0.1.22-SNAPSHOT</version>
+		  <artifactId>ontologize2</artifactId>
+		  <version>0.0.7-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>

@@ -33,7 +33,7 @@
   <inherits name='edu.arizona.biosemantics.euler.alignment.Euler_alignment'/>
   <inherits name='edu.arizona.biosemantics.oto.Model'/>
   <inherits name='edu.arizona.biosemantics.oto2.oto.Oto'/>
-  <inherits name='edu.arizona.biosemantics.oto2.ontologize.Ontologize'/>
+  <inherits name='edu.arizona.biosemantics.oto2.ontologize2.Ontologize2'/>
   <inherits name='edu.ucdavis.cs.cfgproject.CfgProject'/>
   <inherits name='edu.arizona.biosemantics.etcsitehelp.EtcSiteHelp' />
   

@@ -1,0 +1,9 @@
+collectionsDirectory=C:/Users/rodenhausen.CATNET/git/oto2/ontologize2/collections
+ontologyGraphs=
+permanentOntologyDirectory=
+
+etcOntologyBaseIRI=http://www.etc-project.org/owl/ontologies/
+
+context=C:/Users/rodenhausen.CATNET/git/oto2/ontologize2/context
+contextMaxHits=100
+wordNetSource=

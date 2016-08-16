@@ -14,7 +14,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.content.ontologize.IOntologizeBuildView.Presenter;
-import edu.arizona.biosemantics.oto2.ontologize.client.Ontologize;
+import edu.arizona.biosemantics.oto2.ontologize2.client.Ontologize;
+import edu.arizona.biosemantics.oto2.ontologize2.client.event.LoadCollectionEvent;
+import edu.arizona.biosemantics.oto2.ontologize2.shared.model.Collection;
 import edu.arizona.biosemantics.oto2.oto.client.Oto;
 
 public class OntologizeBuildView extends Composite implements IOntologizeBuildView, RequiresResize {
@@ -34,7 +36,7 @@ public class OntologizeBuildView extends Composite implements IOntologizeBuildVi
 
 	public OntologizeBuildView() {
 		initWidget(uiBinder.createAndBindUi(this));
-		ontologizePanel.setWidget(ontologize.getView().asWidget());
+		ontologizePanel.setWidget(ontologize);
 	}
 	
 	@Override
@@ -58,17 +60,16 @@ public class OntologizeBuildView extends Composite implements IOntologizeBuildVi
 	}
 
 	@Override
-	public void setOntologize(int uploadId, String secret) {
+	public void setOntologize(Collection collection) {
 		ontologize.setUser(Authentication.getInstance().getFirstName() + " " + 
 				Authentication.getInstance().getLastName() + " (" + 
 				Authentication.getInstance().getEmail() + ")");
-		
-		ontologize.loadCollection(uploadId, secret);
+		ontologize.getEventBus().fireEvent(new LoadCollectionEvent(collection));
 	}
 
 	@Override
 	public void onResize() {
-		((RequiresResize)ontologize.getView()).onResize();
+		((RequiresResize)ontologize).onResize();
 	}
 	
 }

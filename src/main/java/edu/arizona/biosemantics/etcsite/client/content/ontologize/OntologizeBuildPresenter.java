@@ -27,8 +27,9 @@ import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.ontologize.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ontologize.IOntologizeServiceAsync;
-import edu.arizona.biosemantics.oto2.ontologize.client.event.DownloadEvent;
-import edu.arizona.biosemantics.oto2.ontologize.shared.model.Collection;
+import edu.arizona.biosemantics.oto2.ontologize2.client.event.DownloadEvent;
+//import edu.arizona.biosemantics.oto2.ontologize2.client.event.DownloadEvent;
+import edu.arizona.biosemantics.oto2.ontologize2.shared.model.Collection;
 
 public class OntologizeBuildPresenter implements IOntologizeBuildView.Presenter {
 
@@ -55,12 +56,12 @@ public class OntologizeBuildPresenter implements IOntologizeBuildView.Presenter 
 			@Override
 			public void onDownload(DownloadEvent event) {
 				final MessageBox box = Alerter.startLoading();
-				final MyWindow window = MyWindow.open(null, "_blank", null);
 				ontologizeService.downloadOntologize(Authentication.getInstance().getToken(), 
 						task, new AsyncCallback<String>() {
 					@Override
 					public void onSuccess(String result) {
 						Alerter.stopLoading(box);
+						MyWindow window = MyWindow.open(null, "_blank", null);
 						window.setUrl("download.dld?target=" + URL.encodeQueryString(result) + 
 								"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
 								"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()));
@@ -84,7 +85,7 @@ public class OntologizeBuildPresenter implements IOntologizeBuildView.Presenter 
 				task, new AsyncCallback<Collection>() {
 			@Override
 			public void onSuccess(Collection collection) {
-				view.setOntologize(collection.getId(), collection.getSecret());
+				view.setOntologize(collection);
 				Alerter.stopLoading(box);
 			}
 			@Override
@@ -148,17 +149,17 @@ public class OntologizeBuildPresenter implements IOntologizeBuildView.Presenter 
 						Alerter.emptyFolder();
 						Alerter.stopLoading(box);
 					} else {
-						ontologizeService.addInput(Authentication.getInstance().getToken(), task, inputFile, new AsyncCallback<Void>() {
+						ontologizeService.addInput(Authentication.getInstance().getToken(), task, inputFile, new AsyncCallback<Collection>() {
 							@Override
 							public void onFailure(Throwable caught) {
 								Alerter.stopLoading(box);
 								Alerter.failedToAddInput(caught);
 							}
 							@Override
-							public void onSuccess(Void result) {
+							public void onSuccess(Collection collection) {
 								Alerter.stopLoading(box);
 								OntologizeConfiguration config = (OntologizeConfiguration)task.getConfiguration();
-								view.setOntologize(config.getOntologizeCollectionId(), config.getOntologizeCollectionSecret());
+								view.setOntologize(collection);
 							}
 						});
 					}
