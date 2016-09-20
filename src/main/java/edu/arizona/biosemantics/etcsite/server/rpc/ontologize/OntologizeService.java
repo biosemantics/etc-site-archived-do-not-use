@@ -28,6 +28,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 
 import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.common.ontology.graph.OntologyGraph;
+import edu.arizona.biosemantics.common.ontology.graph.Reader;
 import edu.arizona.biosemantics.common.taxonomy.Rank;
 import edu.arizona.biosemantics.common.taxonomy.RankData;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
@@ -62,9 +64,14 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.IFilePermissi
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.permission.PermissionDeniedException;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ontologize.IOntologizeService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.ontologize.OntologizeException;
+import edu.arizona.biosemantics.oto2.ontologize2.server.owl.Ontology;
 import edu.arizona.biosemantics.oto2.ontologize2.shared.model.Candidate;
 import edu.arizona.biosemantics.oto2.ontologize2.shared.model.Candidates;
 import edu.arizona.biosemantics.oto2.ontologize2.shared.model.Collection;
+import edu.arizona.biosemantics.oto2.ontologize2.shared.model.OntologyGraph.Edge;
+import edu.arizona.biosemantics.oto2.ontologize2.shared.model.OntologyGraph.Edge.Type;
+import edu.arizona.biosemantics.oto2.ontologize2.shared.model.OntologyGraph.Edge.Origin;
+import edu.arizona.biosemantics.oto2.ontologize2.shared.model.OntologyGraph.Vertex;
 import edu.arizona.biosemantics.common.context.shared.Context;
 
 public class OntologizeService extends RemoteServiceServlet implements IOntologizeService {
@@ -172,6 +179,42 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 		collection.setName(name);
 		collection.setTaxonGroup(taxonGroup);
 		collection.add(getCandidates(input));
+		
+		Map<Ontology, edu.arizona.biosemantics.common.ontology.graph.OntologyGraph> graphs = 
+				new HashMap<Ontology, edu.arizona.biosemantics.common.ontology.graph.OntologyGraph>();
+		List<Ontology> relevantOntologies = Ontology.getRelevantOntologies(taxonGroup);
+		for(Ontology ro : relevantOntologies) {
+			Reader reader = new Reader(edu.arizona.biosemantics.oto2.ontologize2.server.Configuration.ontologyGraphs + 
+					File.separator + ro.getName() + ".graph");
+			try {
+				edu.arizona.biosemantics.common.ontology.graph.OntologyGraph g = reader.read();
+				graphs.put(ro, g);
+			} catch (Exception e) {
+				log(LogLevel.ERROR, "Could not read graph", e);
+			}
+		}
+		
+		Candidates candidates = collection.getCandidates();
+		for(OntologyGraph g : graphs.values()) {
+			for(Candidate candidate : candidates) {
+				Set<edu.arizona.biosemantics.common.ontology.graph.OntologyGraph.Vertex> vertices = g.getVerticesByName(candidate.getText());
+				if(vertices.size() == 1) {
+					for(edu.arizona.biosemantics.common.ontology.graph.OntologyGraph.Edge.Type type : edu.arizona.biosemantics.common.ontology.graph.OntologyGraph.Edge.Type.values()) {
+						List<edu.arizona.biosemantics.common.ontology.graph.OntologyGraph.Edge> relations = g.getOutRelations(vertices.iterator().next(), type);
+						for(edu.arizona.biosemantics.common.ontology.graph.OntologyGraph.Edge relation : relations) {
+							if(candidates.contains(relation.getDest().getName())) {
+								try {
+									collection.getGraph().addRelation(new Edge(new Vertex(candidate.getText()), 
+											new Vertex(relation.getDest().getName()), Type.valueOf(type.toString()), Origin.IMPORT));
+								} catch(Exception e) {
+									log(LogLevel.ERROR, "Could not add relation", e);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 		
 		try {
 			collection = collectionService.insert(collection);

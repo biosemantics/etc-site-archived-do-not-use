@@ -217,13 +217,14 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 	
 	@Override
 	public void stopPossibleWorldGeneration(final AuthenticationToken token, final Task task) throws TaxonomyComparisonException {
-		final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
+		TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
+		log(LogLevel.INFO, "Stop possible world generation for config: " + config.getConfiguration().getId());
+		
+		//order matters: First destroy active process, then cancel future. If future canceled first future result listener (that handles successful completion fires)
 		if(activeProcessFutures.containsKey(config.getConfiguration().getId())) {
+			log(LogLevel.INFO, "Cancel active process future for config: " + config.getConfiguration().getId());
 			ListenableFuture<Void> processFuture = this.activeProcessFutures.get(config.getConfiguration().getId());
 			processFuture.cancel(true);
-		}
-		if(activeProcess.containsKey(config.getConfiguration().getId())) {
-			activeProcess.get(config.getConfiguration().getId()).destroy();
 		}
 	}
 	
@@ -270,43 +271,51 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			final PossibleWorldsGeneration possibleWorldGeneration = new ExtraJvmPossibleWorldsGeneration(eulerInputFile, outputDir, workingDir);
 			//final PossibleWorldsGeneration possibleWorldGeneration = new InJvmPossibleWorldsGeneration(eulerInputFile, outputDir, workingDir);
 			//final PossibleWorldsGeneration possibleWorldGeneration = new DummyPossibleWorldsGeneration(eulerInputFile, outputDir);
+
+ 			log(LogLevel.INFO, "active processes: " + activeProcess);
 			activeProcess.put(config.getConfiguration().getId(), possibleWorldGeneration);
+ 			log(LogLevel.INFO, "active processes: " + activeProcess);
 			final ListenableFuture<Void> futureResult = executorService.submit(possibleWorldGeneration);
+			this.activeProcessFutures.put(config.getConfiguration().getId(), futureResult);
 			executorService.schedule(new Runnable() {
 				public void run() {
-					futureResult.cancel(true);
-					log(LogLevel.ERROR, "MIR Generation took too long and was canceled.");
+					try {
+						stopPossibleWorldGeneration(authenticationToken, task);
+						log(LogLevel.ERROR, "MIR Generation took too long and was canceled.");
+					} catch(TaxonomyComparisonException e) {
+
+						log(LogLevel.ERROR, "MIR Generation could not be canceled.", e);
+					}
 				}
 			}, Configuration.taxonomyComparisonTask_maxRunningTimeMinutes, TimeUnit.MINUTES);
-			this.activeProcessFutures.put(config.getConfiguration().getId(), futureResult);
 			futureResult.addListener(new Runnable() {
 			    	public void run() {	
 			     		try {
+			     			log(LogLevel.INFO, config.getConfiguration().getId() + " completed running");
 			     			PossibleWorldsGeneration possibleWorldsGeneration = activeProcess.remove(config.getConfiguration().getId());
 				    		ListenableFuture<Void> futureResult = activeProcessFutures.remove(config.getConfiguration().getId());
-				     		if(possibleWorldsGeneration.isExecutedSuccessfully()) {
-				     			if(!futureResult.isCancelled()) {
-									TaskStage newTaskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.ANALYZE_COMPLETE.toString());
-									task.setTaskStage(newTaskStage);
-									task.setResumable(true);
-									daoManager.getTaskDAO().updateTask(task);
-									
-									// send an email to the user who owns the task.
-									sendFinishedTaxonomyComparisonEmail(task);
-				     			}
-				     			
-				     			save(authenticationToken, task, collection);
-				     		} else {
-				     			if(futureResult.isCancelled()) {
-				     				//took too long
+				     		if(possibleWorldsGeneration != null && futureResult != null) {
+					    		if(futureResult.isCancelled()) {
+					    			log(LogLevel.INFO, config.getConfiguration().getId() + " was canceled");
 				     				task.setTooLong(futureResult.isCancelled());
 				     				daoManager.getTaskDAO().updateTask(task);
-				     			} else {
-				     				//task.setFailed(true);
-									//task.setFailedTime(new Date());
-									//task.setTooLong(futureResult.isCancelled());
-									//daoManager.getTaskDAO().updateTask(task);
-				     			}
+					    			log(LogLevel.INFO, config.getConfiguration().getId() + " will be destroyed");
+					    			possibleWorldsGeneration.destroy();
+					    		} else {
+					     			if(possibleWorldsGeneration.isExecutedSuccessfully()) {
+						     			if(!futureResult.isCancelled()) {
+											TaskStage newTaskStage = daoManager.getTaskStageDAO().getTaxonomyComparisonTaskStage(TaskStageEnum.ANALYZE_COMPLETE.toString());
+											task.setTaskStage(newTaskStage);
+											task.setResumable(true);
+											daoManager.getTaskDAO().updateTask(task);
+											
+											// send an email to the user who owns the task.
+											sendFinishedTaxonomyComparisonEmail(task);
+						     			}
+					     			
+						     			save(authenticationToken, task, collection);
+					     			}
+					    		}
 				     		}
 			     		} catch(Throwable t) {
 			     			log(LogLevel.ERROR, t.getMessage()+"\n"+org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(t));
@@ -419,6 +428,7 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 
 	@Override
 	public void cancel(AuthenticationToken authenticationToken, Task task) throws TaxonomyComparisonException {
+		task = daoManager.getTaskDAO().getTask(task.getId());
 		final TaxonomyComparisonConfiguration config = getTaxonomyComparisonConfiguration(task);
 						
 		//remove taxonomy comparison configuration

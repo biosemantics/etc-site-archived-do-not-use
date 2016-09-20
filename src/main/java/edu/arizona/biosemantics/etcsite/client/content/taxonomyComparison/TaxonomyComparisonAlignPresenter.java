@@ -79,7 +79,7 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 				@Override
 				public void onSelect(SelectEvent event) {
 					final MessageBox box = Alerter.startLoading();
-					taxonomyComparisonService.cancel(Authentication.getInstance().getToken(), task, new AsyncCallback<Void>() {
+					taxonomyComparisonService.stopPossibleWorldGeneration(Authentication.getInstance().getToken(), task, new AsyncCallback<Void>() {
 						@Override
 						public void onFailure(Throwable caught) {
 							Alerter.failedToCancelPossibleWorldGeneration(caught);

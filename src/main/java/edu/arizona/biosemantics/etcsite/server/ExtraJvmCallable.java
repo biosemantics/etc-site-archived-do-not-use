@@ -24,6 +24,7 @@ public abstract class ExtraJvmCallable<T> implements Callable<T>, Task {
 	protected ExtraJvmCallable() {  }
 
 	public ExtraJvmCallable(Class mainClass, String classPath, String xmx, String xms, String[] args) {
+		System.out.println("call");
 		this.mainClass = mainClass;
 		this.classPath = classPath;
 		this.args = args;
@@ -111,6 +112,7 @@ public abstract class ExtraJvmCallable<T> implements Callable<T>, Task {
 	public abstract T createReturn() throws Exception;
 	
 	public void destroy() {
+		log(LogLevel.INFO, "Destory: " + this);
 		if(process != null)
 			process.destroy();
 	}

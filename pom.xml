@@ -264,12 +264,35 @@
 						edu.arizona.biosemantics.semanticmarkup
 					</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>jung-algorithms</artifactId>
+					<groupId>net.sf.jung</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jung-api</artifactId>
+					<groupId>net.sf.jung</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jung-graph-impl</artifactId>
+					<groupId>net.sf.jung</groupId>
+				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>edu.arizona.biosemantics.common.ontology</groupId>
+		 	<artifactId>graph</artifactId>
+		  	<version>0.0.8-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>edu.arizona.biosemantics.common.ontology</groupId>
+		 	<artifactId>graph</artifactId>
+		  	<version>0.0.8-SNAPSHOT</version>
+		  	<classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.130-SNAPSHOT</version>
+		  <version>0.0.133-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		  <exclusions>
 		  	<exclusion>
@@ -281,19 +304,19 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.130-SNAPSHOT</version>
+		  <version>0.0.133-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize2</artifactId>
-		  <version>0.0.7-SNAPSHOT</version>
+		  <version>0.0.25-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize2</artifactId>
-		  <version>0.0.7-SNAPSHOT</version>
+		  <version>0.0.25-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
@@ -459,7 +482,13 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.euler</groupId>
 			<artifactId>euler2</artifactId>
-			<version>0.0.4-SNAPSHOT</version>
+			<version>0.0.8-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>edu.arizona.biosemantics.euler</groupId>
+			<artifactId>euler2</artifactId>
+			<version>0.0.8-SNAPSHOT</version>
+		  	<classifier>sources</classifier>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.euler</groupId>
