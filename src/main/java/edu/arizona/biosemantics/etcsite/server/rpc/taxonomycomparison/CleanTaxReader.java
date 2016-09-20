@@ -108,7 +108,7 @@ public class CleanTaxReader implements IContentValidator {
 
 	public static void main(String[] args) throws Exception {
 		CleanTaxReader r = new CleanTaxReader();
-		System.out.println(r.isValid(new File("cleantax.txt")));
+		System.out.println(r.isValid(new File("FNATaxonomy.txt")));
 	}
 
 	@Override

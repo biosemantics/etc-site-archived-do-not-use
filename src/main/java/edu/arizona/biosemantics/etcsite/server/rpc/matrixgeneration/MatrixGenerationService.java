@@ -1280,9 +1280,9 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		//MatrixGenerationService service = new MatrixGenerationService(null, null, null, null, null, null);
 		//service.createTaxonMatrix("C:/Users/rodenhausen.CATNET/Desktop/Matrix.ser", new Model());
 		edu.arizona.biosemantics.matrixgeneration.io.raw.out.CSVWriter writer = new 
-				edu.arizona.biosemantics.matrixgeneration.io.raw.out.CSVWriter("C:/Users/rodenhausen.CATNET/Desktop/Gumnosper_final1/Gumnosper_final1.csv", false);
+				edu.arizona.biosemantics.matrixgeneration.io.raw.out.CSVWriter("final1.csv", false);
 		 try(ObjectInputStream objectInputStream = new ObjectInputStream(
-				 new FileInputStream("C:/Users/rodenhausen.CATNET/Desktop/Gumnosper_final1/Matrix.ser"))) {
+				 new FileInputStream("C:/Users/rodenhausen.CATNET/workspace/replaceOperator/out2/Matrix.ser"))) {
 		    	Matrix rawMatrix = (Matrix)objectInputStream.readObject();
 				writer.write(rawMatrix);
 		 }
