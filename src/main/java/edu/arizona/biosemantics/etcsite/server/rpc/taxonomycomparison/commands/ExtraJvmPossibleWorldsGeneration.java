@@ -15,6 +15,11 @@ public class ExtraJvmPossibleWorldsGeneration extends ExtraJvmCallable<Void> imp
 		
 		public static void main(String[] args) {
 			try {
+				//args = new String[3];
+				//args[0] = "/home/thomas/euler-test/workdir";
+				//args[1] = "/home/thomas/euler-test/input.txt";
+				//args[2] = "/home/thomas/euler-test/workdir/out";
+				
 				String workingDir = args[0];
 				String inputFile = args[1];
 				String outputDir = args[2];
