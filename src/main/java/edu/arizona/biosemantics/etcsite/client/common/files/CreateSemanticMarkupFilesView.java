@@ -26,7 +26,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -41,7 +40,11 @@ import com.sencha.gxt.widget.core.client.container.CardLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VBoxLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
+import com.sencha.gxt.widget.core.client.form.TextArea;
 import com.sencha.gxt.widget.core.client.form.TextField;
+import com.sencha.gxt.widget.core.client.menu.Item;
+import com.sencha.gxt.widget.core.client.menu.Menu;
+import com.sencha.gxt.widget.core.client.menu.MenuItem;
 
 import edu.arizona.biosemantics.common.taxonomy.Description;
 import edu.arizona.biosemantics.common.taxonomy.Rank;
@@ -213,7 +216,6 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 	private ProgressMessageBox progressBox;
 
 	public CreateSemanticMarkupFilesView() {
-		
 		authorityDate="unspecified,unspecified";
 		
 	    ListStore<Rank> store = new ListStore<Rank>(new ModelKeyProvider<Rank>() {
@@ -315,8 +317,28 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		batch_fullCitation.getElement().setPropertyString("placeholder", "Enter Full Citation");
 		batch_year.getElement().setPropertyString("placeholder", "Enter Publication Year");
 		
+		batchArea.setContextMenu(createMenu(batchArea));
+		descriptionArea.setContextMenu(createMenu(descriptionArea));
 	}
  
+	private Menu createMenu(final TextArea area) {
+		Menu menu = new Menu();
+		for(final String symbol : new String[] { "°", "μm" }) {
+			MenuItem item = new MenuItem("°");
+			item.addSelectionHandler(new SelectionHandler<Item>() {
+				@Override
+				public void onSelection(SelectionEvent<Item> event) {
+					area.setValue(
+							area.getText().substring(0, area.getCursorPos()) + 
+							symbol + 
+							area.getText().substring(area.getCursorPos()));
+				}
+			});
+			menu.add(item);
+		}
+		return menu;
+	}
+
 	/*============ Handler Methods ============*/
 	@UiHandler({
 	      "basic", "roFields", "tNames", "descInstructions"})

@@ -247,7 +247,7 @@
 											    </g:VerticalPanel> 
 											</g:customCell>
 											<g:customCell>
-											    <g:TextArea ui:field="descriptionArea" styleName="{style.descriptionArea}"></g:TextArea>
+											    <form:TextArea ui:field="descriptionArea" styleName="{style.descriptionArea}"></form:TextArea>
 											</g:customCell>
 										</g:row>
 										<g:row>
@@ -453,14 +453,14 @@
 		                            <g:CheckBox ui:field="copyCheckBox" title="If checked, authority and date info of a higher taxon will be copied automatically to all its lower taxa. ">Copy Authority and Date values</g:CheckBox>
 		                        </g:cell>
 			                </g:HorizontalPanel>
-			               	<g:TextArea ui:field="batchArea" styleName="{style.batchArea}"></g:TextArea>
+			               	<form:TextArea ui:field="batchArea" styleName="{style.batchArea}"></form:TextArea>
 		    	           	<g:HorizontalPanel spacing = "3">
 		        	       	    <g:Button ui:field="previewButton">Preview Input Text</g:Button>
 		            	   	</g:HorizontalPanel>
 			            </g:VerticalPanel>
 			            <g:VerticalPanel ui:field="previewPanel">
 			                <g:Label styleName="{style.heading}">PREVIEW</g:Label>
-		    	            <g:TextArea ui:field="previewArea" styleName="{style.batchArea}" enabled="false"></g:TextArea>
+		    	            <form:TextArea ui:field="previewArea" styleName="{style.batchArea}" enabled="false"></form:TextArea>
 		        	        <g:HorizontalPanel spacing="3">
 		            	        <g:Button ui:field="batchButton">Accept &amp; Create</g:Button>
 		                	    <g:Button ui:field="returnButton">Return to Original</g:Button>
