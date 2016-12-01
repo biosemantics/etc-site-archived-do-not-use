@@ -23,6 +23,7 @@ public class ExtraJvmInputVisualization extends ExtraJvmCallable<Void> implement
 				euler.setName("iv");
 				euler.run();
 			} catch (Throwable t) {
+				t.printStackTrace();
 				System.exit(-1);
 			}
 		}
@@ -38,6 +39,10 @@ public class ExtraJvmInputVisualization extends ExtraJvmCallable<Void> implement
 		this.inputFile = inputFile;
 		this.outputDir = outputDir;
 		
+		this.addPathEnvironment(edu.arizona.biosemantics.euler2.Configuration.eulerPath + ":" +
+				edu.arizona.biosemantics.euler2.Configuration.eulerPath + "src-el:" +
+				edu.arizona.biosemantics.euler2.Configuration.eulerPath + "bbox-lattice:" + 
+				edu.arizona.biosemantics.euler2.Configuration.eulerPath + "default-stylesheet");
 		this.setArgs(createArgs());
 		if(!Configuration.taxonomyComparison_xms.isEmpty()) 
 			this.setXms(Configuration.taxonomyComparison_xms);

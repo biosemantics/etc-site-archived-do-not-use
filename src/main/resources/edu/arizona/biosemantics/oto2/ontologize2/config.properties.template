@@ -7,3 +7,9 @@ etcOntologyBaseIRI=http://www.etc-project.org/owl/ontologies/
 context=C:/Users/rodenhausen.CATNET/git/oto2/ontologize2/context
 contextMaxHits=100
 wordNetSource=
+
+existing_classes_file=src/main/resources/edu/arizona/biosemantics/oto2/ontologize2/classes.json
+existing_parts_file=src/main/resources/edu/arizona/biosemantics/oto2/ontologize2/parts.json
+existing_synonyms_file=src/main/resources/edu/arizona/biosemantics/oto2/ontologize2/synonyms.json
+
+modifier_ontology=src/main/resources/edu/arizona/biosemantics/oto2/ontologize2/ModifierOntology.owl

@@ -37,6 +37,7 @@ import edu.arizona.biosemantics.etcsite.server.Emailer;
 import edu.arizona.biosemantics.etcsite.server.JavaZipper;
 import edu.arizona.biosemantics.etcsite.server.Zipper;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
+import edu.arizona.biosemantics.etcsite.server.rpc.auth.AdminAuthenticationToken;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.FileService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.access.FileAccessService;
 import edu.arizona.biosemantics.etcsite.server.rpc.file.format.FileFormatService;
@@ -265,7 +266,7 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 		for(BiologicalEntity structure : structures) {
 			String name = structure.hasConstraint() ? structure.getConstraint() + " " + structure.getName() : structure.getName();
 			if(!containedStructures.contains(name + structure.getIri())) {
-				result.add(new Candidate(name, "/structure"));
+				result.add(new Candidate(name, "/material anatomical entity"));
 				containedStructures.add(name);
 			}
 		}
@@ -274,7 +275,7 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 			//filter comparison values such as "wider than long". "twice of leaf"
 			if(character.getValue().split("\\W+").length < 3) {
 				if(!containedCharacters.contains(character.getValue() + character.getCategory() + character.getIri())) {
-					result.add(new Candidate(character.getValue(), "/character/" + character.getCategory()));
+					result.add(new Candidate(character.getValue(), "/quality/" + character.getCategory()));
 					containedCharacters.add(character.getValue() + character.getCategory() + character.getIri());
 				}
 			}
@@ -665,7 +666,7 @@ public class OntologizeService extends RemoteServiceServlet implements IOntologi
 		//find a suitable destination filePath
 		String createDirectoryResult;
 		try {
-			createDirectoryResult = fileService.createDirectory(token, outputDirectoryParentResult, 
+			createDirectoryResult = fileService.createDirectory(new AdminAuthenticationToken(), outputDirectoryParentResult, 
 				outputDirectoryNameResult, true);
 		} catch (PermissionDeniedException | CreateDirectoryFailedException e) {
 			throw new OntologizeException(task);

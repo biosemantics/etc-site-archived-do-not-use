@@ -1,0 +1,144 @@
+{
+  "Thing" : [ {
+    "value" : "material anatomical entity",
+    "requiresCandidate" : false
+  }, {
+    "value" : "quality",
+    "requiresCandidate" : false
+  }, {
+    "value" : "modifier",
+    "requiresCandidate" : false
+  } ],
+  "quality" : [ {
+    "value" : "coloration",
+    "requiresCandidate" : false
+  }, {
+    "value" : "reflection",
+    "requiresCandidate" : false
+  } ],
+  "material anatomical entity" : [ {
+    "value" : "non-specific material anatomical entity",
+    "requiresCandidate" : false
+  } ],
+  "modifier" : [ {
+    "value" : "certainty_modifiers",
+    "requiresCandidate" : false
+  }, {
+    "value" : "coverage_modifiers",
+    "requiresCandidate" : false
+  }, {
+    "value" : "degree_modifiers",
+    "requiresCandidate" : false
+  }, {
+    "value" : "frequency_modifiers",
+    "requiresCandidate" : false
+  } ],
+  "certainty_modifiers" : [ {
+    "value" : "less than 25% certain",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 25% certain",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 50% certain",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 75% certain",
+    "requiresCandidate" : false
+  }, {
+    "value" : "greater than 75% certain",
+    "requiresCandidate" : false
+  } ],
+  "coverage_modifiers" : [ {
+    "value" : "less than 25% coverage",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 25% coverage",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 50% coverage",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 75% coverage",
+    "requiresCandidate" : false
+  }, {
+    "value" : "greater than 75% coverage",
+    "requiresCandidate" : false
+  } ],
+  "degree_modifiers" : [ {
+    "value" : "less than 25% degree",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 25% degree",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 50% degree",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 75% degree",
+    "requiresCandidate" : false
+  }, {
+    "value" : "greater than 75% degree",
+    "requiresCandidate" : false
+  } ],
+  "frequency_modifiers" : [ {
+    "value" : "less than 25% frequency",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 25% frequency",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 50% frequency",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 75% frequency",
+    "requiresCandidate" : false
+  }, {
+    "value" : "greater than 75% frequency",
+    "requiresCandidate" : false
+  } ],
+  "coloration" : [ {
+    "value" : "red",
+    "requiresCandidate" : false
+  }, {
+    "value" : "blue",
+    "requiresCandidate" : false
+  }, {
+    "value" : "green",
+    "requiresCandidate" : false
+  }, {
+    "value" : "yellow",
+    "requiresCandidate" : false
+  }, {
+    "value" : "white",
+    "requiresCandidate" : false
+  }, {
+    "value" : "black",
+    "requiresCandidate" : false
+  }, {
+    "value" : "brown",
+    "requiresCandidate" : false
+  }, {
+    "value" : "gray",
+    "requiresCandidate" : false
+  }, {
+    "value" : "pink",
+    "requiresCandidate" : false
+  }, {
+    "value" : "orange",
+    "requiresCandidate" : false
+  }, {
+    "value" : "violet",
+    "requiresCandidate" : false
+  } ],
+  "reflection" : [ {
+    "value" : "bright",
+    "requiresCandidate" : false
+  }, {
+    "value" : "translucent",
+    "requiresCandidate" : false
+  }, {
+    "value" : "opaque",
+    "requiresCandidate" : false
+  } ]
+}

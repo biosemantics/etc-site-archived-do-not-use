@@ -37,6 +37,7 @@ import edu.arizona.biosemantics.common.taxonomy.RankData;
 import edu.arizona.biosemantics.common.taxonomy.TaxonIdentification;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.Emailer;
+import edu.arizona.biosemantics.etcsite.server.ExtraJvmCallable;
 import edu.arizona.biosemantics.etcsite.server.db.DAOManager;
 import edu.arizona.biosemantics.etcsite.server.rpc.auth.AdminAuthenticationToken;
 import edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison.commands.ConsistencyCheck;
@@ -293,7 +294,14 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			     		try {
 			     			log(LogLevel.INFO, config.getConfiguration().getId() + " completed running");
 			     			PossibleWorldsGeneration possibleWorldsGeneration = activeProcess.remove(config.getConfiguration().getId());
-				    		ListenableFuture<Void> futureResult = activeProcessFutures.remove(config.getConfiguration().getId());
+				    		if(possibleWorldsGeneration instanceof ExtraJvmCallable<?>) {
+				    			ExtraJvmCallable<?> extraJvmCallable = (ExtraJvmCallable<?>)possibleWorldsGeneration;
+				    			log(LogLevel.INFO, "info: " + extraJvmCallable.getStdOut());
+				    			if(!extraJvmCallable.getErr().isEmpty())
+					    			log(LogLevel.ERROR, "error: " + extraJvmCallable.getErr());
+				    		}
+			     			
+			     			ListenableFuture<Void> futureResult = activeProcessFutures.remove(config.getConfiguration().getId());
 				     		if(possibleWorldsGeneration != null && futureResult != null) {
 					    		if(futureResult.isCancelled()) {
 					    			log(LogLevel.INFO, config.getConfiguration().getId() + " was canceled");
@@ -792,8 +800,10 @@ public class TaxonomyComparisonService extends RemoteServiceServlet implements I
 			edu.arizona.biosemantics.matrixreview.shared.model.Model reviewModel2 = this.unserializeMatrix(getSerializedModel(modelInput2));
 			Taxonomy taxonomy1 = createTaxonomy(reviewModel1);
 			Taxonomy taxonomy2 = createTaxonomy(reviewModel2);
-			taxonomy1.setId(config.getModel1Author() + "_" + config.getModel1Year());
-			taxonomy2.setId(config.getModel2Author() + "_" + config.getModel2Year());
+			//euler / the reasoner does not work with a lot of symbols in the taxonomy id
+			// can't use _ @ as separators
+			taxonomy1.setId(config.getModel1Author() + "" + config.getModel1Year());
+			taxonomy2.setId(config.getModel2Author() + "" + config.getModel2Year());
 			taxonomy1.setYear(config.getModel1Year());
 			taxonomy2.setYear(config.getModel2Year());
 			taxonomy1.setAuthor(config.getModel1Author());

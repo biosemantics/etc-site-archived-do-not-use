@@ -317,14 +317,23 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		batch_fullCitation.getElement().setPropertyString("placeholder", "Enter Full Citation");
 		batch_year.getElement().setPropertyString("placeholder", "Enter Publication Year");
 		
+		batchArea.setHeight(400);
+		batchArea.setWidth(720);
+		previewArea.setHeight(400);
+		previewArea.setWidth(720);
+		descriptionArea.setWidth(550);
+		descriptionArea.setHeight(60);
 		batchArea.setContextMenu(createMenu(batchArea));
 		descriptionArea.setContextMenu(createMenu(descriptionArea));
 	}
  
 	private Menu createMenu(final TextArea area) {
 		Menu menu = new Menu();
+		MenuItem insert = new MenuItem("Insert");
+		Menu sub = new Menu();
+		insert.setSubMenu(sub);
 		for(final String symbol : new String[] { "°", "μm" }) {
-			MenuItem item = new MenuItem("°");
+			MenuItem item = new MenuItem(symbol);
 			item.addSelectionHandler(new SelectionHandler<Item>() {
 				@Override
 				public void onSelection(SelectionEvent<Item> event) {
@@ -334,8 +343,9 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 							area.getText().substring(area.getCursorPos()));
 				}
 			});
-			menu.add(item);
+			sub.add(item);
 		}
+		menu.add(insert);
 		return menu;
 	}
 
@@ -433,6 +443,10 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 		if(!tArea1.getText().isEmpty()&&!descriptionCombo.getValue().name().isEmpty()) {
 			int newRow = descriptionGrid.insertRow(descriptionGrid.getRowCount()-1);
 		    TextArea tArea = new TextArea();
+		    tArea.setWidth(550);
+		    tArea.setHeight(60);
+		    tArea.setContextMenu(createMenu(tArea));
+			descriptionArea.setContextMenu(createMenu(descriptionArea));
 		    tArea.setStyleName(descriptionArea.getStyleName());
 		    Label descriptionLabel = new Label(descriptionCombo.getValue().name());
 		    Label scopeLabel = new Label();
@@ -655,6 +669,9 @@ public class CreateSemanticMarkupFilesView extends Composite implements ICreateS
 			descriptionGrid.removeRow(descriptionGrid.getRowCount() - 2);
 		}
 		TextArea tArea = new TextArea();
+	    tArea.setWidth(550);
+	    tArea.setHeight(60);
+	    tArea.setContextMenu(createMenu(tArea));
 		tArea.setStyleName(descriptionArea.getStyleName());
 		descriptionCombo.setValue(Description.MORPHOLOGY);
 		descriptionArea.setText("");

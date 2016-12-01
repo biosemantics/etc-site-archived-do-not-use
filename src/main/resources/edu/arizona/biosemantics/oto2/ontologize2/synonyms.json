@@ -1,0 +1,63 @@
+{
+  "Synonym-Root" : [ {
+    "value" : "less than 25% certain",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 25% certain",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 50% certain",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 75% certain",
+    "requiresCandidate" : false
+  }, {
+    "value" : "greater than 75% certain",
+    "requiresCandidate" : false
+  }, {
+    "value" : "less than 25% coverage",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 25% coverage",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 50% coverage",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 75% coverage",
+    "requiresCandidate" : false
+  }, {
+    "value" : "greater than 75% coverage",
+    "requiresCandidate" : false
+  }, {
+    "value" : "less than 25% degree",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 25% degree",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 50% degree",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 75% degree",
+    "requiresCandidate" : false
+  }, {
+    "value" : "greater than 75% degree",
+    "requiresCandidate" : false
+  }, {
+    "value" : "less than 25% frequency",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 25% frequency",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 50% frequency",
+    "requiresCandidate" : false
+  }, {
+    "value" : "around 75% frequency",
+    "requiresCandidate" : false
+  }, {
+    "value" : "greater than 75% frequency",
+    "requiresCandidate" : false
+  } ]
+}

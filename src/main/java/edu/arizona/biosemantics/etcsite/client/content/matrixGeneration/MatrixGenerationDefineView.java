@@ -1,5 +1,11 @@
 package edu.arizona.biosemantics.etcsite.client.content.matrixGeneration;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -54,7 +60,15 @@ public class MatrixGenerationDefineView extends Composite implements IMatrixGene
 	public MatrixGenerationDefineView() {
 		super();
 		initWidget(uiBinder.createAndBindUi(this));
-		for(TaxonGroup taxonGroup : TaxonGroup.values()) {
+		
+		List<TaxonGroup> groups = new ArrayList<TaxonGroup>(Arrays.asList(TaxonGroup.values()));
+		Collections.sort(groups, new Comparator<TaxonGroup>() {
+			@Override
+			public int compare(TaxonGroup o1, TaxonGroup o2) {
+				return o1.getDisplayName().compareTo(o2.getDisplayName());
+			}
+		});
+		for(TaxonGroup taxonGroup : groups) {
 			this.glossaryListBox.addItem(taxonGroup.getDisplayName());
 		}
 	}
@@ -125,8 +139,15 @@ public class MatrixGenerationDefineView extends Composite implements IMatrixGene
 	}
 
 	private int getInitialGlossaryIndex() {
-		for(int i=0; i<TaxonGroup.values().length; i++) {
-			if(TaxonGroup.values()[i].equals(TaxonGroup.PLANT))
+		List<TaxonGroup> groups = new ArrayList<TaxonGroup>(Arrays.asList(TaxonGroup.values()));
+		Collections.sort(groups, new Comparator<TaxonGroup>() {
+			@Override
+			public int compare(TaxonGroup o1, TaxonGroup o2) {
+				return o1.getDisplayName().compareTo(o2.getDisplayName());
+			}
+		});
+		for(int i=0; i<groups.size(); i++) {
+			if(groups.get(i).equals(TaxonGroup.PLANT))
 				return i;
 		}
 		return 0;

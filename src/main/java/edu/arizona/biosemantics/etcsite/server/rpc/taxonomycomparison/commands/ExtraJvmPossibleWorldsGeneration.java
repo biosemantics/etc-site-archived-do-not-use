@@ -1,5 +1,7 @@
 package edu.arizona.biosemantics.etcsite.server.rpc.taxonomycomparison.commands;
 
+import org.python.core.PyString;
+
 import edu.arizona.biosemantics.common.log.LogLevel;
 import edu.arizona.biosemantics.etcsite.server.Configuration;
 import edu.arizona.biosemantics.etcsite.server.ExtraJvmCallable;
@@ -20,46 +22,52 @@ public class ExtraJvmPossibleWorldsGeneration extends ExtraJvmCallable<Void> imp
 				//args[1] = "/home/thomas/euler-test/input.txt";
 				//args[2] = "/home/thomas/euler-test/workdir/out";
 				
-				String workingDir = args[0];
+				String pythonWorkingDir = args[0];
 				String inputFile = args[1];
 				String outputDir = args[2];
 				
 				String commandLineOutput = "";
 				EulerAlign euler = new EulerAlign();
 				euler.setInputFile(inputFile);
-				euler.setWorkingDir(workingDir);
+				euler.setWorkingDir(pythonWorkingDir);
 				euler.setOutputDirectory(outputDir);
 				euler.setReasoner(Reasoner.GRINGO);
 				commandLineOutput = euler.run();
 				commandLineOutput += "\n\n";
 				EulerShow show = new EulerShow();
-				show.setWorkingDir(workingDir);
+				show.setWorkingDir(pythonWorkingDir);
 				show.setOutputDirectory(outputDir);
 				show.setName("pw"); // Generate possible worlds pdfs.
 				commandLineOutput += show.run();
 				show.setName("sv"); // Generate aggregate pdfs.
 				show.run();
 			} catch (Throwable t) {
+				t.printStackTrace();
 				System.exit(-1);
 			}
 		}
 		
 	}
 
-	private String workingDir;
+	private String pythonWorkingDir;
 	private String inputFile;
 	private String outputDir;
 	
-	public ExtraJvmPossibleWorldsGeneration(String inputFile, String outputDir, String workingDir) {
-		this.workingDir = workingDir;
+	public ExtraJvmPossibleWorldsGeneration(String inputFile, String outputDir, String pythonWorkingDir) {
+		this.pythonWorkingDir = pythonWorkingDir;
 		this.inputFile = inputFile;
 		this.outputDir = outputDir;
 		
+		this.addPathEnvironment(edu.arizona.biosemantics.euler2.Configuration.eulerPath + ":" +
+				edu.arizona.biosemantics.euler2.Configuration.eulerPath + "src-el:" +
+				edu.arizona.biosemantics.euler2.Configuration.eulerPath + "bbox-lattice:" + 
+				edu.arizona.biosemantics.euler2.Configuration.eulerPath + "default-stylesheet");
 		this.setArgs(createArgs());
 		if(!Configuration.taxonomyComparison_xms.isEmpty()) 
 			this.setXms(Configuration.taxonomyComparison_xms);
 		if(!Configuration.taxonomyComparison_xmx.isEmpty()) 
 			this.setXmx(Configuration.taxonomyComparison_xmx);
+		this.setWorkingDir(pythonWorkingDir);
 		
 		//could be reduced to only libraries relevant to taxonomy comparison
 		if(Configuration.classpath.isEmpty())
@@ -70,7 +78,7 @@ public class ExtraJvmPossibleWorldsGeneration extends ExtraJvmCallable<Void> imp
 	}
 	
 	private String[] createArgs() {
-		String[] args = { workingDir, inputFile, outputDir };
+		String[] args = { pythonWorkingDir, inputFile, outputDir };
 		return args;
 	}
 

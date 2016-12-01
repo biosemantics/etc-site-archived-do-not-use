@@ -1,0 +1,1822 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE Ontology [
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY xml "http://www.w3.org/XML/1998/namespace" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+
+<Ontology xmlns="http://www.w3.org/2002/07/owl#"
+     xml:base="http://biosemantics.arizona.edu/modifiers.owl"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     ontologyIRI="http://biosemantics.arizona.edu/modifiers.owl">
+    <Prefix name="xsd" IRI="http://www.w3.org/2001/XMLSchema#"/>
+    <Prefix name="owl" IRI="http://www.w3.org/2002/07/owl#"/>
+    <Prefix name="oboInOwl" IRI="http://www.geneontology.org/formats/oboInOwl#"/>
+    <Prefix name="" IRI="http://www.w3.org/2002/07/owl#"/>
+    <Prefix name="xml" IRI="http://www.w3.org/XML/1998/namespace"/>
+    <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+    <Prefix name="rdfs" IRI="http://www.w3.org/2000/01/rdf-schema#"/>
+    <Import>http://www.ontologydesignpatterns.org/cp/owl/list.owl</Import>
+    <Declaration>
+        <Class IRI="#always"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#approximation_modifiers"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#certainly"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#certainty_modifiers"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#complete_coverage"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#considerately"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#degree_modifiers"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#frequency_modifiers"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#frequently"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#half_coverage"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#half_possibility"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#high_coverage"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#high_possibility"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#impossible"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#lightly"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#little"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#low_coverage"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#moderately"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#never"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#no_coverage"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#often"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#rarely"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#strongly"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#uncertain"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#more_frequently_than"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty abbreviatedIRI="oboInOwl:less_certain_than"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty abbreviatedIRI="oboInOwl:less_coverage_than"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty abbreviatedIRI="oboInOwl:less_frequently_than"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty abbreviatedIRI="oboInOwl:lighter_than"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty abbreviatedIRI="oboInOwl:more_certain_than"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty abbreviatedIRI="oboInOwl:more_coverage_than"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty abbreviatedIRI="oboInOwl:more_strong_than"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#index"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#30-40_certain"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#medium_frequency"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#very_rarely"/>
+    </Declaration>
+    <Declaration>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+    </Declaration>
+    <EquivalentClasses>
+        <Class IRI="#always"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:less_frequently_than"/>
+                <Class IRI="#frequently"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#frequency_modifiers"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#lastItemOf"/>
+                <Class IRI="#frequency_modifiers"/>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#always"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#frequency_modifiers"/>
+            </ObjectAllValuesFrom>
+            <DataHasValue>
+                <DataProperty IRI="#index"/>
+                <Literal datatypeIRI="&xsd;integer">5</Literal>
+            </DataHasValue>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#approximation_modifiers"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#List"/>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <Class IRI="#complete_coverage"/>
+            </ObjectSomeValuesFrom>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <Class IRI="#half_coverage"/>
+            </ObjectSomeValuesFrom>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <Class IRI="#high_coverage"/>
+            </ObjectSomeValuesFrom>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <Class IRI="#low_coverage"/>
+            </ObjectSomeValuesFrom>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <Class IRI="#no_coverage"/>
+            </ObjectSomeValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <ObjectUnionOf>
+                    <Class IRI="#complete_coverage"/>
+                    <Class IRI="#half_coverage"/>
+                    <Class IRI="#high_coverage"/>
+                    <Class IRI="#low_coverage"/>
+                    <Class IRI="#no_coverage"/>
+                </ObjectUnionOf>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#certainly"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:less_certain_than"/>
+                <Class IRI="#high_possibility"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#certainty_modifiers"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#lastItemOf"/>
+                <Class IRI="#certainty_modifiers"/>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#certainly"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#certainty_modifiers"/>
+            </ObjectAllValuesFrom>
+            <DataHasValue>
+                <DataProperty IRI="#index"/>
+                <Literal datatypeIRI="&xsd;integer">5</Literal>
+            </DataHasValue>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#certainty_modifiers"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#List"/>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <Class IRI="#certainly"/>
+            </ObjectSomeValuesFrom>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <Class IRI="#half_possibility"/>
+            </ObjectSomeValuesFrom>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <Class IRI="#high_possibility"/>
+            </ObjectSomeValuesFrom>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <Class IRI="#impossible"/>
+            </ObjectSomeValuesFrom>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <Class IRI="#uncertain"/>
+            </ObjectSomeValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <ObjectUnionOf>
+                    <Class IRI="#certainly"/>
+                    <Class IRI="#half_possibility"/>
+                    <Class IRI="#high_possibility"/>
+                    <Class IRI="#impossible"/>
+                    <Class IRI="#uncertain"/>
+                </ObjectUnionOf>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#complete_coverage"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:less_coverage_than"/>
+                <Class IRI="#high_coverage"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#approximation_modifiers"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#lastItemOf"/>
+                <Class IRI="#approximation_modifiers"/>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#complete_coverage"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#approximation_modifiers"/>
+            </ObjectAllValuesFrom>
+            <DataHasValue>
+                <DataProperty IRI="#index"/>
+                <Literal datatypeIRI="&xsd;integer">5</Literal>
+            </DataHasValue>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#considerately"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:lighter_than"/>
+                <Class IRI="#moderately"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:more_strong_than"/>
+                <Class IRI="#strongly"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemOf"/>
+                <Class IRI="#degree_modifiers"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#degree_modifiers"/>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#considerately"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#degree_modifiers"/>
+            </ObjectAllValuesFrom>
+            <DataHasValue>
+                <DataProperty IRI="#index"/>
+                <Literal datatypeIRI="&xsd;integer">4</Literal>
+            </DataHasValue>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#degree_modifiers"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#List"/>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <Class IRI="#considerately"/>
+            </ObjectSomeValuesFrom>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <Class IRI="#lightly"/>
+            </ObjectSomeValuesFrom>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <Class IRI="#little"/>
+            </ObjectSomeValuesFrom>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <Class IRI="#moderately"/>
+            </ObjectSomeValuesFrom>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <Class IRI="#strongly"/>
+            </ObjectSomeValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <ObjectUnionOf>
+                    <Class IRI="#considerately"/>
+                    <Class IRI="#lightly"/>
+                    <Class IRI="#little"/>
+                    <Class IRI="#moderately"/>
+                    <Class IRI="#strongly"/>
+                </ObjectUnionOf>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#frequency_modifiers"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#List"/>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <Class IRI="#always"/>
+            </ObjectSomeValuesFrom>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <Class IRI="#frequently"/>
+            </ObjectSomeValuesFrom>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <Class IRI="#never"/>
+            </ObjectSomeValuesFrom>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <Class IRI="#often"/>
+            </ObjectSomeValuesFrom>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <Class IRI="#rarely"/>
+            </ObjectSomeValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem"/>
+                <ObjectUnionOf>
+                    <Class IRI="#always"/>
+                    <Class IRI="#frequently"/>
+                    <Class IRI="#never"/>
+                    <Class IRI="#often"/>
+                    <Class IRI="#rarely"/>
+                </ObjectUnionOf>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#frequently"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="#more_frequently_than"/>
+                <Class IRI="#always"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:less_frequently_than"/>
+                <Class IRI="#often"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemOf"/>
+                <Class IRI="#frequency_modifiers"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#frequency_modifiers"/>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#frequently"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#frequency_modifiers"/>
+            </ObjectAllValuesFrom>
+            <DataHasValue>
+                <DataProperty IRI="#index"/>
+                <Literal datatypeIRI="&xsd;integer">4</Literal>
+            </DataHasValue>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#half_coverage"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:less_coverage_than"/>
+                <Class IRI="#low_coverage"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:more_coverage_than"/>
+                <Class IRI="#high_coverage"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemOf"/>
+                <Class IRI="#approximation_modifiers"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#approximation_modifiers"/>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#half_coverage"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#approximation_modifiers"/>
+            </ObjectAllValuesFrom>
+            <DataHasValue>
+                <DataProperty IRI="#index"/>
+                <Literal datatypeIRI="&xsd;integer">3</Literal>
+            </DataHasValue>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#half_possibility"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:less_certain_than"/>
+                <Class IRI="#uncertain"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:more_certain_than"/>
+                <Class IRI="#high_possibility"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemOf"/>
+                <Class IRI="#certainty_modifiers"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#certainty_modifiers"/>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#half_possibility"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#certainty_modifiers"/>
+            </ObjectAllValuesFrom>
+            <DataHasValue>
+                <DataProperty IRI="#index"/>
+                <Literal datatypeIRI="&xsd;integer">3</Literal>
+            </DataHasValue>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#high_coverage"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:less_coverage_than"/>
+                <Class IRI="#half_coverage"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:more_coverage_than"/>
+                <Class IRI="#complete_coverage"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemOf"/>
+                <Class IRI="#approximation_modifiers"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#approximation_modifiers"/>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#high_coverage"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#approximation_modifiers"/>
+            </ObjectAllValuesFrom>
+            <DataHasValue>
+                <DataProperty IRI="#index"/>
+                <Literal datatypeIRI="&xsd;integer">4</Literal>
+            </DataHasValue>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#high_possibility"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:less_certain_than"/>
+                <Class IRI="#half_possibility"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:more_certain_than"/>
+                <Class IRI="#certainly"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemOf"/>
+                <Class IRI="#certainty_modifiers"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#certainty_modifiers"/>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#high_possibility"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#certainty_modifiers"/>
+            </ObjectAllValuesFrom>
+            <DataHasValue>
+                <DataProperty IRI="#index"/>
+                <Literal datatypeIRI="&xsd;integer">4</Literal>
+            </DataHasValue>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#impossible"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:more_certain_than"/>
+                <Class IRI="#uncertain"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#certainty_modifiers"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#firstItemOf"/>
+                <Class IRI="#certainty_modifiers"/>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#impossible"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#certainty_modifiers"/>
+            </ObjectAllValuesFrom>
+            <DataHasValue>
+                <DataProperty IRI="#index"/>
+                <Literal datatypeIRI="&xsd;integer">1</Literal>
+            </DataHasValue>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#lightly"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:lighter_than"/>
+                <Class IRI="#little"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:more_strong_than"/>
+                <Class IRI="#moderately"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemOf"/>
+                <Class IRI="#degree_modifiers"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#degree_modifiers"/>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#lightly"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#degree_modifiers"/>
+            </ObjectAllValuesFrom>
+            <DataHasValue>
+                <DataProperty IRI="#index"/>
+                <Literal datatypeIRI="&xsd;integer">2</Literal>
+            </DataHasValue>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#little"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:more_strong_than"/>
+                <Class IRI="#lightly"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#degree_modifiers"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#firstItemOf"/>
+                <Class IRI="#degree_modifiers"/>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#little"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#degree_modifiers"/>
+            </ObjectAllValuesFrom>
+            <DataHasValue>
+                <DataProperty IRI="#index"/>
+                <Literal datatypeIRI="&xsd;integer">1</Literal>
+            </DataHasValue>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#low_coverage"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:less_coverage_than"/>
+                <Class IRI="#no_coverage"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:more_coverage_than"/>
+                <Class IRI="#half_coverage"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemOf"/>
+                <Class IRI="#approximation_modifiers"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#approximation_modifiers"/>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#low_coverage"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#approximation_modifiers"/>
+            </ObjectAllValuesFrom>
+            <DataHasValue>
+                <DataProperty IRI="#index"/>
+                <Literal datatypeIRI="&xsd;integer">2</Literal>
+            </DataHasValue>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#moderately"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:lighter_than"/>
+                <Class IRI="#lightly"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:more_strong_than"/>
+                <Class IRI="#considerately"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemOf"/>
+                <Class IRI="#degree_modifiers"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#degree_modifiers"/>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#moderately"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#degree_modifiers"/>
+            </ObjectAllValuesFrom>
+            <DataHasValue>
+                <DataProperty IRI="#index"/>
+                <Literal datatypeIRI="&xsd;integer">3</Literal>
+            </DataHasValue>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#never"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="#more_frequently_than"/>
+                <Class IRI="#rarely"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#frequency_modifiers"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#firstItemOf"/>
+                <Class IRI="#frequency_modifiers"/>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#never"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#frequency_modifiers"/>
+            </ObjectAllValuesFrom>
+            <DataHasValue>
+                <DataProperty IRI="#index"/>
+                <Literal datatypeIRI="&xsd;integer">1</Literal>
+            </DataHasValue>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#no_coverage"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:more_coverage_than"/>
+                <Class IRI="#low_coverage"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#approximation_modifiers"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#firstItemOf"/>
+                <Class IRI="#approximation_modifiers"/>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#no_coverage"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#approximation_modifiers"/>
+            </ObjectAllValuesFrom>
+            <DataHasValue>
+                <DataProperty IRI="#index"/>
+                <Literal datatypeIRI="&xsd;integer">1</Literal>
+            </DataHasValue>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#often"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="#more_frequently_than"/>
+                <Class IRI="#frequently"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:less_frequently_than"/>
+                <Class IRI="#rarely"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemOf"/>
+                <Class IRI="#frequency_modifiers"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#frequency_modifiers"/>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#often"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#frequency_modifiers"/>
+            </ObjectAllValuesFrom>
+            <DataHasValue>
+                <DataProperty IRI="#index"/>
+                <Literal datatypeIRI="&xsd;integer">3</Literal>
+            </DataHasValue>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#rarely"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="#more_frequently_than"/>
+                <Class IRI="#often"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:less_frequently_than"/>
+                <Class IRI="#never"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemOf"/>
+                <Class IRI="#frequency_modifiers"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#frequency_modifiers"/>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#rarely"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#frequency_modifiers"/>
+            </ObjectAllValuesFrom>
+            <DataHasValue>
+                <DataProperty IRI="#index"/>
+                <Literal datatypeIRI="&xsd;integer">2</Literal>
+            </DataHasValue>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#strongly"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:lighter_than"/>
+                <Class IRI="#considerately"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#degree_modifiers"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#lastItemOf"/>
+                <Class IRI="#degree_modifiers"/>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#strongly"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#degree_modifiers"/>
+            </ObjectAllValuesFrom>
+            <DataHasValue>
+                <DataProperty IRI="#index"/>
+                <Literal datatypeIRI="&xsd;integer">5</Literal>
+            </DataHasValue>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#uncertain"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:less_certain_than"/>
+                <Class IRI="#impossible"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:more_certain_than"/>
+                <Class IRI="#half_possibility"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemOf"/>
+                <Class IRI="#certainty_modifiers"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#certainty_modifiers"/>
+            </ObjectAllValuesFrom>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="#uncertain"/>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#certainty_modifiers"/>
+            </ObjectAllValuesFrom>
+            <DataHasValue>
+                <DataProperty IRI="#index"/>
+                <Literal datatypeIRI="&xsd;integer">2</Literal>
+            </DataHasValue>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <SubClassOf>
+        <Class IRI="#always"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#always"/>
+        <ObjectAllValuesFrom>
+            <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#previousItem"/>
+            <Class IRI="#frequently"/>
+        </ObjectAllValuesFrom>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#always"/>
+        <DataHasValue>
+            <DataProperty IRI="#index"/>
+            <Literal datatypeIRI="&xsd;integer">5</Literal>
+        </DataHasValue>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#approximation_modifiers"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#List"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#approximation_modifiers"/>
+        <DataHasValue>
+            <DataProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#size"/>
+            <Literal datatypeIRI="&xsd;integer">5</Literal>
+        </DataHasValue>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#certainly"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#certainly"/>
+        <DataHasValue>
+            <DataProperty IRI="#index"/>
+            <Literal datatypeIRI="&xsd;integer">5</Literal>
+        </DataHasValue>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#certainty_modifiers"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#List"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#certainty_modifiers"/>
+        <DataHasValue>
+            <DataProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#size"/>
+            <Literal datatypeIRI="&xsd;integer">5</Literal>
+        </DataHasValue>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#complete_coverage"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#considerately"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#degree_modifiers"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#List"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#degree_modifiers"/>
+        <DataHasValue>
+            <DataProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#size"/>
+            <Literal datatypeIRI="&xsd;integer">5</Literal>
+        </DataHasValue>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#frequency_modifiers"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#List"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#frequency_modifiers"/>
+        <DataHasValue>
+            <DataProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#size"/>
+            <Literal datatypeIRI="&xsd;integer">5</Literal>
+        </DataHasValue>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#frequently"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#half_coverage"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#half_possibility"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#half_possibility"/>
+        <DataHasValue>
+            <DataProperty IRI="#index"/>
+            <Literal datatypeIRI="&xsd;integer">3</Literal>
+        </DataHasValue>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#high_coverage"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#high_possibility"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#impossible"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#impossible"/>
+        <DataHasValue>
+            <DataProperty IRI="#index"/>
+            <Literal datatypeIRI="&xsd;integer">1</Literal>
+        </DataHasValue>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#lightly"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#little"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#low_coverage"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#moderately"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#never"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#no_coverage"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#often"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#rarely"/>
+        <DataHasValue>
+            <DataProperty IRI="#index"/>
+            <Literal datatypeIRI="&xsd;integer">2</Literal>
+        </DataHasValue>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#strongly"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#uncertain"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+    </SubClassOf>
+    <DisjointClasses>
+        <Class IRI="#always"/>
+        <Class IRI="#certainly"/>
+        <Class IRI="#complete_coverage"/>
+        <Class IRI="#considerately"/>
+        <Class IRI="#frequently"/>
+        <Class IRI="#half_coverage"/>
+        <Class IRI="#half_possibility"/>
+        <Class IRI="#high_coverage"/>
+        <Class IRI="#high_possibility"/>
+        <Class IRI="#impossible"/>
+        <Class IRI="#lightly"/>
+        <Class IRI="#little"/>
+        <Class IRI="#low_coverage"/>
+        <Class IRI="#moderately"/>
+        <Class IRI="#never"/>
+        <Class IRI="#no_coverage"/>
+        <Class IRI="#often"/>
+        <Class IRI="#rarely"/>
+        <Class IRI="#strongly"/>
+        <Class IRI="#uncertain"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#approximation_modifiers"/>
+        <Class IRI="#certainty_modifiers"/>
+        <Class IRI="#degree_modifiers"/>
+        <Class IRI="#frequency_modifiers"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#Item"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#List"/>
+    </DisjointClasses>
+    <ClassAssertion>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+        <NamedIndividual IRI="#30-40_certain"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <ObjectIntersectionOf>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:less_certain_than"/>
+                <Class IRI="#impossible"/>
+            </ObjectSomeValuesFrom>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty abbreviatedIRI="oboInOwl:more_certain_than"/>
+                <Class IRI="#half_possibility"/>
+            </ObjectSomeValuesFrom>
+        </ObjectIntersectionOf>
+        <NamedIndividual IRI="#30-40_certain"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <ObjectIntersectionOf>
+            <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf"/>
+                <Class IRI="#frequency_modifiers"/>
+            </ObjectSomeValuesFrom>
+            <DataHasValue>
+                <DataProperty IRI="#index"/>
+                <Literal datatypeIRI="&xsd;integer">3</Literal>
+            </DataHasValue>
+        </ObjectIntersectionOf>
+        <NamedIndividual IRI="#medium_frequency"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/bag.owl#Item"/>
+        <NamedIndividual IRI="#very_rarely"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#nextItem"/>
+            <Class IRI="#often"/>
+        </ObjectSomeValuesFrom>
+        <NamedIndividual IRI="#very_rarely"/>
+    </ClassAssertion>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#more_frequently_than"/>
+        <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#nextItem"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty abbreviatedIRI="oboInOwl:less_certain_than"/>
+        <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#previousItem"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty abbreviatedIRI="oboInOwl:less_coverage_than"/>
+        <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#previousItem"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty abbreviatedIRI="oboInOwl:less_frequently_than"/>
+        <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#previousItem"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty abbreviatedIRI="oboInOwl:lighter_than"/>
+        <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#previousItem"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty abbreviatedIRI="oboInOwl:more_certain_than"/>
+        <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#nextItem"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty abbreviatedIRI="oboInOwl:more_coverage_than"/>
+        <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#nextItem"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty abbreviatedIRI="oboInOwl:more_strong_than"/>
+        <ObjectProperty IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#nextItem"/>
+    </SubObjectPropertyOf>
+    <InverseObjectProperties>
+        <ObjectProperty IRI="#more_frequently_than"/>
+        <ObjectProperty abbreviatedIRI="oboInOwl:less_frequently_than"/>
+    </InverseObjectProperties>
+    <InverseObjectProperties>
+        <ObjectProperty abbreviatedIRI="oboInOwl:less_certain_than"/>
+        <ObjectProperty abbreviatedIRI="oboInOwl:more_certain_than"/>
+    </InverseObjectProperties>
+    <InverseObjectProperties>
+        <ObjectProperty abbreviatedIRI="oboInOwl:more_coverage_than"/>
+        <ObjectProperty abbreviatedIRI="oboInOwl:less_coverage_than"/>
+    </InverseObjectProperties>
+    <InverseObjectProperties>
+        <ObjectProperty abbreviatedIRI="oboInOwl:lighter_than"/>
+        <ObjectProperty abbreviatedIRI="oboInOwl:more_strong_than"/>
+    </InverseObjectProperties>
+    <DataPropertyDomain>
+        <DataProperty IRI="#index"/>
+        <Class IRI="http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem"/>
+    </DataPropertyDomain>
+    <DataPropertyRange>
+        <DataProperty IRI="#index"/>
+        <Datatype abbreviatedIRI="xsd:integer"/>
+    </DataPropertyRange>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#always</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">always</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#always</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">commonly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#always</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">frequently</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#always</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">incessantly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#always</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">normally</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#always</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">persistently</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#always</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">regularly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#always</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">throughout</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#always</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">very often</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#always</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">greater than 75% frequency</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#approximation_modifiers</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">coverage_modifiers</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#certainly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">greater than 75% coverage</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#complete_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">consistently</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#complete_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">entirely</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#complete_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">extensively</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#complete_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">generally</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#complete_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">substantially</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#complete_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">throughout</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#complete_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">totally</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#complete_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">typically</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#complete_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">uniformly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#complete_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">wholly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#complete_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">greater than 75% coverage</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#considerately</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">considerately</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#considerately</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">greatly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#considerately</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">around 75% degree</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#frequently</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">mostly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#frequently</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">often</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#frequently</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">around 75% frequency</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#half_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">partially</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#half_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">partly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#half_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">around 50% coverage</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#half_possibility</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">approximately</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#half_possibility</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">roughly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#half_possibility</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">around 50% certain</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#high_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">largely</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#high_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">mainly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#high_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">mostly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#high_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">primarily</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#high_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">around 75% coverage</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#high_possibility</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">not defintively</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#high_possibility</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">probably</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#high_possibility</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">prominently</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#high_possibility</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">around 75% certain</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#impossible</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">less than 25% certain</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#lightly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">faintly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#lightly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">gently</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#lightly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">lightly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#lightly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">modestly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#lightly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">slightly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#lightly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">somewhat</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#lightly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">very slightly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#lightly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">weakly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#lightly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">around 25% degree</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#little</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">not</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#little</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">less than 25% degree</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#low_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">not generally</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#low_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">often partially</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#low_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">around 25% coverage</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#moderately</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">fairly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#moderately</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">less heavily</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#moderately</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">moderately</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#moderately</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">more or less</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#moderately</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">more-or-less</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#moderately</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">normally fairly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#moderately</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">around 50% degree</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#more_frequently_than</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">one level less frequently than</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#never</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">barely</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#never</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">never</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#never</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">not</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#never</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">rarely</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#never</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">seldom</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#never</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">less than 25% frequency</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#no_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">mostly not</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#no_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">rarely</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#no_coverage</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">less than 25% coverage</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#often</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">not always</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#often</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">sometimes</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#often</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">around 50% frequency</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#rarely</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">less commonly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#rarely</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">not normally</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#rarely</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">occasionally</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#rarely</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">often not</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#rarely</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">around 25% frequency</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#strongly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">completely</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#strongly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">excessively</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#strongly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">extremely</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#strongly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">fully</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#strongly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">heavily</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#strongly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">highly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#strongly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">intensively</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#strongly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">quite</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#strongly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">rather</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#strongly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">strongly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#strongly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">substantially</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#strongly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">totally</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#strongly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">very</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#strongly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">wholly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#strongly</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">greater than 75% degree</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#uncertain</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">not clearly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#uncertain</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">obscurely</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#uncertain</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">possibly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="oboInOwl:has_exact_synonym"/>
+        <IRI>#uncertain</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">subtly</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#uncertain</IRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">around 25% certain</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <AbbreviatedIRI>oboInOwl:less_certain_than</AbbreviatedIRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">one level more certain than</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <AbbreviatedIRI>oboInOwl:less_coverage_than</AbbreviatedIRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">one level more coverage than</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <AbbreviatedIRI>oboInOwl:less_frequently_than</AbbreviatedIRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">one level more frequently than</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <AbbreviatedIRI>oboInOwl:lighter_than</AbbreviatedIRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">one level stronger than</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <AbbreviatedIRI>oboInOwl:more_certain_than</AbbreviatedIRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">one level less certain than</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <AbbreviatedIRI>oboInOwl:more_coverage_than</AbbreviatedIRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">one level less coverage than</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <AbbreviatedIRI>oboInOwl:more_strong_than</AbbreviatedIRI>
+        <Literal datatypeIRI="&rdf;PlainLiteral">one level weaker than</Literal>
+    </AnnotationAssertion>
+</Ontology>
+
+
+
+<!-- Generated by the OWL API (version 3.2.3.1824) http://owlapi.sourceforge.net -->
+

@@ -33,6 +33,7 @@ public class ExtraJvmInputFormatCheck extends ExtraJvmCallable<Boolean> implemen
 					out.flush();
 				}
 			} catch (Throwable t) {
+				t.printStackTrace();
 				System.exit(-1);
 			}
 		}
@@ -45,6 +46,10 @@ public class ExtraJvmInputFormatCheck extends ExtraJvmCallable<Boolean> implemen
 		this.inputFile = inputFile;
 		this.outputFile = outputFile;
 		
+		this.addPathEnvironment(edu.arizona.biosemantics.euler2.Configuration.eulerPath + ":" +
+				edu.arizona.biosemantics.euler2.Configuration.eulerPath + "src-el:" +
+				edu.arizona.biosemantics.euler2.Configuration.eulerPath + "bbox-lattice:" + 
+				edu.arizona.biosemantics.euler2.Configuration.eulerPath + "default-stylesheet");
 		this.setArgs(createArgs());
 		if(!Configuration.taxonomyComparison_xms.isEmpty()) 
 			this.setXms(Configuration.taxonomyComparison_xms);
