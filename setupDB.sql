@@ -76,7 +76,9 @@ INSERT INTO `etcsite_taxon_group` (`id`, `name`, `created`) VALUES
 (6, 'Gastropods', '2013-10-22 01:07:24'),
 (7, 'Cnidaria', '2013-10-22 01:07:24'),
 (8, 'Spider', '2013-10-22 01:07:24'),
-(9, 'Empty', '2013-10-22 01:07:24');
+(9, 'Empty', '2013-10-22 01:07:24'),
+(10, 'Bacteria', '2013-10-22 01:07:24'),
+(11, 'Coleoptera', '2013-10-22 01:07:24');
 
 
 CREATE TABLE IF NOT EXISTS `etcsite_ontologizeconfigurations` (

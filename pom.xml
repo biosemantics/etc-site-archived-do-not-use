@@ -221,7 +221,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 		  <artifactId>enhance</artifactId>
-		  <version>0.0.17-SNAPSHOT</version>
+		  <version>0.0.18-SNAPSHOT</version>
 		  <exclusions>
 		  	<exclusion>
 		  		<artifactId>owlapi-tools</artifactId>
@@ -310,13 +310,13 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize2</artifactId>
-		  <version>0.0.44-SNAPSHOT</version>
+		  <version>0.0.49-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize2</artifactId>
-		  <version>0.0.44-SNAPSHOT</version>
+		  <version>0.0.49-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
@@ -364,7 +364,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>ling</artifactId>
-			<version>0.0.16-SNAPSHOT</version>
+			<version>0.0.18-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.gwtquery</groupId>
@@ -476,13 +476,13 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.common</groupId>
 		  <artifactId>biology</artifactId>
-		  <version>0.0.8-SNAPSHOT</version>
+		  <version>0.0.10-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.common</groupId>
 		  <artifactId>biology</artifactId>
-		  <version>0.0.8-SNAPSHOT</version>
+		  <version>0.0.10-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.euler</groupId>
@@ -534,6 +534,11 @@
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
+		  <groupId>edu.arizona.biosemantics.micropie</groupId>
+		  <artifactId>micropie</artifactId>
+		  <version>0.1.5-SNAPSHOT</version>
+		</dependency>
+		<dependency>
     		<groupId>org.gwtbootstrap3</groupId>
     		<artifactId>gwtbootstrap3</artifactId>
     		<version>0.9.1</version>
@@ -546,7 +551,6 @@
 		<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
 
 		<plugins>
-
 		<!-- GWT Maven Plugin -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>

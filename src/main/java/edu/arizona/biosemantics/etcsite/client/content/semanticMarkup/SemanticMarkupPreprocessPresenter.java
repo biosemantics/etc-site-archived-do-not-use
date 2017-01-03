@@ -3,6 +3,7 @@ package edu.arizona.biosemantics.etcsite.client.content.semanticMarkup;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -11,6 +12,7 @@ import com.google.inject.Inject;
 import edu.arizona.biosemantics.etcsite.client.common.Alerter;
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.content.taskManager.TaskManagerPlace;
+import edu.arizona.biosemantics.etcsite.shared.model.SemanticMarkupConfiguration;
 import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.process.semanticmarkup.BracketValidator;
 import edu.arizona.biosemantics.etcsite.shared.model.semanticmarkup.Description;
@@ -54,18 +56,26 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 			@Override
 			public void onSuccess(List<PreprocessedDescription> result) {
                 if(result.isEmpty()) {
-                    semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), task, 
-                    		TaskStageEnum.LEARN_TERMS, new AsyncCallback<Task>() {
+                	SemanticMarkupConfiguration config = (SemanticMarkupConfiguration)task.getConfiguration();
+                	TaskStageEnum nextStage = TaskStageEnum.LEARN_TERMS;
+            		Place nextPlace = new SemanticMarkupParsePlace(task);
+                	if(config.getTaxonGroup().getName().equals("Bacteria")) {
+                		nextStage = TaskStageEnum.PARSE_TEXT;
+                		nextPlace = new SemanticMarkupParsePlace(task);
+                	}
+                	final Place finalNextPlace = nextPlace;
+                	semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), task, 
+                    		nextStage, new AsyncCallback<Task>() {
 						@Override
 						public void onSuccess(Task result) {
-							placeController.goTo(new SemanticMarkupLearnPlace(task));
+							placeController.goTo(finalNextPlace);
 						}
 						@Override
 						public void onFailure(Throwable caught) {
 							Alerter.failedToGoToTaskStage(caught);
 						}
                     });
-                    return;
+         			return;
                 } else 
                 	preprocessedDescriptions = result;
                 	
@@ -113,19 +123,26 @@ public class SemanticMarkupPreprocessPresenter implements ISemanticMarkupPreproc
 	private void storeAndLeave() {
 		store(new AsyncCallback<Void>() {
 			@Override
-			public void onSuccess(Void result) {	
-				semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), task, 
-						TaskStageEnum.LEARN_TERMS, new AsyncCallback<Task>() {
-							@Override
-							public void onSuccess(Task task) {
-								placeController.goTo(new SemanticMarkupLearnPlace(task));
-							}
-
-							@Override
-							public void onFailure(Throwable caught) {
-								Alerter.failedToGoToTaskStage(caught);
-							} 
-				});
+			public void onSuccess(Void result) {
+				SemanticMarkupConfiguration config = (SemanticMarkupConfiguration)task.getConfiguration();
+            	TaskStageEnum nextStage = TaskStageEnum.LEARN_TERMS;
+        		Place nextPlace = new SemanticMarkupParsePlace(task);
+            	if(config.getTaxonGroup().getName().equals("Bacteria")) {
+            		nextStage = TaskStageEnum.PARSE_TEXT;
+            		nextPlace = new SemanticMarkupParsePlace(task);
+            	}
+            	final Place finalNextPlace = nextPlace;
+            	semanticMarkupService.goToTaskStage(Authentication.getInstance().getToken(), task, 
+                		nextStage, new AsyncCallback<Task>() {
+					@Override
+					public void onSuccess(Task result) {
+						placeController.goTo(finalNextPlace);
+					}
+					@Override
+					public void onFailure(Throwable caught) {
+						Alerter.failedToGoToTaskStage(caught);
+					}
+                });
 			}
 
 			@Override

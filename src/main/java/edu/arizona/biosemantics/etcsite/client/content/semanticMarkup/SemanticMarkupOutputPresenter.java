@@ -69,7 +69,11 @@ public class SemanticMarkupOutputPresenter implements ISemanticMarkupOutputView.
 						view.setOutput(configuration.getOutput(), 
 								filePathShortener.shortenOutput(configuration.getOutput(), result, Authentication.getInstance().getUserId()), 
 								configuration.getOutputTermReview());
-						view.setEnabledSendToOto(!configuration.isOtoCreatedDataset() && hasLinkedOTOAccount);
+						//OTO account is linked
+						//not yet created a dataset for this task on OTO
+						//a charaparser parse and not micropie
+						view.setEnabledSendToOto(!configuration.isOtoCreatedDataset() && hasLinkedOTOAccount && 
+								!configuration.getTaxonGroup().getName().equalsIgnoreCase("Bacteria"));
 						SemanticMarkupOutputPresenter.this.task = task;
 						Alerter.stopLoading(box);
 					}

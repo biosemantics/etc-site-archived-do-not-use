@@ -12,7 +12,7 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
 import edu.arizona.biosemantics.etcsite.shared.rpc.semanticmarkup.SemanticMarkupException;
 import edu.arizona.biosemantics.semanticmarkup.ETCMarkupMain;
 
-public class InJvmParse implements Parse {
+public class InJvmParse implements CharaparserParse {
 
 	private String config;
 	private String input;

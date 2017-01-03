@@ -33,6 +33,8 @@ charaparser_ontologies=
 semanticMarkup_numberOfWordsToWarnUser=50000
 semanticMarkup_learnStep_maxRunningTimeMinutes=
 semanticMarkup_parseStep_maxRunningTimeMinutes=
+micropie_classpath=/opt/web/etcbase/webapps/etcsite/WEB-INF/classes:/opt/web/etcbase/webapps/etcsite/WEB-INF/lib/*:/var/lib/etcsite/resources/textCapture/micropie/classpath/*
+micropie_models=/var/lib/etcsite/resources/textCapture/micropie/models
 
 #Matrix Generation
 matrixGeneration_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/matrixGeneration

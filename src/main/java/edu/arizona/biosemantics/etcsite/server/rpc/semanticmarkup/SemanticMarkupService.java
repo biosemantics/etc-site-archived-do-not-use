@@ -187,7 +187,10 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		taskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.PREPROCESS_TEXT.toString());
 		List<PreprocessedDescription> result = this.getPreprocessedDescriptions(authenticationToken, task);
 		if(result.isEmpty())
-			taskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.LEARN_TERMS.toString());
+			if(taxonGroup.equals("Bacteria"))
+				taskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.PARSE_TEXT.toString());
+			else
+				taskStage = daoManager.getTaskStageDAO().getSemanticMarkupTaskStage(TaskStageEnum.LEARN_TERMS.toString());
 		task.setTaskStage(taskStage);
 		daoManager.getTaskDAO().updateTask(task);
 		
@@ -196,8 +199,6 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 		} catch (PermissionDeniedException e) {
 			throw new SemanticMarkupException(task);
 		}
-		
-		
 		return task;
 	}
 
@@ -363,7 +364,17 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			}
 			String bioportalUserId = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalUserId();
 			String bioportalAPIKey = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalAPIKey();
-			final Parse parse = new ExtraJvmParse(taxonGroup, useEmptyGlossary, input, tablePrefix, source, operator);
+			
+			final String outputDirectory = Configuration.charaparser_tempFileBase + File.separator + task.getId() + File.separator + "out";
+			new File(outputDirectory).mkdirs();
+			Parse parse = new ExtraJvmParse(taxonGroup, useEmptyGlossary, input, tablePrefix, source, operator);
+			//Parse parse = new InJvmParse(taxonGroup, useEmptyGlossary, input, tablePrefix, source, operator);
+			if(config.getTaxonGroup().getName().equals("Bacteria")) 
+				//parse = new InJvmMicropieParse(input, outputDirectory, Configuration.micropie_models);
+				parse = new ExtraJvmMicropieParse(input, outputDirectory, Configuration.micropie_models);
+			
+			final Parse finalParse = parse;
+			
 			//final Parse parse = new InJvmParse(taxonGroup, useEmptyGlossary, input, tablePrefix, source, operator);
 			activeParses.put(config.getConfiguration().getId(), parse);
 			final ListenableFuture<ParseResult> futureResult = executorService.submit(parse);
@@ -387,56 +398,26 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 				public void run() {
 					try {
 						Parse parse = activeParses.remove(config.getConfiguration().getId());
+						boolean charaparserParse = parse instanceof CharaparserParse;
 						ListenableFuture<ParseResult> futureResult = activeParseFutures.remove(config.getConfiguration().getId());
 						if(parse.isExecutedSuccessfully()) {
 							if(!futureResult.isCancelled()) {
 								List<String> files;
-								String charaParserOutputDirectory = Configuration.charaparser_tempFileBase + File.separator + task.getId() + File.separator + "out";
-								boolean validResult=true;
+								boolean validResult = true;
 								try {
-									files = fileService.getDirectoriesFiles(new AdminAuthenticationToken(), charaParserOutputDirectory);
+									files = fileService.getDirectoriesFiles(new AdminAuthenticationToken(), outputDirectory);
 								} catch (PermissionDeniedException e) {
 									throw new SemanticMarkupException();
 								}
-								for(String file : files) {
-									try {
-										validResult = fileFormatService.isValidMarkedupTaxonDescription(new AdminAuthenticationToken(), charaParserOutputDirectory + File.separator + file);
-									} catch (PermissionDeniedException | GetFileContentFailedException e) {
-										throw new SemanticMarkupException();
-									}
-									if(!validResult){
-										parse.destroy();
-										String inputpath = Configuration.charaparser_tempFileBase + File.separator + task.getId() + File.separator + "input" + ".zip";
-										String outputpath = charaParserOutputDirectory + ".zip";
-										JavaZipper zipper = new JavaZipper();
-										try {
-											inputpath = zipper.zip(input, inputpath);
-											outputpath = zipper.zip(charaParserOutputDirectory, outputpath);
-										} catch (Exception e) {
-											throw new SemanticMarkupException("Saving failed");
-										}
-										sendFailedParsingEmail(task,inputpath,outputpath);	//rewrite
-										task.setResumable(false);
-										daoManager.getTaskDAO().updateTask(task);
-										task.setFailed(true);
-										task.setFailedTime(new Date());
-										/*try {
-											fileService.deleteFile(new AdminAuthenticationToken(), inputpath);
-											fileService.deleteFile(new AdminAuthenticationToken(), outputpath);
-										} catch (PermissionDeniedException | FileDeleteFailedException e) {
-											throw new SemanticMarkupException(task);
-										}*/
-										throw new SemanticMarkupException();
-									}
-								}
-								
+								validResult = validateCharaparserOutput(task, parse, files, input, outputDirectory);								
 								if(validResult) {
 									config.setOutput(config.getInput() + "_output_by_TC_task_" + task.getName());
 									config.setOutputTermReview(config.getInput() + "_TermsReviewed_by_TC_task_" + task.getName());
 									String createDirectory = getOutputDirectory(config.getOutput(), task);
 									String createTermReviewDirectory = getOutputDirectory(config.getOutputTermReview(), task);
 									copyCharaparserOutput(createDirectory, task);
-									saveOto(authenticationToken, createTermReviewDirectory, task);
+									if(charaparserParse)
+										saveOto(authenticationToken, createTermReviewDirectory, task);
 									
 									config.setOutput(createDirectory);
 									config.setOutputTermReview(createTermReviewDirectory);
@@ -460,7 +441,7 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 							daoManager.getTaskDAO().updateTask(task);
 						}
 					} catch(Throwable t) {
-						parse.destroy();
+						finalParse.destroy();
 			     		task.setFailed(true);
 						task.setFailedTime(new Date());
 						daoManager.getTaskDAO().updateTask(task);
@@ -469,7 +450,45 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			}, executorService);
 		}
 	}
-	
+
+	protected boolean validateCharaparserOutput(Task task, Parse parse, List<String> files, String input, String outputDirectory) throws SemanticMarkupException {
+		boolean validResult = true;
+		for(String file : files) {
+			if(file.endsWith(".xml")) {
+				try {
+					validResult = fileFormatService.isValidMarkedupTaxonDescription(new AdminAuthenticationToken(), outputDirectory + File.separator + file);
+				} catch (PermissionDeniedException | GetFileContentFailedException e) {
+					throw new SemanticMarkupException();
+				}
+				if(!validResult){
+					parse.destroy();
+					String inputpath = Configuration.charaparser_tempFileBase + File.separator + task.getId() + File.separator + "input" + ".zip";
+					String outputpath = outputDirectory + ".zip";
+					JavaZipper zipper = new JavaZipper();
+					try {
+						inputpath = zipper.zip(input, inputpath);
+						outputpath = zipper.zip(outputDirectory, outputpath);
+					} catch (Exception e) {
+						throw new SemanticMarkupException("Saving failed");
+					}
+					sendFailedParsingEmail(task, inputpath, outputpath);	//rewrite
+					task.setResumable(false);
+					daoManager.getTaskDAO().updateTask(task);
+					task.setFailed(true);
+					task.setFailedTime(new Date());
+					/*try {
+						fileService.deleteFile(new AdminAuthenticationToken(), inputpath);
+						fileService.deleteFile(new AdminAuthenticationToken(), outputpath);
+					} catch (PermissionDeniedException | FileDeleteFailedException e) {
+						throw new SemanticMarkupException(task);
+					}*/
+					throw new SemanticMarkupException();
+				}
+			}
+		}
+		return validResult;
+	}
+
 	@Override
 	public Task output(AuthenticationToken authenticationToken, Task task) throws SemanticMarkupException {	
 		task.setResumable(false);

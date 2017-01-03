@@ -48,6 +48,8 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.shared.Confi
 	public static int semanticMarkup_numberOfWordsToWarnUser;
 	public static int semanticMarkup_learnStep_maxRunningTimeMinutes;
 	public static int semanticMarkup_parseStep_maxRunningTimeMinutes;
+	public static String micropie_classpath;
+	public static String micropie_models;
 	
 	/** Matrix Generation **/
 	public static String matrixGeneration_tempFileBase;
@@ -160,6 +162,8 @@ public class Configuration extends edu.arizona.biosemantics.etcsite.shared.Confi
 			semanticMarkup_numberOfWordsToWarnUser = Integer.valueOf(properties.getProperty("semanticMarkup_numberOfWordsToWarnUser"));
 			semanticMarkup_learnStep_maxRunningTimeMinutes = Integer.valueOf(properties.getProperty("semanticMarkup_learnStep_maxRunningTimeMinutes"));
 			semanticMarkup_parseStep_maxRunningTimeMinutes = Integer.valueOf(properties.getProperty("semanticMarkup_parseStep_maxRunningTimeMinutes"));
+			micropie_classpath = properties.getProperty("micropie_classpath");
+			micropie_models = properties.getProperty("micropie_models");
 			
 			matrixGeneration_tempFileBase = properties.getProperty("matrixGeneration_tempFileBase").replaceAll("/", Matcher.quoteReplacement(File.separator));
 			maxActiveMatrixGeneration = Integer.parseInt(properties.getProperty("maxActiveMatrixGeneration"));

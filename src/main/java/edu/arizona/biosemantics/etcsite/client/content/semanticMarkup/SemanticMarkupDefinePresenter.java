@@ -114,6 +114,9 @@ public class SemanticMarkupDefinePresenter implements ISemanticMarkupDefineView.
 					case LEARN_TERMS:
 						placeController.goTo(new SemanticMarkupLearnPlace(result));
 						break;
+					case PARSE_TEXT:
+						placeController.goTo(new SemanticMarkupParsePlace(result));
+						break;
 					default:
 						placeController.goTo(new SemanticMarkupPreprocessPlace(result));
 						break;
