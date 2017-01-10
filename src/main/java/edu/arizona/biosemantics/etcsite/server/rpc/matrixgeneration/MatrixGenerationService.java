@@ -151,8 +151,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			input = destination;
 		}
 		
-		if(this.isEnhanceAndMatrixGeneration(inputTermReview, inputOntology)) {
-			boolean isSharedInputTermReview = filePermissionService.isSharedFilePath(authenticationToken.getUserId(), inputTermReview);
+		if(inputTermReview != null && !inputTermReview.isEmpty()) {
 			String inputTermReviewFileName = null;
 			try {
 				inputTermReviewFileName = fileService.getFileName(authenticationToken, inputTermReview);
@@ -160,6 +159,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				log(LogLevel.ERROR, "Permission denied to read " + inputTermReview);
 				throw new MatrixGenerationException();
 			}
+			boolean isSharedInputTermReview = filePermissionService.isSharedFilePath(authenticationToken.getUserId(), inputTermReview);
 			if(isSharedInputTermReview) {
 				String destination;
 				try {
@@ -175,7 +175,9 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				}
 				inputTermReview = destination;
 			}
-		
+		}
+	
+		if(inputOntology != null && !inputOntology.isEmpty()) {
 			boolean isSharedInputOntology = filePermissionService.isSharedFilePath(authenticationToken.getUserId(), inputOntology);
 			String inputOntologyFileName = null;
 			try {
@@ -200,7 +202,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 				inputOntology = destination;
 			}
 		}
-				
+		
 		MatrixGenerationConfiguration config = new MatrixGenerationConfiguration();
 		config.setInput(input);
 		config.setInputTermReview(inputTermReview);
@@ -285,7 +287,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		try {
 			List<String> files = fileService.getDirectoriesFiles(token, inputOntology);
 			for(String file : files) {
-				if(file.endsWith(".owl") && !file.startsWith("module.")) {
+				if(file.endsWith(".owl") && !file.startsWith("module.") && !file.equals("ModifierOntology.owl")) {
 					ontologyFile = inputOntology + File.separator + file;
 				}	
 			}
@@ -296,10 +298,10 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 			List<String> files = fileService.getDirectoriesFiles(token, inputTermReview);
 			for(String file : files) {
 				if(file.startsWith("category_term-")) {
-					categoryTerm = inputOntology + File.separator + file;
+					categoryTerm = inputTermReview + File.separator + file;
 				}	
 				if(file.startsWith("category_mainterm_synonymterm-")) {
-					synonym = inputOntology + File.separator + file;
+					synonym = inputTermReview + File.separator + file;
 				}
 			}
 		} catch(PermissionDeniedException e) {

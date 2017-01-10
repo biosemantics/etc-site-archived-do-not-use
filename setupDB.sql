@@ -366,7 +366,7 @@ CREATE TABLE IF NOT EXISTS `etcsite_visualizationconfigurations` (
 
 CREATE TABLE IF NOT EXISTS `etcsite_tasksoutputfiles` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `file` varchar(100) NOT NULL,
+  `file` varchar(500) NOT NULL,
   `task` bigint(20) unsigned DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),

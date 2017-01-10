@@ -221,7 +221,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 		  <artifactId>enhance</artifactId>
-		  <version>0.0.18-SNAPSHOT</version>
+		  <version>0.0.19-SNAPSHOT</version>
 		  <exclusions>
 		  	<exclusion>
 		  		<artifactId>owlapi-tools</artifactId>
@@ -503,13 +503,13 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.euler</groupId>
 		  <artifactId>alignment</artifactId>
-		  <version>0.0.80-SNAPSHOT</version>
+		  <version>0.0.81-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.euler</groupId>
 		  <artifactId>alignment</artifactId>
-		  <version>0.0.80-SNAPSHOT</version>
+		  <version>0.0.81-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
@@ -537,6 +537,12 @@
 		  <groupId>edu.arizona.biosemantics.micropie</groupId>
 		  <artifactId>micropie</artifactId>
 		  <version>0.1.5-SNAPSHOT</version>
+		  <exclusions>
+		  	<exclusion>
+		  		<artifactId>stanford-corenlp</artifactId>
+		  		<groupId>edu.stanford.nlp</groupId>
+		  	</exclusion>
+		  </exclusions>
 		</dependency>
 		<dependency>
     		<groupId>org.gwtbootstrap3</groupId>
