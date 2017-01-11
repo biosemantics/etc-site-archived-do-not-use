@@ -475,7 +475,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 
 		Model model = new Model();
 		try {
-			matrix = createTaxonMatrix(outputFile, model);
+			matrix = createTaxonMatrix(outputFile, model, !config.getTaxonGroup().getName().equals("Bacteria"));
 		} catch (IOException | JDOMException | ClassNotFoundException e) {
 			log(LogLevel.ERROR, "Couldn't create taxon matrix from generated output", e);
 			throw new MatrixGenerationException(task);
@@ -802,7 +802,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		}
 	}
 
-	private TaxonMatrix createTaxonMatrix(String filePath, Model model) throws ClassNotFoundException, IOException, JDOMException {
+	private TaxonMatrix createTaxonMatrix(String filePath, Model model, boolean showWholeOrganismReference) throws ClassNotFoundException, IOException, JDOMException {
 		List<Organ> hierarhicalCharacters = new LinkedList<Organ>();
 		List<Taxon> hierarchyTaxa = new LinkedList<Taxon>();
 		
@@ -823,7 +823,10 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	    		String connector = columnHead.getSource().getConnector();
 	    		edu.arizona.biosemantics.matrixgeneration.model.complete.Character chara = columnHead.getSource();
 	    		String organName = chara.getBearerStructureIdentifier().getDisplayName();
-	    		
+	    		if(organName.equals("whole_organism") && !showWholeOrganismReference) {
+	    			organName = "";
+	    			connector = "";
+	    		}
 				Organ o;
 				if(!organMap.containsKey(organName)) {
 					o = new Organ(organName);
