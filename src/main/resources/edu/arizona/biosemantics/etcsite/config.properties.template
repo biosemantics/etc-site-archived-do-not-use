@@ -1,8 +1,10 @@
 oto2Url=
 otoUrl=http://biosemantics.arizona.edu:8080/OTO
 classpath= #Order matters for log4j properties pickup. Put log4j path first
+otoUrl=
 otoSecret=
 secret=
+helpFiles=
 
 #Files
 targetNamespace=http://www.github.com/biosemantics
@@ -17,46 +19,46 @@ databaseHost=
 databasePort=
 database_partitionCount=2
 database_minConnectionsPerPartition=10
-database_maxConnectionsPerPartition=20
+database_maxConnectionsPerPartition=
 
 #Charaparser
 charaparser_databaseName=
-charaparser_wordnet=/home/sirls/hongcui/charaparser/wordnet/wn31/dict
-charaparser_perl=/home/sirls/hongcui/charaparser/src/main/perl/edu/arizona/biosemantics/semanticmarkup/markupelement/description/ling/learn/lib/perl
-taxonDescriptionSchemaFile=/home/sirls/hongcui/etc-site/src/main/resources/edu/arizona/biosemantics/etcsite/server/rpc/io/semanticMarkupInput.xsd
-markedUpTaxonDescriptionSchemaFile=/home/sirls/hongcui/etc-site/src/main/resources/edu/arizona/biosemantics/etcsite/server/rpc/io/semanticMarkupOutput.xsd
-charaparser_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/charaparser
-maxActiveSemanticMarkup=4
+charaparser_wordnet=
+charaparser_perl=
+taxonDescriptionSchemaFile=
+markedUpTaxonDescriptionSchemaFile=
+charaparser_tempFileBase=
+maxActiveSemanticMarkup=
 charaparser_xms=
-charaparser_xmx=2048m
+charaparser_xmx=
 charaparser_ontologies=
 semanticMarkup_numberOfWordsToWarnUser=50000
 semanticMarkup_learnStep_maxRunningTimeMinutes=
 semanticMarkup_parseStep_maxRunningTimeMinutes=
-micropie_classpath=/opt/web/etcbase/webapps/etcsite/WEB-INF/classes:/var/lib/etcsite/resources/textCapture/micropie/classpath/*
-micropie_models=/var/lib/etcsite/resources/textCapture/micropie/models
+micropie_classpath=
+micropie_models=
 
 #Matrix Generation
-matrixGeneration_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/matrixGeneration
-maxActiveMatrixGeneration=4
+matrixGeneration_tempFileBase=
+maxActiveMatrixGeneration=
 matrixgeneration_xms=
-matrixgeneration_xmx=2048m
+matrixgeneration_xmx=
 matrixgeneration_classpath= #Need extra classpath because of dependency conflict owlapi 3 vs 4 (matrix generation needs 3 for elk reasoner, rest of etcsite uses 4)
 matrixGeneration_maxRunningTimeMinutes=
 matrixReview_tempFileBase=
 
 #Taxonomy Comparison
-maxActiveTaxonomyComparison=4
-taxonomyComparisonTask_maxRunningTimeMinutes=5
+maxActiveTaxonomyComparison=
+taxonomyComparisonTask_maxRunningTimeMinutes=
 taxonomyComparison_tempFileBase=
 taxonomyComparison_xms=
-taxonomyComparison_xmx=2048m
+taxonomyComparison_xmx=
 
 #Captcha
-captcha_tempFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp/captcha
+captcha_tempFileBase=
 
 #File Management
-fileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/users
+fileBase=
 profiles=
 compressedFileBase=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/compressedFiles
 tempFiles=/var/lib/tomcat5/apache-tomcat-5.5.28/webapps/temp
@@ -94,7 +96,7 @@ finished_martrix_generation_genreate_subject=[ETC] (<taskname>) Matrix Generatio
 finished_matrix_generation_generate_body=Matrix Generation has finished the generation step for your task \"<taskname>\". You may resume the task using the Task Manager.
 
 #Bioportal
-bioportalUrl=http://data.bioontology.org
+bioportalUrl=
 bioportalApiKey=
 
 #to-OTO 
