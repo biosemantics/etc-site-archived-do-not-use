@@ -43,5 +43,5 @@
 		"content": "One way to <b>sort relations</b> is:<br>Use <span style='color:green'>Sort</span> menu on the menu bar below the tabs in relation grid and tree panel.<br><br>You can also sort subclass terms through:<br><b>Click the down arrow</b> revoked by holding the mouse cursor over a superclass term in the grid &gt; <b>Select <span style='color:green'>Order subclasses</span></b> &gt; Sort subclass terms by <b>drag-and-drop</b> and click <span style='color:green'>Set Order</span> to save the change."}
 	{
 		"title": "<b>Save ontology</b>",
-		"content": "Use <span style='color:green'>Save Ontology to File Manager</span> button in the upper-right corner below the main menu."}
+		"content": "Use <span style='color:green'>Save Ontology to File Manager</span> button in the top-right corner below the main menu."}
 ]
