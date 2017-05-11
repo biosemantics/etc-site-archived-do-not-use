@@ -2,6 +2,7 @@ package edu.arizona.biosemantics.etcsite.client;
 
 import com.google.gwt.activity.shared.MyActivityManager;
 import com.google.gwt.activity.shared.MyActivityMapper;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.gwt.place.shared.Place;
@@ -190,6 +191,8 @@ import edu.arizona.biosemantics.etcsite.shared.rpc.treegeneration.ITreeGeneratio
 import edu.arizona.biosemantics.etcsite.shared.rpc.user.IUserServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.visualization.IVisualizationServiceAsync;
 import edu.arizona.biosemantics.etcsitehelp.shared.rpc.help.IHelpServiceAsync;
+import edu.arizona.biosemantics.oto2.ontologize2.shared.IUserLogService;
+import edu.arizona.biosemantics.oto2.ontologize2.shared.IUserLogServiceAsync;
 
 public class ClientModule extends AbstractGinModule {
 	
@@ -251,6 +254,9 @@ public class ClientModule extends AbstractGinModule {
 		bind(IOntologizeBuildView.Presenter.class).to(OntologizeBuildPresenter.class).in(Singleton.class);
 		bind(IOntologizeOutputView.class).to(OntologizeOutputView.class).in(Singleton.class);
 		bind(IOntologizeOutputView.Presenter.class).to(OntologizeOutputPresenter.class).in(Singleton.class);
+		
+		//userlog
+		//bind(IUserLogServiceAsync.class).to userLogService = GWT.create(IUserLogService.class);
 		
 		bind(IAnnotationReviewView.class).to(AnnotationReviewView.class);
 		bind(IAnnotationReviewView.Presenter.class).to(AnnotationReviewPresenter.class);
