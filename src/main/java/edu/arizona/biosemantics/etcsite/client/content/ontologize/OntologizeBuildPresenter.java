@@ -124,7 +124,26 @@ public class OntologizeBuildPresenter implements IOntologizeBuildView.Presenter 
 				String output = ((OntologizeConfiguration)result.getConfiguration()).getOutput();
 				output = filePathShortener.shortenOutput(output, result, Authentication.getInstance().getUserId());
 				Alerter.successfullySavedOntology(output);
-				userLog("save_ontology","top_button");
+				//userLog("save_ontology","top_button");
+				
+				String user = Authentication.getInstance().getEmail();
+				AbstractTaskConfiguration configuration = task.getConfiguration();
+				OntologizeConfiguration ontologizeConfiguration = (OntologizeConfiguration)configuration;
+				String collectionId = ontologizeConfiguration.getOntologizeCollectionId()+"";
+		 		userLogService.insertLog(user, Authentication.getInstance().getSessionId(), collectionId, "save_ontology","top_button", new AsyncCallback() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+					}
+
+					@Override
+					public void onSuccess(Object result) {
+						//Alerter.showAlert("evernt_bus", "log sucess");
+					}
+					
+				});
+		 		
+		 		
 			}
 		});
 		/*ontologizeService.goToTaskStage(Authentication.getInstance().getToken(), task, TaskStageEnum.OUTPUT, new AsyncCallback<Task>() {
@@ -139,7 +158,7 @@ public class OntologizeBuildPresenter implements IOntologizeBuildView.Presenter 
 		});*/
 	}
 
-	protected void userLog(String operation, String content) {
+	public void userLog(String operation, String content) {
 		String user = Authentication.getInstance().getEmail();
 		AbstractTaskConfiguration configuration = task.getConfiguration();
 		OntologizeConfiguration ontologizeConfiguration = (OntologizeConfiguration)configuration;
