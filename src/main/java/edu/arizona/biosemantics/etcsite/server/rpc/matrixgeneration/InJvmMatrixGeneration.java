@@ -49,6 +49,7 @@ public class InJvmMatrixGeneration implements MatrixGeneration {
 		addArg(argList, "output_format", "serialize");
 		
 		String[] args = argList.toArray(new String[argList.size()]);
+		System.out.println(args);
 		try {
 			CLIMain.main(args);
 			executedSuccessfully = true;
@@ -81,7 +82,7 @@ public class InJvmMatrixGeneration implements MatrixGeneration {
 
 	public static void main(String[] args) throws Exception {
 		//MatrixGeneration mg = new MatrixGeneration("C:/test/users/1070/input_2", "C:/test/temp/matrixGeneration/124/Matrix.mx");
-		InJvmMatrixGeneration mg = new InJvmMatrixGeneration("C:/test/Test_mmm", "Plant", "C:/test/Test_mmm.mx", true, true, true);
+		InJvmMatrixGeneration mg = new InJvmMatrixGeneration("C:\\etcsitebase\\etcsite\\data\\users\\4\\test_mg", "BACTERIA", "C:/micropie/outputser/Matrix.mx", true, true, true);
 		mg.call();
 		
 	}

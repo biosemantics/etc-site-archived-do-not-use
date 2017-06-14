@@ -14,6 +14,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import edu.arizona.biosemantics.etcsite.client.common.Authentication;
 import edu.arizona.biosemantics.etcsite.client.content.ontologize.IOntologizeBuildView.Presenter;
+import edu.arizona.biosemantics.matrixreview.client.common.Alerter;
 import edu.arizona.biosemantics.oto2.ontologize2.client.Ontologize;
 import edu.arizona.biosemantics.oto2.ontologize2.client.event.LoadCollectionEvent;
 import edu.arizona.biosemantics.oto2.ontologize2.shared.model.Collection;
@@ -32,7 +33,10 @@ public class OntologizeBuildView extends Composite implements IOntologizeBuildVi
 	SimpleLayoutPanel ontologizePanel;
 	
 	private Presenter presenter;
-	private Ontologize ontologize = new Ontologize();
+	//private Ontologize ontologize = new Ontologize();
+	private Ontologize ontologize = new Ontologize(Authentication.getInstance().getFirstName() + " " + 
+			Authentication.getInstance().getLastName() + " (" + 
+			Authentication.getInstance().getEmail() + ")|"+Authentication.getInstance().getAffiliation());
 
 	public OntologizeBuildView() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -61,9 +65,12 @@ public class OntologizeBuildView extends Composite implements IOntologizeBuildVi
 
 	@Override
 	public void setOntologize(Collection collection) {
-		ontologize.setUser(Authentication.getInstance().getFirstName() + " " + 
+		/*ontologize.setUser(Authentication.getInstance().getFirstName() + " " + 
 				Authentication.getInstance().getLastName() + " (" + 
 				Authentication.getInstance().getEmail() + ")");
+		Alerter.showAlert("user", Authentication.getInstance().getFirstName() + " " + 
+			Authentication.getInstance().getLastName() + " (" + 
+			Authentication.getInstance().getEmail() + ")|"+Authentication.getInstance().getAffiliation());*/
 		ontologize.getEventBus().fireEvent(new LoadCollectionEvent(collection));
 	}
 

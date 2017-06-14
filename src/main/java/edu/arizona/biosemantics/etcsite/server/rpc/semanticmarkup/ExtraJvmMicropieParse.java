@@ -76,13 +76,13 @@ public class ExtraJvmMicropieParse extends ExtraJvmCallable<ParseResult> impleme
 	}
 	
 	public static void main(String[] args) throws Exception {
-		InJvmMicropieParse parse = new InJvmMicropieParse("C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/users/1/00", 
-				"C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/textCapture/charaparser/313/out", 
-				"C:/Users/rodenhausen.CATNET/Desktop/etcsite/resources/textCapture/micropie/models");
-		
-		//ExtraJvmMicropieParse parse = new ExtraJvmMicropieParse("C:/Users/rodenhausen.CATNET/git/etc-site3/in", 
-		//		"C:/Users/rodenhausen.CATNET/git/etc-site3/out", 
-		//		"C:/Users/rodenhausen.CATNET/Desktop/etcsite/resources/textCapture/micropie/model");
+		/*InJvmMicropieParse parse = new InJvmMicropieParse("C:/etcsitebase/etcsite/data/users/4/smicropie_demo", 
+				"C:/etcsitebase/etcsite/data/textCapture/charaparser/352/out", 
+				"C:/etcsitebase/etcsite/resources/textCapture/micropie/models");
+		*/
+		ExtraJvmMicropieParse parse = new ExtraJvmMicropieParse("C:/etcsitebase/etcsite/data/users/4/smicropie_demo", 
+		"C:/etcsitebase/etcsite/data/textCapture/charaparser/352/out", 
+		"C:/etcsitebase/etcsite/resources/textCapture/micropie/models");
 		parse.call();
 	}
 

@@ -105,13 +105,13 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.50-SNAPSHOT</version>
+		  <version>0.0.51-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.50-SNAPSHOT</version>
+		  <version>0.0.51-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
@@ -234,7 +234,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 		  <artifactId>enhance</artifactId>
-		  <version>0.0.19-SNAPSHOT</version>
+		  <version>0.0.22-SNAPSHOT</version>
 		  <exclusions>
 		  	<exclusion>
 		  		<artifactId>owlapi-tools</artifactId>
@@ -261,7 +261,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>semantic-markup</artifactId>
-			<version>0.1.190-SNAPSHOT</version>
+			<version>0.1.194-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>app</artifactId>
@@ -323,19 +323,19 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize2</artifactId>
-		  <version>0.0.64-SNAPSHOT</version>
+		  <version>0.0.67-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize2</artifactId>
-		  <version>0.0.64-SNAPSHOT</version>
+		  <version>0.0.67-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.matrixgeneration</groupId>
 		  <artifactId>matrix-generation</artifactId>
-		  <version>0.1.56-SNAPSHOT</version>
+		  <version>0.1.59-SNAPSHOT</version>
 		  <exclusions>
 		  	<exclusion>
 		  		<artifactId>owlapi-tools</artifactId>
@@ -377,7 +377,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>ling</artifactId>
-			<version>0.0.18-SNAPSHOT</version>
+			<version>0.0.19-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.gwtquery</groupId>
@@ -457,7 +457,7 @@
 			<version>0.0.24-SNAPSHOT</version>
 			<classifier>sources</classifier>
 		</dependency>
-		<!-- Neeeded For JavaEnvUtils.getJreExecutable(), even if removed no errors are displayed -->
+		<!-- Needed For JavaEnvUtils.getJreExecutable(), even if removed no errors are displayed -->
 		<dependency>
 			<groupId>org.apache.ant</groupId>
 			<artifactId>ant</artifactId>
@@ -486,6 +486,7 @@
 			<version>0.0.4-SNAPSHOT</version>
 			<classifier>sources</classifier>
 		</dependency>
+		<!-- use the old biology, new version will amke existed serialized classes corrupt -->
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.common</groupId>
 		  <artifactId>biology</artifactId>
@@ -549,7 +550,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.micropie</groupId>
 		  <artifactId>micropie</artifactId>
-		  <version>0.1.5-SNAPSHOT</version>
+		  <version>0.1.7-SNAPSHOT</version>
 		  <exclusions>
 		  	<exclusion>
 		  		<artifactId>stanford-corenlp</artifactId>
@@ -563,6 +564,14 @@
     		<version>0.9.1</version>
     		<scope>provided</scope>
 		</dependency>
+		<!-- for com.bfr.client.Selection in gwt.xml -->
+	   <dependency>
+	     <groupId>gwt-selection</groupId>
+	     <artifactId>selection</artifactId>
+	     <scope>system</scope>
+	     <version>1.1</version>
+	     <systemPath>${basedir}\lib\Selection_1_1.jar</systemPath>
+	   </dependency>
 	</dependencies>
 
 	<build>

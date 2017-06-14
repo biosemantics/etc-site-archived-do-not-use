@@ -99,7 +99,7 @@ public class ExtraJvmMatrixGeneration extends ExtraJvmCallable<Void> implements 
 	
 	public static void main(String[] args) throws Exception {
 		//MatrixGeneration mg = new MatrixGeneration("C:/test/users/1070/input_2", "C:/test/temp/matrixGeneration/124/Matrix.mx");
-		ExtraJvmMatrixGeneration mg = new ExtraJvmMatrixGeneration("C:/test/Test_mmm", "PLANT", "C:/test/Test_mmm.mx", true, 
+		ExtraJvmMatrixGeneration mg = new ExtraJvmMatrixGeneration("C:/etcsitebase/etcsite/data/users/4/test_mg", "BACTERIA", "C:/micropie/outputser/ext.ser", true, 
 				true, true);
 		mg.call();
 		

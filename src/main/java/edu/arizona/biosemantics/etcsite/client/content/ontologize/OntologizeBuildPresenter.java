@@ -130,6 +130,9 @@ public class OntologizeBuildPresenter implements IOntologizeBuildView.Presenter 
 				AbstractTaskConfiguration configuration = task.getConfiguration();
 				OntologizeConfiguration ontologizeConfiguration = (OntologizeConfiguration)configuration;
 				String collectionId = ontologizeConfiguration.getOntologizeCollectionId()+"";
+				
+				ontologizeEventBus.fireEvent(new UserLogEvent("save_ontology","top_button"));
+				/*
 		 		userLogService.insertLog(user, Authentication.getInstance().getSessionId(), collectionId, "save_ontology","top_button", new AsyncCallback() {
 
 					@Override
@@ -143,7 +146,7 @@ public class OntologizeBuildPresenter implements IOntologizeBuildView.Presenter 
 					
 				});
 		 		
-		 		
+		 		*/
 			}
 		});
 		/*ontologizeService.goToTaskStage(Authentication.getInstance().getToken(), task, TaskStageEnum.OUTPUT, new AsyncCallback<Task>() {

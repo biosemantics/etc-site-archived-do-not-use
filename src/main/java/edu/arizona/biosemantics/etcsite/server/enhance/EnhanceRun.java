@@ -28,6 +28,8 @@ import edu.arizona.biosemantics.common.ling.transform.ITokenizer;
 import edu.arizona.biosemantics.common.ling.transform.lib.SomeInflector;
 import edu.arizona.biosemantics.common.ling.transform.lib.WhitespaceTokenizer;
 import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration.Enhance;
+import edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration.InJvmEnhance;
 import edu.arizona.biosemantics.oto.client.oto.OTOClient;
 import edu.arizona.biosemantics.oto.model.GlossaryDownload;
 import edu.arizona.biosemantics.oto.model.TermCategory;
@@ -136,6 +138,8 @@ public class EnhanceRun {
 	}
 	
 	public void run() throws OWLOntologyCreationException {
+		System.out.println("run --"+"doenhance");
+		System.out.println("ontology --"+ontology);
 		Run run = new Run();
 		KnowsPartOf knowsPartOf = new OWLOntologyKnowsPartOf(ontology, inflector);
 		KnowsSynonyms knowsSynonyms = new OWLOntologyKnowsSynonyms(ontology, inflector);
