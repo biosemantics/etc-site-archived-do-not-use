@@ -28,6 +28,8 @@ import edu.arizona.biosemantics.common.ling.transform.ITokenizer;
 import edu.arizona.biosemantics.common.ling.transform.lib.SomeInflector;
 import edu.arizona.biosemantics.common.ling.transform.lib.WhitespaceTokenizer;
 import edu.arizona.biosemantics.common.log.LogLevel;
+import edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration.Enhance;
+import edu.arizona.biosemantics.etcsite.server.rpc.matrixgeneration.InJvmEnhance;
 import edu.arizona.biosemantics.oto.client.oto.OTOClient;
 import edu.arizona.biosemantics.oto.model.GlossaryDownload;
 import edu.arizona.biosemantics.oto.model.TermCategory;
@@ -63,13 +65,33 @@ import edu.arizona.biosemantics.semanticmarkup.enhance.transform.RemoveUselessWh
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.RenameCharacter;
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.ReplaceTaxonNameByWholeOrganism;
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.SimpleRemoveSynonyms;
+<<<<<<< HEAD
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.SortBiologicalEntityNameWithDistanceCharacter;
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.SplitCompoundBiologicalEntitiesCharacters;
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.SplitCompoundBiologicalEntity;
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.StandardizeCount;
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.StandardizeQuantityPresence;
+=======
+import edu.arizona.biosemantics.semanticmarkup.enhance.transform.CreateOrPopulateWholeOrganism;
+>>>>>>> branch 'dongfang' of https://github.com/biosemantics/etc-site.git
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.old.MoveCharacterToStructureConstraint;
+<<<<<<< HEAD
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.old.StandardizeStructureNameBySyntax;
+=======
+import edu.arizona.biosemantics.semanticmarkup.enhance.transform.MoveNegationOrAdverbBiologicalEntityConstraint;
+import edu.arizona.biosemantics.semanticmarkup.enhance.transform.OrderBiologicalEntityConstraint;
+import edu.arizona.biosemantics.semanticmarkup.enhance.transform.RemoveUselessCharacterConstraint;
+import edu.arizona.biosemantics.semanticmarkup.enhance.transform.RemoveUselessWholeOrganism;
+import edu.arizona.biosemantics.semanticmarkup.enhance.transform.RenameCharacter;
+import edu.arizona.biosemantics.semanticmarkup.enhance.transform.ReplaceTaxonNameByWholeOrganism;
+import edu.arizona.biosemantics.semanticmarkup.enhance.transform.SortBiologicalEntityNameWithDistanceCharacter;
+import edu.arizona.biosemantics.semanticmarkup.enhance.transform.SplitCompoundBiologicalEntitiesCharacters;
+import edu.arizona.biosemantics.semanticmarkup.enhance.transform.SplitCompoundBiologicalEntity;
+import edu.arizona.biosemantics.semanticmarkup.enhance.transform.StandardizeCount;
+import edu.arizona.biosemantics.semanticmarkup.enhance.transform.StandardizeQuantityPresence;
+//import edu.arizona.biosemantics.semanticmarkup.enhance.transform.old.StandardizeStructureName;
+//import edu.arizona.biosemantics.semanticmarkup.enhance.transform.old.StandardizeStructureNameBySyntax;
+>>>>>>> branch 'dongfang' of https://github.com/biosemantics/etc-site.git
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.old.StandardizeTerminology;
 
 public class EnhanceRun {
@@ -136,6 +158,8 @@ public class EnhanceRun {
 	}
 	
 	public void run() throws OWLOntologyCreationException {
+		System.out.println("run --"+"doenhance");
+		System.out.println("ontology --"+ontology);
 		Run run = new Run();
 		KnowsPartOf knowsPartOf = new OWLOntologyKnowsPartOf(ontology, inflector);
 		KnowsSynonyms knowsSynonyms = new OWLOntologyKnowsSynonyms(ontology, inflector);
@@ -168,6 +192,7 @@ public class EnhanceRun {
 		run.addTransformer(new SortBiologicalEntityNameWithDistanceCharacter());
 		run.addTransformer(new OrderBiologicalEntityConstraint());
 		run.addTransformer(new StandardizeStructureNameBySyntax(characterKnowledgeBase, possessionTerms));
+		run.addTransformer(new StandardizeStructureNameTest(characterKnowledgeBase, possessionTerms));
 		run.addTransformer(new StandardizeTerminology(characterKnowledgeBase));
 		run.addTransformer(new RemoveOrphanRelations());
 		run.addTransformer(new RemoveDuplicateValues());

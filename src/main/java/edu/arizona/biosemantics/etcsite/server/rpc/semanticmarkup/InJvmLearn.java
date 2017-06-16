@@ -68,6 +68,8 @@ public class InJvmLearn implements Learn {
 		}
 		
 		try {
+			//for(String s: args) System.out.print(s+" ");
+			//System.out.println(" ");
 			ETCLearnMain.main(args);
 			DatasetPrefix datasetPrefix = daoManager.getSemanticMarkupDBDAO().getDatasetPrefix(tablePrefix);
 			LearnResult result = new LearnResult(datasetPrefix.getOtoUploadId(), datasetPrefix.getOtoSecret());	

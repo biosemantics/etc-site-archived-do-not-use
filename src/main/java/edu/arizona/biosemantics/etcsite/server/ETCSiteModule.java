@@ -85,6 +85,7 @@ public class ETCSiteModule extends AbstractModule {
 		bind(TreeGenerationService.class).in(Scopes.SINGLETON);
 		bind(KaptchaServlet.class).in(Scopes.SINGLETON);
 		bind(edu.arizona.biosemantics.oto2.ontologize2.server.CollectionService.class).in(Scopes.SINGLETON);
+		bind(edu.arizona.biosemantics.oto2.ontologize2.server.UserLogService.class).in(Scopes.SINGLETON);
 		bind(edu.arizona.biosemantics.oto2.ontologize2.server.ContextService.class).in(Scopes.SINGLETON);
 		bind(edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService.class).in(Scopes.SINGLETON);
 		bind(edu.arizona.biosemantics.oto2.oto.server.rpc.CommunityService.class).in(Scopes.SINGLETON);

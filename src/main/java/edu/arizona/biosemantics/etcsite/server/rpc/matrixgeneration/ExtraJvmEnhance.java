@@ -63,7 +63,7 @@ public class ExtraJvmEnhance extends ExtraJvmCallable<Void> implements Enhance {
 			}
 		}
 	}
-	
+	/*
 	public static void main(String[] args) throws Exception {
 		String inputDir = "enhance2/in";
 		//"C:/Users/rodenhausen.CATNET/Downloads/cathy mg task/Weakley_Plant_1130_output_by_TC_task_Weakley_Plant_1130_12-10-2016_2";
@@ -76,7 +76,7 @@ public class ExtraJvmEnhance extends ExtraJvmCallable<Void> implements Enhance {
 		EnhanceRun enhance = new EnhanceRun(inputDir, tempDir, inputOntology, 
 				termReviewTermCategorization, termReviewSynonyms, TaxonGroup.valueOf(taxonGroup));
 		enhance.run();
-	}
+	}*/
 	
 	private String inputDir;
 	private String outputDir;
@@ -144,13 +144,14 @@ public class ExtraJvmEnhance extends ExtraJvmCallable<Void> implements Enhance {
 		return null;
 	}
 	
-	/*public static void main(String[] args) throws Exception {
+	/**/
+	public static void main(String[] args) throws Exception {
 		//MatrixGeneration mg = new MatrixGeneration("C:/test/users/1070/input_2", "C:/test/temp/matrixGeneration/124/Matrix.mx");
-		ExtraJvmMatrixGeneration mg = new ExtraJvmMatrixGeneration("C:/test/Test_mmm", "", "PLANT", "C:/test/Test_mmm.mx", true, 
-				true, true);
+		ExtraJvmEnhance mg = new ExtraJvmEnhance("C:/etcsitebase/etcsite/data/users/4/smicropie_demo_output_by_TC_task_micropiedemo", "C:/test/Test_mmm.mx", "",
+				"", "", "BACTERIA");
 		mg.call();
 		
-	}*/
+	}
 
 
 }

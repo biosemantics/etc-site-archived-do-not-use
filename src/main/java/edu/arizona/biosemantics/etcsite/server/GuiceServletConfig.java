@@ -23,6 +23,7 @@ import edu.arizona.biosemantics.etcsite.server.rpc.user.UserService;
 import edu.arizona.biosemantics.etcsite.server.rpc.visualization.VisualizationService;
 import edu.arizona.biosemantics.etcsite.server.upload.UploadServlet;
 import edu.arizona.biosemantics.etcsitehelp.server.rpc.help.HelpService;
+import edu.arizona.biosemantics.oto2.ontologize2.server.UserLogService;
 
 public class GuiceServletConfig extends GuiceServletContextListener {
 
@@ -51,6 +52,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
 				serve("/etcsite/ontologize").with(OntologizeService.class);
 				serve("/etcsite/captcha/*").with(KaptchaServlet.class);
 				serve("/etcsite/ontologize2_collection").with(edu.arizona.biosemantics.oto2.ontologize2.server.CollectionService.class);
+				serve("/etcsite/ontologize2_userlog").with(edu.arizona.biosemantics.oto2.ontologize2.server.UserLogService.class);
 				serve("/etcsite/ontologize2_context").with(edu.arizona.biosemantics.oto2.ontologize2.server.ContextService.class);
 				serve("/etcsite/oto_collection").with(edu.arizona.biosemantics.oto2.oto.server.rpc.CollectionService.class);
 				serve("/etcsite/oto_community").with(edu.arizona.biosemantics.oto2.oto.server.rpc.CommunityService.class);

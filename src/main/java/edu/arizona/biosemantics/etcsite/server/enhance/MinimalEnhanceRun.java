@@ -69,7 +69,11 @@ import edu.arizona.biosemantics.semanticmarkup.enhance.transform.SplitCompoundBi
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.StandardizeCount;
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.StandardizeQuantityPresence;
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.old.MoveCharacterToStructureConstraint;
+<<<<<<< HEAD
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.old.StandardizeStructureNameBySyntax;
+=======
+//import edu.arizona.biosemantics.semanticmarkup.enhance.transform.old.StandardizeStructureNameBySyntax;
+>>>>>>> branch 'dongfang' of https://github.com/biosemantics/etc-site.git
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.old.StandardizeTerminology;
 
 public class MinimalEnhanceRun {
@@ -143,7 +147,12 @@ public class MinimalEnhanceRun {
 		run.addTransformer(new StandardizeCount());
 		run.addTransformer(new SortBiologicalEntityNameWithDistanceCharacter());
 		run.addTransformer(new OrderBiologicalEntityConstraint());
+
 		run.addTransformer(new StandardizeStructureNameBySyntax(characterKnowledgeBase, possessionTerms));
+
+		//run.addTransformer(new StandardizeStructureName(characterKnowledgeBase, possessionTerms));
+		//run.addTransformer(new StandardizeStructureNameBySyntax(characterKnowledgeBase, possessionTerms));
+
 		run.addTransformer(new StandardizeTerminology(characterKnowledgeBase));
 		run.addTransformer(new RemoveOrphanRelations());
 		run.addTransformer(new RemoveDuplicateValues());

@@ -514,3 +514,20 @@ ALTER TABLE `etcsite_treegenerationconfigurations`
 --
 ALTER TABLE `etcsite_visualizationconfigurations`
   ADD CONSTRAINT `configurations_visualizationconfigurations_CON` FOREIGN KEY (`configuration`) REFERENCES `etcsite_configurations` (`id`);
+
+--
+-- user log service
+--  
+CREATE TABLE `user_log` (
+  `ID` bigint(20) NOT NULL auto_increment,
+  `userid` varchar(80) default NULL,
+  `sessionid` varchar(32) default NULL,
+  `ontology` varchar(16) default NULL,
+  `operation` varchar(32) default NULL,
+  `superlevel` text,
+  `origin` varchar(160) default NULL,
+  `targetlevel` varchar(160) default NULL,
+  `relation` varchar(256) default NULL,
+  `operatioin_time` timestamp NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
