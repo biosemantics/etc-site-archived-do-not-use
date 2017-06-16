@@ -131,12 +131,12 @@ public class XMLValidator implements IContentValidator {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		File file = new File("3.xml");
+		File file = new File("C:\\etcsitebase\\etcsite\\data\\textCapture\\charaparser\\387\\out\\Fernald_Rosaceae_1950.xml");
 		byte[] bytes = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
 		String fileContent = new String(bytes, Charset.forName("UTF8"));
-		System.out.println(fileContent);
+		//System.out.println(fileContent);
 		
-		XMLValidator taxonDescriptionValidator = new XMLValidator(new File("semanticMarkupInput.xsd"));
+		XMLValidator taxonDescriptionValidator = new XMLValidator(new File("semanticMarkupOutput.xsd"));
 		//XMLValidator xmlValidator = new XMLValidator("http://raw.githubusercontent.com/biosemantics/schemas/0.0.1/semanticMarkupInput.xsd;https://raw.githubusercontent.com/biosemantics/schemas/master/semanticMarkupOutput.xsd");
 		
 		System.out.println(taxonDescriptionValidator.validate(fileContent));

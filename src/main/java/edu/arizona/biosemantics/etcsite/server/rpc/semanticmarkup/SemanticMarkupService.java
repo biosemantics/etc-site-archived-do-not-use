@@ -406,11 +406,12 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 								List<String> files;
 								boolean validResult = true;
 								try {
+									
 									files = fileService.getDirectoriesFiles(new AdminAuthenticationToken(), outputDirectory);
 								} catch (PermissionDeniedException e) {
 									throw new SemanticMarkupException();
 								}
-								validResult = validateCharaparserOutput(task, parse, files, input, outputDirectory);								
+								validResult = validateCharaparserOutput(task, parse, files, input, outputDirectory);		
 								if(validResult) {
 									config.setOutput(config.getInput() + "_output_by_TC_task_" + task.getName());
 									config.setOutputTermReview(config.getInput() + "_TermsReviewed_by_TC_task_" + task.getName());
@@ -419,7 +420,6 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 									copyCharaparserOutput(createDirectory, task);
 									if(charaparserParse)
 										saveOto(authenticationToken, createTermReviewDirectory, task);
-									
 									config.setOutput(createDirectory);
 									config.setOutputTermReview(createTermReviewDirectory);
 									daoManager.getSemanticMarkupConfigurationDAO().updateSemanticMarkupConfiguration(config);
