@@ -23,14 +23,13 @@
 	</profiles>
 	<!-- version variables, used subsequently  -->
 	<properties>
-		<!--  <gwtVersion>2.6.1</gwtVersion> -->
 		<gwtVersion>2.7.0</gwtVersion>
 		<!-- GWT needs at least java 1.5 -->
 		<!-- But we need at least java 1.6 -->
 		<java.version>1.8</java.version>
-		<maven.compiler.source>1.8</maven.compiler.source> <!-- same as java.version -->
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<compliance.level>1.8</compliance.level>
+		<maven.compiler.source>1.7</maven.compiler.source> 
+		<maven.compiler.target>1.7</maven.compiler.target>
+		<compliance.level>1.7</compliance.level>
 		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -146,17 +145,17 @@
 		<dependency>
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
-			<version>4.0-beta</version>
+			<version>4.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.inject.extensions</groupId>
 			<artifactId>guice-assistedinject</artifactId>
-			<version>4.0-beta</version>
+			<version>4.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.inject.extensions</groupId>
 			<artifactId>guice-servlet</artifactId>
-			<version>4.0-beta</version>
+			<version>4.0</version>
 		</dependency>
 		
 		<dependency>
@@ -185,7 +184,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.7</version>
+			<version>1.7.25</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -195,12 +194,12 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.7</version>
+			<version>1.7.25</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jul-to-slf4j</artifactId>
-			<version>1.7.7</version>
+			<version>1.7.25</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -241,7 +240,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 		  <artifactId>enhance</artifactId>
-		  <version>0.0.22-SNAPSHOT</version>
+		  <version>0.0.22-SNAPSHOT-debug</version>
 		  <exclusions>
 		  	<exclusion>
 		  		<artifactId>owlapi-tools</artifactId>
@@ -268,7 +267,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>semantic-markup</artifactId>
-			<version>0.1.194-SNAPSHOT</version>
+			<version>0.1.194-SNAPSHOT-debug</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>app</artifactId>
@@ -301,12 +300,12 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common.ontology</groupId>
 		 	<artifactId>graph</artifactId>
-		  	<version>0.0.8-SNAPSHOT</version>
+		  	<version>0.0.8-SNAPSHOT-debug</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common.ontology</groupId>
 		 	<artifactId>graph</artifactId>
-		  	<version>0.0.8-SNAPSHOT</version>
+		  	<version>0.0.8-SNAPSHOT-debug</version>
 		  	<classifier>sources</classifier>
 		</dependency>
 		<dependency>
@@ -330,19 +329,19 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize2</artifactId>
-		  <version>0.0.67-SNAPSHOT</version>
+		  <version>0.0.66-SNAPSHOT-debug</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize2</artifactId>
-		  <version>0.0.67-SNAPSHOT</version>
+		  <version>0.0.66-SNAPSHOT-debug</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.matrixgeneration</groupId>
 		  <artifactId>matrix-generation</artifactId>
-		  <version>0.1.59-SNAPSHOT</version>
+		  <version>0.1.60-SNAPSHOT-debug</version>
 		  <exclusions>
 		  	<exclusion>
 		  		<artifactId>owlapi-tools</artifactId>
@@ -379,7 +378,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics</groupId>
 			<artifactId>bioportal-client</artifactId>
-			<version>0.0.13-SNAPSHOT</version>
+			<version>0.0.13-SNAPSHOT-debug</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
@@ -419,7 +418,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.gxt</groupId>
 		  <artifactId>theme</artifactId>
-		  <version>0.0.3-SNAPSHOT</version>
+		  <version>0.0.3-SNAPSHOT-debug</version>
 		  <exclusions>
 		  	<exclusion>
 		  		<artifactId>slf4j-jdk14</artifactId>
@@ -485,12 +484,12 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>validation</artifactId>
-			<version>0.0.4-SNAPSHOT</version>
+			<version>0.0.4-SNAPSHOT-debug</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>validation</artifactId>
-			<version>0.0.4-SNAPSHOT</version>
+			<version>0.0.4-SNAPSHOT-debug</version>
 			<classifier>sources</classifier>
 		</dependency>
 		<!-- use the old biology, new version will amke existed serialized classes corrupt -->
@@ -508,29 +507,29 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.euler</groupId>
 			<artifactId>euler2</artifactId>
-			<version>0.0.12-SNAPSHOT</version>
+			<version>0.0.14-SNAPSHOT-debug</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.euler</groupId>
 			<artifactId>euler2</artifactId>
-			<version>0.0.12-SNAPSHOT</version>
+			<version>0.0.14-SNAPSHOT-debug</version>
 		  	<classifier>sources</classifier>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.euler</groupId>
 			<artifactId>io</artifactId>
-			<version>0.0.14-SNAPSHOT</version>
+			<version>0.0.14-SNAPSHOT-debug</version>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.euler</groupId>
 		  <artifactId>alignment</artifactId>
-		  <version>0.0.81-SNAPSHOT</version>
+		  <version>0.0.82-SNAPSHOT-debug</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.euler</groupId>
 		  <artifactId>alignment</artifactId>
-		  <version>0.0.81-SNAPSHOT</version>
+		  <version>0.0.82-SNAPSHOT-debug</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
@@ -557,7 +556,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.micropie</groupId>
 		  <artifactId>micropie</artifactId>
-		  <version>0.1.7-SNAPSHOT</version>
+		  <version>0.1.6-SNAPSHOT-debug</version>
 		  <exclusions>
 		  	<exclusion>
 		  		<artifactId>stanford-corenlp</artifactId>
