@@ -2,7 +2,7 @@ package edu.arizona.biosemantics.etcsite.client.content.semanticMarkup;
 
 import java.util.List;
 
-import org.eclipse.jdt.internal.codeassist.select.SelectionScanner;
+//import org.eclipse.jdt.internal.codeassist.select.SelectionScanner;
 
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;

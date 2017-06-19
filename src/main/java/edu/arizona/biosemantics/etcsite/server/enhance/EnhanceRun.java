@@ -65,33 +65,13 @@ import edu.arizona.biosemantics.semanticmarkup.enhance.transform.RemoveUselessWh
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.RenameCharacter;
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.ReplaceTaxonNameByWholeOrganism;
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.SimpleRemoveSynonyms;
-<<<<<<< HEAD
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.SortBiologicalEntityNameWithDistanceCharacter;
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.SplitCompoundBiologicalEntitiesCharacters;
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.SplitCompoundBiologicalEntity;
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.StandardizeCount;
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.StandardizeQuantityPresence;
-=======
-import edu.arizona.biosemantics.semanticmarkup.enhance.transform.CreateOrPopulateWholeOrganism;
->>>>>>> branch 'dongfang' of https://github.com/biosemantics/etc-site.git
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.old.MoveCharacterToStructureConstraint;
-<<<<<<< HEAD
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.old.StandardizeStructureNameBySyntax;
-=======
-import edu.arizona.biosemantics.semanticmarkup.enhance.transform.MoveNegationOrAdverbBiologicalEntityConstraint;
-import edu.arizona.biosemantics.semanticmarkup.enhance.transform.OrderBiologicalEntityConstraint;
-import edu.arizona.biosemantics.semanticmarkup.enhance.transform.RemoveUselessCharacterConstraint;
-import edu.arizona.biosemantics.semanticmarkup.enhance.transform.RemoveUselessWholeOrganism;
-import edu.arizona.biosemantics.semanticmarkup.enhance.transform.RenameCharacter;
-import edu.arizona.biosemantics.semanticmarkup.enhance.transform.ReplaceTaxonNameByWholeOrganism;
-import edu.arizona.biosemantics.semanticmarkup.enhance.transform.SortBiologicalEntityNameWithDistanceCharacter;
-import edu.arizona.biosemantics.semanticmarkup.enhance.transform.SplitCompoundBiologicalEntitiesCharacters;
-import edu.arizona.biosemantics.semanticmarkup.enhance.transform.SplitCompoundBiologicalEntity;
-import edu.arizona.biosemantics.semanticmarkup.enhance.transform.StandardizeCount;
-import edu.arizona.biosemantics.semanticmarkup.enhance.transform.StandardizeQuantityPresence;
-//import edu.arizona.biosemantics.semanticmarkup.enhance.transform.old.StandardizeStructureName;
-//import edu.arizona.biosemantics.semanticmarkup.enhance.transform.old.StandardizeStructureNameBySyntax;
->>>>>>> branch 'dongfang' of https://github.com/biosemantics/etc-site.git
 import edu.arizona.biosemantics.semanticmarkup.enhance.transform.old.StandardizeTerminology;
 
 public class EnhanceRun {
@@ -192,7 +172,7 @@ public class EnhanceRun {
 		run.addTransformer(new SortBiologicalEntityNameWithDistanceCharacter());
 		run.addTransformer(new OrderBiologicalEntityConstraint());
 		run.addTransformer(new StandardizeStructureNameBySyntax(characterKnowledgeBase, possessionTerms));
-		run.addTransformer(new StandardizeStructureNameTest(characterKnowledgeBase, possessionTerms));
+		//run.addTransformer(new StandardizeStructureNameTest(characterKnowledgeBase, possessionTerms));
 		run.addTransformer(new StandardizeTerminology(characterKnowledgeBase));
 		run.addTransformer(new RemoveOrphanRelations());
 		run.addTransformer(new RemoveDuplicateValues());

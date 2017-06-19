@@ -19,7 +19,9 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.widget.client.TextButton;
+import com.google.gwt.user.client.ui.Button;
+//import com.google.gwt.widget.client.TextButton;
+
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.core.client.util.ToggleGroup;
 import com.sencha.gxt.widget.core.client.container.AbstractHtmlLayoutContainer.HtmlData;
@@ -60,18 +62,18 @@ public class SettingsView extends Composite implements ISettingsView {
 	private TextField email = new TextField();
 	private TextField lastName = new TextField();
 	private TextField firstName = new TextField();
-	private TextButton saveButton = new TextButton("Save");
+	private Button saveButton = new Button("Save");
 
 	private PasswordField confirmPassword = new PasswordField();
 	private PasswordField newPassword = new PasswordField();
 	private PasswordField currentPassword = new PasswordField();
-	private TextButton changePasswordButton = new TextButton("Save");
-    private TextButton saveBioportalButton = new TextButton("save");
-    private TextButton emailNotificationButton = new TextButton("save");
+	private Button changePasswordButton = new Button("Save");
+    private Button saveBioportalButton = new Button("save");
+    private Button emailNotificationButton = new Button("save");
 	
 	
 	private VerticalLayoutContainer otoVertical;
-	private TextButton otoSaveButton = new TextButton("Save");
+	private Button otoSaveButton = new Button("Save");
 
 	private CheckBox otoShareCheckBox = new CheckBox();
 	private FieldLabel otoShareFieldLabel = new FieldLabel(otoShareCheckBox, "Share Terms with Community");
@@ -91,16 +93,16 @@ public class SettingsView extends Composite implements ISettingsView {
 	private FieldLabel otoNewPasswordFieldLabel = new FieldLabel(otoNewPassword, "OTO Password");
 	private PasswordField otoNewPasswordConfirm = new PasswordField();
 	private FieldLabel otoNewPasswordConfirmFieldLabel = new FieldLabel(otoNewPasswordConfirm, "OTO Password");
-	private TextButton otoNewCreateButton = new TextButton("Create");
-	private TextButton otoNewAccountGoogleButton = new TextButton("Create OTO Account using Google");
+	private Button otoNewCreateButton = new Button("Create");
+	private Button otoNewAccountGoogleButton = new Button("Create OTO Account using Google");
 	
 	private FieldSet existingOTOAccountFieldSet = new FieldSet();
 	private TextField otoExistingEmail = new TextField();
 	private FieldLabel otoExistingEmailFieldLabel = new FieldLabel(otoExistingEmail, "OTO Email");
 	private PasswordField otoExistingPassword = new PasswordField();
 	private FieldLabel otoExistingPasswordFieldLabel = new FieldLabel(otoExistingPassword, "OTO Password");
-	private TextButton otoExistingLinkButton = new TextButton("Link");
-	private TextButton otoExistingAccountGoogleButton = new TextButton("Link OTO Account using Google");
+	private Button otoExistingLinkButton = new Button("Link");
+	private Button otoExistingAccountGoogleButton = new Button("Link OTO Account using Google");
 	
 
 	private CheckBox semanticMarkupEmail = new CheckBox();

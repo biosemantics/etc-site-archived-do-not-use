@@ -1,6 +1,5 @@
 package edu.arizona.biosemantics.etcsite.shared.rpc.auth;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 

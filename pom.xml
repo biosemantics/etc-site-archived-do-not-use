@@ -7,9 +7,9 @@
 	<groupId>edu.arizona.biosemantics.etcsite</groupId>
 	<artifactId>etc-site</artifactId>
 	<packaging>war</packaging>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1-SNAPSHOT-debug</version>
 
-	<!-- disable java doc generation, because source code are not annotated to java 8 doc standards -->
+   <!-- disable java doc generation, because source code are not annotated to java 8 doc standards -->
 	<profiles>
 	  <profile>
 	    <id>java8-doclint-disabled</id>
@@ -23,30 +23,21 @@
 	</profiles>
 	<!-- version variables, used subsequently  -->
 	<properties>
-		<gwtVersion>2.6.1</gwtVersion>
+		<!--  <gwtVersion>2.6.1</gwtVersion> -->
+		<gwtVersion>2.7.0</gwtVersion>
 		<!-- GWT needs at least java 1.5 -->
 		<!-- But we need at least java 1.6 -->
 		<java.version>1.8</java.version>
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<maven.compiler.target>1.7</maven.compiler.target>
-		<compliance.level>1.7</compliance.level>
+		<maven.compiler.source>1.8</maven.compiler.source> <!-- same as java.version -->
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<compliance.level>1.8</compliance.level>
 		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     	<aspectj.version>1.8.10</aspectj.version>
 	</properties>
 	
-	<profiles>
-		<profile>
- 			<id>java8-doclint-disabled</id>
- 	 		<activation>
- 	 		  <jdk>[1.8,)</jdk>
- 	 		</activation>
- 	 		<properties>
- 	 		  <javadoc.opts>-Xdoclint:none</javadoc.opts>
- 	 		</properties>
- 		</profile>
-	</profiles>
+
 
 	<repositories>
 		<repository>
@@ -119,24 +110,24 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.51-SNAPSHOT</version>
+		  <version>0.0.51-SNAPSHOT-debug</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.51-SNAPSHOT</version>
+		  <version>0.0.51-SNAPSHOT-debug</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics</groupId>
 		  <artifactId>gxt</artifactId>
-		  <version>0.0.11-SNAPSHOT</version>
+		  <version>0.0.11-SNAPSHOT-debug</version>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics</groupId>
 		  <artifactId>gxt</artifactId>
-		  <version>0.0.11-SNAPSHOT</version>
+		  <version>0.0.11-SNAPSHOT-debug</version>
 		  <classifier>sources</classifier>
 		</dependency> 
 		<dependency>
@@ -321,7 +312,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.133-SNAPSHOT</version>
+		  <version>0.0.134-SNAPSHOT-debug</version>
 		  <classifier>sources</classifier>
 		  <exclusions>
 		  	<exclusion>
@@ -333,7 +324,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.133-SNAPSHOT</version>
+		  <version>0.0.134-SNAPSHOT-debug</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
@@ -393,7 +384,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>ling</artifactId>
-			<version>0.0.19-SNAPSHOT</version>
+			<version>0.0.19-SNAPSHOT-debug</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.gwtquery</groupId>
@@ -454,23 +445,23 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>log</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
+			<version>0.0.3-SNAPSHOT-debug</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>log</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
+			<version>0.0.3-SNAPSHOT-debug</version>
 			<classifier>sources</classifier>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>taxonomy</artifactId>
-			<version>0.0.24-SNAPSHOT</version>
+			<version>0.0.24-SNAPSHOT-debug</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>taxonomy</artifactId>
-			<version>0.0.24-SNAPSHOT</version>
+			<version>0.0.24-SNAPSHOT-debug</version>
 			<classifier>sources</classifier>
 		</dependency>
 		<!-- Needed For JavaEnvUtils.getJreExecutable(), even if removed no errors are displayed -->
@@ -506,13 +497,13 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.common</groupId>
 		  <artifactId>biology</artifactId>
-		  <version>0.0.10-SNAPSHOT</version>
+		  <version>0.0.10-SNAPSHOT-debug</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.common</groupId>
 		  <artifactId>biology</artifactId>
-		  <version>0.0.10-SNAPSHOT</version>
+		  <version>0.0.10-SNAPSHOT-debug</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.euler</groupId>
@@ -545,7 +536,7 @@
 		<dependency>
 		<groupId>edu.arizona.biosemantics.oto</groupId>
 		<artifactId>oto-client</artifactId>
-		<version>0.0.54-SNAPSHOT</version>
+		<version>0.0.54-SNAPSHOT-debug</version>
 			</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
@@ -555,12 +546,12 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.oto</groupId>
 			<artifactId>oto-model</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
+			<version>0.0.3-SNAPSHOT-debug</version>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto</groupId>
 		  <artifactId>oto-model</artifactId>
-		  <version>0.0.3-SNAPSHOT</version>
+		  <version>0.0.3-SNAPSHOT-debug</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
@@ -586,8 +577,10 @@
 	     <artifactId>selection</artifactId>
 	     <scope>system</scope>
 	     <version>1.1</version>
-	     <systemPath>${basedir}\lib\Selection_1_1.jar</systemPath>
+	     <systemPath>C:\Users\hongcui\git\etc-site\lib\Selection_1_1.jar</systemPath>
 	   </dependency>
+
+	  
 	</dependencies>
 
 	<build>

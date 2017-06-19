@@ -129,7 +129,7 @@
 						</g:HorizontalPanel>
 						<g:HorizontalPanel styleName="inputForm">
 						<g:InlineLabel styleName="{style.note} DescriptionFont">
-						Select taxon group relevant to your text.
+						Select taxon group relevant to your text.Select Bacteria to use MicroPIE as the parser. 
 						</g:InlineLabel>
 								
 						</g:HorizontalPanel>

@@ -31,6 +31,49 @@
 		.clickable {
 			cursor:pointer;
 		}
+		
+				.charaparserLogo {
+		    /*background-image: url('images/charaparser_logo.jfif');*/
+		    background-size: 100% 100%;
+		    width: 200px;
+		    height: 50px;
+		    position: absolute;
+		    left: 80px;
+		    padding-left: 20px;
+		    vertical-align: bottom;
+		}
+		
+		.eulerLogo {
+		    /*background-image: url('images/Euler_logo.png');*/
+		    background-size: 100% 100%;
+		    width: 220px;
+		    height: 200px;
+		    position: absolute;
+		    left: 300px;
+		    padding-left: 20px;
+		}
+		
+		.micropieLogo {
+		    /*background-image: url('images/MicroPIE_logo.png');*/
+		    background-size: 100% 100%;
+		    width: 200px;
+		    height: 50px;
+		    position: absolute;
+		    left: 540px;
+		    padding-left: 20px;
+		}
+		
+		
+		
+		.nsfLogo {
+		    /*background-image: url('images/nsf_logo.jfif');*/
+		    background-size: 100% 100%;
+		    width: 200px;
+		    height: 200px;
+		    position: absolute;
+		    left: 740px;
+		    padding-left: 20px;
+		}
 	</ui:style>
 	<g:ScrollPanel>
 	  <lay:CenteredContentPanel>
@@ -38,7 +81,8 @@
 		    <g:Label styleName="{style.header}">About ETC Toolkit</g:Label>
 		    <g:Label>&nbsp;</g:Label>
 		    <g:HTMLPanel>
-		    <g:InlineLabel>The ETC toolbox consists of a set of software tools that can be used as a pipeline that takes clean textual morphological descriptions and outputs taxon-character matrices for taxon concept or phylogenetic analysis. The tools may also be used separately if their required input in the correct format is available. The tools are produced through a collaborative project (NSF DBI-1147266) between the University of Arizona and University of California at Davis and with collaboration from the project Next Generation Phenomics for the Tree of Life sponsored by NSF’s Assembling, Visualizing and Analysing the Tree of Life program (NSF DEB-1208567). For more information about the project, see </g:InlineLabel>
+		    <g:InlineLabel>The ETC toolbox consists of a set of software tools that can be used as a pipeline that takes clean textual morphological descriptions and outputs taxon-character matrices for taxon concept or phylogenetic analysis. The tools may also be used separately if their required input in the correct format is available. 
+             For more information about the project, see </g:InlineLabel>
 		    <g:Anchor href="http://taxonconceptexplorer.org/pub/Main_Page" target="_blank">http://taxonconceptexplorer.org/pub/Main_Page.</g:Anchor>
 		    </g:HTMLPanel>
 
@@ -48,8 +92,36 @@
 		    <g:InlineLabel>“A taxonomic [or taxon] concept is the underlying meaning, or referential extension, of a scientific name as stated by a particular author in a particular publication. It represents the author’s view of how the name is supposed to reach out to objects in nature” (Franz, 2008). In the simplest form, a taxon concept may be expressed as "taxon_name according to the_author". In a sense, a taxon concept attaches a meaning to a scientific name. The ETC project aims to provide a collection of software tools for biologists to explore the relationships among taxon concepts based on the physical characters of the taxa in question, however, each individual tool may also be used outside of the context of taxon concepts. </g:InlineLabel>
 		    </g:VerticalPanel>
 		    
+		    <g:VerticalPanel styleName="{style.padding}">
+		    <g:InlineLabel styleName="{style.bold}">Participating projects</g:InlineLabel>    
+		    <g:Label>&nbsp;</g:Label>
+		    <g:InlineLabel>ETC project is sponsored by NSF Advances in Biological Informatics (ABI) and Assembling, Visualizing and Analysing the Tree of Life (AVATOL) programs. The project was led by University of Arizona (NSF DBI-1147266, NSF DEB-1208567), with collaborations from  Agriculture Agr-Food Canada, University of California at Davis/University of Illinois at Urbana-Champaign (NSF DBI-1147273), University of Floria (1208256), University of Southern Maine (NSF DEB-1208685), University of Montana (NSF DEB-1208534), and others. </g:InlineLabel>
+		    </g:VerticalPanel>
+
+		    <g:VerticalPanel styleName="{style.padding}">
+		    <g:InlineLabel styleName="{style.bold}">Software tools that power ETC</g:InlineLabel>    
+		    <g:Label>&nbsp;</g:Label>
+		    <g:InlineLabel>CharaParser [1], Euler[2], MicroPIE[3], and a number of other modules developed by the project [4].</g:InlineLabel>
+		    <g:Label>&nbsp;</g:Label>
+		    <g:InlineLabel>[1] Cui, H (2012). CharaParser for fine-grained semantic annotation of organism morphological descriptions. Journal of the American Society for Information Science and Technology, 63(4), 738-754.</g:InlineLabel>
+		    <g:Label>&nbsp;</g:Label>
+		    <g:InlineLabel>[2] Chen M, Yu S, Franz N, Bowers S, Ludäscher B (2014) Euler/X: a toolkit for logic-based taxonomy integration. arXiv:1402.1992 [cs.LO] Available: http://arxiv.org/abs/1402.1992 Accessed 2015 January 10.</g:InlineLabel>
+		     <g:Label>&nbsp;</g:Label>
+		    <g:InlineLabel>[3] Mao, J. Moore, L., Blank, C. Wu, E.H-H, Ackerman, M., Ranade, S., Cui, H (2016). Microbial Phenomics Information Extractor (MicroPIE): A Natural Language Processing Tool for the Automated Acquisition of Prokaryotic Phenotypic Characters from Text Sources. BMC Bioinformatics, 17:528, DOI: 10.1186/s12859-016-1396-8</g:InlineLabel>
+		    <g:Label>&nbsp;</g:Label>
+		    <g:InlineLabel>[4] Cui, H., Xu, D., Chong, S.S., Ramirez, M.J., Rodenhausen, T., Macklin, J.A., Ludascher, B., Morris, R.A., Soto, E. M., Koch, N.M.  (2016). Introducing Explorer of Taxon Concepts with a Case Study on Spider Measurement Matrix Building. BMC Bioinformatics, 17;17(1):471. DOI: 10.1186/s12859-016-1352-7</g:InlineLabel>
+		    </g:VerticalPanel>
+		    <g:HTML ui:field="toolLogos">
+			<div class="{style.charaparserLogo}"><img src="images/charaparser_logo.jfif" width="200px" height="50px"/></div>
+			<div class="{style.eulerLogo}"><img src="images/Euler_logo.png" width="220px" height="200px"/></div>
+			<div class="{style.micropieLogo}"><img src="images/MicroPIE_logo.png" width="200px" height="50px"/></div>
+			<div class="{style.nsfLogo}"><img src="images/nsf_logo.jfif" width="200px" height="200px"/></div>
+		    </g:HTML>
+		    
+		    
 		     <g:VerticalPanel styleName="{style.padding}">
 		    <g:InlineLabel styleName="{style.bold}">How to start?</g:InlineLabel>  
+		    <g:Label>&nbsp;</g:Label>
 		    <g:FlowPanel>
 		    <g:InlineLabel>The&nbsp;</g:InlineLabel>
 		    <g:Anchor ui:field="getStartAnchor" styleName="{style.clickable}">Getting Started</g:Anchor>

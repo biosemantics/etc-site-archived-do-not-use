@@ -211,13 +211,18 @@
 		.absolutePositioned {
 			position: absolute;
 		}
+
+		
+		
+		
+		
 	</ui:style>
 	<g:HTMLPanel styleName="{style.absolutePositioned} font">
 		<div class="{style.semanticMarkupImage} {style.actionImage}"></div>
 		<div class="{style.semanticMarkupText} {style.actionText}"></div>
 		<div class="{style.semanticMarkupDescription} {style.actionDescription} ">
 		    Captures characters from taxonomic descriptions by performing a process called “semantic markup”. It generates marked-up files that can then 
-		    be used to create a taxon-character matrix automatically. This tool is powered by CharaParser. 
+		    be used to create a taxon-character matrix automatically. This tool is powered by CharaParser and MicroPIE. 
 		</div>
 		<div class="{style.semanticMarkupArrow} {style.actionArrow}"></div>
 		<g:HTML ui:field="semanticMarkupButton">
@@ -287,6 +292,7 @@
 			<div class="{style.pipelineButton}"><img src="images/ButtonGray.gif" width="200px" height="50px"/></div>
 			<div class="{style.pipelineButtonText}">Begin New Pipeline</div>
 		</g:HTML>--> 
-
+		
+		
 	</g:HTMLPanel>
 </ui:UiBinder> 
