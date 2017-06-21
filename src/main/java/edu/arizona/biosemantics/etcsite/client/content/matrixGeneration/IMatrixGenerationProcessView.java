@@ -13,6 +13,7 @@ public interface IMatrixGenerationProcessView extends IsWidget {
 		void setTask(Task task);
 		void onReview();
 		void onOutput();
+		void onOutputMC();
 	}
 	  
 	void setPresenter(Presenter presenter);

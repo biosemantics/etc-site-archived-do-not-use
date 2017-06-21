@@ -33,6 +33,7 @@ import edu.arizona.biosemantics.matrixreview.client.event.SetTaxonCommentEvent;
 import edu.arizona.biosemantics.matrixreview.client.event.SetValueColorEvent;
 import edu.arizona.biosemantics.matrixreview.client.event.SetValueCommentEvent;
 import edu.arizona.biosemantics.matrixreview.client.event.SetValueEvent;
+import edu.arizona.biosemantics.matrixreview.client.matrix.MatrixFormat;
 import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.TaxonMatrix;
 
@@ -159,7 +160,7 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 		view.getMatrixReviewView().getFullModelBus().addHandler(DownloadEvent.TYPE, new DownloadEvent.DownloadHandler() {
 			@Override
 			public void onDownload(DownloadEvent event) {
-				download(event.getModel());
+				download(event.getModel(), event.getFormat());
 			}
 		});
 		view.getMatrixReviewView().getFullModelBus().addHandler(SaveEvent.TYPE, new SaveEvent.SaveHandler() {
@@ -182,11 +183,12 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 		});
 	}
 
-	protected void download(Model model) {
+	protected void download(Model model, MatrixFormat format) {
 		final MessageBox box = Alerter.startLoading();
 		final MyWindow window = MyWindow.open(null, "_blank", null);
+		if(format==null) format = MatrixFormat.CSV;
 		matrixGenerationService.outputMatrix(Authentication.getInstance().getToken(), 
-				task, model, new AsyncCallback<String>() {
+				task, model, format, new AsyncCallback<String>() {
 			@Override
 			public void onSuccess(String result) {
 				Alerter.stopLoading(box);
@@ -323,6 +325,6 @@ public class MatrixGenerationReviewPresenter implements IMatrixGenerationReviewV
 
 	@Override
 	public void onExport() {
-		download(model);
+		download(model, MatrixFormat.CSV);
 	}
 }

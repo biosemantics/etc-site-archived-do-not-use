@@ -7,6 +7,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.matrixreview.client.matrix.MatrixFormat;
 import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 
 @RemoteServiceRelativePath("matrixGeneration")
@@ -30,7 +31,7 @@ public interface IMatrixGenerationService extends RemoteService, IHasTasksServic
 	public String checkInputValid(AuthenticationToken authenticationToken,
 			String filePath);
 	
-	public String outputMatrix(AuthenticationToken token, Task task, Model model) throws MatrixGenerationException;
+	public String outputMatrix(AuthenticationToken token, Task task, Model model, MatrixFormat format) throws MatrixGenerationException;
 
 	public Model loadMatrixFromProcessOutput(AuthenticationToken token, Task task) throws MatrixGenerationException;
 

@@ -6,6 +6,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.IHasTasksServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.auth.AuthenticationToken;
+import edu.arizona.biosemantics.matrixreview.client.matrix.MatrixFormat;
 import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 
 public interface IMatrixGenerationServiceAsync extends IHasTasksServiceAsync {
@@ -27,7 +28,7 @@ public interface IMatrixGenerationServiceAsync extends IHasTasksServiceAsync {
 
 	public void checkInputValid(AuthenticationToken authenticationToken, String filePath, AsyncCallback<String> callback);
 
-	public void outputMatrix(AuthenticationToken token, Task task, Model model, AsyncCallback<String> callback);
+	public void outputMatrix(AuthenticationToken token, Task task, Model model, MatrixFormat format, AsyncCallback<String> callback);
 	
 	public void loadMatrixFromProcessOutput(AuthenticationToken token, Task task, AsyncCallback<Model> callback);
 

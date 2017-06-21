@@ -24,6 +24,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.Task;
 import edu.arizona.biosemantics.etcsite.shared.model.matrixgeneration.TaskStageEnum;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
 import edu.arizona.biosemantics.etcsite.shared.rpc.matrixGeneration.IMatrixGenerationServiceAsync;
+import edu.arizona.biosemantics.matrixreview.client.matrix.MatrixFormat;
 import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.TaxonMatrix;
 
@@ -129,7 +130,7 @@ public class MatrixGenerationProcessPresenter implements IMatrixGenerationProces
 				//	public void onSuccess(Task result) {
 						final MyWindow window = MyWindow.open(null, "_blank", null);
 						matrixGenerationService.outputMatrix(Authentication.getInstance().getToken(), 
-								task, model, new AsyncCallback<String>() {
+								task, model, MatrixFormat.CSV, new AsyncCallback<String>() {
 							@Override
 							public void onSuccess(String result) {
 								Alerter.stopLoading(box);
@@ -155,6 +156,36 @@ public class MatrixGenerationProcessPresenter implements IMatrixGenerationProces
 				//		Alerter.stopLoading(box);
 				//	}
 				//});
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Alerter.failedToReview(caught);
+				Alerter.stopLoading(box);
+			}
+		});
+	}
+	
+	@Override
+	public void onOutputMC() {
+		final MessageBox box = Alerter.startLoading();
+		matrixGenerationService.review(Authentication.getInstance().getToken(), task, new AsyncCallback<Model>() { 
+			public void onSuccess(final Model model) {
+						final MyWindow window = MyWindow.open(null, "_blank", null);
+						matrixGenerationService.outputMatrix(Authentication.getInstance().getToken(), 
+								task, model, MatrixFormat.MCCSV, new AsyncCallback<String>() {
+							@Override
+							public void onSuccess(String result) {
+								Alerter.stopLoading(box);
+								window.setUrl("download.dld?target=" + URL.encodeQueryString(result) + 
+										"&userID=" + URL.encodeQueryString(String.valueOf(Authentication.getInstance().getUserId())) + "&" + 
+										"sessionID=" + URL.encodeQueryString(Authentication.getInstance().getSessionId()));
+							}
+							@Override
+							public void onFailure(Throwable caught) {
+								Alerter.failedToOutputMatrix(caught);
+								Alerter.stopLoading(box);
+							}
+						});	
 			}
 			@Override
 			public void onFailure(Throwable caught) {

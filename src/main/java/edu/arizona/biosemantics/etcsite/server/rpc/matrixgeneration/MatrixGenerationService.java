@@ -84,6 +84,8 @@ import edu.arizona.biosemantics.matrixgeneration.model.raw.CellValue;
 import edu.arizona.biosemantics.matrixgeneration.model.raw.ColumnHead;
 import edu.arizona.biosemantics.matrixgeneration.model.raw.Matrix;
 import edu.arizona.biosemantics.matrixgeneration.model.raw.RowHead;
+import edu.arizona.biosemantics.matrixreview.client.matrix.MatrixFormat;
+import edu.arizona.biosemantics.matrixreview.server.MatrixFileUtil;
 import edu.arizona.biosemantics.matrixreview.shared.model.Color;
 import edu.arizona.biosemantics.matrixreview.shared.model.Model;
 import edu.arizona.biosemantics.matrixreview.shared.model.core.Character;
@@ -103,6 +105,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	private Map<Integer, ListenableFuture<Void>> activeProcessFutures = new HashMap<Integer, ListenableFuture<Void>>();
 	private Map<Integer, MatrixGeneration> activeMatrixGenerationProcess = new HashMap<Integer, MatrixGeneration>();
 	private Map<Integer, Enhance> activeEnhanceProcess = new HashMap<Integer, Enhance>();
+	private MatrixFileUtil matrixFileUtil = new MatrixFileUtil();
 	private DAOManager daoManager;
 	
 	@Inject
@@ -749,12 +752,22 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	}
 
 	@Override
-	public String outputMatrix(AuthenticationToken authenticationToken, Task task, Model model) throws MatrixGenerationException {
+	public String outputMatrix(AuthenticationToken authenticationToken, Task task, Model model, MatrixFormat format) throws MatrixGenerationException {
+		
 		final MatrixGenerationConfiguration config = getMatrixGenerationConfiguration(task);
 		
+		String extName = ".csv";
+		switch(format){
+			case CSV: extName = ".csv"; break;
+			case MCCSV: extName = ".csv"; break;
+			case NEXUS: extName = ".nex"; break;
+			case NEXML: extName = ".xml"; break;
+		}
 		String path = Configuration.matrixReview_tempFileBase + 
 				File.separator + "matrix-review" + File.separator + authenticationToken.getUserId() +
-				File.separator + "matrix_task-" + task.getName() + ".csv";
+				File.separator + "matrix_task-" + task.getName() + extName;
+		//System.out.println(path);
+		/*
 		File file = new File(path);
 		file.getParentFile().mkdirs();
 		try {
@@ -802,6 +815,18 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		try (FileWriter fileWriter = new FileWriter(new File(path))) {
 			fileWriter.write(jsonModel);
 		}*/
+		try{
+			switch(format){
+				case CSV: matrixFileUtil.generateSimpleCSV(path, model.getTaxonMatrix());break;
+				case MCCSV: matrixFileUtil.generateMatrixConverterCSV(path, model.getTaxonMatrix());break;
+				case NEXUS: break;
+				case NEXML: break;
+				default: matrixFileUtil.generateMatrixConverterCSV(path, model.getTaxonMatrix());
+			}
+		} catch(Exception e){
+			log(LogLevel.ERROR, "Couldn't download matrix", e);
+			throw new MatrixGenerationException(task);
+		}
 		return path;
 	}
 	

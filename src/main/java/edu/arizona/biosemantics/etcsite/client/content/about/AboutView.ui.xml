@@ -20,6 +20,7 @@
 		.bioPosition{
 			font-style: italic;
 			padding-left: 4px;
+			text-wrap:normal
 		}
 		.image {
 			width:100px;
@@ -111,13 +112,14 @@
 		    <g:Label>&nbsp;</g:Label>
 		    <g:InlineLabel>[4] Cui, H., Xu, D., Chong, S.S., Ramirez, M.J., Rodenhausen, T., Macklin, J.A., Ludascher, B., Morris, R.A., Soto, E. M., Koch, N.M.  (2016). Introducing Explorer of Taxon Concepts with a Case Study on Spider Measurement Matrix Building. BMC Bioinformatics, 17;17(1):471. DOI: 10.1186/s12859-016-1352-7</g:InlineLabel>
 		    </g:VerticalPanel>
+		    <!-- 
 		    <g:HTML ui:field="toolLogos">
 			<div class="{style.charaparserLogo}"><img src="images/charaparser_logo.jfif" width="200px" height="50px"/></div>
 			<div class="{style.eulerLogo}"><img src="images/Euler_logo.png" width="220px" height="200px"/></div>
 			<div class="{style.micropieLogo}"><img src="images/MicroPIE_logo.png" width="200px" height="50px"/></div>
 			<div class="{style.nsfLogo}"><img src="images/nsf_logo.jfif" width="200px" height="200px"/></div>
 		    </g:HTML>
-		    
+		     -->
 		    
 		     <g:VerticalPanel styleName="{style.padding}">
 		    <g:InlineLabel styleName="{style.bold}">How to start?</g:InlineLabel>  
@@ -133,75 +135,99 @@
 		    
 		    <g:HTMLPanel>
 		    
-		    <table style="width:100%">	    
+		    <table style="width:100%">
 		    <tr>
-			    <td valign="top" style="width:50%">
+			    <td valign="top">
+			    	<g:HTMLPanel>
+				   		<g:Label styleName="{style.header}" text="&nbsp;Powerred by"/>
+				   		
+						<hr noshade="noshade" width="110%"/>
+						<table style="padding:5px; height:100px">
+							<tr>
+								<td width="30%" align="center"> 
+									<g:Image url="images/charaparser_logo.jfif"  height="50px"/>
+								</td>
+								<td width="20%"  align="center"> 
+									<g:Image url="images/Euler_logo.png"  height="100px"/>
+								</td>
+								<td width="30%"  align="center"> 
+									<g:Image url="images/MicroPIE_logo.png"   height="50px"/>
+								</td>
+								<td width="20%"  align="center"> 
+									<g:Image url="images/nsf_logo.jfif"   height="100px"/>
+								</td>
+							</tr>
+						</table>
+					   </g:HTMLPanel>
+					</td>
+				</tr>    
+		    <tr>
+			    <td valign="top">
 			    	<g:HTMLPanel>
 				   		<g:Label styleName="{style.header}" text="&nbsp;Developer Team"/>
 				   		
 						<hr noshade="noshade" width="110%"/>
 						<table style="padding:5px">
 							<tr>
-								<td> 
+								<td  width="10%"> 
 									<g:Image url="images/staffthomas.jpg" styleName="{style.image}"/>
 								</td>
-								<td valign="top" style="padding-left:20px; padding-top:10px">
-									<table>
-										<tr><g:Label styleName="{style.bioName}" text="Thomas Rodenhausen"/></tr>
-										<tr><g:Label styleName="{style.bioPosition}" text="Lead Developer"/></tr>
+								<td valign="top" style="padding-left:20px; padding-top:10px"  width="23%">
+									<table style="width:100%;text-wrap:normal">
+										<tr><td><g:Label styleName="{style.bioName}" text="Thomas Rodenhausen"/></td></tr>
+										<tr><td><g:Label styleName="{style.bioPosition}" text="Lead Developer"/></td></tr>
 										<!-- <tr>&nbsp;</tr>
 										<tr><g:Label text="Bio goes here!"/></tr> -->
 									</table>
 								</td>
-							</tr>
-							<tr>
-								<td> 
-									<g:Image url="images/staffhong.jpg" styleName="{style.image}"/>
+								<td  width="10%"> 
+									<g:Image url="images/staffhong.png" styleName="{style.image}"/>
 								</td>
-								<td valign="top" style="padding-left:20px; padding-top:10px">
-									<table>
-										<tr><g:Label styleName="{style.bioName}" text="Hong Cui"/></tr>
-										<tr><g:Label styleName="{style.bioPosition}" text="Assistant Developer"/></tr>
+								<td valign="top" style="padding-left:20px; padding-top:10px"  width="23%">
+									<table style="width:100%;text-wrap:normal">
+										<tr><td><g:Label styleName="{style.bioName}" text="Hong Cui"/></td></tr>
+										<tr><td><g:Label styleName="{style.bioPosition}" text="Assistant Developer"/></td></tr>
 										<!-- <tr>&nbsp;</tr>
 										<tr><g:Label text="Bio goes here!"/></tr> -->
 									</table>
+								</td>							
+								<td  width="10%"> 
+									<g:Image url="images/staffjin.png" styleName="{style.image}"/>
 								</td>
-							</tr>
-							<tr>
-								<td> 
-									<g:Image url="images/staffshizhuo.jpg" styleName="{style.image}"/>
-								</td>
-								<td valign="top" style="padding-left:20px; padding-top:10px">
-									<table>
-										<tr><g:Label styleName="{style.bioName}" text="Shizhuo Yu"/></tr>
-										<tr><g:Label styleName="{style.bioPosition}" text="Assistant Developer"/></tr>
-										<tr><g:Label styleName="{style.bioPosition}" text="PhD Student, University of California, Davis"/></tr>
+								<td valign="top" style="padding-left:20px; padding-top:10px"  width="24%">
+									<table style="width:100%;text-wrap:normal">
+										<tr><td><g:Label styleName="{style.bioName}" text="Jin Mao"/></td></tr>
+										<tr><td><g:Label styleName="{style.bioPosition}" text="Postdoc, University of Arizona"/></td></tr>
+										<!-- <tr><td><g:Label styleName="{style.bioPosition}" text="PhD Student, University of California, Davis"/></td></tr> -->
 									</table>
 								</td>
 							</tr>
 						</table>
-						
+					   </g:HTMLPanel>
+					</td>
+				</tr>
+				<tr>
+			    <td valign="top">
+			    	<g:HTMLPanel>
 						<g:Label styleName="{style.header}" text="&nbsp;Developer Team (Past)"/>
 						<hr noshade="noshade" width="110%"/>
 						<table style="padding:5px">
 							<tr>
-								<td> 
+								<td width="10%"> 
 									<g:Image url="images/staffelvis.jpg" styleName="{style.image}"/>
 								</td>
-								<td valign="top" style="padding-left:20px; padding-top:10px">
+								<td valign="top" style="padding-left:20px; padding-top:10px"  width="23%">
 									<table>
 										<tr><g:Label styleName="{style.bioName}" text="Elvis Hsin-Hui Wu"/></tr>
 										<tr><g:Label styleName="{style.bioPosition}" text="Assistant Developer"/></tr>
 										<!-- <tr>&nbsp;</tr>
 										<tr><g:Label text="Bio goes here!"/></tr> -->
 									</table>
-								</td>
-							</tr>
-							<tr>
-								<td> 
+								</td>							
+								<td  width="10%"> 
 									<g:Image url="images/stafffengqiong.jpg" styleName="{style.image}"/>
 								</td>
-								<td valign="top" style="padding-left:20px; padding-top:10px">
+								<td valign="top" style="padding-left:20px; padding-top:10px"  width="23%">
 									<table>
 										<tr><g:Label styleName="{style.bioName}" text="Fengqiong Huang"/></tr>
 										<tr><g:Label styleName="{style.bioPosition}" text="Developer"/></tr>
@@ -209,12 +235,10 @@
 										<tr><g:Label text="Bio goes here!"/></tr> -->
 									</table>
 								</td>
-							</tr>
-							<tr>
-								<td> 
+								<td  width="10%"> 
 									<g:Image url="images/staffandrew.jpg" styleName="{style.image}"/>
 								</td>
-								<td valign="top" style="padding-left:20px; padding-top:10px">
+								<td valign="top" style="padding-left:20px; padding-top:10px"  width="24%">
 									<table>
 										<tr><g:Label styleName="{style.bioName}" text="Andrew Stockton"/></tr>
 										<tr><g:Label styleName="{style.bioPosition}" text="Assistant Developer"/></tr>
@@ -223,10 +247,37 @@
 									</table>
 								</td>
 							</tr>
+							<tr>
+							<td  width="10%"> 
+									<g:Image url="images/staffshizhuo.jpg" styleName="{style.image}"/>
+								</td>
+								<td valign="top" style="padding-left:20px; padding-top:10px"  width="24%">
+									<table style="width:100%;text-wrap:normal">
+										<tr><td><g:Label styleName="{style.bioName}" text="Shizhuo Yu"/></td></tr>
+										<tr><td><g:Label styleName="{style.bioPosition}" text="Assistant Developer"/></td></tr>
+										<tr><td><g:Label styleName="{style.bioPosition}" text="PhD Student, University of California, Davis"/></td></tr>
+									</table>
+								</td>
+								<td  width="10%"> 
+									<g:Image url="images/staffarthy.jpg" styleName="{style.image}"/>
+								</td>
+								<td valign="top" style="padding-left:20px; padding-top:10px"  width="24%">
+									<table style="width:100%;text-wrap:normal">
+										<tr><td><g:Label styleName="{style.bioName}" text="Aarthy Sankari Bhaska"/></td></tr>
+										<tr><td><g:Label styleName="{style.bioPosition}" text="Assistant Developer"/></td></tr>
+										<tr><td><g:Label styleName="{style.bioPosition}" text="Graduate Student, University of Arizona"/></td></tr>
+									</table>
+								</td>
+								<td>
+								
+								</td>
+								
+							</tr>
 						</table>
 					</g:HTMLPanel>
-					
-				</td>
+					</td>
+				</tr>
+				<tr>
 				<td valign="top">
 			    	<g:HTMLPanel>
 				   		<g:Label styleName="{style.header}" text="&nbsp;&nbsp;Senior Personnel"/>
@@ -234,34 +285,30 @@
 						<hr noshade="noshade" width="110%"/>
 						<table style="padding:5px">
 							<tr>
-								<td> 
-									<g:Image url="images/staffhong.jpg" styleName="{style.image}"/>
+								<td  width="10%"> 
+									<g:Image url="images/staffhong.png" styleName="{style.image}"/>
 								</td>
-								<td valign="top" style="padding-left:20px; padding-top:10px">
+								<td valign="top" style="padding-left:20px; padding-top:10px"  width="23%">
 									<table>
 										<tr><g:Label styleName="{style.bioName}" text="Hong Cui"/></tr>
 										<tr><g:Label styleName="{style.bioPosition}" text="PI"/></tr>
 										<tr><g:Label styleName="{style.bioPosition}" text="Associate Professor, University of Arizona"/></tr>
 									</table>
 								</td>
-							</tr>
-							<tr>
-								<td> 
+								<td  width="10%"> 
 									<g:Image url="images/staffbertram.jpg" styleName="{style.image}"/>
 								</td>
-								<td valign="top" style="padding-left:20px; padding-top:10px">
+								<td valign="top" style="padding-left:20px; padding-top:10px"  width="23%">
 									<table>
 										<tr><g:Label styleName="{style.bioName}" text="Bertram Ludaescher"/></tr>
 										<tr><g:Label styleName="{style.bioPosition}" text="Co-PI"/></tr>
 										<tr><g:Label styleName="{style.bioPosition}" text="Professor, University of Illinois (formerly University of California at Davis)"/></tr>
 									</table>
 								</td>
-							</tr>
-							<tr>
-								<td> 
+								<td  width="10%"> 
 									<g:Image url="images/staffjames.jpg" styleName="{style.image}"/>
 								</td>
-								<td valign="top" style="padding-left:20px; padding-top:10px">
+								<td valign="top" style="padding-left:20px; padding-top:10px"  width="24%">
 									<table>
 										<tr><g:Label styleName="{style.bioName}" text="James Macklin"/></tr>
 										<tr><g:Label styleName="{style.bioPosition}" text="Co-PI"/></tr>
@@ -279,6 +326,8 @@
 										<tr><g:Label styleName="{style.bioPosition}" text="Consultant"/></tr>
 										<tr><g:Label styleName="{style.bioPosition}" text="Professor Emeritus, University of Massachusetts-Boston"/></tr>
 									</table>
+								</td>
+								<td colspan="4"> 
 								</td>
 							</tr>
 							
