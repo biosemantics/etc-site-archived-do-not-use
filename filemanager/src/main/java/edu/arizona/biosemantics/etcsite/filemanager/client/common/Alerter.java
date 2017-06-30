@@ -613,7 +613,7 @@ public class Alerter {
 		dialog.setPredefinedButtons(PredefinedButton.CLOSE);
 		dialog.add(panel);
 		dialog.setBodyBorder(false);
-		dialog.setHeadingText("Upload Failed");
+		dialog.setHeading("Upload Failed");
 		dialog.setWidth(600);
 		dialog.setHeight(400);
 		dialog.setHideOnButtonClick(true);

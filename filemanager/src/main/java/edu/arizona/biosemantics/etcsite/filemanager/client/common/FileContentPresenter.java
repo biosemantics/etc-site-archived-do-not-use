@@ -31,7 +31,7 @@ public class FileContentPresenter implements IFileContentView.Presenter {
 		
 		dialog = new Dialog();
 		dialog.setBodyBorder(false);
-		dialog.setHeadingText("File Content");
+		dialog.setHeading("File Content");
 		dialog.setPixelSize(-1, -1);
 		dialog.setMinWidth(0);
 		dialog.setMinHeight(0);

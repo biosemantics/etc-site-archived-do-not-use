@@ -34,7 +34,7 @@ public class CreateSemanticMarkupFilesDialogView implements
 
 		dialog = new Dialog();
 		dialog.setBodyBorder(false);
-		dialog.setHeadingText("Create Files");
+		dialog.setHeading("Create Files");
 		dialog.setPixelSize(-1, -1);
 		dialog.setMinWidth(0);
 		dialog.setMinHeight(0);
