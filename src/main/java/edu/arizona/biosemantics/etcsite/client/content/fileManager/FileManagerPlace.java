@@ -7,6 +7,8 @@ public class FileManagerPlace extends Place {
 	
 	public static class Tokenizer implements PlaceTokenizer<FileManagerPlace> {
 
+		public Tokenizer(){}
+		
 		@Override
 		public FileManagerPlace getPlace(String token) {
 			return new FileManagerPlace();

@@ -17,7 +17,7 @@ public class TaxonomyComparisonDefinePlace extends TaxonomyComparisonPlace {
 	//needed becuase per default the name is used, which causes a name clash with 
 	//InputPlace of semanticMarkup's
 	public static class Tokenizer implements PlaceTokenizer<TaxonomyComparisonDefinePlace> {
-
+		public Tokenizer(){}
 		@Override
 		public TaxonomyComparisonDefinePlace getPlace(String token) {
 			Task task = new Task();

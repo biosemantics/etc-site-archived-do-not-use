@@ -13,6 +13,7 @@ public class MatrixGenerationReviewPlace extends MatrixGenerationPlace {
 	
 	public static class Tokenizer implements PlaceTokenizer<MatrixGenerationReviewPlace> {
 
+		public Tokenizer(){}
 		@Override
 		public MatrixGenerationReviewPlace getPlace(String token) {
 			Task task = new Task();

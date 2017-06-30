@@ -12,7 +12,7 @@ public class SemanticMarkupOutputPlace extends SemanticMarkupPlace {
 	}
 
 	public static class Tokenizer implements PlaceTokenizer<SemanticMarkupOutputPlace> {
-
+		public Tokenizer(){}
 		@Override
 		public SemanticMarkupOutputPlace getPlace(String token) {
 			Task task = new Task();

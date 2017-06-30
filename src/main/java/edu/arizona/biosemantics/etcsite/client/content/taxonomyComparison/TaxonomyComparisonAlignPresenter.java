@@ -60,7 +60,7 @@ public class TaxonomyComparisonAlignPresenter implements ITaxonomyComparisonAlig
 			this.processingView = processingPresenter.getView();
 			processingPresenter.addOnTaskManagerListener(this);
 			setBodyBorder(false);
-			setHeadingText("Please wait...");
+			setHeading("Please wait...");
 			setPixelSize(-1, -1);
 			setMinWidth(0);
 			setMinHeight(0);

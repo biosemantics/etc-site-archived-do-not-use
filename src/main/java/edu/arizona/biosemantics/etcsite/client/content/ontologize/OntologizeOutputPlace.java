@@ -12,6 +12,7 @@ public class OntologizeOutputPlace extends OntologizePlace {
 	
 	public static class Tokenizer implements PlaceTokenizer<OntologizeOutputPlace> {
 
+		public Tokenizer(){}
 		@Override
 		public OntologizeOutputPlace getPlace(String token) {
 			Task task = new Task();

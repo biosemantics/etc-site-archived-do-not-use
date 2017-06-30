@@ -16,7 +16,7 @@ public class VisualizationPlace extends HasTaskPlace  {
 	}
 	
 	public static class Tokenizer implements PlaceTokenizer<VisualizationPlace> {
-
+		public Tokenizer(){}
 		@Override
 		public VisualizationPlace getPlace(String token) {
 			return new VisualizationPlace();

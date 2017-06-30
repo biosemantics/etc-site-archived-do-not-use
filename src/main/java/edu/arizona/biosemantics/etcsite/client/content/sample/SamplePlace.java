@@ -11,6 +11,9 @@ public class SamplePlace extends Place implements RequiresAuthenticationPlace  {
 	}
 	
 	public static class Tokenizer implements PlaceTokenizer<SamplePlace>{
+		
+		public Tokenizer(){}
+		
 		@Override
 		public SamplePlace getPlace(String token) {
 			return new SamplePlace();

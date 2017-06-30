@@ -104,7 +104,7 @@ public class UserSelectForSharePresenter extends Dialog implements IUserSelectVi
 	public UserSelectForSharePresenter(IUserServiceAsync userService) {
 		this.userService = userService;
 		setPredefinedButtons(PredefinedButton.OK);
-		setHeadingText("Select Users");
+		setHeading("Select Users");
 		setBodyBorder(false);
 		setPixelSize(-1, -1);
 		setMinWidth(0);

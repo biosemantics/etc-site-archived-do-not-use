@@ -7,6 +7,8 @@ public class NewsPlace extends Place {
 
 	public static class Tokenizer implements PlaceTokenizer<NewsPlace> {
 
+		public Tokenizer(){}
+		
 		@Override
 		public NewsPlace getPlace(String token) {
 			return new NewsPlace();

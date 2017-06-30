@@ -140,7 +140,7 @@ public class MyUploaderConstants implements IUploader.UploaderConstants  {
 		return "Error you have typed an invalid file name, please select a valid one.";
 	}
 
-	/*
+	
 	@Override
     @DefaultStringValue("Drop files here.")
 	public String uploaderDrop() {
@@ -151,6 +151,6 @@ public class MyUploaderConstants implements IUploader.UploaderConstants  {
     @DefaultStringValue("Check logs in server side, maybe it raised an exception, or maybe it made a CORS request.")
 	public String uploaderBadParsing() {
 		return "Check logs in server side, maybe it raised an exception, or maybe it made a CORS request.";
-	}*/
+	}
 
 }

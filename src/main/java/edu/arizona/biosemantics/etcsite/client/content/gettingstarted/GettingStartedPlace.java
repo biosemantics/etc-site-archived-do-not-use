@@ -7,6 +7,8 @@ public class GettingStartedPlace extends Place {
 
 	public static class Tokenizer implements PlaceTokenizer<GettingStartedPlace> {
 
+		public Tokenizer(){}
+		
 		@Override
 		public GettingStartedPlace getPlace(String token) {
 			return new GettingStartedPlace();

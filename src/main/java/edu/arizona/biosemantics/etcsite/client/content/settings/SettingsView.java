@@ -8,6 +8,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
@@ -120,13 +121,13 @@ public class SettingsView extends Composite implements ISettingsView {
 		VerticalLayoutContainer vertical = new VerticalLayoutContainer();
 		
 		FieldSet userInfoFieldSet = new FieldSet();
-	    userInfoFieldSet.setHeadingText("User Information");
+	    userInfoFieldSet.setHeading("User Information");
 	    userInfoFieldSet.setCollapsible(true);
 	    VerticalLayoutContainer userInfoVertical = new VerticalLayoutContainer();
 	    userInfoFieldSet.add(userInfoVertical);
 	    
 	    FieldSet profileFieldSet = new FieldSet();
-	    profileFieldSet.setHeadingText("Profile");
+	    profileFieldSet.setHeading("Profile");
 	    profileFieldSet.setCollapsible(true);
 	    VerticalLayoutContainer profileVertical = new VerticalLayoutContainer();
 	    profileFieldSet.add(profileVertical);
@@ -155,7 +156,7 @@ public class SettingsView extends Composite implements ISettingsView {
 	    profileVertical.add(saveButton, new VerticalLayoutData(1, -1));
 	    
 	    FieldSet passwordFieldSet = new FieldSet();
-	    passwordFieldSet.setHeadingText("Change Password");
+	    passwordFieldSet.setHeading("Change Password");
 	    passwordFieldSet.setCollapsible(true);
 	    VerticalLayoutContainer passwordVertical = new VerticalLayoutContainer();
 	    FieldLabel currentPasswordFieldLabel =  new FieldLabel(currentPassword, "Current Password");
@@ -179,7 +180,7 @@ public class SettingsView extends Composite implements ISettingsView {
 	    
 	    FieldSet bioportNotificationFieldSet = new FieldSet();
 	    VerticalLayoutContainer bioportNotificationVertical = new VerticalLayoutContainer();
-	    bioportNotificationFieldSet.setHeadingText("BioPortal connection");
+	    bioportNotificationFieldSet.setHeading("BioPortal connection");
 	    bioportNotificationFieldSet.add(bioportNotificationVertical);
 	    bioportNotificationFieldSet.setCollapsible(true);
 	    bioportNotificationVertical.add(new Label("Note: Needed for submitting ontology terms to BioPortal."),new VerticalLayoutData(1, 25));
@@ -195,7 +196,7 @@ public class SettingsView extends Composite implements ISettingsView {
 	    
 	    
 	    FieldSet emailNotificationFieldSet = new FieldSet();
-	    emailNotificationFieldSet.setHeadingText("Email Notification");
+	    emailNotificationFieldSet.setHeading("Email Notification");
 	    VerticalLayoutContainer emailNotificationVertical = new VerticalLayoutContainer();
 	    emailNotificationFieldSet.setCollapsible(true);
 	    emailNotificationFieldSet.add(emailNotificationVertical);
@@ -235,7 +236,7 @@ public class SettingsView extends Composite implements ISettingsView {
 	    
 	    
 	    FieldSet otoFieldSet = new FieldSet();
-	    otoFieldSet.setHeadingText("Link to Ontology Term Organizer (OTO)");
+	    otoFieldSet.setHeading("Link to Ontology Term Organizer (OTO)");
 	    otoFieldSet.setCollapsible(true);
 	    otoVertical = new VerticalLayoutContainer();
 	    otoVerticalInner = new VerticalLayoutContainer();
@@ -275,8 +276,8 @@ public class SettingsView extends Composite implements ISettingsView {
 	    hasOTOAccountGroup.add(hasNoOTOAccount);
 	    hasOtoAccountFieldLabel.setLabelWidth(200);
 	    
-	    existingOTOAccountFieldSet.setHeadingHtml("OTO Account Login");
-	    HtmlLayoutContainer choiceContatiner = new HtmlLayoutContainer("<table width=100% cellpadding=0 cellspacing=0>"
+	    existingOTOAccountFieldSet.setHeading(SafeHtmlUtils.fromString("OTO Account Login"));
+	    HtmlLayoutContainer choiceContatiner = new HtmlLayoutContainer(SafeHtmlUtils.fromString("<table width=100% cellpadding=0 cellspacing=0>"
 	    		+ "<tr>"
 	    		+ "<td class=email width=50%></td>"
 	    		+ "<td width=20%>or</td>"
@@ -292,7 +293,7 @@ public class SettingsView extends Composite implements ISettingsView {
 	    		+ "<td></td>"
 	    		+ "<td></td>"
 	    		+ "</tr>"
-	    		+ "</table>");
+	    		+ "</table>"));
 	    otoExistingEmailFieldLabel.setLabelWidth(200);
 	    otoExistingPasswordFieldLabel.setLabelWidth(200);
 	    otoAccountEmailFieldLabel.setLabelWidth(200);
@@ -303,8 +304,8 @@ public class SettingsView extends Composite implements ISettingsView {
 	    existingOTOAccountFieldSet.add(choiceContatiner);
 	    otoAccountEmail.setEnabled(false);
 	    
-	    newOTOAccountFieldSet.setHeadingHtml("Create OTO Account");
-	    choiceContatiner = new HtmlLayoutContainer("<table width=100% cellpadding=0 cellspacing=0>"
+	    newOTOAccountFieldSet.setHeading(SafeHtmlUtils.fromString("Create OTO Account"));
+	    choiceContatiner = new HtmlLayoutContainer(SafeHtmlUtils.fromString("<table width=100% cellpadding=0 cellspacing=0>"
 	    		+ "<tr>"
 	    		+ "<td class=email width=50%></td>"
 	    		+ "<td width=20%>or</td>"
@@ -325,7 +326,7 @@ public class SettingsView extends Composite implements ISettingsView {
 	    		+ "<td></td>"
 	    		+ "<td></td>"
 	    		+ "</tr>"
-	    		+ "</table>");
+	    		+ "</table>"));
 	    otoNewEmailFieldLabel.setLabelWidth(200);
 	    otoNewPasswordFieldLabel.setLabelWidth(200);
 	    otoNewPasswordConfirmFieldLabel.setLabelWidth(200);

@@ -31,7 +31,7 @@ public class SettingsPlace extends Place implements RequiresAuthenticationPlace 
 
 
 	public static class Tokenizer implements PlaceTokenizer<SettingsPlace>{
-
+		public Tokenizer(){}
 		@Override
 		public SettingsPlace getPlace(String token) {
 			return new SettingsPlace();

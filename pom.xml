@@ -23,13 +23,13 @@
 	</profiles>
 	<!-- version variables, used subsequently  -->
 	<properties>
-		<gwtVersion>2.7.0</gwtVersion>
+		<gwtVersion>2.8.0</gwtVersion>
 		<!-- GWT needs at least java 1.5 -->
 		<!-- But we need at least java 1.6 -->
 		<java.version>1.8</java.version>
-		<maven.compiler.source>1.7</maven.compiler.source> 
-		<maven.compiler.target>1.7</maven.compiler.target>
-		<compliance.level>1.7</compliance.level>
+		<maven.compiler.source>1.8</maven.compiler.source> 
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<compliance.level>1.8</compliance.level>
 		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -109,13 +109,13 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.51-SNAPSHOT-debug</version>
+		  <version>0.0.52-SNAPSHOT-debug</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.51-SNAPSHOT-debug</version>
+		  <version>0.0.52-SNAPSHOT-debug</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
@@ -132,7 +132,7 @@
 		<dependency>
 			<groupId>com.googlecode.gwtupload</groupId>
 			<artifactId>gwtupload</artifactId>
-			<version>1.0.1</version>
+			<version>1.0.3</version>
 		</dependency>
 		<!-- This specific beta version required by owlapi 4.0.2  -->
 		<!-- <dependency>
@@ -178,13 +178,19 @@
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
 			<version>${aspectj.version}</version>
-			<scope>runtime</scope>
+			 <!-- <scope>runtime</scope> -->
 
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.25</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.25</version>
+			<classifier>sources</classifier>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -198,18 +204,30 @@
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.25</version>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
 			<artifactId>jul-to-slf4j</artifactId>
 			<version>1.7.25</version>
 		</dependency>
 		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+			<version>1.7.25</version>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>18.0</version>
+			<version>22.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava-gwt</artifactId>
-			<version>18.0</version>
+			<version>22.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
@@ -385,11 +403,17 @@
 			<artifactId>ling</artifactId>
 			<version>0.0.19-SNAPSHOT-debug</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.googlecode.gwtquery</groupId>
 			<artifactId>gwtquery</artifactId>
-			<version>1.3.3</version>
+			<version>1.4.3</version>
 		</dependency>
+			<dependency>
+			<groupId>com.googlecode.gwtquery</groupId>
+			<artifactId>gwtquery</artifactId>
+			<version>1.4.3</version>
+			<classifier>sources</classifier> 
+		</dependency> -->
 		<dependency>
 			<groupId>org.jdom</groupId>
 			<artifactId>jdom2</artifactId>
@@ -437,9 +461,27 @@
 			<version>1.9.13</version>
 		</dependency>
 		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
+			<version>1.9.13</version>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.13</version>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
 		    <groupId>com.fasterxml.jackson.core</groupId>
 		    <artifactId>jackson-core</artifactId>
 		    <version>2.5.1</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-core</artifactId>
+		    <version>2.5.1</version>
+		    <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
@@ -472,13 +514,13 @@
 		<dependency>
 			<groupId>edu.ucdavis.cs</groupId>
 			<artifactId>cfgproject</artifactId>
-			<version>0.0.13-SNAPSHOT</version>
+			<version>0.0.13-SNAPSHOT-debug</version>
 			<classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.ucdavis.cs</groupId>
 		  <artifactId>cfgproject</artifactId>
-		  <version>0.0.13-SNAPSHOT</version>
+		  <version>0.0.13-SNAPSHOT-debug</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
@@ -492,7 +534,7 @@
 			<version>0.0.4-SNAPSHOT-debug</version>
 			<classifier>sources</classifier>
 		</dependency>
-		<!-- use the old biology, new version will amke existed serialized classes corrupt -->
+		<!-- use the old biology, new version will make existed serialized classes corrupt -->
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.common</groupId>
 		  <artifactId>biology</artifactId>
@@ -556,7 +598,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.micropie</groupId>
 		  <artifactId>micropie</artifactId>
-		  <version>0.1.6-SNAPSHOT-debug</version>
+		  <version>0.1.7-SNAPSHOT-debug</version>
 		  <exclusions>
 		  	<exclusion>
 		  		<artifactId>stanford-corenlp</artifactId>
@@ -567,7 +609,7 @@
 		<dependency>
     		<groupId>org.gwtbootstrap3</groupId>
     		<artifactId>gwtbootstrap3</artifactId>
-    		<version>0.9.1</version>
+    		<version>0.9.4</version>
     		<scope>provided</scope>
 		</dependency>
 		<!-- for com.bfr.client.Selection in gwt.xml -->
@@ -576,7 +618,7 @@
 	     <artifactId>selection</artifactId>
 	     <scope>system</scope>
 	     <version>1.1</version>
-	     <systemPath>C:\Users\hongcui\git\etc-site\lib\Selection_1_1.jar</systemPath>
+	     <systemPath>${basedir}\lib\Selection_1_1.jar</systemPath>
 	   </dependency>
 
 	  
@@ -591,7 +633,24 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
-				<version>2.6.1</version>
+				<version>${gwtVersion}</version>
+				<dependencies>
+	                <dependency>
+	                    <groupId>com.google.gwt</groupId>
+	                    <artifactId>gwt-user</artifactId>
+	                    <version>${gwtVersion}</version>
+	                </dependency>
+	                <dependency>
+	                    <groupId>com.google.gwt</groupId>
+	                    <artifactId>gwt-dev</artifactId>
+	                    <version>${gwtVersion}</version>
+	                </dependency>
+	                <dependency>
+	                    <groupId>com.google.gwt</groupId>
+	                    <artifactId>gwt-servlet</artifactId>
+	                    <version>${gwtVersion}</version>
+	                </dependency>
+                </dependencies>
 				<executions>
 					<execution>
 						<configuration>
@@ -608,6 +667,7 @@
 				<!-- Plugin configuration. There are many available options, see gwt-maven-plugin 
 					documentation at codehaus.org -->
 				<configuration>
+				    <logLevel>INFO</logLevel>
 					<runTarget>index.html</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
 					<!--<i18nMessagesBundle>edu.arizona.biosemantics.etcsite.client.Messages</i18nMessagesBundle> -->
@@ -624,7 +684,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.6.0</version>
+				<version>3.6.1</version>
 				<configuration>
 					<source>${maven.compiler.source}</source>
 					<target>${maven.compiler.target}</target>
@@ -650,21 +710,11 @@
 					<webappDirectory>${webappDirectory}</webappDirectory>
 				</configuration>
 			</plugin>
-			<plugin>
- 				<groupId>org.apache.maven.plugins</groupId>
- 				<artifactId>maven-compiler-plugin</artifactId>
- 				<version>3.6.0</version>
- 				<configuration>
- 				  <source>${java.version}</source>
- 				  <target>${java.version}</target>
- 				  <!-- IMPORTANT -->
- 				  <useIncrementalCompilation>false</useIncrementalCompilation>
- 				</configuration>
- 			</plugin>
+		
 			<plugin>
 			<groupId>org.codehaus.mojo</groupId>
 				<artifactId>aspectj-maven-plugin</artifactId>
-				<version>1.9</version>
+				<version>1.10</version>
 				<configuration>
 					<proceedOnError>true</proceedOnError>
 					<showWeaveInfo>true</showWeaveInfo>
@@ -719,7 +769,6 @@
 				<configuration>
                     <additionalparam>${javadoc.opts}</additionalparam>
                 </configuration>
-
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>

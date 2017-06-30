@@ -34,7 +34,7 @@ public class TaskSelectDialog extends Dialog {
 	@Inject
 	public TaskSelectDialog(SelectionMode selectionMode) {
 		setPredefinedButtons(PredefinedButton.OK);
-		setHeadingText("Select Task");
+		setHeading("Select Task");
 		setBodyBorder(false);
 		setPixelSize(-1, -1);
 		setMinWidth(0);

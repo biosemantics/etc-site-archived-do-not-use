@@ -22,6 +22,7 @@ public class MatrixGenerationDefinePlace extends MatrixGenerationPlace {
 	//InputPlace of semanticMarkup's
 	public static class Tokenizer implements PlaceTokenizer<MatrixGenerationDefinePlace> {
 
+		public Tokenizer(){}
 		@Override
 		public MatrixGenerationDefinePlace getPlace(String token) {
 			Map<String, String> keyValues = new HashMap<String, String>();

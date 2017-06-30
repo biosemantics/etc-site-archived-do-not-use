@@ -17,7 +17,7 @@ public class TreeGenerationInputPlace extends TreeGenerationPlace {
 	//needed becuase per default the name is used, which causes a name clash with 
 	//InputPlace of semanticMarkup's
 	public static class Tokenizer implements PlaceTokenizer<TreeGenerationInputPlace> {
-
+		public Tokenizer(){}
 		@Override
 		public TreeGenerationInputPlace getPlace(String token) {
 			Task task = new Task();

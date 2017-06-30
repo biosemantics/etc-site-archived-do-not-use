@@ -12,6 +12,7 @@ public class MatrixGenerationProcessPlace extends MatrixGenerationPlace {
 
 	public static class Tokenizer implements PlaceTokenizer<MatrixGenerationProcessPlace> {
 
+		public Tokenizer(){}
 		@Override
 		public MatrixGenerationProcessPlace getPlace(String token) {
 			Task task = new Task();
