@@ -3,9 +3,11 @@
   When updating your version of GWT, you should also update this DTD reference,
   so that your app can take advantage of the latest GWT module capabilities.
 -->
-<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.6.0//EN"
-  "http://google-web-toolkit.googlecode.com/svn/tags/2.6.0/distro-source/core/src/gwt-module.dtd">
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.8.0//EN"
+  "http://google-web-toolkit.googlecode.com/svn/tags/2.8.0/distro-source/core/src/gwt-module.dtd">
 <module rename-to='filemanager'>
+   <set-configuration-property name="CssResource.conversionMode"    value="lenient" />
+
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User'/>
   <inherits name='edu.arizona.biosemantics.etcsite.core.Core'/>
