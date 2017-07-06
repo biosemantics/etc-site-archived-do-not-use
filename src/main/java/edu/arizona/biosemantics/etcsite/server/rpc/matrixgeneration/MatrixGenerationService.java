@@ -381,10 +381,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		final String enhanceDir = this.getTempDir(task) + File.separator + "enhance";
 		final Enhance enhance = new ExtraJvmEnhance(input, enhanceDir, ontologyFile, categoryTerm, synonym, taxonGroup);
 		//final Enhance enhance = new InJvmEnhance(input, enhanceDir, ontologyFile, categoryTerm, synonym, taxonGroup);
-		System.out.println(taxonGroup+"--"+"doenhance");
-		System.out.println("input --"+input);
-		System.out.println("enhanceDir --"+enhanceDir);
-		System.out.println("taxonGroup --"+taxonGroup);
 		activeEnhanceProcess.put(config.getConfiguration().getId(), enhance);
 		final ListenableFuture<Void> futureResult = executorService.submit(enhance);
 		this.activeProcessFutures.put(config.getConfiguration().getId(), futureResult);
@@ -406,16 +402,13 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 		futureResult.addListener(new Runnable() {
 		     	public void run() {	
 		     		try {
-		     			System.out.println("--"+"doenhance handler");
 		     			Enhance enhance = activeEnhanceProcess.remove(config.getConfiguration().getId());
 		     			ListenableFuture<Void> futureResult = activeProcessFutures.remove(config.getConfiguration().getId());
 		     			if(enhance.isExecutedSuccessfully()) {
-		     				System.out.println("--"+"doenhance sucessfully");
 		     				if(!futureResult.isCancelled()) {
 		     					doMatrixGeneration(token, task, config, enhanceDir);
 		     				}
 		     			} else {
-		     				System.out.println("--"+"doenhance failed");
 			     			task.setFailed(true);
 							task.setFailedTime(new Date());
 							task.setTooLong(futureResult.isCancelled());
@@ -423,7 +416,6 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 							daoManager.getTaskDAO().updateTask(task);
 			     		}
 		     		} catch(Throwable t) {
-		     			System.out.println(t.getMessage());
 		     			log(LogLevel.ERROR, t.getMessage()+"\n"+org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(t));
 		     			task.setFailed(true);
 						task.setFailedTime(new Date());

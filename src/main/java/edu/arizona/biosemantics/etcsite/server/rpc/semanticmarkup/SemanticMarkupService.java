@@ -370,8 +370,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			
 			final String outputDirectory = Configuration.charaparser_tempFileBase + File.separator + task.getId() + File.separator + "out";
 			new File(outputDirectory).mkdirs();
-			Parse parse = new ExtraJvmParse(taxonGroup, useEmptyGlossary, input, tablePrefix, source, operator);
-			//Parse parse = new InJvmParse(taxonGroup, useEmptyGlossary, input, tablePrefix, source, operator);
+			//Parse parse = new ExtraJvmParse(taxonGroup, useEmptyGlossary, input, tablePrefix, source, operator);
+			Parse parse = new InJvmParse(taxonGroup, useEmptyGlossary, input, tablePrefix, source, operator);
 			if(config.getTaxonGroup().getName().equals("Bacteria")) 
 				//parse = new InJvmMicropieParse(input, outputDirectory, Configuration.micropie_models);
 				parse = new ExtraJvmMicropieParse(input, outputDirectory, Configuration.micropie_models);

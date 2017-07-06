@@ -77,11 +77,14 @@ import edu.arizona.biosemantics.semanticmarkup.enhance.transform.old.Standardize
 public class EnhanceRun {
 
 	public static void main(String[] args) throws IOException, InterruptedException, ExecutionException, OWLOntologyCreationException {
-		String inputDir = "C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/users/1/1_output_by_TC_task_2";
-		String enhanceDir = "C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/matrixGeneration/45/enhance";
-		String inputOntology = "C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/users/1/1_output_by_TC_task_2_output_by_OB_task_3/3.owl";
-		String termReviewTermCategorization = "C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/users/1/1_TermsReviewed_by_TC_task_2/category_term-task-2.csv";
-		String termReviewSynonyms = "C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/users/1/1_TermsReviewed_by_TC_task_2/category_mainterm_synonymterm-task-2.csv";
+		String inputDir = "C:/etcsitebase/etcsite/data/users/4/plant_output_by_TC_task_Plant3files_07-03-2017_1";
+		String enhanceDir = "C:/etcsitebase/etcsite/data/matrixGeneration/432/enhance";
+		//String inputOntology = "C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/users/1/1_output_by_TC_task_2_output_by_OB_task_3/3.owl";
+		//String termReviewTermCategorization = "C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/users/1/1_TermsReviewed_by_TC_task_2/category_term-task-2.csv";
+		//String termReviewSynonyms = "C:/Users/rodenhausen.CATNET/Desktop/etcsite/data/users/1/1_TermsReviewed_by_TC_task_2/category_mainterm_synonymterm-task-2.csv";
+		String inputOntology = "";
+		String termReviewTermCategorization = "";
+		String termReviewSynonyms = "";
 		String taxonGroup = TaxonGroup.PLANT.toString();
 		
 		EnhanceRun enhance = new EnhanceRun(inputDir, enhanceDir, inputOntology, 

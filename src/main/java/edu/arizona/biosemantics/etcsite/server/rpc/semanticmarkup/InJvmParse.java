@@ -45,11 +45,11 @@ public class InJvmParse implements CharaparserParse {
 			args = argList.toArray(new String[argList.size()]);
 		}
 		
-		//System.out.println();
-		//for(String arg : args) {
-		//	System.out.print(arg + " ");
-		//}
-		//System.out.println();
+		System.out.println();
+		for(String arg : args) {
+			System.out.print(arg + " ");
+		}
+		System.out.println();
 		
 		try {
 			ETCMarkupMain.main(args);
