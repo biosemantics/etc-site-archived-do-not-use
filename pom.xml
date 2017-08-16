@@ -7,7 +7,7 @@
 	<groupId>edu.arizona.biosemantics.etcsite</groupId>
 	<artifactId>etc-site</artifactId>
 	<packaging>war</packaging>
-	<version>0.0.1-SNAPSHOT-debug</version>
+	<version>0.0.1-SNAPSHOT</version>
 
    <!-- disable java doc generation, because source code are not annotated to java 8 doc standards -->
 	<profiles>
@@ -109,24 +109,24 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.52-SNAPSHOT-debug</version>
+		  <version>0.0.53-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.52-SNAPSHOT-debug</version>
+		  <version>0.0.53-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics</groupId>
 		  <artifactId>gxt</artifactId>
-		  <version>0.0.11-SNAPSHOT-debug</version>
+		  <version>0.0.12-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics</groupId>
 		  <artifactId>gxt</artifactId>
-		  <version>0.0.11-SNAPSHOT-debug</version>
+		  <version>0.0.12-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency> 
 		<dependency>
@@ -258,7 +258,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 		  <artifactId>enhance</artifactId>
-		  <version>0.0.22-SNAPSHOT-debug</version>
+		  <version>0.0.23-SNAPSHOT</version>
 		  <exclusions>
 		  	<exclusion>
 		  		<artifactId>owlapi-tools</artifactId>
@@ -285,7 +285,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>semantic-markup</artifactId>
-			<version>0.1.194-SNAPSHOT-debug</version>
+			<version>0.1.195-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>app</artifactId>
@@ -318,18 +318,18 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common.ontology</groupId>
 		 	<artifactId>graph</artifactId>
-		  	<version>0.0.8-SNAPSHOT-debug</version>
+		  	<version>0.0.9-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common.ontology</groupId>
 		 	<artifactId>graph</artifactId>
-		  	<version>0.0.8-SNAPSHOT-debug</version>
+		  	<version>0.0.9-SNAPSHOT</version>
 		  	<classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.134-SNAPSHOT-debug</version>
+		  <version>0.0.136-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		  <exclusions>
 		  	<exclusion>
@@ -341,25 +341,25 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.134-SNAPSHOT-debug</version>
+		  <version>0.0.136-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize2</artifactId>
-		  <version>0.0.66-SNAPSHOT-debug</version>
+		  <version>0.0.68-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize2</artifactId>
-		  <version>0.0.66-SNAPSHOT-debug</version>
+		  <version>0.0.68-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.matrixgeneration</groupId>
 		  <artifactId>matrix-generation</artifactId>
-		  <version>0.1.60-SNAPSHOT-debug</version>
+		  <version>0.1.62-SNAPSHOT</version>
 		  <exclusions>
 		  	<exclusion>
 		  		<artifactId>owlapi-tools</artifactId>
@@ -396,12 +396,12 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics</groupId>
 			<artifactId>bioportal-client</artifactId>
-			<version>0.0.13-SNAPSHOT-debug</version>
+			<version>0.0.14-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>ling</artifactId>
-			<version>0.0.19-SNAPSHOT-debug</version>
+			<version>0.0.20-SNAPSHOT</version>
 		</dependency>
 		<!-- <dependency>
 			<groupId>com.googlecode.gwtquery</groupId>
@@ -442,7 +442,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.gxt</groupId>
 		  <artifactId>theme</artifactId>
-		  <version>0.0.3-SNAPSHOT-debug</version>
+		  <version>0.0.4-SNAPSHOT</version>
 		  <exclusions>
 		  	<exclusion>
 		  		<artifactId>slf4j-jdk14</artifactId>
@@ -486,23 +486,23 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>log</artifactId>
-			<version>0.0.3-SNAPSHOT-debug</version>
+			<version>0.0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>log</artifactId>
-			<version>0.0.3-SNAPSHOT-debug</version>
+			<version>0.0.4-SNAPSHOT</version>
 			<classifier>sources</classifier>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>taxonomy</artifactId>
-			<version>0.0.24-SNAPSHOT-debug</version>
+			<version>0.0.25-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>taxonomy</artifactId>
-			<version>0.0.24-SNAPSHOT-debug</version>
+			<version>0.0.25-SNAPSHOT</version>
 			<classifier>sources</classifier>
 		</dependency>
 		<!-- Needed For JavaEnvUtils.getJreExecutable(), even if removed no errors are displayed -->
@@ -514,70 +514,70 @@
 		<dependency>
 			<groupId>edu.ucdavis.cs</groupId>
 			<artifactId>cfgproject</artifactId>
-			<version>0.0.13-SNAPSHOT-debug</version>
+			<version>0.0.14-SNAPSHOT</version>
 			<classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.ucdavis.cs</groupId>
 		  <artifactId>cfgproject</artifactId>
-		  <version>0.0.13-SNAPSHOT-debug</version>
+		  <version>0.0.14-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>validation</artifactId>
-			<version>0.0.4-SNAPSHOT-debug</version>
+			<version>0.0.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>validation</artifactId>
-			<version>0.0.4-SNAPSHOT-debug</version>
+			<version>0.0.5-SNAPSHOT</version>
 			<classifier>sources</classifier>
 		</dependency>
 		<!-- use the old biology, new version will make existed serialized classes corrupt -->
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.common</groupId>
 		  <artifactId>biology</artifactId>
-		  <version>0.0.10-SNAPSHOT-debug</version>
+		  <version>0.0.11-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.common</groupId>
 		  <artifactId>biology</artifactId>
-		  <version>0.0.10-SNAPSHOT-debug</version>
+		  <version>0.0.11-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.euler</groupId>
 			<artifactId>euler2</artifactId>
-			<version>0.0.14-SNAPSHOT-debug</version>
+			<version>0.0.15-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.euler</groupId>
 			<artifactId>euler2</artifactId>
-			<version>0.0.14-SNAPSHOT-debug</version>
+			<version>0.0.15-SNAPSHOT</version>
 		  	<classifier>sources</classifier>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.euler</groupId>
 			<artifactId>io</artifactId>
-			<version>0.0.14-SNAPSHOT-debug</version>
+			<version>0.0.15-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.euler</groupId>
 		  <artifactId>alignment</artifactId>
-		  <version>0.0.82-SNAPSHOT-debug</version>
+		  <version>0.0.83-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.euler</groupId>
 		  <artifactId>alignment</artifactId>
-		  <version>0.0.82-SNAPSHOT-debug</version>
+		  <version>0.0.83-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		<groupId>edu.arizona.biosemantics.oto</groupId>
 		<artifactId>oto-client</artifactId>
-		<version>0.0.54-SNAPSHOT-debug</version>
+		<version>0.0.55-SNAPSHOT</version>
 			</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
@@ -587,18 +587,18 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.oto</groupId>
 			<artifactId>oto-model</artifactId>
-			<version>0.0.3-SNAPSHOT-debug</version>
+			<version>0.0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto</groupId>
 		  <artifactId>oto-model</artifactId>
-		  <version>0.0.3-SNAPSHOT-debug</version>
+		  <version>0.0.4-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.micropie</groupId>
 		  <artifactId>micropie</artifactId>
-		  <version>0.1.7-SNAPSHOT-debug</version>
+		  <version>0.1.7-SNAPSHOT</version>
 		  <exclusions>
 		  	<exclusion>
 		  		<artifactId>stanford-corenlp</artifactId>
