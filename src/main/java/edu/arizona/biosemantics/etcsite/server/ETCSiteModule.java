@@ -17,8 +17,6 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
-import edu.arizona.biosemantics.common.ling.know.ICharacterKnowledgeBase;
-import edu.arizona.biosemantics.common.ling.know.IPOSKnowledgeBase;
 import edu.arizona.biosemantics.common.ling.know.SingularPluralProvider;
 import edu.arizona.biosemantics.common.ling.know.lib.WordNetPOSKnowledgeBase;
 import edu.arizona.biosemantics.common.ling.transform.IInflector;
