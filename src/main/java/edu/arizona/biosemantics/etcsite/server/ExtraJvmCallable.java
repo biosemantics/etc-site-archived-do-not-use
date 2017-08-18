@@ -112,6 +112,7 @@ public abstract class ExtraJvmCallable<T> implements Callable<T>, Task {
 			for(String arg : args)
 				commandParts.add(arg);
 				
+			System.out.println(commandParts.toString());
 			ProcessBuilder processBuilder = new ProcessBuilder(commandParts);
 			if(pathEnvironment != null)
 				processBuilder.environment().put("PATH", pathEnvironment);

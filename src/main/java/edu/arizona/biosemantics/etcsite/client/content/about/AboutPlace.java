@@ -20,7 +20,9 @@ public class AboutPlace extends Place {
 		public String getToken(AboutPlace place) {
 			return "";
 		}
+
 	}
+	
 	@Override
 	public String toString(){
 		return "AboutPlace";

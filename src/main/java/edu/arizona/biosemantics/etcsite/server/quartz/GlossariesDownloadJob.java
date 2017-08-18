@@ -33,6 +33,7 @@ public class GlossariesDownloadJob  implements Job {
 
 	public void saveGlossaryDownloads() {
 		Client oto2Client = new Client(edu.arizona.biosemantics.etcsite.server.Configuration.oto2Url);
+		//System.out.println("otoUrl="+edu.arizona.biosemantics.semanticmarkup.config.Configuration.otoUrl);
 		OTOClient otoClient = new OTOClient(edu.arizona.biosemantics.semanticmarkup.config.Configuration.otoUrl);
 		
 		oto2Client.open();

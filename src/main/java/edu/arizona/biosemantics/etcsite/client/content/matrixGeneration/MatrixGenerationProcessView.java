@@ -33,6 +33,9 @@ public class MatrixGenerationProcessView extends Composite implements IMatrixGen
 	Button outputButton;
 	
 	@UiField
+	Button outputMCButton;
+	
+	@UiField
 	HorizontalPanel resumablePanel;
 
 	@UiField
@@ -60,6 +63,7 @@ public class MatrixGenerationProcessView extends Composite implements IMatrixGen
 	public void setNonResumable() {
 		this.reviewButton.setVisible(false);
 		this.outputButton.setVisible(false);
+		this.outputMCButton.setVisible(false);
 		this.nonResumablePanel.setVisible(true);
 		this.resumablePanel.setVisible(false);
 	}
@@ -68,6 +72,7 @@ public class MatrixGenerationProcessView extends Composite implements IMatrixGen
 	public void setResumable() {
 		this.reviewButton.setVisible(true);
 		this.outputButton.setVisible(true);
+		this.outputMCButton.setVisible(true);
 		this.nonResumablePanel.setVisible(false);
 		this.resumablePanel.setVisible(true);
 	}
@@ -80,6 +85,11 @@ public class MatrixGenerationProcessView extends Composite implements IMatrixGen
 	@UiHandler("outputButton")
 	public void onOutput(ClickEvent event) {
 		presenter.onOutput();
+	}
+	
+	@UiHandler("outputMCButton")
+	public void onOutputMC(ClickEvent event) {
+		presenter.onOutputMC();
 	}
 	
 	@Override
