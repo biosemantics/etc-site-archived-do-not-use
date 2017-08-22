@@ -5,10 +5,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
+import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
@@ -16,6 +20,7 @@ import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
+import com.sencha.gxt.core.client.dom.XElement;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.data.client.loader.RpcProxy;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -39,6 +44,7 @@ import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileService;
 import edu.arizona.biosemantics.etcsite.shared.rpc.file.IFileServiceAsync;
+import edu.arizona.biosemantics.matrixreview.client.common.Alerter;
 
 public class FileTreeView extends Composite implements IFileTreeView {
 
@@ -102,6 +108,19 @@ public class FileTreeView extends Composite implements IFileTreeView {
 			        }
 			        super.onDoubleClick(event);
 			   }
+			 
+			 @Override
+			 public void onBrowserEvent(Event event) {
+			        if (DOM.eventGetType(event) == Event.ONMOUSEDOWN) {
+			        	super.onClick(event);
+			        	TreeNode<FileTreeItem> node = findNode(event.getEventTarget().<Element> cast());
+					        if(!(node.getModel() instanceof FolderTreeItem)) {
+						      this.scrollIntoView(node.getModel());
+					        }
+			        }
+
+			        super.onBrowserEvent(event);
+			 }
 		};
 		loader = new TreeLoader<FileTreeItem>(getProxy()) {
 			@Override
@@ -231,6 +250,6 @@ public class FileTreeView extends Composite implements IFileTreeView {
 		return tree.getStore().getParent(fileTreeItem);
 	}
 
-
+// tree.scrollIntoView(next);
 	
 }

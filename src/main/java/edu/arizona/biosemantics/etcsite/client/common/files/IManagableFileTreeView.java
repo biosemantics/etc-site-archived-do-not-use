@@ -47,5 +47,4 @@ public interface IManagableFileTreeView extends IsWidget {
 
 	String getFormat();
 
-
 }
