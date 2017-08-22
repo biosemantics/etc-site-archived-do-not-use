@@ -472,7 +472,7 @@ public class ManagableFileTreePresenter implements IManagableFileTreeView.Presen
 	    for (index = 0; index < inputs.length; ++index) {
 	        if(inputs[index].getAttribute("type") == "file" && inputs[index].getAttribute("class") == "gwt-FileUpload") {
 	            inputs[index].setAttribute("multiple", "multiple");
-	            //alert("set multiple in setInputFileMultiple");
+//	            alert("set multiple in setInputFileMultiple");
 	        }
 	    }
 	}-*/;

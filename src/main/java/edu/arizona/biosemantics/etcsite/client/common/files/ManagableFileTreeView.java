@@ -1,21 +1,32 @@
 package edu.arizona.biosemantics.etcsite.client.common.files;
 
+import edu.arizona.biosemantics.etcsite.shared.model.file.FileTreeItem;
 import edu.arizona.biosemantics.etcsite.shared.model.file.FileTypeEnum;
+import edu.arizona.biosemantics.etcsite.shared.model.file.FolderTreeItem;
+import edu.arizona.biosemantics.matrixreview.client.common.Alerter;
 import gwtupload.client.IUploader;
 import gwtupload.client.SingleUploader;
 //import gwtupload.client.MultiUploader;
+
+
+
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+import com.sencha.gxt.core.client.dom.XElement;
+import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
+import com.sencha.gxt.widget.core.client.tree.Tree.TreeNode;
 
 public class ManagableFileTreeView extends Composite implements IManagableFileTreeView {
 
@@ -162,4 +173,5 @@ public class ManagableFileTreeView extends Composite implements IManagableFileTr
 		int index = formatListBox.getSelectedIndex()==0? 1 : formatListBox.getSelectedIndex();
 		return formatListBox.getItemText(index);
 	}
+
 }
