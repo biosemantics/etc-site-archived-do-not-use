@@ -54,7 +54,7 @@
 						
 						<g:InlineLabel>&nbsp;</g:InlineLabel>
 						<g:Button ui:field="outputButton">Download Matrix Now</g:Button>
-						<g:Button ui:field="outputMCButton">Download MatrixConverter Matrix</g:Button>
+						<!-- <g:Button ui:field="outputMCButton">Download MatrixConverter Matrix</g:Button> -->
 						<g:FlowPanel>
 						<g:InlineLabel>Download the raw matrix to review it offline. The matrix will also be saved as&nbsp;</g:InlineLabel>
 						<g:InlineLabel ui:field="outputLabel"></g:InlineLabel>
