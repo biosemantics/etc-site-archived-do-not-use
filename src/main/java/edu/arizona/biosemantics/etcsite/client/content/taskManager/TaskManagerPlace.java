@@ -6,7 +6,7 @@ import com.google.gwt.place.shared.PlaceTokenizer;
 public class TaskManagerPlace extends Place  {
 
 	public static class Tokenizer implements PlaceTokenizer<TaskManagerPlace> {
-
+		public Tokenizer(){}
 		@Override
 		public TaskManagerPlace getPlace(String token) {
 			return new TaskManagerPlace();

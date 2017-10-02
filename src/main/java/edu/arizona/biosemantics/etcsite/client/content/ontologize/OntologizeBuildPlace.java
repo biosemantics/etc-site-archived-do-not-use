@@ -16,6 +16,7 @@ public class OntologizeBuildPlace extends OntologizePlace {
 
 	public static class Tokenizer implements PlaceTokenizer<OntologizeBuildPlace> {
 
+		public Tokenizer(){}
 		@Override
 		public OntologizeBuildPlace getPlace(String token) {
 			Task task = new Task();

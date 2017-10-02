@@ -7,7 +7,8 @@ public class HomePlace extends Place{
 
 	public static class Tokenizer implements PlaceTokenizer<HomePlace> {
 
-	
+		public Tokenizer(){}
+		
 		@Override
 		public HomePlace getPlace(String token) {
 			return new HomePlace();

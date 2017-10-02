@@ -12,7 +12,7 @@ public class TreeGenerationViewPlace extends TreeGenerationPlace {
 	}
 	
 	public static class Tokenizer implements PlaceTokenizer<TreeGenerationViewPlace> {
-
+		public Tokenizer(){}
 		@Override
 		public TreeGenerationViewPlace getPlace(String token) {
 			Task task = new Task();

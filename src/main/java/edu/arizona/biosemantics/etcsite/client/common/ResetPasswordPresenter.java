@@ -26,7 +26,7 @@ public class ResetPasswordPresenter implements IResetPasswordView.Presenter {
 		
 		dialog = new Dialog();
 		dialog.setBodyBorder(false);
-		dialog.setHeadingText("Forgot Password");
+		dialog.setHeading("Forgot Password");
 		dialog.setPixelSize(-1, -1);
 		dialog.setMinWidth(0);
 		dialog.setMinHeight(0);

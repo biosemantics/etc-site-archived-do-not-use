@@ -251,8 +251,8 @@ public class SemanticMarkupService extends RemoteServiceServlet implements ISema
 			}
 			String bioportalUserId = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalUserId();
 			String bioportalAPIKey = daoManager.getUserDAO().getUser(authenticationToken.getUserId()).getBioportalAPIKey();
-			//final Learn learn = new ExtraJvmLearn(daoManager, taxonGroup, useEmptyGlossary, input, tablePrefix, source, operator);
-			final Learn learn = new InJvmLearn(daoManager, fileService, taxonGroup, useEmptyGlossary, input, tablePrefix, source, operator);
+			final Learn learn = new ExtraJvmLearn(daoManager, taxonGroup, useEmptyGlossary, input, tablePrefix, source, operator);
+			//final Learn learn = new InJvmLearn(daoManager, fileService, taxonGroup, useEmptyGlossary, input, tablePrefix, source, operator);
 			//debug locally, use InJVMLearn
 			
 			

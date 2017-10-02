@@ -11,7 +11,7 @@ public class SemanticMarkupParsePlace extends SemanticMarkupPlace {
 	}
 	
 	public static class Tokenizer implements PlaceTokenizer<SemanticMarkupParsePlace> {
-
+		public Tokenizer(){}
 		@Override
 		public SemanticMarkupParsePlace getPlace(String token) {
 			Task task = new Task();

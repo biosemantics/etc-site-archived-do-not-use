@@ -302,6 +302,7 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 					@Override
 					public void onSuccess(final Task task) {
 						SemanticMarkupConfiguration configuration = (SemanticMarkupConfiguration)task.getConfiguration();
+						
 						otoCollectionService.get(configuration.getOtoUploadId(), configuration.getOtoSecret(), new AsyncCallback<Collection>() {
 							@Override
 							public void onFailure(Throwable caught) {
@@ -311,6 +312,7 @@ public class SemanticMarkupReviewPresenter implements ISemanticMarkupReviewView.
 							@Override
 							public void onSuccess(Collection result) {
 								SemanticMarkupReviewPresenter.this.collection = result;
+								
 								//don't want to initialize from history when coming back to the task again -> false
 								view.getOto().setUser(Authentication.getInstance().getFirstName() + " " + 
 											Authentication.getInstance().getLastName() + " (" + 

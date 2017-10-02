@@ -11,7 +11,7 @@ public class TaxonomyComparisonAlignPlace extends TaxonomyComparisonPlace {
 	}
 
 	public static class Tokenizer implements PlaceTokenizer<TaxonomyComparisonAlignPlace> {
-
+		public Tokenizer(){}
 		@Override
 		public TaxonomyComparisonAlignPlace getPlace(String token) {
 			Task task = new Task();

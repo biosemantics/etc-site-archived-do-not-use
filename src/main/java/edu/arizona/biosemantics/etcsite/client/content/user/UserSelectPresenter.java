@@ -27,7 +27,7 @@ public class UserSelectPresenter implements IUserSelectView.Presenter {
 		
 		dialog = new Dialog();
 		dialog.setBodyBorder(false);
-		dialog.setHeadingText("Select User");
+		dialog.setHeading("Select User");
 		dialog.setPixelSize(-1, -1);
 		dialog.setMinWidth(0);
 		dialog.setMinHeight(0);

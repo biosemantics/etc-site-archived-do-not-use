@@ -12,7 +12,7 @@ public class TextPresenter {
 	public TextPresenter(TextView view) { 
 		dialog = new Dialog();
 		dialog.setBodyBorder(false);
-		dialog.setHeadingText("Register");
+		dialog.setHeading("Register");
 		dialog.setPixelSize(-1, -1);
 		dialog.setMinWidth(0);
 		dialog.setMinHeight(0);

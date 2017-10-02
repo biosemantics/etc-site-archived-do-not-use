@@ -34,7 +34,7 @@ public class LoginPresenter implements ILoginView.Presenter {
 		
 		dialog = new Dialog();
 		dialog.setBodyBorder(false);
-		dialog.setHeadingText("Login");
+		dialog.setHeading("Login");
 		dialog.setPixelSize(-1, -1);
 		dialog.setMinWidth(0);
 		dialog.setMinHeight(0);

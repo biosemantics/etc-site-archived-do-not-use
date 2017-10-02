@@ -45,7 +45,7 @@ public class HelpDialog extends Dialog {
 		verticalLayoutContainer.add(dontShowCheckBox, verticalLayoutData);
 		dontShowCheckBox.setBoxLabel("Don't show again");
 		
-		setHeadingText(title);
+		setHeading(title);
 		setModal(true);
 		setBodyStyle("fontWeight:bold;padding:13px;");
 		add(verticalLayoutContainer);

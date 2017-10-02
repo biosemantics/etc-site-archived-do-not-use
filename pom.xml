@@ -10,12 +10,13 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
-		<gwtVersion>2.6.1</gwtVersion>
+		<gwtVersion>2.8.0</gwtVersion>
 		<!-- GWT needs at least java 1.5 -->
 		<!-- But we need at least java 1.6 -->
-		<java.version>1.7</java.version>
-		<maven.compiler.source>${java.version}</maven.compiler.source>
-		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<java.version>1.8</java.version>
+		<maven.compiler.source>1.8</maven.compiler.source> 
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<compliance.level>1.8</compliance.level>
 		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -105,30 +106,30 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.54-SNAPSHOT</version>
+		  <version>0.0.57-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  <artifactId>matrix-review</artifactId>
-		  <version>0.0.54-SNAPSHOT</version>
+		  <version>0.0.57-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics</groupId>
 		  <artifactId>gxt</artifactId>
-		  <version>0.0.11-SNAPSHOT</version>
+		  <version>0.0.12-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics</groupId>
 		  <artifactId>gxt</artifactId>
-		  <version>0.0.11-SNAPSHOT</version>
+		  <version>0.0.12-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency> 
 		<dependency>
 			<groupId>com.googlecode.gwtupload</groupId>
 			<artifactId>gwtupload</artifactId>
-			<version>1.0.1</version>
+			<version>1.0.3</version>
 		</dependency>
 		<!-- This specific beta version required by owlapi 4.0.2  -->
 		<!-- <dependency>
@@ -141,17 +142,17 @@
 		<dependency>
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
-			<version>4.0-beta</version>
+			<version>4.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.inject.extensions</groupId>
 			<artifactId>guice-assistedinject</artifactId>
-			<version>4.0-beta</version>
+			<version>4.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.inject.extensions</groupId>
 			<artifactId>guice-servlet</artifactId>
-			<version>4.0-beta</version>
+			<version>4.0</version>
 		</dependency>
 		
 		<dependency>
@@ -174,11 +175,18 @@
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
 			<version>${aspectj.version}</version>
+			 <!-- <scope>runtime</scope> -->
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.7</version>
+			<version>1.7.25</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.25</version>
+			<classifier>sources</classifier>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -188,22 +196,34 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.7</version>
+			<version>1.7.25</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.25</version>
+			<classifier>sources</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jul-to-slf4j</artifactId>
-			<version>1.7.7</version>
+			<version>1.7.25</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+			<version>1.7.25</version>
+			<classifier>sources</classifier>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>18.0</version>
+			<version>22.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava-gwt</artifactId>
-			<version>18.0</version>
+			<version>22.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
@@ -234,7 +254,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 		  <artifactId>enhance</artifactId>
-		  <version>0.0.22-SNAPSHOT</version>
+		  <version>0.0.23-SNAPSHOT</version>
 		  <exclusions>
 		  	<exclusion>
 		  		<artifactId>owlapi-tools</artifactId>
@@ -261,7 +281,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.semanticmarkup</groupId>
 			<artifactId>semantic-markup</artifactId>
-			<version>0.1.195-SNAPSHOT</version>
+			<version>0.1.196-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>app</artifactId>
@@ -294,18 +314,18 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common.ontology</groupId>
 		 	<artifactId>graph</artifactId>
-		  	<version>0.0.8-SNAPSHOT</version>
+		  	<version>0.0.9-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common.ontology</groupId>
 		 	<artifactId>graph</artifactId>
-		  	<version>0.0.8-SNAPSHOT</version>
+		  	<version>0.0.9-SNAPSHOT</version>
 		  	<classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.133-SNAPSHOT</version>
+		  <version>0.0.138-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		  <exclusions>
 		  	<exclusion>
@@ -317,25 +337,25 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>oto</artifactId>
-		  <version>0.0.133-SNAPSHOT</version>
+		  <version>0.0.138-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize2</artifactId>
-		  <version>0.0.67-SNAPSHOT</version>
+		  <version>0.0.70-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize2</artifactId>
-		  <version>0.0.67-SNAPSHOT</version>
+		  <version>0.0.70-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.matrixgeneration</groupId>
 		  <artifactId>matrix-generation</artifactId>
-		  <version>0.1.60-SNAPSHOT</version>
+		  <version>0.1.62-SNAPSHOT</version>
 		  <exclusions>
 		  	<exclusion>
 		  		<artifactId>owlapi-tools</artifactId>
@@ -372,18 +392,24 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics</groupId>
 			<artifactId>bioportal-client</artifactId>
-			<version>0.0.13-SNAPSHOT</version>
+			<version>0.0.14-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>ling</artifactId>
-			<version>0.0.19-SNAPSHOT</version>
+			<version>0.0.21-SNAPSHOT</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.googlecode.gwtquery</groupId>
 			<artifactId>gwtquery</artifactId>
-			<version>1.3.3</version>
+			<version>1.4.3</version>
 		</dependency>
+			<dependency>
+			<groupId>com.googlecode.gwtquery</groupId>
+			<artifactId>gwtquery</artifactId>
+			<version>1.4.3</version>
+			<classifier>sources</classifier> 
+		</dependency> -->
 		<dependency>
 			<groupId>org.jdom</groupId>
 			<artifactId>jdom2</artifactId>
@@ -412,7 +438,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.gxt</groupId>
 		  <artifactId>theme</artifactId>
-		  <version>0.0.3-SNAPSHOT</version>
+		  <version>0.0.4-SNAPSHOT</version>
 		  <exclusions>
 		  	<exclusion>
 		  		<artifactId>slf4j-jdk14</artifactId>
@@ -431,30 +457,48 @@
 			<version>1.9.13</version>
 		</dependency>
 		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
+			<version>1.9.13</version>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.13</version>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
 		    <groupId>com.fasterxml.jackson.core</groupId>
 		    <artifactId>jackson-core</artifactId>
 		    <version>2.5.1</version>
 		</dependency>
 		<dependency>
-			<groupId>edu.arizona.biosemantics.common</groupId>
-			<artifactId>log</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-core</artifactId>
+		    <version>2.5.1</version>
+		    <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>log</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
+			<version>0.0.4-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>edu.arizona.biosemantics.common</groupId>
+			<artifactId>log</artifactId>
+			<version>0.0.4-SNAPSHOT</version>
 			<classifier>sources</classifier>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>taxonomy</artifactId>
-			<version>0.0.24-SNAPSHOT</version>
+			<version>0.0.25-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>taxonomy</artifactId>
-			<version>0.0.24-SNAPSHOT</version>
+			<version>0.0.25-SNAPSHOT</version>
 			<classifier>sources</classifier>
 		</dependency>
 		<!-- Needed For JavaEnvUtils.getJreExecutable(), even if removed no errors are displayed -->
@@ -466,70 +510,70 @@
 		<dependency>
 			<groupId>edu.ucdavis.cs</groupId>
 			<artifactId>cfgproject</artifactId>
-			<version>0.0.13-SNAPSHOT</version>
+			<version>0.0.14-SNAPSHOT</version>
 			<classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.ucdavis.cs</groupId>
 		  <artifactId>cfgproject</artifactId>
-		  <version>0.0.13-SNAPSHOT</version>
+		  <version>0.0.14-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>validation</artifactId>
-			<version>0.0.4-SNAPSHOT</version>
+			<version>0.0.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>validation</artifactId>
-			<version>0.0.4-SNAPSHOT</version>
+			<version>0.0.5-SNAPSHOT</version>
 			<classifier>sources</classifier>
 		</dependency>
-		<!-- use the old biology, new version will amke existed serialized classes corrupt -->
+		<!-- use the old biology, new version will make existed serialized classes corrupt -->
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.common</groupId>
 		  <artifactId>biology</artifactId>
-		  <version>0.0.10-SNAPSHOT</version>
+		  <version>0.0.11-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.common</groupId>
 		  <artifactId>biology</artifactId>
-		  <version>0.0.10-SNAPSHOT</version>
+		  <version>0.0.11-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.euler</groupId>
 			<artifactId>euler2</artifactId>
-			<version>0.0.12-SNAPSHOT</version>
+			<version>0.0.15-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.euler</groupId>
 			<artifactId>euler2</artifactId>
-			<version>0.0.12-SNAPSHOT</version>
+			<version>0.0.15-SNAPSHOT</version>
 		  	<classifier>sources</classifier>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.euler</groupId>
 			<artifactId>io</artifactId>
-			<version>0.0.14-SNAPSHOT</version>
+			<version>0.0.15-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.euler</groupId>
 		  <artifactId>alignment</artifactId>
-		  <version>0.0.81-SNAPSHOT</version>
+		  <version>0.0.83-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.euler</groupId>
 		  <artifactId>alignment</artifactId>
-		  <version>0.0.81-SNAPSHOT</version>
+		  <version>0.0.83-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		<dependency>
 		<groupId>edu.arizona.biosemantics.oto</groupId>
 		<artifactId>oto-client</artifactId>
-		<version>0.0.54-SNAPSHOT</version>
+		<version>0.0.55-SNAPSHOT</version>
 			</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
@@ -539,12 +583,12 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.oto</groupId>
 			<artifactId>oto-model</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
+			<version>0.0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto</groupId>
 		  <artifactId>oto-model</artifactId>
-		  <version>0.0.3-SNAPSHOT</version>
+		  <version>0.0.4-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency>
 		<dependency>
@@ -561,7 +605,7 @@
 		<dependency>
     		<groupId>org.gwtbootstrap3</groupId>
     		<artifactId>gwtbootstrap3</artifactId>
-    		<version>0.9.1</version>
+    		<version>0.9.4</version>
     		<scope>provided</scope>
 		</dependency>
 		<!-- for com.bfr.client.Selection in gwt.xml -->
@@ -583,7 +627,24 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
-				<version>2.6.1</version>
+				<version>${gwtVersion}</version>
+				<dependencies>
+	                <dependency>
+	                    <groupId>com.google.gwt</groupId>
+	                    <artifactId>gwt-user</artifactId>
+	                    <version>${gwtVersion}</version>
+	                </dependency>
+	                <dependency>
+	                    <groupId>com.google.gwt</groupId>
+	                    <artifactId>gwt-dev</artifactId>
+	                    <version>${gwtVersion}</version>
+	                </dependency>
+	                <dependency>
+	                    <groupId>com.google.gwt</groupId>
+	                    <artifactId>gwt-servlet</artifactId>
+	                    <version>${gwtVersion}</version>
+	                </dependency>
+                </dependencies>
 				<executions>
 					<execution>
 						<configuration>
@@ -601,6 +662,7 @@
 				<!-- Plugin configuration. There are many available options, see gwt-maven-plugin 
 					documentation at codehaus.org -->
 				<configuration>
+				    <logLevel>INFO</logLevel>
 					<runTarget>index.html</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
 					<!--<i18nMessagesBundle>edu.arizona.biosemantics.etcsite.client.Messages</i18nMessagesBundle> -->
@@ -610,8 +672,19 @@
 					<!--<packageNamePerModule> <edu.arizona.biosemantics.etcsite.EtcSite>edu.arizona.biosemantics.etcsite</edu.arizona.biosemantics.etcsite.EtcSite> 
 						</packageNamePerModule> -->
 					<!-- <scanRemoteServiceRelativePathAnnotation>true</scanRemoteServiceRelativePathAnnotation> -->
-					<extraJvmArgs>-Xmx4096M -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
-			        <localWorkers>5</localWorkers>
+				</configuration>
+			</plugin>
+			
+			<!-- important -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.6.1</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+					<!-- IMPORTANT -->
+					<useIncrementalCompilation>false</useIncrementalCompilation>
 				</configuration>
 			</plugin>
 
@@ -632,21 +705,11 @@
 					<webappDirectory>${webappDirectory}</webappDirectory>
 				</configuration>
 			</plugin>
-			<plugin>
- 				<groupId>org.apache.maven.plugins</groupId>
- 				<artifactId>maven-compiler-plugin</artifactId>
- 				<version>3.6.0</version>
- 				<configuration>
- 				  <source>${java.version}</source>
- 				  <target>${java.version}</target>
- 				  <!-- IMPORTANT -->
- 				  <useIncrementalCompilation>false</useIncrementalCompilation>
- 				</configuration>
- 			</plugin>
+		
 			<plugin>
 			<groupId>org.codehaus.mojo</groupId>
 				<artifactId>aspectj-maven-plugin</artifactId>
-				<version>1.9</version>
+				<version>1.10</version>
 				<configuration>
 				  <!--<showWeaveInfo>true</showWeaveInfo>-->
 				  <source>${java.version}</source>
@@ -696,8 +759,8 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.9.1</version>
 				<configuration>
- 					<additionalparam>${javadoc.opts}</additionalparam>
- 				</configuration>
+                    <additionalparam>${javadoc.opts}</additionalparam>
+                </configuration>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>

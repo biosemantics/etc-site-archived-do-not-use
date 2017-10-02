@@ -33,7 +33,7 @@ public class ImportOtoView extends Composite implements IImportOtoView {
 		
 		dialog = new Dialog();
 		dialog.setBodyBorder(false);
-		dialog.setHeadingText("Import Term Categorizations");
+		dialog.setHeading("Import Term Categorizations");
 		dialog.setPixelSize(-1, -1);
 		dialog.setMinWidth(0);
 		dialog.setMinHeight(0);

@@ -898,7 +898,7 @@ public class MatrixGenerationService extends RemoteServiceServlet implements IMa
 	    				 rowHead.getSource().getTaxonIdentification();
 	    		 taxonIdentifications.add(taxonIdentification);
 	    		 String description = getMorphologyDescription(rowHead.getSource().getSourceFile());
-	    		 
+	    
 	    		 List<String> statementStrings = rowHead.getSource().getStatementString();
 	    		 //TODO: Integrate rank authority and date
 	    		 Taxon taxon = new Taxon(taxonIdentification, description);

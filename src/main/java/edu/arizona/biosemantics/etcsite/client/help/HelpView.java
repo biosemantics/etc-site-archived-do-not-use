@@ -4,6 +4,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
@@ -32,7 +33,7 @@ public class HelpView extends SimpleContainer implements IHelpView {
 	
 	public HelpView() {
 		appearance = GWT.<AccordionLayoutAppearance> create(AccordionLayoutAppearance.class);
-		panel.setHeadingText("Help/Instructions");
+		panel.setHeading("Help/Instructions");
 		this.add(panel);
 	}
 
@@ -49,7 +50,7 @@ public class HelpView extends SimpleContainer implements IHelpView {
 			HTML htmlContent = new HTML(contents.get(i).getContent());
 			htmlContent.getElement().getStyle().setPadding(5, Unit.PX);
 			ContentPanel subPanel = new ContentPanel(appearance);
-			subPanel.setHeadingHtml(contents.get(i).getTitle());
+			subPanel.setHeading(SafeHtmlUtils.fromString(contents.get(i).getTitle()));
 			FlowLayoutContainer flowLayoutContainer = new FlowLayoutContainer();
 			flowLayoutContainer.setScrollMode(ScrollMode.AUTOY);
 			flowLayoutContainer.add(htmlContent);

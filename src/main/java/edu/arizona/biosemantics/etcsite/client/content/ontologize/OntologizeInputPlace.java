@@ -18,6 +18,7 @@ public class OntologizeInputPlace extends OntologizePlace {
 	//InputPlace of semanticMarkup's
 	public static class Tokenizer implements PlaceTokenizer<OntologizeInputPlace> {
 
+		public Tokenizer(){}
 		@Override
 		public OntologizeInputPlace getPlace(String token) {
 			Task task = new Task();

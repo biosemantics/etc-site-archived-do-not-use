@@ -7,6 +7,8 @@ public class AnnotationReviewPlace extends Place  {
 
 	public static class Tokenizer implements PlaceTokenizer<AnnotationReviewPlace> {
 
+		public Tokenizer(){}
+		
 		@Override
 		public AnnotationReviewPlace getPlace(String token) {
 			return new AnnotationReviewPlace();
