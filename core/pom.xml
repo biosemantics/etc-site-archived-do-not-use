@@ -4,7 +4,7 @@
 	<groupId>edu.arizona.biosemantics.etcsite</groupId>
 	<artifactId>core</artifactId>
 	<packaging>war</packaging>
-	<version>0.0.5-SNAPSHOT-debug</version>
+	<version>0.0.6-SNAPSHOT</version>
 	
 	<properties>
 		<gwtVersion>2.8.0</gwtVersion>
@@ -91,23 +91,23 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>log</artifactId>
-			<version>0.0.3-SNAPSHOT-debug</version>
+			<version>0.0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>log</artifactId>
-			<version>0.0.3-SNAPSHOT-debug</version>
+			<version>0.0.4-SNAPSHOT</version>
 			<classifier>sources</classifier>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics</groupId>
 			<artifactId>gxt</artifactId>
-			<version>0.0.11-SNAPSHOT-debug</version>
+			<version>0.0.12-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.arizona.biosemantics</groupId>
 			<artifactId>gxt</artifactId>
-			<version>0.0.11-SNAPSHOT-debug</version>
+			<version>0.0.12-SNAPSHOT</version>
 			<classifier>sources</classifier>
 		</dependency>
 		<!-- http://dist.wso2.org/maven2/ -->
@@ -145,13 +145,13 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.common</groupId>
 			<artifactId>ling</artifactId>
-			<version>0.0.19-SNAPSHOT-debug</version>
+			<version>0.0.20-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize</artifactId>
-		  <version>0.1.22-SNAPSHOT-debug</version>
+		  <version>0.1.23-SNAPSHOT</version>
 		  <classifier>sources</classifier>
 		</dependency> 
 		
@@ -159,7 +159,7 @@
 		<dependency>
 		  <groupId>edu.arizona.biosemantics.oto2</groupId>
 		  <artifactId>ontologize</artifactId>
-		  <version>0.1.22-SNAPSHOT-debug</version>
+		  <version>0.1.23-SNAPSHOT</version>
 		  <classifier>classes</classifier>
 		</dependency>
 		
@@ -172,7 +172,7 @@
 		<dependency>
 			<groupId>edu.arizona.biosemantics.etcsite</groupId>
 		  	<artifactId>etcsitehelp</artifactId>
-		  	<version>0.0.2-SNAPSHOT-debug</version>
+		  	<version>0.0.3-SNAPSHOT</version>
 		  	<classifier>classes</classifier>
 		</dependency>
         <dependency>
